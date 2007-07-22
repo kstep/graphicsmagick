@@ -131,10 +131,6 @@ TESTS_TIFF_XFAIL_TESTS = \
 	tests/rwblob_EPT_gray.sh \
 	tests/rwblob_EPT_pallette.sh \
 	tests/rwblob_EPT_truecolor.sh \
-	tests/rwblob_PTIF_bilevel.sh \
-	tests/rwblob_PTIF_gray.sh \
-	tests/rwblob_PTIF_pallette.sh \
-	tests/rwblob_PTIF_truecolor.sh \
 	tests/rwblob_TIFF_bilevel.sh \
 	tests/rwblob_TIFF_gray.sh \
 	tests/rwblob_TIFF_pallette.sh \
@@ -198,10 +194,6 @@ TESTS_ZIP_XFAIL_TESTS = \
 endif
 
 TESTS_XFAIL_TESTS = \
-	tests/rwblob_PTIF_bilevel.sh \
-	tests/rwblob_PTIF_gray.sh \
-	tests/rwblob_PTIF_pallette.sh \
-	tests/rwblob_PTIF_truecolor.sh \
 	$(TESTS_FPX_XFAIL_TESTS) \
 	$(TESTS_JBIG_XFAIL_TESTS) \
 	$(TESTS_JP2_XFAIL_TESTS) \
@@ -406,10 +398,6 @@ TESTS_TESTS = \
 	tests/rwblob_PSD_gray.sh \
 	tests/rwblob_PSD_pallette.sh \
 	tests/rwblob_PSD_truecolor.sh \
-	tests/rwblob_PTIF_bilevel.sh \
-	tests/rwblob_PTIF_gray.sh \
-	tests/rwblob_PTIF_pallette.sh \
-	tests/rwblob_PTIF_truecolor.sh \
 	tests/rwblob_RAS_bilevel.sh \
 	tests/rwblob_RAS_gray.sh \
 	tests/rwblob_RAS_pallette.sh \
@@ -893,7 +881,6 @@ CHECK_BLOB_FORMATS = \
 	PNM \
 	PPM \
 	PSD \
-	PTIF \
 	RAS \
 	SGI \
 	SUN \

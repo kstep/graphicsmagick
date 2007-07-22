@@ -3325,10 +3325,6 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasTIFF_FALSE@	tests/rwblob_EPT_gray.sh \
 @HasTIFF_FALSE@	tests/rwblob_EPT_pallette.sh \
 @HasTIFF_FALSE@	tests/rwblob_EPT_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwblob_PTIF_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwblob_PTIF_gray.sh \
-@HasTIFF_FALSE@	tests/rwblob_PTIF_pallette.sh \
-@HasTIFF_FALSE@	tests/rwblob_PTIF_truecolor.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_bilevel.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_gray.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_pallette.sh \
@@ -3387,10 +3383,6 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasZLIB_FALSE@	tests/rwfile_MIFF_truecolor_zip.sh
 
 TESTS_XFAIL_TESTS = \
-	tests/rwblob_PTIF_bilevel.sh \
-	tests/rwblob_PTIF_gray.sh \
-	tests/rwblob_PTIF_pallette.sh \
-	tests/rwblob_PTIF_truecolor.sh \
 	$(TESTS_FPX_XFAIL_TESTS) \
 	$(TESTS_JBIG_XFAIL_TESTS) \
 	$(TESTS_JP2_XFAIL_TESTS) \
@@ -3595,10 +3587,6 @@ TESTS_TESTS = \
 	tests/rwblob_PSD_gray.sh \
 	tests/rwblob_PSD_pallette.sh \
 	tests/rwblob_PSD_truecolor.sh \
-	tests/rwblob_PTIF_bilevel.sh \
-	tests/rwblob_PTIF_gray.sh \
-	tests/rwblob_PTIF_pallette.sh \
-	tests/rwblob_PTIF_truecolor.sh \
 	tests/rwblob_RAS_bilevel.sh \
 	tests/rwblob_RAS_gray.sh \
 	tests/rwblob_RAS_pallette.sh \
@@ -4080,7 +4068,6 @@ CHECK_BLOB_FORMATS = \
 	PNM \
 	PPM \
 	PSD \
-	PTIF \
 	RAS \
 	SGI \
 	SUN \

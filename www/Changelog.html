@@ -24,6 +24,9 @@
 2007-07-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> tests/Makefile.am: Don't test PTIF format with blob I/O since it
+        is not possible to pass the rwblob test and it is really an output
+        driver rather than a format.<BR>
   <LI> libtool: Update to latest CVS libtool.
   <LI> magick/constitute.c (ExportModulo8Quantum): Move Import and
         Export macros from header file since they are not used anywhere
