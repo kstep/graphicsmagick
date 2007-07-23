@@ -24,6 +24,22 @@
 2007-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/delegate.c (UnixShellTextEscape): Don't escape newline
+        character since it performs the opposite of what is desired.
+
+</UL>
+<p>
+2007-07-23  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> magick/delegate.c (UnixShellTextEscape): Fix fencepost error
+          when checking whether escaping is safe.
+
+</UL>
+<p>
+2007-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> Makefile.am: Retire VMS and MacOS 9 support from package.
 
 </UL>
