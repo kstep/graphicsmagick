@@ -527,16 +527,16 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         ThrowWriterTemporaryFileException(ps_filename);
 
       /* Select desired EPS level */
-      strcpy(subformat,"eps");
+      (void) strcpy(subformat,"eps");
       if (LocaleCompare(image_info->magick,"EPT2") == 0)
-        strcpy(subformat,"eps2");
+        (void) strcpy(subformat,"eps2");
       else if (LocaleCompare(image_info->magick,"EPT3") == 0)
-        strcpy(subformat,"eps3");
+        (void) strcpy(subformat,"eps3");
 
       /* JPEG compression requires at least EPS2 */
       if ((image->compression == JPEGCompression) &&
           (LocaleCompare(subformat,"EPS") == 0))
-        strcpy(subformat,"eps2");
+        (void) strcpy(subformat,"eps2");
 
       FormatString(image->filename,"%s:%.1024s",subformat,ps_filename);
       if (logging)

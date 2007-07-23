@@ -225,7 +225,7 @@ static void NormalizeSamplingFactor(ImageInfo *image_info)
     vertical=2;
 
   FormatString(buffer,"%ux%u",horizontal,vertical);
-  CloneString(&image_info->sampling_factor,buffer);
+  (void) CloneString(&image_info->sampling_factor,buffer);
 }
 
 /*

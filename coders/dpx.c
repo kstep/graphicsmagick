@@ -159,15 +159,15 @@ typedef union _R32_u
   R32   f;
 } R32_u;
 
-#define SET_UNDEFINED_U8(value)  (value=~0U)
-#define SET_UNDEFINED_U16(value) (value=~0U)
-#define SET_UNDEFINED_U32(value) (value=~0U)
+#define SET_UNDEFINED_U8(value)  (value=0xFFU)
+#define SET_UNDEFINED_U16(value) (value=0xFFFFU)
+#define SET_UNDEFINED_U32(value) (value=0xFFFFFFFFU)
 #define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=~0);
 #define SET_UNDEFINED_ASCII(value) ((void) memset(value,0,sizeof(value)))
 
-#define IS_UNDEFINED_U8(value) (value == ((U8) ~0U))
-#define IS_UNDEFINED_U16(value) (value == ((U16) ~0U))
-#define IS_UNDEFINED_U32(value) (value == ((U32) ~0U))
+#define IS_UNDEFINED_U8(value) (value == ((U8) 0xFFU))
+#define IS_UNDEFINED_U16(value) (value == ((U16) 0xFFFFU))
+#define IS_UNDEFINED_U32(value) (value == ((U32) 0xFFFFFFFFU))
 #define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) ~0))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
@@ -1337,7 +1337,7 @@ static void ReadRowSamples(const unsigned char *scanline,
 
           if (endian_type == MSBEndian)
             {
-              for (i=samples_per_row/3; i > 0; --i)
+              for (i=samples_per_row/3; i != 0; --i)
                 {
                   datum=0;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
@@ -1349,13 +1349,13 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=0;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
-                  for (i=(samples_per_row % 3); i > 0; --i)
+                  for (i=(samples_per_row % 3); i != 0; --i)
                     *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
                 }
             }
           else if (endian_type == LSBEndian)
             {
-              for (i=samples_per_row/3; i > 0; --i)
+              for (i=samples_per_row/3; i != 0; --i)
                 {
                   datum=0;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
@@ -1367,7 +1367,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=0;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
-                  for (i=(samples_per_row % 3); i > 0; --i)
+                  for (i=(samples_per_row % 3); i != 0; --i)
                     *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
                 }
             }
@@ -1784,7 +1784,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (swab)
         SwabDPXMPFilmInfo(&dpx_mp_info);
 
-      if (dpx_file_info.industry_section_length > 0)
+      if (dpx_file_info.industry_section_length != 0)
         {
           StringToAttribute(image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
           StringToAttribute(image,"DPX:mp.film.type",dpx_mp_info.film_type);
@@ -1812,7 +1812,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (swab)
         SwabDPXTVInfo(&dpx_tv_info);
 
-      if (dpx_file_info.industry_section_length > 0)
+      if (dpx_file_info.industry_section_length != 0)
         {
           U32ToBitsAttribute(image,"DPX:tv.time.code",dpx_tv_info.time_code);
           U32ToBitsAttribute(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
@@ -2134,7 +2134,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Determine number of samples per pixel element.
       */
       samples_per_pixel=DPXSamplesPerPixel(element_descriptor);
-      if (samples_per_pixel > 0)
+      if (samples_per_pixel != 0)
         {
           unsigned int
             max_value_given_bits = MaxValueGivenBits(bits_per_sample),
@@ -2867,7 +2867,7 @@ static void WriteRowSamples(const sample_t *samples,
           if (endian_type == MSBEndian)
             {
               /* Standard specified datum order */
-              for (i=(samples_per_row/3); i > 0; --i)
+              for (i=(samples_per_row/3); i != 0; --i)
                 {
                   datum=0;
                   packed_u32=0;
@@ -2880,7 +2880,7 @@ static void WriteRowSamples(const sample_t *samples,
                 {
                   datum=0;
                   packed_u32=0;
-                  for (i=(samples_per_row % 3); i > 0; --i)
+                  for (i=(samples_per_row % 3); i != 0; --i)
                     packed_u32 |= (*samples++ << shifts[datum++]);
                   MSBPackedU32WordToOctets(packed_u32,scanline);
                 }
@@ -2888,7 +2888,7 @@ static void WriteRowSamples(const sample_t *samples,
           else if (endian_type == LSBEndian)
             {
               /* Standard specified datum order */
-              for (i=(samples_per_row/3); i > 0; --i)
+              for (i=(samples_per_row/3); i != 0; --i)
                 {
                   datum=0;
                   packed_u32=0;
@@ -2901,7 +2901,7 @@ static void WriteRowSamples(const sample_t *samples,
                 {
                   datum=0;
                   packed_u32=0;
-                  for (i=(samples_per_row % 3); i > 0; --i)
+                  for (i=(samples_per_row % 3); i != 0; --i)
                     packed_u32 |= (*samples++ << shifts[datum++]);
                   LSBPackedU32WordToOctets(packed_u32,scanline);
                 }
@@ -4072,7 +4072,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 if (chroma_pixels == (const PixelPacket *) NULL)
                   break;
                 
-                for (x=image->columns; x > 0; x -= 2)
+                for (x=image->columns; x != 0; x -= 2)
                   {
                     *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
                     *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr);  /* Cr */
@@ -4124,7 +4124,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 if (chroma_pixels == (const PixelPacket *) NULL)
                   break;
 
-                for (x=image->columns; x > 0; x -= 2)
+                for (x=image->columns; x != 0; x -= 2)
                   {
                     *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
                     *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
@@ -4147,7 +4147,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 if (chroma_pixels == (const PixelPacket *) NULL)
                   break;
 
-                for (x=image->columns; x > 0; x -= 2)
+                for (x=image->columns; x != 0; x -= 2)
                   {
                     *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
                     *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */

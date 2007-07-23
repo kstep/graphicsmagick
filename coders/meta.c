@@ -1825,7 +1825,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     str[taglen] = 0;
 
     /* now finish up by formatting this binary data into ASCII equivalent */
-    if (strlen((char *)readable) > 0)
+    if (strlen((char *)readable) != 0)
       FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
@@ -1948,7 +1948,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     str[ taglen ] = 0;
 
     /* now finish up by formatting this binary data into ASCII equivalent */
-    if (strlen((char *)readable) > 0)
+    if (strlen((char *)readable) != 0)
       FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
@@ -2059,7 +2059,7 @@ static int format8BIM(Image *ifile, Image *ofile)
         /* now finish up by formatting this binary data into
          * ASCII equivalent
          */
-        if (strlen((const char *) PString) > 0)
+        if (strlen((const char *) PString) != 0)
           FormatString(temp, "8BIM#%d#%s=", ID, PString);
         else
           FormatString(temp, "8BIM#%d=", ID);

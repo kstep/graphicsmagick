@@ -3972,7 +3972,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
     MSLPushImage(&msl_info,*image);
   (void) xmlSubstituteEntitiesDefault(1);
 
-  memset(&SAXModules,0,sizeof(SAXModules));
+  (void) memset(&SAXModules,0,sizeof(SAXModules));
   SAXModules.internalSubset=MSLInternalSubset;
   SAXModules.isStandalone=MSLIsStandalone;
   SAXModules.hasInternalSubset=MSLHasInternalSubset;

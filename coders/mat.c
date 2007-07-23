@@ -909,7 +909,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);    
     for (x=0; x < (long) image->rows; x++)
     {
-      WriteBlobByte(image,ScaleQuantumToChar(q->red));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(q->red));
       q++;
     }
   }
@@ -918,7 +918,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
     for (x=0; x < (long) image->rows; x++)
     {
-      WriteBlobByte(image,ScaleQuantumToChar(q->green));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(q->green));
       q++;
     }
   }
@@ -927,12 +927,12 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
     for (x=0; x < (long) image->rows; x++)
     {
-      WriteBlobByte(image,ScaleQuantumToChar(q->blue));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(q->blue));
       q++;
     }
   }
 
-  while(padding-->0) WriteBlobByte(image,0);
+  while(padding-->0) (void) WriteBlobByte(image,0);
 
   status=True;
 

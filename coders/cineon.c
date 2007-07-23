@@ -59,11 +59,9 @@ static unsigned int
 
 typedef char ASCII;
 typedef magick_uint8_t U8;
-typedef magick_uint16_t U16;
 typedef magick_uint32_t U32;
 typedef magick_int32_t S32;
 typedef float R32;
-typedef unsigned int sample_t;
 
 /*
   Union to allow R32 to be accessed as an unsigned U32 type for "unset
@@ -75,17 +73,15 @@ typedef union _R32_u
   R32   f;
 } R32_u;
 
-#define SET_UNDEFINED_U8(value)  (value=~0U)
-#define SET_UNDEFINED_U16(value) (value=~0U)
-#define SET_UNDEFINED_U32(value) (value=~0U)
+#define SET_UNDEFINED_U8(value)  (value=0xFFU)
+#define SET_UNDEFINED_U32(value) (value=0xFFFFFFFFU)
 #define SET_UNDEFINED_S32(value) (value=0x80000000)
 
 #define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=0x7F800000U);
 #define SET_UNDEFINED_ASCII(value) ((void) memset(value,0,sizeof(value)))
 
-#define IS_UNDEFINED_U8(value) (value == ((U8) ~0U))
-#define IS_UNDEFINED_U16(value) (value == ((U16) ~0U))
-#define IS_UNDEFINED_U32(value) (value == ((U32) ~0U))
+#define IS_UNDEFINED_U8(value) (value == ((U8) 0xFFU))
+#define IS_UNDEFINED_U32(value) (value == ((U32) 0xFFFFFFFFU))
 #define IS_UNDEFINED_S32(value) (value == ((S32) 0x80000000))
 #define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) 0x7F800000U))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
@@ -263,18 +259,6 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
     buffer[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_U8(member)) \
-    { \
-      FormatString(buffer,"%u",(unsigned int) member); \
-      (void) SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
-    } \
-}
-#define U16ToAttribute(image,name,member) \
-{ \
-  char \
-    buffer[MaxTextExtent]; \
-\
-  if (!IS_UNDEFINED_U16(member)) \
     { \
       FormatString(buffer,"%u",(unsigned int) member); \
       (void) SetImageAttribute(image,name,buffer); \
@@ -882,22 +866,6 @@ ModuleExport void UnregisterCINEONImage(void)
     member=(U8) strtol(attribute->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U8(member); \
-}
-
-#define AttributeToU16(image_info,image,key,member) \
-{ \
-  const ImageAttribute \
-    *attribute; \
-\
-  const char \
-    *definition_value; \
-\
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=(U16) strtol(definition_value, (char **) NULL, 10); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=(U16) strtol(attribute->value, (char **) NULL, 10); \
-  else \
-    SET_UNDEFINED_U16(member); \
 }
 
 #define AttributeToU32(image_info,image,key,member) \

@@ -693,7 +693,7 @@ static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
           */
           p=image->colormap;
           scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-          for (i=image->colors; i > 0; i--)
+          for (i=image->colors; i != 0; i--)
             {
               if ((p->red != scale*(p->red/scale)) ||
                   (p->green != scale*(p->green/scale)) ||
@@ -903,14 +903,14 @@ static void CompactSamples( const unsigned long total_pixels,
       BitStreamInitializeRead(&read_stream,samples);
       BitStreamInitializeWrite(&write_stream,samples);
 
-      for (pixels = total_pixels; pixels > 0 ; pixels--)
+      for (pixels = total_pixels; pixels != 0 ; pixels--)
         {
-          for (count = quantum_samples; count > 0 ; count--)
+          for (count = quantum_samples; count != 0 ; count--)
             {
               quantum_value=BitStreamMSBRead(&read_stream,bits_per_sample);
               BitStreamMSBWrite(&write_stream,bits_per_sample,quantum_value);
             }
-          for (count = samples_per_pixel-quantum_samples; count > 0 ; count--)
+          for (count = samples_per_pixel-quantum_samples; count != 0 ; count--)
             {
               (void) BitStreamMSBRead(&read_stream,bits_per_sample);
             }
@@ -1258,7 +1258,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "ICC ICM embedded profile with length %lu bytes",
                                   (unsigned long)length);
-            SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
+            (void) SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
           }
 #endif /* defined(TIFFTAG_ICCPROFILE) */
         /*
@@ -1327,7 +1327,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           int
             sample_index;
 
-          if (extra_samples > 0)
+          if (extra_samples != 0)
             {
               alpha_type=AssociatedAlpha;
               image->matte=True;
@@ -1387,13 +1387,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             {
             default:
             case UnspecifiedAlpha:
-              strlcpy(alpha_string,"Unspecified",MaxTextExtent);
+              (void) strlcpy(alpha_string,"Unspecified",MaxTextExtent);
               break;
             case UnassociatedAlpha:
-              strlcpy(alpha_string,"Unassociated",MaxTextExtent);
+              (void) strlcpy(alpha_string,"Unassociated",MaxTextExtent);
               break;
             case AssociatedAlpha:
-              strlcpy(alpha_string,"Associated",MaxTextExtent);
+              (void) strlcpy(alpha_string,"Associated",MaxTextExtent);
               break;
             }
           (void) SetImageAttribute(image,"alpha",alpha_string);
@@ -1491,7 +1491,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                transferred too many scanlines. (JPEGLib)." caused by
                YCbCr subsampling, but it returns data in RGB rather
                than YCbCr. */
-            TIFFSetField( tiff, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB );
+            (void) TIFFSetField( tiff, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB );
             photometric=PHOTOMETRIC_RGB;
           }
         method=RGBAPuntMethod;
@@ -2275,10 +2275,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     */
                     p=tile_pixels+(tile_rows-tile_rows_remaining)*tile_columns;
                     q=strip+(x+(tile_rows_remaining-1)*image->columns);
-                    for ( tile_row=tile_rows_remaining; tile_row > 0; tile_row--)
+                    for ( tile_row=tile_rows_remaining; tile_row != 0; tile_row--)
                       {
                         if (image->matte)
-                          for (tile_column=tile_columns_remaining; tile_column >0;
+                          for (tile_column=tile_columns_remaining; tile_column != 0;
                                tile_column--)
                             {
                               q->red=ScaleCharToQuantum(TIFFGetR(*p));
@@ -2289,7 +2289,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                               p++;
                             }
                         else
-                          for (tile_column=tile_columns_remaining; tile_column >0;
+                          for (tile_column=tile_columns_remaining; tile_column != 0;
                                tile_column--)
                             {
                               q->red=ScaleCharToQuantum(TIFFGetR(*p));
@@ -2381,7 +2381,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 q+=image->columns-1;
                 if (image->matte)
-                  for (x=(long) image->columns; x > 0; x--)
+                  for (x=(long) image->columns; x != 0; x--)
                     {
                       q->red=ScaleCharToQuantum(TIFFGetR(*p));
                       q->green=ScaleCharToQuantum(TIFFGetG(*p));
@@ -2391,7 +2391,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       q--;
                     }
                 else
-                  for (x=(long) image->columns; x > 0; x--)
+                  for (x=(long) image->columns; x != 0; x--)
                     {
                       q->red=ScaleCharToQuantum(TIFFGetR(*p));
                       q->green=ScaleCharToQuantum(TIFFGetG(*p));
@@ -2705,8 +2705,8 @@ static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
   */
   clone_info=CloneImageInfo(image_info);
   clone_info->adjoin=True;
-  strlcpy(clone_info->magick,"TIFF",MaxTextExtent);
-  strlcpy(image->magick,"TIFF",MaxTextExtent);
+  (void) strlcpy(clone_info->magick,"TIFF",MaxTextExtent);
+  (void) strlcpy(image->magick,"TIFF",MaxTextExtent);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Invoking \"%.1024s\" encoder, monochrome=%s, grayscale=%s",
                         "TIFF",
@@ -3979,7 +3979,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (filename_is_temporary)
         LiberateTemporaryFile(filename);
       else
-        unlink(filename);
+        (void) unlink(filename);
       CloseBlob(image);
       return (MagickFail);
     }

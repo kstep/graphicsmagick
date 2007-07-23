@@ -67,7 +67,7 @@ extern "C" {
     remaining_quantum_bits = requested_bits;
     quantum = 0;
 
-    while (remaining_quantum_bits > 0)
+    while (remaining_quantum_bits != 0)
       {
         register unsigned int
           octet_bits;
@@ -130,7 +130,7 @@ extern "C" {
     register unsigned int
       remaining_quantum_bits = requested_bits;
 
-    while (remaining_quantum_bits > 0)
+    while (remaining_quantum_bits != 0)
       {
         register unsigned int
           octet_bits;
@@ -211,7 +211,7 @@ extern "C" {
     remaining_quantum_bits = requested_bits;
     quantum = 0;
     
-    while (remaining_quantum_bits > 0)
+    while (remaining_quantum_bits != 0)
       {
         register unsigned int
           word_bits;
