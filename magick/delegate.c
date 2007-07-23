@@ -370,7 +370,7 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
           (c == '\n') ||
           (c == '$'))
         {
-          if (length+1 > size-1)
+          if (length+1 >= size-1)
             break;
           *p = '\\';
           p++;
