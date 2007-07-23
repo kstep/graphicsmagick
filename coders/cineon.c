@@ -75,17 +75,17 @@ typedef union _R32_u
   R32   f;
 } R32_u;
 
-#define SET_UNDEFINED_U8(value)  (value=~0)
-#define SET_UNDEFINED_U16(value) (value=~0)
-#define SET_UNDEFINED_U32(value) (value=~0)
+#define SET_UNDEFINED_U8(value)  (value=~0U)
+#define SET_UNDEFINED_U16(value) (value=~0U)
+#define SET_UNDEFINED_U32(value) (value=~0U)
 #define SET_UNDEFINED_S32(value) (value=0x80000000)
 
 #define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=0x7F800000U);
-#define SET_UNDEFINED_ASCII(value) (memset(value,0,sizeof(value)))
+#define SET_UNDEFINED_ASCII(value) ((void) memset(value,0,sizeof(value)))
 
-#define IS_UNDEFINED_U8(value) (value == ((U8) ~0))
-#define IS_UNDEFINED_U16(value) (value == ((U16) ~0))
-#define IS_UNDEFINED_U32(value) (value == ((U32) ~0))
+#define IS_UNDEFINED_U8(value) (value == ((U8) ~0U))
+#define IS_UNDEFINED_U16(value) (value == ((U16) ~0U))
+#define IS_UNDEFINED_U32(value) (value == ((U32) ~0U))
 #define IS_UNDEFINED_S32(value) (value == ((S32) 0x80000000))
 #define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) 0x7F800000U))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
@@ -252,8 +252,8 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      strlcpy(buffer,member,Min(sizeof(member)+1,MaxTextExtent)); \
-      SetImageAttribute(image,name,buffer); \
+      (void) strlcpy(buffer,member,Min(sizeof(member)+1,MaxTextExtent)); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -265,7 +265,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U8(member)) \
     { \
       FormatString(buffer,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -277,7 +277,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U16(member)) \
     { \
       FormatString(buffer,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -289,7 +289,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U32(member)) \
     { \
       FormatString(buffer,"%u",member); \
-      SetImageAttribute(image,name,buffer); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -301,7 +301,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_R32(member)) \
     { \
       FormatString(buffer,"%g",member); \
-      SetImageAttribute(image,name,buffer); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -313,7 +313,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_S32(member)) \
     { \
       FormatString(buffer,"%d",member); \
-      SetImageAttribute(image,name,buffer); \
+      (void) SetImageAttribute(image,name,buffer); \
       LogSetImageAttribute(name,buffer); \
     } \
 }
@@ -462,7 +462,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "File magic 0x%04X",cin_file_info.magic);
 
-  if (cin_file_info.magic != 0x802A5FD7)
+  if (cin_file_info.magic != 0x802A5FD7U)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -488,10 +488,10 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
       creation_datetime[24];
 
     creation_datetime[0]='\0';
-    strlcat(creation_datetime,cin_file_info.creation_date,sizeof(cin_file_info.creation_date)+1);
+    (void) strlcat(creation_datetime,cin_file_info.creation_date,sizeof(cin_file_info.creation_date)+1);
     if (creation_datetime[0]!='\0')
-      strlcat(creation_datetime,":",sizeof(creation_datetime));
-    strlcat(creation_datetime,cin_file_info.creation_time,sizeof(creation_datetime));
+      (void) strlcat(creation_datetime,":",sizeof(creation_datetime));
+    (void) strlcat(creation_datetime,cin_file_info.creation_time,sizeof(creation_datetime));
     StringToAttribute(image,"timestamp",creation_datetime);
     StringToAttribute(image,"DPX:file.creation.datetime",creation_datetime);
   }
@@ -567,10 +567,10 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
       source_creation_datetime[MaxTextExtent];
 
     source_creation_datetime[0]='\0';
-    strlcat(source_creation_datetime,cin_file_info.creation_date,sizeof(cin_file_info.creation_date)+1);
+    (void) strlcat(source_creation_datetime,cin_file_info.creation_date,sizeof(cin_file_info.creation_date)+1);
     if (source_creation_datetime[0]!='\0')
-      strlcat(source_creation_datetime,":",sizeof(source_creation_datetime));
-    strlcat(source_creation_datetime,cin_file_info.creation_time,sizeof(source_creation_datetime));
+      (void) strlcat(source_creation_datetime,":",sizeof(source_creation_datetime));
+    (void) strlcat(source_creation_datetime,cin_file_info.creation_time,sizeof(source_creation_datetime));
     StringToAttribute(image,"DPX:source.creation.datetime",source_creation_datetime);
   }
   StringToAttribute(image,"DPX:source.device.name",cin_source_info.input_device);
@@ -982,13 +982,13 @@ static void GenerateCineonTimeStamp(char *date_str, size_t date_str_length, char
   current_time=time((time_t *) NULL);
   t=localtime(&current_time);
 
-  memset(timestamp,0,sizeof(timestamp));
-  strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",t);
+  (void) memset(timestamp,0,sizeof(timestamp));
+  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",t);
   timestamp[MaxTextExtent-1]='\0';
-  memset(date_str,0,date_str_length);
-  strlcpy(date_str,timestamp,11);
-  memset(time_str,0,time_str_length);
-  strlcpy(time_str,timestamp+11,15);
+  (void) memset(date_str,0,date_str_length);
+  (void) strlcpy(date_str,timestamp,11);
+  (void) memset(time_str,0,time_str_length);
+  (void) strlcpy(time_str,timestamp+11,15);
 }
 
 
@@ -1049,7 +1049,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /*
     File information header
   */
-  memset(&cin_file_info,0,sizeof(cin_file_info));
+  (void) memset(&cin_file_info,0,sizeof(cin_file_info));
 
   /* Magick number (0x802A5FD7) */
   cin_file_info.magic = 0x802A5FD7;
@@ -1074,9 +1074,9 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     cin_file_info.user_defined_length +
     image->rows*image->columns*4;
   /* Version number of header format */
-  strlcpy(cin_file_info.header_format_version,"V4.5",sizeof(cin_file_info.header_format_version));
+  (void) strlcpy(cin_file_info.header_format_version,"V4.5",sizeof(cin_file_info.header_format_version));
   /* Image filename */
-  strlcpy(cin_file_info.image_filename,image->filename,sizeof(cin_file_info.image_filename));
+  (void) strlcpy(cin_file_info.image_filename,image->filename,sizeof(cin_file_info.image_filename));
   /* Creation date "yyyy:mm:dd", and time "hh:mm:ssLTZ" */
   GenerateCineonTimeStamp(cin_file_info.creation_date,sizeof(cin_file_info.creation_date),
                           cin_file_info.creation_time,sizeof(cin_file_info.creation_time));
@@ -1084,7 +1084,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /*
     Image information header
   */
-  memset(&cin_image_info,0,sizeof(cin_image_info));
+  (void) memset(&cin_image_info,0,sizeof(cin_image_info));
   /* Image orientation */
   cin_image_info.orientation = 0; /* left to right, top to bottom */
   /* Number of image channels (1-8) */
@@ -1166,7 +1166,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /*
     Image origination header.
   */
-  memset(&cin_source_info,0,sizeof(cin_source_info));
+  (void) memset(&cin_source_info,0,sizeof(cin_source_info));
   AttributeToS32(image_info,image,"DPX:source.x-offset",cin_source_info.x_offset); /* X offset */
   AttributeToS32(image_info,image,"DPX:source.y-offset",cin_source_info.y_offset); /* Y offset */
   /* Source image filename */
@@ -1206,7 +1206,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /*
     Film/Frame Information
   */
-  memset(&cin_mp_info,0,sizeof(cin_mp_info));
+  (void) memset(&cin_mp_info,0,sizeof(cin_mp_info));
   /* Film mfg. ID code (2 digits from film edge code) */
   AttributeToU8(image_info,image,"DPX:mp.film.manufacturer.id",cin_mp_info.film_mfg_id_code);
   /* Film type (2 digits from film edge code) */
@@ -1334,7 +1334,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     scanline=MagickAllocateMemory(unsigned char *,scanline_bytes);
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-    memset(scanline,0,scanline_bytes);
+    (void) memset(scanline,0,scanline_bytes);
 
     for (y=0; y < (long) image->rows; y++)
       {
@@ -1372,9 +1372,9 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
 
   if ((magick_off_t) cin_file_info.file_size != TellBlob(image))
     {
-      printf("### File length %u, TellBlob says %u\n",
-             cin_file_info.file_size,
-             (unsigned int) TellBlob(image));
+      (void) printf("### File length %u, TellBlob says %u\n",
+                    cin_file_info.file_size,
+                    (unsigned int) TellBlob(image));
     }
 
   CloseBlob(image);

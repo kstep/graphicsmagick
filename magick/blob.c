@@ -365,9 +365,7 @@ static inline size_t WriteBlobStream(Image *image,const size_t length,const void
     if ((dest=ExtendBlobWriteStream(image,length)) == (void *) NULL)
       return 0;
 
-  fflush(stdout);
   (void) memcpy(dest,data,length);
-  fflush(stdout);
   image->blob->offset+=length;
   if (image->blob->offset > (magick_off_t) image->blob->length)
     image->blob->length=image->blob->offset;
@@ -821,7 +819,7 @@ MagickExport void CloseBlob(Image *image)
             /*
               Truncate memory-mapped output file to size.
             */
-            ftruncate(fileno(image->blob->file),image->blob->length);
+            (void) ftruncate(fileno(image->blob->file),image->blob->length);
             status=fclose(image->blob->file);
           }
         break;

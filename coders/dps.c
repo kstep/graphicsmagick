@@ -152,8 +152,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     {
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed to open X11 display!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed to open X11 display!");
       return((Image *) NULL);
     }
   /*
@@ -167,7 +167,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to open blob!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"failed to open blob!");
       return((Image *) NULL);
     }
   /*
@@ -199,8 +199,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       DestroyImage(image);
       MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed to initialize visual info!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed to initialize visual info!");
       return((Image *) NULL);
     }
   /*
@@ -217,8 +217,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       DestroyImage(image);
       MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed to create pixmap for image!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed to create pixmap for image!");
       return((Image *) NULL);
     }
   /*
@@ -232,8 +232,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       DestroyImage(image);
       MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed to rasterize EPS into pixmap!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed to rasterize EPS into pixmap!");
       return((Image *) NULL);
     }
   /*
@@ -247,8 +247,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       DestroyImage(image);
       MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed initialize DPS X image!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed initialize DPS X image!");
       return((Image *) NULL);
     }
   /*
@@ -262,8 +262,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       XDestroyImage(dps_image);
       MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "failed allocate memory for colormap!");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "failed allocate memory for colormap!");
       return((Image *) NULL);
     }
   if ((visual_info->class != DirectColor) &&
@@ -427,8 +427,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
           XDestroyImage(dps_image);
           MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
-          LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "failed allocate image colormap!");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "failed allocate image colormap!");
           return((Image *) NULL);
         }
       for (i=0; i < (long) image->colors; i++)

@@ -148,6 +148,7 @@ struct _DrawContext
 };
 
 /* Vector table for invoking subordinate renderers */
+#if 0
 struct _DrawVTable
 {
   void (*DrawAnnotation)
@@ -334,6 +335,7 @@ struct _DrawVTable
     (DrawContext context, unsigned long x1, unsigned long y1,
      unsigned long x2, unsigned long y2);
 };
+#endif
 
 /*
   Forward declarations.

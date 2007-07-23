@@ -497,8 +497,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
           if ((source_colorspace == UndefinedColorspace) ||
               (target_colorspace == UndefinedColorspace))
             {
-              cmsCloseProfile(source_profile);
-              cmsCloseProfile(target_profile);
+              (void) cmsCloseProfile(source_profile);
+              (void) cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
@@ -506,8 +506,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
           if (IsGrayColorspace(source_colorspace) &&
               !IsGrayImage(image,&image->exception))
             {
-              cmsCloseProfile(source_profile);
-              cmsCloseProfile(target_profile);
+              (void) cmsCloseProfile(source_profile);
+              (void) cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
@@ -515,8 +515,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
           if (IsCMYKColorspace(source_colorspace) &&
               !IsCMYKColorspace(image->colorspace))
             {
-              cmsCloseProfile(source_profile);
-              cmsCloseProfile(target_profile);
+              (void) cmsCloseProfile(source_profile);
+              (void) cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
@@ -524,8 +524,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
           if (IsYCbCrColorspace(source_colorspace) &&
               !IsYCbCrColorspace(image->colorspace))
             {
-              cmsCloseProfile(source_profile);
-              cmsCloseProfile(target_profile);
+              (void) cmsCloseProfile(source_profile);
+              (void) cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                                     ColorspaceColorProfileMismatch);
             }
@@ -535,8 +535,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
               !IsYCbCrColorspace(source_colorspace) &&
               !IsRGBColorspace(image->colorspace))
             {
-              cmsCloseProfile(source_profile);
-              cmsCloseProfile(target_profile);
+              (void) cmsCloseProfile(source_profile);
+              (void) cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
@@ -603,8 +603,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
                                        intent,         /* rendering intent */
                                                        /* build pre-computed transforms? */
                                        (transform_colormap ? cmsFLAGS_NOTPRECALC : 0));
-          cmsCloseProfile(source_profile);
-          cmsCloseProfile(target_profile);
+          (void) cmsCloseProfile(source_profile);
+          (void) cmsCloseProfile(target_profile);
           if (transform == (cmsHTRANSFORM) NULL)
             {
               ThrowBinaryException3(ResourceLimitError,UnableToManageColor,

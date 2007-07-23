@@ -103,7 +103,6 @@ MagickExport void DestroyMagick(void)
   if (MagickInitialized == InitUninitialized)
     return;
 
-  fflush(stdout);
 #if defined(HasX11)
   MagickXDestroyX11Resources();
 #endif
@@ -582,7 +581,7 @@ static RETSIGTYPE MagickPanicSignalHandler(int signo)
     This may cause a core dump or immediate exit.
   */
 #if defined(HAVE_RAISE)
-  fflush(stdout);
+  (void) fflush(stdout);
   (void) raise(signo);
 #endif
 

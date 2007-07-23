@@ -2792,7 +2792,7 @@ static unsigned int ModifyCache(Image *image)
      the same cache. */
   AcquireSemaphoreInfo(&cache_info->semaphore);
   if (!cache_info->nexus_info)
-    OpenCache(image,IOMode);
+    (void) OpenCache(image,IOMode);
   cache_info->reference_count--;
   clone_image=(*image);
   GetCacheInfo(&image->cache);
@@ -4004,7 +4004,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   /*
     Initialize region to zero to ensure consistent behavior.
   */
-  memset(nexus_info->staging,0,nexus_info->length);
+  (void) memset(nexus_info->staging,0,nexus_info->length);
 #endif
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;

@@ -1063,7 +1063,7 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
   double
     length;
 
-  register long
+  register unsigned int
     i;
 
   length=size;
@@ -3311,7 +3311,7 @@ MagickExport MagickBool MagickSceneFileName(char *filename,
     status;
 
   status = MagickFalse;
-  strlcpy(filename,filename_template,MaxTextExtent);
+  (void) strlcpy(filename,filename_template,MaxTextExtent);
   p=strchr(filename_template,'%');
   if ((p != (char *) NULL) && ((strchr(p+1,'%') == (char *) NULL)))
     {
@@ -3334,8 +3334,8 @@ MagickExport MagickBool MagickSceneFileName(char *filename,
   if ((force) && (LocaleCompare(filename,filename_template) == 0))
     {
       char format[MaxTextExtent];
-      strlcpy(format,"%.1024s",sizeof(format));
-      strlcat(format,scene_template,sizeof(format));
+      (void) strlcpy(format,"%.1024s",sizeof(format));
+      (void) strlcat(format,scene_template,sizeof(format));
       FormatString(filename,format,filename_template,scene);
     }
   if (LocaleCompare(filename,filename_template) != 0)
@@ -4276,7 +4276,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=system(command);
   if (status == 1)
     {
-      strlcpy(message,strerror(status),sizeof(message));
+      (void) strlcpy(message,strerror(status),sizeof(message));
       message_p=message;
     }
   else if (WIFSIGNALED(status))
@@ -4701,7 +4701,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
                                  Image *image,
                                  const char *formatted_text)
 {
-  //return TranslateTextEx(image_info,image,formatted_text,strlcpy);
   return TranslateTextEx(image_info,image,formatted_text,MagickStrlCpyTrunc);
 }
 
@@ -4787,7 +4786,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
   translated_text=MagickAllocateMemory(char *,length);
   if (translated_text == (char *) NULL)
     return NULL;
-  strlcpy(translated_text,text,length);
+  (void) strlcpy(translated_text,text,length);
   clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)

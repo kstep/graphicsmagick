@@ -645,7 +645,7 @@ long x;
 unsigned DenX;
 unsigned Flags;
 
- memset(*CTM,0,sizeof(*CTM));     /*CTM.erase();CTM.resize(3,3);*/
+ (void) memset(*CTM,0,sizeof(*CTM));     /*CTM.erase();CTM.resize(3,3);*/
  (*CTM)[0][0]=1;
  (*CTM)[1][1]=1;
  (*CTM)[2][2]=1;
@@ -1119,7 +1119,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotated_image = FlopImage(image, exception);
                       rotated_image->blob = image->blob;
                       image->blob = NULL;
-                      RemoveLastImageFromList(&image);
+                      (void) RemoveLastImageFromList(&image);
                       AppendImageToList(&image,rotated_image);
                     }
                   // flip command
@@ -1128,7 +1128,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotated_image = FlipImage(image, exception);
                       rotated_image->blob = image->blob;
                       image->blob = NULL;
-                      RemoveLastImageFromList(&image);
+                      (void) RemoveLastImageFromList(&image);
                       AppendImageToList(&image,rotated_image);		
                     }
 		
@@ -1138,7 +1138,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
                       rotated_image->blob = image->blob;
                       image->blob = NULL;
-                      RemoveLastImageFromList(&image);
+                      (void) RemoveLastImageFromList(&image);
                       AppendImageToList(&image,rotated_image);		
                     }                
                 }
@@ -1164,7 +1164,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       break;
 
     case 2:  /* WPG level 2 */
-      memset(CTM,0,sizeof(CTM));
+      (void) memset(CTM,0,sizeof(CTM));
       StartWPG.PosSizePrecision = 0;
       while(!EOFBlob(image)) /* object parser loop */
         {
@@ -1290,7 +1290,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 		  rotated_image = FlopImage(image, exception);
 		  rotated_image->blob = image->blob;
 		  image->blob = NULL;
-		  RemoveLastImageFromList(&image);
+		  (void) RemoveLastImageFromList(&image);
 		  AppendImageToList(&image,rotated_image);
                   /* Try to change CTM according to Flip - I am not sure, must be checked.		  
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
@@ -1303,7 +1303,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 		  rotated_image = FlipImage(image, exception);
 		  rotated_image->blob = image->blob;
 		  image->blob = NULL;
-		  RemoveLastImageFromList(&image);
+		  (void) RemoveLastImageFromList(&image);
 		  AppendImageToList(&image,rotated_image);
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      float_matrix Tx(3,3);

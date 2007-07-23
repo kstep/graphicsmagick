@@ -2897,7 +2897,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 {
   assert(options != (ExportPixelAreaOptions *) NULL);
-  memset((void *) options, 0, sizeof(ExportPixelAreaOptions));
+  (void) memset((void *) options, 0, sizeof(ExportPixelAreaOptions));
   options->sample_type=UnsignedQuantumSampleType;
   options->sample_bits=0; /* Run-time default to quantum size */
   options->double_minvalue=0.0;
@@ -4988,7 +4988,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
 MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
 {
   assert(options != (ImportPixelAreaOptions *) NULL);
-  memset((void *) options, 0, sizeof(ImportPixelAreaOptions));
+  (void) memset((void *) options, 0, sizeof(ImportPixelAreaOptions));
   options->sample_type=UnsignedQuantumSampleType;
   options->sample_bits=0; /* Run-time default to quantum size */
   options->double_minvalue=0.0;

@@ -273,7 +273,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SUN raster header.
   */
-  memset(&sun_info,0,sizeof(sun_info));
+  (void) memset(&sun_info,0,sizeof(sun_info));
   sun_info.magic=ReadBlobMSBLong(image);
   do
   {

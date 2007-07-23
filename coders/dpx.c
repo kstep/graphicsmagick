@@ -159,15 +159,15 @@ typedef union _R32_u
   R32   f;
 } R32_u;
 
-#define SET_UNDEFINED_U8(value)  (value=~0)
-#define SET_UNDEFINED_U16(value) (value=~0)
-#define SET_UNDEFINED_U32(value) (value=~0)
+#define SET_UNDEFINED_U8(value)  (value=~0U)
+#define SET_UNDEFINED_U16(value) (value=~0U)
+#define SET_UNDEFINED_U32(value) (value=~0U)
 #define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=~0);
-#define SET_UNDEFINED_ASCII(value) (memset(value,0,sizeof(value)))
+#define SET_UNDEFINED_ASCII(value) ((void) memset(value,0,sizeof(value)))
 
-#define IS_UNDEFINED_U8(value) (value == ((U8) ~0))
-#define IS_UNDEFINED_U16(value) (value == ((U16) ~0))
-#define IS_UNDEFINED_U32(value) (value == ((U32) ~0))
+#define IS_UNDEFINED_U8(value) (value == ((U8) ~0U))
+#define IS_UNDEFINED_U16(value) (value == ((U16) ~0U))
+#define IS_UNDEFINED_U32(value) (value == ((U32) ~0U))
 #define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) ~0))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
@@ -476,8 +476,8 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      strlcpy(buffer_,member,Min(sizeof(member)+1,MaxTextExtent)); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) strlcpy(buffer_,member,Min(sizeof(member)+1,MaxTextExtent)); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -489,7 +489,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U8(member)) \
     { \
       FormatString(buffer_,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -501,7 +501,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U16(member)) \
     { \
       FormatString(buffer_,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -513,7 +513,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U32(member)) \
     { \
       FormatString(buffer_,"%u",member); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -525,7 +525,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_U32(member)) \
     { \
       SMPTEBitsToString(member,buffer_); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -537,7 +537,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_R32(member)) \
     { \
       FormatString(buffer_,"%g",member); \
-      SetImageAttribute(image,name,buffer_); \
+      (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
 }
@@ -623,11 +623,11 @@ static void SMPTEBitsToString(const U32 value, char *str)
 
   for (pos=8; pos > 0; pos--, shift -= 4)
     {
-      sprintf(str,"%01u",(unsigned int) ((value >> shift) & 0x0fU));
+      (void) sprintf(str,"%01u",(unsigned int) ((value >> shift) & 0x0fU));
       str += 1;
       if ((pos > 2) && (pos % 2))
         {
-          strcat(str,":");
+          (void) strcat(str,":");
           str++;
         }
     }
@@ -1382,7 +1382,7 @@ static void ReadRowSamples(const unsigned char *scanline,
               */
               if (endian_type == MSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=0;
                       sample |= (*scanline++ << 8);
@@ -1393,7 +1393,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                 }
               else if (endian_type == LSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=0;
                       sample |= (*scanline++);
@@ -1411,7 +1411,7 @@ static void ReadRowSamples(const unsigned char *scanline,
               */
               if (endian_type == MSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=0;
                       sample |= (*scanline++ << 8);
@@ -1422,7 +1422,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                 }
               else if (endian_type == LSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=0;
                       sample |= (*scanline++);
@@ -1441,7 +1441,7 @@ static void ReadRowSamples(const unsigned char *scanline,
   */
   if (bits_per_sample == 8)
     {
-      for (i=samples_per_row; i > 0; i--)
+      for (i=samples_per_row; i != 0; i--)
         *sp++= (sample_t) *scanline++;
       return;
     }
@@ -1453,7 +1453,7 @@ static void ReadRowSamples(const unsigned char *scanline,
     {
       if (endian_type == MSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               sample=0;
               sample |= (*scanline++ << 8);
@@ -1463,7 +1463,7 @@ static void ReadRowSamples(const unsigned char *scanline,
         }
       else if (endian_type == LSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               sample=0;
               sample |= (*scanline++);
@@ -1484,7 +1484,7 @@ static void ReadRowSamples(const unsigned char *scanline,
 
       if (endian_type == MSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               MSBOctetsToPackedU32Word(scanline,packed_u32);
               *sp++=packed_u32;
@@ -1492,7 +1492,7 @@ static void ReadRowSamples(const unsigned char *scanline,
         }
       else if (endian_type == LSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               LSBOctetsToPackedU32Word(scanline,packed_u32);
               *sp++=packed_u32;
@@ -1521,7 +1521,7 @@ static void ReadRowSamples(const unsigned char *scanline,
 
     read_state.words=scanline;
     WordStreamInitializeRead(&read_stream,read_func, (void *) &read_state);
-      for (i=samples_per_row; i > 0; i--)
+      for (i=samples_per_row; i != 0; i--)
         *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
   }
 }
@@ -1705,17 +1705,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         user_length_str[MaxTextExtent];
 
       if (IS_UNDEFINED_U32(dpx_file_info.generic_section_length))
-        strlcpy(generic_length_str,"UNDEFINED",sizeof(generic_length_str));
+        (void) strlcpy(generic_length_str,"UNDEFINED",sizeof(generic_length_str));
       else
         FormatString(generic_length_str,"%u",dpx_file_info.generic_section_length);
 
       if (IS_UNDEFINED_U32(dpx_file_info.industry_section_length))
-        strlcpy(industry_length_str,"UNDEFINED",sizeof(industry_length_str));
+        (void) strlcpy(industry_length_str,"UNDEFINED",sizeof(industry_length_str));
       else
         FormatString(industry_length_str,"%u",dpx_file_info.industry_section_length);
 
       if (IS_UNDEFINED_U32(dpx_file_info.user_defined_length))
-        strlcpy(user_length_str,"UNDEFINED",sizeof(user_length_str));
+        (void) strlcpy(user_length_str,"UNDEFINED",sizeof(user_length_str));
       else
         FormatString(user_length_str,"%u",dpx_file_info.user_defined_length);
 
@@ -2243,7 +2243,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               samples_itr=samples;
               if (bits_per_sample == 1)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       *samples_itr=(*samples_itr == 0) ? 0 : MaxRGB;
                       samples_itr++;
@@ -2251,7 +2251,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               else
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       *samples_itr=ScaleShortToQuantum((*samples_itr)*scale_to_short);
                       samples_itr++;
@@ -2264,19 +2264,19 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               switch (element_descriptor)
                 {
                 case ImageElementRed:
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetRedSample(q++,*samples_itr++);
                     }
                   break;
                 case ImageElementGreen:
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetGreenSample(q++,*samples_itr++);
                     }
                   break;
                 case ImageElementBlue:
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetBlueSample(q++,*samples_itr++);
                     }
@@ -2285,7 +2285,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (IsYCbCrColorspace(image->colorspace))
                     {
                       /* Video levels */
-                      for (x=image->columns; x > 0; x--)
+                      for (x=image->columns; x != 0; x--)
                         {
                           SetOpacitySample(q++,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                         }
@@ -2293,7 +2293,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   else
                     {
                       /* Full range levels. */
-                      for (x=image->columns; x > 0; x--)
+                      for (x=image->columns; x != 0; x--)
                         {
                           SetOpacitySample(q++,*samples_itr++);
                         }
@@ -2304,7 +2304,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (IsYCbCrColorspace(image->colorspace))
                     {
                       /* Video Luma (planar) */
-                      for (x=image->columns; x > 0; x--)
+                      for (x=image->columns; x != 0; x--)
                         {
                           SetRedSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                           q++;
@@ -2314,7 +2314,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                            (image->colorspace == Rec709LumaColorspace))
                     {
                       /* Video Luma */
-                      for (x=image->columns; x > 0; x--)
+                      for (x=image->columns; x != 0; x--)
                         {
                           SetGraySample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                           q++;
@@ -2323,7 +2323,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   else
                     {
                       /* Linear Grayscale */
-                      for (x=image->columns; x > 0; x--)
+                      for (x=image->columns; x != 0; x--)
                         {
                           SetGraySample(q,*samples_itr++);
                           q++;
@@ -2355,7 +2355,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 case ImageElementRGB:
                   /* RGB order */
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetRedSample(q,*samples_itr++);
                       SetGreenSample(q,*samples_itr++);
@@ -2366,7 +2366,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 case ImageElementRGBA:
                   /* RGB order */
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetRedSample(q,*samples_itr++);
                       SetGreenSample(q,*samples_itr++);
@@ -2377,7 +2377,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 case ImageElementABGR:
                   /* ARGB order */
-                  for (x=image->columns; x > 0; x--)
+                  for (x=image->columns; x != 0; x--)
                     {
                       SetOpacitySample(q,*samples_itr++);
                       SetRedSample(q,*samples_itr++);
@@ -2456,7 +2456,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementCbYCr444:
                   {
                     /* red,green,blue = Y, Cb, Cr */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cb */
                         SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));     /* Y */
@@ -2469,7 +2469,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementCbYCrA4444:
                   {
                     /* red,green,blue = Y, Cb, Cr */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr));   /* Cb */
                         SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));       /* Y */
@@ -2494,16 +2494,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
 
               if (BlobIsSeekable(image))
-              {
-                magick_off_t reported_file_offset = TellBlob(image);
-                if (EOFBlob(image))
                 {
-                  fprintf(stderr,"### File length %u, TellBlob says %ld\n",
-                          dpx_file_info.file_size,
-                          (long) reported_file_offset);
-                  break;
+                  magick_off_t reported_file_offset = TellBlob(image);
+                  if (EOFBlob(image))
+                    {
+                      (void) fprintf(stderr,"### File length %u, TellBlob says %ld\n",
+                                     dpx_file_info.file_size,
+                                     (long) reported_file_offset);
+                      break;
+                    }
                 }
-              }
             }
           /* break; */
         }
@@ -2552,7 +2552,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (IsYCbCrColorspace(image->colorspace))
     {
-      TransformColorspace(image,RGBColorspace);
+      (void) TransformColorspace(image,RGBColorspace);
       if (transfer_characteristic == TransferCharacteristicPrintingDensity)
         image->colorspace=CineonLogRGBColorspace;
     }
@@ -2680,7 +2680,7 @@ static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
   current_time=time((time_t *) NULL);
   t=localtime(&current_time);
 
-  strftime(timestamp,maxsize,"%Y:%m:%d:%H:%M:%S%Z",t);
+  (void) strftime(timestamp,maxsize,"%Y:%m:%d:%H:%M:%S%Z",t);
   timestamp[maxsize-1]='\0';
   for (p=timestamp ; *p != '\0'; p++)
     if (*p == ' ')
@@ -2917,7 +2917,7 @@ static void WriteRowSamples(const sample_t *samples,
               */
               if (endian_type == MSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=*samples++;
                       sample <<= 4;
@@ -2927,7 +2927,7 @@ static void WriteRowSamples(const sample_t *samples,
                 }
               else if (endian_type == LSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=*samples++;
                       sample <<= 4;
@@ -2943,7 +2943,7 @@ static void WriteRowSamples(const sample_t *samples,
               */
               if (endian_type == MSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=((*samples++) & 0xFFF);
                       *sp++=(unsigned char) (((unsigned int) sample) >> 8);
@@ -2952,7 +2952,7 @@ static void WriteRowSamples(const sample_t *samples,
                 }
               else if (endian_type == LSBEndian)
                 {
-                  for (i=samples_per_row; i > 0; i--)
+                  for (i=samples_per_row; i != 0; i--)
                     {
                       sample=((*samples++) & 0xFFF);
                       *sp++=(unsigned char) sample;
@@ -2969,7 +2969,7 @@ static void WriteRowSamples(const sample_t *samples,
   */
   if (bits_per_sample == 8)
     {
-      for (i=samples_per_row; i > 0; i--)
+      for (i=samples_per_row; i != 0; i--)
         *sp++=(unsigned char) *samples++;
       return;
     }
@@ -2981,7 +2981,7 @@ static void WriteRowSamples(const sample_t *samples,
     {
       if (endian_type == MSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
               *sp++=(unsigned char) *samples;
@@ -2990,7 +2990,7 @@ static void WriteRowSamples(const sample_t *samples,
         }
       else if (endian_type == LSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               *sp++=(unsigned char) *samples;
               *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
@@ -3010,7 +3010,7 @@ static void WriteRowSamples(const sample_t *samples,
 
       if (endian_type == MSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               packed_u32=*samples++;
               MSBPackedU32WordToOctets(packed_u32,scanline);
@@ -3018,7 +3018,7 @@ static void WriteRowSamples(const sample_t *samples,
         }
       else if (endian_type == LSBEndian)
         {
-          for (i=samples_per_row; i > 0; i--)
+          for (i=samples_per_row; i != 0; i--)
             {
               packed_u32=*samples++;
               LSBPackedU32WordToOctets(packed_u32,scanline);
@@ -3048,7 +3048,7 @@ static void WriteRowSamples(const sample_t *samples,
       write_state.words=scanline;
       WordStreamInitializeWrite(&write_stream,write_func, (void *) &write_state);
 
-      for (i=samples_per_row; i > 0; i--)
+      for (i=samples_per_row; i != 0; i--)
         WordStreamLSBWrite(&write_stream,bits_per_sample,*samples++);
 
       WordStreamLSBWriteFlush(&write_stream);
@@ -3464,7 +3464,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Image information header
   */
-  memset(&dpx_image_info,0,sizeof(dpx_image_info));
+  (void) memset(&dpx_image_info,0,sizeof(dpx_image_info));
   /* Image orientation */
   dpx_image_info.orientation=OrientationTypeToDPXOrientation(image->orientation);
   /* Number of image elements described. */
@@ -3697,24 +3697,24 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   for (i=0; i < number_of_elements; i++)
     {
-      strlcpy(dpx_image_info.element_info[i].description,
-              DescribeImageElementDescriptor((DPXImageElementDescriptor) dpx_image_info.element_info[i].descriptor),
-              sizeof(dpx_image_info.element_info[0].description));
-      strlcat(dpx_image_info.element_info[i].description," / ",
-              sizeof(dpx_image_info.element_info[0].description));
-      strlcat(dpx_image_info.element_info[i].description,
-              DescribeImageTransferCharacteristic((DPXTransferCharacteristic) dpx_image_info.element_info[i].transfer_characteristic),
-              sizeof(dpx_image_info.element_info[0].description));
+      (void) strlcpy(dpx_image_info.element_info[i].description,
+                     DescribeImageElementDescriptor((DPXImageElementDescriptor) dpx_image_info.element_info[i].descriptor),
+                     sizeof(dpx_image_info.element_info[0].description));
+      (void) strlcat(dpx_image_info.element_info[i].description," / ",
+                     sizeof(dpx_image_info.element_info[0].description));
+      (void) strlcat(dpx_image_info.element_info[i].description,
+                     DescribeImageTransferCharacteristic((DPXTransferCharacteristic) dpx_image_info.element_info[i].transfer_characteristic),
+                     sizeof(dpx_image_info.element_info[0].description));
     }
 
   /*
     File information header.
   */
-  memset(&dpx_file_info,0,sizeof(dpx_file_info));
+  (void) memset(&dpx_file_info,0,sizeof(dpx_file_info));
   dpx_file_info.magic=0x53445058U;
   dpx_file_info.image_data_offset=dpx_image_info.element_info[0].data_offset;
-  strlcpy(dpx_file_info.header_format_version,"V2.0",
-          sizeof(dpx_file_info.header_format_version));
+  (void) strlcpy(dpx_file_info.header_format_version,"V2.0",
+                 sizeof(dpx_file_info.header_format_version));
   dpx_file_info.file_size=
     dpx_file_info.image_data_offset+number_of_elements*element_size;
   if (image->logging)
@@ -3725,19 +3725,19 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
   dpx_file_info.industry_section_length=sizeof(dpx_mp_info)+sizeof(dpx_tv_info);
   dpx_file_info.user_defined_length=(user_data ? user_data_length : 0);
-  strlcpy(dpx_file_info.image_filename,image->filename,
-          sizeof(dpx_file_info.image_filename));
+  (void) strlcpy(dpx_file_info.image_filename,image->filename,
+                 sizeof(dpx_file_info.image_filename));
   GenerateDPXTimeStamp(dpx_file_info.creation_datetime,
                        sizeof(dpx_file_info.creation_datetime));
-  strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
-          sizeof(dpx_file_info.creator));
+  (void) strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
+                 sizeof(dpx_file_info.creator));
   AttributeToString(image_info,image,"DPX:file.project.name",dpx_file_info.project_name);
   AttributeToString(image_info,image,"DPX:file.copyright",dpx_file_info.copyright);
   AttributeToU32(image_info,image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
   /*
     Image source information header
   */
-  memset(&dpx_source_info,0,sizeof(dpx_source_info));
+  (void) memset(&dpx_source_info,0,sizeof(dpx_source_info));
   SET_UNDEFINED_U32(dpx_source_info.x_offset);
   SET_UNDEFINED_U32(dpx_source_info.y_offset);
   SET_UNDEFINED_R32(dpx_source_info.x_center);
@@ -3759,8 +3759,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
   AttributeToString(image_info,image,"DPX:source.filename",dpx_source_info.source_image_filename);
   if (IS_UNDEFINED_ASCII(dpx_source_info.source_image_filename))
-    strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
-            sizeof(dpx_source_info.source_image_filename));
+    (void) strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
+                   sizeof(dpx_source_info.source_image_filename));
   AttributeToString(image_info,image,"DPX:source.creation.datetime",dpx_source_info.source_image_datetime);
   AttributeToString(image_info,image,"DPX:source.device.name",dpx_source_info.input_device_name);
   AttributeToString(image_info,image,"DPX:source.device.serialnumber",dpx_source_info.input_device_serialnumber);
@@ -3823,8 +3823,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                                image->columns*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-  memset((void *) samples,0,max_samples_per_pixel*image->columns*
-         sizeof(sample_t));
+  (void) memset((void *) samples,0,max_samples_per_pixel*image->columns*
+                sizeof(sample_t));
   /*
     Allocate row scanline.
   */
@@ -3834,7 +3834,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       MagickFreeMemory(samples);
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     }
-  memset((void *) scanline,0,row_octets);
+  (void) memset((void *) scanline,0,row_octets);
   /*
     Write file headers.
   */
@@ -3907,9 +3907,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
               reported_file_offset)
             {
-              fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %ld\n",
-                      element+1, dpx_image_info.element_info[element].data_offset,
-                      (long) reported_file_offset);
+              (void) fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %ld\n",
+                             element+1, dpx_image_info.element_info[element].data_offset,
+                             (long) reported_file_offset);
             }
         }
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
@@ -3992,21 +3992,21 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           switch (element_descriptor)
             {
             case ImageElementRed:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   *samples_itr++=GetRedSample(p);
                   p++;
                 }
               break;
             case ImageElementGreen:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   *samples_itr++=GetGreenSample(p);
                   p++;
                 }
               break;
             case ImageElementBlue:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   *samples_itr++=GetBlueSample(p);
                   p++;
@@ -4019,7 +4019,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     (transfer_characteristic == TransferCharacteristicITU_R601_525L))
                   {
                     /* Video levels */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         *samples_itr++=ScaleToVideo(GetOpacitySample(p),reference_low,ScaleY);
                         p++;
@@ -4028,7 +4028,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 else
                   {
                     /* Full range levels */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         *samples_itr++=GetOpacitySample(p);
                         p++;
@@ -4044,7 +4044,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     (transfer_characteristic == TransferCharacteristicITU_R601_525L))
                   {
                     /* Video luma */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);
                         p++;
@@ -4053,7 +4053,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 else
                   {
                     /* Linear gray */
-                    for (x=image->columns; x > 0; x--)
+                    for (x=image->columns; x != 0; x--)
                       {
                         *samples_itr++=GetGraySample(p);
                         p++;
@@ -4081,7 +4081,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 break;
               }
             case ImageElementRGB:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
 #if 0
                   /* BGR */
@@ -4097,7 +4097,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 }
               break;
             case ImageElementRGBA:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
 #if 0
                   /* BGRA */
@@ -4162,7 +4162,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 break;
               }
             case ImageElementCbYCr444:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr); /* Cb */
                   *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);     /* Y */
@@ -4171,7 +4171,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 }
               break;
             case ImageElementCbYCrA4444:
-              for (x=image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr);   /* Cb */
                   *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);       /* Y */
@@ -4191,7 +4191,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           samples_itr=samples;
           if (bits_per_sample == 1)
             {
-              for (i=samples_per_row; i > 0; i--)
+              for (i=samples_per_row; i != 0; i--)
                 {
                   *samples_itr=(*samples_itr > MaxRGB/2) ? 1 : 0;
                   samples_itr++;
@@ -4199,7 +4199,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             }
           else
             {
-              for (i=samples_per_row; i > 0; i--)
+              for (i=samples_per_row; i != 0; i--)
                 {
                   *samples_itr=ScaleQuantumToShort(*samples_itr)/scale_from_short;
                   samples_itr++;
@@ -4228,9 +4228,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       magick_off_t reported_file_offset = TellBlob(image);
       if ((magick_off_t) dpx_file_info.file_size != reported_file_offset)
         {
-          fprintf(stderr,"### File length %u, TellBlob says %ld\n",
-                  dpx_file_info.file_size,
-                  (long) reported_file_offset);
+          (void) fprintf(stderr,"### File length %u, TellBlob says %ld\n",
+                         dpx_file_info.file_size,
+                         (long) reported_file_offset);
         }
     }
   

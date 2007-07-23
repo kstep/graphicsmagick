@@ -103,7 +103,7 @@ MagickExport int MagickSpawnVP(const unsigned int verbose,const char *file, char
       status = execvp(file, argv);
 
       /* If we get here, then execvp must have failed. */
-      fprintf(stderr, "execvp failed, errno = %d (%s)\n",errno,strerror(errno));
+      (void) fprintf(stderr, "execvp failed, errno = %d (%s)\n",errno,strerror(errno));
 
       /* If there is an execvp error, then call _exit() */
       _exit(1);
@@ -160,9 +160,9 @@ MagickExport int MagickSpawnVP(const unsigned int verbose,const char *file, char
         FormatString(buffer,"\"%.1024s\"", argv[i]);
 
         if (0 != i)
-          ConcatenateString(&command," ");
+          (void) ConcatenateString(&command," ");
 
-        ConcatenateString(&command,buffer);
+        (void) ConcatenateString(&command,buffer);
       }
     if (message[0] != '\0')
       message_p = message;

@@ -791,7 +791,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
       ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
-    switch (bmp_info.compression)
+    switch ((unsigned int) bmp_info.compression)
     {
       case BI_RGB:
       case BI_RLE8:

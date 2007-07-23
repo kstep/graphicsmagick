@@ -1582,7 +1582,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
           FormatSize(pixels_per_second,format);
           (void) fprintf(file," (%s pixels/s)",format);
         }
-      fprintf(file,"\n");
+      (void) fprintf(file,"\n");
     
       return (ferror(file) ? MagickFail : MagickPass);
     }
@@ -4061,7 +4061,7 @@ ReplaceImageColormap(Image *image,
   /*
     Build a map between the new colormap and the old colormap.
   */
-  memset(colormap_index,0,MaxColormapSize*sizeof(unsigned int));
+  (void) memset(colormap_index,0,MaxColormapSize*sizeof(unsigned int));
   for (i=0; i < image->colors ; i++)
     {
       for (j=0; j < colors; j++)
@@ -4111,7 +4111,7 @@ ReplaceImageColormap(Image *image,
             }
         }
       if (status == MagickPass)
-        memcpy(image->colormap,colormap,sizeof(PixelPacket)*colors);
+        (void) memcpy(image->colormap,colormap,sizeof(PixelPacket)*colors);
     }
 
   MagickFreeMemory(colormap_index);

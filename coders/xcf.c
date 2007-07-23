@@ -285,7 +285,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
     string[i]=c;
   }
   string[i]='\0';
-  SeekBlob(image, length-i, SEEK_CUR);
+  (void) SeekBlob(image, length-i, SEEK_CUR);
   return(string);
 }
 

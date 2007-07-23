@@ -9813,7 +9813,7 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
             output_filename[MaxTextExtent],
             temporary_filename[MaxTextExtent];
 
-          strcpy(temporary_filename,"");
+          (void) strlcpy(temporary_filename,"",MaxTextExtent);
           /*
             Compute final output file name and format
           */
@@ -9821,7 +9821,7 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
           if (options->output_format != (char *) NULL)
             {
               AppendImageFormat(options->output_format,output_filename);
-              strlcpy(image->magick,options->output_format,MaxTextExtent);
+              (void) strlcpy(image->magick,options->output_format,MaxTextExtent);
             }
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
@@ -9841,12 +9841,12 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
                   if (rename(output_filename,temporary_filename) == 0)
                     {
                       if(image_info->verbose)
-                        fprintf(stdout, "rename to backup %.1024s=>%.1024s\n",
-                                output_filename,temporary_filename);
+                        (void) fprintf(stdout, "rename to backup %.1024s=>%.1024s\n",
+                                       output_filename,temporary_filename);
                     }
                   else
                     {
-                      strcpy(temporary_filename,"");
+                      (void) strlcpy(temporary_filename,"",MaxTextExtent);
                     }
                 }
             }
@@ -9863,7 +9863,7 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
               if (remove(temporary_filename) == 0)
                 {
                   if (image_info->verbose)
-                    fprintf(stdout, "remove backup %.1024s\n",temporary_filename);
+                    (void) fprintf(stdout, "remove backup %.1024s\n",temporary_filename);
                 }
             }
         }

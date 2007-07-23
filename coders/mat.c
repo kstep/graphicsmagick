@@ -532,7 +532,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     ReadBlobDoublesXXX = ReadBlobDoublesMSB;
   }
   else 
-    goto MATLAB_KO;    //unsupported endian
+    goto MATLAB_KO;    /* unsupported endian */
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
   MATLAB_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
@@ -868,7 +868,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   DataSize = image->rows /*Y*/ * image->columns /*X*/ * 3 /*Z*/;
   padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
-  memset(MATLAB_HDR,' ',124);
+  (void) memset(MATLAB_HDR,' ',124);
   FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
     OsDesc,
     DayOfWTab[t->tm_wday],
@@ -882,24 +882,24 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   MATLAB_HDR[0x7F]='M';
   MATLAB_HDR[0x80]=0xE;
   MATLAB_HDR[0x81]=0;  MATLAB_HDR[0x82]=0;   MATLAB_HDR[0x83]=0;
-  WriteBlob(image,sizeof(MATLAB_HDR),MATLAB_HDR);
+  (void) WriteBlob(image,sizeof(MATLAB_HDR),MATLAB_HDR);
 
-  WriteBlobLSBLong(image, DataSize + 56l + padding); /* 0x84 */
-  WriteBlobLSBLong(image, 0x6); /* 0x88 */
-  WriteBlobLSBLong(image, 0x8); /* 0x8C */
-  WriteBlobLSBLong(image, 0x6); /* 0x90 */  
-  WriteBlobLSBLong(image, 0);   
-  WriteBlobLSBLong(image, 0x5); /* 0x98 */  
-  WriteBlobLSBLong(image, 0xC); /* 0x9C */      
-  WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
-  WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
-  WriteBlobLSBLong(image, 3);              /* z: 0xA8 */  
-  WriteBlobLSBLong(image, 0);
-  WriteBlobLSBShort(image, 1);  /* 0xB0 */  
-  WriteBlobLSBShort(image, 1);  /* 0xB2 */
-  WriteBlobLSBLong(image, 'M'); /* 0xB4 */
-  WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
-  WriteBlobLSBLong(image, DataSize); /* 0xBC */
+  (void) WriteBlobLSBLong(image, DataSize + 56l + padding); /* 0x84 */
+  (void) WriteBlobLSBLong(image, 0x6); /* 0x88 */
+  (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
+  (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */  
+  (void) WriteBlobLSBLong(image, 0);   
+  (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */  
+  (void) WriteBlobLSBLong(image, 0xC); /* 0x9C */      
+  (void) WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
+  (void) WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
+  (void) WriteBlobLSBLong(image, 3);              /* z: 0xA8 */  
+  (void) WriteBlobLSBLong(image, 0);
+  (void) WriteBlobLSBShort(image, 1);  /* 0xB0 */  
+  (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
+  (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
+  (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
+  (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
 
   /*
     Store image data.

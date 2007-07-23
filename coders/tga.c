@@ -785,7 +785,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
            (image->colors > 256)) ||
           (image->matte == True))
         {
-          SyncImage(image);
+          (void) SyncImage(image);
           image->storage_class=DirectClass;
         }
 
