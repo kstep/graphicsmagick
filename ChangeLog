@@ -1,3 +1,9 @@
+2007-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* INSTALL-unix.txt: Updated for release.
+	* NEWS: Updated for pending 1.1.8 release.
+	* Makefile.am: Retire VMS and MacOS 9 support from package.
+
 2007-07-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am: Don't test PTIF format since it is not

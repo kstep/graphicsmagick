@@ -165,9 +165,9 @@ MAGICK DELEGATES
 
       to perform ICC CMS color management.
 
-    o GraphicsMagick requires gnuplot available via anonymous FTP as
+    o GraphicsMagick requires gnuplot available from
 
-         ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot-3.7.tar.gz
+         http://gnuplot.sourceforge.net/
 
       to read GNUPLOT plot files (with extension gplt).
 
@@ -181,10 +181,6 @@ MAGICK DELEGATES
       HTTP from
 
          http://www.cl.cam.ac.uk/~mgk25/jbigkit/
-
-      or via anonymous FTP as
-
-         ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 
       to read the JBIG image format.
 

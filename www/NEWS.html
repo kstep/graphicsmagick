@@ -21,8 +21,83 @@
 </tr>
 </table>
 <p>
-This file was last updated on October 12, 2005.
+This file was last updated on July 23, 2007.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.8 (released TBD)
+
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Shell command injection via delegates subsystem (CVE-2005-4601).
+  <LI> Insecure use of filenames as a "sprintf" specification (CVE-2006-0082).
+  <LI> EXIF IFD stack overflow vulnerability.
+  <LI> BMP  format: Verify seek before proceeding.
+  <LI> DCM  format: Buffer overflow prevention (CVE-2006-5456).
+  <LI> DCM  format: Integer overflow prevention (CVE-2007-1797).
+  <LI> PALM format: Heap overflow prevention (CVE-2006-5456).
+  <LI> SGI  format: Fixes for RLE decoding issue (CVE-2006-4144).
+  <LI> XCF  format: Buffer overflow prevention, infinite loop prevention.
+
+</UL>
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> Typo when searching for HTMLDecodeDelegate.
+  <LI> Avoid crash if delegate program fails to return an image.
+  <LI> EXIF memory leak fixes.
+  <LI> Command parser memory leak fixes.
+  <LI> Deadlock fix for event log initialization.
+  <LI> Work with latest Ghostscript "GPL Ghostscript" under Windows.
+  <LI> 'gm import' now returns image of appropriate depth.
+  <LI> Fixed memory map resource managment.
+  <LI> Fixed includedir variable in pkg-config files.
+  <LI> Fixed validation of -affine argument.
+  <LI> Fixed bug where fseeko() and ftello() were not used when available.
+  <LI> Fixed issue when pread() and pwrite() prototypes are missing.
+  <LI> Fixed pixel cache issues when size_t is an unsigned type.
+  <LI> Fixed dcraw delegate options to work with modern dcraw.
+  <LI> Fix for segfault in InitializeMagick(NULL).
+  <LI> Fix for segfault in ModifyCache().
+  <LI> Fix for Wand MagickGetQuantumDepth() interface.
+  <LI> Fix for GrayscalePseudoClassImage() on 64-bit systems.
+  <LI> Fix for MagickReallocMemory memory leak under certain error conditions.
+  <LI> Validate BLOB access range.
+  <LI> ICON format: Segfault fix.
+  <LI> JPEG format: Fixed reading 12-bit grayscale JPEG.
+  <LI> MAT  format: Stability improvements.
+  <LI> MIFF format: Handle a compression value of 'None'.
+  <LI> PCX  format: Segfault fix.  Heap overflow fix.
+  <LI> PDF  format: Fixed writing with JPEG compression.
+  <LI> PICT format: Segfault fix.
+  <LI> PNG  format: Fixed compile problem with some libpng versions. Segfault fix.
+  <LI> PNM  format: Fixed scaling problem due to rounding error. Validate scaling.
+  <LI> PSD  format: Fixed memory leak with layerd PSD files.
+  <LI> SGI  format: Handle 16-bit SGI image files correctly.
+  <LI> SUN  format: Segfault fix.
+  <LI> TIFF format: Secure error reporting.  Finally support LZW under Windows.
+  <LI> WPG  format: Fixed crash with clip-art WPG files.
+  <LI> XWD  format: Fix for integer under/overflow.
+
+</UL>
+<p>
+  Feature Improvements
+
+<UL>
+  <LI> CIN format: Implementation is entirely replaced.
+  <LI> MAT format: Support Byte and Word formats, as well as big/little endian.
+  <LI> WPG format: Support for CTM translation.
+
+</UL>
+<p>
+  Updates:
+
+<UL>
+  <LI> Libtiff is updated to version 3.8.2.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.7 (released October 12, 2005)
 

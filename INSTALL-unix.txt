@@ -10,8 +10,8 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Type:
 
-    gzip -dc GraphicsMagick-1.1.tar.gz | tar xvf -
-    cd GraphicsMagick-1.1
+    gzip -dc GraphicsMagick-1.1.8.tar.gz | tar xvf -
+    cd GraphicsMagick-1.1.8
 
   If you do not have gzip(1), the source for the gzip package is
   available as a shell archive at
@@ -26,7 +26,7 @@ UNIX/Cygwin/MinGW COMPILATION
   GraphicsMagick. The configure script may be executed from the
   GraphicsMagick source directory (e.g ./configure) or from a seperate
   build directory by specifying the full path to configure (e.g.
-  /src/GraphicsMagick-1.1/configure). The advantage of using a seperate
+  /src/GraphicsMagick-1.1.8/configure). The advantage of using a seperate
   build directory is that multiple GraphicsMagick builds may share the
   same GraphicsMagick source directory while allowing each build to use a
   unique set of options.
@@ -110,7 +110,6 @@ UNIX/Cygwin/MinGW COMPILATION
    --disable-installed     disable building an installed GraphicsMagick
                            (default enabled)
    --disable-largefile     disable support for large (64 bit) file offsets
-   --disable-lzw           disable LZW support (default enabled)
    --enable-symbol-prefix  enable prefixing library symbols with "Gm"
    --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
 
@@ -128,7 +127,7 @@ UNIX/Cygwin/MinGW COMPILATION
                            generating PerlMagick's Makefile from Makefile.PL
    --without-bzlib         disable BZLIB support
    --without-dps           disable Display Postscript support
-   --without-fpx           disable FlashPIX support
+   --with-fpx              enable FlashPIX support
    --with-gslib            enable Ghostscript library support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
@@ -238,10 +237,6 @@ UNIX/Cygwin/MinGW COMPILATION
       copying a module into place) but GraphicsMagick itself is not built
       using modules.
 
-    o --disable-lzw: Until July 7, 2004, Unisys held a patent on the LZW
-      algorithm so LZW was disabled by default. Support for LZW is now
-      enabled by default. Use this option if you need to disable it.
-
     o --enable-symbol-prefix: The GraphicsMagick libraries may contain
       symbols which conflict with other libraries.  Specifify this option
       to prefix "Gm" to all library symbols, and use the C pre-processor
@@ -293,6 +288,12 @@ UNIX/Cygwin/MinGW COMPILATION
               8              3MB
              16              8MB
              32             15MB
+
+      GraphicsMagick performs all image processing computations using
+      double-precision floating point so results are very accurate.
+      Increasing the quantum storage size decreases the amount of
+      quantization noise (usually not visible at 8 bits) and helps
+      prevent countouring and posterization in the image.
 
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to GraphicsMagick. A suitable C++
@@ -452,6 +453,57 @@ UNIX/Cygwin/MinGW COMPILATION
     which may be embedded in libraries and configuration files are
     transformed into Windows paths so they don't depend on MSYS.
 
+  Building under the Intel version of Apple's OS X
+
+    A GraphicsMagick user submitted these steps for how to get
+    GraphicsMagick up and going on an Intel Mac:
+
+    The first few steps should be done as an administrator, or with
+    proper use of "sudo"
+    
+    1. Install Fink (a package manager). The default setup will create a
+      /sw directory on your main hard drive. It will also make sure
+      /sw/bin is in your path.
+    
+    2. Install the latest X-Code from Apple.
+    
+    3. Make a link in /Developer/SDKs/MacOSX10.4u.sdk/ to /sw:
+
+       "cd /Developer/SDKs/MacOSX10.4u.sdk; ln -s sw /sw"
+    
+    4. Use Fink, or FinkCommander to install libjpeg and libtiff and any
+       other libraries you might want.
+    
+    As a regular user or administrator:
+    
+    5. Download the GM snapshot.
+    
+    6. Unpack and cd into the source directory.
+    
+    7. Set your CFLAGS environment variable to (command varies by shell):
+
+       "-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk/ -arch i386 -I/sw/include/"
+    
+    8. Set your LDFLAGS environment variable to:
+
+       "-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk/,-L/sw/lib/"
+    
+    9. I used the following ./configure line:
+
+      ./configure --prefix=/sw --with-quantum-depth=16 --disable-dependency-tracking \\
+      --with-x=yes --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ --without-perl
+    
+    10. Issue make
+    
+    11. Test the binaries as necessary and when satisfied:
+
+      sudo make install
+    
+    12. start X11 and in a new shell: (or source your .profile or .login)
+
+      gm display
+
+
   Dealing with configuration failures:
 
     While configure is designed to ease installation of GraphicsMagick, it
@@ -552,9 +604,10 @@ UNIX/Cygwin/MinGW COMPILATION
     CPU type, and the library versions used. The GraphicsMagick developers
     use the current release of all dependent libraries.
 
+
 ---------------------------------------------------------------------------
 
-Copyright (C) 2003 GraphicsMagick Group
+Copyright (C) 2003, 2007 GraphicsMagick Group
 Copyright (C) 2002 ImageMagick Studio
 Copyright (C) 1999 E. I. du Pont de Nemours and Company
 

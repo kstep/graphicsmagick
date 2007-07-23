@@ -3,10 +3,10 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick For Windows</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040418;19193000">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20070723;9524700">
 	<META NAME="CLASSIFICATION" CONTENT="Describes GraphicsMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install GraphicsMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -30,8 +30,8 @@ style installation wizard under Microsoft Windows. It applies only to
 the pre-built &quot;binaries&quot; package, and not to versions
 compiled from source code. If you would like to install
 GraphicsMagick from source code, then please refer to the
-<A HREF="INSTALL-windows.html">GraphicsMagick installation guide</A>
-. </I>
+<A HREF="INSTALL-windows.html">GraphicsMagick installation guide for
+Windows</A> . </I>
 </BLOCKQUOTE>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
@@ -48,16 +48,17 @@ installed at one time, if your intention is to replace a prior
 installation of GraphicsMagick with a newer version, then it may be
 wise to uninstall the existing GraphicsMagick (see uninstall
 procedure) prior to installing the newer version.<BR><BR>While it is
-not a requirement, it is strongly recommended that the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
-package (version 7.05 preferred since it has the least bugs) be
-installed. GraphicsMagick uses Ghostscript to render Postscript and
-PDF files, as well as formats where a translator to Postscript is
-available. GraphicsMagick will also use the fonts delivered with
-Ghostscript to support the standard set of Adobe Postscript fonts
-like &quot;Helvetica&quot; and &quot;Times Roman&quot;. <BR><BR>The
-installation package includes the GraphicsMagick Perl extension (
-<A HREF="perl.html">PerlMagick</A>) as an installation option. If you
-would like to use this extension, then you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
+not a requirement, it is strongly recommended that the <A HREF="http://www.cs.wisc.edu/~ghost/" TARGET="_top">Ghostscript</A>
+package (GraphicsMagick is tested with version 8.50) be installed.
+GraphicsMagick uses Ghostscript to render Postscript and PDF files,
+as well as formats where a translator to Postscript is available.
+GraphicsMagick will also use the fonts delivered with Ghostscript to
+support the standard set of Adobe Postscript fonts like &quot;Helvetica&quot;
+and &quot;Times Roman&quot; if these fonts are not available as
+TrueType fonts. <BR><BR>The installation package includes the
+GraphicsMagick Perl extension ( <A HREF="perl.html">PerlMagick</A>)
+as an installation option. If you would like to use this extension,
+then you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html" TARGET="_top">ActiveState
 ActivePerl</A> prior to commencing with installation of
 GraphicsMagick. 
 </P>
@@ -69,23 +70,24 @@ follows</P>
 <P CLASS="western">Windows Dynamic-Multithread (DLL-based) install
 package with utilities, PerlMagick, ImageMagickObject COM object, API
 headers, DLLs, link libraries, and web pages.</P>
-<PRE>    GraphicsMagick-1.1-Q8-windows-dll.exe
-    GraphicsMagick-1.1-Q16-windows-dll.exe</PRE><P CLASS="western">
+<PRE>    GraphicsMagick-1.1.8-Q8-windows-dll.exe
+    GraphicsMagick-1.1.8-Q16-windows-dll.exe</PRE><P CLASS="western">
 Windows Static-Multithread package including the utilities (gm.exe,
 gmdisplay.exe, and MagickCMD.exe), the <A HREF="ImageMagickObject.html">ImageMagickObject</A>
 COM object, and the GraphicsMagick web pages. This package does not
 include PerlMagick.</P>
-<PRE>    GraphicsMagick-1.1-Q8-windows-static.exe
-    GraphicsMagick-1.1-Q16-windows-static.exe</PRE><P CLASS="western">
+<PRE>    GraphicsMagick-1.1.8-Q8-windows-static.exe
+    GraphicsMagick-1.1.8-Q16-windows-static.exe</PRE><P CLASS="western">
 Note that the QuantumDepth=8 version (Q8) which provides industry
 standard 24/32 bit pixels consumes half the memory and about 30% less
 CPU than the QuantumDepth=16 version (Q16) which provides 48/64 bit
 pixels for high-resolution color. A Q8 version is fine for processing
-typical photos. If you are dealing with scientific or medical images
-or deal with images that have limited contrast, then the Q16 version
-is recommended. It is also possible to build a Q32 version which has
-enough resolution to deal with the latest reconnaissance images.
-Please let us know if there is any demand for the Q32 versions.</P>
+typical photos. If you are dealing with film, scientific, or medical
+images or deal with images that have limited contrast, then the Q16
+version is recommended. It is also possible to build a Q32 version
+which has enough resolution to deal with the latest reconnaissance
+images. Please let us know if there is any demand for the Q32
+versions.</P>
 <H4 CLASS="western">Start Installation Wizard 
 </H4>
 <P CLASS="western">Execute the downloaded file from your browser or
@@ -106,9 +108,9 @@ required to install all of GraphicsMagick (you may choose to install
 a subset to save space). A message at the bottom of the screen will
 tell you exactly how much space is required to install the complete
 package. The default installation directory is similar to &ldquo;<FONT FACE="Cumberland">C:\Program
-Files\GraphicsMagick-1.1-Q8</FONT>&rdquo;. Once you have entered the
-desired installation directory, then select &ldquo;Next&gt;&rdquo; to
-continue. 
+Files\GraphicsMagick-1.1.8-Q8</FONT>&rdquo;. Once you have entered
+the desired installation directory, then select &ldquo;Next&gt;&rdquo;
+to continue. 
 </P>
 <H4 CLASS="western">Select Start Menu Folder</H4>
 <P CLASS="western">Select the folder where you would like the
@@ -128,21 +130,23 @@ of the following options:</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
 	development headers and libraries for C and C++</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
-	PerlMagick for ActiveState Perl v5.8.3 build 809</P>
+	PerlMagick for ActiveState Perl v5.8.7 build 815</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
 	ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH.</P>
 </UL>
 <P CLASS="western">&quot;Creating a desktop icon&quot; and &quot;Update
 the executable search path&quot; are selected by default. The
 remaining options default to un-selected. Select the options you
-prefer.</P>
+prefer. Note that ActiveState Perl packages are intended to be binary
+compatible across a build series (i.e. 800 series builds should be
+binary compatible).</P>
 <P CLASS="western">Think twice before selecting &quot;Associate
 supported file extensions with GraphicsMagick&quot; since this will
 set up approximately fifty file associations, including common
 formats like JPEG, GIF, PNG, TIFF, and PDF. These file associations
 will be to the 'gmdisplay' program which is suitable for displaying
 images, but currently offers little more than that. Windows XP seems
-to handle the file assocations pretty well, allowing you to choose
+to handle the file associations pretty well, allowing you to choose
 from a list of programs, but older systems like Windows NT 4.0 and
 Windows '98 only support a single association per format, which can
 be quite annoying. Associations for GraphicsMagick's native formats
@@ -199,7 +203,7 @@ a window.</P>
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western">[ The following is transcribed from the <A HREF="http://www.jrsoftware.org/isinfo.php">Inno
+<P CLASS="western">[ The following is transcribed from the <A HREF="http://www.jrsoftware.org/isinfo.php" TARGET="_top">Inno
 Setup</A> documentation. Inno Setup is used to create the binary
 install package. This information may be of value if the
 GraphicsMagick installation must be automated (e.g. If it is
@@ -336,11 +340,11 @@ as delivered:</P>
 	<COL WIDTH=170*>
 	<TR VALIGN=TOP>
 		<TD WIDTH=34% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
 			Name</SPAN></B></FONT></FONT></P>
 		</TD>
 		<TD WIDTH=66% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
 			Type</SPAN></B></FONT></FONT></P>
 		</TD>
 	</TR>
@@ -402,15 +406,15 @@ These entries are available under the registry path
 	<COL WIDTH=121*>
 	<TR VALIGN=TOP>
 		<TD WIDTH=34% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
 			Name</SPAN></B></FONT></FONT></P>
 		</TD>
 		<TD WIDTH=19% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
 			Type</SPAN></B></FONT></FONT></P>
 		</TD>
 		<TD WIDTH=47% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Description</SPAN></B></FONT></FONT></P>
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Description</SPAN></B></FONT></FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -518,15 +522,13 @@ entries.</P>
 	<COL WIDTH=138*>
 	<TR VALIGN=TOP>
 		<TD WIDTH=27% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key
-			Name</B></FONT></FONT></P>
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key Name</B></FONT></FONT></P>
 		</TD>
 		<TD WIDTH=20% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key
-			Type</B></FONT></FONT></P>
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key Type</B></FONT></FONT></P>
 		</TD>
 		<TD WIDTH=54% BGCOLOR="#52799e">
-			<P CLASS="western" STYLE="color: #ffffff"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Description</B></FONT></FONT></P>
+			<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Description</B></FONT></FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -607,6 +609,6 @@ entries.</P>
 <HR>
 <P CLASS="western" ALIGN=CENTER><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</P>
+GraphicsMagick Group 2002, 2003, 2004, 2007</P>
 </BODY>
 </HTML>

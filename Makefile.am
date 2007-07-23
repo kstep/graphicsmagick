@@ -49,9 +49,9 @@ pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
-EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt \
-	INSTALL-unix.txt INSTALL-vms.txt INSTALL-windows.txt TODO.txt \
-	index.html Magickshr.opt Make.com NEWS PLATFORMS.txt \
+EXTRA_DIST = ChangeLog Copyright.txt \
+	INSTALL-unix.txt INSTALL-windows.txt TODO.txt \
+	index.html NEWS PLATFORMS.txt \
 	README.txt lndir.sh version.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
@@ -202,9 +202,7 @@ if WITH_PERL
 TXT2HTMLTARGETS= \
 	$(top_srcdir)/www/AUTHORS.html \
 	$(top_srcdir)/www/Changelog.html \
-	$(top_srcdir)/www/INSTALL-mac.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
-	$(top_srcdir)/www/INSTALL-vms.html \
 	$(top_srcdir)/www/INSTALL-windows.html \
 	$(top_srcdir)/www/NEWS.html \
 	$(top_srcdir)/www/README.html
@@ -247,17 +245,9 @@ $(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
 	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
 
-# Build HTML version of INSTALL-mac.txt
-$(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
-
 # Build HTML version of INSTALL-unix.txt
 $(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
-
-# Build HTML version of INSTALL-vms.txt
-$(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
 
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
