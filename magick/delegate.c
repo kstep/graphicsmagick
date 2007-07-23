@@ -367,7 +367,6 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
       if ((c == '\\') ||
           (c == '`') ||
           (c == '"') ||
-          (c == '\n') ||
           (c == '$'))
         {
           if (length+1 >= size-1)

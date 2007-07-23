@@ -891,7 +891,9 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     Determine left and right edges.
   */
   inverse_edge.x1=edge->x1;
+  inverse_edge.y1=0;
   inverse_edge.x2=edge->x2;
+  inverse_edge.y2=0;
   z=affine->ry*(y+0.5)+affine->tx;
   if (affine->sx > MagickEpsilon)
     {
