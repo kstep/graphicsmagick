@@ -6,16 +6,11 @@
 IMPORTANT NOTES
 
   On some platforms VISUAL C++ 7.0 fails with an internal compiler
-  error while compiling image.c.  The workaround to this problem is to
-  use the following procedure if the problem is encountered:
+  error while compiling image.c. If this happens to you, then make sure
+  that your compiler is updated with the latest fixes from the Microsoft
+  web site and the problem should go away.
 
-   o In the Solution Explorer, select CORE_Magick->src->image.c
-   o Select "Properities" (right-mouse menu) to bring up the Property
-   Pages for image.c
-   o Select "C/C++"->"Optimization"->"Floating-Point Consistency"
-   o Select "Improve Consistency (/Op)"
-
-WINDOWS WIN2K/95 VISUAL C++ 6.0 AND 7.0 COMPILATION
+WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 95
   does not provide any stock workspace (DSW) or project files (DSP) except
@@ -50,8 +45,8 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0 AND 7.0 COMPILATION
 
   To do a build for your requirements, simply go to the configure sub-
   directory under VisualMagick and open the configure.dsw workspace (for
-  Visual C++ 6.0) or configure.sln (for Visual C++ 7.0). Set the build
-  configuration to "Release" under the
+  Visual C++ 6.0) or configure.sln (for Visual C++ 7.X or 8.X). Set the
+  build configuration to "Release" under the
 
       "Build..., Set Active Configuration..."  menu.
 
@@ -209,10 +204,13 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0 AND 7.0 COMPILATION
   The folder containing the executables and DLLs should contain the
   following files:
 
-      1) magic.mgk
-      2) delegates.mgk (derived from nt.mgk)
-      3) modules.mgk
-      4) rgb.txt
+      1) colors.mgk
+      2) delegates.mgk
+      3) log.mgk
+      4) magic.mgk
+      5) modules.mgk
+      6) type.mgk
+      7) type-ghostscript.mgk (if Ghostscript is used)
 
   The "bin" folder should contains all EXE's and DLL's as well as the
   very important "modules.mgk" file.

@@ -31,19 +31,12 @@
 
 <p>
   On some platforms VISUAL C++ 7.0 fails with an internal compiler
-  error while compiling image.c.  The workaround to this problem is to
-  use the following procedure if the problem is encountered:
+  error while compiling image.c. If this happens to you, then make sure
+  that your compiler is updated with the latest fixes from the Microsoft
+  web site and the problem should go away.
 
-<UL>
-  <LI> In the Solution Explorer, select CORE_Magick-&gt;src-&gt;image.c
-  <LI> Select "Properities" (right-mouse menu) to bring up the Property
-   Pages for image.c<BR>
-  <LI> Select "C/C++"-&gt;"Optimization"-&gt;"Floating-Point Consistency"
-  <LI> Select "Improve Consistency (/Op)"
-
-</UL>
 <p>
-<STRONG>WINDOWS WIN2K/95 VISUAL C++ 6.0 AND 7.0 COMPILATION</STRONG>
+WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
 <p>
   The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 95
@@ -86,8 +79,8 @@
 <p>
   To do a build for your requirements, simply go to the configure subdirectory 
   under VisualMagick and open the configure.dsw workspace (for
-  Visual C++ 6.0) or configure.sln (for Visual C++ 7.0). Set the build
-  configuration to "Release" under the
+  Visual C++ 6.0) or configure.sln (for Visual C++ 7.X or 8.X). Set the
+  build configuration to "Release" under the
 
 <PRE>
       "Build..., Set Active Configuration..."  menu.
@@ -294,10 +287,13 @@
   following files:
 
 <OL>
+  <LI> colors.mgk
+  <LI> delegates.mgk
+  <LI> log.mgk
   <LI> magic.mgk
-  <LI> delegates.mgk (derived from nt.mgk)
   <LI> modules.mgk
-  <LI> rgb.txt
+  <LI> type.mgk
+  <LI> type-ghostscript.mgk (if Ghostscript is used)
 
 </OL>
 <p>

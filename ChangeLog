@@ -1,3 +1,7 @@
+2007-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Retire VMS and MacOS 9 support from package.
+
 2007-07-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/{cmyk.c, gray.c, mono.c, rgb.c, uyvy.c, wbmp.c, yuv.c}

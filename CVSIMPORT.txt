@@ -11,12 +11,6 @@ bzlib:
     import -m 'Import bzip2 1.0.2' delegates/bzlib \
     INITIAL BZIP2_1_0_2
 
-embryo:
-
-  cvs -d ':ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick' \
-    import -m 'Import CVS embryo 0.9.1' -I CVS delegates/embryo \
-    EMBRYO_DIST EMBRYO_0_9_1
-
 FreeType:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
