@@ -51,7 +51,7 @@ static void DestroyImageAttribute(ImageAttribute *attribute)
     return;
   MagickFreeMemory(attribute->value);
   MagickFreeMemory(attribute->key);
-  memset(attribute,0xbf,sizeof(ImageAttribute));
+  (void) memset(attribute,0xbf,sizeof(ImageAttribute));
   MagickFreeMemory(attribute);
 }
 /*

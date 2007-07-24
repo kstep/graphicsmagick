@@ -630,6 +630,7 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
   black_point=0.0;
   mid_point=1.0;
   white_point=MaxRGB;
+  /* FIXME: OSF compiler warns that this loop accesses one beyond end of array */
   for (cp=buffer, lp=levels; (cp < (buffer+sizeof(buffer)-1)) && (*lp != 0); lp++)
     {
       if (*lp == '%')

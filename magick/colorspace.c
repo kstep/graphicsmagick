@@ -514,7 +514,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                     status=MagickFail;
                     break;
                   }
-                for (x=image->columns; x > 0; x--)
+                for (x=image->columns; x != 0; x--)
                   {
                     double
                       p1, /* H */

@@ -698,7 +698,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   pixels=MagickAllocateMemory(unsigned char *,pixels_size);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-  memset(pixels,0,pixels_size);
+  (void) memset(pixels,0,pixels_size);
   /*
     Convert MIFF to XWD raster pixels.
   */
