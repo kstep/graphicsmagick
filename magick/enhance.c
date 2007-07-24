@@ -583,11 +583,7 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 {
 #define LevelImageText  "  Leveling the image...  "
 
-  const char
-    *lp;
-
   char
-    *cp,
     buffer[MaxTextExtent];
 
   MagickBool
@@ -618,7 +614,6 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
   MagickPassFail
     status=MagickPass;
 
-
   /*
     Allocate and initialize levels map.
   */
@@ -630,17 +625,34 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
   black_point=0.0;
   mid_point=1.0;
   white_point=MaxRGB;
-  /* FIXME: OSF compiler warns that this loop accesses one beyond end of array */
-  for (cp=buffer, lp=levels; (cp < (buffer+sizeof(buffer)-1)) && (*lp != 0); lp++)
-    {
-      if (*lp == '%')
-        percent = MagickTrue;
-      else
-        *cp++=*lp;
-    }
-  *cp=0;
+  /*
+    Remove any embedded '%' symbols prior to sscanf on the buffer.
+  */
+  {
+    const char
+      *lp;
+    
+    char
+      *cp;
+    
+    cp=buffer;
+    lp=levels;
+    for (i=sizeof(buffer)-1 ; (*lp != 0) && (i != 0) ; lp++)
+      {
+        if (*lp == '%')
+          {
+            percent = MagickTrue;
+          }
+        else
+          {
+            *cp++=*lp;
+            i--;
+          }
+      }
+    *cp=0;
+  }
   count=sscanf(buffer,"%lf%*[,/]%lf%*[,/]%lf",&black_point,&mid_point,
-    &white_point);
+               &white_point);
   if (percent)
     {
       if (count > 0)
