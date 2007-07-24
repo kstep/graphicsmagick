@@ -1933,7 +1933,7 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
         if ((slider_info.id < 0) || (colors <= visible_colors))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
-        if (colors > 0)
+        if (colors != 0)
           slider_info.y+=
             slider_info.id*(slider_info.max_y-slider_info.min_y+1)/colors;
         if (slider_info.id != selection_info.id)

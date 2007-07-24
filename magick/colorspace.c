@@ -275,7 +275,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   register long
     i;
 
-  register unsigned int
+  register unsigned long
     x;
 
   MagickPassFail
@@ -341,7 +341,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             break;
           }
         indexes=GetIndexes(image);
-        for (x=(long) image->columns; x > 0; x--)
+        for (x=image->columns; x != 0; x--)
         {
           cyan=(Quantum) (MaxRGB-q->red);
           magenta=(Quantum) (MaxRGB-q->green);
@@ -460,7 +460,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
               status=MagickFail;
               break;
             }
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             {
               q->red=logmap[ScaleQuantumToMap(q->red)];
               q->green=logmap[ScaleQuantumToMap(q->green)];
@@ -1020,7 +1020,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             status=MagickFail;
             break;
           }
-        for (x=(long) image->columns; x > 0; x--)
+        for (x=image->columns; x != 0; x--)
         {
           XYZTransformPacket(q,x_map,y_map,z_map,&primary_info);
           q++;

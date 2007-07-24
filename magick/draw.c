@@ -1264,7 +1264,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->indent_depth = 0;
 
   /* Graphic context */
-  for ( ; context->index > 0; context->index--)
+  for ( ; context->index != 0; context->index--)
     {
       DestroyDrawInfo(CurrentContext);
       CurrentContext = (DrawInfo*) NULL;
@@ -3909,7 +3909,7 @@ MagickExport void DrawPopClipPath(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->indent_depth > 0)
+  if(context->indent_depth != 0)
     context->indent_depth--;
   (void) MvgPrintf(context, "pop clip-path\n");
 }
@@ -3941,7 +3941,7 @@ MagickExport void DrawPopDefs(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->indent_depth > 0)
+  if(context->indent_depth != 0)
     context->indent_depth--;
   (void) MvgPrintf(context, "pop defs\n");
 }
@@ -3976,7 +3976,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->index > 0)
+  if(context->index != 0)
     {
       /* Destroy clip path if not same in preceding context */
 #if DRAW_BINARY_IMPLEMENTATION
@@ -3990,7 +3990,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
       CurrentContext=(DrawInfo*)NULL;
       context->index--;
 
-      if(context->indent_depth > 0)
+      if(context->indent_depth != 0)
         context->indent_depth--;
       (void) MvgPrintf(context, "pop graphic-context\n");
     }
@@ -4052,7 +4052,7 @@ MagickExport void DrawPopPattern(DrawContext context)
 
   context->filter_off = False;
 
-  if(context->indent_depth > 0)
+  if(context->indent_depth != 0)
     context->indent_depth--;
   (void) MvgPrintf(context, "pop pattern\n");
 }
@@ -5737,7 +5737,7 @@ MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
   if (context->filter_off || (CurrentContext->encoding == (char *) NULL) ||
       (LocaleCompare(CurrentContext->encoding,encoding) != 0))
     {
-        CloneString(&CurrentContext->encoding,encoding);
+        (void) CloneString(&CurrentContext->encoding,encoding);
 
       (void) MvgPrintf(context, "encoding '%s'\n", encoding);
     }

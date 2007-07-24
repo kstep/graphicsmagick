@@ -87,14 +87,14 @@ typedef struct _PDBImage
     reserved_1,
     note;
 
-  short int
+  unsigned short int
     x_last,
     y_last;
 
   unsigned long
     reserved_2;
 
-  short int
+  unsigned short int
     x_anchor,
     y_anchor,
     width,
@@ -279,10 +279,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   unsigned int
+    bits_per_pixel,
     status;
 
   unsigned long
-    bits_per_pixel,
     packets;
 
   /*
@@ -649,11 +649,11 @@ ModuleExport void UnregisterPDBImage(void)
 static unsigned char *EncodeRLE(unsigned char *destination,
   unsigned char *source,unsigned int literal,unsigned int repeat)
 {
-  if (literal > 0)
+  if (literal != 0)
     *destination++=literal-1;
   (void) memcpy(destination,source,literal);
   destination+=literal;
-  if (repeat > 0)
+  if (repeat != 0)
     {
       *destination++=0x80 | (repeat-1);
       *destination++=source[literal];

@@ -621,7 +621,7 @@ static void SMPTEBitsToString(const U32 value, char *str)
     pos,
     shift = 28;
 
-  for (pos=8; pos > 0; pos--, shift -= 4)
+  for (pos=8; pos != 0; pos--, shift -= 4)
     {
       (void) sprintf(str,"%01u",(unsigned int) ((value >> shift) & 0x0fU));
       str += 1;

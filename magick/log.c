@@ -396,7 +396,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
               if (((int) type >= eventmask_map[i].start_type) &&
                   ((int) type <= eventmask_map[i].end_type))
                 {
-                  if (log_info->events & eventmask_map[i].mask)
+                  if (((unsigned int) log_info->events) & ((unsigned int) eventmask_map[i].mask))
                     {
                       enabled=True;
                       break;
@@ -411,7 +411,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
               if ((((int) type % 100) >= eventmask_map[i].start_type) &&
                   (((int) type % 100) <= eventmask_map[i].end_type))
                 {
-                  if (log_info->events & eventmask_map[i].mask)
+                  if (((unsigned int) log_info->events) & ((unsigned int) eventmask_map[i].mask))
                     {
                       enabled=True;
                       break;
@@ -429,7 +429,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
   GetPathComponent(module,TailPath,srcname);
 
   AcquireSemaphoreInfo(&log_semaphore);
-  switch (type % 100)
+  switch (((unsigned int) type) % 100)
   {
     case UndefinedException: domain=(char *) "Undefined"; break;
     case ExceptionBase: domain=(char *) "Exception"; break;
@@ -462,7 +462,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
     case ConfigureBase: domain=(char *) "Configure"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
-  switch ((type / 100) * 100)
+  switch ((((unsigned int) type) / 100) * 100)
   {
     case EventException: severity=(char *) "Event"; break;
     case WarningException: severity=(char *) "Warning"; break;
@@ -497,7 +497,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
   FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
     1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
     time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
-  if (log_info->output_type & XMLFileOutput)
+  if (((unsigned int) log_info->output_type) & XMLFileOutput)
     {
       /*
         Log to a file in the XML format.
@@ -550,7 +550,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
       LiberateSemaphoreInfo(&log_semaphore);
       return(True);
     }
-  if (log_info->output_type & TXTFileOutput)
+  if (((unsigned int) log_info->output_type) & TXTFileOutput)
     {
       /*
         Log to a file in the TXT format.
@@ -622,7 +622,8 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
         }
     }
 #endif
-  if ((log_info->output_type & StdoutOutput) || (log_info->output_type & StderrOutput))
+  if ((((unsigned int) log_info->output_type) & StdoutOutput) ||
+      (((unsigned int) log_info->output_type) & StderrOutput))
     {
       FILE
         *file;
@@ -630,7 +631,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
         Log to stdout in a "human readable" format.
       */
       file = stdout;
-      if (log_info->output_type & StderrOutput)
+      if (((unsigned int) log_info->output_type) & StderrOutput)
         file = stderr;
       for (p=log_info->format; *p != '\0'; p++)
       {

@@ -208,7 +208,7 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
         i++;
       }
     value[j]='\0';
-    if (strlen(key) > 0)
+    if (strlen(key) != 0)
       {
         status &= MagickMapAddEntry((MagickMap) image_info->definitions,key,value,0,exception);
       }
@@ -1854,7 +1854,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     }
   if (image->storage_class == DirectClass)
     {
-      if (image->total_colors > 0)
+      if (image->total_colors != 0)
         (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
     }
   else
@@ -3960,7 +3960,7 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
       key[j]=keys[i];
     key[j]='\0';
     i++;
-    if (strlen(key) > 0)
+    if (strlen(key) != 0)
       {
         if ((key[0] == '*') && (key[1] == '\0'))
           MagickMapClearMap((MagickMap) image_info->definitions);
