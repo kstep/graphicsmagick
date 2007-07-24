@@ -30,6 +30,7 @@ Significant changes associated with GraphicsMagick 1.1.8 (released TBD)
     o Fixed issue when pread() and pwrite() prototypes are missing.
     o Fixed pixel cache issues when size_t is an unsigned type.
     o Fixed dcraw delegate options to work with modern dcraw.
+    o Fixed -level argument parsing to allow embedded % characters.
     o Fix for segfault in InitializeMagick(NULL).
     o Fix for segfault in ModifyCache().
     o Fix for Wand MagickGetQuantumDepth() interface.

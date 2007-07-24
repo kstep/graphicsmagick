@@ -126,6 +126,10 @@ typedef unsigned int Quantum;
   (value > MaxRGB) ? MaxRGB : value + 0.5))
 #define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
   value + 0.5))
+#define ConstrainToQuantum(value) (value < 0 ? 0 : \
+  (value > MaxRGB) ? MaxRGB : value)
+#define ScaleAnyToQuantum(x,max_value) \
+  ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
 
 #define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))

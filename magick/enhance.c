@@ -541,6 +541,12 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
 {
 #define LevelImageText  "  Leveling the image...  "
 
+  char
+    buffer[MaxTextExtent];
+
+  MagickBool
+    percent = MagickFalse;
+
   double
     black_point,
     *levels_map,
@@ -563,25 +569,58 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Allocate and initialize levels map.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (levels == (char *) NULL)
-    return(False);
+    return(MagickFail);
   is_grayscale=image->is_grayscale;
   black_point=0.0;
   mid_point=1.0;
   white_point=MaxRGB;
-  count=sscanf(levels,"%lf%*[,/]%lf%*[,/]%lf",&black_point,&mid_point,
-    &white_point);
-  if (strchr(levels,'%') != (char *) NULL)
+  /*
+    Remove any embedded '%' symbols prior to sscanf on the buffer.
+  */
+  {
+    const char
+      *lp;
+    
+    char
+      *cp;
+    
+    cp=buffer;
+    lp=levels;
+    for (i=sizeof(buffer)-1 ; (*lp != 0) && (i != 0) ; lp++)
+      {
+        if (*lp == '%')
+          {
+            percent = MagickTrue;
+          }
+        else
+          {
+            *cp++=*lp;
+            i--;
+          }
+      }
+    *cp=0;
+  }
+  count=sscanf(buffer,"%lf%*[,/]%lf%*[,/]%lf",&black_point,&mid_point,
+               &white_point);
+  if (percent)
     {
-      black_point*=MaxRGB/100.0;
-      white_point*=MaxRGB/100.0;
+      if (count > 0)
+        black_point*=MaxRGB/100.0;
+      if (count > 2)
+        white_point*=MaxRGB/100.0;
     }
+  black_point=ConstrainToQuantum(black_point);
   black_point=ScaleQuantumToMap(black_point);
+  white_point=ConstrainToQuantum(white_point);
   white_point=ScaleQuantumToMap(white_point);
   if (count == 1)
     white_point=MaxMap-black_point;
@@ -589,7 +628,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   if (levels_map == (double *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToLevelImage);
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
   {
     if (i < black_point)
       {
@@ -616,7 +655,10 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=(long) image->columns; x > 0; x--)
         {
           q->red=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->red)]);
@@ -625,10 +667,16 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(LevelImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -637,6 +685,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       /*
         Level PseudoClass image.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[i].red=ScaleMapToQuantum(
@@ -652,7 +701,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   }
   MagickFreeMemory(levels_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -1162,6 +1211,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
   unsigned long
     threshold_intensity;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Allocate histogram and normalize map.
   */
@@ -1178,12 +1230,15 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Form histogram.
   */
-  memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (image->matte)
       for (x=(long) image->columns; x > 0; x--)
         {
@@ -1206,14 +1261,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
     Find the histogram boundaries by locating the 0.1 percent levels.
   */
   threshold_intensity=(long) (image->columns*image->rows)/1000;
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.red=0; low.red < MaxMap; low.red++)
   {
     intensity.red+=histogram[(long) low.red].red;
     if (intensity.red > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.red=MaxMap; high.red != 0; high.red--)
   {
     intensity.red+=histogram[(long) high.red].red;
@@ -1226,14 +1281,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.red=0; low.red < MaxRange(MaxRGB); low.red++)
       {
         intensity.red+=histogram[(long) low.red].red;
         if (intensity.red > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.red=MaxRange(MaxRGB); high.red != 0; high.red--)
       {
         intensity.red+=histogram[(long) high.red].red;
@@ -1241,14 +1296,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
           break;
       }
     }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
   {
     intensity.green+=histogram[(long) low.green].green;
     if (intensity.green > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
   {
     intensity.green+=histogram[(long) high.green].green;
@@ -1261,14 +1316,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
       {
         intensity.green+=histogram[(long) low.green].green;
         if (intensity.green > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
       {
         intensity.green+=histogram[(long) high.green].green;
@@ -1276,14 +1331,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
           break;
       }
     }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
   {
     intensity.blue+=histogram[(long) low.blue].blue;
     if (intensity.blue > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
   {
     intensity.blue+=histogram[(long) high.blue].blue;
@@ -1296,14 +1351,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
       {
         intensity.blue+=histogram[(long) low.blue].blue;
         if (intensity.blue > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
       {
         intensity.blue+=histogram[(long) high.blue].blue;
@@ -1311,16 +1366,18 @@ MagickExport unsigned int NormalizeImage(Image *image)
           break;
       }
     }
+  high.opacity=0;
+  low.opacity=0;
   if (image->matte)
     {
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
         {
           intensity.opacity+=histogram[(long) low.opacity].opacity;
           if (intensity.opacity > threshold_intensity)
             break;
         }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
         {
           intensity.opacity+=histogram[(long) high.opacity].opacity;
@@ -1333,14 +1390,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
             Unreasonable contrast;  use zero threshold to determine boundaries.
           */
           threshold_intensity=0;
-          memset(&intensity,0,sizeof(DoublePixelPacket));
+          (void) memset(&intensity,0,sizeof(DoublePixelPacket));
           for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
             {
               intensity.opacity+=histogram[(long) low.opacity].opacity;
               if (intensity.opacity > threshold_intensity)
                 break;
             }
-          memset(&intensity,0,sizeof(DoublePixelPacket));
+          (void) memset(&intensity,0,sizeof(DoublePixelPacket));
           for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
             {
               intensity.opacity+=histogram[(long) high.opacity].opacity;
@@ -1353,8 +1410,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Stretch the histogram to create the normalized image mapping.
   */
-  memset(normalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
-  for (i=0; i <= MaxMap; i++)
+  (void) memset(normalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
+  for (i=0; i <= (long) MaxMap; i++)
   {
     if (i < (long) low.red)
       normalize_map[i].red=0;
@@ -1415,7 +1472,10 @@ MagickExport unsigned int NormalizeImage(Image *image)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (image->matte)
           for (x=(long) image->columns; x > 0; x--)
             {
@@ -1441,10 +1501,16 @@ MagickExport unsigned int NormalizeImage(Image *image)
               q++;
             }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(NormalizeImageText,y,image->rows,exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -1471,5 +1537,5 @@ MagickExport unsigned int NormalizeImage(Image *image)
   }
   MagickFreeMemory(normalize_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
