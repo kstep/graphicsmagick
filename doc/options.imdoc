@@ -4380,6 +4380,12 @@ though only gray pixels are present, use</pp>
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
 to write an alpha channel even though the image is opaque, if the
 output format supports transparency.</pp>
+<pp>Some pseudo-formats (e.g. the XC format) will respect the requested
+type if it occurs previously on the command line.  For example, to obtain
+a DirectClass solid color canvas image rather than PsuedoClass, use</pp>
+<pre>
+    convert -size 640x480 -type TrueColor xc:red red.miff
+</pre>
 
 </utils>
 

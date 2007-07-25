@@ -4151,7 +4151,7 @@ ReplaceImageColormap(Image *image,
 */
 MagickExport void SetImage(Image *image,const Quantum opacity)
 {
-  long
+  unsigned long
     y;
 
   PixelPacket
@@ -4160,7 +4160,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -4178,7 +4178,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       image->storage_class=DirectClass;
     }
 
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < image->rows; y++)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -4187,7 +4187,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
       /*
         Set DirectClass pixels
       */
-      for (x=(long) image->columns; x > 0; x--)
+      for (x=image->columns; x != 0; x--)
         *q++=background_color;
       
       if ((image->storage_class == PseudoClass) ||
@@ -4197,13 +4197,14 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
             Set PseudoClass pixel indexes.
           */
           indexes=GetIndexes(image);
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             *indexes++=0;
         }
       if (!SyncImagePixels(image))
         break;
     }
   image->is_grayscale=IsGray(image->background_color);
+  image->is_monochrome=IsMonochrome(image->background_color);
 }
 
 /*

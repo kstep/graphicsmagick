@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/color.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/fx.h"

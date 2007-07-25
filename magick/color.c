@@ -1257,13 +1257,13 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 MagickExport unsigned int IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
-  long
+  unsigned long
     y;
 
   register const PixelPacket
     *p;
 
-  register long
+  register unsigned long
     x;
 
   assert(image != (Image *) NULL);
@@ -1277,12 +1277,12 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     case DirectClass:
     case UndefinedClass:
     {
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           return(False);
-        for (x=(long) image->columns; x > 0; x--)
+        for (x=image->columns; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue) ||
               ((p->red != 0) && (p->red != MaxRGB)))
@@ -1295,7 +1295,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     case PseudoClass:
     {
       p=image->colormap;
-      for (x=(long) image->colors; x > 0; x--)
+      for (x=image->colors; x != 0; x--)
       {
         if ((p->red != p->green) || (p->green != p->blue) ||
             ((p->red != 0) && (p->red != MaxRGB)))

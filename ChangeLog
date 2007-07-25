@@ -1,5 +1,12 @@
 2007-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xc.c (ReadXCImage): If ImageInfo type field is set to
+	TrueColorType or TrueColorMatteType type, then return a
+	DirectClass image, otherwise a PseudoClass image is returned as
+	before.  From the command line this can be used like:
+	  gm convert -size 640x480 -type TrueColor xc:red red.miff
+	Programs may also use this in order to obtain a DirectClass
+	canvas image to draw on.
 	* magick/enhance.c (LevelImage): Fix potential buffer overflow
 	which was added since the 1.1 branch.
 

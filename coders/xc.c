@@ -102,13 +102,21 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       return((Image *) NULL);
     }
-  if (!AllocateImageColormap(image,1))
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  image->colormap[0]=image->background_color;
+  /*
+    Create a colormap if image is not DirectClass type.
+  */
+  if ((TrueColorType != image_info->type) &&
+      (TrueColorMatteType != image_info->type))
+    {
+      if (!AllocateImageColormap(image,1))
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      image->colormap[0]=image->background_color;
+    }
   /*
     Initialize image pixels to the value of image->background_color
   */
   SetImage(image,image->background_color.opacity);
+
   return(image);
 }
 

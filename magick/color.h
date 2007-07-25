@@ -15,6 +15,8 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+#if defined(MAGICK_IMPLEMENTATION)
+
 #define VerifyColormapIndex(image,index) \
 { \
   if (index >= image->colors) \
@@ -30,6 +32,22 @@ extern "C" {
         InvalidColormapIndex,colormapIndexBuffer); \
     } \
 }
+
+/*
+  Macros for testing a pixel to see if it is grayscale or bilevel.
+*/
+#define IsGray(color)  \
+  (((color).red == (color).green) && ((color).green == (color).blue))
+#define IsMonochrome(color) \
+  (IsGray(color) && ((0 == color.red) || (MaxRGB == color.red)))
+
+/*
+  Compare two colors
+*/
+#define ColorMatch(p,q) (((p)->red == (q)->red) && \
+  ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 /*
   PixelPacket with usage count, used to support color histograms.

@@ -36,6 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"

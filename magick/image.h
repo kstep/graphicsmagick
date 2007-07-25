@@ -114,8 +114,6 @@ typedef unsigned int Quantum;
 #  endif
 #endif
 
-#define ColorMatch(p,q) (((p)->red == (q)->red) && \
-  ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
 #define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
