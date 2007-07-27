@@ -8,30 +8,30 @@ CVS user name and package version.
 bzlib:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import bzip2 1.0.2' delegates/bzlib \
+    import -ko -m 'Import bzip2 1.0.2' delegates/bzlib \
     INITIAL BZIP2_1_0_2
 
 FreeType:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import freetype 2.1.5' delegates/freetype2 \
+    import -ko -m 'Import freetype 2.1.5' delegates/freetype2 \
     FREETYPE2 FREETYPE_2_1_5
 
 jasper
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jasper 1.701.0' delegates/jp2 \
-    JASPER_DIST JASPER_1_701_0
+    import -ko -m 'Import jasper 1.900.1' delegates/jp2 \
+    JASPER_DIST JASPER_1_900_1
 
 jbig:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jbigkit 1.5' delegates/jbig \
+    import -ko -m 'Import jbigkit 1.5' delegates/jbig \
     INITIAL JBIGKIT_1_5
 
 lcms:
   
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import lcms 1.15' delegates/lcms \
+    import -ko -m 'Import lcms 1.15' delegates/lcms \
     LCMS_DIST LCMS_1_15
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
     checkout -j LCMS_1_14 -jLCMS_1_15 delegates/lcms
@@ -39,12 +39,12 @@ lcms:
 png:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libpng  1.2.7' delegates/png \
+    import -ko -m 'Import libpng  1.2.7' delegates/png \
     INITIAL LIBPNG_1_2_7
 
 ralcgm:
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import ralcgm 3.50' delegates/ralcgm \
+    import -ko -m 'Import ralcgm 3.50' delegates/ralcgm \
     RALCGM_DIST RALCGM_3_50
 
 
@@ -59,7 +59,7 @@ tiff:
 wmf:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import CVS libwmf 0.2.8.2' delegates/wmf \
+    import -ko -m 'Import CVS libwmf 0.2.8.2' delegates/wmf \
     LIBWMF_DIST LIBWMF_0_2_8_2
 
   Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_8_2' is the
@@ -68,12 +68,12 @@ wmf:
 xml: Note, this one may be bogus!
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libxml2 2.4.19' delegates/libxml \
+    import -ko -m 'Import libxml2 2.4.19' delegates/libxml \
     LIBXML_DIST LIBXML_2_4_19
 
 
 zlib:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import zlib 1.2.3' delegates/zlib \
+    import -ko -m 'Import zlib 1.2.3' delegates/zlib \
     INITIAL ZLIB_1_2_3

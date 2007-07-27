@@ -6,10 +6,6 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o Cineon writer seems to be entirely broken now.
-
-  o SGI writer should support 16-bit quantums.
-
   o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.
 
   o Fix/improve PSD reader.
@@ -23,8 +19,6 @@ For 1.2 Branch
 
   o Fix bug noticed when writing multiple image frames to a JPEG
     file without an extension.
-
-  o Fix "gm convert logo: logo%n.png" --> Segmentation fault
 
   o Fix PerlMagick BLOB reading (disable header magic checking if already
     specified).
@@ -41,7 +35,7 @@ For 1.2 Branch
   o Update to libtool 2.0 (now using development libtool 2.0).
 
   o Re-write metadata handling to use accessor functions rather
-    than accessing Image members directly (50% complete).
+    than accessing Image members directly (90% complete).
 
   o Update Windows libtiff to version 3.8.2. (done)
 
