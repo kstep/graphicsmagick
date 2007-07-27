@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -35,15 +35,23 @@ void cdecl VEC3perK(LPVEC3 r, LPVEC3 v, double d);
 void cdecl VEC3perComp(LPVEC3 r, LPVEC3 a, LPVEC3 b);
 void cdecl VEC3minus(LPVEC3 r, LPVEC3 a, LPVEC3 b);
 void cdecl VEC3scaleAndCut(LPWVEC3 r, LPVEC3 v, double d);
+void cdecl VEC3cross(LPVEC3 r, LPVEC3 u, LPVEC3 v);
+void cdecl VEC3saturate(LPVEC3 v);
 
-void cdecl MAT3identity(LPMAT3 a);
-void cdecl MAT3per(LPMAT3 r, LPMAT3 a, LPMAT3 b);
-int  cdecl MAT3inverse(LPMAT3 a, LPMAT3 b);
-void cdecl MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v);
-void cdecl MAT3toFix(LPWMAT3 r, LPMAT3 v);
-void cdecl MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v);
-void cdecl MAT3perK(LPMAT3 r, LPMAT3 v, double d);
-void cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
+double cdecl VEC3length(LPVEC3 a);
+double cdecl VEC3distance(LPVEC3 a, LPVEC3 b);
+
+
+void   cdecl MAT3identity(LPMAT3 a);
+void   cdecl MAT3per(LPMAT3 r, LPMAT3 a, LPMAT3 b);
+int    cdecl MAT3inverse(LPMAT3 a, LPMAT3 b);
+BOOL   cdecl MAT3solve(LPVEC3 x, LPMAT3 a, LPVEC3 b);
+double cdecl MAT3det(LPMAT3 m);
+void   cdecl MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v);
+void   cdecl MAT3toFix(LPWMAT3 r, LPMAT3 v);
+void   cdecl MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v);
+void   cdecl MAT3perK(LPMAT3 r, LPMAT3 v, double d);
+void   cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
 
 // --------------------- Implementation ----------------------------
 
@@ -56,6 +64,7 @@ void cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4033)
+#pragma warning(disable : 4035)
 #endif
 
 
@@ -144,27 +153,27 @@ WORD FixedScale(WORD a, Fixed32 s)
 
 #ifdef _MSC_VER
 #pragma warning(default : 4033)
+#pragma warning(default : 4035)
 #endif
 
 #else
-
 
 
 // These are floating point versions for compilers that doesn't
 // support asm at all. Use with care, since this will slow down
 // all operations
 
+
 Fixed32 FixedMul(Fixed32 a, Fixed32 b)
 {
 #ifdef USE_INT64
-       LONGLONG l = (LONGLONG) a * b + (LONGLONG) 0x8000;
+       LCMSULONGLONG l = (LCMSULONGLONG) (LCMSSLONGLONG) a * (LCMSULONGLONG) (LCMSSLONGLONG) b + (LCMSULONGLONG) 0x8000;
        l >>= 16;
        return (Fixed32) l;
 #else
        return DOUBLE_TO_FIXED(FIXED_TO_DOUBLE(a) * FIXED_TO_DOUBLE(b));
 #endif
 }
-
 
 Fixed32 FixedSquare(Fixed32 a)
 {
@@ -176,7 +185,7 @@ Fixed32 FixedLERP(Fixed32 a, Fixed32 l, Fixed32 h)
 {
 #ifdef USE_INT64
 
-       LONGLONG dif = (LONGLONG) (h - l) * a + 0x8000;           
+       LCMSULONGLONG dif = (LCMSULONGLONG) (h - l) * a + 0x8000;           
        dif = (dif >> 16) + l;        
        return (Fixed32) (dif);
 #else
@@ -329,6 +338,22 @@ BOOL VEC3equal(LPWVEC3 a, LPWVEC3 b, double Tolerance)
        return TRUE;
 }
 
+BOOL VEC3equalF(LPVEC3 a, LPVEC3 b, double Tolerance)
+{
+       int i;
+       double c;
+
+       for (i=0; i < 3; i++)
+       {
+              c = a -> n[i];
+              if (!RangeCheck(c - Tolerance,
+                              c + Tolerance,
+                              b->n[i])) return FALSE;
+       }
+
+       return TRUE;
+}
+
 
 void VEC3scaleFix(LPWORD r, LPWVEC3 Scale)
 {
@@ -342,6 +367,55 @@ void VEC3scaleFix(LPWORD r, LPWVEC3 Scale)
 
 }
 
+
+
+// Vector cross product
+
+void VEC3cross(LPVEC3 r, LPVEC3 u, LPVEC3 v)
+{
+
+    r ->n[VX] = u->n[VY] * v->n[VZ] - v->n[VY] * u->n[VZ];
+    r ->n[VY] = u->n[VZ] * v->n[VX] - v->n[VZ] * u->n[VX];
+    r ->n[VZ] = u->n[VX] * v->n[VY] - v->n[VX] * u->n[VY];
+}
+    
+
+
+// The vector size
+
+double VEC3length(LPVEC3 a)
+{
+    return sqrt(a ->n[VX] * a ->n[VX] +
+                a ->n[VY] * a ->n[VY] +
+                a ->n[VZ] * a ->n[VZ]);
+}
+
+
+// Saturate a vector into 0..1.0 range
+
+void VEC3saturate(LPVEC3 v)
+{
+    int i;
+    for (i=0; i < 3; i++) {
+        if (v ->n[i] < 0)
+                v ->n[i] = 0;
+        else
+        if (v ->n[i] > 1.0)
+                v ->n[i] = 1.0;
+    }
+}
+
+
+// Euclidean distance
+
+double VEC3distance(LPVEC3 a, LPVEC3 b)
+{
+    double d1 = a ->n[VX] - b ->n[VX];
+    double d2 = a ->n[VY] - b ->n[VY];
+    double d3 = a ->n[VZ] - b ->n[VZ];
+
+    return sqrt(d1*d1 + d2*d2 + d3*d3);
+}
 
 
 // Identity
@@ -440,6 +514,41 @@ int MAT3inverse(LPMAT3 a, LPMAT3 b)
 }
 
 
+// Solve a system in the form Ax = b
+
+BOOL MAT3solve(LPVEC3 x, LPMAT3 a, LPVEC3 b)
+{
+	MAT3 m, a_1;
+
+	CopyMemory(&m, a, sizeof(MAT3));
+
+	if (!MAT3inverse(&m, &a_1)) return FALSE;  // Singular matrix
+
+	MAT3eval(x, &a_1, b);
+	return TRUE;
+}
+
+
+// The determinant
+
+double MAT3det(LPMAT3 m)
+{
+
+    double a1 = m ->v[VX].n[VX];
+    double a2 = m ->v[VX].n[VY];
+    double a3 = m ->v[VX].n[VZ];
+    double b1 = m ->v[VY].n[VX];
+    double b2 = m ->v[VY].n[VY];
+    double b3 = m ->v[VY].n[VZ];
+    double c1 = m ->v[VZ].n[VX];
+    double c2 = m ->v[VZ].n[VY];
+    double c3 = m ->v[VZ].n[VZ];
+
+    
+    return a1*b2*c3 - a1*b3*c2 + a2*b3*c1 - a2*b1*c3 - a3*b1*c2 - a3*b2*c1;
+}
+
+
 // linear transform
 
 
@@ -453,8 +562,8 @@ void MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v)
 
 // Ok, this is another bottleneck of performance.
 
-#ifdef USE_ASSEMBLER
 
+#ifdef USE_ASSEMBLER
 
 // ecx:ebx is result in 64 bits format
 // edi points to matrix, esi points to input vector
@@ -470,9 +579,7 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
        mov    esi, dword ptr ss:v_
        mov    edi, dword ptr ss:a_
 
-
    //     r->n[VX] = FixedMul(a->v[0].n[0], v->n[0]) +
-
 
        mov       eax,dword ptr [esi]
        mov       edx,dword ptr [edi]
@@ -519,8 +626,6 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
        mov       ecx, eax
        mov       ebx, edx
 
-
-
    //         FixedMul(a->v[1].n[1], v->n[1]) +
 
        mov       eax,dword ptr [esi+4]
@@ -528,7 +633,6 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
        imul      edx
        add       ecx, eax
        adc       ebx, edx
-
 
        //     FixedMul(a->v[1].n[2], v->n[2]);
 
@@ -557,7 +661,6 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
        mov       ecx, eax
        mov       ebx, edx
 
-
    //    FixedMul(a->v[2].n[1], v->n[1]) +
 
        mov       eax,dword ptr [esi+4]
@@ -565,7 +668,6 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
        imul      edx
        add       ecx, eax
        adc       ebx, edx
-
 
    //   FixedMul(a->v[2].n[2], v->n[2]);
 
@@ -588,8 +690,69 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
 #else
 
 
+#ifdef USE_FLOAT
+
 void MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v)
 {
+    r->n[VX] = DOUBLE_TO_FIXED(
+                 FIXED_TO_DOUBLE(a->v[0].n[0]) * FIXED_TO_DOUBLE(v->n[0]) +
+                 FIXED_TO_DOUBLE(a->v[0].n[1]) * FIXED_TO_DOUBLE(v->n[1]) +
+                 FIXED_TO_DOUBLE(a->v[0].n[2]) * FIXED_TO_DOUBLE(v->n[2])
+                );
+
+    r->n[VY] = DOUBLE_TO_FIXED(
+                 FIXED_TO_DOUBLE(a->v[1].n[0]) * FIXED_TO_DOUBLE(v->n[0]) +
+                 FIXED_TO_DOUBLE(a->v[1].n[1]) * FIXED_TO_DOUBLE(v->n[1]) +
+                 FIXED_TO_DOUBLE(a->v[1].n[2]) * FIXED_TO_DOUBLE(v->n[2])
+               );
+
+    r->n[VZ] = DOUBLE_TO_FIXED(
+                FIXED_TO_DOUBLE(a->v[2].n[0]) * FIXED_TO_DOUBLE(v->n[0]) +
+                FIXED_TO_DOUBLE(a->v[2].n[1]) * FIXED_TO_DOUBLE(v->n[1]) +
+                FIXED_TO_DOUBLE(a->v[2].n[2]) * FIXED_TO_DOUBLE(v->n[2])
+               );
+}
+
+
+#else
+
+void MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v)
+{
+
+#ifdef USE_INT64
+
+    LCMSULONGLONG l1 = (LCMSULONGLONG) (LCMSSLONGLONG) a->v[0].n[0] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[0] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[0].n[1] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[1] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[0].n[2] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[2] + (LCMSULONGLONG) 0x8000;
+
+    LCMSULONGLONG l2 = (LCMSULONGLONG) (LCMSSLONGLONG) a->v[1].n[0] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[0] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[1].n[1] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[1] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[1].n[2] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[2] + (LCMSULONGLONG) 0x8000;
+
+    LCMSULONGLONG l3 = (LCMSULONGLONG) (LCMSSLONGLONG) a->v[2].n[0] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[0] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[2].n[1] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[1] +
+                       (LCMSULONGLONG) (LCMSSLONGLONG) a->v[2].n[2] * 
+                       (LCMSULONGLONG) (LCMSSLONGLONG) v->n[2] + (LCMSULONGLONG) 0x8000;
+    l1 >>= 16;
+    l2 >>= 16;
+    l3 >>= 16;
+
+    r->n[VX] = (Fixed32) l1;               
+    r->n[VY] = (Fixed32) l2;
+    r->n[VZ] = (Fixed32) l3;
+
+#else
+    
+    // FIXME: Rounding should be done at very last stage. There is 1-Contone rounding error!
+
     r->n[VX] = FixedMul(a->v[0].n[0], v->n[0]) +
                FixedMul(a->v[0].n[1], v->n[1]) +
                FixedMul(a->v[0].n[2], v->n[2]);
@@ -601,8 +764,10 @@ void MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v)
     r->n[VZ] = FixedMul(a->v[2].n[0], v->n[0]) +
                FixedMul(a->v[2].n[1], v->n[1]) +
                FixedMul(a->v[2].n[2], v->n[2]);
+#endif
 }
 
+#endif
 #endif
 
 
@@ -647,17 +812,5 @@ void MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d)
 }
 
 
-// Saturate a vector into 0..1.0 range
 
-void VEC3saturate(LPVEC3 v)
-{
-	int i;
-	for (i=0; i < 3; i++) {
-		if (v ->n[i] < 0)
-				v ->n[i] = 0;
-		else
-		if (v ->n[i] > 1.0)
-				v ->n[i] = 1.0;
-	}
-}
 

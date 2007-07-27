@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -250,9 +250,9 @@ void AllSmeltedBehaviour(LPMATSHAPER MatShaper, WORD In[], WORD Out[])
        }
 
              
-       tmp[0] = Clamp_XYZ(FromFixedDomain(OutVect.n[VX]));
-       tmp[1] = Clamp_XYZ(FromFixedDomain(OutVect.n[VY]));
-       tmp[2] = Clamp_XYZ(FromFixedDomain(OutVect.n[VZ]));
+       tmp[0] = _cmsClampWord(FromFixedDomain(OutVect.n[VX]));
+       tmp[1] = _cmsClampWord(FromFixedDomain(OutVect.n[VY]));
+       tmp[2] = _cmsClampWord(FromFixedDomain(OutVect.n[VZ]));
 
        
            
@@ -302,9 +302,9 @@ void InputBehaviour(LPMATSHAPER MatShaper, WORD In[], WORD Out[])
 
        // PCS in 1Fixed15 format, adjusting
 
-       Out[0] = (WORD) Clamp_XYZ((OutVect.n[VX]) >> 1);
-       Out[1] = (WORD) Clamp_XYZ((OutVect.n[VY]) >> 1);
-       Out[2] = (WORD) Clamp_XYZ((OutVect.n[VZ]) >> 1);
+       Out[0] = _cmsClampWord((OutVect.n[VX]) >> 1);
+       Out[1] = _cmsClampWord((OutVect.n[VY]) >> 1);
+       Out[2] = _cmsClampWord((OutVect.n[VZ]) >> 1);
 
 }
 
@@ -338,7 +338,7 @@ void OutputBehaviour(LPMATSHAPER MatShaper, WORD In[], WORD Out[])
               {
 
               Out[i] = cmsLinearInterpLUT16(
-                     Clamp_RGB(FromFixedDomain(OutVect.n[i])),
+                     _cmsClampWord(FromFixedDomain(OutVect.n[i])),
                      MatShaper -> L[i],
                      &MatShaper ->p16);
               }
@@ -347,9 +347,9 @@ void OutputBehaviour(LPMATSHAPER MatShaper, WORD In[], WORD Out[])
        {
        // Result from fixed domain to RGB
 
-       Out[0] = Clamp_RGB(FromFixedDomain(OutVect.n[VX]));
-       Out[1] = Clamp_RGB(FromFixedDomain(OutVect.n[VY]));
-       Out[2] = Clamp_RGB(FromFixedDomain(OutVect.n[VZ]));
+       Out[0] = _cmsClampWord(FromFixedDomain(OutVect.n[VX]));
+       Out[1] = _cmsClampWord(FromFixedDomain(OutVect.n[VY]));
+       Out[2] = _cmsClampWord(FromFixedDomain(OutVect.n[VZ]));
        }
 
 }

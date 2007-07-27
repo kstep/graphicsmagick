@@ -1,7 +1,7 @@
 
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -34,6 +34,9 @@ cmsHPROFILE OpenStockProfile(const char* File)
        
        if (stricmp(File, "*Lab") == 0)
                 return cmsCreateLabProfile(NULL);
+       
+       if (stricmp(File, "*Lab4") == 0)
+                return cmsCreateLab4Profile(NULL);
        
        if (stricmp(File, "*LabD65") == 0) {
 

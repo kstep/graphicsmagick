@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -23,7 +23,6 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-// Version 1.14
 
 #include "lcms.h"
 #include <stdarg.h>
@@ -46,9 +45,14 @@ static int PrecalcMode = 1;
 static int NumOfGridPoints = 0;
 
 static BOOL BlackPointCompensation = FALSE;
+static int  BlackPreservation      = 0;
+
 static double InkLimit             = 400;
 static BOOL lUse8bits = FALSE;
 static BOOL TagResult = FALSE;
+
+
+
 
 static
 void FatalError(const char *frm, ...)
@@ -72,17 +76,18 @@ void Help(int level)
      case 0:
 
      fprintf(stderr, "\nLinks two or more profiles into a single devicelink profile.\n");     
-     fprintf(stderr, "Colorspaces must be paired except Lab/XYZ, that can be interchanged.\n");
-     fprintf(stderr, "\n");     
+	 fprintf(stderr, "Colorspaces must be paired except Lab/XYZ, that can be interchanged.\n");
+	 fprintf(stderr, "\n");     
      fprintf(stderr, "usage: icclink [flags] <profiles>\n\n");
      fprintf(stderr, "flags:\n\n");         
      fprintf(stderr, "%co<profile> - Output devicelink profile. [defaults to 'devicelink.icm']\n", SW);        
      fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
-     fprintf(stderr, "%cc<0,1,2> - Precission (0=LowRes, 1=Normal, 2=Hi-res) [defaults to 1]\n", SW);     
+	 fprintf(stderr, "%cc<0,1,2> - Precission (0=LowRes, 1=Normal, 2=Hi-res) [defaults to 1]\n", SW);     
      fprintf(stderr, "%cn<gridpoints> - Alternate way to set precission, number of CLUT points\n", SW);     
      fprintf(stderr, "%cd<description> - description text (quotes can be used)\n", SW);     
      fprintf(stderr, "\n%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
+     fprintf(stderr, "%cf<0,1> - Black preserving 0=off, 1=K ink only 2=K plane\n", SW);
+     fprintf(stderr, "\n%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
      fprintf(stderr, "%c8 - Creates 8-bit devicelink\n", SW);
      fprintf(stderr, "%cx - Creatively, guess deviceclass of resulting profile.\n", SW);
      fprintf(stderr, "\n");
@@ -119,7 +124,7 @@ void Help(int level)
       break;                       
 
      case 3:
-     
+	 
      fprintf(stderr, "This program is intended to be a demo of the little cms\n"
                      "engine. Both lcms and this program are freeware. You can\n"
                      "obtain both in source code at http://www.littlecms.com\n"
@@ -137,11 +142,11 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:f:F:")) != EOF) {
 
        switch (s){
 
-     
+	 
        case '8':
             lUse8bits = TRUE;
             break;
@@ -164,7 +169,7 @@ void HandleSwitches(int argc, char *argv[])
             if (Intent < 0) Intent = 0;
             break;
      
-        case 'c':
+		case 'c':
         case 'C':
             PrecalcMode = atoi(xoptarg);
             if (PrecalcMode < 0 || PrecalcMode > 2)
@@ -183,7 +188,14 @@ void HandleSwitches(int argc, char *argv[])
         case 'B':
             BlackPointCompensation = TRUE;
             break;
-            
+			
+        case 'f':
+        case 'F': 
+                BlackPreservation = atoi(xoptarg);
+                if (BlackPreservation < 0 || BlackPreservation > 2)
+                    FatalError("ERROR: Unknown black preservation mode '%d'", BlackPreservation);
+                break;
+
         case 'k':
         case 'K':
                 InkLimit = atof(xoptarg);
@@ -210,7 +222,7 @@ void HandleSwitches(int argc, char *argv[])
 static
 cmsHPROFILE OpenProfile(const char* File)
 {
-    cmsHPROFILE h;
+	cmsHPROFILE h;
 
        if (!File) 
             return cmsCreate_sRGBProfile();    
@@ -221,17 +233,17 @@ cmsHPROFILE OpenProfile(const char* File)
        if (stricmp(File, "*XYZ") == 0)
                 return cmsCreateXYZProfile();
          
-       if (stricmp(File, "*srgb") == 0)
-                return cmsCreate_sRGBProfile();
+	   if (stricmp(File, "*srgb") == 0)
+				return cmsCreate_sRGBProfile();
 
        
-       if (stricmp(File, "*Gray22") == 0) {
-           LPGAMMATABLE Gamma = cmsBuildGamma(256, 2.2);
-           cmsHPROFILE hProfile = cmsCreateGrayProfile(cmsD50_xyY(), Gamma);
-           cmsFreeGamma(Gamma);
-           return hProfile;
+	   if (stricmp(File, "*Gray22") == 0) {
+		   LPGAMMATABLE Gamma = cmsBuildGamma(256, 2.2);
+		   cmsHPROFILE hProfile = cmsCreateGrayProfile(cmsD50_xyY(), Gamma);
+		   cmsFreeGamma(Gamma);
+		   return hProfile;
 
-       }
+	   }
        
        if (stricmp(File, "*Lin2222") == 0) {
 
@@ -241,20 +253,20 @@ cmsHPROFILE OpenProfile(const char* File)
 
             Gamma4[0] = Gamma4[1] = Gamma4[2] = Gamma4[3] = Gamma;
             hProfile = cmsCreateLinearizationDeviceLink(icSigCmykData, Gamma4);
-            cmsFreeGamma(Gamma);
-            return hProfile;
+		    cmsFreeGamma(Gamma);
+		    return hProfile;
 
-       }
+	   }
 
 
        h = cmsOpenProfileFromFile(File, "r");
 
-       
+	   
        if (cmsGetDeviceClass(h) == icSigNamedColorClass)
-            FatalError("ERROR: Cannot make devicelink of named color profiles!");
+			FatalError("ERROR: Cannot make devicelink of named color profiles!");
        
 
-       return h;
+	   return h;
 }
 
 static
@@ -265,58 +277,57 @@ int MyErrorHandler(int ErrorCode, const char *ErrorText)
 }
 
 
-static
-int IsPCS(icColorSpaceSignature ColorSpace)
-{
-    return (ColorSpace == icSigXYZData ||
-            ColorSpace == icSigLabData);
-}
-
-
 
 
 int main(int argc, char *argv[])
 {
-    int i, nargs;
-    cmsHPROFILE Profiles[257];
-    cmsHPROFILE hProfile;
-    DWORD dwFlags = 0;
-    cmsHTRANSFORM hTransform;
+	int i, nargs;
+	cmsHPROFILE Profiles[257];
+	cmsHPROFILE hProfile;
+	DWORD dwFlags = 0;
+	cmsHTRANSFORM hTransform;
     
 
-     fprintf(stderr, "little cms device link generator - v1.5\n");
+     fprintf(stderr, "little cms device link generator - v1.6\n");
 
-     HandleSwitches(argc, argv);
+	 HandleSwitches(argc, argv);
 
      cmsSetErrorHandler(MyErrorHandler);
 
      nargs = (argc - xoptind);
-     if (nargs < 2)
-                Help(0); 
-     
-     if (nargs > 255)
-            FatalError("ERROR: Holy profile! what are you trying to do with so many profiles?");
+	 if (nargs < 1)
+				Help(0); 
+	 
+	 if (nargs > 255)
+			FatalError("ERROR: Holy profile! what are you trying to do with so many profiles?");
 
 
-     for (i=0; i < nargs; i++) {
-         Profiles[i] = OpenProfile(argv[i + xoptind]);
-     }
+	 for (i=0; i < nargs; i++) {
+		 Profiles[i] = OpenProfile(argv[i + xoptind]);
+	 }
 
-    
-     switch (PrecalcMode) {
-            
-        case 0: dwFlags |= cmsFLAGS_LOWRESPRECALC; break;
-        case 2: dwFlags |= cmsFLAGS_HIGHRESPRECALC; break;
-        case 1: 
+	
+
+	 switch (PrecalcMode) {
+           	
+	    case 0: dwFlags |= cmsFLAGS_LOWRESPRECALC; break;
+		case 2: dwFlags |= cmsFLAGS_HIGHRESPRECALC; break;
+		case 1: 
             if (NumOfGridPoints > 0)
                 dwFlags |= cmsFLAGS_GRIDPOINTS(NumOfGridPoints);
             break;
 
-        default: FatalError("ERROR: Unknown precalculation mode '%d'", PrecalcMode);
-     }
+		default: FatalError("ERROR: Unknown precalculation mode '%d'", PrecalcMode);
+	 }
 
      if (BlackPointCompensation)
             dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
+
+     if (BlackPreservation > 0) {
+
+            dwFlags |= cmsFLAGS_PRESERVEBLACK;
+            cmsSetCMYKPreservationStrategy(BlackPreservation-1);
+     }
 
      if (TagResult)
             dwFlags |= cmsFLAGS_GUESSDEVICECLASS;
@@ -331,8 +342,8 @@ int main(int argc, char *argv[])
 
      if (lUse8bits) dwFlags |= cmsFLAGS_NOPRELINEARIZATION;
 
-     hTransform = cmsCreateMultiprofileTransform(Profiles, nargs, 0, 0, Intent, dwFlags);
-     if (hTransform) {
+	 hTransform = cmsCreateMultiprofileTransform(Profiles, nargs, 0, 0, Intent, dwFlags);
+	 if (hTransform) {
 
         size_t size = sizeof(int) + nargs * sizeof(cmsPSEQDESC);
         LPcmsSEQ pseq = (LPcmsSEQ) malloc(size);
@@ -345,30 +356,30 @@ int main(int argc, char *argv[])
             strcpy(pseq ->seq[i].Manufacturer, cmsTakeManufacturer(Profiles[i]));
             strcpy(pseq ->seq[1].Model, cmsTakeModel(Profiles[i]));
         }
-           
-        hProfile =  cmsTransform2DeviceLink(hTransform, dwFlags);
+	       
+		hProfile = 	cmsTransform2DeviceLink(hTransform, dwFlags);
 
-        cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) Description);
-        cmsAddTag(hProfile, icSigCopyrightTag, (LPVOID) "Generated by littlecms icclink. No copyright, use freely");
+		cmsAddTag(hProfile, icSigProfileDescriptionTag, (LPVOID) Description);
+		cmsAddTag(hProfile, icSigCopyrightTag, (LPVOID) "Generated by littlecms icclink. No copyright, use freely");
         cmsAddTag(hProfile, icSigProfileSequenceDescTag, (LPVOID) pseq);
 
         if (lUse8bits) _cmsSetLUTdepth(hProfile, 8);
 
-        if (_cmsSaveProfile(hProfile, cOutProf)) 
-                fprintf(stderr, "Ok");
-        else 
-                fprintf(stderr, "Error saving file!");
+		if (_cmsSaveProfile(hProfile, cOutProf)) 
+				fprintf(stderr, "Ok");
+		else 
+				fprintf(stderr, "Error saving file!");
 
-        cmsCloseProfile(hProfile);
+		cmsCloseProfile(hProfile);
         free(pseq);
-     }
+	 }
 
-     cmsDeleteTransform(hTransform);
+	 cmsDeleteTransform(hTransform);
 
-     for (i=0; i < nargs; i++) {
-         cmsCloseProfile(Profiles[i]);
-     }
+	 for (i=0; i < nargs; i++) {
+		 cmsCloseProfile(Profiles[i]);
+	 }
 
-            
-      return 0;     
+		 	
+     return 0;     
 }

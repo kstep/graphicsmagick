@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -288,71 +288,109 @@ cmsHPROFILE CreateNamedColorDevicelink(cmsHTRANSFORM xform)
 
 cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags)
 {
-        cmsHPROFILE hICC;
-        _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) hTransform;
-        LPLUT Lut;
-        BOOL MustFreeLUT;
-      
-        // Check if is a named color transform
-
-        if (cmsGetDeviceClass(v ->InputProfile) == icSigNamedColorClass) {
-                           
-            return CreateNamedColorDevicelink(hTransform);
-                
-        }
-
-        if (v ->DeviceLink) {
-
-                Lut = v -> DeviceLink;
-                MustFreeLUT = FALSE;
-        }
-        else {
-
-            Lut = _cmsPrecalculateDeviceLink(hTransform, dwFlags);
-            if (!Lut) return NULL;
-            MustFreeLUT = TRUE;
-        }
-
-       hICC = _cmsCreateProfilePlaceholder();
-       if (!hICC) {                          // can't allocate
-      
-            if (MustFreeLUT) cmsFreeLUT(Lut);
-            return NULL;
-       }
-
-
-       FixColorSpaces(hICC, v -> EntryColorSpace, v -> ExitColorSpace, dwFlags);             
-
-       cmsSetRenderingIntent(hICC,  v -> Intent); 
-              
-       // Implement devicelink profile using following tags:
-       //
-       //  1 icSigProfileDescriptionTag
-       //  2 icSigMediaWhitePointTag
-       //  3 icSigAToB0Tag
-       
-                 
-       cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "LittleCMS");       
-       cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "Device link");
-       cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "Device link");      
+    cmsHPROFILE hICC;
+    _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) hTransform;
+    LPLUT Lut;
+    BOOL MustFreeLUT;
+    LPcmsNAMEDCOLORLIST InputColorant = NULL;
+    LPcmsNAMEDCOLORLIST OutputColorant = NULL;
     
-
-       cmsAddTag(hICC, icSigMediaWhitePointTag,  (LPVOID) cmsD50_XYZ());
-
-       if (cmsGetDeviceClass(hICC) == icSigOutputClass) {
-           
-                
-                cmsAddTag(hICC, icSigBToA0Tag, (LPVOID) Lut);
-       }
-
-       else
-                cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
-
+    
+    // Check if is a named color transform
+    
+    if (cmsGetDeviceClass(v ->InputProfile) == icSigNamedColorClass) {
+        
+        return CreateNamedColorDevicelink(hTransform);
+        
+    }
+    
+    if (v ->DeviceLink) {
+        
+        Lut = v -> DeviceLink;
+        MustFreeLUT = FALSE;
+    }
+    else {
+        
+        Lut = _cmsPrecalculateDeviceLink(hTransform, dwFlags);
+        if (!Lut) return NULL;
+        MustFreeLUT = TRUE;
+    }
+    
+    hICC = _cmsCreateProfilePlaceholder();
+    if (!hICC) {                          // can't allocate
+        
+        if (MustFreeLUT) cmsFreeLUT(Lut);
+        return NULL;
+    }
+    
+    
+    FixColorSpaces(hICC, v -> EntryColorSpace, v -> ExitColorSpace, dwFlags);             
+    
+    cmsSetRenderingIntent(hICC,  v -> Intent); 
+    
+    // Implement devicelink profile using following tags:
+    //
+    //  1 icSigProfileDescriptionTag
+    //  2 icSigMediaWhitePointTag
+    //  3 icSigAToB0Tag
+    
+    
+    cmsAddTag(hICC, icSigDeviceMfgDescTag,       (LPVOID) "LittleCMS");       
+    cmsAddTag(hICC, icSigProfileDescriptionTag,  (LPVOID) "Device link");
+    cmsAddTag(hICC, icSigDeviceModelDescTag,     (LPVOID) "Device link");      
+    
+    
+    cmsAddTag(hICC, icSigMediaWhitePointTag,  (LPVOID) cmsD50_XYZ());
+    
+    if (cmsGetDeviceClass(hICC) == icSigOutputClass) {
+        
+        
+        cmsAddTag(hICC, icSigBToA0Tag, (LPVOID) Lut);
+    }
+    
+    else
+        cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
+    
+    
+    
+    // Try to read input and output colorant table
+    if (cmsIsTag(v ->InputProfile, icSigColorantTableTag)) {
+        
+        // Input table can only come in this way.
+        InputColorant = cmsReadColorantTable(v ->InputProfile, icSigColorantTableTag);
+    }
+    
+    // Output is a little bit more complex.    
+    if (cmsGetDeviceClass(v ->OutputProfile) == icSigLinkClass) {
+        
+        // This tag may exist only on devicelink profiles.        
+        if (cmsIsTag(v ->OutputProfile, icSigColorantTableOutTag)) {
+            
+            OutputColorant = cmsReadColorantTable(v ->OutputProfile, icSigColorantTableOutTag);
+        }
+        
+    } else {
+        
+        if (cmsIsTag(v ->OutputProfile, icSigColorantTableTag)) {
+            
+            OutputColorant = cmsReadColorantTable(v ->OutputProfile, icSigColorantTableTag);
+        }     
+	}
+    
+    if (InputColorant) 
+           cmsAddTag(hICC, icSigColorantTableTag, InputColorant);       
        
-       if (MustFreeLUT) cmsFreeLUT(Lut);
-
-       return hICC;
-
+    if (OutputColorant) 
+           cmsAddTag(hICC, icSigColorantTableOutTag, OutputColorant);       
+       
+       
+       
+    if (MustFreeLUT) cmsFreeLUT(Lut);
+    if (InputColorant) cmsFreeNamedColorList(InputColorant);
+    if (OutputColorant) cmsFreeNamedColorList(OutputColorant);
+       
+    return hICC;
+       
 }
 
 
@@ -702,8 +740,10 @@ int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
     cmsCIEXYZ XYZ;
     LPBCHSWADJUSTS bchsw = (LPBCHSWADJUSTS) Cargo;
     
+
     cmsLabEncoded2Float(&LabIn, In);
-     
+    
+
     cmsLab2LCh(&LChIn, &LabIn);
 
     // Do some adjusts on LCh
@@ -712,13 +752,14 @@ int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
     LChOut.C = LChIn.C + bchsw -> Saturation;
     LChOut.h = LChIn.h + bchsw -> Hue;
     
+        
     cmsLCh2Lab(&LabOut, &LChOut);
 
     // Move white point in Lab
 
     cmsLab2XYZ(&bchsw ->WPsrc,  &XYZ, &LabOut);
     cmsXYZ2Lab(&bchsw ->WPdest, &LabOut, &XYZ);
-
+    
     // Back to encoded
 
     cmsFloat2LabEncoded(Out, &LabOut);
@@ -831,7 +872,7 @@ cmsHPROFILE LCMSEXPORT cmsCreateNULLProfile(void)
 
        cmsAllocLinearTable(Lut, &EmptyTab, 2);
         
-       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
+       cmsAddTag(hProfile, icSigBToA0Tag, (LPVOID) Lut);
     
        cmsFreeLUT(Lut);
        cmsFreeGamma(EmptyTab);

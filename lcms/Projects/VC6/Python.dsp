@@ -92,7 +92,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\python\lcms_wrap.cpp
+SOURCE=..\..\python\lcms_wrap.cxx
 # End Source File
 # End Group
 # Begin Group "SWIG Files"
@@ -106,26 +106,26 @@ SOURCE=..\..\python\lcms.i
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build
-InputDir=\lcms-1.14\python
+InputDir=..\..\python
 InputPath=..\..\python\lcms.i
 InputName=lcms
 
-"$(InputDir)\$(InputName)_wrap.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName)_wrap.cxx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cd ..\..\python 
-	swig -c++ -python -DLCMS_APIONLY -I..\include -o $(InputDir)\$(InputName)_wrap.cpp  $(InputPath) 
+	swig -c++ -python -DLCMS_APIONLY -I..\include -o $(InputDir)\$(InputName)_wrap.cxx  $(InputPath) 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Python - Win32 Debug"
 
 # Begin Custom Build
-InputDir=\lcms-1.14\python
+InputDir=..\..\python
 InputPath=..\..\python\lcms.i
 InputName=lcms
 
-"$(InputDir)\$(InputName)_wrap.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName)_wrap.cxx" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cd ..\..\python 
-	swig -c++ -python -DLCMS_APIONLY -I..\include -o $(InputDir)\$(InputName)_wrap.cpp  $(InputPath) 
+	swig -c++ -python -DLCMS_APIONLY -I..\include -o $(InputDir)\$(InputName)_wrap.cxx  $(InputPath) 
 	
 # End Custom Build
 

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="lcmsdll"
 	SccProjectName=""
 	SccLocalPath="">
@@ -25,6 +25,7 @@
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;LCMSDLL_EXPORTS;LCMS_DLL;LCMS_DLL_BUILD"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				StructMemberAlignment="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\DllDebug/lcmsdll.pch"
 				AssemblerListingLocation=".\DllDebug/"
@@ -66,7 +67,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -84,20 +91,21 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
-				AdditionalIncludeDirectories="..\include,..\..\include"
+				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="NDEBUG;LCMS_DLL,LCMS_DLL_BUILD;WIN32;_WINDOWS;_USRDLL"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				StructMemberAlignment="4"
+				StructMemberAlignment="1"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\DllRelease/"
 				ObjectFile="Release/"
 				ProgramDataBaseFileName="Release/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -130,9 +138,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -160,6 +176,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\cmsintrp.c">
+			</File>
+			<File
+				RelativePath="..\..\src\cmsio0.c">
 			</File>
 			<File
 				RelativePath="..\..\src\cmsio1.c">

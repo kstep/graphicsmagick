@@ -2,13 +2,12 @@ SHELL = /bin/sh
 MAKE_SILENT = $(MAKE) -s -f makefile.simple
 
 init: FORCED
-	@echo "little cms color management engine 1.13"
+	@echo "little cms color management engine 1.16"
 	@echo
 	@echo "Available targets are 'all', 'test', 'clean'"
-	@echo " 'utils' and 'python'"
+	@echo " 'utils' "
 	@echo
-	@echo "- To compile additional utilities, type 'make utils'"
-	@echo "- To make Python support type 'make python'"
+	@echo "- To compile additional utilities, type 'make utils'"	
 	@echo "- To install libraries, type 'make install'"
 	@echo
 	@echo 
@@ -26,8 +25,7 @@ clean: FORCED
 	@cd samples ; $(MAKE_SILENT) $@ ; cd .. 
 	@cd testbed ; $(MAKE_SILENT) $@ ; cd ..  
 	@cd tifficc; $(MAKE_SILENT) $@ ; cd ..  
-	@cd jpegicc; $(MAKE_SILENT) $@ ; cd ..
-	@cd python; $(MAKE_SILENT) $@ ; cd ..
+	@cd jpegicc; $(MAKE_SILENT) $@ ; cd ..	
 
 utils: FORCED
 	@echo "Extra utilities are being built ..."
@@ -40,9 +38,6 @@ tifficc: FORCED
 jpegicc: FORCED
 	@cd jpegicc; $(MAKE_SILENT) $@ ; cd ..
 
-python: FORCED
-	@echo "Building Python support ..."
-	@cd python; $(MAKE_SILENT) $@ ; cd ..
 
 FORCED:
 

@@ -43,7 +43,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LCMSDLL_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /O2 /I "..\include" /I "..\..\include" /D "NDEBUG" /D "LCMS_DLL" /D "LCMS_DLL_BUILD" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /Fp"Release/lcms108dll.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c
+# ADD CPP /nologo /Zp1 /MT /W3 /O2 /I "..\include" /I "..\..\include" /D "NDEBUG" /D "LCMS_DLL" /D "LCMS_DLL_BUILD" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /Fo"Release/" /Fd"Release/" /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
@@ -69,7 +70,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LCMSDLL_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LCMSDLL_EXPORTS" /D "LCMS_DLL" /D "LCMS_DLL_BUILD" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LCMSDLL_EXPORTS" /D "LCMS_DLL" /D "LCMS_DLL_BUILD" /FD /GZ /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
@@ -121,6 +123,10 @@ SOURCE=..\..\src\cmsgmt.c
 # Begin Source File
 
 SOURCE=..\..\src\cmsintrp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmsio0.c
 # End Source File
 # Begin Source File
 

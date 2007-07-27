@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -25,6 +25,8 @@
 
 
 // ---------------------------------------------------------------------------------
+
+static volatile int GlobalBlackPreservationStrategy = 0;
 
 // Quantize a value 0 <= i < MaxSamples
 
@@ -276,6 +278,284 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
 
 
 
+// Sampler for Black-preserving CMYK->CMYK transforms
+
+typedef struct {
+                cmsHTRANSFORM cmyk2cmyk;
+                cmsHTRANSFORM cmyk2Lab;
+                LPGAMMATABLE  KTone;
+                L16PARAMS     KToneParams;
+                LPLUT         LabK2cmyk;
+                double        MaxError;
+
+                cmsHTRANSFORM hRoundTrip;               
+                int           MaxTAC;
+
+                cmsHTRANSFORM hProofOutput;
+
+    } BPCARGO, *LPBPCARGO;
+
+
+
+// Preserve black only if that is the only ink used
+static
+int BlackPreservingGrayOnlySampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+    BPCARGO* bp = (LPBPCARGO) Cargo;
+
+    // If going across black only, keep black only
+    if (In[0] == 0 && In[1] == 0 && In[2] == 0) {
+
+        // TAC does not apply because it is black ink!
+        Out[0] = Out[1] = Out[2] = 0;
+        Out[3] = cmsLinearInterpLUT16(In[3], bp->KTone ->GammaTable, &bp->KToneParams);
+        return 1;
+    }
+
+    // Keep normal transform for other colors
+    cmsDoTransform(bp ->cmyk2cmyk, In, Out, 1);
+    return 1;
+}
+
+
+
+// Preserve all K plane.
+static
+int BlackPreservingSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+
+    WORD LabK[4];   
+    double SumCMY, SumCMYK, Error;
+    cmsCIELab ColorimetricLab, BlackPreservingLab;
+    BPCARGO* bp = (LPBPCARGO) Cargo;
+    
+    // Get the K across Tone curve
+    LabK[3] = cmsLinearInterpLUT16(In[3], bp->KTone ->GammaTable, &bp->KToneParams);
+
+    // If going across black only, keep black only
+    if (In[0] == 0 && In[1] == 0 && In[2] == 0) {
+
+        Out[0] = Out[1] = Out[2] = 0;
+        Out[3] = LabK[3];
+        return 1;
+    }
+    
+    // Try the original transform, maybe K is already ok (valid on K=0)
+    cmsDoTransform(bp ->cmyk2cmyk, In, Out, 1);
+    if (Out[3] == LabK[3]) return 1;
+    
+
+    // No, mesure and keep Lab measurement for further usage    
+    cmsDoTransform(bp->hProofOutput, Out, &ColorimetricLab, 1);
+    
+    // Is not black only and the transform doesn't keep black.
+    // Obtain the Lab of CMYK. After that we have Lab + K
+    cmsDoTransform(bp ->cmyk2Lab, In, LabK, 1);
+        
+    // Obtain the corresponding CMY using reverse interpolation.
+    // As a seed, we use the colorimetric CMY
+    cmsEvalLUTreverse(bp ->LabK2cmyk, LabK, Out, Out); 
+        
+    // Estimate the error
+    cmsDoTransform(bp->hProofOutput, Out, &BlackPreservingLab, 1);  
+    Error = cmsDeltaE(&ColorimetricLab, &BlackPreservingLab);
+
+    
+    // Apply TAC if needed
+    
+    SumCMY   = Out[0]  + Out[1] + Out[2];
+    SumCMYK  = SumCMY + Out[3];      
+
+    if (SumCMYK > bp ->MaxTAC) {
+
+        double Ratio = 1 - ((SumCMYK - bp->MaxTAC) / SumCMY);
+        if (Ratio < 0)
+                  Ratio = 0;
+                
+        Out[0] = (WORD) floor(Out[0] * Ratio + 0.5);     // C
+        Out[1] = (WORD) floor(Out[1] * Ratio + 0.5);     // M
+        Out[2] = (WORD) floor(Out[2] * Ratio + 0.5);     // Y
+    }
+                        
+    return 1;
+}
+
+
+// Sample whole gamut to estimate maximum TAC
+
+#ifdef _MSC_VER
+#pragma warning(disable : 4100)
+#endif
+
+static
+int EstimateTAC(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+    BPCARGO* bp = (LPBPCARGO) Cargo;
+    WORD RoundTrip[4];
+    int Sum;
+
+    cmsDoTransform(bp->hRoundTrip, In, RoundTrip, 1);
+    
+    Sum = RoundTrip[0] + RoundTrip[1] + RoundTrip[2] + RoundTrip[3];
+
+    if (Sum > bp ->MaxTAC)
+            bp ->MaxTAC = Sum;
+    
+    return 1;
+}
+
+
+// Estimate the maximum error
+static
+int BlackPreservingEstimateErrorSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+    BPCARGO* bp = (LPBPCARGO) Cargo;
+    WORD ColorimetricOut[4];
+    cmsCIELab ColorimetricLab, BlackPreservingLab;
+    double Error;
+        
+    if (In[0] == 0 && In[1] == 0 && In[2] == 0) return 1;
+
+    cmsDoTransform(bp->cmyk2cmyk, In, ColorimetricOut, 1);
+
+    cmsDoTransform(bp->hProofOutput, ColorimetricOut, &ColorimetricLab, 1); 
+    cmsDoTransform(bp->hProofOutput, Out, &BlackPreservingLab, 1);
+        
+    Error = cmsDeltaE(&ColorimetricLab, &BlackPreservingLab);
+
+    if (Error > bp ->MaxError)
+        bp ->MaxError = Error;
+
+    return 1;
+}
+
+// Setup the K preservation strategy
+int LCMSEXPORT cmsSetCMYKPreservationStrategy(int n)
+{
+    int OldVal = GlobalBlackPreservationStrategy;
+
+    if (n >= 0) 
+            GlobalBlackPreservationStrategy = n;
+
+    return OldVal;
+}
+
+
+// Get a pointer to callback on depending of strategy
+static
+_cmsSAMPLER _cmsGetBlackPreservationSampler(void)
+{
+    switch (GlobalBlackPreservationStrategy) {
+
+        case 0: return BlackPreservingGrayOnlySampler;
+        default: return BlackPreservingSampler;
+   }
+
+}
+
+// This is the black-preserving devicelink generator
+LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD dwFlags)
+{
+       _LPcmsTRANSFORM p = (_LPcmsTRANSFORM) hCMYK2CMYK;
+       BPCARGO Cargo;      
+       LPLUT Grid;
+       DWORD LocalFlags;
+       cmsHPROFILE hLab = cmsCreateLabProfile(NULL);
+       int nGridPoints;    
+       icTagSignature Device2PCS[] = {icSigAToB0Tag,       // Perceptual
+                                      icSigAToB1Tag,       // Relative colorimetric
+                                      icSigAToB2Tag,       // Saturation
+                                      icSigAToB1Tag };     // Absolute colorimetric
+                                                           // (Relative/WhitePoint)
+           
+       nGridPoints = _cmsReasonableGridpointsByColorspace(p -> EntryColorSpace, dwFlags);
+     
+       // Get a copy of inteserting flags for this kind of xform
+       LocalFlags = cmsFLAGS_NOTPRECALC;
+       if (p -> dwOriginalFlags & cmsFLAGS_BLACKPOINTCOMPENSATION)
+           LocalFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
+
+       // Fill in cargo struct
+       Cargo.cmyk2cmyk = hCMYK2CMYK;
+
+       // Compute tone curve.       
+       Cargo.KTone  =  _cmsBuildKToneCurve(hCMYK2CMYK, 256);
+       if (Cargo.KTone == NULL) return NULL;   		
+       cmsCalcL16Params(Cargo.KTone ->nEntries, &Cargo.KToneParams);
+       
+
+       // Create a CMYK->Lab "normal" transform on input, without K-preservation
+       Cargo.cmyk2Lab  = cmsCreateTransform(p ->InputProfile, TYPE_CMYK_16, 
+                                            hLab, TYPE_Lab_16, p->Intent, LocalFlags);
+
+       // We are going to use the reverse of proof direction
+       Cargo.LabK2cmyk = cmsReadICCLut(p->OutputProfile, Device2PCS[p->Intent]);
+
+       // Is there any table available?
+	   if (Cargo.LabK2cmyk == NULL) {
+
+		   Grid = NULL;
+           goto Cleanup;		   
+	   }
+
+       // Setup a roundtrip on output profile for TAC estimation
+       Cargo.hRoundTrip = cmsCreateTransform(p ->OutputProfile, TYPE_CMYK_16, 
+                                             p ->OutputProfile, TYPE_CMYK_16, p->Intent, cmsFLAGS_NOTPRECALC);
+
+
+       // Setup a proof CMYK->Lab on output
+       Cargo.hProofOutput  = cmsCreateTransform(p ->OutputProfile, TYPE_CMYK_16, 
+                                            hLab, TYPE_Lab_DBL, p->Intent, LocalFlags);
+
+
+       // Create an empty LUT for holding K-preserving xform
+       Grid =  cmsAllocLUT();
+       if (!Grid) goto Cleanup;
+
+       Grid = cmsAlloc3DGrid(Grid, nGridPoints, 4, 4);
+
+       // Setup formatters
+       p -> FromInput = _cmsIdentifyInputFormat(p,  TYPE_CMYK_16);
+       p -> ToOutput  = _cmsIdentifyOutputFormat(p, TYPE_CMYK_16);
+
+
+
+       // Step #1, estimate TAC
+       Cargo.MaxTAC = 0;
+       if (!cmsSample3DGrid(Grid, EstimateTAC, (LPVOID) &Cargo, 0)) {
+
+                cmsFreeLUT(Grid);
+                Grid = NULL;
+                goto Cleanup;
+       }
+
+	   
+       // Step #2, compute approximation
+       if (!cmsSample3DGrid(Grid, _cmsGetBlackPreservationSampler(), (LPVOID) &Cargo, 0)) {
+
+                cmsFreeLUT(Grid);
+                Grid = NULL;
+                goto Cleanup;
+       }
+      
+       // Step #3, estimate error
+        Cargo.MaxError = 0;
+        cmsSample3DGrid(Grid, BlackPreservingEstimateErrorSampler, (LPVOID) &Cargo, SAMPLER_INSPECT);
+       
+
+Cleanup:
+
+       if (Cargo.cmyk2Lab) cmsDeleteTransform(Cargo.cmyk2Lab);
+       if (Cargo.hRoundTrip) cmsDeleteTransform(Cargo.hRoundTrip);
+       if (Cargo.hProofOutput) cmsDeleteTransform(Cargo.hProofOutput);
+
+       if (hLab) cmsCloseProfile(hLab);
+       if (Cargo.KTone) cmsFreeGamma(Cargo.KTone);
+       if (Cargo.LabK2cmyk) cmsFreeLUT(Cargo.LabK2cmyk);
+      
+       return Grid;
+}
+
 
 
 // Fix broken LUT. just to obtain other CMS compatibility
@@ -315,7 +595,7 @@ void PatchLUT(LPLUT Grid, WORD At[], WORD Value[],
                       p16 -> opta1 * w0;
        }
        else 
-	   if (nChannelsIn == 3) {
+       if (nChannelsIn == 3) {
 
               if (((px - x0) != 0) ||
                   ((py - y0) != 0) ||
@@ -325,13 +605,13 @@ void PatchLUT(LPLUT Grid, WORD At[], WORD Value[],
                       p16 -> opta2 * y0 +
                       p16 -> opta1 * z0;
        }
-	   else 
+       else 
        if (nChannelsIn == 1) {
 
-		      if (((px - x0) != 0)) return;	// Not on exact node
-		                  
-			  index = p16 -> opta1 * x0;	
-	   }
+              if (((px - x0) != 0)) return; // Not on exact node
+                          
+              index = p16 -> opta1 * x0;    
+       }
        else {
            cmsSignalError(LCMS_ERRC_ABORTED, "(internal) %d Channels are not supported on PatchLUT", nChannelsIn);
            return;

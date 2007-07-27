@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -22,10 +22,6 @@
 
 #include "lcms.h"
 
-// Uncomment this line if you want lcms to use the black point tag in profile, 
-// if commented, lcms will compute the black point by its own. 
-// It is safer to leve it commented out
-// #define HONOR_BLACK_POINT_TAG
 
 // Conversions
 
@@ -48,7 +44,6 @@ void LCMSEXPORT cmsxyY2XYZ(LPcmsCIEXYZ Dest, const cmsCIExyY* Source)
         Dest -> Y = Source -> Y;
         Dest -> Z = ((1 - Source -> x - Source -> y) / Source -> y) * Source -> Y;
 }
-
 
 
 // Obtains WhitePoint from Temperature
@@ -140,14 +135,12 @@ BOOL LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r, LPcmsCIExyY WhitePt,
 
 
         // Build Primaries matrix
-
         VEC3init(&Primaries.v[0], xr,        xg,         xb);
         VEC3init(&Primaries.v[1], yr,        yg,         yb);
         VEC3init(&Primaries.v[2], (1-xr-yr), (1-xg-yg),  (1-xb-yb));
 
 
         // Result = Primaries ^ (-1) inverse matrix
-
         if (!MAT3inverse(&Primaries, &Result))
                         return FALSE;
 
@@ -155,11 +148,9 @@ BOOL LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r, LPcmsCIExyY WhitePt,
         VEC3init(&WhitePoint, xn/yn, 1.0, (1.0-xn-yn)/yn);
 
         // Across inverse primaries ...
-
         MAT3eval(&Coef, &Result, &WhitePoint);
 
         // Give us the Coefs, then I build transformation matrix
-
         VEC3init(&r -> v[0], Coef.n[VX]*xr,          Coef.n[VY]*xg,          Coef.n[VZ]*xb);
         VEC3init(&r -> v[1], Coef.n[VX]*yr,          Coef.n[VY]*yg,          Coef.n[VZ]*yb);
         VEC3init(&r -> v[2], Coef.n[VX]*(1.0-xr-yr), Coef.n[VY]*(1.0-xg-yg), Coef.n[VZ]*(1.0-xb-yb));
@@ -214,7 +205,7 @@ void ComputeChromaticAdaptation(LPMAT3 Conversion,
 }
 
 
-// Returns the final chromatic adaptation from illuminant FromIll to Illuminant ToIll
+// Returns the final chrmatic adaptation from illuminant FromIll to Illuminant ToIll
 // The cone matrix can be specified in ConeMatrix. If NULL, Bradford is assumed
 
 BOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcmsCIEXYZ ToIll)
@@ -429,6 +420,7 @@ int FromD40toD150(LPWHITEPOINTS pts)
 }
 
 
+// To be removed in future versions
 void _cmsIdentifyWhitePoint(char *Buffer, LPcmsCIEXYZ WhitePt)
 {
        int i, n;
@@ -488,8 +480,7 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
     cmsCIELab  Lab;
     cmsCIEXYZ  BlackXYZ, MediaWhite;        
     
-    // If the profile does not support input direction, assume Black point 0
-    
+    // If the profile does not support input direction, assume Black point 0    
     if (!cmsIsIntentSupported(hInput, Intent, LCMS_USED_AS_INPUT)) {
 
         BlackPoint -> X = BlackPoint ->Y = BlackPoint -> Z = 0.0;
@@ -498,7 +489,6 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
     
 
     // Try to get black by using black colorant
-
     Space = cmsGetColorSpace(hInput);
     
     if (!_cmsEndPointsBySpace(Space, &White, &Black, &nChannels)) {
@@ -547,7 +537,7 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
 
 
 // Get a black point of output CMYK profile, discounting any ink-limiting embedded 
-// in the profile. Fou doing that, use perceptual intent in input direction:
+// in the profile. For doing that, use perceptual intent in input direction:
 // Lab (0, 0, 0) -> [Perceptual] Profile -> CMYK -> [Rel. colorimetric] Profile -> Lab
 
 static
@@ -622,6 +612,8 @@ int GetV4PerceptualBlack(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, DWORD dwF
             D50BlackPoint.X = PERCEPTUAL_BLACK_X; 
             D50BlackPoint.Y = PERCEPTUAL_BLACK_Y;
             D50BlackPoint.Z = PERCEPTUAL_BLACK_Z;
+
+            // Obtain the absolute XYZ. Adapt perceptual black back from D50 to whatever media white
             cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &D50BlackPoint);
         }
 
@@ -633,20 +625,24 @@ int GetV4PerceptualBlack(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, DWORD dwF
 // This function shouldn't exist at all -- there is such quantity of broken
 // profiles on black point tag, that we must somehow fix chromaticity to 
 // avoid huge tint when doing Black point compensation. This function does
-// just that. If BP is specified, then forces it to neutral and uses only L
-// component. If does not exist, computes it by taking 400% of ink or RGB=0 This
-// works well on relative intent and is undefined on perceptual & saturation.
-// However, I will support all intents for tricking & trapping.
-
+// just that. There is a special flag for using black point tag, but turned 
+// off by default because it is bogus on most profiles. The detection algorithm 
+// involves to turn BP to neutral and to use only L component.  
 
 int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent, DWORD dwFlags)
 {    
 
-    // v4 + perceptual & saturation intents does have its own black point
+    // v4 + perceptual & saturation intents does have its own black point, and it is 
+    // well specified enough to use it.
 
-    if ((cmsGetProfileICCversion(hProfile) >= 0x4000000) &&
+    if ((cmsGetProfileICCversion(hProfile) >= 0x4000000) &&     
         (Intent == INTENT_PERCEPTUAL || Intent == INTENT_SATURATION)) {
 
+       // Matrix shaper share MRC & perceptual intents
+       if (_cmsIsMatrixShaper(hProfile)) 
+           return BlackPointAsDarkerColorant(hProfile, INTENT_RELATIVE_COLORIMETRIC, BlackPoint, cmsFLAGS_NOTPRECALC);
+
+       // CLUT based - Get perceptual black point (fixed value)
        return GetV4PerceptualBlack(BlackPoint, hProfile, dwFlags);
     }
 
@@ -666,7 +662,6 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
              cmsTakeMediaWhitePoint(&MediaWhite, hProfile);
 
              // Black point is absolute XYZ, so adapt to D50 to get PCS value
-
              cmsAdaptToIlluminant(&UntrustedBlackPoint, &MediaWhite, cmsD50_XYZ(), &BlackXYZ);
 
              // Force a=b=0 to get rid of any chroma
@@ -678,24 +673,25 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
              cmsLab2XYZ(NULL, &TrustedBlackPoint, &Lab);
 
              // Return BP as D50 relative or absolute XYZ (depends on flags)
-
              if (!(dwFlags & LCMS_BPFLAGS_D50_ADAPTED))
                     cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &TrustedBlackPoint);
              else
                     *BlackPoint = TrustedBlackPoint;
+
+             return 1;
     }
 
 #endif
     
-    // If output profile, discount ink-limiting
-
+    // That is about v2 profiles. 
+    
+    // If output profile, discount ink-limiting and that's all
     if (Intent == INTENT_RELATIVE_COLORIMETRIC && 
             (cmsGetDeviceClass(hProfile) == icSigOutputClass) &&
             (cmsGetColorSpace(hProfile) == icSigCmykData))
                 return BlackPointUsingPerceptualBlack(BlackPoint, hProfile, dwFlags);
 
     // Nope, compute BP using current intent.
-
     return BlackPointAsDarkerColorant(hProfile, Intent, BlackPoint, dwFlags);
 
 }

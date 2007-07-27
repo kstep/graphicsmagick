@@ -1,7 +1,7 @@
 #
 # LCMS configure script
 # Written by Bob Friesenhahn, June 2003
-# The bugs were introduced by Marti Maria on July 2003
+# The bugs were introduced by Marti Maria 
 #
 
 AC_PREREQ(2.57)
@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.14)
+AC_INIT(lcms,1.16)
 
 #
 # Libtool library revision control info
@@ -31,17 +31,15 @@ AC_INIT(lcms,1.14)
 #     increment age.
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
+#
 LIBRARY_CURRENT=1
-LIBRARY_REVISION=14
+LIBRARY_REVISION=16
 LIBRARY_AGE=0
 
 
 AC_SUBST(LIBRARY_CURRENT)dnl
 AC_SUBST(LIBRARY_REVISION)dnl
 AC_SUBST(LIBRARY_AGE)dnl
-
-# Reject versions of SWIG lower than this version
-SWIG_MINIMUM_VERSION="1.3.12"
 
 
 # Obtain system type by running config.guess
@@ -71,7 +69,7 @@ AC_ARG_WITH(zlib,
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
-# With Python
+# Disable Python
 AC_ARG_WITH(python,
 	      [  --with-python           enable building python extension],
 	      [with_python=$withval],
@@ -88,45 +86,27 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_PROG_CXX
 
-# Configure python & swig
+# Configure python. AM_PATH_PYTHON is basically braindead 
 PYTHON=''
-SWIG=''
 if test "$with_python" = 'yes'
 then
-  AM_PATH_PYTHON(1.5.2)
-  AC_PATH_PROG(SWIG,swig,)
-  if test -n "$SWIG"
+  AM_PATH_PYTHON(2.2,PYTHON_OK='yes',PYTHON_OK='no')  
+  if test -n "$PYTHON"
   then
-    AC_MSG_CHECKING([for swig version])
-    SWIG_VERSION=`$SWIG -version 2>&1 | awk '/SWIG Version/ {print $3}'`
-    AC_MSG_RESULT($SWIG_VERSION)
-
-    AC_MSG_CHECKING([for required swig version >= $SWIG_MINIMUM_VERSION])
-    eval `echo "$SWIG_MINIMUM_VERSION" | awk 'BEGIN { FS="."; } { print "SWIG_MIN_MAJORVER=" $1 "; SWIG_MIN_MINORVER=" $2 "; SWIG_MIN_MINVER=" int($3)}'`
-    eval `echo "$SWIG_VERSION" | awk 'BEGIN { FS="."; } { print "SWIG_MAJORVER=" $1 "; SWIG_MINORVER=" $2 "; SWIG_MINVER=" int($3)}'`
-    SWIG_VERSION_OK='no'
-    if test $SWIG_MAJORVER -gt $SWIG_MIN_MAJORVER
-    then
-      SWIG_VERSION_OK='yes'
-    elif test $SWIG_MAJORVER -eq $SWIG_MIN_MAJORVER -a $SWIG_MINORVER -gt $SWIG_MIN_MINORVER
-    then
-      SWIG_VERSION_OK='yes'
-    elif test $SWIG_MAJORVER -eq $SWIG_MIN_MAJORVER -a $SWIG_MINORVER -eq $SWIG_MIN_MINORVER -a $SWIG_MINVER -ge $SWIG_MIN_MINVER
-    then
-      SWIG_VERSION_OK='yes'
-    fi    
-    AC_MSG_RESULT($SWIG_VERSION_OK)
-  fi
-
-  if test ! $SWIG_VERSION_OK = 'yes'
-  then
-    AC_MSG_WARN([SWIG $SWIG_MINIMUM_VERSION or later is required to build the LCMS Python extension.])
-    AC_MSG_WARN([Python extension build disabled.])
-  fi
+	LCMS_PYTHON_PREFIX=`$PYTHON -c "import sys; print sys.prefix"`
+	LCMS_PYEXECDIR=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib()"`
+    LCMS_PYINCLUDE=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`	
+	LCMS_PYLIB=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(0,1)"`
+	AC_CHECK_FILE([$LCMS_PYINCLUDE/Python.h],PYTHON_OK='yes',PYTHON_OK='no')
+    AC_SUBST(LCMS_PYEXECDIR)
+    AC_SUBST(LCMS_PYINCLUDE)
+    AC_SUBST(LCMS_PYLIB)
+#	AC_SUBST(PYTHON_OK)
+  fi     
 fi
 
-# If swig and python are found then enable python support
-AM_CONDITIONAL(SUPPORT_PYTHON,test -n "$PYTHON" -a -n "$SWIG" -a "$SWIG_VERSION_OK" = 'yes')
+# If python is found then enable python support
+AM_CONDITIONAL(SUPPORT_PYTHON,test -n "$PYTHON" -a "$PYTHON_OK" = 'yes')
 
 #
 # Tests for Windows
@@ -406,8 +386,6 @@ then
     AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFClientOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFIsByteSwapped,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-#    AC_CHECK_LIB(tiff,TIFFReadRGBATile,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-#    AC_CHECK_LIB(tiff,TIFFReadRGBAStrip,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if TIFF package is complete)
     if test $passed -gt 0
     then

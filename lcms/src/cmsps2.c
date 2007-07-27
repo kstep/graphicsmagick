@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -44,17 +44,17 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent,
 
   PostScript does use XYZ as its internal PCS. But since PostScript 
   interpolation tables are limited to 8 bits, I use Lab as a way to 
-  improve the accurancy, favoring perceptual results. So, for the creation 
+  improve the accuracy, favoring perceptual results. So, for the creation 
   of each CRD, CSA the profiles are converted to Lab via a device 
   link between  profile -> Lab or Lab -> profile. The PS code necessary to
-  convert Lab <-> XYZ is also added.
+  convert Lab <-> XYZ is also included.
 
 
 
   Color Space Arrays (CSA) 
   ==================================================================================
 
-  In order to obtain precision, code chooses between three ways to implement
+  In order to obtain precission, code chooses between three ways to implement
   the device -> XYZ transform. These cases identifies monochrome profiles (often
   implemented as a set of curves), matrix-shaper and LUT-based.
 
@@ -300,10 +300,10 @@ typedef struct {
                 int SecondComponent;
                 
                 int   bps;
-                char* PreMaj;
-                char* PostMaj;
-                char* PreMin;
-                char* PostMin;
+                const char* PreMaj;
+                const char* PostMaj;
+                const char* PreMin;
+                const char* PostMin;
 
                 int  lIsInput;    // Handle L* encoding
                 int  FixWhite;    // Force mapping of pure white 
@@ -347,7 +347,11 @@ BYTE Word2Byte(WORD w)
 static
 BYTE L2Byte(WORD w)
 {    
-    return (BYTE) ((WORD) ((w + 0x0080) >> 8) & 0xFF);
+	int ww = w + 0x0080;
+
+	if (ww > 0xFFFF) return 0xFF;
+
+    return (BYTE) ((WORD) (ww >> 8) & 0xFF);
 }
 
 // Write a raw, uncooked byte. Check for space
@@ -529,6 +533,7 @@ void EmitLab2XYZ(LPMEMSTREAM m)
     Writef(m, "{255 mul 128 sub 200 div } bind\n");
     Writef(m, "]\n");
     Writef(m, "/MatrixABC [ 1 1 1 1 0 0 0 0 -1]\n");
+	Writef(m, "/RangeLMN [ 0.0 0.9642 0.0 1.0000 0.0 0.8249 ]\n");
     Writef(m, "/DecodeLMN [\n");
     Writef(m, "{dup 6 29 div ge {dup dup mul mul} {4 29 div sub 108 841 div mul} ifelse 0.964200 mul} bind\n");
     Writef(m, "{dup 6 29 div ge {dup dup mul mul} {4 29 div sub 108 841 div mul} ifelse } bind\n");
@@ -693,7 +698,9 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
                 WORD* White;
                 int nOutputs;
 
-                _cmsEndPointsBySpace(sc ->ColorSpace, &White, &Black, &nOutputs);
+                if (!_cmsEndPointsBySpace(sc ->ColorSpace, &White, &Black, &nOutputs))
+                        return 0;
+
                 for (i=0; i < (unsigned int) nOutputs; i++)
                         Out[i] = White[i];
             }
@@ -774,10 +781,10 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
 // Writes a LUT on memstream. Could be 8 or 16 bits based
 
 static
-void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj, 
-                                                  char* PostMaj,
-                                                  char* PreMin,
-                                                  char* PostMin,
+void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, const char* PreMaj, 
+                                                  const char* PostMaj,
+                                                  const char* PreMin,
+                                                  const char* PostMin,
                                                   int lIsInput,
                                                   int FixWhite,
                                                   icColorSpaceSignature ColorSpace)
@@ -892,9 +899,9 @@ int EmitCIEBasedABC(LPMEMSTREAM m, LPWORD L[], int nEntries, LPWMAT3 Matrix, LPc
 static
 int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent, LPcmsCIEXYZ BlackPoint)
 {
-    char* PreMaj;
-    char* PostMaj;
-    char* PreMin, *PostMin;
+    const char* PreMaj;
+    const char* PostMaj;
+    const char* PreMin, *PostMin;
 
     switch (Lut ->InputChan) {
     case 3:
@@ -943,6 +950,31 @@ int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent, LPcmsCIEXYZ BlackPoint
     
 
     return 1;
+}
+
+// Generates a curve from a gray profile
+
+static
+LPGAMMATABLE ExtractGray2Y(cmsHPROFILE hProfile, int Intent)
+{
+    LPGAMMATABLE Out = cmsAllocGamma(256);
+    cmsHPROFILE hXYZ = cmsCreateXYZProfile();
+    cmsHTRANSFORM xform = cmsCreateTransform(hProfile, TYPE_GRAY_8, hXYZ, TYPE_XYZ_DBL, Intent, cmsFLAGS_NOTPRECALC);
+    int i;
+
+    for (i=0; i < 256; i++) {
+        
+      BYTE Gray = (BYTE) i;
+      cmsCIEXYZ XYZ;
+      
+        cmsDoTransform(xform, &Gray, &XYZ, 1);
+        
+        Out ->GammaTable[i] =_cmsClampWord((int) floor(XYZ.Y * 65535.0 + 0.5));
+    }
+
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hXYZ);
+    return Out;
 }
 
 
@@ -1014,13 +1046,10 @@ int WriteInputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
 
     switch (nChannels) {
 
-    case 1: {
-
-            // LPGAMMATABLE Gray2Y = ExtractGray2Y(xform);
-            // rc = EmitCIEBasedA(m, Gray2Y->GammaTable, Gray2Y ->nEntries, hProfile);
-            // cmsFreeGamma(Gray2Y);
-
-            cmsSignalError(LCMS_ERRC_ABORTED, "Monochrome LUT-based currently unsupported for CSA generation");
+    case 1: {            
+            LPGAMMATABLE Gray2Y = ExtractGray2Y(hProfile, Intent);
+            EmitCIEBasedA(m, Gray2Y->GammaTable, Gray2Y ->nEntries, &BlackPointAdaptedToD50);            
+            cmsFreeGamma(Gray2Y);            
             }
             break;
 
@@ -1475,7 +1504,8 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     if (DeviceLink ->wFlags & LUT_HASTL1) {
 
         // Shouldn't happen
-        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");       
+        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");
+        return 0;
     }
     
 

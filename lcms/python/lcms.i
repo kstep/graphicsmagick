@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -23,7 +23,7 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-// Version 1.14
+// Version 1.16
 
 
 /* File lcms.i */
@@ -109,9 +109,9 @@ cmsSetErrorHandler(MyErrorHandler);
       return NULL;
     }
 	
-	if ((SWIG_ConvertPtr(tmp[0], (void **) &gamma[0], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
-	if ((SWIG_ConvertPtr(tmp[1], (void **) &gamma[1], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
-	if ((SWIG_ConvertPtr(tmp[2], (void **) &gamma[2], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[0], (void **) &gamma[0], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[1], (void **) &gamma[1], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[2], (void **) &gamma[2], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
 
     $1 = gamma;
 

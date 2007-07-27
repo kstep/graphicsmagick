@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="tifficc"
 	SccProjectName=""
 	SccLocalPath="">
@@ -24,7 +24,7 @@
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\tifficcDebug/tifficc.pch"
 				AssemblerListingLocation=".\tifficcDebug/"
@@ -62,7 +62,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -78,7 +84,7 @@
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\tifficcRelease/tifficc.pch"
@@ -93,11 +99,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib zlib.lib libjpeg.lib libc.lib"
+				AdditionalDependencies="libtiff.lib zlib.lib libjpeg.lib"
 				OutputFile="..\..\bin\tifficc.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				IgnoreAllDefaultLibraries="TRUE"
+				IgnoreAllDefaultLibraries="FALSE"
 				ProgramDatabaseFile="./tifficc.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -116,9 +122,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"

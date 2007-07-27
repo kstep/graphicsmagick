@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -22,8 +22,6 @@
 
 
 #include "lcms.h"
-
-// #define DEBUG 1
 
 /*
 Gamut check by default is a catching of 0xFFFF/0xFFFF/0xFFFF PCS values, used
@@ -52,28 +50,34 @@ BOOL _cmsEndPointsBySpace(icColorSpaceSignature Space, WORD **White, WORD **Blac
        static WORD LABwhite[4]  = { 0xFF00, 0x8000, 0x8000 };
        static WORD CMYblack[4]  = { 0xffff, 0xffff, 0xffff };
        static WORD CMYwhite[4]  = { 0, 0, 0 };
-
+       static WORD Grayblack[4] = { 0 };
+       static WORD GrayWhite[4] = { 0xffff };
 
        switch (Space) {
 
-       case icSigRgbData:  *White = RGBwhite;
-                           *Black = RGBblack;
-                           *nOutputs = 3;
+       case icSigGrayData: if (White)    *White = GrayWhite;
+                           if (Black)    *Black = Grayblack;
+                           if (nOutputs) *nOutputs = 1;
+                           return TRUE;
+                        
+       case icSigRgbData:  if (White)    *White = RGBwhite;
+                           if (Black)    *Black = RGBblack;
+                           if (nOutputs) *nOutputs = 3;
                            return TRUE;
 
-       case icSigLabData:  *White = LABwhite;
-                           *Black = LABblack;
-                           *nOutputs = 3;
+       case icSigLabData:  if (White)    *White = LABwhite;
+                           if (Black)    *Black = LABblack;
+                           if (nOutputs) *nOutputs = 3;
                            return TRUE;
 
-       case icSigCmykData: *White = CMYKwhite;
-                           *Black = CMYKblack;
-                           *nOutputs = 4;
+       case icSigCmykData: if (White)    *White = CMYKwhite;
+                           if (Black)    *Black = CMYKblack;
+                           if (nOutputs) *nOutputs = 4;
                            return TRUE;
 
-       case icSigCmyData:  *White = CMYwhite;
-                           *Black = CMYblack;
-                           *nOutputs = 3;
+       case icSigCmyData:  if (White)    *White = CMYwhite;
+                           if (Black)    *Black = CMYblack;
+                           if (nOutputs) *nOutputs = 3;
                            return TRUE;
 
        default:;
@@ -97,19 +101,6 @@ WORD *_cmsWhiteBySpace(icColorSpaceSignature Space)
 }
 
 
-WORD Clamp_XYZ(int in)
-{
-       if (in < 0) return 0;
-       if (in > 0xFFFF) return 0xFFFFU;   // Including marker
-       return (WORD) in;
-}
-
-WORD Clamp_RGB(int in)
-{
-       if (in < 0) return 0;
-       if (in > 0xFFFF) return 0xFFFFU;   // Including marker
-       return (WORD) in;
-}
 
 
 WORD Clamp_L(Fixed32 in)
@@ -315,7 +306,7 @@ double atan2deg(double b, double a)
 {
    double h;
 
-   if (a == 0)
+   if (a == 0 && b == 0)
             h   = 0;
     else
             h = atan2(a, b);
@@ -357,7 +348,7 @@ double LCMSEXPORT cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2,
     double Cs = sqrt( Sqr(as) + Sqr(bs) );
 
 
-    double G = 0.5 * ( 1 - sqrt(pow((C + Cs) / 2 , 7) / (pow((C + Cs) / 2, 7) + pow(25, 7) ) ));
+    double G = 0.5 * ( 1 - sqrt(pow((C + Cs) / 2 , 7.0) / (pow((C + Cs) / 2, 7.0) + pow(25.0, 7.0) ) ));
 
     double a_p = (1 + G ) * a1;
     double b_p = b1;
@@ -394,7 +385,7 @@ double LCMSEXPORT cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2,
 
     double delta_ro = 30 * exp( -Sqr(((meanh_p - 275 ) / 25)));
 
-    double Rc = 2 * sqrt(( pow(meanC_p, 7) )/( pow(meanC_p , 7 ) + pow(25, 7)));
+    double Rc = 2 * sqrt(( pow(meanC_p, 7.0) )/( pow(meanC_p, 7.0) + pow(25.0, 7.0)));
 
     double Rt = -sin(2 * RADIANES(delta_ro)) * Rc;
 
@@ -516,13 +507,13 @@ icColorSpaceSignature LCMSEXPORT _cmsICCcolorSpace(int OurNotation)
        case PT_HiFi7: return icSigHeptachromeData;
        case PT_HiFi8: return icSigOctachromeData;
 
-	   case PT_HiFi9:  return icSigMCH9Data;
-	   case PT_HiFi10: return icSigMCHAData;
-	   case PT_HiFi11: return icSigMCHBData;
-	   case PT_HiFi12: return icSigMCHCData;
-	   case PT_HiFi13: return icSigMCHDData;
-	   case PT_HiFi14: return icSigMCHEData;
-	   case PT_HiFi15: return icSigMCHFData;
+       case PT_HiFi9:  return icSigMCH9Data;
+       case PT_HiFi10: return icSigMCHAData;
+       case PT_HiFi11: return icSigMCHBData;
+       case PT_HiFi12: return icSigMCHCData;
+       case PT_HiFi13: return icSigMCHDData;
+       case PT_HiFi14: return icSigMCHEData;
+       case PT_HiFi15: return icSigMCHFData;
 
        default:  return icMaxEnumData;
        }
@@ -760,7 +751,7 @@ int GamutSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
             else
                 // dE1 is big and dE2 is small, clearly out of gamut
                 if (dE1 > t->Thereshold && dE2 < t->Thereshold)
-                    Out[0] = (WORD) floor((dE1 - t->Thereshold) + .5);
+                    Out[0] = (WORD) _cmsQuickFloor((dE1 - t->Thereshold) + .5);
                 else  {
                     
                     // dE1 is big and dE2 is also big, could be due to perceptual mapping
@@ -771,7 +762,7 @@ int GamutSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
                         ErrorRatio = dE1 / dE2;
                     
                     if (ErrorRatio > t->Thereshold) 
-                        Out[0] = (WORD)  floor((ErrorRatio - t->Thereshold) + .5);
+                        Out[0] = (WORD)  _cmsQuickFloor((ErrorRatio - t->Thereshold) + .5);
                     else
                         Out[0] = 0;
                 }
@@ -1009,29 +1000,6 @@ LPLUT _cmsComputeSoftProofLUT(cmsHPROFILE hProfile, int nIntent)
 }
 
 
-
-#ifdef DEBUG
-static
-void ASAVE(LPGAMMATABLE p, const char* dump)
-{
-    FILE* f;
-    int i;
-
-        f = fopen(dump, "wt");
-        if (!f)
-                return;
-
-        if (p) {
-
-    for (i=0; i < p -> nEntries; i++)
-        fprintf(f, "%g\n", (double) p -> GammaTable[i]);
-        }
-
-    fclose(f);
-}
-#endif
-
-
 static
 int MostlyLinear(WORD Table[], int nEntries)
 {
@@ -1093,10 +1061,10 @@ BOOL IsMonotonic(LPGAMMATABLE t)
 static
 BOOL HasProperEndpoints(LPGAMMATABLE t)
 {
-	if (t ->GammaTable[0] != 0) return FALSE;
-	if (t ->GammaTable[t ->nEntries-1] != 0xFFFF) return FALSE;
+    if (t ->GammaTable[0] != 0) return FALSE;
+    if (t ->GammaTable[t ->nEntries-1] != 0xFFFF) return FALSE;
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -1164,34 +1132,26 @@ void _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransfor
         if (MostlyLinear(Trans[t]->GammaTable, PRELINEARIZATION_POINTS))
                     lIsSuitable = FALSE;
 
-		// Exclude if non-monotonic
+        // Exclude if non-monotonic
         if (!IsMonotonic(Trans[t]))
                     lIsSuitable = FALSE;        
-		
-		// Exclude if weird endpoints
-		if (!HasProperEndpoints(Trans[t]))
-					lIsSuitable = FALSE;
+        
+        // Exclude if weird endpoints
+        if (!HasProperEndpoints(Trans[t]))
+                    lIsSuitable = FALSE;
+
+        // Exclude if transfer function is not smooth enough
+        // to be modelled as a gamma function, or the gamma is reversed
+        if (cmsEstimateGamma(Trans[t]) < 1.0)
+                    lIsSuitable = FALSE;
               
     }
 
     if (lIsSuitable) {
-
     
             for (t = 0; t < Grid ->InputChan; t++) 
                 SlopeLimiting(Trans[t]->GammaTable, Trans[t]->nEntries);
     }
-
-       
-
-
-#ifdef DEBUG    
-    if (lIsSuitable) {
-            ASAVE(Trans[0], "\\gammar.txt");
-            ASAVE(Trans[1], "\\gammag.txt");
-            ASAVE(Trans[2], "\\gammab.txt");
-    }
-#endif
-       
       
     if (lIsSuitable) cmsAllocLinearTable(Grid, Trans, 1);
 
@@ -1202,3 +1162,74 @@ void _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransfor
     
 }
 
+
+// Compute K -> L* relationship. Flags may include black point compensation. In this case, 
+// the relationship is assumed from the profile with BPC to a black point zero.
+static
+LPGAMMATABLE ComputeKToLstar(cmsHPROFILE hProfile, int nPoints, int Intent, DWORD dwFlags)
+{
+    LPGAMMATABLE out;   
+    int i;
+    WORD cmyk[4], wLab[3];
+    cmsHPROFILE   hLab  = cmsCreateLabProfile(NULL);
+    cmsHTRANSFORM xform = cmsCreateTransform(hProfile, TYPE_CMYK_16,
+                                             hLab, TYPE_Lab_16, 
+                                             Intent, (dwFlags|cmsFLAGS_NOTPRECALC));
+
+
+    out = cmsAllocGamma(nPoints);
+    for (i=0; i < nPoints; i++) {
+
+        cmyk[0] = 0;
+        cmyk[1] = 0;
+        cmyk[2] = 0;
+        cmyk[3] = _cmsQuantizeVal(i, nPoints);
+
+        cmsDoTransform(xform, cmyk, wLab, 1);
+        out->GammaTable[i] = (WORD) (0xFFFF - wLab[0]);
+    }
+
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hLab);
+
+    return out;
+}
+
+
+
+// Compute Black tone curve on a CMYK -> CMYK transform. This is done by
+// using the proof direction on both profiles to find K->L* relationship
+// then joining both curves. dwFlags may include black point compensation.
+
+LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints)
+{
+    LPGAMMATABLE in, out;   
+    LPGAMMATABLE KTone; 
+    _LPcmsTRANSFORM p = (_LPcmsTRANSFORM) hCMYK2CMYK;
+
+
+    // Make sure CMYK -> CMYK
+    if (p -> EntryColorSpace != icSigCmykData ||
+        p -> ExitColorSpace  != icSigCmykData) return NULL;
+
+    // Create individual curves. BPC works also as each K to L* is
+    // computed as a BPC to zero black point in case of L*
+    in  = ComputeKToLstar(p ->InputProfile,  nPoints, p->Intent, p -> dwOriginalFlags);
+    out = ComputeKToLstar(p ->OutputProfile, nPoints, p->Intent, p -> dwOriginalFlags);
+
+    // Build the relationship
+    KTone = cmsJoinGamma(in, out);
+            
+    cmsFreeGamma(in); cmsFreeGamma(out);
+
+    // Make sure it is monotonic
+    
+    if (!IsMonotonic(KTone)) {
+
+        cmsFreeGamma(KTone);
+        return NULL;
+    }
+    
+
+    return KTone;
+}

@@ -30,8 +30,8 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,14,0
- PRODUCTVERSION 1,0,14,0
+ FILEVERSION 1,0,16,0
+ PRODUCTVERSION 1,0,16,0
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -49,14 +49,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "Marti Maria\0"
             VALUE "FileDescription", "lcms color engine\0"
-            VALUE "FileVersion", "1.14\0"
+            VALUE "FileVersion", "1.16\0"
             VALUE "InternalName", "lcms\0"
-            VALUE "LegalCopyright", "Copyright © Marti Maria 2004\0"
+            VALUE "LegalCopyright", "Copyright © Marti Maria 2006\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "lcms.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "LittleCMS color engine\0"
-            VALUE "ProductVersion", "1, 0, 14, 0\0"
+            VALUE "ProductVersion", "1, 0, 16, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END

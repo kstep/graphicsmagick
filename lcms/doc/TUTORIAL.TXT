@@ -8,11 +8,11 @@
 
                           by Marti Maria
 
-                            Ver 1.13 
+                            Ver 1.16
 
         ---------------------------------------------------
 
-                            Introduction
+                         Introduction
 
                          BASIC USAGE
                          ===========
@@ -26,7 +26,8 @@
                          6. On-the-fly profiles
                          7. Gamma tables
                          8. Proofing
-                         9. Black point compensation
+                         9.1 Black point compensation
+						 9.2 Black preservation
                         
                         10. Error handling
                         11. Getting information from profiles.
@@ -71,7 +72,7 @@ Introduction:
   For more details about profile architecture, you can reach the
   latest ICC specs on:
 
-                      http://www.color.org
+                http://www.color.org
 
 
     **PLEASE NOTE THAN lcms IS NOT A ICC SUPPORTED LIBRARY**
@@ -621,7 +622,7 @@ NOTES:
 
 
 
-6. On-the-fly profiles.
+6. - On-the-fly profiles.
 ============================================================================
 
   There are several situations where it will be useful to build
@@ -723,8 +724,8 @@ NOTES:
   primaries!
 
 
- 7. Gamma tables
- ================
+ 7. - Gamma tables
+ ============================================================================
 
   The gamma tables or transfer functions are stored in a simple way,
   let's examine the GAMMATABLE typedef:
@@ -895,7 +896,7 @@ NOTES:
  "softproofing" and "gamut check" with these flags.
 
 
-9. Black point compensation
+9.1 Black point compensation
 ============================================================================
 
   The black point compensation feature does work in conjunction 
@@ -934,6 +935,44 @@ NOTES:
  on softproofs too.
 
                 cmsFLAGS_BLACKPOINTCOMPENSATION
+
+
+9.2 - Black preserving transforms
+===========================================================================
+
+Black preservation deals with CMYK -> CMYK transforms, and is intended 
+to preserve, as much as possible, the black (K) channel
+whilst matching color by using CMY inks. There is a tradeoff between 
+accuracy and black preservation, so you lost some accuracy 
+in order to preserve the original separation.  Not to be a big problem 
+in most  cases, benefits of keeping K channel are huge!
+
+
+For sure you have seen prints of gray images with a huge 
+color cast towards magenta or green. That's very unpleasant. 
+
+Mainly, this happens because metamerism is not taken into 
+account when doing the profile. Black ink chromaticity  changes on 
+different illuminants. For example, a profile is done measuring black 
+ink under D50, then, under D50 this black ink have tendency to 
+magenta. Ok, the profile captures such chroma and, when
+reproducing colorimetrically, replaces the destination black with
+CMY reproducing this magenta. Now, If you take the original K ink
+and examine it under sunlight, it is not magenta anymore! But the 
+reproduction using CMY keeps going magenta. Result: a nasty color 
+cast . 
+
+And this is just one of the reasons why keeping black ink is so important. 
+Maybe there is a slight discontinuity, as big as the chromaticity of
+blacks differ, but it is so small that the smoothing induced by the 
+CLUT is enough to compensate. And this is almost nothing when 
+compared with the huge cast on grays a CMYK->Lab->CMYK 
+may create.
+
+
+ You can enable the black preservation feature by using this flag:
+
+			cmsFLAGS_PRESERVEBLACK
 
 
 
@@ -1099,8 +1138,10 @@ NOTES:
    setting its colorspace, device class, PCS and then add the required 
    tags. cmsAddTag() does understand following tags:
 
-        Signature                   Expected data type
-        =================           ==================
+      
+
+       Signature                   Expected data type
+       ==========================  ==================
 
        icSigCharTargetTag               const char*
        icSigCopyrightTag                const char*
@@ -1127,6 +1168,10 @@ NOTES:
        icSigPreview1Tag                 LPLUT
        icSigPreview2Tag                 LPLUT
        icSigChromaticityTag             LPcmsCIExyYTRIPLE
+       icSigNamedColor2Tag              LPcmsNAMEDCOLORLIST
+	   icSigColorantTableTag		    LPcmsNAMEDCOLORLIST
+       icSigColorantTableOutTag         LPcmsNAMEDCOLORLIST
+	   icSigCalibrationDateTimeTag	    const struct tm*
     
     More tags are expected to be added in future revisions.
               
@@ -1218,7 +1263,7 @@ NOTES:
         for (i=0; i < 3; i++)
                 Out[i] = ~ In[i];
 
-    return 0;
+    return TRUE;
     }
 
 
@@ -1252,7 +1297,7 @@ NOTES:
     (non-postlinearized) space as well. The linearization cooking is done
     automatically.
      
-    The callback must return 0 if all is ok, or any other value
+    The callback must return TRUE if all is ok, or zero
     to indicate error. If error condition is raised, whole CLUT
     construction is aborted.
 
@@ -1303,8 +1348,8 @@ NOTES:
     
    Chromatic Adaptation:
 
-       BOOL cmsAdaptToIlluminant(LPcmsCIEXYZ Result, LPcmsCIExyY SourceWhitePt,
-                                     LPcmsCIExyY Illuminant, LPcmsCIEXYZ Value);
+       BOOL cmsAdaptToIlluminant(LPcmsCIEXYZ Result, LPcmsCIEXYZ SourceWhitePt,
+                                     LPcmsCIEXYZ Illuminant, LPcmsCIEXYZ Value);
 
    Build a balanced transfer matrix with chromatic adaptation, this
    is equivalent to "cooking" required to conform a colorant matrix.
@@ -1765,7 +1810,7 @@ int main(void)
 
 
 Annex A. About intents
-======================
+============================================================================
 
   Charles Cowens gives to me a clear explanation about
   accomplished intents. Since it is very useful to understand how
@@ -1815,7 +1860,7 @@ Annex A. About intents
 
 
 Annex B Apparent bug in XYZ -> sRGB transforms
-==============================================
+============================================================================
 
 John van den Heuvel warns me about an apparent bug on
 XYZ -> sRGB transforms. Ver 1.10 should minimize this effect.

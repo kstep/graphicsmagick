@@ -147,9 +147,9 @@ authorization from SunSoft Inc.
 #ifdef PACKAGE_NAME
 /*
   June 9, 2003, Adapted for use with configure by Bob Friesenhahn
-  Added the stupid check for autoconf by Marti Maria 
+  Added the stupid check for autoconf by Marti Maria. 
+  PACKAGE_NAME is defined if autoconf is being used 
 */
-typedef @INT32_T@	icSignature;
 
 typedef @UINT8_T@	icUInt8Number;
 typedef @UINT16_T@	icUInt16Number;
@@ -161,8 +161,6 @@ typedef @INT16_T@	icInt16Number;
 typedef @INT32_T@	icInt32Number;
 typedef @INT32_T@	icInt64Number[2];
 
-typedef icInt32Number	icS15Fixed16Number;
-typedef icUInt32Number	icU16Fixed16Number;
 #else
 
 /* 
@@ -175,8 +173,6 @@ typedef icUInt32Number	icU16Fixed16Number;
 
 #include <inttypes.h>
 
-typedef int32_t       icSignature; 
-
 typedef uint8_t   icUInt8Number;
 typedef uint16_t  icUInt16Number;
 typedef uint32_t  icUInt32Number;
@@ -187,14 +183,10 @@ typedef int16_t    icInt16Number;
 typedef int32_t    icInt32Number;
 typedef int32_t    icInt64Number[2];
 
-typedef icInt32Number    icS15Fixed16Number;
-typedef icUInt32Number   icU16Fixed16Number;
-
 #else
 #ifdef __sgi
 #include "sgidefs.h"
 
-typedef __int32_t       icSignature; 
 
 /*
  * Number definitions
@@ -212,18 +204,13 @@ typedef short           icInt16Number;
 typedef __int32_t       icInt32Number;
 typedef __int32_t       icInt64Number[2];
 
-/* Fixed numbers */
-typedef __int32_t       icS15Fixed16Number;
-typedef __uint32_t      icU16Fixed16Number;
 
 #else   
-#if defined(__GNUC__) || defined(__unix__)
+#if defined(__GNUC__) || defined(__unix__) || defined(__unix)
 
 #include <sys/types.h>
 
-typedef int32_t       icSignature; 
-
-#ifdef __sun
+#if defined(__sun) || defined(__hpux) || defined (__MINGW) || defined(__MINGW32__)
 
 typedef uint8_t   icUInt8Number;
 typedef uint16_t  icUInt16Number;
@@ -247,13 +234,8 @@ typedef int16_t    icInt16Number;
 typedef int32_t    icInt32Number;
 typedef int32_t    icInt64Number[2];
 
-/* Fixed numbers */
-typedef icInt32Number    icS15Fixed16Number;
-typedef icUInt32Number   icU16Fixed16Number;
 
 #else /* default definitions */
-
-typedef long            icSignature;
 
 /*
  * Number definitions
@@ -271,13 +253,18 @@ typedef short           icInt16Number;
 typedef long            icInt32Number;
 typedef long            icInt64Number[2];
 
-/* Fixed numbers */
-typedef long            icS15Fixed16Number;
-typedef unsigned long   icU16Fixed16Number;
+
 #endif  /* default defs */
 #endif
 #endif
 #endif
+
+/* Base types */
+
+typedef icInt32Number    icSignature;
+typedef icInt32Number    icS15Fixed16Number;
+typedef icUInt32Number   icU16Fixed16Number;
+
 
 /*------------------------------------------------------------------------*/
 /* public tags and sizes */

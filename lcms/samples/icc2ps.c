@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -127,7 +127,7 @@ void Help(void)
                      "engine. Both lcms and this program are freeware. You can\n"
                      "obtain both in source code at http://www.littlecms.com\n"
                      "For suggestions, comments, bug reports etc. send mail to\n"
-                     "marti@littlecms.com\n\n");
+                     "info@littlecms.com\n\n");
      exit(0);
 }
 

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -29,6 +29,7 @@
 
 void cdecl cmsSignalError(int ErrorCode, const char *ErrorText, ...);
 int  LCMSEXPORT cmsErrorAction(int lAbort);
+void LCMSEXPORT cmsSetErrorHandler(cmsErrorHandlerFunction Fn);
 
 
 // ******************************************************************
@@ -47,7 +48,7 @@ int LCMSEXPORT cmsErrorAction(int nAction)
 
 void LCMSEXPORT cmsSetErrorHandler(cmsErrorHandlerFunction Fn)
 {
-    UserErrorHandler = Fn;
+       UserErrorHandler = Fn;
 }
 
 
@@ -57,7 +58,6 @@ void LCMSEXPORT cmsSetErrorHandler(cmsErrorHandlerFunction Fn)
 void cmsSignalError(int ErrorCode, const char *ErrorText, ...)
 {
        va_list args;
-
        
        if (nDoAbort == LCMS_ERROR_IGNORE) return;
 
@@ -66,15 +66,15 @@ void cmsSignalError(int ErrorCode, const char *ErrorText, ...)
         if (UserErrorHandler != NULL) {
 
             char Buffer[1024];
-            
+
             vsprintf(Buffer, ErrorText, args);
             va_end(args);   
 
             if (UserErrorHandler(ErrorCode, Buffer)) {     
-                   
+
                 return;
-            }
-       }
+                }
+         }
 
 #if defined( __CONSOLE__ ) || defined( NON_WINDOWS )
 
@@ -104,7 +104,6 @@ void cmsSignalError(int ErrorCode, const char *ErrorText, ...)
 
                   FatalAppExit(0, "lcms is terminating application");
               }
-
               }
 #endif
 }

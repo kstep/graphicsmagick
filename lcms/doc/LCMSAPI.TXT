@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.14
+                     little cms Engine 1.16
 
                          API Definition
 
@@ -11,6 +11,7 @@
                            Index
                            -----
 
+        0 - Compilation toggles
         1 - Profile & Transform functions
         2 - Information functions
         3 - On-the-fly profile creation functions
@@ -25,6 +26,69 @@
         12 - Named color functions
         13 - PostScript
         14 - CGATS.13 - 200
+
+
+
+0 - Compilation toggles
+_________________________________
+
+Generally, there is no need to touch anything. Comment/uncomment if the 
+testbet hints to do so.
+
+Optimization mode. 
+
+ USE_ASSEMBLER Is fastest by far, but it is limited to Pentium.
+ USE_FLOAT are the generic floating-point routines. 
+ USE_C should work on virtually any machine.
+
+
+
+ Define this if you are using this package as a DLL (windows only)
+
+    LCMS_DLL     
+
+Define this if you are compiling using this package as a DLL (windows only)
+
+   LCMS_DLL_BUILD   
+
+
+ Uncomment if you are trying the engine in a non-windows environment
+ like linux, SGI, VAX, FreeBSD, BeOS, etc. 
+
+   NON_WINDOWS  
+
+ Uncomment this one if you are using big endian machines (only meaningful
+ when NON_WINDOWS is used)
+
+  USE_BIG_ENDIAN   
+
+ Uncomment this one if your compiler/machine does support the
+"long long" type This will speedup fixed point math. (USE_C only)
+
+   USE_INT64        
+
+Some machines does not have a reliable 'swab' function. Usually
+leave commented unless the testbed diagnoses the contrary.
+   USE_CUSTOM_SWAB   
+
+Uncomment this if your compiler supports inline
+
+   USE_INLINE  
+
+Uncomment this if your compiler doesn't work with fast floor function
+
+  USE_DEFAULT_FLOOR_CONVERSION  
+
+Define this one if you are using windows.h in a non-windows environment
+
+   LCMS_WIN_TYPES_ALREADY_DEFINED
+
+Define this one if you want lcms.h just defining public API 
+
+   LCMS_APIONLY
+
+
+
 
 
 1 - Profile & Transform functions
@@ -195,10 +259,19 @@ Parameters:
 
         cmsFLAGS_LOWRESPRECALC: Use lower resolution table. 
 
-        cmsFLAGS_BLACKPOINTCOMPENSATION: Use BPC algorithm.
-
+      
         cmsFLAGS_GRIDPOINTS(n): You can specify the desired number of gridpoints 
                             in devicelink by using this macro in the flags.
+
+        cmsFLAGS_BLACKPOINTCOMPENSATION: Use BPC algorithm.
+
+		cmsFLAGS_PRESERVEBLACK: Preserve K channel on CMYK -> CMYK transforms 
+
+		cmsFLAGS_NOTCACHE:  Inhibit the 1-pixel built-in cache
+
+		cmsFLAGS_NOWHITEONWHITEFIXUP: Do NOT fix white-on-white broken profiles
+
+		cmsFLAGS_NOPRELINEARIZATION: Do NOT use prelinearization tables
 
 
 Returns:
@@ -462,26 +535,45 @@ ________________________________________________________________________________
 cmsHPROFILE cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags);
 _________________________________________________________________________________
 
+  
+ Generates a device-link profile from a transform. This profile can then be used
+ by any other function accepting profile handle, or be saved on disk 
+ by _cmsSaveProfile(). See icclink.c for a sample.
 
-  Coonverts a yet-existing transform into a device-link profile. This profile
-  can be used in any other transform or saved to disk/memory.
 
 Parameters:
 
     hTransform: A handle to the transform.
 
-    Flags: Usually 0. The devicelink LUT will have so many points as the 
-           transform that generates it. However, some transforms like those
-           from matrix-shaper to matrix shaper, has no LUT, and only in such 
-           special cases this parameter can be used to define the render 
-           resolution. 
-           
-           It can be:
+    Flags: 
 
-                    cmsFLAGS_HIGHRESPRECALC           
-                    cmsFLAGS_LOWRESPRECALC            
+		cmsFLAGS_GUESSDEVICECLASS: Mark the profile profile class "guessing" 
+		                              from input & output colorspaces.
 
-            But this applies only to matrix-shaper to matrix-shaper.  
+	    cmsFLAGS_HIGHRESPRECALC: Use 48 points instead of 33 for 
+                             device-link CLUT precalculation. Not needed
+                             but for the most extreme cases of mismatch 
+                             of "impedance" between profiles.
+
+
+        cmsFLAGS_LOWRESPRECALC: Use lower resolution table. 
+
+      
+        cmsFLAGS_GRIDPOINTS(n): You can specify the desired number of gridpoints 
+                            in devicelink by using this macro in the flags.
+
+        cmsFLAGS_BLACKPOINTCOMPENSATION: Use BPC algorithm.
+
+		cmsFLAGS_PRESERVEBLACK: Preserve K channel on CMYK -> CMYK transforms 
+
+		cmsFLAGS_NOTCACHE:  Inhibit the 1-pixel built-in cache
+
+		cmsFLAGS_NOWHITEONWHITEFIXUP: Do NOT fix white-on-white broken profiles
+
+		cmsFLAGS_NOPRELINEARIZATION: Do NOT use prelinearization tables
+
+
+            
     
 
 
@@ -757,6 +849,40 @@ Returns:
  operate in reverse direction.
 
 
+
+
+_________________________________________________________________________________
+
+icInt32Number cmsGetTagCount(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+  Return number of tags contained in a profile
+
+Parameters:
+                hProfile: Handle to an open profile
+
+Returns:
+			    Number of tags
+
+
+
+_________________________________________________________________________________
+
+icTagSignature cmsGetTagSignature(cmsHPROFILE hProfile, icInt32Number n);
+_________________________________________________________________________________
+
+
+    Enumerates tags in a profile
+
+Parameters:
+                hProfile: Handle to an open profile
+				n : Tag ordinal
+
+
+Returns:
+			    Tag signature
+
+
 _________________________________________________________________________________
 
 BOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
@@ -770,6 +896,8 @@ Parameters:
 
 Returns:
                 FALSE if not present, TRUE if tag is found
+
+
 
 _________________________________________________________________________________
 
@@ -807,11 +935,34 @@ The least significant 16 bits are reserved for the ICC.
        (set to 1 if true, 0 if false)
 
 Parameters:
-                hProfile: Handle to an open profile
+            hProfile: Handle to an open profile
 
 Returns: 
             The header flags
 
+
+
+_________________________________________________________________________________
+
+int  cmsTakeHeaderAttributes(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+Returns the attributes field of the ICC profile header. The device attributes 
+field shall contain flags used to identify attributes unique to the particular 
+device setup for which the profile is applicable. 
+
+ Currently (v4.2) there are only two ICC attributes defined:
+
+  Bit  Meaning 
+  ---  -------------------------------------------------------------
+   0    0=icReflective  1=icTransparency                  
+   1    0=icGlossy      1=icMatte                         
+
+Parameters:
+                hProfile: Handle to an open profile
+
+Returns: 
+            The header attributes
 
 
 _________________________________________________________________________________
@@ -904,6 +1055,23 @@ Returns:
         A pointer to a static buffer holding the 16 bytes ID. This buffer 
         is overwritten in each function call.
     
+
+
+
+
+_________________________________________________________________________________
+
+BOOL  _cmsIsMatrixShaper(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+ Tests whatever a particular profile is implemented as Matrix-shaper-
+
+Parameters:
+                hProfile: Handle to an open profile
+
+Returns:
+                TRUE or FALSE about profile being implemented as matrix-shaper
+
 
 _________________________________________________________________________________
 
@@ -1009,38 +1177,6 @@ Parameters:
 
 _________________________________________________________________________________
 
-cmmHPROFILE cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags);
-_________________________________________________________________________________
-
-
- Generates a device-link profile from a transform. This profile can then be used
- by any other function accepting profile handle, or be saved on disk 
- by _cmsSaveProfile(). See icclink.c for a sample.
-
- Parameters:
-
-  hTransform: A handle to the transform.
-
-  dwFlags:
-
-        If the transform is using cmsFLAGS_NOTPRECALC, the LUT table is 
-        computed using this parameters as flags:
-
-
-        cmsFLAGS_HIGHRESPRECALC: Use 48 points instead of 33 for 
-                             device-link CLUT precalculation. Not needed
-                             but for the most extreme cases of mismatch 
-                             of "impedance" between profiles.
-
-
-        cmsFLAGS_LOWRESPRECALC: Use lower resolution table. Usefull when
-                            memory is a preciated resource.
-
-        cmsFLAGS_GRIDPOINTS(n): You can specify the desired number of gridpoints 
-                            in devicelink by using this macro in the flags.
-
-_________________________________________________________________________________
-
 cmsHPROFILE cmsCreateLinearizationDeviceLink(icColorSpaceSignature ColorSpace,
                                             LPGAMMATABLE TransferFunctions[]);
 _________________________________________________________________________________
@@ -1100,6 +1236,9 @@ ________________________________________________________________________________
   int TempDest      : Destination white point temperature.
 
 
+Renges:
+    Bright: 
+
 
 _________________________________________________________________________________
 
@@ -1143,14 +1282,6 @@ ________________________________________________________________________________
 
   Creates a virtual profile of sRGB standard colorspace.
 
-_________________________________________________________________________________
-
-cmsHPROFILE   LCMSEXPORT cmsCreateAppleRGB(void);
-cmsHPROFILE   LCMSEXPORT cmsCreateAdobe1998RGB(void);
-cmsHPROFILE   LCMSEXPORT cmsCreateColormatchRGB(void);
-_________________________________________________________________________________
-
-  Creates a virtual profile of such standard colorspaces.
 
 
 _________________________________________________________________________________
@@ -1200,6 +1331,20 @@ ________________________________________________________________________________
    Returns:
 
                 FALSE on error, TRUE on success
+
+
+
+_________________________________________________________________________________
+
+double  cmsSetAdaptationState(double d);
+
+_________________________________________________________________________________
+
+Specifies adaptation state of observer for V4 absolute colorimetric transforms.
+Only two values are implemented:
+
+		d = 0: No adaptation
+		d = 1: Observer is fully adapted
 
 
 
@@ -1340,15 +1485,26 @@ double cmsEstimateGamma(LPGAMMATABLE t);
 double cmsEstimateGammaEx(LPWORD Table, int nEntries, double Thereshold); 
 _________________________________________________________________________________
 
+  Returns a numerical estimation of the apparent gamma on the given table.
 _________________________________________________________________________________
 
 LPGAMMATABLE  cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
 LPGAMMATABLE  cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
 int           cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
-LPcmsSEQ      cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+int           cmsReadICCTextEx(cmsHPROFILE hProfile, icTagSignature sig, char *Text, size_t size);
+_________________________________________________________________________________
+
+
+
 
 _________________________________________________________________________________
 
+LPcmsSEQ      cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+void          cmsFreeProfileSequenceDescription(LPcmsSEQ pseq);
+_________________________________________________________________________________
+
+  Reads and free profile sequence description structure
+  
 
 _________________________________________________________________________________
 
@@ -1707,6 +1863,21 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
+void cmsSetHeaderFlags(cmsSetHeaderFlags(cmsHPROFILE hProfile, DWORD Flags)
+_________________________________________________________________________________
+
+    Does set flags in profile header
+
+
+_________________________________________________________________________________
+
+void cmsSetHeaderAttributes(cmsSetHeaderFlags(cmsHPROFILE hProfile, DWORD Flags)
+_________________________________________________________________________________
+
+    Does set attribute flags in profile header
+
+_________________________________________________________________________________
+
 BOOL cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
 _________________________________________________________________________________
 
@@ -1742,6 +1913,10 @@ ________________________________________________________________________________
        icSigPreview2Tag                 LPLUT
        icSigChromaticityTag             LPcmsCIExyYTRIPLE
        icSigNamedColor2Tag              LPcmsNAMEDCOLORLIST
+       icSigColorantTableTag          LPcmsNAMEDCOLORLIST
+       icSigColorantTableOutTag         LPcmsNAMEDCOLORLIST
+       icSigCalibrationDateTimeTag      const struct tm*
+
 
 
 _________________________________________________________________________________
@@ -1776,6 +1951,10 @@ ________________________________________________________________________________
 
 
   Duplicates a LUT.
+
+Returns:
+
+    A handle to a new LUT, or NULL if error.
 
 _________________________________________________________________________________
 
@@ -1851,7 +2030,7 @@ ________________________________________________________________________________
 LPLUT cmsSetMatrixLUT(LPLUT Lut, LPMAT3 M);
 _________________________________________________________________________________
 
-  Provided for compatibility. Sets the Mat Matrix in the LUT pipeline
+  Provided for backwards compatibility sake. Sets the 'Mat' Matrix in the LUT pipeline
 
 
 _________________________________________________________________________________
@@ -1978,7 +2157,7 @@ ________________________________________________________________________________
  We create a transform using:
 
 
- hTransform = cmmCreateColorTransform(hNamedColorProfile,
+ hTransform = cmsCreateColorTransform(hNamedColorProfile,
                                            TYPE_NAMED_COLOR_INDEX,
                                            hOutputProfile,
                                            TYPE_BGR_8,
@@ -2287,6 +2466,22 @@ ________________________________________________________________________________
 
  Returns:
  
+
+_________________________________________________________________________________
+
+ BOOL           cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded);
+_________________________________________________________________________________
+
+
+ Saves a IT8/CGATS.13 object to a memory stream.
+
+ Parameters:
+
+        hIT8: The CGATS.13 parser handle
+
+ Returns:
+ 
+
 
 _________________________________________________________________________________
 
