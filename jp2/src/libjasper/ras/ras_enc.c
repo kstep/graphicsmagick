@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -111,7 +111,7 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	ras_enc_t *enc = &encbuf;
 
 	if (optstr) {
-		fprintf(stderr, "warning: ignoring RAS encoder options\n");
+		jas_eprintf("warning: ignoring RAS encoder options\n");
 	}
 
 	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
@@ -156,7 +156,7 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false ||
 		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
 		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0) {
-			fprintf(stderr, "The RAS format cannot be used to represent an image with this geometry.\n");
+			jas_eprintf("The RAS format cannot be used to represent an image with this geometry.\n");
 			return -1;
 		}
 	}

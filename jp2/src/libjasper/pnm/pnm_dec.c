@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -118,7 +118,7 @@ jas_image_t *pnm_decode(jas_stream_t *in, char *opts)
 	int i;
 
 	if (opts) {
-		fprintf(stderr, "warning: ignoring options\n");
+		jas_eprintf("warning: ignoring options\n");
 	}
 
 	/* Read the file header. */
@@ -204,10 +204,14 @@ int pnm_validate(jas_stream_t *in)
 static int pnm_gethdr(jas_stream_t *in, pnm_hdr_t *hdr)
 {
 	int_fast32_t maxval;
-	if (pnm_getint16(in, &hdr->magic) || pnm_getsintstr(in, &hdr->width) ||
-	  pnm_getsintstr(in, &hdr->height)) {
+	int_fast32_t width;
+	int_fast32_t height;
+	if (pnm_getint16(in, &hdr->magic) || pnm_getsintstr(in, &width) ||
+	  pnm_getsintstr(in, &height)) {
 		return -1;
 	}
+	hdr->width = width;
+	hdr->height = height;
 	if (pnm_type(hdr->magic) != PNM_TYPE_PBM) {
 		if (pnm_getsintstr(in, &maxval)) {
 			return -1;

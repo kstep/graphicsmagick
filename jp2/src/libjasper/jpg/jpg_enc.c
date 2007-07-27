@@ -7,9 +7,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -126,7 +126,7 @@ static int jpg_copyfiletostream(jas_stream_t *out, FILE *in);
 static void jpg_start_input(j_compress_ptr cinfo, struct jpg_src_s *sinfo);
 static JDIMENSION jpg_get_pixel_rows(j_compress_ptr cinfo, struct jpg_src_s *sinfo);
 static void jpg_finish_input(j_compress_ptr cinfo, struct jpg_src_s *sinfo);
-static int tojpgcs(int colorspace);
+static J_COLOR_SPACE tojpgcs(int colorspace);
 static int jpg_parseencopts(char *optstr, jpg_encopts_t *encopts);
 
 /******************************************************************************\
@@ -296,6 +296,7 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	src_mgr->error = 0;
 	src_mgr->image = image;
 	src_mgr->data = jas_matrix_create(1, width);
+	assert(src_mgr->data);
 	src_mgr->buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo,
 	  JPOOL_IMAGE, (JDIMENSION) width * cinfo.input_components,
 	  (JDIMENSION) 1);
@@ -327,6 +328,7 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	jpg_finish_input(&cinfo, src_mgr);
 	jpeg_finish_compress(&cinfo);
 	jpeg_destroy_compress(&cinfo);
+	jas_matrix_destroy(src_mgr->data);
 
 	rewind(output_file);
 	jpg_copyfiletostream(out, output_file);
@@ -342,7 +344,7 @@ error:
 	return -1;
 }
 
-static int tojpgcs(int colorspace)
+static J_COLOR_SPACE tojpgcs(int colorspace)
 {
 	switch (jas_clrspc_fam(colorspace)) {
 	case JAS_CLRSPC_FAM_RGB:
@@ -384,14 +386,13 @@ static int jpg_parseencopts(char *optstr, jpg_encopts_t *encopts)
 		case OPT_QUAL:
 			qual_str = jas_tvparser_getval(tvp);
 			if (sscanf(qual_str, "%d", &encopts->qual) != 1) {
-				fprintf(stderr,
-					"ignoring bad quality specifier %s\n",
+				jas_eprintf("ignoring bad quality specifier %s\n",
 					jas_tvparser_getval(tvp));
 				encopts->qual = -1;
 			}
 			break;
 		default:
-			fprintf(stderr, "warning: ignoring invalid option %s\n",
+			jas_eprintf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 			break;
 		}

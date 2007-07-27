@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -149,10 +149,10 @@ int main(int argc, char **argv)
 	cmdopts_t *cmdopts;
 	jas_stream_t *in;
 	jas_stream_t *out;
-	clock_t startclk;
-	clock_t endclk;
-	long dectime;
-	long enctime;
+	jas_tmr_t dectmr;
+	jas_tmr_t enctmr;
+	double dectime;
+	double enctime;
 	int_fast16_t numcmpts;
 	int i;
 
@@ -225,13 +225,13 @@ int main(int argc, char **argv)
 	}
 
 	/* Get the input image data. */
-	startclk = clock();
+	jas_tmr_start(&dectmr);
 	if (!(image = jas_image_decode(in, cmdopts->infmt, cmdopts->inopts))) {
 		fprintf(stderr, "error: cannot load image data\n");
 		exit(EXIT_FAILURE);
 	}
-	endclk = clock();
-	dectime = endclk - startclk;
+	jas_tmr_stop(&dectmr);
+	dectime = jas_tmr_get(&dectmr);
 
 	/* If requested, throw away all of the components except one.
 	  Why might this be desirable?  It is a hack, really.
@@ -266,20 +266,18 @@ int main(int argc, char **argv)
 	}
 
 	/* Generate the output image data. */
-	startclk = clock();
+	jas_tmr_start(&enctmr);
 	if (jas_image_encode(image, out, cmdopts->outfmt, cmdopts->outopts)) {
 		fprintf(stderr, "error: cannot encode image\n");
 		exit(EXIT_FAILURE);
 	}
 	jas_stream_flush(out);
-	endclk = clock();
-	enctime = endclk - startclk;
+	jas_tmr_stop(&enctmr);
+	enctime = jas_tmr_get(&enctmr);
 
 	if (cmdopts->verbose) {
-		fprintf(stderr, "decoding time = %f\n", dectime / (double)
-		  CLOCKS_PER_SEC);
-		fprintf(stderr, "encoding time = %f\n", enctime / (double)
-		  CLOCKS_PER_SEC);
+		fprintf(stderr, "decoding time = %f\n", dectime);
+		fprintf(stderr, "encoding time = %f\n", enctime);
 	}
 
 	/* If this fails, we don't care. */

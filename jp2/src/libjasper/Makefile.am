@@ -5,9 +5,9 @@
 # 
 # JasPer License Version 2.0
 # 
+# Copyright (c) 2001-2006 Michael David Adams
 # Copyright (c) 1999-2000 Image Power, Inc.
 # Copyright (c) 1999-2000 The University of British Columbia
-# Copyright (c) 2001-2003 Michael David Adams
 # 
 # All rights reserved.
 # 
@@ -82,6 +82,8 @@ libjasper_la_LIBADD = \
 	pgx/libpgx.la \
 	pnm/libpnm.la \
 	ras/libras.la
+
+# -release $(LT_RELEASE)
 libjasper_la_LDFLAGS = \
-	-release $(LT_RELEASE) \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+

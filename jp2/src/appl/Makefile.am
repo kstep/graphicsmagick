@@ -5,9 +5,9 @@
 # 
 # JasPer License Version 2.0
 # 
+# Copyright (c) 2001-2006 Michael David Adams
 # Copyright (c) 1999-2000 Image Power, Inc.
 # Copyright (c) 1999-2000 The University of British Columbia
-# Copyright (c) 2001-2003 Michael David Adams
 # 
 # All rights reserved.
 # 
@@ -64,14 +64,19 @@ BIN_JIV =
 EXTRA_JIV = jiv
 endif
 
-bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo
-EXTRA_PROGRAMS = $(EXTRA_JIV) dummy
+bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo tmrdemo
+#bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo tmrdemo dummy dummy2
+EXTRA_PROGRAMS = $(EXTRA_JIV) dummy dummy2
 
 jasper_SOURCES = jasper.c
 imgcmp_SOURCES = imgcmp.c
 imginfo_SOURCES = imginfo.c
 dummy_SOURCES = dummy.c
+dummy2_SOURCES = dummy2.c
+tmrdemo_SOURCES = tmrdemo.c
 jiv_SOURCES = jiv.c
+man_MANS = imgcmp.1 imginfo.1 jasper.1 jiv.1
+EXTRA_DIST = $(man_MANS)
 
 INCLUDES = -I$(top_srcdir)/src/libjasper/include
 
@@ -81,3 +86,6 @@ imgcmp_LDADD = $(MYLDFLAGS)
 imginfo_LDADD = $(MYLDFLAGS)
 jiv_LDADD = $(MYLDFLAGS) $(OPENGL_LIBS)
 dummy_LDADD = $(MYLDFLAGS)
+dummy2_LDADD = $(MYLDFLAGS)
+tmrdemo_LDADD = $(MYLDFLAGS)
+

@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -110,7 +110,7 @@ int bmp_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	jas_clrspc_t clrspc;
 
 	if (optstr) {
-		fprintf(stderr, "warning: ignoring BMP encoder options\n");
+		jas_eprintf("warning: ignoring BMP encoder options\n");
 	}
 
 	clrspc = jas_image_clrspc(image);
@@ -168,7 +168,7 @@ int bmp_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false ||
 		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
 		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0) {
-			fprintf(stderr, "The BMP format cannot be used to represent an image with this geometry.\n");
+			jas_eprintf("The BMP format cannot be used to represent an image with this geometry.\n");
 			return -1;
 		}
 	}
@@ -289,7 +289,7 @@ static int bmp_putdata(jas_stream_t *out, bmp_info_t *info, jas_image_t *image,
 
 	/* We do not support palettized images. */
 	if (BMP_HASPAL(info) && numcmpts == 3) {
-		fprintf(stderr, "no palettized image support for BMP format\n");
+		jas_eprintf("no palettized image support for BMP format\n");
 		return -1;
 	}
 

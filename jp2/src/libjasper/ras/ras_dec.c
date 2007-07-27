@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -109,7 +109,7 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 	int i;
 
 	if (optstr) {
-		fprintf(stderr, "warning: ignoring RAS decoder options\n");
+		jas_eprintf("warning: ignoring RAS decoder options\n");
 	}
 
 	/* Read the header. */
@@ -322,7 +322,7 @@ static int ras_getcmap(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap)
 		break;
 	case RAS_MT_EQUALRGB:
 		{
-fprintf(stderr, "warning: palettized images not fully supported\n");
+		jas_eprintf("warning: palettized images not fully supported\n");
 		numcolors = 1 << hdr->depth;
 		assert(numcolors <= RAS_CMAP_MAXSIZ);
 		actualnumcolors = hdr->maplength / 3;

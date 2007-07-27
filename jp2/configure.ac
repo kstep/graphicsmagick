@@ -1,5 +1,5 @@
 dnl ****************************************************************************
-dnl Copyright (c) 2001-2003 Michael David Adams.
+dnl Copyright (c) 2001-2004 Michael David Adams.
 dnl All rights reserved.
 dnl
 dnl The complete licensing terms for this software can be found in the file
@@ -15,8 +15,8 @@ dnl ************************************************************
 
 dnl The major, minor, and micro version numbers of the package.
 define(AC_JAS_MAJOR_VERSION, 1)
-define(AC_JAS_MINOR_VERSION, 701)
-define(AC_JAS_MICRO_VERSION, 0)
+define(AC_JAS_MINOR_VERSION, 900)
+define(AC_JAS_MICRO_VERSION, 1)
 
 dnl The package version.
 define(AC_JAS_VERSION,
@@ -62,7 +62,7 @@ dnl ****************************************************************************
 
 dnl Initialize autoconf.
 AC_INIT(AC_JAS_NAME, AC_JAS_VERSION)
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR(README)
 dnl Note: Avoid the temptation to call the auxiliary directory "aux" because
 dnl Microsoft Windows will barf if you try to use "aux" as a directory name. :-(
@@ -127,7 +127,7 @@ AH_TOP([
 /* The preprocessor symbol JAS_WIN_MSVC_BUILD should not be defined
   unless the JasPer software is being built under Microsoft Windows
   using Microsoft Visual C. */
-#ifndef	JAS_WIN_MSVC_BUILD
+#if !defined(JAS_WIN_MSVC_BUILD)
 /* A configure-based build is being used. */
 
 ])
@@ -145,12 +145,12 @@ AH_BOTTOM([
 # Checks for programs.
 ############################################################
 
-AC_PROG_AWK
 AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_INSTALL
-AC_PROG_LN_S
 AC_PROG_RANLIB
+# AC_PROG_AWK
+# AC_PROG_CPP
+# AC_PROG_LN_S
 
 AM_DISABLE_SHARED
 AC_PROG_LIBTOOL
@@ -158,11 +158,14 @@ AC_PROG_LIBTOOL
 AC_PATH_XTRA
 
 AC_MSG_CHECKING(whether variable-length arrays are supported)
-AC_TRY_COMPILE([], [
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 	int n; int foo[n];
-],
-[AC_MSG_RESULT(yes); AC_DEFINE(HAVE_VLA)],
-AC_MSG_RESULT(no))
+]])],[AC_MSG_RESULT(yes); AC_DEFINE(HAVE_VLA)],[AC_MSG_RESULT(no)])
+
+dnl AC_TRY_COMPILE is obsolete
+dnl AC_TRY_COMPILE([], [
+dnl 	int n; int foo[n];
+dnl ], [AC_MSG_RESULT(yes); AC_DEFINE(HAVE_VLA)], AC_MSG_RESULT(no))
 
 ############################################################
 # Check for the IJG JPEG library.
@@ -266,24 +269,15 @@ AC_CHECK_LIB(m, main)
 ############################################################
 
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h limits.h unistd.h stdint.h stdbool.h io.h windows.h sys/types.h stdlib.h stddef.h)
+AC_CHECK_HEADERS(fcntl.h limits.h unistd.h stdint.h stdbool.h io.h windows.h sys/types.h sys/time.h stdlib.h stddef.h)
 
 ############################################################
 # Check for typedefs, structures, and compiler characteristics.
 ############################################################
 
-AC_C_BIGENDIAN
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(unsigned short)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(unsigned int)
-AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(unsigned long)
-AC_CHECK_SIZEOF(long long)
-AC_CHECK_SIZEOF(unsigned long long)
 dnl AC_CHECK_TYPE(bool, int)
 AC_CHECK_TYPE(uchar, unsigned char)
 AC_CHECK_TYPE(ushort, unsigned short)
@@ -292,6 +286,8 @@ AC_CHECK_TYPE(ulong, unsigned long)
 AC_CHECK_TYPE(longlong, long long)
 AC_CHECK_TYPE(ulonglong, unsigned long long)
 AC_CHECK_TYPE(ssize_t, int)
+AC_CHECK_FUNCS(gettimeofday)
+AC_CHECK_FUNCS(getrusage)
 
 ############################################################
 # Checks for library functions.
@@ -327,7 +323,7 @@ AC_ARG_ENABLE(debug,
 [
 case "${enableval}" in
 yes)
-	debug=true
+	debug=yes
 	AC_DEFINE(DEBUG)
 	AC_DEFINE(DEBUG_OVERFLOW)
 	if test "$GCC" = yes; then
@@ -335,29 +331,58 @@ yes)
 	fi
 	;;
 no)
-	debug=false
+	debug=no
 	;;
 *)
 	AC_MSG_ERROR(bad value ${enableval} for --enable-debug)
 	;;
 esac
-], [debug=false])
+], [debug=no])
 
 if test "$GCC" = yes; then
-	CFLAGS="$CFLAGS -W -Wall -Wno-long-long -Wformat -Wmissing-prototypes -Wstrict-prototypes -pedantic"
+	CFLAGS="$CFLAGS"
+	#CFLAGS="$CFLAGS -std=c99"
+	#CFLAGS="$CFLAGS -pedantic"
+	#CFLAGS="$CFLAGS -pedantic-errors"
+	#CFLAGS="$CFLAGS -W -Wall -Wno-long-long -Wformat -Wmissing-prototypes -Wstrict-prototypes"
+fi
+
+############################################################
+# Extra stuff for research purposes.
+############################################################
+
+AC_ARG_ENABLE(special0,
+[  --enable-special0    enable something],
+[
+case "${enableval}" in
+yes)
+	if test "$GCC" = yes; then
+		CFLAGS="-g -O0"
+	fi
+	;;
+no)
+	;;
+*)
+	AC_MSG_ERROR(bad value ${enableval} for --enable-special0)
+	;;
+esac
+], [])
+
+if test -n "$EXTRACFLAGS"; then
+	CFLAGS="$CFLAGS $EXTRACFLAGS"
 fi
 
 ############################################################
 # Generate the configuration header file.
 ############################################################
 
-AM_CONFIG_HEADER(src/libjasper/include/jasper/jas_config.h)
+AC_CONFIG_HEADERS([src/libjasper/include/jasper/jas_config.h])
 
 ############################################################
 # Generate the makefiles.
 ############################################################
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/appl/Makefile
@@ -376,4 +401,5 @@ src/libjasper/ras/Makefile
 src/msvc/Makefile
 jasper.spec
 ])
+AC_OUTPUT
 

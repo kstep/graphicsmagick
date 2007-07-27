@@ -9,9 +9,9 @@
  * 
  * JasPer License Version 2.0
  * 
+ * Copyright (c) 2001-2006 Michael David Adams
  * Copyright (c) 1999-2000 Image Power, Inc.
  * Copyright (c) 1999-2000 The University of British Columbia
- * Copyright (c) 2001-2003 Michael David Adams
  * 
  * All rights reserved.
  * 
@@ -132,7 +132,7 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 
 	/* Parse the encoder option string. */
 	if (pnm_parseencopts(optstr, &encopts)) {
-		fprintf(stderr, "invalid PNM encoder options specified\n");
+		jas_eprintf("invalid PNM encoder options specified\n");
 		return -1;
 	}
 
@@ -191,14 +191,14 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		  jas_image_cmptvstep(image, enc->cmpts[cmptno]) != jas_image_cmptvstep(image, 0) ||
 		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != jas_image_cmpttlx(image, 0) ||
 		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != jas_image_cmpttly(image, 0)) {
-			fprintf(stderr, "The PNM format cannot be used to represent an image with this geometry.\n");
+			jas_eprintf("The PNM format cannot be used to represent an image with this geometry.\n");
 			return -1;
 		}
 	}
 
 	if (sgnd) {
-		fprintf(stderr, "warning: support for signed sample data requires use of nonstandard extension to PNM format\n");
-		fprintf(stderr, "You may not be able to read or correctly display the resulting PNM data with other software.\n");
+		jas_eprintf("warning: support for signed sample data requires use of nonstandard extension to PNM format\n");
+		jas_eprintf("You may not be able to read or correctly display the resulting PNM data with other software.\n");
 	}
 
 	/* Initialize the header. */
@@ -260,7 +260,7 @@ static int pnm_parseencopts(char *optstr, pnm_encopts_t *encopts)
 			encopts->bin = false;
 			break;
 		default:
-			fprintf(stderr, "warning: ignoring invalid option %s\n",
+			jas_eprintf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 			break;
 		}	
@@ -428,8 +428,9 @@ static int pnm_putuint(jas_stream_t *out, int wordsize, uint_fast32_t *val)
 	int c;
 
 	n = (wordsize + 7) / 8;
+	tmpval = (*val);
 	tmpval &= PNM_ONES(8 * n);
-	tmpval = (*val) << (8 * (4 - n));
+	tmpval = tmpval << (8 * (4 - n));
 	while (--n >= 0) {
 		c = (tmpval >> 24) & 0xff;
 		if (jas_stream_putc(out, c) == EOF) {
