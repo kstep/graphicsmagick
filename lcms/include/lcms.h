@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -20,7 +20,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Version 1.15
+// Version 1.16
 
 #ifndef __cms_H
 
@@ -77,10 +77,35 @@
 // Uncomment this if your compiler doesn't work with fast floor function
 // #define USE_DEFAULT_FLOOR_CONVERSION  1
 
+// Uncomment this line on multithreading environments
+// #define USE_PTHREADS    1
+
+// Uncomment this line if you want lcms to use the black point tag in profile, 
+// if commented, lcms will compute the black point by its own. 
+// It is safer to leve it commented out
+// #define HONOR_BLACK_POINT_TAG    1
 
 // ********** End of configuration toggles ******************************
 
-#define LCMS_VERSION        115
+#define LCMS_VERSION        116
+
+// Microsoft VisualC++
+
+// Deal with Microsoft's attempt at deprecating C standard runtime functions 
+
+#ifdef _MSC_VER
+#    undef NON_WINDOWS
+#    if (_MSC_VER >= 1400)
+#        define _CRT_SECURE_NO_DEPRECATE 1
+#    endif
+#endif
+
+// Borland C 
+
+#ifdef __BORLANDC__
+#    undef NON_WINDOWS
+#endif
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,33 +115,32 @@
 #include <time.h>
 
 // Metroworks CodeWarrior
-
 #ifdef __MWERKS__ 
 #   define unlink remove
 #   if WIN32 
 #       define USE_CUSTOM_SWAB 1
+#       undef  NON_WINDOWS
 #   else
 #       define NON_WINDOWS   1
 #   endif
 #endif
 
-// Borland C 
-
-#ifdef __BORLANDC__
-#    undef NON_WINDOWS
-#endif
-
-// Microsoft VisualC++
-
-#ifdef _MSC_VER
-#    undef NON_WINDOWS
-#endif
 
 // Here comes the Non-Windows settings
 
 #ifdef NON_WINDOWS
 
 // Non windows environments. Also avoid indentation on includes.
+
+#ifdef USE_PTHREADS
+#   include <pthread.h>
+typedef    pthread_rwlock_t      LCMS_RWLOCK_T;
+#   define LCMS_CREATE_LOCK(x)       pthread_rwlock_init((x), NULL) 
+#   define LCMS_FREE_LOCK(x)         pthread_rwlock_destroy((x))
+#   define LCMS_READ_LOCK(x)		 pthread_rwlock_rdlock((x))
+#   define LCMS_WRITE_LOCK(x)        pthread_rwlock_wrlock((x))
+#   define LCMS_UNLOCK(x)            pthread_rwlock_unlock((x))
+#endif
 
 #undef LCMS_DLL
 
@@ -133,11 +157,17 @@
 #   define USE_BIG_ENDIAN      1
 #endif
 
-#ifdef TARGET_CPU_PPC
+#if TARGET_CPU_PPC
 #   define USE_BIG_ENDIAN   1
 #endif
 
-#ifdef macintosh
+#if macintosh
+# ifndef __LITTLE_ENDIAN__
+#   define USE_BIG_ENDIAN      1
+# endif
+#endif
+
+#if __BIG_ENDIAN__
 #   define USE_BIG_ENDIAN      1
 #endif
 
@@ -148,7 +178,7 @@
 #if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__)
 #  include <sys/types.h>
 #  define USE_INT64           1
-#  define LCMSSLONGLONG       int_64_t
+#  define LCMSSLONGLONG       int64_t
 #  define LCMSULONGLONG       u_int64_t
 #endif
 
@@ -173,7 +203,7 @@
 
 typedef unsigned char BYTE, *LPBYTE; 
 typedef unsigned short WORD, *LPWORD;
-typedef unsigned int DWORD, *LPDWORD;
+typedef unsigned long DWORD, *LPDWORD;
 typedef int BOOL;
 typedef char *LPSTR;
 typedef void *LPVOID;
@@ -199,7 +229,9 @@ typedef void* LCMSHANDLE;
 #define LOWORD(l)    ((WORD)(l))
 #define HIWORD(l)    ((WORD)((DWORD)(l) >> 16))
 
-#define MAX_PATH     (256)
+#ifndef MAX_PATH
+#       define MAX_PATH     (256)
+#endif
 
 #define cdecl
 #endif
@@ -231,6 +263,24 @@ typedef HANDLE LCMSHANDLE;
 // This works for both VC & BorlandC
 #define LCMS_INLINE __inline
 
+#ifdef USE_PTHREADS
+typedef CRITICAL_SECTION LCMS_RWLOCK_T;
+#   define LCMS_CREATE_LOCK(x)       InitializeCriticalSection((x))
+#   define LCMS_FREE_LOCK(x)         DeleteCriticalSection((x))
+#   define LCMS_READ_LOCK(x)		 EnterCriticalSection((x))
+#   define LCMS_WRITE_LOCK(x)        EnterCriticalSection((x))
+#   define LCMS_UNLOCK(x)            LeaveCriticalSection((x))
+#endif
+
+#endif
+
+#ifndef USE_PTHREADS
+typedef int LCMS_RWLOCK_T;             
+#   define LCMS_CREATE_LOCK(x)       
+#   define LCMS_FREE_LOCK(x)         
+#   define LCMS_READ_LOCK(x)		 
+#   define LCMS_WRITE_LOCK(x)        
+#   define LCMS_UNLOCK(x)            
 #endif
 
 
@@ -394,7 +444,7 @@ extern "C" {
 #endif
 
 #ifndef LOGE
-#       define LOGE   0.434294481   
+#       define LOGE   0.4342944819   
 #endif
 
 // ********** Little cms API ***************************************************
@@ -660,7 +710,7 @@ typedef struct {
 
 typedef struct {
 
-	LCMSGAMMAPARAMS Birth;	// Parameters used for table creation
+	LCMSGAMMAPARAMS Seed;	// Parameters used for table creation
                       
     // Table-based representation follows
 
@@ -805,10 +855,10 @@ LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateRGBProfile(LPcmsCIExyY WhitePoint,
 LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateGrayProfile(LPcmsCIExyY WhitePoint,
                                               LPGAMMATABLE TransferFunction);
 
-LCMSAPI cmsHPROFILE LCMSEXPORT cmsCreateLinearizationDeviceLink(icColorSpaceSignature ColorSpace,
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateLinearizationDeviceLink(icColorSpaceSignature ColorSpace,
                                                         LPGAMMATABLE TransferFunctions[]);
 
-LCMSAPI cmsHPROFILE LCMSEXPORT cmsCreateInkLimitingDeviceLink(icColorSpaceSignature ColorSpace,
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateInkLimitingDeviceLink(icColorSpaceSignature ColorSpace,
                                                       double Limit);
 
 
@@ -828,7 +878,7 @@ LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
                                                      int TempSrc, 
                                                      int TempDest);
 
-LCMSAPI cmsHPROFILE LCMSEXPORT cmsCreateNULLProfile(void);
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateNULLProfile(void);
 
 
 // Colorimetric space conversions
@@ -862,7 +912,7 @@ LCMSAPI BOOL          LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r,
                                                         LPcmsCIExyY WhitePoint,
                                                         LPcmsCIExyYTRIPLE Primaries);
 
-// CIECAM97s
+// Viewing conditions 
 
 #define AVG_SURROUND_4     0
 #define AVG_SURROUND       1
@@ -885,6 +935,7 @@ typedef struct {
 
 typedef cmsViewingConditions FAR* LPcmsViewingConditions;
 
+// CIECAM97s
 
 LCMSAPI LCMSHANDLE    LCMSEXPORT cmsCIECAM97sInit(LPcmsViewingConditions pVC2);
 LCMSAPI void          LCMSEXPORT cmsCIECAM97sDone(LCMSHANDLE hModel);
@@ -894,10 +945,10 @@ LCMSAPI void          LCMSEXPORT cmsCIECAM97sReverse(LCMSHANDLE hModel, LPcmsJCh
 
 // CIECAM02
 
-LCMSAPI LCMSHANDLE LCMSEXPORT cmsCIECAM02Init(LPcmsViewingConditions pVC);
-LCMSAPI void       LCMSEXPORT cmsCIECAM02Done(LCMSHANDLE hModel);
-LCMSAPI void       LCMSEXPORT cmsCIECAM02Forward(LCMSHANDLE hModel, LPcmsCIEXYZ pIn, LPcmsJCh pOut);
-LCMSAPI void       LCMSEXPORT cmsCIECAM02Reverse(LCMSHANDLE hModel, LPcmsJCh pIn,    LPcmsCIEXYZ pOut);
+LCMSAPI LCMSHANDLE    LCMSEXPORT cmsCIECAM02Init(LPcmsViewingConditions pVC);
+LCMSAPI void          LCMSEXPORT cmsCIECAM02Done(LCMSHANDLE hModel);
+LCMSAPI void          LCMSEXPORT cmsCIECAM02Forward(LCMSHANDLE hModel, LPcmsCIEXYZ pIn, LPcmsJCh pOut);
+LCMSAPI void          LCMSEXPORT cmsCIECAM02Reverse(LCMSHANDLE hModel, LPcmsJCh pIn,    LPcmsCIEXYZ pOut);
 
 
 // Gamma
@@ -935,15 +986,19 @@ LCMSAPI const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
 LCMSAPI const char*   LCMSEXPORT cmsTakeCopyright(cmsHPROFILE hProfile);
 LCMSAPI const BYTE*   LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile);
 
-LCMSAPI BOOL LCMSEXPORT cmsTakeCreationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
-LCMSAPI BOOL LCMSEXPORT cmsTakeCalibrationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsTakeCreationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsTakeCalibrationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
 
 LCMSAPI BOOL          LCMSEXPORT cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 LCMSAPI int           LCMSEXPORT cmsTakeRenderingIntent(cmsHPROFILE hProfile);
 
 LCMSAPI BOOL          LCMSEXPORT cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t* len);
                                                   
+LCMSAPI int           LCMSEXPORT cmsReadICCTextEx(cmsHPROFILE hProfile, icTagSignature sig, char *Text, size_t size);
 LCMSAPI int           LCMSEXPORT cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
+
+
+#define LCMS_DESC_MAX     512
 
 typedef struct {
 
@@ -952,8 +1007,8 @@ typedef struct {
             icUInt32Number              attributes[2];     
             icTechnologySignature       technology;     
             
-            char Manufacturer[512];
-            char Model[512];
+            char Manufacturer[LCMS_DESC_MAX];
+            char Model[LCMS_DESC_MAX];
 
     } cmsPSEQDESC, FAR *LPcmsPSEQDESC;
 
@@ -965,8 +1020,8 @@ typedef struct {
     } cmsSEQ, FAR *LPcmsSEQ;
 
 
-LCMSAPI LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
-
+LCMSAPI LPcmsSEQ      LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+LCMSAPI void          LCMSEXPORT cmsFreeProfileSequenceDescription(LPcmsSEQ pseq);
 
 
 // Extended gamut tag -- an HP extension
@@ -986,7 +1041,7 @@ typedef struct {
 			icUInt16Number         Method;		// Method used to generate gamut
 			icUInt16Number         Usage;       // Gamut usage or intent
 
-			char Description[512];				// Textual description
+			char Description[LCMS_DESC_MAX];	// Textual description
 			
 			cmsViewingConditions   Vc;			// The viewing conditions
 
@@ -1066,11 +1121,10 @@ LCMSAPI void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE Pr
 #define cmsFLAGS_GAMUTCHECK               0x1000    // Out of Gamut alarm
 #define cmsFLAGS_SOFTPROOFING             0x4000    // Do softproofing
 
-
-// Black preservation
+// Black preservation         
 
 #define cmsFLAGS_PRESERVEBLACK            0x8000
-            
+
 // CRD special
 
 #define cmsFLAGS_NODEFAULTRESOURCEDEF     0x00010000
@@ -1123,6 +1177,13 @@ LCMSAPI void         LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b);
 LCMSAPI double       LCMSEXPORT cmsSetAdaptationState(double d);
 
 
+// Primary preservation strategy
+
+#define LCMS_PRESERVE_PURE_K    0
+#define LCMS_PRESERVE_K_PLANE   1
+
+LCMSAPI int LCMSEXPORT cmsSetCMYKPreservationStrategy(int n);
+
 // Named color support
 typedef struct {                
                 char Name[MAX_PATH];
@@ -1155,7 +1216,7 @@ LCMSAPI LPcmsNAMEDCOLORLIST LCMSEXPORT cmsReadColorantTable(cmsHPROFILE hProfile
 
 // Profile creation 
 
-LCMSAPI BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
+LCMSAPI BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, const void* data);
 
 // Converts a transform to a devicelink profile
 LCMSAPI cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags);
@@ -1332,7 +1393,7 @@ LCMSAPI void          LCMSEXPORT cmsFloat2XYZEncoded(WORD XYZ[3], const cmsCIEXY
 
 LCMSAPI BOOL LCMSEXPORT _cmsAddTextTag(cmsHPROFILE hProfile,  icTagSignature sig, const char* Text);
 LCMSAPI BOOL LCMSEXPORT _cmsAddXYZTag(cmsHPROFILE hProfile,   icTagSignature sig, const cmsCIEXYZ* XYZ);
-LCMSAPI BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile,   icTagSignature sig, void* lut);
+LCMSAPI BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile,   icTagSignature sig, const void* lut);
 LCMSAPI BOOL LCMSEXPORT _cmsAddGammaTag(cmsHPROFILE hProfile, icTagSignature sig, LPGAMMATABLE TransferFunction);
 LCMSAPI BOOL LCMSEXPORT _cmsAddChromaticityTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsCIExyYTRIPLE Chrm);
 LCMSAPI BOOL LCMSEXPORT _cmsAddSequenceDescriptionTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsSEQ PSeq);
@@ -1349,7 +1410,7 @@ LCMSAPI BOOL LCMSEXPORT _cmsAddColorantTableTag(cmsHPROFILE hProfile, icTagSigna
 
 LCMS_INLINE int _cmsQuickFloor(double val)
 {
-#if USE_DEFAULT_FLOOR_CONVERSION
+#ifdef USE_DEFAULT_FLOOR_CONVERSION
     return (int) floor(val);
 #else
     const double _lcms_double2fixmagic = 68719476736.0 * 1.5;  // 2^36 * 1.5, (52-16=36) uses limited precision to floor
@@ -1361,7 +1422,7 @@ LCMS_INLINE int _cmsQuickFloor(double val)
     temp.val = val + _lcms_double2fixmagic;
 
     
-#if USE_BIG_ENDIAN
+#ifdef USE_BIG_ENDIAN
     return temp.halves[1] >> 16;
 #else
     return temp.halves[0] >> 16;
@@ -1622,7 +1683,7 @@ struct _lcms_LUT_struc {
 
 			   // Parameters used for curve creation
 
-			   LCMSGAMMAPARAMS LCurvesBirth[4][MAXCHANNELS];
+			   LCMSGAMMAPARAMS LCurvesSeed[4][MAXCHANNELS];
                
 
                }; // LUT, FAR* LPLUT;
@@ -1847,6 +1908,8 @@ typedef struct _cmstransform_struct {
                    
                     icColorSpaceSignature EntryColorSpace;
                     icColorSpaceSignature ExitColorSpace;
+
+                    DWORD dwOriginalFlags;      // Flags as specified by user
                 
                     WMAT3 m1, m2;       // Matrix holding inter PCS operation
                     WVEC3 of1, of2;     // Offset terms
@@ -1878,7 +1941,6 @@ typedef struct _cmstransform_struct {
                     LPMATSHAPER OutMatShaper;
                     LPMATSHAPER SmeltMatShaper;
 
-
                     // Phase of Lab/XYZ, Abs/Rel
 
                     int Phase1, Phase2, Phase3;
@@ -1891,14 +1953,15 @@ typedef struct _cmstransform_struct {
 
                     BOOL lInputV4Lab, lOutputV4Lab;
 
+                    
                     // 1-pixel cache
 
                     WORD CacheIn[MAXCHANNELS];
                     WORD CacheOut[MAXCHANNELS];
 
-
                     double AdaptationState; // Figure for v4 incomplete state of adaptation
 
+					LCMS_RWLOCK_T rwlock;
 
                    } _cmsTRANSFORM,FAR *_LPcmsTRANSFORM;
 

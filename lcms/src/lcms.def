@@ -156,6 +156,7 @@ EXPORTS
     cmsIT8GetPatchName           = cmsIT8GetPatchName
     cmsIT8SetTableByLabel        = cmsIT8SetTableByLabel
     cmsReadICCText               = cmsReadICCText
+    cmsReadICCTextEx             = cmsReadICCTextEx
     cmsCreateLab4Profile         = cmsCreateLab4Profile
     cmsCreateNULLProfile         = cmsCreateNULLProfile
     cmsIT8DefineDblFormat        = cmsIT8DefineDblFormat
@@ -176,4 +177,7 @@ EXPORTS
     cmsSetAdaptationState        = cmsSetAdaptationState
     cmsSetHeaderAttributes       = cmsSetHeaderAttributes
     cmsTakeHeaderAttributes      = cmsTakeHeaderAttributes
+    cmsSetCMYKPreservationStrategy = cmsSetCMYKPreservationStrategy
+    cmsFreeProfileSequenceDescription = cmsFreeProfileSequenceDescription
+    
 
