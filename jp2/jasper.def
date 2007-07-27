@@ -9,7 +9,6 @@ EXPORTS
 	jas_cmxform_apply
 	jas_cmxform_create
 	jas_cmxform_destroy
-	jas_dummy
 	jas_eprintf
 	jas_free
 	jas_getdbglevel
