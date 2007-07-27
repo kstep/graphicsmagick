@@ -53,7 +53,7 @@ void read_file(unsigned char **buf, size_t *buflen, size_t *len, FILE *f)
   if (*buflen == 0) {
     *buflen = 4000;
     *len = 0;
-    *buf = malloc(*buflen);
+    *buf = (unsigned char *) malloc(*buflen);
     if (!*buf) {
       fprintf(stderr, "Sorry, not enough memory available!\n");
       exit(1);
@@ -63,7 +63,7 @@ void read_file(unsigned char **buf, size_t *buflen, size_t *len, FILE *f)
     *len += fread(*buf + *len, 1, *buflen - *len, f);
     if (*len == *buflen) {
       *buflen *= 2;
-      *buf = realloc(*buf, *buflen);
+      *buf = (unsigned char *) realloc(*buf, *buflen);
       if (!*buf) {
 	fprintf(stderr, "Sorry, not enough memory available!\n");
 	exit(1);
@@ -75,7 +75,7 @@ void read_file(unsigned char **buf, size_t *buflen, size_t *len, FILE *f)
     }
   } while (!feof(f));
   *buflen = *len;
-  *buf = realloc(*buf, *buflen);
+  *buf = (unsigned char *) realloc(*buf, *buflen);
   if (!*buf) {
     fprintf(stderr, "Oops, realloc failed when shrinking buffer!\n");
     exit(1);
@@ -236,7 +236,7 @@ int main (int argc, char **argv)
   int plane = -1, use_graycode = 1, diagnose = 0, multi = 0;
 
   buflen = 8000;
-  buffer = malloc(buflen);
+  buffer = (unsigned char *) malloc(buflen);
   if (!buffer) {
     printf("Sorry, not enough memory available!\n");
     exit(1);

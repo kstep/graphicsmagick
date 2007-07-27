@@ -15,7 +15,7 @@
  * JBIG-KIT version number
  */
 
-#define JBG_VERSION    "1.5"
+#define JBG_VERSION    "1.6"
 
 /*
  * Buffer block for SDEs which are temporarily stored by encoder
@@ -105,6 +105,14 @@ struct jbg_arenc_state {
  * Status description of an arithmetic decoder
  */
 
+enum jbg_ardec_result {
+  JBG_OK,                          /* symbol has been successfully decoded */
+  JBG_READY,               /* no more bytes of this PSCD required, marker  *
+			    * encountered, probably more symbols available */
+  JBG_MORE,            /* more PSCD data bytes required to decode a symbol */
+  JBG_MARKER     /* more PSCD data bytes required, ignored final 0xff byte */
+};
+
 struct jbg_ardec_state {
   unsigned char st[4096];    /* probability status for contexts, MSB = MPS */
   unsigned long c;                /* C register, base of coding intervall, *
@@ -113,13 +121,7 @@ struct jbg_ardec_state {
   int ct;     /* bit shift counter, determines when next byte will be read */
   unsigned char *pscd_ptr;               /* pointer to next PSCD data byte */
   unsigned char *pscd_end;                   /* pointer to byte after PSCD */
-  enum {
-    JBG_OK,                        /* symbol has been successfully decoded */
-    JBG_READY,             /* no more bytes of this PSCD required, marker  *
-		            * encountered, probably more symbols available */
-    JBG_MORE,          /* more PSCD data bytes required to decode a symbol */
-    JBG_MARKER   /* more PSCD data bytes required, ignored final 0xff byte */
-  } result;                              /* result of previous decode call */
+  enum jbg_ardec_result result;          /* result of previous decode call */
   int startup;                            /* controls initial fill of s->c */
 };
 
@@ -228,54 +230,71 @@ struct jbg_dec_state {
 
 /* function prototypes */
 
-#if !defined(_VISUALC_)
-#  error Something is very very wrong. This header must only be used under Visual C++.
+/**
+ ** Borland C++ Builder defines
+ **/
+#if defined(__BORLANDC__)
+#  if defined(_DLL)
+#    define _JBIGDLL_
+#    define _JBIGLIB_
+#  else
+#    undef _JBIGDLL_
+#  endif   
 #endif
+
 /**
  * Under VISUALC we have single threaded static libraries, or
- * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ * multi-threaded DLLs using the multithreaded runtime DLLs.
  **/
-#if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#  pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
-#  if !defined(_JBIGLIB_)
-#    define JBIGEXPORT __declspec(dllimport)
-#  else
-#   define JBIGEXPORT __declspec(dllexport)
-#  endif
+ 
+#if defined(_MT) && defined(_DLL) && !defined(_JBIGDLL_) && !defined(_LIB)
+#   define _JBIGDLL_
+#endif
+#if defined(_JBIGDLL_)
+#   if defined(_VISUALC_)
+#       pragma warning( disable : 4273 )
+#   endif
+#   if !defined(_JBIGLIB_)
+#       define JBIGEXPORT __declspec(dllimport)
+#   else
+#       define JBIGEXPORT __declspec(dllexport)
+#   endif
 #else
-#  define JBIGEXPORT
+#   define JBIGEXPORT
 #endif
 
-#pragma warning(disable : 4018)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4142)
+#if defined(_VISUALC_)
+#   pragma warning( disable : 4018 )
+#   pragma warning( disable : 4244 )
+#   pragma warning( disable : 4142 )
+#endif
 
 extern JBIGEXPORT void jbg_enc_init(struct jbg_enc_state *s, unsigned long x, unsigned long y,
-		  int planes, unsigned char **p,
-		  void (*data_out)(unsigned char *start, size_t len,
-				   void *file),
-		  void *file);
+                                    int planes, unsigned char **p,
+                                    void (*data_out)(unsigned char *start, size_t len,
+                                                     void *file),
+                                    void *file);
 extern JBIGEXPORT int jbg_enc_lrlmax(struct jbg_enc_state *s, unsigned long mwidth,
-		   unsigned long mheight);
+                                     unsigned long mheight);
 extern JBIGEXPORT void jbg_enc_layers(struct jbg_enc_state *s, int d);
 extern JBIGEXPORT int  jbg_enc_lrange(struct jbg_enc_state *s, int dl, int dh);
 extern JBIGEXPORT void jbg_enc_options(struct jbg_enc_state *s, int order, int options,
-		     long l0, int mx, int my);
+                                       unsigned long l0, int mx, int my);
 extern JBIGEXPORT void jbg_enc_out(struct jbg_enc_state *s);
 extern JBIGEXPORT void jbg_enc_free(struct jbg_enc_state *s);
 
 extern JBIGEXPORT void jbg_dec_init(struct jbg_dec_state *s);
 extern JBIGEXPORT void jbg_dec_maxsize(struct jbg_dec_state *s, unsigned long xmax,
-		     unsigned long ymax);
+                                       unsigned long ymax);
 extern JBIGEXPORT int  jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
-		size_t *cnt);
+                                  size_t *cnt);
 extern JBIGEXPORT long jbg_dec_getwidth(const struct jbg_dec_state *s);
 extern JBIGEXPORT long jbg_dec_getheight(const struct jbg_dec_state *s);
 extern JBIGEXPORT unsigned char *jbg_dec_getimage(const struct jbg_dec_state *s, int plane);
 extern JBIGEXPORT long jbg_dec_getsize(const struct jbg_dec_state *s);
 extern JBIGEXPORT void jbg_dec_merge_planes(const struct jbg_dec_state *s, int use_graycode,
-			  void (*data_out)(unsigned char *start, size_t len,
-					   void *file), void *file);
+                                            void (*data_out)(unsigned char *start, size_t len,
+                                                             void *file), void *file);
 extern JBIGEXPORT long jbg_dec_getsize_merged(const struct jbg_dec_state *s);
 extern JBIGEXPORT void jbg_dec_free(struct jbg_dec_state *s);
 
@@ -284,9 +303,9 @@ extern JBIGEXPORT void jbg_int2dppriv(unsigned char *dptable, const char *intern
 extern JBIGEXPORT void jbg_dppriv2int(char *internal, const unsigned char *dptable);
 extern JBIGEXPORT unsigned long jbg_ceil_half(unsigned long x, int n);
 extern JBIGEXPORT void jbg_split_planes(unsigned long x, unsigned long y, int has_planes,
-		      int encode_planes,
-		      const unsigned char *src, unsigned char **dest,
-		      int use_graycode);
-int jbg_newlen(unsigned char *bie, size_t len);
+                                        int encode_planes,
+                                        const unsigned char *src, unsigned char **dest,
+                                        int use_graycode);
+extern JBIGEXPORT int jbg_newlen(unsigned char *bie, size_t len);
 
 #endif /* JBG_H */

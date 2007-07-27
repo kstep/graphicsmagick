@@ -117,25 +117,7 @@ static void testimage(unsigned char *pic)
   if (sum != 861965L)
     printf("WARNING: Artificial test image has %lu (not 861965) "
 	   "foreground pixels!\n", sum);
-  
-#if 0
-  {
-    FILE *f;
 
-
-    for (i = 0; i < TESTPIC_SIZE; i++) {
-      sum = 0;
-      for (j = 0; j < 8; j++)
-	sum |= ((pic[i] >> j) & 1) << (7-j);
-      pic[i] = sum;
-    }
-
-    f = fopen("t82demo.lit", "wb");
-    fwrite(pic, 1, TESTPIC_SIZE, f);
-    fclose(f);
-  }
-#endif
-  
   return;
 }
   
@@ -148,7 +130,7 @@ static void testimage(unsigned char *pic)
  */
 static int test_cycle(unsigned char **orig_image, int width, int height,
 		      int options, int order, int layers, int planes,
-		      int l0, int mx, long correct_length,
+		      unsigned long l0, int mx, long correct_length,
 		      const char *test_id)
 {
   struct jbg_enc_state sje;
@@ -160,9 +142,9 @@ static int test_cycle(unsigned char **orig_image, int width, int height,
   unsigned char **image;
 
   plane_size = ((width + 7) / 8) * height;
-  image = checkedmalloc(planes * sizeof(unsigned char *));
+  image = (unsigned char **) checkedmalloc(planes * sizeof(unsigned char *));
   for (i = 0; i < planes; i++) {
-    image[i] = checkedmalloc(plane_size);
+    image[i] = (unsigned char *) checkedmalloc(plane_size);
     memcpy(image[i], orig_image[i], plane_size);
   }
 
@@ -250,7 +232,7 @@ static int test_cycle(unsigned char **orig_image, int width, int height,
 }
 
 
-int main(void)
+int main(int argc, char **argv)
 {
   int trouble, problems = 0;
   struct jbg_arenc_state *se;
@@ -335,10 +317,10 @@ int main(void)
 	 " -- This test will take a few minutes.\n\n\n");
 
   /* allocate test buffer memory */
-  testbuf = checkedmalloc(TESTBUF_SIZE);
-  testpic = checkedmalloc(TESTPIC_SIZE);
-  se = checkedmalloc(sizeof(struct jbg_arenc_state));
-  sd = checkedmalloc(sizeof(struct jbg_ardec_state));
+  testbuf = (unsigned char *) checkedmalloc(TESTBUF_SIZE);
+  testpic = (unsigned char *) checkedmalloc(TESTPIC_SIZE);
+  se = (struct jbg_arenc_state *) checkedmalloc(sizeof(struct jbg_arenc_state));
+  sd = (struct jbg_ardec_state *) checkedmalloc(sizeof(struct jbg_ardec_state));
 
   /* test a few properties of the machine architecture */
   testbuf[0] = 42;
@@ -358,6 +340,28 @@ int main(void)
            "memory model, JBIG-KIT can only handle very small images and\n"
            "not even this compatibility test suite will run. :-(\n\n");
     exit(1);
+  }
+
+  /* only supported command line option:
+   * output file name for exporting test image */
+  if (argc > 1) {
+    FILE *f;
+
+    puts("Generating test image ...");
+    testimage(testpic);
+    printf("Storing in '%s' ...\n", argv[1]);
+    
+    /* write out test image as PBM file */
+    f = fopen(argv[1], "wb");
+    if (!f) abort();
+    fprintf(f, "P4\n");
+#if 0
+    fprintf(f, "# Test image as defined in ITU-T T.82, clause 7.2.1\n");
+#endif
+    fprintf(f, "1960 1951\n");
+    fwrite(testpic, 1, TESTPIC_SIZE, f);
+    fclose(f);
+    exit(0);
   }
 
 #if 1
