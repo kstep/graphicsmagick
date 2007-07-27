@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -22,8 +22,8 @@
 
 // Test Suite for Little cms
 
-//#define ICM_COMPARATIVE      1
-//#define CHECK_SPEED          1
+// #define ICM_COMPARATIVE      1
+// #define CHECK_SPEED          1
 
 #ifdef __BORLANDC__
 #     include <condefs.h>
@@ -562,7 +562,7 @@ int TestLinearInterpolation(int lExhaustive)
 
        if (!lExhaustive) return 1;
 
-       printf("Now, checking interpolation errors for tables of n elements ...\n");
+       printf("Now, testing interpolation errors for tables of n elements ...\n");
 
        for (j=10; j < 4096; j ++)
        {
@@ -1398,7 +1398,7 @@ int TestMultiprofile(void)
 
     hXForm = cmsCreateMultiprofileTransform(Profiles, 7, TYPE_RGBA_16, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, cmsFLAGS_HIGHRESPRECALC);
     
-    printf("Checking multiprofile transforms (6 profiles)");
+    printf("Testing multiprofile transforms (6 profiles)");
 
     nMaxErr = TestFullSpectrum(hXForm, 31, 0x1000L);
 
@@ -1423,7 +1423,7 @@ int TestLinearizationDevicelink()
     cmsHPROFILE Profiles[10];
     int nMaxErr;
 
-    printf("Checking linearization devicelink");
+    printf("Testing linearization devicelink");
 
     Transfer[0] = cmsBuildGamma(256, 1./2.2);
     Transfer[1] = cmsBuildGamma(256, 1./2.2);
@@ -1474,7 +1474,7 @@ int TestLinearizationDevicelink2()
     cmsHTRANSFORM hXForm;    
     int nMaxErr;
 
-    printf("Checking saved linearization devicelink");
+    printf("Testing saved linearization devicelink");
 
     Transfer[0] = cmsBuildGamma(256, 1);
     Transfer[1] = cmsBuildGamma(256, 1);
@@ -1516,7 +1516,7 @@ int TestDeviceLinkGeneration()
     int nMaxErr;
 
 
-    printf("Checking devicelink generation");
+    printf("Testing devicelink generation");
 
     hsRGB     = cmsOpenProfileFromFile("sRGB Color Space Profile.icm", "r");
     hIdentity = cmsCreateTransform(hsRGB, TYPE_RGBA_16, hsRGB, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0);
@@ -1631,6 +1631,8 @@ void CompareWithICM_16bit(void)
     HPROFILE   hICMProfileFrom, hICMProfileTo;
     LOGCOLORSPACE LogColorSpace;
     COLOR In, Out;
+	COLOR *InBlk, *OutBlk, *InPtr;
+	size_t size;
     int r, g, b;
     PROFILE Profile;
     clock_t atime;
@@ -1661,21 +1663,34 @@ void CompareWithICM_16bit(void)
 
     hICMxform = CreateColorTransform(&LogColorSpace, hICMProfileTo, NULL, BEST_MODE);
 
+
+
+	size = 256 * 256 * 256;
+	InBlk = malloc((size_t) size * sizeof(COLOR));
+	OutBlk = malloc((size_t) size * sizeof(COLOR));
+
+	if (InBlk == NULL || OutBlk == NULL) {
+		printf("Out of memory\n"); exit(2);
+	}
+			
     printf("Windows ICM is transforming full spectrum...");
 
-    atime = clock();
-
-    for (r=0; r < 255; r++)
+	InPtr = InBlk;
+	for (r=0; r < 255; r++)
         for (g=0; g < 255; g++)
             for (b=0; b < 255; b++) {
 
-        In.rgb.red   = (r << 8) | r;
-        In.rgb.green = (g << 8) | g;
-        In.rgb.blue  = (b << 8) | b;
+        InPtr->rgb.red   = (r << 8) | r;
+        InPtr->rgb.green = (g << 8) | g;
+        InPtr->rgb.blue  = (b << 8) | b;
 
-        TranslateColors( hICMxform, &In, 1, COLOR_RGB, &Out, COLOR_RGB);
-    }
+		InPtr++;
+	}
 
+    atime = clock();
+    
+    TranslateColors( hICMxform, InBlk, size, COLOR_RGB, OutBlk, COLOR_RGB);
+    
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
 
@@ -1695,17 +1710,8 @@ void CompareWithICM_16bit(void)
 
     atime = clock();
 
-    for (r=0; r < 255; r++)
-        for (g=0; g < 255; g++)
-            for (b=0; b < 255; b++) {
-
-        In.rgb.red   = (r << 8) | r;
-        In.rgb.green = (g << 8) | g;
-        In.rgb.blue  = (b << 8) | b;
-
-        cmsDoTransform(hlcmsxform, &In.rgb, &Out.rgb, 1);
-    }
-
+    cmsDoTransform(hlcmsxform, InBlk, OutBlk, size);
+   
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
 
@@ -1715,6 +1721,8 @@ void CompareWithICM_16bit(void)
     cmsCloseProfile(hlcmsProfileIn);
     cmsCloseProfile(hlcmsProfileOut);
 
+	free(InBlk);
+	free(OutBlk);
 }
 
 static
@@ -1841,16 +1849,16 @@ void SpeedTest(void)
 
 	Mb = 256*256*256*sizeof(Scanline_rgb0);
 
-	In = malloc(Mb);
+	In = (Scanline_rgb0*) malloc(Mb);
 
 	j = 0;
 	for (r=0; r < 256; r++)
         for (g=0; g < 256; g++)
             for (b=0; b < 256; b++) {
 
-        In[j].r = (r << 8) | r;
-        In[j].g = (g << 8) | g;
-        In[j].b = (b << 8) | b;
+        In[j].r = (WORD) ((r << 8) | r);
+        In[j].g = (WORD) ((g << 8) | g);
+        In[j].b = (WORD) ((b << 8) | b);
 
 		j++;
 	}
@@ -1897,16 +1905,16 @@ void SpeedTest2(void)
 
 	Mb = 256*256*256*sizeof(Scanline_rgb8);
 
-	In = malloc(Mb);
+	In = (Scanline_rgb8*) malloc(Mb);
 
 	j = 0;
 	for (r=0; r < 256; r++)
         for (g=0; g < 256; g++)
             for (b=0; b < 256; b++) {
 
-        In[j].r = r;
-        In[j].g = g;
-        In[j].b = b;
+        In[j].r = (BYTE) r;
+        In[j].g = (BYTE) g;
+        In[j].b = (BYTE) b;
 
 		j++;
 	}
@@ -2208,7 +2216,7 @@ void GenerateCSA(const char* cInProf)
 	cmsHPROFILE hProfile;
 	
 	
-	size_t n;
+	DWORD n;
 	char* Buffer;
 
 
@@ -2233,7 +2241,7 @@ static
 void GenerateCRD(const char* cOutProf)
 {
 	cmsHPROFILE hProfile;
-	size_t n;
+	DWORD n;
 	char* Buffer;
     DWORD dwFlags = 0;
     
@@ -2266,15 +2274,34 @@ int TestPostScript()
 }
 
 
+static
+void TestLabFloat()
+{
+#define TYPE_LabA_DBL   (COLORSPACE_SH(PT_Lab)|CHANNELS_SH(3)|BYTES_SH(0)|EXTRA_SH(1)|DOSWAP_SH(1))
+
+	struct {
+		   double L, a, b;
+		   double A;
+	} a;
+	cmsCIELab b;
+	cmsHPROFILE hLab  = cmsCreateLabProfile(NULL);
+    cmsHTRANSFORM xform = cmsCreateTransform(hLab, TYPE_LabA_DBL, hLab, TYPE_Lab_DBL, 0, 0);
+
+	a.L = 100; a.a = 0; a.b= 0;
+	cmsDoTransform(xform, &a, &b, 1);
+
+	cmsDeleteTransform(xform);
+	cmsCloseProfile(hLab);
+}
+
 
 
 int main(int argc, char *argv[])
 {
        int lExhaustive = 0;   
-       
 	
-	  // #include "crtdbg.h"
-	  //_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
+	   // #include "crtdbg.h"
+	   // _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 
 	  	   
        printf("little cms testbed. Ver %1.2f [build %s %s]\n\n", LCMS_VERSION / 100., __DATE__, __TIME__);

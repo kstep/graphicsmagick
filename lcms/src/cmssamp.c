@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -25,6 +25,8 @@
 
 
 // ---------------------------------------------------------------------------------
+
+static volatile int GlobalBlackPreservationStrategy = 0;
 
 // Quantize a value 0 <= i < MaxSamples
 
@@ -295,8 +297,29 @@ typedef struct {
 
 
 
+// Preserve black only if that is the only ink used
+static
+int BlackPreservingGrayOnlySampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+    BPCARGO* bp = (LPBPCARGO) Cargo;
+
+    // If going across black only, keep black only
+    if (In[0] == 0 && In[1] == 0 && In[2] == 0) {
+
+        // TAC does not apply because it is black ink!
+        Out[0] = Out[1] = Out[2] = 0;
+        Out[3] = cmsLinearInterpLUT16(In[3], bp->KTone ->GammaTable, &bp->KToneParams);
+        return 1;
+    }
+
+    // Keep normal transform for other colors
+    cmsDoTransform(bp ->cmyk2cmyk, In, Out, 1);
+    return 1;
+}
 
 
+
+// Preserve all K plane.
 static
 int BlackPreservingSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
 {
@@ -309,9 +332,7 @@ int BlackPreservingSampler(register WORD In[], register WORD Out[], register LPV
     // Get the K across Tone curve
     LabK[3] = cmsLinearInterpLUT16(In[3], bp->KTone ->GammaTable, &bp->KToneParams);
 
-
     // If going across black only, keep black only
-
     if (In[0] == 0 && In[1] == 0 && In[2] == 0) {
 
         Out[0] = Out[1] = Out[2] = 0;
@@ -338,7 +359,6 @@ int BlackPreservingSampler(register WORD In[], register WORD Out[], register LPV
     // Estimate the error
     cmsDoTransform(bp->hProofOutput, Out, &BlackPreservingLab, 1);  
     Error = cmsDeltaE(&ColorimetricLab, &BlackPreservingLab);
-
 
     
     // Apply TAC if needed
@@ -386,7 +406,6 @@ int EstimateTAC(register WORD In[], register WORD Out[], register LPVOID Cargo)
 
 
 // Estimate the maximum error
-
 static
 int BlackPreservingEstimateErrorSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
 {
@@ -394,11 +413,8 @@ int BlackPreservingEstimateErrorSampler(register WORD In[], register WORD Out[],
     WORD ColorimetricOut[4];
     cmsCIELab ColorimetricLab, BlackPreservingLab;
     double Error;
-    
-
-    
+        
     if (In[0] == 0 && In[1] == 0 && In[2] == 0) return 1;
-
 
     cmsDoTransform(bp->cmyk2cmyk, In, ColorimetricOut, 1);
 
@@ -413,15 +429,37 @@ int BlackPreservingEstimateErrorSampler(register WORD In[], register WORD Out[],
     return 1;
 }
 
+// Setup the K preservation strategy
+int LCMSEXPORT cmsSetCMYKPreservationStrategy(int n)
+{
+    int OldVal = GlobalBlackPreservationStrategy;
+
+    if (n >= 0) 
+            GlobalBlackPreservationStrategy = n;
+
+    return OldVal;
+}
+
+
+// Get a pointer to callback on depending of strategy
+static
+_cmsSAMPLER _cmsGetBlackPreservationSampler(void)
+{
+    switch (GlobalBlackPreservationStrategy) {
+
+        case 0: return BlackPreservingGrayOnlySampler;
+        default: return BlackPreservingSampler;
+   }
+
+}
 
 // This is the black-preserving devicelink generator
-
-
 LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD dwFlags)
 {
        _LPcmsTRANSFORM p = (_LPcmsTRANSFORM) hCMYK2CMYK;
        BPCARGO Cargo;      
        LPLUT Grid;
+       DWORD LocalFlags;
        cmsHPROFILE hLab = cmsCreateLabProfile(NULL);
        int nGridPoints;    
        icTagSignature Device2PCS[] = {icSigAToB0Tag,       // Perceptual
@@ -429,58 +467,60 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
                                       icSigAToB2Tag,       // Saturation
                                       icSigAToB1Tag };     // Absolute colorimetric
                                                            // (Relative/WhitePoint)
-
            
        nGridPoints = _cmsReasonableGridpointsByColorspace(p -> EntryColorSpace, dwFlags);
      
-
+       // Get a copy of inteserting flags for this kind of xform
+       LocalFlags = cmsFLAGS_NOTPRECALC;
+       if (p -> dwOriginalFlags & cmsFLAGS_BLACKPOINTCOMPENSATION)
+           LocalFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
 
        // Fill in cargo struct
-
        Cargo.cmyk2cmyk = hCMYK2CMYK;
 
-
-       // Compute tone curves
-
-       
-        Cargo.KTone  =  _cmsBuildKToneCurve(hCMYK2CMYK, 256);
-        if (Cargo.KTone == NULL) return NULL;                           
-        cmsCalcL16Params(Cargo.KTone ->nEntries, &Cargo.KToneParams);
+       // Compute tone curve.       
+       Cargo.KTone  =  _cmsBuildKToneCurve(hCMYK2CMYK, 256);
+       if (Cargo.KTone == NULL) return NULL;   		
+       cmsCalcL16Params(Cargo.KTone ->nEntries, &Cargo.KToneParams);
        
 
+       // Create a CMYK->Lab "normal" transform on input, without K-preservation
        Cargo.cmyk2Lab  = cmsCreateTransform(p ->InputProfile, TYPE_CMYK_16, 
-                                            hLab, TYPE_Lab_16, p->Intent, cmsFLAGS_NOTPRECALC);
+                                            hLab, TYPE_Lab_16, p->Intent, LocalFlags);
 
        // We are going to use the reverse of proof direction
        Cargo.LabK2cmyk = cmsReadICCLut(p->OutputProfile, Device2PCS[p->Intent]);
 
+       // Is there any table available?
+	   if (Cargo.LabK2cmyk == NULL) {
 
+		   Grid = NULL;
+           goto Cleanup;		   
+	   }
 
        // Setup a roundtrip on output profile for TAC estimation
-
        Cargo.hRoundTrip = cmsCreateTransform(p ->OutputProfile, TYPE_CMYK_16, 
-                                            p ->OutputProfile, TYPE_CMYK_16, p->Intent, cmsFLAGS_NOTPRECALC);
+                                             p ->OutputProfile, TYPE_CMYK_16, p->Intent, cmsFLAGS_NOTPRECALC);
 
 
        // Setup a proof CMYK->Lab on output
-
        Cargo.hProofOutput  = cmsCreateTransform(p ->OutputProfile, TYPE_CMYK_16, 
-                                            hLab, TYPE_Lab_DBL, p->Intent, cmsFLAGS_NOTPRECALC);
+                                            hLab, TYPE_Lab_DBL, p->Intent, LocalFlags);
 
 
+       // Create an empty LUT for holding K-preserving xform
        Grid =  cmsAllocLUT();
-       if (!Grid) return NULL;
+       if (!Grid) goto Cleanup;
 
        Grid = cmsAlloc3DGrid(Grid, nGridPoints, 4, 4);
 
-                   
+       // Setup formatters
        p -> FromInput = _cmsIdentifyInputFormat(p,  TYPE_CMYK_16);
        p -> ToOutput  = _cmsIdentifyOutputFormat(p, TYPE_CMYK_16);
 
 
 
        // Step #1, estimate TAC
-
        Cargo.MaxTAC = 0;
        if (!cmsSample3DGrid(Grid, EstimateTAC, (LPVOID) &Cargo, 0)) {
 
@@ -489,9 +529,9 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
                 goto Cleanup;
        }
 
+	   
        // Step #2, compute approximation
-
-       if (!cmsSample3DGrid(Grid, BlackPreservingSampler, (LPVOID) &Cargo, 0)) {
+       if (!cmsSample3DGrid(Grid, _cmsGetBlackPreservationSampler(), (LPVOID) &Cargo, 0)) {
 
                 cmsFreeLUT(Grid);
                 Grid = NULL;
@@ -499,22 +539,19 @@ LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD 
        }
       
        // Step #3, estimate error
-       
         Cargo.MaxError = 0;
         cmsSample3DGrid(Grid, BlackPreservingEstimateErrorSampler, (LPVOID) &Cargo, SAMPLER_INSPECT);
        
 
 Cleanup:
 
-       cmsDeleteTransform(Cargo.cmyk2Lab);
-       cmsDeleteTransform(Cargo.hRoundTrip);
-       cmsDeleteTransform(Cargo.hProofOutput);
+       if (Cargo.cmyk2Lab) cmsDeleteTransform(Cargo.cmyk2Lab);
+       if (Cargo.hRoundTrip) cmsDeleteTransform(Cargo.hRoundTrip);
+       if (Cargo.hProofOutput) cmsDeleteTransform(Cargo.hProofOutput);
 
-       cmsCloseProfile(hLab);
-
-       cmsFreeGamma(Cargo.KTone);
-
-       cmsFreeLUT(Cargo.LabK2cmyk);
+       if (hLab) cmsCloseProfile(hLab);
+       if (Cargo.KTone) cmsFreeGamma(Cargo.KTone);
+       if (Cargo.LabK2cmyk) cmsFreeLUT(Cargo.LabK2cmyk);
       
        return Grid;
 }

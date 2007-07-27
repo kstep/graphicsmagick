@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -61,7 +61,7 @@ static BOOL Width16                = FALSE;
 static BOOL GamutCheck             = FALSE;
 static BOOL lIsDeviceLink          = FALSE;
 static BOOL StoreAsAlpha           = FALSE;
-static BOOL PreserveBlack		   = FALSE;
+static int PreserveBlack		   = 0;
 static BOOL InputLabUsingICC	   = FALSE;
 
 static int Intent                  = INTENT_PERCEPTUAL;
@@ -984,6 +984,7 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
        if (PreserveBlack) {
 			dwFlags |= cmsFLAGS_PRESERVEBLACK;
 			if (PrecalcMode == 0) PrecalcMode = 1;
+            cmsSetCMYKPreservationStrategy(PreserveBlack-1);
 	   }
 
        switch (PrecalcMode) {
@@ -1172,7 +1173,7 @@ void Help(int level)
      
      fprintf(stderr, "\n"); 
      fprintf(stderr, "%cb - Black point compensation\n", SW);
-	 fprintf(stderr, "%cf - Preserve black channel (CMYK->CMYK only)\n", SW);
+	 fprintf(stderr, "%cf<n> - Preserve black (CMYK only) 0=off, 1=black ink only, 2=full K plane\n", SW);
      fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
      fprintf(stderr, "%cd<0..1> - Observer adaptation state (abs.col. only)\n", SW);
 
@@ -1225,7 +1226,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s=xgetopt(argc,argv,"aAeEbBfFwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:D:d:")) != EOF) {
+       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:D:d:f:F:")) != EOF) {
 
        switch (s)
        {
@@ -1260,7 +1261,9 @@ void HandleSwitches(int argc, char *argv[])
 
 	   case 'f':
 	   case 'F':
-		    PreserveBlack = TRUE;
+		    PreserveBlack = atoi(xoptarg);
+            if (PreserveBlack < 0 || PreserveBlack > 2)
+                    FatalError("Unknown PreserveBlack '%d'", PreserveBlack);
 			break;
 
         case 'g':

@@ -7,8 +7,8 @@ BINDIR  = $(BASEDIR)/bin
 
 all:	icctrans wtpt icc2ps icclink
 
-icctrans: icctrans.c xgetopt.c
-	$(CC) $(CFLAGS) icctrans.c xgetopt.c ../src/liblcms.a -I../include -o icctrans -lm
+icctrans: icctrans.c xgetopt.c vprf.c
+	$(CC) $(CFLAGS) icctrans.c xgetopt.c vprf.c ../src/liblcms.a -I../include -o icctrans -lm
 
 wtpt: wtpt.c
 	$(CC) $(CFLAGS) wtpt.c ../src/liblcms.a -I../include -o wtpt -lm

@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.15
+                     little cms Engine 1.16
 
                          API Definition
 
@@ -1485,15 +1485,26 @@ double cmsEstimateGamma(LPGAMMATABLE t);
 double cmsEstimateGammaEx(LPWORD Table, int nEntries, double Thereshold); 
 _________________________________________________________________________________
 
+  Returns a numerical estimation of the apparent gamma on the given table.
 _________________________________________________________________________________
 
 LPGAMMATABLE  cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
 LPGAMMATABLE  cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
 int           cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
-LPcmsSEQ      cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+int           cmsReadICCTextEx(cmsHPROFILE hProfile, icTagSignature sig, char *Text, size_t size);
+_________________________________________________________________________________
+
+
+
 
 _________________________________________________________________________________
 
+LPcmsSEQ      cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+void          cmsFreeProfileSequenceDescription(LPcmsSEQ pseq);
+_________________________________________________________________________________
+
+  Reads and free profile sequence description structure
+  
 
 _________________________________________________________________________________
 

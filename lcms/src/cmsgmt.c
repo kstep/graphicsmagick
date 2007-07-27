@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -22,8 +22,6 @@
 
 
 #include "lcms.h"
-
-// #define DEBUG 1
 
 /*
 Gamut check by default is a catching of 0xFFFF/0xFFFF/0xFFFF PCS values, used
@@ -350,7 +348,7 @@ double LCMSEXPORT cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2,
     double Cs = sqrt( Sqr(as) + Sqr(bs) );
 
 
-    double G = 0.5 * ( 1 - sqrt(pow((C + Cs) / 2 , 7) / (pow((C + Cs) / 2, 7) + pow(25, 7) ) ));
+    double G = 0.5 * ( 1 - sqrt(pow((C + Cs) / 2 , 7.0) / (pow((C + Cs) / 2, 7.0) + pow(25.0, 7.0) ) ));
 
     double a_p = (1 + G ) * a1;
     double b_p = b1;
@@ -387,7 +385,7 @@ double LCMSEXPORT cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2,
 
     double delta_ro = 30 * exp( -Sqr(((meanh_p - 275 ) / 25)));
 
-    double Rc = 2 * sqrt(( pow(meanC_p, 7) )/( pow(meanC_p , 7 ) + pow(25, 7)));
+    double Rc = 2 * sqrt(( pow(meanC_p, 7.0) )/( pow(meanC_p, 7.0) + pow(25.0, 7.0)));
 
     double Rt = -sin(2 * RADIANES(delta_ro)) * Rc;
 
@@ -1002,29 +1000,6 @@ LPLUT _cmsComputeSoftProofLUT(cmsHPROFILE hProfile, int nIntent)
 }
 
 
-
-#ifdef DEBUG
-static
-void ASAVE(LPGAMMATABLE p, const char* dump)
-{
-    FILE* f;
-    int i;
-
-        f = fopen(dump, "wt");
-        if (!f)
-                return;
-
-        if (p) {
-
-    for (i=0; i < p -> nEntries; i++)
-        fprintf(f, "%g\n", (double) p -> GammaTable[i]);
-        }
-
-    fclose(f);
-}
-#endif
-
-
 static
 int MostlyLinear(WORD Table[], int nEntries)
 {
@@ -1167,30 +1142,16 @@ void _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransfor
 
         // Exclude if transfer function is not smooth enough
         // to be modelled as a gamma function, or the gamma is reversed
-
         if (cmsEstimateGamma(Trans[t]) < 1.0)
                     lIsSuitable = FALSE;
               
     }
 
     if (lIsSuitable) {
-
     
             for (t = 0; t < Grid ->InputChan; t++) 
                 SlopeLimiting(Trans[t]->GammaTable, Trans[t]->nEntries);
     }
-
-       
-
-
-#ifdef DEBUG    
-    if (lIsSuitable) {
-            ASAVE(Trans[0], "\\gammar.txt");
-            ASAVE(Trans[1], "\\gammag.txt");
-            ASAVE(Trans[2], "\\gammab.txt");
-    }
-#endif
-       
       
     if (lIsSuitable) cmsAllocLinearTable(Grid, Trans, 1);
 
@@ -1202,9 +1163,10 @@ void _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransfor
 }
 
 
-// Compute K -> L* relationship
+// Compute K -> L* relationship. Flags may include black point compensation. In this case, 
+// the relationship is assumed from the profile with BPC to a black point zero.
 static
-LPGAMMATABLE ComputeKToLstar(cmsHPROFILE hProfile, int nPoints, int Intent)
+LPGAMMATABLE ComputeKToLstar(cmsHPROFILE hProfile, int nPoints, int Intent, DWORD dwFlags)
 {
     LPGAMMATABLE out;   
     int i;
@@ -1212,7 +1174,7 @@ LPGAMMATABLE ComputeKToLstar(cmsHPROFILE hProfile, int nPoints, int Intent)
     cmsHPROFILE   hLab  = cmsCreateLabProfile(NULL);
     cmsHTRANSFORM xform = cmsCreateTransform(hProfile, TYPE_CMYK_16,
                                              hLab, TYPE_Lab_16, 
-                                             Intent, cmsFLAGS_NOTPRECALC);
+                                             Intent, (dwFlags|cmsFLAGS_NOTPRECALC));
 
 
     out = cmsAllocGamma(nPoints);
@@ -1237,7 +1199,7 @@ LPGAMMATABLE ComputeKToLstar(cmsHPROFILE hProfile, int nPoints, int Intent)
 
 // Compute Black tone curve on a CMYK -> CMYK transform. This is done by
 // using the proof direction on both profiles to find K->L* relationship
-// then joining both curves
+// then joining both curves. dwFlags may include black point compensation.
 
 LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints)
 {
@@ -1250,19 +1212,14 @@ LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints)
     if (p -> EntryColorSpace != icSigCmykData ||
         p -> ExitColorSpace  != icSigCmykData) return NULL;
 
-    // Create individual curves
-    in  = ComputeKToLstar(p ->InputProfile,  nPoints, p->Intent);
-    out = ComputeKToLstar(p ->OutputProfile, nPoints, p->Intent);
+    // Create individual curves. BPC works also as each K to L* is
+    // computed as a BPC to zero black point in case of L*
+    in  = ComputeKToLstar(p ->InputProfile,  nPoints, p->Intent, p -> dwOriginalFlags);
+    out = ComputeKToLstar(p ->OutputProfile, nPoints, p->Intent, p -> dwOriginalFlags);
 
     // Build the relationship
     KTone = cmsJoinGamma(in, out);
             
-#ifdef DEBUG
-    ASAVE(in,    "\\in.txt");
-    ASAVE(out,   "\\out.txt");
-    ASAVE(KTone, "\\KTone.txt");
-#endif  
-
     cmsFreeGamma(in); cmsFreeGamma(out);
 
     // Make sure it is monotonic
@@ -1273,8 +1230,6 @@ LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints)
         return NULL;
     }
     
-
-
 
     return KTone;
 }

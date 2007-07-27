@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -55,7 +55,6 @@ double LCMSEXPORT cmsEstimateGammaEx(LPWORD GammaTable, int nEntries, double The
 
 // ----------------------------------------------------------------------------------------
 
-// #define DEBUG 1
 
 #define MAX_KNOTS   4096
 typedef float vec[MAX_KNOTS+1];
@@ -100,10 +99,10 @@ unsigned int _cmsCrc32OfGammaTable(LPGAMMATABLE Table)
 {
     unsigned int crc = ~0U;
 
-    crc = Crc32(crc, &Table -> Birth.Type,      sizeof(int));
-    crc = Crc32(crc, Table ->Birth.Params,     sizeof(double)*10);
-    crc = Crc32(crc, &Table ->nEntries,  sizeof(int));
-    crc = Crc32(crc, Table ->GammaTable, sizeof(WORD) * Table -> nEntries);
+    crc = Crc32(crc, &Table -> Seed.Type,  sizeof(int));
+    crc = Crc32(crc, Table ->Seed.Params,  sizeof(double)*10);
+    crc = Crc32(crc, &Table ->nEntries,    sizeof(int));
+    crc = Crc32(crc, Table ->GammaTable,   sizeof(WORD) * Table -> nEntries);
 
     return ~crc;
 
@@ -127,7 +126,7 @@ LPGAMMATABLE LCMSEXPORT cmsAllocGamma(int nEntries)
 
        ZeroMemory(p, size);
 
-       p -> Birth.Type     = 0;
+       p -> Seed.Type     = 0;
        p -> nEntries = nEntries;
        
        return p;
@@ -286,9 +285,9 @@ LPGAMMATABLE LCMSEXPORT cmsBuildParametricGamma(int nEntries, int Type, double P
         Table = cmsAllocGamma(nEntries);
         if (NULL == Table) return NULL;
 
-        Table -> Birth.Type = Type;       
+        Table -> Seed.Type = Type;       
 
-        CopyMemory(Table ->Birth.Params, Params, ParamsByType[abs(Type)] * sizeof(double));
+        CopyMemory(Table ->Seed.Params, Params, ParamsByType[abs(Type)] * sizeof(double));
 
 
         for (i=0; i < nEntries; i++) {
@@ -439,7 +438,7 @@ LPGAMMATABLE LCMSEXPORT cmsBuildParametricGamma(int nEntries, int Type, double P
         Table->GammaTable[i] = (WORD) floor(dval);
         }
 
-        Table -> Birth.Crc32 = _cmsCrc32OfGammaTable(Table);
+        Table -> Seed.Crc32 = _cmsCrc32OfGammaTable(Table);
 
         return Table;
 }
@@ -891,9 +890,6 @@ BOOL _cmsSmoothEndpoints(LPWORD Table, int nEntries)
     vec w, y, z;
     int i, Zeros, Poles;
 
-#ifdef DEBUG
-        ASAVE(Table, nEntries, "nonsmt.txt");
-#endif
 
 
     if (cmsIsLinear(Table, nEntries)) return FALSE; // Nothing to do

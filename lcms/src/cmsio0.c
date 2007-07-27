@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -98,8 +98,10 @@ BOOL MemorySeek(struct _lcms_iccprofile_struct* Icc, size_t offset)
 {
     FILEMEM* ResData = (FILEMEM*) Icc ->stream;
 
-    if (offset > ResData ->Size)
+    if (offset > ResData ->Size) {
          cmsSignalError(LCMS_ERRC_ABORTED,  "Pointer error; probably corrupted file");        
+         return TRUE;
+    }
 
     ResData ->Pointer = (DWORD) offset; 
     return FALSE; 
@@ -161,7 +163,8 @@ size_t FileRead(void *buffer, size_t size, size_t count, struct _lcms_iccprofile
 {
     size_t nReaded = fread(buffer, size, count, (FILE*) Icc->stream);
     if (nReaded != count) {
-            cmsSignalError(LCMS_ERRC_WARNING, "Read error. Got %d bytes, block should be of %d bytes", nReaded * size, count * size);         
+            cmsSignalError(LCMS_ERRC_WARNING, "Read error. Got %d bytes, block should be of %d bytes", nReaded * size, count * size);
+            return 0;
     }
 
     return nReaded;
@@ -606,7 +609,7 @@ LPVOID DupBlock(LPLCMSICCPROFILE Icc, LPVOID Block, size_t size)
 
 // This is tricky, since LUT structs does have pointers
 
-BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID lut)
+BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile, icTagSignature sig, const void* lut)
 {
        LPLCMSICCPROFILE Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
        LPLUT Orig, Stored;

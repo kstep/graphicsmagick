@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -506,8 +506,8 @@ int CmpImages(TIFF* tiff1, TIFF* tiff2, TIFF* diff)
 
     
                 cmsCIELab Lab1, Lab2;
-                int index1 = cols * PixelSize(dwFormat1);
-                int index2 = cols * PixelSize(dwFormat2);
+                size_t index1 = cols * PixelSize(dwFormat1);
+                size_t index2 = cols * PixelSize(dwFormat2);
 
                 cmsDoTransform(xform1, &buf1[index1], &Lab1,  1);
                 cmsDoTransform(xform2, &buf2[index2], &Lab2,  1);

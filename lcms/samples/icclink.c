@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -23,7 +23,6 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-// Version 1.15
 
 #include "lcms.h"
 #include <stdarg.h>
@@ -46,9 +45,14 @@ static int PrecalcMode = 1;
 static int NumOfGridPoints = 0;
 
 static BOOL BlackPointCompensation = FALSE;
+static int  BlackPreservation      = 0;
+
 static double InkLimit             = 400;
 static BOOL lUse8bits = FALSE;
 static BOOL TagResult = FALSE;
+
+
+
 
 static
 void FatalError(const char *frm, ...)
@@ -82,7 +86,8 @@ void Help(int level)
      fprintf(stderr, "%cn<gridpoints> - Alternate way to set precission, number of CLUT points\n", SW);     
      fprintf(stderr, "%cd<description> - description text (quotes can be used)\n", SW);     
      fprintf(stderr, "\n%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
+     fprintf(stderr, "%cf<0,1> - Black preserving 0=off, 1=K ink only 2=K plane\n", SW);
+     fprintf(stderr, "\n%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
      fprintf(stderr, "%c8 - Creates 8-bit devicelink\n", SW);
      fprintf(stderr, "%cx - Creatively, guess deviceclass of resulting profile.\n", SW);
      fprintf(stderr, "\n");
@@ -137,7 +142,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:f:F:")) != EOF) {
 
        switch (s){
 
@@ -184,6 +189,13 @@ void HandleSwitches(int argc, char *argv[])
             BlackPointCompensation = TRUE;
             break;
 			
+        case 'f':
+        case 'F': 
+                BlackPreservation = atoi(xoptarg);
+                if (BlackPreservation < 0 || BlackPreservation > 2)
+                    FatalError("ERROR: Unknown black preservation mode '%d'", BlackPreservation);
+                break;
+
         case 'k':
         case 'K':
                 InkLimit = atof(xoptarg);
@@ -265,14 +277,6 @@ int MyErrorHandler(int ErrorCode, const char *ErrorText)
 }
 
 
-static
-int IsPCS(icColorSpaceSignature ColorSpace)
-{
-    return (ColorSpace == icSigXYZData ||
-            ColorSpace == icSigLabData);
-}
-
-
 
 
 int main(int argc, char *argv[])
@@ -303,6 +307,7 @@ int main(int argc, char *argv[])
 	 }
 
 	
+
 	 switch (PrecalcMode) {
            	
 	    case 0: dwFlags |= cmsFLAGS_LOWRESPRECALC; break;
@@ -317,6 +322,12 @@ int main(int argc, char *argv[])
 
      if (BlackPointCompensation)
             dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
+
+     if (BlackPreservation > 0) {
+
+            dwFlags |= cmsFLAGS_PRESERVEBLACK;
+            cmsSetCMYKPreservationStrategy(BlackPreservation-1);
+     }
 
      if (TagResult)
             dwFlags |= cmsFLAGS_GUESSDEVICECLASS;
@@ -369,6 +380,6 @@ int main(int argc, char *argv[])
 		 cmsCloseProfile(Profiles[i]);
 	 }
 
-	 	 	
-      return 0;     
+		 	
+     return 0;     
 }

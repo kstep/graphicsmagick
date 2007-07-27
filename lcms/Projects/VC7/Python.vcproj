@@ -143,7 +143,7 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\python\lcms_wrap.cpp">
+				RelativePath="..\..\python\lcms_wrap.cxx">
 			</File>
 		</Filter>
 		<Filter
@@ -156,18 +156,18 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="cd ..\..\python
-swig -c++ -python -DLCMS_APIONLY  -I..\include -o $(InputDir)$(InputName)_wrap.cpp  $(InputPath)
+swig -c++ -python -DLCMS_APIONLY  -I..\include -o $(InputDir)$(InputName)_wrap.cxx  $(InputPath)
 "
-						Outputs="$(InputDir)$(InputName)_wrap.cpp"/>
+						Outputs="$(InputDir)$(InputName)_wrap.cxx"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="cd ..\..\python
-swig -c++ -python -DLCMS_APIONLY  -I..\include -o $(InputDir)$(InputName)_wrap.cpp  $(InputPath)
+swig -c++ -python -DLCMS_APIONLY  -I..\include -o $(InputDir)$(InputName)_wrap.cxx  $(InputPath)
 "
-						Outputs="$(InputDir)$(InputName)_wrap.cpp"/>
+						Outputs="$(InputDir)$(InputName)_wrap.cxx"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

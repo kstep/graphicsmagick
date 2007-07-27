@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -26,6 +26,10 @@
 #include <stdarg.h>
 #include <ctype.h>
 
+#ifndef NON_WINDOWS
+#include <io.h>
+#endif
+
 // xgetopt() interface -----------------------------------------------------
 
 extern int   xoptind;
@@ -40,70 +44,130 @@ int    cdecl xgetopt(int argc, char *argv[], char *optionS);
 extern cmsHPROFILE OpenStockProfile(const char* File);
 
 
-static BOOL InHexa          = FALSE;
-static BOOL Verbose         = FALSE;
-static BOOL GamutCheck      = FALSE;
+// Globals
+
+static BOOL InHexa                 = FALSE;
+static BOOL Verbose                = FALSE;
+static BOOL GamutCheck             = FALSE;
+static BOOL Width16                = FALSE;
+static BOOL BlackPointCompensation = FALSE;
+static BOOL PreserveBlack		   = FALSE;
+static BOOL lIsDeviceLink          = FALSE;
+static BOOL lTerse                 = FALSE;
 
 static char *cInProf   = NULL;
 static char *cOutProf  = NULL;
 static char *cProofing = NULL;
 
-static LCMSHANDLE hIT8in;		// CGATS input 
+static char *IncludePart = NULL;
 
-static char CGATSPatch[1024];	// Patch Name
+static LCMSHANDLE hIT8in = NULL;		// CGATS input 
+static LCMSHANDLE hIT8out = NULL;       // CGATS output
+
+static char CGATSPatch[1024];	// Actual Patch Name
+static char CGATSoutFilename[MAX_PATH];
+
 
 static int Intent           = INTENT_PERCEPTUAL;
 static int ProofingIntent   = INTENT_PERCEPTUAL;
+static int PrecalcMode      = 0;
+static int nMaxPatches;
 
-static BOOL Width16 = FALSE;
-static BOOL BlackPointCompensation = FALSE;
-
-static int PrecalcMode             = 0;
-static BOOL lIsDeviceLink          = FALSE;
-static BOOL lTerse     = FALSE;
-
-static cmsHPROFILE hInput, hOutput, hProof, hLab, hXYZ;
+static cmsHPROFILE hInput, hOutput, hProof, hLab = NULL, hXYZ = NULL;
 static cmsHTRANSFORM hTrans, hTransXYZ, hTransLab;
 
 static icColorSpaceSignature InputColorSpace, OutputColorSpace;
 static cmsCIEXYZ xyz;
 static cmsCIELab Lab;
 
-#ifdef _MS_VER
+
+static LPcmsNAMEDCOLORLIST InputColorant = NULL;
+static LPcmsNAMEDCOLORLIST OutputColorant = NULL;
+
+
+// isatty replacement
+
+#ifdef _MSC_VER
 #define xisatty(x) _isatty( _fileno( (x) ) )
 #else
 #define xisatty(x) isatty( fileno( (x) ) )
 #endif
 
 
+// Give up
 
 static
 void FatalError(const char *frm, ...)
 {
-       va_list args;
-
-       va_start(args, frm);
-       vfprintf(stderr, frm, args);
-       va_end(args);
-
-       exit(1);
+	va_list args;
+	
+	va_start(args, frm);
+	vfprintf(stderr, frm, args);
+	va_end(args);
+	
+	exit(1);
 }
+
+// Issue a message
 
 static
 void Warning(const char *frm, ...)
 {
-       va_list args;
-
-       va_start(args, frm);
-       vfprintf(stderr, frm, args);
-       va_end(args);
+	va_list args;
+	
+	va_start(args, frm);
+	vfprintf(stderr, frm, args);
+	va_end(args);
 }
+
+// The error handler
 
 static
 int MyErrorHandler(int ErrorCode, const char *ErrorText)
 {
     FatalError("icctrans: %s", ErrorText);
     return 0;
+}
+
+// Print usage to stderr
+
+static
+void Help(void)
+{
+             
+     fprintf(stderr, "usage: icctrans [flags] [CGATS input] [CGATS output]\n\n");
+
+     fprintf(stderr, "flags:\n\n");
+     fprintf(stderr, "%cv - Verbose (Print PCS as well)\n", SW); 
+	 fprintf(stderr, "%cw - use 16 bits\n", SW);     
+     fprintf(stderr, "%cx - Hexadecimal\n\n", SW);
+
+     fprintf(stderr, "%ci<profile> - Input profile (defaults to sRGB)\n", SW);
+     fprintf(stderr, "%co<profile> - Output profile (defaults to sRGB)\n", SW);   
+     fprintf(stderr, "%cl<profile> - Transform by device-link profile\n", SW);   
+
+     fprintf(stderr, "\nYou can use '*Lab', '*xyz' and others as built-in profiles\n\n");
+
+     fprintf(stderr, "%ct<0,1,2,3> Intent (0=Perceptual, 1=Rel.Col, 2=Saturation, 3=Abs.Col.)\n", SW);    
+     fprintf(stderr, "%cd<0..1> - Observer adaptation state (abs.col. only)\n\n", SW);
+    
+     fprintf(stderr, "%cb - Black point compensation\n", SW);
+	 fprintf(stderr, "%cf<n> - Preserve black (CMYK only) 0=off, 1=black ink only, 2=full K plane\n", SW);
+     fprintf(stderr, "%cc<0,1,2,3> Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes)\n\n", SW);     
+     fprintf(stderr, "%cn - Terse output, intended for pipe usage\n", SW);
+     
+     fprintf(stderr, "%cp<profile> - Soft proof profile\n", SW);
+     fprintf(stderr, "%cm<0,1,2,3> - Soft proof intent\n", SW);
+     fprintf(stderr, "%cg - Marks out-of-gamut colors on softproof\n\n", SW);
+
+	 
+     
+     fprintf(stderr, "This program is intended to be a demo of the little cms\n"
+                     "engine. Both lcms and this program are freeware. You can\n"
+                     "obtain both in source code at http://www.littlecms.com\n"
+                     "For suggestions, comments, bug reports etc. send mail to\n"
+                     "info@littlecms.com\n\n");
+     exit(0);
 }
 
 
@@ -113,239 +177,309 @@ int MyErrorHandler(int ErrorCode, const char *ErrorText)
 static
 void HandleSwitches(int argc, char *argv[])
 {
-       int s;
-      
-       while ((s = xgetopt(argc,argv,"%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:p:P:m:M:gG")) != EOF) {
+	int s;
+	
+	while ((s = xgetopt(argc,argv,
+        "%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:p:P:m:M:gGF:f:d:D:!:")) != EOF) {
+		
+		switch (s){
+			
+        case '!': 
+            IncludePart = xoptarg;
+            break;
 
-       switch (s){
-       
-       case 'b':
-       case 'B': 
-           BlackPointCompensation = TRUE;
-           break;
-
-     
-       case 'c':
-       case 'C':
+		case 'b':
+		case 'B': 
+			BlackPointCompensation = TRUE;
+			break;
+						
+		case 'c':
+		case 'C':
             PrecalcMode = atoi(xoptarg);
             if (PrecalcMode < 0 || PrecalcMode > 3)
-                    FatalError("Unknown precalc mode '%d'", PrecalcMode);
+				FatalError("icctrans: Unknown precalc mode '%d'", PrecalcMode);
             break;
+	  
+	   case 'd':
+       case 'D': {
+		         double ObserverAdaptationState = atof(xoptarg);
+                 if (ObserverAdaptationState != 0 && 
+                     ObserverAdaptationState != 1.0)
+                        Warning("Adaptation states other that 0 or 1 are not yet implemented");
 
-       case 'x':
-       case 'X':
-            InHexa = TRUE;
-            break;
-
-       case 'v':
-       case 'V':
-            Verbose = TRUE;
-            break;
-
-       case 'n':
-       case 'N':
-           lTerse = TRUE;
-           break;
-
-       case 'i':
-       case 'I':
-            if (lIsDeviceLink)
-                   FatalError("Device-link already specified");
-
-            cInProf = xoptarg;
-            break;
-
-       case 'o':
-       case 'O':
-            if (lIsDeviceLink)
-                   FatalError("Device-link already specified"); 
-            cOutProf = xoptarg;
-            break;
-
-
-       case 't':
-       case 'T':
-            Intent = atoi(xoptarg);
-            if (Intent > 3) Intent = 3;
-            if (Intent < 0) Intent = 0;
-            break;
-     
-       case 'W':
-       case 'w':
-            Width16 = TRUE;
-            break;
-
-       case 'l':
-       case 'L': 
-            cInProf = xoptarg;
-            lIsDeviceLink = TRUE;
-            break;
-
-
-       case 'p':
-       case 'P':
-           cProofing = xoptarg;
-           break;
-
-       case 'm':
-       case 'M':
-            ProofingIntent = atoi(xoptarg);
-            if (ProofingIntent > 3) ProofingIntent = 3;
-            if (ProofingIntent < 0) ProofingIntent = 0;
-            break;
+				 cmsSetAdaptationState(ObserverAdaptationState);
+				 }
+                 break;
+		
+		case 'f':
+	    case 'F':
+		    PreserveBlack = atoi(xoptarg);
+            if (PreserveBlack < 0 || PreserveBlack > 2)
+                    FatalError("Unknown PreserveBlack '%d'", PreserveBlack);
+			break;
 
         case 'g':
         case 'G':
             GamutCheck = TRUE;
             break;
 
-  default:
+		case 'i':
+		case 'I':
+            if (lIsDeviceLink)
+				FatalError("icctrans: Device-link already specified");
+			
+            cInProf = xoptarg;
+            break;	
 
-       FatalError("Unknown option - run without args to see valid ones.\n");
-    }
-       
+	    case 'l':
+		case 'L': 
+            cInProf = xoptarg;
+            lIsDeviceLink = TRUE;
+            break;
+
+		case 'm':
+		case 'M':
+            ProofingIntent = atoi(xoptarg);
+            if (ProofingIntent > 3) ProofingIntent = 3;
+            if (ProofingIntent < 0) ProofingIntent = 0;
+            break;		
+
+		case 'n':
+		case 'N':
+			lTerse = TRUE;
+			break;
+			
+				
+		case 'o':
+		case 'O':
+            if (lIsDeviceLink)
+				FatalError("icctrans: Device-link already specified"); 
+            cOutProf = xoptarg;
+            break;
+
+		case 'p':
+		case 'P':
+			cProofing = xoptarg;
+			break;		
+								 			
+		
+	    case 't':
+		case 'T':
+            Intent = atoi(xoptarg);
+            if (Intent > 3) Intent = 3;
+            if (Intent < 0) Intent = 0;
+            break;
+			
+	    case 'v':
+		case 'V':
+            Verbose = TRUE;
+            break;
+
+	    case 'W':
+		case 'w':
+            Width16 = TRUE;
+            break;
+				
+        case 'x':
+		case 'X':
+            InHexa = TRUE;
+            break;
+		
+		default:
+			
+			FatalError("icctrans: Unknown option - run without args to see valid ones.\n");
+		}		
     }
 }
 
 
+// Displays the colorant table
 
+static
+void PrintColorantTable(cmsHPROFILE hInput, icTagSignature Sig, const char* Title)
+{
+	LPcmsNAMEDCOLORLIST list;
+	int i;
+
+	if (cmsIsTag(hInput, Sig)) {
+		
+		printf("%s:\n", Title);
+		
+		list = cmsReadColorantTable(hInput, Sig);
+		
+		for (i=0; i < list ->nColors; i++)
+			printf("\t%s\n", list ->List[i].Name);
+		
+		cmsFreeNamedColorList(list);	
+		printf("\n");
+	}
+	
+}
 
 // Creates all needed color transforms
 
 static
 void OpenTransforms(void)
 {
-
+	
     DWORD dwIn, dwOut, dwFlags;
-
+	
     dwFlags = 0;
     
     
     if (lIsDeviceLink) {
+		
+		hInput  = cmsOpenProfileFromFile(cInProf, "r");
+		hOutput = NULL;
+		InputColorSpace  = cmsGetColorSpace(hInput);
+		OutputColorSpace = cmsGetPCS(hInput);
 
-            hInput  = cmsOpenProfileFromFile(cInProf, "r");
-            hOutput = NULL;
-            InputColorSpace   = cmsGetColorSpace(hInput);
-            OutputColorSpace = cmsGetPCS(hInput);
+        // Read colorant tables if present
+
+        if (cmsIsTag(hInput, icSigColorantTableTag))
+            InputColorant = cmsReadColorantTable(hInput, icSigColorantTableTag);
+
+        if (cmsIsTag(hInput, icSigColorantTableOutTag))
+            OutputColorant = cmsReadColorantTable(hInput, icSigColorantTableOutTag);
+
         
-            
-       }
+		
+	}
     else {
+		
+		hInput  = OpenStockProfile(cInProf);
+		hOutput = OpenStockProfile(cOutProf);    
+		hProof  = NULL;
+		
+        if (cmsIsTag(hInput, icSigColorantTableTag))
+            InputColorant = cmsReadColorantTable(hInput, icSigColorantTableTag);
 
-            hInput  = OpenStockProfile(cInProf);
-            hOutput = OpenStockProfile(cOutProf);    
-            hProof  = NULL;
+        if (cmsIsTag(hOutput, icSigColorantTableTag))
+            OutputColorant = cmsReadColorantTable(hOutput, icSigColorantTableTag);
 
-            if (cProofing != NULL) {
 
-                   hProof = OpenStockProfile(cProofing);
-                   dwFlags |= cmsFLAGS_SOFTPROOFING;
-            }
-
-            InputColorSpace   = cmsGetColorSpace(hInput);
-            OutputColorSpace  = cmsGetColorSpace(hOutput);
-
-            if (cmsGetDeviceClass(hInput) == icSigLinkClass ||
-                cmsGetDeviceClass(hOutput) == icSigLinkClass)   
-                        FatalError("Use %cl flag for devicelink profiles!\n", SW);
-    
+		if (cProofing != NULL) {
+			
+			hProof = OpenStockProfile(cProofing);
+			dwFlags |= cmsFLAGS_SOFTPROOFING;
+		}
+		
+		InputColorSpace   = cmsGetColorSpace(hInput);
+		OutputColorSpace  = cmsGetColorSpace(hOutput);
+		
+		if (cmsGetDeviceClass(hInput) == icSigLinkClass ||
+			cmsGetDeviceClass(hOutput) == icSigLinkClass)   
+			FatalError("icctrans: Use %cl flag for devicelink profiles!\n", SW);
+		
     }
 
-       hXYZ    = cmsCreateXYZProfile();
-       hLab    = cmsCreateLabProfile(NULL);
+	
+	
+	if (Verbose) {
+		
+		printf("From: %s\n", cmsTakeProductName(hInput));
+		printf("Desc: %s\n", cmsTakeProductDesc(hInput));
+        printf("Info: %s\n\n", cmsTakeProductInfo(hInput));
+        PrintColorantTable(hInput, icSigColorantTableTag,    "Input colorant table");
+		PrintColorantTable(hInput, icSigColorantTableOutTag, "Input colorant out table");		
+
+		if (hOutput) {
+			printf("To  : %s\n", cmsTakeProductName(hOutput));
+			printf("Desc: %s\n", cmsTakeProductDesc(hOutput));
+            printf("Info: %s\n\n", cmsTakeProductInfo(hOutput));
+            PrintColorantTable(hOutput, icSigColorantTableTag,    "Output colorant table");
+		    PrintColorantTable(hOutput, icSigColorantTableOutTag, "Input colorant out table");				
+		}						
+	}
+	
+	
+	dwIn  = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(InputColorSpace));
+	dwOut = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(OutputColorSpace));
 
 
-       if (Verbose) {
+    if (PreserveBlack) {
+			dwFlags |= cmsFLAGS_PRESERVEBLACK;
+			if (PrecalcMode == 0) PrecalcMode = 1;
+            cmsSetCMYKPreservationStrategy(PreserveBlack-1);
+	}
 
-            printf("From: %s\n", cmsTakeProductName(hInput));
-            printf("Desc: %s\n", cmsTakeProductDesc(hInput));
-            if (hOutput) printf("To  : %s\n\n", cmsTakeProductName(hOutput));
 
-            if (cmsIsTag(hInput, icSigColorantTableTag)) {
-
-                LPcmsNAMEDCOLORLIST list = cmsReadColorantTable(hInput, icSigColorantTableTag);
-                int i;
-
-                for (i=0; i < list ->nColors; i++)
-                    printf("%s\n", list ->List[i].Name);
-
-                cmsFreeNamedColorList(list);
-
-            }
-
-            if (cmsIsTag(hInput, icSigColorantTableOutTag)) {
-                printf("...");
-            }
-       }
-
-      
-       dwIn  = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(InputColorSpace));
-       dwOut = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(OutputColorSpace));
-              
-       switch (PrecalcMode) {
-           
-       case 0: dwFlags |= cmsFLAGS_NOTPRECALC; break;
-       case 2: dwFlags |= cmsFLAGS_HIGHRESPRECALC; break;
+	switch (PrecalcMode) {
+		
+	   case 0: dwFlags |= cmsFLAGS_NOTPRECALC; break;
+	   case 2: dwFlags |= cmsFLAGS_HIGHRESPRECALC; break;
 	   case 3: dwFlags |= cmsFLAGS_LOWRESPRECALC; break;
 	   case 1: break;
+		   
+       default: FatalError("icctrans: Unknown precalculation mode '%d'", PrecalcMode);
+	}
+	
+	
+	if (BlackPointCompensation) 
+		dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
+	
 
-       default: FatalError("Unknown precalculation mode '%d'", PrecalcMode);
-       }
-       
-       
-       if (BlackPointCompensation) 
-            dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
+	
+	if (GamutCheck) {
+		
+		if (hProof == NULL)
+			FatalError("icctrans: I need proofing profile -p for gamut checking!");
+		
+		cmsSetAlarmCodes(0xFF, 0xFF, 0xFF);
+		dwFlags |= cmsFLAGS_GAMUTCHECK;            
+	}
+	
+	if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
+		dwIn = TYPE_NAMED_COLOR_INDEX;
+	}
+	
 
-       if (GamutCheck) {
+	hTrans = cmsCreateProofingTransform(hInput,  dwIn,
+						hOutput, dwOut,
+						hProof,
+						Intent, ProofingIntent, dwFlags);
+	
+		
+	hTransXYZ = NULL; hTransLab = NULL;
 
-            if (hProof == NULL)
-                FatalError("I need proofing profile -p for gamut checking!");
+	if (hOutput && Verbose) {
+			
+	    hXYZ = cmsCreateXYZProfile();
+	    hLab = cmsCreateLabProfile(NULL);
 
-            cmsSetAlarmCodes(0xFF, 0xFF, 0xFF);
-            dwFlags |= cmsFLAGS_GAMUTCHECK;            
-       }
-
-       if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
-           dwIn = TYPE_NAMED_COLOR_INDEX;
-       }
-
-       hTrans     = cmsCreateProofingTransform(hInput,  dwIn,
-                                               hOutput, dwOut,
-                                               hProof,
-                                               Intent, ProofingIntent, dwFlags);
-
-
-       
-       
-       hTransXYZ = NULL; hTransLab = NULL;
-       if (hOutput && Verbose) {
-
-            hTransXYZ = cmsCreateTransform(hInput, dwIn,
-                                      hXYZ,  TYPE_XYZ_16,
-                                      Intent, cmsFLAGS_NOTPRECALC);
-
-            hTransLab = cmsCreateTransform(hInput, dwIn,
-                                      hLab,  TYPE_Lab_16,
-                                      Intent, cmsFLAGS_NOTPRECALC);    
-       }
-       
+		hTransXYZ = cmsCreateTransform(hInput, dwIn,
+			hXYZ,  TYPE_XYZ_16,
+			Intent, cmsFLAGS_NOTPRECALC);
+		
+		hTransLab = cmsCreateTransform(hInput, dwIn,
+			hLab,  TYPE_Lab_16,
+			Intent, cmsFLAGS_NOTPRECALC);    
+	}
+	
 }
 
+
+// Free open resources
 
 static
 void CloseTransforms(void)
 {
+       if (InputColorant) cmsFreeNamedColorList(InputColorant);
+       if (OutputColorant) cmsFreeNamedColorList(OutputColorant);
+
        cmsDeleteTransform(hTrans);
        if (hTransLab) cmsDeleteTransform(hTransLab);
        if (hTransXYZ) cmsDeleteTransform(hTransXYZ);
        cmsCloseProfile(hInput);
        if (hOutput) cmsCloseProfile(hOutput); 
        if (hProof) cmsCloseProfile(hProof);
-       cmsCloseProfile(hXYZ);
-       cmsCloseProfile(hLab);
+       if (hXYZ) cmsCloseProfile(hXYZ);
+       if (hLab) cmsCloseProfile(hLab);
 
 }
 
+
+// Print a value, with a prefix, normalized to a given range
 
 static
 void PrintRange(const char* C, double v, double Range)
@@ -374,7 +508,7 @@ void PrintRange(const char* C, double v, double Range)
 
 
 static
-void PrintOne(const char* C, double v)
+void Print255(const char* C, double v)
 {
        PrintRange(C, v, 255.0);
 }
@@ -417,44 +551,44 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
                     break;
 
     case icSigLuvData:
-                    PrintOne("L", Encoded[0]); 
-                    PrintOne("u", Encoded[1]); 
-                    PrintOne("v", Encoded[2]);
+                    Print255("L", Encoded[0]); 
+                    Print255("u", Encoded[1]); 
+                    Print255("v", Encoded[2]);
                     break;
 
     case icSigYCbCrData:
-                    PrintOne("Y", Encoded[0]); 
-                    PrintOne("Cb", Encoded[1]); 
-                    PrintOne("Cr", Encoded[2]);
+                    Print255("Y",  Encoded[0]); 
+                    Print255("Cb", Encoded[1]); 
+                    Print255("Cr", Encoded[2]);
                     break;
 
 
     case icSigYxyData:
-                    PrintOne("Y", Encoded[0]); 
-                    PrintOne("x", Encoded[1]); 
-                    PrintOne("y", Encoded[2]);
+                    Print255("Y", Encoded[0]); 
+                    Print255("x", Encoded[1]); 
+                    Print255("y", Encoded[2]);
                     break;
 
     case icSigRgbData:
-                    PrintOne("R", Encoded[0]); 
-                    PrintOne("G", Encoded[1]); 
-                    PrintOne("B", Encoded[2]);
+                    Print255("R", Encoded[0]); 
+                    Print255("G", Encoded[1]); 
+                    Print255("B", Encoded[2]);
                     break;
 
     case icSigGrayData:
-                    PrintOne("G", Encoded[0]); 
+                    Print255("G", Encoded[0]); 
                     break;
 
     case icSigHsvData:
-                    PrintOne("H", Encoded[0]); 
-                    PrintOne("s", Encoded[1]); 
-                    PrintOne("v", Encoded[2]);
+                    Print255("H", Encoded[0]); 
+                    Print255("s", Encoded[1]); 
+                    Print255("v", Encoded[2]);
                     break;
 
     case icSigHlsData:
-                    PrintOne("H", Encoded[0]); 
-                    PrintOne("l", Encoded[1]); 
-                    PrintOne("s", Encoded[2]);
+                    Print255("H", Encoded[0]); 
+                    Print255("l", Encoded[1]); 
+                    Print255("s", Encoded[2]);
                     break;
 
     case icSigCmykData:
@@ -485,9 +619,14 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
 
         for (i=0; i < _cmsChannelsOf(OutputColorSpace); i++) {
         
-            char Buffer[10];
-            sprintf(Buffer, "CHAN%d", i + 1);
-            PrintOne(Buffer, Encoded[i]);           
+            char Buffer[256];
+
+            if (OutputColorant) 
+                sprintf(Buffer, "%s", OutputColorant->List[i].Name);
+            else
+            sprintf(Buffer, "Channel #%d", i + 1);
+
+            Print255(Buffer, Encoded[i]);           
         }   
     }
 
@@ -495,6 +634,7 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
 }
 
 
+// Get input from user
 
 static
 void GetLine(char* Buffer)
@@ -514,13 +654,14 @@ void GetLine(char* Buffer)
 }
 
 
+// Ask for a value
+
 static
 double GetAnswer(const char* Prompt, double Range)
 {
     char Buffer[4096];
     double val = 0.0;
-    
-    
+	       
     if (Range == 0.0) {              // Range 0 means double value
         
         if (xisatty(stdin)) printf("%s? ", Prompt);
@@ -553,11 +694,14 @@ double GetAnswer(const char* Prompt, double Range)
         
         // Normalize to 0..0xffff
         
-        return floor((val * 65535.0) / Range + 0.5);            
+		if (val > Range) return 0xFFFF;
+        return floor((val * 65535.0) / Range + 0.5);            		
+		
     }    
 }
 
 
+// Get a value in %
 static
 WORD Get100(const char* AskFor)
 {
@@ -565,13 +709,15 @@ WORD Get100(const char* AskFor)
 }
 
 
+// Get a simple value in 0..255 range
+
 static 
 WORD GetVal(const char* AskFor)
 {
     return (WORD) GetAnswer(AskFor, 255.0);
 }
 
-
+// Get a double value
 static
 double GetDbl(const char* AskFor)
 {
@@ -579,6 +725,7 @@ double GetDbl(const char* AskFor)
 }
 
 
+// Get a named-color index
 static
 WORD GetIndex(void)
 {
@@ -593,7 +740,7 @@ WORD GetIndex(void)
     index = atoi(Buffer);
 
     if (index > max)
-            FatalError("Named color %d out of range!", index);
+            FatalError("icctrans: Named color %d out of range!", index);
 
     cmsNamedColorInfo(hTrans, index, Name, Prefix, Suffix);
 
@@ -614,6 +761,7 @@ void TakeTextValues(WORD Encoded[])
         printf("\nEnter values, 'q' to quit\n");
 
     if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
+
         Encoded[0] = GetIndex();
         return;
     }
@@ -703,21 +851,25 @@ void TakeTextValues(WORD Encoded[])
     case icSig6colorData:
     case icSig7colorData:
     case icSig8colorData: {
-        int i;
-
+        
+		int i;
+		
         for (i=0; i < _cmsChannelsOf(InputColorSpace); i++) {
+			
+            char Name[256];
+			
+            if (InputColorant)
+                sprintf(Name, "%s", InputColorant->List[i].Name);
+            else
+                sprintf(Name, "Channel #%d", i+1);
 
-            char Name[100];
-
-            sprintf(Name, "Channel #%d", i+1);
             Encoded[i] = GetVal(Name);
+        }		
         }
-
-                          }
-                          break;
+		break;
 
     default:              
-        FatalError("Unsupported %d channel profile", _cmsChannelsOf(InputColorSpace));
+        FatalError("icctrans: Unsupported %d channel profile", _cmsChannelsOf(InputColorSpace));
     }
 
     if (xisatty(stdin))
@@ -727,19 +879,22 @@ void TakeTextValues(WORD Encoded[])
 
 
 
-// Take a value and scale it accordly to fill a WORD (0..FFFF)
+// Take a value from IT8 and scale it accordly to fill a WORD (0..FFFF)
 
 static
 WORD GetIT8Val(const char* Name, double Max)
 {
 	double CGATSfactor = 65535.0 / Max;
+	double res;
 	const char* Val = cmsIT8GetData(hIT8in, CGATSPatch, Name);
 
 	if (Val == NULL)
-		FatalError("Field '%s' not found", Name);
+		FatalError("icctrans: Field '%s' not found", Name);
 	 
+    res = atof(Val);
+	if (res > Max) return 0xFFFF;
 
-	return (WORD) floor(atof(Val) * CGATSfactor + 0.5);
+	return (WORD) floor(res * CGATSfactor + 0.5);
 
 }
 
@@ -759,7 +914,7 @@ void TakeCGATSValues(int nPatch, WORD Encoded[])
 
         int index = cmsNamedColorIndex(hTrans, CGATSPatch);
         if (index < 0) 
-            FatalError("Named color '%s' not found in the profile", CGATSPatch); 
+            FatalError("icctrans: Named color '%s' not found in the profile", CGATSPatch); 
 
         Encoded[0] = (WORD) index;
         return;
@@ -811,50 +966,80 @@ void TakeCGATSValues(int nPatch, WORD Encoded[])
                     break;
     
 	default:
-		FatalError("Unsupported %d channel profile for CGATS", _cmsChannelsOf(InputColorSpace));
+		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(InputColorSpace));
 
 	}
 
 }
 
 
-
-
 static
-void Help(void)
+void SetCGATSfld(const char* Col, double Val)
 {
-             
-     fprintf(stderr, "usage: icctrans [flags] [CGATS input file]\n\n");
 
-     fprintf(stderr, "flags:\n\n");
-     fprintf(stderr, "%cv - Verbose\n", SW);
-     fprintf(stderr, "%ci<profile> - Input profile (defaults to sRGB)\n", SW);
-     fprintf(stderr, "%co<profile> - Output profile (defaults to sRGB)\n", SW);   
-     fprintf(stderr, "%cl<profile> - Transform by device-link profile\n", SW);   
-
-     fprintf(stderr, "\nYou can use '*Lab' and '*xyz' as built-in profiles\n\n");
-
-     fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
-     
-     fprintf(stderr, "%cw - use 16 bits\n", SW);     
-     fprintf(stderr, "%cx - Hexadecimal\n\n", SW);
-     fprintf(stderr, "%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 0]\n", SW);     
-     fprintf(stderr, "%cn - Terse output, intended for pipe usage\n\n", SW);
-
-     fprintf(stderr, "%cp<profile> - Soft proof profile\n", SW);
-     fprintf(stderr, "%cm<0,1,2,3> - Soft proof intent\n", SW);
-     fprintf(stderr, "%cg - Marks out-of-gamut colors on softproof\n\n", SW);
-     
-     fprintf(stderr, "This program is intended to be a demo of the little cms\n"
-                     "engine. Both lcms and this program are freeware. You can\n"
-                     "obtain both in source code at http://www.littlecms.com\n"
-                     "For suggestions, comments, bug reports etc. send mail to\n"
-                     "info@littlecms.com\n\n");
-     exit(0);
+	if (!cmsIT8SetDataDbl(hIT8out, CGATSPatch, Col, Val)) {
+		FatalError("icctrans: couldn't set '%s' on output cgats '%s'", Col, CGATSoutFilename);
+	}
 }
 
 
+
+static
+void PutCGATSValues(int nPatch, WORD Encoded[])
+{
+
+	cmsIT8SetData(hIT8out, CGATSPatch, "SAMPLE_ID", CGATSPatch);
+  	switch (OutputColorSpace) {
+
+
+    // Encoding should follow CGATS specification.
+
+	case icSigXYZData:
+		            cmsXYZEncoded2Float(&xyz, Encoded);
+					SetCGATSfld("XYZ_X", xyz.X * 100.0);
+					SetCGATSfld("XYZ_Y", xyz.Y * 100.0);
+					SetCGATSfld("XYZ_Z", xyz.Z * 100.0);                    
+                    break;
+
+    case icSigLabData:
+                    cmsLabEncoded2Float(&Lab, Encoded);
+					SetCGATSfld("LAB_L", Lab.L);
+					SetCGATSfld("LAB_A", Lab.a);
+					SetCGATSfld("LAB_B", Lab.b);                    
+                    break;
+
+        
+    case icSigRgbData:
+				    SetCGATSfld("RGB_R", Encoded[0] / 257.0);
+					SetCGATSfld("RGB_G", Encoded[1] / 257.0);
+					SetCGATSfld("RGB_B", Encoded[2] / 257.0);
+                    break;
+
+    case icSigGrayData:
+					SetCGATSfld("GRAY", Encoded[0] / 257.0);					
+                    break;
+    
+    case icSigCmykData:
+				    SetCGATSfld("CMYK_C", 100.0 * Encoded[0] / 65535.0);
+					SetCGATSfld("CMYK_M", 100.0 * Encoded[1] / 65535.0);
+					SetCGATSfld("CMYK_Y", 100.0 * Encoded[2] / 65535.0);
+					SetCGATSfld("CMYK_K", 100.0 * Encoded[3] / 65535.0);
+                    break;
+
+    case icSigCmyData:
+					SetCGATSfld("CMY_C", 100.0 * Encoded[0] / 65535.0);
+					SetCGATSfld("CMY_M", 100.0 * Encoded[1] / 65535.0);
+					SetCGATSfld("CMY_Y", 100.0 * Encoded[2] / 65535.0);					
+                    break;
+    
+	default:
+		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(OutputColorSpace));
+
+	}
+}
+
+
+// Print XYZ/Lab values on verbose mode
 
 static
 void PrintPCS(WORD Input[], WORD PCSxyz[], WORD PCSLab[])
@@ -871,60 +1056,178 @@ void PrintPCS(WORD Input[], WORD PCSxyz[], WORD PCSLab[])
 
 
 
+// Create data format 
+
+
+static
+void SetOutputDataFormat() 
+{
+
+	cmsIT8SetPropertyStr(hIT8out, "ORIGINATOR", "icctrans");
+
+    if (IncludePart != NULL) 
+        cmsIT8SetPropertyStr(hIT8out, ".INCLUDE", IncludePart);
+
+	cmsIT8SetComment(hIT8out, "Data follows");
+	cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_SETS", nMaxPatches);
+
+
+	switch (OutputColorSpace) {
+
+
+    // Encoding should follow CGATS specification.
+
+	case icSigXYZData:
+			        cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 4);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+					cmsIT8SetDataFormat(hIT8out, 1, "XYZ_X");
+					cmsIT8SetDataFormat(hIT8out, 2, "XYZ_Y");
+					cmsIT8SetDataFormat(hIT8out, 3, "XYZ_Z");
+		            break;
+
+    case icSigLabData:
+					cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 4);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+				    cmsIT8SetDataFormat(hIT8out, 1, "LAB_L");
+					cmsIT8SetDataFormat(hIT8out, 2, "LAB_A");
+					cmsIT8SetDataFormat(hIT8out, 3, "LAB_B");
+                    break;
+
+        
+    case icSigRgbData:
+					cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 4);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+					cmsIT8SetDataFormat(hIT8out, 1, "RGB_R");
+					cmsIT8SetDataFormat(hIT8out, 2, "RGB_G");
+					cmsIT8SetDataFormat(hIT8out, 3, "RGB_B");
+				    break;
+
+    case icSigGrayData:				
+					cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 2);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+					cmsIT8SetDataFormat(hIT8out, 1, "GRAY");
+                    break;
+    
+    case icSigCmykData:
+					cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 5);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+					cmsIT8SetDataFormat(hIT8out, 1, "CMYK_C");
+					cmsIT8SetDataFormat(hIT8out, 2, "CMYK_M");
+					cmsIT8SetDataFormat(hIT8out, 3, "CMYK_Y");
+					cmsIT8SetDataFormat(hIT8out, 4, "CMYK_K");
+				    break;
+
+    case icSigCmyData:
+					cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", 4);
+					cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+					cmsIT8SetDataFormat(hIT8out, 1, "CMY_C");
+					cmsIT8SetDataFormat(hIT8out, 2, "CMY_M");
+					cmsIT8SetDataFormat(hIT8out, 3, "CMY_Y");					
+					break;
+    
+	default:
+		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(OutputColorSpace));
+
+	}
+}
+
+// Open CGATS if specified
+
+static
+void OpenCGATSFiles(int argc, char *argv[])
+{	 
+	int nParams = argc - xoptind;
+
+	if (nParams >= 1)  {
+		
+		hIT8in = cmsIT8LoadFromFile(argv[xoptind]);
+		
+		if (hIT8in == NULL) 
+			FatalError("icctrans: '%s' is not recognized as a CGATS file", argv[xoptind]);
+		
+		nMaxPatches = (int) cmsIT8GetPropertyDbl(hIT8in, "NUMBER_OF_SETS");		
+	}
+	
+
+	if (nParams == 2) {
+
+		hIT8out = cmsIT8Alloc();			
+		SetOutputDataFormat();
+		strncpy(CGATSoutFilename, argv[xoptind+1], MAX_PATH-1);
+	}
+      
+	if (nParams > 2) FatalError("icctrans: Too many CGATS files");
+}
+
+
+
+// The main sink
+
 int main(int argc, char *argv[])
 {
-    WORD Input[MAXCHANNELS], Output[MAXCHANNELS], PCSLab[MAXCHANNELS], PCSxyz[MAXCHANNELS];
+    WORD Input[MAXCHANNELS];
+	WORD Output[MAXCHANNELS];
+	WORD PCSLab[MAXCHANNELS];
+	WORD PCSxyz[MAXCHANNELS];
 	int nPatch = 0;
-    int nMaxPatches;
+    
 
-    fprintf(stderr, "little cms ColorSpace conversion calculator - v2.0\n\n");
+    cmsSetErrorHandler(MyErrorHandler);
 
-      if (argc == 1)  
+    fprintf(stderr, "LittleCMS ColorSpace conversion calculator - v3.0\n\n");
+
+    if (argc == 1)  
               Help();              
 
-      HandleSwitches(argc, argv);
+    HandleSwitches(argc, argv);
 
-      cmsSetErrorHandler(MyErrorHandler);
+	// Open profiles, create transforms
+    OpenTransforms();
 
-	  // Open CGATS input if specified
+    // Open CGATS input if specified
+	OpenCGATSFiles(argc, argv);
 
-	  if (argc - xoptind == 1)  {
-		  hIT8in = cmsIT8LoadFromFile(argv[xoptind]);
-          if (hIT8in == NULL) 
-              FatalError("'%s' is not recognized as a CGATS file", argv[xoptind]);
-          
-		  nMaxPatches = (int) cmsIT8GetPropertyDbl(hIT8in, "NUMBER_OF_SETS");
-
-	  }
-
-      OpenTransforms();
-      
-      for(;;) {
-
-		  if (feof(stdin))
-              break;
-          
-		  if (hIT8in == NULL) {
+    for(;;) {
+				
+		if (hIT8in != NULL) {
 			
-			TakeTextValues(Input);          
-
-		  }
-		  else {
-
-			if (nPatch >= nMaxPatches) break;
+		    if (nPatch >= nMaxPatches) break;
 			TakeCGATSValues(nPatch++, Input);
-		  }
+			
+		} else {
 
-          cmsDoTransform(hTrans, Input, Output, 1);          
-          PrintResults(Output, OutputColorSpace); 
-          PrintPCS(Input, PCSxyz, PCSLab);             
-      }
+			if (feof(stdin)) break;
+			TakeTextValues(Input);    
+			
+		}
+		
+		cmsDoTransform(hTrans, Input, Output, 1);
+		
 
+		if (hIT8out != NULL) {
 
-	  if (hIT8in)
-		  cmsIT8Free(hIT8in);
+			PutCGATSValues(nPatch, Output);
+		}
+		else {
 
-      return 0;     
+			PrintResults(Output, OutputColorSpace); 
+			PrintPCS(Input, PCSxyz, PCSLab);             
+		}
+	}
+
+	
+	CloseTransforms();
+
+	if (hIT8in)
+		cmsIT8Free(hIT8in);
+	
+	if (hIT8out) {
+		
+		cmsIT8SaveToFile(hIT8out, CGATSoutFilename);
+		cmsIT8Free(hIT8out);
+	}
+	
+	return 0;     
 }
 
 

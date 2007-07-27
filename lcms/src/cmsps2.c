@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -952,6 +952,31 @@ int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent, LPcmsCIEXYZ BlackPoint
     return 1;
 }
 
+// Generates a curve from a gray profile
+
+static
+LPGAMMATABLE ExtractGray2Y(cmsHPROFILE hProfile, int Intent)
+{
+    LPGAMMATABLE Out = cmsAllocGamma(256);
+    cmsHPROFILE hXYZ = cmsCreateXYZProfile();
+    cmsHTRANSFORM xform = cmsCreateTransform(hProfile, TYPE_GRAY_8, hXYZ, TYPE_XYZ_DBL, Intent, cmsFLAGS_NOTPRECALC);
+    int i;
+
+    for (i=0; i < 256; i++) {
+        
+      BYTE Gray = (BYTE) i;
+      cmsCIEXYZ XYZ;
+      
+        cmsDoTransform(xform, &Gray, &XYZ, 1);
+        
+        Out ->GammaTable[i] =_cmsClampWord((int) floor(XYZ.Y * 65535.0 + 0.5));
+    }
+
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hXYZ);
+    return Out;
+}
+
 
 
 // Because PostScrip has only 8 bits in /Table, we should use
@@ -1021,13 +1046,10 @@ int WriteInputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
 
     switch (nChannels) {
 
-    case 1: {
-
-            // LPGAMMATABLE Gray2Y = ExtractGray2Y(xform);
-            // rc = EmitCIEBasedA(m, Gray2Y->GammaTable, Gray2Y ->nEntries, hProfile);
-            // cmsFreeGamma(Gray2Y);
-
-            cmsSignalError(LCMS_ERRC_ABORTED, "Monochrome LUT-based currently unsupported for CSA generation");
+    case 1: {            
+            LPGAMMATABLE Gray2Y = ExtractGray2Y(hProfile, Intent);
+            EmitCIEBasedA(m, Gray2Y->GammaTable, Gray2Y ->nEntries, &BlackPointAdaptedToD50);            
+            cmsFreeGamma(Gray2Y);            
             }
             break;
 
@@ -1482,7 +1504,8 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlag
     if (DeviceLink ->wFlags & LUT_HASTL1) {
 
         // Shouldn't happen
-        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");       
+        cmsSignalError(LCMS_ERRC_ABORTED, "Internal error (prelinearization on CRD)");
+        return 0;
     }
     
 

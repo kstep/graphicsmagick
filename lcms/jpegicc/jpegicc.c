@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -64,6 +64,7 @@ static BOOL lIsITUFax              = FALSE;
 static BOOL lIsPhotoshopApp13      = FALSE;
 static BOOL lIsDeviceLink          = FALSE;
 static BOOL EmbedProfile           = FALSE;
+static int PreserveBlack		   = 0;
 
 static const char* SaveEmbedded = NULL;
 
@@ -570,10 +571,13 @@ void WriteOutputFields(int OutputColorSpace)
     Compressor.input_components = Compressor.num_components = components;
     jpeg_set_defaults(&Compressor);
     jpeg_set_colorspace(&Compressor, jpeg_space);
-    jpeg_set_quality(&Compressor, jpegQuality, 1);    
+
+    // Make sure to pass resolution through
+    if (OutputColorSpace == PT_CMYK)
+        Compressor.write_JFIF_header = 1;
 
     //avoid subsampling on high quality factor
-
+    jpeg_set_quality(&Compressor, jpegQuality, 1);    
     if (jpegQuality >= 70) {
 
       int i;
@@ -710,6 +714,14 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
             dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;            
        }
 
+
+       if (PreserveBlack) {
+			dwFlags |= cmsFLAGS_PRESERVEBLACK;
+			if (PrecalcMode == 0) PrecalcMode = 1;
+            cmsSetCMYKPreservationStrategy(PreserveBlack-1);
+	   }
+
+
        switch (PrecalcMode) {
            
        case 0: dwFlags |= cmsFLAGS_NOTPRECALC; break;
@@ -760,8 +772,9 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
        if (cProofing != NULL) {
 
            hProof = OpenStockProfile(cProofing);
+           dwFlags |= cmsFLAGS_SOFTPROOFING;
+          }
        }
-        }
 
        // Take input color space
 
@@ -833,6 +846,7 @@ void Help(int level)
      fprintf(stderr, "\n");
 
      fprintf(stderr, "%cb - Black point compensation\n", SW);
+     fprintf(stderr, "%cf<n> - Preserve black (CMYK only) 0=off, 1=black ink only, 2=full K plane\n", SW);
      fprintf(stderr, "%cn - Ignore embedded profile\n", SW);
      fprintf(stderr, "%ce - Embed destination profile\n", SW);
      fprintf(stderr, "%cs<new profile> - Save embedded profile as <new profile>\n", SW);
@@ -891,7 +905,7 @@ void HandleSwitches(int argc, char *argv[])
 {
     int s;
     
-    while ((s=xgetopt(argc,argv,"bBnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:Q:q:M:m:L:l:eEs:S:")) != EOF) {
+    while ((s=xgetopt(argc,argv,"bBnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:Q:q:M:m:L:l:eEs:S:F:f:")) != EOF) {
         
         switch (s)
         {
@@ -952,6 +966,13 @@ void HandleSwitches(int argc, char *argv[])
             EmbedProfile = TRUE;
             break;
             
+       case 'f':
+	   case 'F':
+		    PreserveBlack = atoi(xoptarg);
+            if (PreserveBlack < 0 || PreserveBlack > 2)
+                    FatalError("Unknown PreserveBlack '%d'", PreserveBlack);
+			break;
+
         case 'g':
         case 'G':
             GamutCheck = TRUE;

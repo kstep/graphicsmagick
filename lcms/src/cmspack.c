@@ -1,5 +1,5 @@
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -608,6 +608,25 @@ LPBYTE UnrollDouble(register _LPcmsTRANSFORM info, register WORD wIn[], register
         return accum + (nChan + T_EXTRA(info ->InputFormat)) * sizeof(double);
 }
 
+
+
+static
+LPBYTE UnrollDouble1Chan(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
+{
+    double* Inks = (double*) accum;
+    double v;
+	
+	
+	v = floor(Inks[0] * 65535.0 + 0.5);
+	
+	if (v > 65535.0) v = 65535.0;
+	if (v < 0) v = 0;
+	
+	
+	wIn[0] = wIn[1] = wIn[2] = (WORD) v;
+    
+    return accum + sizeof(double);    
+}
 
 
 // ----------------------------------------------------------- Packing routines
@@ -1318,9 +1337,7 @@ LPBYTE PackLabDouble(register _LPcmsTRANSFORM Info, register WORD wOut[], regist
        else
            cmsLabEncoded2Float((LPcmsCIELab) output, wOut);
 
-        output += sizeof(cmsCIELab);
-    
-        return output;
+        return output + (sizeof(cmsCIELab) + T_EXTRA(Info ->OutputFormat) * sizeof(double));            
     }
 
 }
@@ -1344,10 +1361,9 @@ LPBYTE PackXYZDouble(register _LPcmsTRANSFORM Info, register WORD wOut[], regist
     }
     else {
 
-    cmsXYZEncoded2Float((LPcmsCIEXYZ) output, wOut);
-    output += sizeof(cmsCIEXYZ);
-
-    return output;
+        cmsXYZEncoded2Float((LPcmsCIEXYZ) output, wOut);
+        
+        return output + (sizeof(cmsCIEXYZ) + T_EXTRA(Info ->OutputFormat) * sizeof(double));
     }
 }
 
@@ -1460,7 +1476,10 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
            case PT_HSV:
            case PT_HLS:
            case PT_Yxy: 
-                    FromInput = UnrollDouble;
+			        if (T_CHANNELS(dwInput) == 1)
+						FromInput = UnrollDouble1Chan;
+					else
+						FromInput = UnrollDouble;
                     break;
 
             // Inks (%) 0.0 .. 100.0
@@ -2026,10 +2045,10 @@ void LCMSEXPORT cmsGetUserFormatters(cmsHTRANSFORM hTransform,
 {
     _LPcmsTRANSFORM xform = (_LPcmsTRANSFORM) (LPSTR) hTransform;
     
-    *Input =  (cmsFORMATTER) xform ->FromInput;
-    *InputFormat = xform -> InputFormat;
-    *Output = (cmsFORMATTER) xform ->ToOutput;
-    *OutputFormat = xform -> OutputFormat;
+    if (Input)        *Input =  (cmsFORMATTER) xform ->FromInput;
+    if (InputFormat)  *InputFormat = xform -> InputFormat;
+    if (Output)       *Output = (cmsFORMATTER) xform ->ToOutput;
+    if (OutputFormat) *OutputFormat = xform -> OutputFormat;
 }
 
 
@@ -2042,7 +2061,7 @@ void LCMSEXPORT cmsChangeBuffersFormat(cmsHTRANSFORM hTransform,
 
     cmsSetUserFormatters(hTransform, 
                         dwInputFormat,
-                        (cmsFORMATTER) _cmsIdentifyInputFormat((_LPcmsTRANSFORM ) hTransform, dwInputFormat),
+                        (cmsFORMATTER) _cmsIdentifyInputFormat((_LPcmsTRANSFORM) hTransform, dwInputFormat),
                         dwOutputFormat,
-                        (cmsFORMATTER) _cmsIdentifyOutputFormat((_LPcmsTRANSFORM ) hTransform, dwOutputFormat));
+                        (cmsFORMATTER) _cmsIdentifyOutputFormat((_LPcmsTRANSFORM) hTransform, dwOutputFormat));
 }

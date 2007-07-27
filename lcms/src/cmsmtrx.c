@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -64,6 +64,7 @@ void   cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4033)
+#pragma warning(disable : 4035)
 #endif
 
 
@@ -152,6 +153,7 @@ WORD FixedScale(WORD a, Fixed32 s)
 
 #ifdef _MSC_VER
 #pragma warning(default : 4033)
+#pragma warning(default : 4035)
 #endif
 
 #else

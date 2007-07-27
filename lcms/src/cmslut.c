@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -228,7 +228,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                      PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> InputEntries);
                      NewLUT -> L1[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> InputEntries);
-					 CopyMemory(&NewLUT -> LCurvesBirth[0][i], &Tables[i] -> Birth, sizeof(LCMSGAMMAPARAMS));
+					 CopyMemory(&NewLUT -> LCurvesSeed[0][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
 			   
 
@@ -242,7 +242,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                      PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> OutputEntries);
                      NewLUT -> L2[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> OutputEntries);
-					 CopyMemory(&NewLUT -> LCurvesBirth[1][i], &Tables[i] -> Birth, sizeof(LCMSGAMMAPARAMS));
+					 CopyMemory(&NewLUT -> LCurvesSeed[1][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
 
@@ -259,7 +259,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                      PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> L3Entries);
                      NewLUT -> L3[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L3Entries);
-					 CopyMemory(&NewLUT -> LCurvesBirth[2][i], &Tables[i] -> Birth, sizeof(LCMSGAMMAPARAMS));
+					 CopyMemory(&NewLUT -> LCurvesSeed[2][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
 
@@ -272,7 +272,7 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                      PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> L4Entries);
                      NewLUT -> L4[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L4Entries);
-					 CopyMemory(&NewLUT -> LCurvesBirth[3][i], &Tables[i] -> Birth, sizeof(LCMSGAMMAPARAMS));
+					 CopyMemory(&NewLUT -> LCurvesSeed[3][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
                }
                break;
                
@@ -623,25 +623,6 @@ LPLUT _cmsBlessLUT8(LPLUT Lut)
 #define INVERSION_MAX_ITERATIONS    30
 
 
-// Evaluates the CLUT part of a LUT (3x3 only)
-
-static
-void EvalLUTdoubleK(LPLUT Lut, const VEC3* In, WORD FixedK, LPVEC3 Out)
-{
-    WORD wIn[4], wOut[3];
-
-    wIn[0] = (WORD) floor(In ->n[0] * 65535.0 + 0.5);
-    wIn[1] = (WORD) floor(In ->n[1] * 65535.0 + 0.5);
-    wIn[2] = (WORD) floor(In ->n[2] * 65535.0 + 0.5);
-    wIn[3] = FixedK;
-
-    cmsEvalLUT(Lut, wIn, wOut);     
-
-    Out ->n[0] = (double) wOut[0] / 65535.0;
-    Out ->n[1] = (double) wOut[1] / 65535.0;
-    Out ->n[2] = (double) wOut[2] / 65535.0;    
-}
-
 
 // Increment with reflexion on boundary
 
@@ -657,40 +638,6 @@ void IncDelta(double *Val)
     
 }
 
-
-// Builds a Jacobian CMY->Lab
-
-static
-void ComputeJacobian(LPLUT Lut, LPMAT3 Jacobian, const VEC3* Colorant, WORD K)
-{
-    VEC3 ColorantD;
-    double DeltaColorant;
-    VEC3 Lab, LabD;
-    int  i, j;
-            
-    EvalLUTdoubleK(Lut, Colorant, K, &Lab);
-    
-
-    for (j = 0; j < 3; j++) {
-
-        ColorantD.n[0] = Colorant ->n[0];
-        ColorantD.n[1] = Colorant ->n[1];
-        ColorantD.n[2] = Colorant ->n[2];
-        
-        IncDelta(&ColorantD.n[j]);
-
-        EvalLUTdoubleK(Lut, &ColorantD, K, &LabD);
-
-        DeltaColorant = (Colorant->n[j] - ColorantD.n[j]);
-
-        for (i = 0; i < 3; i++) {
-
-            double DeltaTristim  = (Lab.n[i] - LabD.n[i]);
-            
-            Jacobian->v[i].n[j] = (DeltaTristim / DeltaColorant);
-        }
-    }
-}
 
 
 static
@@ -709,25 +656,71 @@ void FromEncoded(LPVEC3 Float, WORD Encoded[3])
     Float->n[2] = Encoded[2] / 65535.0;
 }
 
+// Evaluates the CLUT part of a LUT (4 -> 3 only)
+static
+void EvalLUTdoubleKLab(LPLUT Lut, const VEC3* In, WORD FixedK, LPcmsCIELab Out)
+{
+    WORD wIn[4], wOut[3];
+
+    wIn[0] = (WORD) floor(In ->n[0] * 65535.0 + 0.5);
+    wIn[1] = (WORD) floor(In ->n[1] * 65535.0 + 0.5);
+    wIn[2] = (WORD) floor(In ->n[2] * 65535.0 + 0.5);
+    wIn[3] = FixedK;
+
+    cmsEvalLUT(Lut, wIn, wOut);     
+	cmsLabEncoded2Float(Out, wOut);
+}
+
+// Builds a Jacobian CMY->Lab
+
+static
+void ComputeJacobianLab(LPLUT Lut, LPMAT3 Jacobian, const VEC3* Colorant, WORD K)
+{
+    VEC3 ColorantD;
+    cmsCIELab Lab, LabD;
+    int  j;
+            
+    EvalLUTdoubleKLab(Lut, Colorant, K, &Lab);
+    
+
+    for (j = 0; j < 3; j++) {
+
+        ColorantD.n[0] = Colorant ->n[0];
+        ColorantD.n[1] = Colorant ->n[1];
+        ColorantD.n[2] = Colorant ->n[2];
+        
+        IncDelta(&ColorantD.n[j]);
+
+        EvalLUTdoubleKLab(Lut, &ColorantD, K, &LabD);
+				
+		Jacobian->v[0].n[j] = ((LabD.L - Lab.L) / JACOBIAN_EPSILON);
+		Jacobian->v[1].n[j] = ((LabD.a - Lab.a) / JACOBIAN_EPSILON);
+		Jacobian->v[2].n[j] = ((LabD.b - Lab.b) / JACOBIAN_EPSILON);
+        
+    }
+}
+
 
 // Evaluate a LUT in reverse direction. It only searches on 3->3 LUT, but It 
 // can be used on CMYK -> Lab LUT to obtain black preservation. 
 // Target holds LabK in this case
 
+// x1 <- x - [J(x)]^-1 * f(x)
+
 
 LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Result[], LPWORD Hint)
 {
     int      i;
-    double   error, LastError;
-    VEC3     Guess;
-    VEC3     Goal, TestPoint, Colorant;
-    MAT3     Jacobian, JacobianInverse;
-    WORD     FixedK;
-    WORD     LastResult[4];
+    double     error, LastError = 1E20;
+    cmsCIELab  fx, Goal;
+    VEC3       tmp, tmp2, x;
+    MAT3       Jacobian;
+    WORD       FixedK;
+    WORD       LastResult[4];
     
         
     // This is our Lab goal
-    FromEncoded(&Goal, Target);
+    cmsLabEncoded2Float(&Goal, Target);
     
     // Special case for CMYK->Lab 
 
@@ -743,27 +736,24 @@ LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Resul
 
         // Begin at any point, we choose 1/3 of neutral CMY gray
 
-        Colorant.n[0] = 
-        Colorant.n[1] = 
-        Colorant.n[2] = 0.3;
+        x.n[0] = x.n[1] = x.n[2] = 0.3;
 
     }
     else {
-        FromEncoded(&Colorant, Hint);
+
+        FromEncoded(&x, Hint);
     }
     
-            
-    LastError = 1E20;
 
     // Iterate
     
     for (i = 0; i < INVERSION_MAX_ITERATIONS; i++) {
 
-        // Get beginning guess
-        EvalLUTdoubleK(Lut, &Colorant, FixedK, &Guess);
+        // Get beginning fx
+        EvalLUTdoubleKLab(Lut, &x, FixedK, &fx);
     
         // Compute error
-        error = VEC3distance(&Guess, &Goal);
+        error = cmsDeltaE(&fx, &Goal);
                         
         // If not convergent, return last safe value
         if (error >= LastError) 
@@ -772,36 +762,27 @@ LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Resul
         // Keep latest values
         LastError = error;
 
-        ToEncoded(LastResult, &Colorant);
+        ToEncoded(LastResult, &x);
         LastResult[3] = FixedK;
-
                 
         // Obtain slope
-        ComputeJacobian(Lut, &Jacobian, &Colorant, FixedK);
+        ComputeJacobianLab(Lut, &Jacobian, &x, FixedK);
 
-        // Evaluate jacobian
-        MAT3eval(&TestPoint, &Jacobian, &Colorant);
-        
-        // Move testpoint
-        TestPoint.n[0] += (Goal.n[0] - Guess.n[0]);
-        TestPoint.n[1] += (Goal.n[1] - Guess.n[1]);
-        TestPoint.n[2] += (Goal.n[2] - Guess.n[2]);
+		// Solve system
+		tmp2.n[0] = fx.L - Goal.L;
+		tmp2.n[1] = fx.a - Goal.a;
+		tmp2.n[2] = fx.b - Goal.b;
 
-        VEC3saturate(&TestPoint);       
-        
-        // Jacobian ^ -1
-        if (MAT3inverse(&Jacobian, &JacobianInverse) < 0) {
-
-            // Singular matrix, 
-            break;
-        }
-
-
-        // Obtain colorant from current point
-        MAT3eval(&Colorant, &JacobianInverse, &TestPoint);
-
+		if (!MAT3solve(&tmp, &Jacobian, &tmp2))
+			break;
+		
+       	// Move our guess
+		x.n[0] -= tmp.n[0];
+	    x.n[1] -= tmp.n[1];
+		x.n[2] -= tmp.n[2];
+               
         // Some clipping....
-        VEC3saturate(&Colorant);                
+        VEC3saturate(&x);                
     }
 
     Result[0] = LastResult[0];
@@ -812,8 +793,6 @@ LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Resul
     return LastError;    
     
 }
-
-
 
 
 

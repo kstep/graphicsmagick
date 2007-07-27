@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -27,7 +27,7 @@
 /*
 
 
-       CIE Lab is defined as:
+       CIE 15:2004 CIELab is defined as:
 
        L* = 116*f(Y/Yn) - 16                     0 <= L* <= 100
        a* = 500*[f(X/Xn) - f(Y/Yn)]
@@ -35,14 +35,14 @@
 
        and
 
-              f(t) = t^(1/3)                     1 >= t >  0.008856
-                     7.787*t + (16/116)          0 <= t <= 0.008856
+              f(t) = t^(1/3)                     1 >= t >  (24/116)^3
+                     (841/108)*t + (16/116)      0 <= t <= (24/116)^3
 
 
        Reverse transform is:
 
-       X = Xn*[a* / 500 + (L* + 16) / 116] ^ 3   if (X/Xn) > 0.206893
-         = Xn*(a* / 500 + L* / 116) / 7.787      if (X/Xn) <= 0.206893
+       X = Xn*[a* / 500 + (L* + 16) / 116] ^ 3   if (X/Xn) > (24/116)
+         = Xn*(a* / 500 + L* / 116) / 7.787      if (X/Xn) <= (24/116)
 
 
 
@@ -148,12 +148,32 @@ static
 double f(double t)
 {
 
-       if (t <= 0.008856)
-              return 7.787037037037037037037037037037*t + (16./116.);
-       else
-              return CubeRoot((float) t); // more precisse than return pow(t, 1.0/3.0);
+      const double Limit = (24.0/116.0) * (24.0/116.0) * (24.0/116.0);
 
+       if (t <= Limit)
+              return (841.0/108.0) * t + (16.0/116.0);
+       else
+              return CubeRoot((float) t); 
 }
+
+
+static
+double f_1(double t)
+{
+       const double Limit = (24.0/116.0);
+
+       if (t <= Limit)
+       {
+              double tmp;
+
+              tmp = (108.0/841.0) * (t - (16.0/116.0));
+              if (tmp <= 0.0) return 0.0;
+              else return tmp;
+       }
+
+       return t * t * t;
+}
+
 
 
 void LCMSEXPORT cmsXYZ2Lab(LPcmsCIEXYZ WhitePoint, LPcmsCIELab Lab, const cmsCIEXYZ* xyz)
@@ -175,10 +195,10 @@ void LCMSEXPORT cmsXYZ2Lab(LPcmsCIEXYZ WhitePoint, LPcmsCIELab Lab, const cmsCIE
        fy = f(xyz->Y / WhitePoint->Y);
        fz = f(xyz->Z / WhitePoint->Z);
 
-       Lab->L = 116.* fy - 16.;
+       Lab->L = 116.0* fy - 16.;
 
-       Lab->a = 500.*(fx - fy);
-       Lab->b = 200.*(fy - fz);
+       Lab->a = 500.0*(fx - fy);
+       Lab->b = 200.0*(fy - fz);
 }
 
 
@@ -237,22 +257,6 @@ void cmsXYZ2LabEncoded(WORD XYZ[3], WORD Lab[3])
 
 
 
-static
-double f_1(double t)
-{
-
-       if (t <= ((7.787*0.008856) + (16./116.)))
-       {
-              double tmp;
-
-              tmp = ((t - (16./116.)) / 7.787037037037037037037037037037);
-              if (tmp <= 0.0) return 0.0;
-              else return tmp;
-       }
-
-       return t * t * t;
-}
-
 
 
 void LCMSEXPORT cmsLab2XYZ(LPcmsCIEXYZ WhitePoint, LPcmsCIEXYZ xyz,  const cmsCIELab* Lab)
@@ -270,7 +274,7 @@ void LCMSEXPORT cmsLab2XYZ(LPcmsCIEXYZ WhitePoint, LPcmsCIEXYZ xyz,  const cmsCI
        if (WhitePoint == NULL) 
             WhitePoint = cmsD50_XYZ();
 
-       y = (Lab-> L + 16.) / 116.0;
+       y = (Lab-> L + 16.0) / 116.0;
        x = y + 0.002 * Lab -> a;
        z = y - 0.005 * Lab -> b;
 

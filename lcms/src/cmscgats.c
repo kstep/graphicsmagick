@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2005 Marti Maria
+//  Copyright (C) 1998-2006 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -108,6 +108,9 @@ LCMSAPI int             LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const 
 
 #ifndef NON_WINDOWS
 #include <io.h>
+#define	DIR_CHAR	'\\'
+#else
+#define	DIR_CHAR	'/'
 #endif
 
 // Symbols
@@ -191,7 +194,12 @@ typedef struct _Table {
 
     } TABLE, *LPTABLE;
 
+// File stream being parsed
 
+typedef struct _FileContext {
+        char           FileName[MAX_PATH];    // File name if being readed from file
+        FILE*          Stream;                // File stream or NULL if holded in memory
+	} FILECTX, *LPFILECTX;
 
 // This struct hold all information about an openened
 // IT8 handler. Only one dataset is allowed.
@@ -228,9 +236,9 @@ typedef struct {
         char*          Source;                // Points to loc. being parsed
         int            lineno;                // line counter for error reporting
        
-        char           FileName[MAX_PATH];    // File name if being readed from file
-        FILE*          Stream[MAXINCLUDE];    // File stream or NULL if holded in memory
+		LPFILECTX      FileStack[MAXINCLUDE]; // Stack of files being parsed
         int            IncludeSP;             // Include Stack Pointer
+
         char*          MemoryBlock;           // The stream if holded in memory
 
         char           DoubleFormatter[MAXID];   // Printf-like 'double' formatter
@@ -284,6 +292,7 @@ static const char* PredefinedProperties[] = {
         "NUMBER_OF_FIELDS",    // Required - NUMBER OF FIELDS
         "NUMBER_OF_SETS",      // Required - NUMBER OF SETS
         "ORIGINATOR",          // Required - Identifies the specific system, organization or individual that created the data file.
+        "FILE_DESCRIPTOR",     // Required - Describes the purpose or contents of the data file.
         "CREATED",             // Required - Indicates date of creation of the data file.
         "DESCRIPTOR",          // Required  - Describes the purpose or contents of the data file.
         "DIFFUSE_GEOMETRY",    // The diffuse geometry used. Allowed values are "sphere" or "opal".
@@ -367,31 +376,80 @@ static const char* PredefinedSampleID[] = {
 
 #define NUMPREDEFINEDSAMPLEID (sizeof(PredefinedSampleID)/sizeof(char *))
 
+//Forward declaration of some internal functions		
+static void* AllocChunk(LPIT8 it8, size_t size);
+
+// Checks if c is a separator
+static
+BOOL isseparator(int c)
+{
+        return (c == ' ') || (c == '\t') || (c == '\r');
+}
+
+// Checks whatever if c is a valid identifier char
+static 
+BOOL ismiddle(int c)
+{
+   return (!isseparator(c) && (c != '#') && (c !='\"') && (c != '\'') && (c > 32) && (c < 127));
+}
 
 // Checks whatsever if c is a valid identifier middle char.
 static
 BOOL isidchar(int c)
 {
-   return (isalnum(c) || c == '$' || c == '%' || c == '&' || c == '/' || c == '.' || c == '_');
-
+   return isalnum(c) || ismiddle(c);
 }
 
 // Checks whatsever if c is a valid identifier first char.
 static
 BOOL isfirstidchar(int c)
 {
-        return !isdigit(c) && isidchar(c);
+     return !isdigit(c) && ismiddle(c);
 }
 
-// Checks if c is a separator
+// checks whether the supplied path looks like an absolute path
+// NOTE: this function doesn't checks if the path exists or even if it's legal
 static
-BOOL isseparator(int c)
+BOOL isabsolutepath(const char *path)
 {
-        return (c == ' ' || c == '\t' || c == '\r');
+	if(path == NULL)
+		return FALSE;
+	
+    if(path[0] == DIR_CHAR)
+		return TRUE;
+
+#ifndef	NON_WINDOWS
+	if(isalpha(path[0]) && path[1] == ':')
+		return TRUE;
+#endif
+	return FALSE;
 }
 
+// Makes a file path based on a given reference path
+// NOTE: buffer is assumed to point to at least MAX_PATH bytes
+// NOTE: both relPath and basePath are assumed to be no more than MAX_PATH characters long (including the null terminator!)
+// NOTE: this function doesn't check if the path exists or even if it's legal
+static 
+BOOL _cmsMakePath(const char *relPath, const char *basePath, char *buffer)
+{
+	if(!isabsolutepath(relPath))
+	{
+		char *tail;
+		strcpy(buffer, basePath);
+		tail = strrchr(buffer, DIR_CHAR);
+		if (tail != NULL)
+		{
+			size_t len = tail - buffer;
+			strncpy(tail + 1, relPath, MAX_PATH - len -1);
+			//	TODO: if combined path is longer than MAX_PATH, this should return FALSE!
+			return TRUE;
+		}
+	}
+	strcpy(buffer, relPath);
+	return TRUE;
+}
 
-
+// Syntax error
 static
 BOOL SynError(LPIT8 it8, const char *Txt, ...)
 {
@@ -402,12 +460,13 @@ BOOL SynError(LPIT8 it8, const char *Txt, ...)
         vsprintf(Buffer, Txt, args);
         va_end(args);
 
-        sprintf(ErrMsg, "%s: Line %d, %s", it8->FileName, it8->lineno, Buffer);
+        sprintf(ErrMsg, "%s: Line %d, %s", it8->FileStack[it8 ->IncludeSP]->FileName, it8->lineno, Buffer);
         it8->sy = SSYNERROR;
         cmsSignalError(LCMS_ERRC_ABORTED, ErrMsg);
         return FALSE;
 }
 
+// Check if current symbol is same as specified. issue an error else.
 static
 BOOL Check(LPIT8 it8, SYMBOL sy, const char* Err)
 {
@@ -422,15 +481,15 @@ BOOL Check(LPIT8 it8, SYMBOL sy, const char* Err)
 static
 void NextCh(LPIT8 it8)
 {
-    if (it8 -> Stream[it8 ->IncludeSP]) {
+    if (it8 -> FileStack[it8 ->IncludeSP]->Stream) {
 
-        it8 ->ch = fgetc(it8 ->Stream[it8 ->IncludeSP]);
+        it8 ->ch = fgetc(it8 ->FileStack[it8 ->IncludeSP]->Stream);
 
-        if (feof(it8 -> Stream[it8 ->IncludeSP]))  {
+        if (feof(it8 -> FileStack[it8 ->IncludeSP]->Stream))  {
 
             if (it8 ->IncludeSP > 0) {
 
-                fclose(it8 ->Stream[it8->IncludeSP--]);
+                fclose(it8 ->FileStack[it8->IncludeSP--]->Stream);
                 it8 -> ch = ' ';                            // Whitespace to be ignored
 
             } else
@@ -441,7 +500,6 @@ void NextCh(LPIT8 it8)
 
     }
     else {
-
         it8->ch = *it8->Source;
         if (it8->ch) it8->Source++;
     }
@@ -764,18 +822,39 @@ void InSymbol(LPIT8 it8)
 
     if (it8 -> sy == SINCLUDE) {
 
-                FILE* IncludeFile;
+                LPFILECTX FileNest;
+
+				if(it8 -> IncludeSP >= (MAXINCLUDE-1))
+				{
+					SynError(it8, "Too many recursion levels");
+					return;
+				}
 
                 InSymbol(it8);
                 if (!Check(it8, SSTRING, "Filename expected")) return;
-                IncludeFile = fopen(it8 -> str, "rt");
-                if (IncludeFile == NULL) {
 
-                        SynError(it8, "File %s not found", it8 ->str);
+				FileNest = it8 -> FileStack[it8 -> IncludeSP + 1];
+				if(FileNest == NULL)
+				{
+					FileNest = it8 ->FileStack[it8 -> IncludeSP + 1] = (LPFILECTX)AllocChunk(it8, sizeof(FILECTX));
+					//if(FileNest == NULL)
+						//	TODO: how to manage out-of-memory conditions?
+				}
+
+				if(_cmsMakePath(it8->str, it8->FileStack[it8->IncludeSP]->FileName, FileNest->FileName) == FALSE)
+				{
+					SynError(it8, "File path too long");
+					return;
+				}
+
+                FileNest->Stream = fopen(FileNest->FileName, "rt");
+                if (FileNest->Stream == NULL) {
+
+                        SynError(it8, "File %s not found", FileNest->FileName);
                         return;
                 }
+				it8->IncludeSP++;
 
-                it8 -> Stream[++it8 -> IncludeSP] = IncludeFile;
                 it8 ->ch = ' ';
                 InSymbol(it8);    
     }
@@ -1087,8 +1166,6 @@ LCMSHANDLE LCMSEXPORT cmsIT8Alloc(void)
     AllocTable(it8);
     
     it8->MemoryBlock = NULL;
-    it8->Stream[0]   = NULL;
-    it8->IncludeSP   = 0;
     it8->MemorySink  = NULL;
     
     it8 ->nTable = 0;
@@ -1106,6 +1183,8 @@ LCMSHANDLE LCMSEXPORT cmsIT8Alloc(void)
     it8 -> inum = 0;
     it8 -> dnum = 0.0;
 
+	it8->FileStack[0] = (LPFILECTX)AllocChunk(it8, sizeof(FILECTX));
+    it8->IncludeSP   = 0;
     it8 -> lineno = 1;
 
     strcpy(it8->DoubleFormatter, DEFAULT_DBL_FORMAT);
@@ -1575,7 +1654,7 @@ BOOL LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeed
 	ZeroMemory(&sd, sizeof(SAVESTREAM));
 
     sd.stream = NULL;
-	sd.Base   = MemPtr;
+	sd.Base   = (LPBYTE) MemPtr;
 	sd.Ptr    = sd.Base;
 
 	sd.Used = 0;
@@ -1769,7 +1848,7 @@ BOOL ParseIT8(LPIT8 it8)
     
     SheetTypePtr = it8 ->SheetType;
 
-    while (it8->ch != '\r' && it8 ->ch != '\n' && it8 -> ch != -1) {
+    while (it8->ch != '\r' && it8 ->ch != '\n' && it8->ch != '\t' && it8 -> ch != -1) {
 
         *SheetTypePtr++= (char) it8 ->ch;
         NextCh(it8);
@@ -1924,9 +2003,9 @@ BOOL IsMyBlock(LPBYTE Buffer, size_t n)
 
     for (i = 1; i < n; i++) {
 
-        if (Buffer[i] == '\n' || Buffer[i] == '\r') return TRUE;
+        if (Buffer[i] == '\n' || Buffer[i] == '\r' || Buffer[i] == '\t') return TRUE;
         if (Buffer[i] < 32) return FALSE;
-       
+        if (Buffer[i] > 127) return FALSE;
     }
 
     return FALSE;
@@ -1974,7 +2053,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len)
     strncpy(it8 ->MemoryBlock, (const char*) Ptr, len);
     it8 ->MemoryBlock[len] = 0;
 
-    strncpy(it8->FileName, "", MAX_PATH-1);
+    strncpy(it8->FileStack[0]->FileName, "", MAX_PATH-1);
     it8-> Source = it8 -> MemoryBlock;
 
     if (!ParseIT8(it8)) { 
@@ -2008,19 +2087,19 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromFile(const char* cFileName)
      if (!hIT8) return NULL;
 
 
-     it8 ->Stream[0] = fopen(cFileName, "rt");
+     it8 ->FileStack[0]->Stream = fopen(cFileName, "rt");
 
-     if (!it8 ->Stream[0]) {         
+     if (!it8 ->FileStack[0]->Stream) {         
          cmsIT8Free(hIT8);
          return NULL;
      }
      
 
-    strncpy(it8->FileName, cFileName, MAX_PATH-1);    
+    strncpy(it8->FileStack[0]->FileName, cFileName, MAX_PATH-1);    
 
     if (!ParseIT8(it8)) { 
     
-            fclose(it8 ->Stream[0]);
+            fclose(it8 ->FileStack[0]->Stream);
             cmsIT8Free(hIT8); 
             return NULL; 
     }
@@ -2028,7 +2107,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromFile(const char* cFileName)
     CookPointers(it8);
     it8 ->nTable = 0;
 
-    fclose(it8 ->Stream[0]);    
+    fclose(it8 ->FileStack[0]->Stream);    
     return hIT8;
 
 }
@@ -2059,7 +2138,7 @@ int LCMSEXPORT cmsIT8EnumProperties(LCMSHANDLE hIT8, char ***PropertyNames)
     }
 
 
-    Props = (char **) malloc(sizeof(char *) * n);
+    Props = (char **) AllocChunk(it8, sizeof(char *) * n);
 
     // Pass#2 - Fill pointers
     n = 0;
