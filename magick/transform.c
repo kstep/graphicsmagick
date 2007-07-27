@@ -43,16 +43,8 @@
 #include "magick/monitor.h"
 #include "magick/resize.h"
 #include "magick/transform.h"
-#include "magick/quantize.h"
 #include "magick/utility.h"
 #include "magick/log.h"
-#if defined(HasLCMS)
-#if defined(HAVE_LCMS_LCMS_H)
-#include <lcms/lcms.h>
-#else
-#include "lcms.h"
-#endif
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

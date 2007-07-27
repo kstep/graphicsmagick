@@ -1,8 +1,12 @@
+2007-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* jp2: Updated JasPer to 1.900.1.
+
 2007-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (LevelImage): Fix -level command parsing when a
-        percent symbol is supplied within the argument rather than at the
-        end.
+	percent symbol is supplied within the argument rather than at the
+	end.
 
 2007-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
