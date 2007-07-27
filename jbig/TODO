@@ -10,3 +10,5 @@ hopefully have done before one of the next releases:
 
   - investigate whether there is a standard way of embedding JBIG
     into TIFF and implement it (see also RFC 2301)
+
+  - eliminate warning messages from compilers other than GCC

@@ -10,7 +10,7 @@ CCFLAGS = -O2 -W
 
 CFLAGS = $(CCFLAGS) -I../libjbig
 
-VERSION=1.5
+VERSION=1.6
 
 all: lib pbm
 	@echo "Enter 'make test' in order to start some automatic tests."

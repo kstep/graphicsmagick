@@ -23,5 +23,8 @@ jbig.o: jbig.c jbig.h
 test: tstcodec
 	./tstcodec
 
+t82test.pbm: tstcodec
+	./tstcodec $@
+
 clean:
-	rm -f *.o *~ core gmon.out dbg_d\=??.pbm tstcodec
+	rm -f *.o *~ core gmon.out dbg_d\=??.pbm tstcodec t82test.pbm

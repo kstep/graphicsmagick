@@ -2,13 +2,27 @@
 JBIG-KIT revision history
 -------------------------
 
+Changes in version 1.6 (2004-06-11)
+
+  - various small changes to reduce the risk of 32-bit unsigned
+    integer overflows when dealing with extremely large images
+
+  - robuster treatment of L0 = 0xffffffff
+
+  - minor API modification in jbg_enc_options(): parameter l0 changed
+    from type long to unsigned long; previous value now remains
+    unchanged when l0 == 0 (was: l0 < 0)
+
+  - lots of type casts added such that the C source code is now
+    also compilable as C++
+
 Changes in version 1.5 (2003-06-11)
 
   - fixed two minor memory leaks (special thanks to Davide Pizzolato
     <ing.davide.pizzolato@libero.it> for locating one of these)
 
   - jbgtopbm does not attempt any more to parse multiple concatenated
-    BIEs (options -m must be used now to enable this feature explicitely),
+    BIEs (options -m must be used now to enable this feature explicitly),
     in order to handle BIEs with data after the last expected SDE gracefully
 
   - various extensions to improve support of JBIG fax applications
@@ -18,7 +32,7 @@ Changes in version 1.5 (2003-06-11)
         to MX=127 in both encoder and decoder
 
       o encoder now has a hook for producing BIEs with a NEWLEN marker
-        segment and VLENGHTH=1, in order to assist in testing decoders
+        segment and VLENGTH=1, in order to assist in testing decoders
         for T.85 conformance (see also new pbmtojbg option -Y)
 
       o a new function jbg_newlen() can be used to scan an

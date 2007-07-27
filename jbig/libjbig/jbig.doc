@@ -2,7 +2,7 @@
 Using the JBIG-KIT library
 --------------------------
 
-Markus Kuhn -- 2003-06-11
+Markus Kuhn -- 2004-06-10
 
 
 This text explains how to use the functions provided by the JBIG-KIT
@@ -532,8 +532,8 @@ implementations only to support maximum values mx = 16 and my = 0,
 higher values should normally be avoided in order to guarantee
 interoperability. The ITU-T T.85 profile for JBIG in fax machines
 requires support for mx = 127 and my = 0. Default is mx = 8 and my =
-0. If any of the parameters order, options, l0, mx or my is negative,
-then the corresponding current value remains unmodified.
+0. If any of the parameters order, options, mx or my is negative, or
+l0 is zero, then the corresponding current value remains unmodified.
 
 The resolution reduction and deterministic prediction tables can also
 be replaced. However as these options are anyway only for experts,
@@ -714,6 +714,8 @@ limitations:
   - Not more than JBG_ATMOVES_MAX (currently set to 64) ATMOVE
     marker segments can be handled per stripe.
 
+  - the number D of differential layers must be less than 32
+
 None of the above limitations can be exceeded by a JBIG data stream
 that conforms to the ITU-T T.85 application profile for the use of
 JBIG1 in fax machines.
@@ -730,7 +732,7 @@ stream that conform to ITU-T T.85:
     However section 6.2.6.2 of ITU-T T.82 says that a NEWLEN marker
     segment "could refer to a line in the immediately preceding stripe
     due to an unexpected termination of the image or the use of only
-    such stripe", and ITU-T.85 explicitely suggests the use of this
+    such stripe", and ITU-T.85 explicitly suggests the use of this
     for fax machines that start transmission before having encountered
     the end of the page.
 
