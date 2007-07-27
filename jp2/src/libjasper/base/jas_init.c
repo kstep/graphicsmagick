@@ -151,7 +151,7 @@ int jas_init()
 	at least one memory allocation is performed.  This is desirable
 	as it ensures that the JasPer exit handler is called before the
 	debug memory allocator exit handler. */
-	atexit(jas_cleanup);
+	/* atexit(jas_cleanup); */
 
 	return 0;
 }
