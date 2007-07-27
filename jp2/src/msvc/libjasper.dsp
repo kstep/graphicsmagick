@@ -141,6 +141,10 @@ SOURCE=..\libjasper\base\jas_string.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\libjasper\base\jas_tmr.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\libjasper\base\jas_tvp.c
 # End Source File
 # Begin Source File
@@ -298,6 +302,10 @@ SOURCE=..\libjasper\include\jasper\jas_cm.h
 # Begin Source File
 
 SOURCE=..\libjasper\include\jasper\jas_icc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjasper\include\jasper\jas_tmr.h
 # End Source File
 # Begin Source File
 

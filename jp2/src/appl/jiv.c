@@ -5,105 +5,56 @@
 
 /* __START_OF_JASPER_LICENSE__
  * 
- * JasPer Software License
+ * JasPer License Version 2.0
  * 
- * IMAGE POWER JPEG-2000 PUBLIC LICENSE
- * ************************************
+ * Copyright (c) 2001-2006 Michael David Adams
+ * Copyright (c) 1999-2000 Image Power, Inc.
+ * Copyright (c) 1999-2000 The University of British Columbia
  * 
- * GRANT:
+ * All rights reserved.
  * 
- * Permission is hereby granted, free of charge, to any person (the "User")
- * obtaining a copy of this software and associated documentation, to deal
- * in the JasPer Software without restriction, including without limitation
- * the right to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the JasPer Software (in source and binary forms),
- * and to permit persons to whom the JasPer Software is furnished to do so,
- * provided further that the License Conditions below are met.
+ * Permission is hereby granted, free of charge, to any person (the
+ * "User") obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of the Software, and to permit
+ * persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  * 
- * License Conditions
- * ******************
+ * 1.  The above copyright notices and this permission notice (which
+ * includes the disclaimer below) shall be included in all copies or
+ * substantial portions of the Software.
  * 
- * A.  Redistributions of source code must retain the above copyright notice,
- * and this list of conditions, and the following disclaimer.
+ * 2.  The name of a copyright holder shall not be used to endorse or
+ * promote products derived from the Software without specific prior
+ * written permission.
  * 
- * B.  Redistributions in binary form must reproduce the above copyright
- * notice, and this list of conditions, and the following disclaimer in
- * the documentation and/or other materials provided with the distribution.
- * 
- * C.  Neither the name of Image Power, Inc. nor any other contributor
- * (including, but not limited to, the University of British Columbia and
- * Michael David Adams) may be used to endorse or promote products derived
- * from this software without specific prior written permission.
- * 
- * D.  User agrees that it shall not commence any action against Image Power,
- * Inc., the University of British Columbia, Michael David Adams, or any
- * other contributors (collectively "Licensors") for infringement of any
- * intellectual property rights ("IPR") held by the User in respect of any
- * technology that User owns or has a right to license or sublicense and
- * which is an element required in order to claim compliance with ISO/IEC
- * 15444-1 (i.e., JPEG-2000 Part 1).  "IPR" means all intellectual property
- * rights worldwide arising under statutory or common law, and whether
- * or not perfected, including, without limitation, all (i) patents and
- * patent applications owned or licensable by User; (ii) rights associated
- * with works of authorship including copyrights, copyright applications,
- * copyright registrations, mask work rights, mask work applications,
- * mask work registrations; (iii) rights relating to the protection of
- * trade secrets and confidential information; (iv) any right analogous
- * to those set forth in subsections (i), (ii), or (iii) and any other
- * proprietary rights relating to intangible property (other than trademark,
- * trade dress, or service mark rights); and (v) divisions, continuations,
- * renewals, reissues and extensions of the foregoing (as and to the extent
- * applicable) now existing, hereafter filed, issued or acquired.
- * 
- * E.  If User commences an infringement action against any Licensor(s) then
- * such Licensor(s) shall have the right to terminate User's license and
- * all sublicenses that have been granted hereunder by User to other parties.
- * 
- * F.  This software is for use only in hardware or software products that
- * are compliant with ISO/IEC 15444-1 (i.e., JPEG-2000 Part 1).  No license
- * or right to this Software is granted for products that do not comply
- * with ISO/IEC 15444-1.  The JPEG-2000 Part 1 standard can be purchased
- * from the ISO.
- * 
- * THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
- * NO USE OF THE JASPER SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER
- * THIS DISCLAIMER.  THE JASPER SOFTWARE IS PROVIDED BY THE LICENSORS AND
- * CONTRIBUTORS UNDER THIS LICENSE ON AN ``AS-IS'' BASIS, WITHOUT WARRANTY
- * OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT LIMITATION,
- * WARRANTIES THAT THE JASPER SOFTWARE IS FREE OF DEFECTS, IS MERCHANTABLE,
- * IS FIT FOR A PARTICULAR PURPOSE OR IS NON-INFRINGING.  THOSE INTENDING
- * TO USE THE JASPER SOFTWARE OR MODIFICATIONS THEREOF FOR USE IN HARDWARE
- * OR SOFTWARE PRODUCTS ARE ADVISED THAT THEIR USE MAY INFRINGE EXISTING
- * PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER INTELLECTUAL PROPERTY RIGHTS.
- * THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE JASPER SOFTWARE
- * IS WITH THE USER.  SHOULD ANY PART OF THE JASPER SOFTWARE PROVE DEFECTIVE
- * IN ANY RESPECT, THE USER (AND NOT THE INITIAL DEVELOPERS, THE UNIVERSITY
- * OF BRITISH COLUMBIA, IMAGE POWER, INC., MICHAEL DAVID ADAMS, OR ANY
- * OTHER CONTRIBUTOR) SHALL ASSUME THE COST OF ANY NECESSARY SERVICING,
- * REPAIR OR CORRECTION.  UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY,
- * WHETHER TORT (INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE
- * INITIAL DEVELOPER, THE UNIVERSITY OF BRITISH COLUMBIA, IMAGE POWER, INC.,
- * MICHAEL DAVID ADAMS, ANY OTHER CONTRIBUTOR, OR ANY DISTRIBUTOR OF THE
- * JASPER SOFTWARE, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE LIABLE TO
- * THE USER OR ANY OTHER PERSON FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION,
- * DAMAGES FOR LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR
- * MALFUNCTION, OR ANY AND ALL OTHER COMMERCIAL DAMAGES OR LOSSES, EVEN IF
- * SUCH PARTY HAD BEEN INFORMED, OR OUGHT TO HAVE KNOWN, OF THE POSSIBILITY
- * OF SUCH DAMAGES.  THE JASPER SOFTWARE AND UNDERLYING TECHNOLOGY ARE NOT
- * FAULT-TOLERANT AND ARE NOT DESIGNED, MANUFACTURED OR INTENDED FOR USE OR
- * RESALE AS ON-LINE CONTROL EQUIPMENT IN HAZARDOUS ENVIRONMENTS REQUIRING
- * FAIL-SAFE PERFORMANCE, SUCH AS IN THE OPERATION OF NUCLEAR FACILITIES,
- * AIRCRAFT NAVIGATION OR COMMUNICATION SYSTEMS, AIR TRAFFIC CONTROL, DIRECT
- * LIFE SUPPORT MACHINES, OR WEAPONS SYSTEMS, IN WHICH THE FAILURE OF THE
- * JASPER SOFTWARE OR UNDERLYING TECHNOLOGY OR PRODUCT COULD LEAD DIRECTLY
- * TO DEATH, PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE
- * ("HIGH RISK ACTIVITIES").  LICENSOR SPECIFICALLY DISCLAIMS ANY EXPRESS
- * OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES.  USER WILL NOT
- * KNOWINGLY USE, DISTRIBUTE OR RESELL THE JASPER SOFTWARE OR UNDERLYING
- * TECHNOLOGY OR PRODUCTS FOR HIGH RISK ACTIVITIES AND WILL ENSURE THAT ITS
- * CUSTOMERS AND END-USERS OF ITS PRODUCTS ARE PROVIDED WITH A COPY OF THE
- * NOTICE SPECIFIED IN THIS SECTION.
+ * THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
+ * LICENSE.  NO USE OF THE SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER
+ * THIS DISCLAIMER.  THE SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS
+ * "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS.  IN NO
+ * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING
+ * FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+ * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+ * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.  NO ASSURANCES ARE
+ * PROVIDED BY THE COPYRIGHT HOLDERS THAT THE SOFTWARE DOES NOT INFRINGE
+ * THE PATENT OR OTHER INTELLECTUAL PROPERTY RIGHTS OF ANY OTHER ENTITY.
+ * EACH COPYRIGHT HOLDER DISCLAIMS ANY LIABILITY TO THE USER FOR CLAIMS
+ * BROUGHT BY ANY OTHER ENTITY BASED ON INFRINGEMENT OF INTELLECTUAL
+ * PROPERTY RIGHTS OR OTHERWISE.  AS A CONDITION TO EXERCISING THE RIGHTS
+ * GRANTED HEREUNDER, EACH USER HEREBY ASSUMES SOLE RESPONSIBILITY TO SECURE
+ * ANY OTHER INTELLECTUAL PROPERTY RIGHTS NEEDED, IF ANY.  THE SOFTWARE
+ * IS NOT FAULT-TOLERANT AND IS NOT INTENDED FOR USE IN MISSION-CRITICAL
+ * SYSTEMS, SUCH AS THOSE USED IN THE OPERATION OF NUCLEAR FACILITIES,
+ * AIRCRAFT NAVIGATION OR COMMUNICATION SYSTEMS, AIR TRAFFIC CONTROL
+ * SYSTEMS, DIRECT LIFE SUPPORT MACHINES, OR WEAPONS SYSTEMS, IN WHICH
+ * THE FAILURE OF THE SOFTWARE OR SYSTEM COULD LEAD DIRECTLY TO DEATH,
+ * PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE ("HIGH
+ * RISK ACTIVITIES").  THE COPYRIGHT HOLDERS SPECIFICALLY DISCLAIM ANY
+ * EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES.
  * 
  * __END_OF_JASPER_LICENSE__
  */
@@ -122,10 +73,10 @@
 \******************************************************************************/
 
 #define MAXCMPTS	256
-#define BIGPAN		0.90
-#define SMALLPAN	0.05
-#define	BIGZOOM		2.0
-#define	SMALLZOOM	1.41421356237310
+#define BIGPANAMOUNT	0.90
+#define SMALLPANAMOUNT	0.05
+#define	BIGZOOMAMOUNT	2.0
+#define	SMALLZOOMAMOUNT	1.41421356237310
 
 #define	min(x, y)	(((x) < (y)) ? (x) : (y))
 #define	max(x, y)	(((x) > (y)) ? (x) : (y))
@@ -170,19 +121,15 @@ typedef struct {
 	jas_image_t *image;
 	jas_image_t *altimage;
 
-	/* The x-coordinate of viewport center. */
-	float vcx;
+	float botleftx;
+	float botlefty;
+	float toprightx;
+	float toprighty;
 
-	/* The y-coordinate of viewport center. */
-	float vcy;
+	int viewportwidth;
+	int viewportheight;
 
-	/* The x scale factor. */
-	float sx;
-
-	/* The y scale factor. */
-	float sy;
-
-	/* The viewport pixmap buffer. */
+	/* The image for display. */
 	pixmap_t vp;
 
 	/* The active timer ID. */
@@ -195,19 +142,17 @@ typedef struct {
 
 	int cmptno;
 
-	int dirty;
-
 } gs_t;
 
 /******************************************************************************\
 *
 \******************************************************************************/
 
-static void display(void);
-static void reshape(int w, int h);
-static void keyboard(unsigned char key, int x, int y);
-static void special(int key, int x, int y);
-static void timer(int value);
+static void displayfunc(void);
+static void reshapefunc(int w, int h);
+static void keyboardfunc(unsigned char key, int x, int y);
+static void specialfunc(int key, int x, int y);
+static void timerfunc(int value);
 
 static void usage(void);
 static void nextimage(void);
@@ -216,7 +161,6 @@ static void nextcmpt(void);
 static void prevcmpt(void);
 static int loadimage(void);
 static void unloadimage(void);
-static void adjust(void);
 static int jas_image_render2(jas_image_t *image, int cmptno, float vtlx, float vtly,
   float vsx, float vsy, int vw, int vh, GLshort *vdata);
 static int jas_image_render(jas_image_t *image, float vtlx, float vtly,
@@ -229,6 +173,11 @@ static void cmdinfo(void);
 
 static void cleanupandexit(int);
 static void init(void);
+
+static void zoom(float sx, float sy);
+static void pan(float dx, float dy);
+static void panzoom(float dx, float dy, float sx, float sy);
+static void render(void);
 
 /******************************************************************************\
 *
@@ -272,12 +221,12 @@ int main(int argc, char **argv)
 	}
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutCreateWindow(cmdname);
-	glutReshapeFunc(reshape);
-	glutDisplayFunc(display);
-	glutSpecialFunc(special);
-	glutKeyboardFunc(keyboard);
+	glutReshapeFunc(reshapefunc);
+	glutDisplayFunc(displayfunc);
+	glutSpecialFunc(specialfunc);
+	glutKeyboardFunc(keyboardfunc);
 
 	cmdopts.numfiles = 0;
 	cmdopts.filenames = 0;
@@ -375,69 +324,68 @@ static void usage()
 
 /* Display callback function. */
 
-static void display()
+static void displayfunc()
 {
-	float vtlx;
-	float vtly;
+
+	float w;
+	float h;
+	int regbotleftx;
+	int regbotlefty;
+	int regtoprightx;
+	int regtoprighty;
+	int regtoprightwidth;
+	int regtoprightheight;
+	int regwidth;
+	int regheight;
+	float x;
+	float y;
+	float xx;
+	float yy;
 
 	if (cmdopts.verbose) {
-		fprintf(stderr, "display()\n");
-		dumpstate();
+		fprintf(stderr, "displayfunc()\n");
 	}
 
-	if (!gs.dirty) {
-		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA,
-		  GL_UNSIGNED_SHORT, gs.vp.data);
-		glFlush();
-		return;
-	}
+	regbotleftx = max(ceil(gs.botleftx), 0);
+	regbotlefty = max(ceil(gs.botlefty), 0);
+	regtoprightx = min(gs.vp.width, floor(gs.toprightx));
+	regtoprighty = min(gs.vp.height, floor(gs.toprighty));
+	regwidth = regtoprightx - regbotleftx;
+	regheight = regtoprighty - regbotlefty;
+	w = gs.toprightx - gs.botleftx;
+	h = gs.toprighty - gs.botlefty;
+	x = (regbotleftx - gs.botleftx) / w;
+	y = (regbotlefty - gs.botlefty) / h;
+	xx = (regtoprightx - gs.botleftx) / w;
+	yy = (regtoprighty - gs.botlefty) / h;
+
+	assert(regwidth > 0);
+	assert(regheight > 0);
+	assert(abs(((double) regheight / regwidth) - ((double) gs.viewportheight / gs.viewportwidth)) < 1e-5);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	pixmap_clear(&gs.vp);
-	glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA, GL_UNSIGNED_SHORT,
+	glPixelStorei(GL_UNPACK_ALIGNMENT, sizeof(GLshort));
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, gs.vp.width);
+	glPixelStorei(GL_UNPACK_SKIP_PIXELS, regbotleftx);
+	glPixelStorei(GL_UNPACK_SKIP_ROWS, regbotlefty);
+	glRasterPos2f(x * gs.viewportwidth, y * gs.viewportheight);
+	glPixelZoom((xx - x) * ((double) gs.viewportwidth) / regwidth, (yy - y) * ((double) gs.viewportheight) / regheight);
+	glDrawPixels(regwidth, regheight, GL_RGBA, GL_UNSIGNED_SHORT,
 	  gs.vp.data);
 	glFlush();
+	glutSwapBuffers();
 
-	vtlx = gs.vcx - 0.5 * gs.sx * gs.vp.width;
-	vtly = gs.vcy - 0.5 * gs.sy * gs.vp.height;
-	if (cmdopts.verbose) {
-		fprintf(stderr, "vtlx=%f, vtly=%f, vsx=%f, vsy=%f\n",
-		  vtlx, vtly, gs.sx, gs.sy);
-	}
-	if (gs.monomode) {
-		if (cmdopts.verbose) {
-			fprintf(stderr, "component %d\n", gs.cmptno);
-		}
-		jas_image_render2(gs.image, gs.cmptno, vtlx, vtly,
-		  gs.sx, gs.sy, gs.vp.width, gs.vp.height, gs.vp.data);
-	} else {
-		if (cmdopts.verbose) {
-			fprintf(stderr, "color\n");
-		}
-		jas_image_render(gs.altimage, vtlx, vtly, gs.sx, gs.sy,
-		  gs.vp.width, gs.vp.height, gs.vp.data);
-	}
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDrawPixels(gs.vp.width, gs.vp.height, GL_RGBA, GL_UNSIGNED_SHORT,
-	  gs.vp.data);
-	glFlush();
-	gs.dirty = 0;
 }
 
 /* Reshape callback function. */
 
-static void reshape(int w, int h)
+static void reshapefunc(int w, int h)
 {
 	if (cmdopts.verbose) {
-		fprintf(stderr, "reshape(%d, %d)\n", w, h);
+		fprintf(stderr, "reshapefunc(%d, %d)\n", w, h);
 		dumpstate();
 	}
 
-	if (pixmap_resize(&gs.vp, w, h)) {
-		cleanupandexit(EXIT_FAILURE);
-	}
-	pixmap_clear(&gs.vp);
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -447,21 +395,18 @@ static void reshape(int w, int h)
 	glTranslatef(0, 0, 0);
 	glRasterPos2i(0, 0);
 
-	if (gs.vp.width > jas_image_width(gs.image) / gs.sx) {
-		gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
-	}
-	if (gs.vp.height > jas_image_height(gs.image) / gs.sy) {
-		gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
-	}
-	gs.dirty = 1;
+	zoom((double) gs.viewportwidth / w, (double) gs.viewportheight / h);
+	gs.viewportwidth = w;
+	gs.viewportheight = h;
+
 }
 
 /* Keyboard callback function. */
 
-static void keyboard(unsigned char key, int x, int y)
+static void keyboardfunc(unsigned char key, int x, int y)
 {
 	if (cmdopts.verbose) {
-		fprintf(stderr, "keyboard(%d, %d, %d)\n", key, x, y);
+		fprintf(stderr, "keyboardfunc(%d, %d, %d)\n", key, x, y);
 	}
 
 	switch (key) {
@@ -472,29 +417,19 @@ static void keyboard(unsigned char key, int x, int y)
 		previmage();
 		break;
 	case '>':
-		gs.sx /= BIGZOOM;
-		gs.sy /= BIGZOOM;
-		gs.dirty = 1;
+		zoom(BIGZOOMAMOUNT, BIGZOOMAMOUNT);
 		glutPostRedisplay();
 		break;
 	case '.':
-		gs.sx /= SMALLZOOM;
-		gs.sy /= SMALLZOOM;
-		gs.dirty = 1;
+		zoom(SMALLZOOMAMOUNT, SMALLZOOMAMOUNT);
 		glutPostRedisplay();
 		break;
 	case '<':
-		gs.sx *= BIGZOOM;
-		gs.sy *= BIGZOOM;
-		adjust();
-		gs.dirty = 1;
+		zoom(1.0 / BIGZOOMAMOUNT, 1.0 / BIGZOOMAMOUNT);
 		glutPostRedisplay();
 		break;
 	case ',':
-		gs.sx *= SMALLZOOM;
-		gs.sy *= SMALLZOOM;
-		gs.dirty = 1;
-		adjust();
+		zoom(1.0 / SMALLZOOMAMOUNT, 1.0 / SMALLZOOMAMOUNT);
 		glutPostRedisplay();
 		break;
 	case 'c':
@@ -502,6 +437,20 @@ static void keyboard(unsigned char key, int x, int y)
 		break;
 	case 'C':
 		prevcmpt();
+		break;
+	case 'h':
+		fprintf(stderr, "h             help\n");
+		fprintf(stderr, ">             zoom in (large)\n");
+		fprintf(stderr, ",             zoom in (small)\n");
+		fprintf(stderr, "<             zoom out (large)\n");
+		fprintf(stderr, ".             zoom out (small)\n");
+		fprintf(stderr, "down arrow    pan down\n");
+		fprintf(stderr, "up arrow      pan up\n");
+		fprintf(stderr, "left arrow    pan left\n");
+		fprintf(stderr, "right arrow   pan right\n");
+		fprintf(stderr, "space         next image\n");
+		fprintf(stderr, "backspace     previous image\n");
+		fprintf(stderr, "q             quit\n");
 		break;
 	case 'q':
 		cleanupandexit(EXIT_SUCCESS);
@@ -511,87 +460,47 @@ static void keyboard(unsigned char key, int x, int y)
 
 /* Special keyboard callback function. */
 
-static void special(int key, int x, int y)
+static void specialfunc(int key, int x, int y)
 {
 	if (cmdopts.verbose) {
-		fprintf(stderr, "special(%d, %d, %d)\n", key, x, y);
+		fprintf(stderr, "specialfunc(%d, %d, %d)\n", key, x, y);
 	}
 
 	switch (key) {
 	case GLUT_KEY_UP:
 		{
-			float oldvcy;
-			float vh;
-			float pan;
-			if (gs.vp.height < jas_image_height(gs.image) / gs.sy) {
-				pan = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
-				  BIGPAN : SMALLPAN;
-				oldvcy = gs.vcy;
-				vh = gs.sy * gs.vp.height;
-				gs.vcy = max(gs.vcy - pan * vh, jas_image_tly(gs.image) +
-				  0.5 * vh);
-				if (gs.vcy != oldvcy) {
-					gs.dirty = 1;
-					glutPostRedisplay();
-				}
-			}
+			float panamount;
+			panamount = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
+			  BIGPANAMOUNT : SMALLPANAMOUNT;
+			pan(0.0, panamount * (gs.toprighty - gs.botlefty));
+			glutPostRedisplay();
 		}
 		break;
 	case GLUT_KEY_DOWN:
 		{
-			float oldvcy;
-			float vh;
-			float pan;
-			if (gs.vp.height < jas_image_height(gs.image) / gs.sy) {
-				pan = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
-				  BIGPAN : SMALLPAN;
-				oldvcy = gs.vcy;
-				vh = gs.sy * gs.vp.height;
-				gs.vcy = min(gs.vcy + pan * vh, jas_image_bry(gs.image) -
-				  0.5 * vh);
-				if (gs.vcy != oldvcy) {
-					gs.dirty = 1;
-					glutPostRedisplay();
-				}
-			}
+			float panamount;
+			panamount = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
+			  BIGPANAMOUNT : SMALLPANAMOUNT;
+			pan(0.0, -panamount * (gs.toprighty - gs.botlefty));
+			glutPostRedisplay();
 		}
 		break;
 	case GLUT_KEY_LEFT:
 		{
-			float oldvcx;
-			float vw;
-			float pan;
-			if (gs.vp.width < jas_image_width(gs.image) / gs.sx) {
-				pan = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
-				  BIGPAN : SMALLPAN;
-				oldvcx = gs.vcx;
-				vw = gs.sx * gs.vp.width;
-				gs.vcx = max(gs.vcx - pan * vw, jas_image_tlx(gs.image) +
-				  0.5 * vw);
-				if (gs.vcx != oldvcx) {
-					gs.dirty = 1;
-					glutPostRedisplay();
-				}
-			}
+			float panamount;
+			panamount = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
+			  BIGPANAMOUNT : SMALLPANAMOUNT;
+			pan(-panamount * (gs.toprightx - gs.botleftx), 0.0);
+			glutPostRedisplay();
 		}
 		break;
 	case GLUT_KEY_RIGHT:
 		{
-			float oldvcx;
-			float vw;
-			float pan;
-			if (gs.vp.width < jas_image_width(gs.image) / gs.sx) {
-				pan = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
-				  BIGPAN : SMALLPAN;
-				oldvcx = gs.vcx;
-				vw = gs.sx * gs.vp.width;
-				gs.vcx = min(gs.vcx + pan * vw, jas_image_brx(gs.image) -
-				  0.5 * vw);
-				if (gs.vcx != oldvcx) {
-					gs.dirty = 1;
-					glutPostRedisplay();
-				}
-			}
+			float panamount;
+			panamount = (glutGetModifiers() & GLUT_ACTIVE_SHIFT) ?
+			  BIGPANAMOUNT : SMALLPANAMOUNT;
+			pan(panamount * (gs.toprightx - gs.botleftx), 0.0);
+			glutPostRedisplay();
 		}
 		break;
 	default:
@@ -601,10 +510,10 @@ static void special(int key, int x, int y)
 
 /* Timer callback function. */
 
-static void timer(int value)
+static void timerfunc(int value)
 {
 	if (cmdopts.verbose) {
-		fprintf(stderr, "timer(%d)\n", value);
+		fprintf(stderr, "timerfunc(%d)\n", value);
 	}
 	if (value == gs.activetmid) {
 		nextimage();
@@ -614,6 +523,94 @@ static void timer(int value)
 /******************************************************************************\
 *
 \******************************************************************************/
+
+static void zoom(float sx, float sy)
+{
+	panzoom(0, 0, sx, sy);
+}
+
+static void pan(float dx, float dy)
+{
+	panzoom(dx, dy, 1.0, 1.0);
+}
+
+static void panzoom(float dx, float dy, float sx, float sy)
+{
+	float w;
+	float h;
+	float cx;
+	float cy;
+	int reginh;
+	int reginv;
+
+	reginh = (gs.botleftx >= 0 && gs.toprightx <= gs.vp.width);
+	reginv = (gs.botlefty >= 0 && gs.toprighty <= gs.vp.height);
+
+	if (cmdopts.verbose) {
+		fprintf(stderr, "start of panzoom\n");
+		dumpstate();
+		fprintf(stderr, "reginh=%d reginv=%d\n", reginh, reginv);
+	}
+
+	if (dx || dy) {
+		gs.botleftx += dx;
+		gs.botlefty += dy;
+		gs.toprightx += dx;
+		gs.toprighty += dy;
+	}
+
+	if (sx != 1.0 || sy != 1.0) {
+		cx = (gs.botleftx + gs.toprightx) / 2.0;
+		cy = (gs.botlefty + gs.toprighty) / 2.0;
+		w = gs.toprightx - gs.botleftx;
+		h = gs.toprighty - gs.botlefty;
+		gs.botleftx = cx - 0.5 * w / sx;
+		gs.botlefty = cy - 0.5 * h / sy;
+		gs.toprightx = cx + 0.5 * w / sx;
+		gs.toprighty = cy + 0.5 * h / sy;
+	}
+
+	if (reginh) {
+		if (gs.botleftx < 0) {
+			dx = -gs.botleftx;
+			gs.botleftx += dx;
+			gs.toprightx += dx;
+		} else if (gs.toprightx > gs.vp.width) {
+			dx = gs.vp.width - gs.toprightx;
+			gs.botleftx += dx;
+			gs.toprightx += dx;
+		}
+	}
+	if (gs.botleftx < 0 || gs.toprightx > gs.vp.width) {
+		float w;
+		w = gs.toprightx - gs.botleftx;
+		gs.botleftx = 0.5 * gs.vp.width - 0.5 * w;
+		gs.toprightx = 0.5 * gs.vp.width + 0.5 * w;
+	}
+
+	if (reginv) {
+		if (gs.botlefty < 0) {
+			dy = -gs.botlefty;
+			gs.botlefty += dy;
+			gs.toprighty += dy;
+		} else if (gs.toprighty > gs.vp.height) {
+			dy = gs.vp.height - gs.toprighty;
+			gs.botlefty += dy;
+			gs.toprighty += dy;
+		}
+	}
+	if (gs.botlefty < 0 || gs.toprighty > gs.vp.height) {
+		float h;
+		h = gs.toprighty - gs.botlefty;
+		gs.botlefty = 0.5 * gs.vp.height - 0.5 * h;
+		gs.toprighty = 0.5 * gs.vp.height + 0.5 * h;
+	}
+
+	if (cmdopts.verbose) {
+		fprintf(stderr, "end of panzoom\n");
+		dumpstate();
+	}
+}
 
 static void nextcmpt()
 {
@@ -631,7 +628,7 @@ static void nextcmpt()
 		gs.monomode = 1;
 		gs.cmptno = 0;
 	}
-	gs.dirty = 1;
+	render();
 	glutPostRedisplay();
 }
 
@@ -647,7 +644,7 @@ static void prevcmpt()
 		gs.monomode = 1;
 		gs.cmptno = jas_image_numcmpts(gs.image) - 1;
 	}
-	gs.dirty = 1;
+	render();
 	glutPostRedisplay();
 }
 
@@ -712,9 +709,9 @@ static int loadimage()
 	pathname = cmdopts.filenames[gs.filenum];
 
 	if (pathname && pathname[0] != '\0') {
-#if 1
-	fprintf(stderr, "opening %s\n", pathname);
-#endif
+		if (cmdopts.verbose) {
+			fprintf(stderr, "opening file %s\n", pathname);
+		}
 		/* The input image is to be read from a file. */
 		if (!(in = jas_stream_fopen(pathname, "rb"))) {
 			fprintf(stderr, "error: cannot open file %s\n", pathname);
@@ -723,6 +720,10 @@ static int loadimage()
 	} else {
 		/* The input image is to be read from standard input. */
 		in = streamin;
+	}
+
+	if (cmdopts.verbose) {
+		fprintf(stderr, "decoding image\n");
 	}
 
 	/* Get the input image data. */
@@ -736,25 +737,22 @@ static int loadimage()
 		jas_stream_close(in);
 	}
 
+	if (cmdopts.verbose) {
+		fprintf(stderr, "creating color profile\n");
+	}
+
 	if (!(outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB)))
 		goto error;
 	if (!(gs.altimage = jas_image_chclrspc(gs.image, outprof, JAS_CMXFORM_INTENT_PER)))
 		goto error;
 
-	if ((scrnwidth = glutGet(GLUT_SCREEN_WIDTH)) < 0) {
-		scrnwidth = 256;
-	}
-	if ((scrnheight = glutGet(GLUT_SCREEN_HEIGHT)) < 0) {
-		scrnheight = 256;
-	}
+	vw = jas_image_width(gs.image);
+	vh = jas_image_height(gs.image);
 
-	vw = min(jas_image_width(gs.image), 0.95 * scrnwidth);
-	vh = min(jas_image_height(gs.image), 0.95 * scrnheight);
-
-	gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
-	gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
-	gs.sx = 1.0;
-	gs.sy = 1.0;
+	gs.botleftx = jas_image_tlx(gs.image);
+	gs.botlefty = jas_image_tly(gs.image);
+	gs.toprightx = jas_image_brx(gs.image);
+	gs.toprighty = jas_image_bry(gs.image);
 	if (gs.altimage) {
 		gs.monomode = 0;
 	} else {
@@ -762,30 +760,26 @@ static int loadimage()
 		gs.cmptno = 0;
 	}
 
-#if 1
-	fprintf(stderr, "num of components %d\n", jas_image_numcmpts(gs.image));
-#endif
 
-	if (vw < jas_image_width(gs.image)) {
-		gs.sx = jas_image_width(gs.image) / ((float) vw);
+	if (cmdopts.verbose) {
+		fprintf(stderr, "num of components %d\n", jas_image_numcmpts(gs.image));
+		fprintf(stderr, "dimensions %d %d\n", jas_image_width(gs.image), jas_image_height(gs.image));
 	}
-	if (vh < jas_image_height(gs.image)) {
-		gs.sy = jas_image_height(gs.image) / ((float) vh);
-	}
-	if (gs.sx > gs.sy) {
-		gs.sy = gs.sx;
-	} else if (gs.sx < gs.sy) {
-		gs.sx = gs.sy;
-	}
-	vw = jas_image_width(gs.image) / gs.sx;
-	vh = jas_image_height(gs.image) / gs.sy;
-	gs.dirty = 1;
 
-	reshapeflag = 0;
+	gs.viewportwidth = vw;
+	gs.viewportheight = vh;
+	pixmap_resize(&gs.vp, vw, vh);
+	if (cmdopts.verbose) {
+		fprintf(stderr, "preparing image for viewing\n");
+	}
+	render();
+	if (cmdopts.verbose) {
+		fprintf(stderr, "done preparing image for viewing\n");
+	}
+
 	if (vw != glutGet(GLUT_WINDOW_WIDTH) ||
 	  vh != glutGet(GLUT_WINDOW_HEIGHT)) {
 		glutReshapeWindow(vw, vh);
-		reshapeflag = 1;
 	}
 	if (cmdopts.title) {
 		glutSetWindowTitle(cmdopts.title);
@@ -797,12 +791,10 @@ static int loadimage()
 	  the reshape and display callback (in this order).  Therefore, we
 	  only need to explicitly force the display callback to be invoked
 	  if the window was not reshaped. */
-	if (!reshapeflag) {
-		glutPostRedisplay();
-	}
+	glutPostRedisplay();
 
 	if (cmdopts.tmout != 0) {
-		glutTimerFunc(cmdopts.tmout, timer, gs.nexttmid);
+		glutTimerFunc(cmdopts.tmout, timerfunc, gs.nexttmid);
 		gs.activetmid = gs.nexttmid;
 		++gs.nexttmid;
 	}
@@ -830,36 +822,6 @@ static void unloadimage()
 *
 \******************************************************************************/
 
-static void adjust()
-{
-	if (gs.vp.width < jas_image_width(gs.image) / gs.sx) {
-		float mnx;
-		float mxx;
-		mnx = jas_image_tlx(gs.image) + 0.5 * gs.vp.width * gs.sx;
-		mxx = jas_image_brx(gs.image) - 0.5 * gs.vp.width * gs.sx;
-		if (gs.vcx < mnx) {
-			gs.vcx = mnx;
-		} else if (gs.vcx > mxx) {
-			gs.vcx = mxx;
-		}
-	} else {
-		gs.vcx = (jas_image_tlx(gs.image) + jas_image_brx(gs.image)) / 2.0;
-	}
-	if (gs.vp.height < jas_image_height(gs.image) / gs.sy) {
-		float mny;
-		float mxy;
-		mny = jas_image_tly(gs.image) + 0.5 * gs.vp.height * gs.sy;
-		mxy = jas_image_bry(gs.image) - 0.5 * gs.vp.height * gs.sy;
-		if (gs.vcy < mny) {
-			gs.vcy = mny;
-		} else if (gs.vcy > mxy) {
-			gs.vcy = mxy;
-		}
-	} else {
-		gs.vcy = (jas_image_tly(gs.image) + jas_image_bry(gs.image)) / 2.0;
-	}
-}
-
 static void pixmap_clear(pixmap_t *p)
 {
 	memset(p->data, 0, 4 * p->width * p->height * sizeof(GLshort));
@@ -877,7 +839,7 @@ static int pixmap_resize(pixmap_t *p, int w, int h)
 
 static void dumpstate()
 {
-	printf("vcx=%f vcy=%f sx=%f sy=%f dirty=%d\n", gs.vcx, gs.vcy, gs.sx, gs.sy, gs.dirty);
+	printf("blx=%f bly=%f trx=%f try=%f\n", gs.botleftx, gs.botlefty, gs.toprightx, gs.toprighty);
 }
 
 #define	vctocc(i, co, cs, vo, vs) \
@@ -950,8 +912,8 @@ error:
 	return -1;
 }
 
-int jas_image_render2(jas_image_t *image, int cmptno, float vtlx, float vtly,
-  float vsx, float vsy, int vw, int vh, GLshort *vdata)
+static int jas_image_render2(jas_image_t *image, int cmptno, float vtlx,
+  float vtly, float vsx, float vsy, int vw, int vh, GLshort *vdata)
 {
 	int i;
 	int j;
@@ -985,6 +947,35 @@ int jas_image_render2(jas_image_t *image, int cmptno, float vtlx, float vtly,
 	return 0;
 error:
 	return -1;
+}
+
+
+static void render()
+{
+	float vtlx;
+	float vtly;
+
+	vtlx = gs.botleftx;
+	vtly = gs.toprighty;
+	if (cmdopts.verbose) {
+//		fprintf(stderr, "vtlx=%f, vtly=%f, vsx=%f, vsy=%f\n",
+//		  vtlx, vtly, gs.sx, gs.sy);
+	}
+
+	if (gs.monomode) {
+		if (cmdopts.verbose) {
+			fprintf(stderr, "component %d\n", gs.cmptno);
+		}
+		jas_image_render2(gs.image, gs.cmptno, 0.0, 0.0,
+		  1.0, 1.0, gs.vp.width, gs.vp.height, gs.vp.data);
+	} else {
+		if (cmdopts.verbose) {
+			fprintf(stderr, "color\n");
+		}
+		jas_image_render(gs.altimage, 0.0, 0.0, 1.0, 1.0,
+		  gs.vp.width, gs.vp.height, gs.vp.data);
+	}
+
 }
 
 #if 0
@@ -1090,5 +1081,6 @@ static void init()
 	gs.vp.width = 0;
 	gs.vp.height = 0;
 	gs.vp.data = 0;
-	gs.dirty = 1;
+	gs.viewportwidth = -1;
+	gs.viewportheight = -1;
 }
