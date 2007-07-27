@@ -9,6 +9,7 @@ EXPORTS
 	jas_cmxform_apply
 	jas_cmxform_create
 	jas_cmxform_destroy
+	jas_dummy
 	jas_eprintf
 	jas_free
 	jas_getdbglevel
@@ -88,6 +89,8 @@ EXPORTS
 	jas_seq2d_bindsub
 	jas_seq2d_copy
 	jas_seq2d_create
+	jas_seq2d_input
+	jas_seq2d_output
 	jas_setdbglevel
 	jas_strdup
 	jas_stream_close
@@ -119,6 +122,9 @@ EXPORTS
 	jas_stream_write
 	jas_taginfo_nonull
 	jas_taginfos_lookup
+	jas_tmr_get
+	jas_tmr_start
+	jas_tmr_stop
 	jas_tvparser_create
 	jas_tvparser_destroy
 	jas_tvparser_gettag

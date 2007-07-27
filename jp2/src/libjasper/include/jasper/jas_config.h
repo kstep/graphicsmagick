@@ -7,7 +7,7 @@
 #define JAS_CONFIG_H
 
 /* This preprocessor symbol identifies the version of JasPer. */
-#define	JAS_VERSION "1.701.0"
+#define	JAS_VERSION "1.900.1"
 /* If configure is being used, this symbol will be defined automatically
   at this point in the configuration header file. */
 
@@ -17,7 +17,7 @@
 #if defined(_VISUALC_) && !defined(JAS_WIN_MSVC_BUILD)
 # define JAS_WIN_MSVC_BUILD
 #endif
-#ifndef	JAS_WIN_MSVC_BUILD
+#if !defined(JAS_WIN_MSVC_BUILD)
 /* A configure-based build is being used. */
 
 
@@ -39,6 +39,12 @@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
+
+/* Define to 1 if you have the `getrusage' function. */
+#define HAVE_GETRUSAGE 1
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#define HAVE_GETTIMEOFDAY 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -76,6 +82,9 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
 
+/* Define to 1 if you have the <sys/time.h> header file. */
+#define HAVE_SYS_TIME_H 1
+
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
@@ -95,7 +104,7 @@
 #define JAS_CONFIGURE 1
 
 /* JasPer version */
-#define JAS_VERSION "1.701.0"
+#define JAS_VERSION "1.900.1"
 
 /* Name of package */
 #define PACKAGE "jasper"
@@ -107,47 +116,19 @@
 #define PACKAGE_NAME "jasper"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "jasper 1.701.0"
+#define PACKAGE_STRING "jasper 1.900.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "jasper"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.701.0"
-
-/* The size of a `int', as computed by sizeof. */
-#define SIZEOF_INT 4
-
-/* The size of a `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
-
-/* The size of a `long long', as computed by sizeof. */
-#define SIZEOF_LONG_LONG 8
-
-/* The size of a `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
-
-/* The size of a `unsigned int', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_INT 4
-
-/* The size of a `unsigned long', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_LONG 4
-
-/* The size of a `unsigned long long', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_LONG_LONG 8
-
-/* The size of a `unsigned short', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_SHORT 2
+#define PACKAGE_VERSION "1.900.1"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "1.701.0"
-
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-/* #undef WORDS_BIGENDIAN */
+#define VERSION "1.900.1"
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
@@ -155,9 +136,11 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 /* #undef inline */
+#endif
 
 /* Define to `long long' if <sys/types.h> does not define. */
 #define longlong long long
