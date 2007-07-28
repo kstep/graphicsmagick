@@ -1,3 +1,9 @@
+2007-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh (PACKAGE_VERSION): Released version 1.1.8.
+	* magick/image.c (SetImage): Set is_monochrome flag if image is
+	bi-level.
+
 2007-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* bzlib: Updated bzip2 to 1.0.4.

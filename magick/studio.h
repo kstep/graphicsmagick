@@ -388,6 +388,8 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
+#define IsMonochrome(color) \
+  (IsGray(color) && ((0 == color.red) || (MaxRGB == color.red)))
 #define MagickIncarnate(x)  InitializeMagick(x)
 #define MagickEpsilon  1.0e-12
 #define MagickPI  3.14159265358979323846264338327950288419716939937510

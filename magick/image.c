@@ -5668,6 +5668,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
         break;
     }
   image->is_grayscale=IsGray(image->background_color);
+  image->is_monochrome=IsMonochrome(image->background_color);
 }
 
 /*

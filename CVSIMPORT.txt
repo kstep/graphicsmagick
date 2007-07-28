@@ -7,47 +7,59 @@ CVS user name and package version.
 
 bzlib:
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import bzip2 1.0.2' delegates/bzlib \
-    INITIAL BZIP2_1_0_2
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import bzip2 1.0.4' delegates/bzlib \
+    INITIAL BZIP2_1_0_4
 
 FreeType:
-cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import freetype 2.1.5' delegates/freetype2 \
+
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import freetype 2.1.5' delegates/freetype2 \
     FREETYPE2 FREETYPE_2_1_5
 
 jasper
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jasper 1.700.2' delegates/jp2 \
-    JASPER_DIST JASPER_1_700_2
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import jasper 1.900.1' delegates/jp2 \
+    JASPER_DIST JASPER_1_900_1
 
 jbig:
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jbigkit 1.5' delegates/jbig \
-    INITIAL JBIGKIT_1_5
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import jbigkit 1.6' delegates/jbig \
+    INITIAL JBIGKIT_1_6
 
 lcms:
   
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import lcms 1.12' delegates/lcms \
-    LCMS_DIST LCMS_1_12
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import lcms 1.16' delegates/lcms \
+    LCMS_DIST LCMS_1_16
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    checkout -j LCMS_1_15 -jLCMS_1_16 delegates/lcms
 
 png:
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libpng 1.2.5' delegates/png \
-    INITIAL LIBPNG_1_2_5
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import libpng 1.2.18' delegates/png \
+    INITIAL LIBPNG_1_2_18
 
 ralcgm:
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import ralcgm 3.50' delegates/ralcgm \
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import ralcgm 3.50' delegates/ralcgm \
     RALCGM_DIST RALCGM_3_50
+
+
+tiff:
+
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import libtiff 3.8.2' delegates/tiff \
+    INITIAL TIFF_3_8_2
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    checkout -jTIFF_3_8_0 -jTIFF_3_8_2 delegates/tiff
 
 wmf:
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import CVS libwmf 0.2.8.2' delegates/wmf \
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import CVS libwmf 0.2.8.2' delegates/wmf \
     LIBWMF_DIST LIBWMF_0_2_8_2
 
   Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_8_2' is the
@@ -55,15 +67,13 @@ wmf:
 
 xml: Note, this one may be bogus!
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libxml2 2.4.19' delegates/libxml \
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import libxml2 2.4.19' delegates/libxml \
     LIBXML_DIST LIBXML_2_4_19
 
 
 zlib:
 
-  cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import zlib 1.2.1' delegates/zlib \
-    INITIAL ZLIB_1_2_1
-
-
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -ko -m 'Import zlib 1.2.3' delegates/zlib \
+    INITIAL ZLIB_1_2_3
