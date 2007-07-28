@@ -1,6 +1,8 @@
 2007-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_VERSION): Released version 1.1.8.
+	* magick/delegate.c (InvokePostscriptDelegate): MagickSpawnVP
+	requires three arguments.
 	* magick/image.c (SetImage): Set is_monochrome flag if image is
 	bi-level.
 
