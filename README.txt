@@ -88,12 +88,7 @@ of the library-based packages listed here.
 
 * GraphicsMagick requires the BZLIB library from
 
-    http://sources.redhat.com/bzip2/
-
-      or
-
-    ftp://sources.redhat.com/pub/bzip2/
-
+    http://www.bzip.org/
 
   to read and write BZip compressed MIFF images.
 
@@ -128,7 +123,7 @@ of the library-based packages listed here.
   include/freetype/config/ftoption.h will produce better glyph
   renderings but may violate an Apple patent.
 
-* GraphicsMagick requires Ghostscript software (version 7.07 recommended)
+* GraphicsMagick requires Ghostscript software (version 8.50 recommended)
   available from
 
     http://www.cs.wisc.edu/~ghost/
@@ -201,12 +196,15 @@ of the library-based packages listed here.
   Use of lossless JPEG is not encouraged. Unless you have a requirement
   to read lossless jpeg-encoded DICOM images, please disregard the patch.
 
-* GraphicsMagick requires the JasPer Project's Jasper library version
-  1.701.0 available via http from
+* GraphicsMagick requires the JasPer Project's JasPer library version
+  1.701.0 (or later) available via http from
 
      http://www.ece.uvic.ca/~mdadams/jasper/
 
-  to read and write the JPEG-2000 format.
+  to read and write the JPEG-2000 format. Please note that JasPer 1.900.1
+  may have a problem when used with GraphicsMagick's modules build. To
+  solve this problem, edit the file src/libjasper/base/jas_init.c and
+  comment out the line which invokes atexit().
 
 * GraphicsMagick requires the MPEG utilities from the MPEG Software
   Simulation Group, which are available via anonymous FTP as
@@ -231,7 +229,7 @@ of the library-based packages listed here.
 * GraphicsMagick requires rawtorle from the Utah Raster Toolkit
   available via anonymous FTP as
 
-     ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
+     ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/urt-3.1b.tar.Z
 
   to write the RLE image format.
 
@@ -251,15 +249,7 @@ of the library-based packages listed here.
      http://www.remotesensing.org/libtiff/
 
   to read the TIFF image format. It in turn optionally requires the
-  JPEG and ZLIB libraries. In versions prior to libtiff 3.7.0,
-  support for JPEG, ZIP, and LZW compression must be explicitly
-  enabled by editing libtiff Makefiles. Since LZW was protected by
-  Unisys patent until July 7, 2004, older versions of the TIFF
-  library have not been including support for LZW compression. If you
-  need to use LZW compression and your libtiff version is not yet
-  updated to include it, support is available via a seperate LZW
-  compression kit (a patch) at the sites listed above. Libtiff 3.7.0
-  and later include LZW compression support as part of the the package.
+  JPEG and ZLIB libraries.  Libtiff 3.8.2 or later is recommended.
 
 * GraphicsMagick may optionally use the TRIO library from
 
@@ -342,12 +332,12 @@ of the library-based packages listed here.
 
 * GraphicsMagick requires the ZLIB library from
 
-     http://www.gzip.org/zlib/
+     http://www.zlib.net/
 
   to read or write the PNG or Zip compressed MIFF images.
 
 
-| Copyright (C) 2003, 2004, 2005 GraphicsMagick Group
+| Copyright (C) 2003, 2004, 2005, 2007 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 

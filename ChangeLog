@@ -1,6 +1,10 @@
 2007-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* bzlib: Updated bzip2 to 1.0.4.
+	* jbig: Updated jbigkit to 1.6
 	* jp2: Updated JasPer to 1.900.1.
+	* lcms: Updated lcms to 1.16
+	* png: Updated libpng to 1.2.18.
 
 2007-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
