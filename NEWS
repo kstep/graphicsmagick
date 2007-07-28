@@ -61,8 +61,11 @@ Significant changes associated with GraphicsMagick 1.1.8 (released TBD)
 
   Updates:
 
-    o Libtiff is updated to version 3.8.2.
     o JasPer is updated to version 1.900.1.
+    o Jbigkit is updated to version 1.6
+    o Lcms is updated to version 1.16
+    o Libpng is updated to version 1.2.18
+    o Libtiff is updated to version 3.8.2.
 
 Significant changes associated with GraphicsMagick 1.1.7 (released October 12, 2005)
 
