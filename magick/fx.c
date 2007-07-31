@@ -363,7 +363,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
          for (u=0; u<width; u++)
          {
            FormatString(cell_text,"%#12.4g",*k++);
-           (void) strncat(row_text,cell_text,12);
+           (void) strlcat(row_text,cell_text,sizeof(cell_text));
            if (u%5 == 4)
              {
                 (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -372,7 +372,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
              }
          }
          if (u > 5)
-           (void) strcat(row_text,"\n");
+           (void) strlcat(row_text,"\n",sizeof(row_text));
          if (row_text[0] != '\0')
            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                "   %.64s", row_text);

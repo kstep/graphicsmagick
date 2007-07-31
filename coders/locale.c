@@ -125,11 +125,11 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
   /*
     Read the locale configure file.
   */
-  (void) strcpy(path,basename);
+  (void) strlcpy(path,basename,sizeof(path));
   xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
     return(False);
-  (void) strcpy(locale,"/");
+  (void) strlcpy(locale,"/",sizeof(locale));
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -179,11 +179,11 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
                   char
                     filename[MaxTextExtent];
 
+                  filename[0]='\0';
                   GetPathComponent(path,HeadPath,filename);
-                  if (*filename != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
+                  if (filename[0] != '\0')
+                    (void) strlcat(filename,DirectorySeparator,sizeof(filename));
+                  (void) strlcat(filename,token,sizeof(filename));
                   (void) ReadConfigureFile(image,filename,depth+1,exception);
                 }
             }
@@ -234,8 +234,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
-              (void) strncat(locale,token,MaxTextExtent-strlen(locale)-2);
-              (void) strcat(locale,"/");
+              (void) strlcat(locale,token,sizeof(locale));
+              (void) strlcat(locale,"/",sizeof(locale));
             }
         }
         for (p=q; (*q != '<') && (*q != '\0'); q++);
@@ -243,8 +243,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           (void) strncpy(message,p,(size_t)(q-p));
           message[q-p]='\0';
           Strip(message);
-          (void) strncat(locale,message,MaxTextExtent-strlen(locale)-2);
-          (void) strcat(locale,"\n");
+          (void) strlcat(locale,message,sizeof(locale));
+          (void) strlcat(locale,"\n",sizeof(locale));
           (void) SetImageAttribute(image,"[Locale]",locale);
         }
         continue;
@@ -270,8 +270,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           }
         token[strlen(token)-1]='\0';
         (void) strcpy(token,token+1);
-        (void) strncat(locale,token,MaxTextExtent-strlen(message)-2);
-        (void) strcat(locale,"/");
+        (void) strlcat(locale,token,sizeof(locale));
+        (void) strlcat(locale,"/",sizeof(locale));
         continue;
       }
     GetToken(q,(char **) NULL,token);
@@ -599,8 +599,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
                     (void) fprintf(stderr, "out of memory!\n" );
                     exit(1);
                 }
-                (void) strncpy(xp, tp, (size_t) (np - tp));
-                xp[np - tp] = '\0';
+                (void) strlcpy(xp, tp, (size_t) (np - tp + 1));
                 tp = ++np;
 
                 if (*xloc && !(*xloc)->lower) /* skip leaf node if it's there */
@@ -834,7 +833,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
         register char
           *p;
 
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -899,7 +898,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       */
       for (i=0; i < count; i++)
       {
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -939,7 +938,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       severityindex=0;
       for (i=0; i < count; i++)
       {
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -991,7 +990,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       last[0]='\0';
       for (i=0; i < count; i++)
       {
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -1037,7 +1036,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"  {");
       for (i=0; i < count; i++)
       {
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -1071,7 +1070,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"    \"%1\",");
       for (i=0; i < count; i++)
       {
-        (void) strcpy(path,locale[i]);
+        (void) strlcpy(path,locale[i],sizeof(path));
         if (*path != '\0')
           {
             p=path+strlen(path)-1;

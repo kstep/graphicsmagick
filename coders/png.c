@@ -2611,8 +2611,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
             }
           *value='\0';
-          (void) strncat(value,text[i].text,length);
-          value[length]='\0';
+          (void) strlcat(value,text[i].text,length+1);
           (void) SetImageAttribute(image,text[i].key,value);
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),

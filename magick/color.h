@@ -39,7 +39,7 @@ extern "C" {
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define IsMonochrome(color) \
-  (IsGray(color) && ((0 == color.red) || (MaxRGB == color.red)))
+  (IsGray(color) && ((0 == (color).red) || (MaxRGB == (color).red)))
 
 /*
   Compare two colors

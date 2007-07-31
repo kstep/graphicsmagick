@@ -21,6 +21,37 @@
 </tr>
 </table>
 <p>
+2007-07-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pnm.c (ReadPNMImage): Add logging as well as support for
+        is_monochrome and is_grayscale flags.
+  <LI> magick/color.h (IsMonochrome): Add parenthesis so macro is more
+        robust.
+
+</UL>
+<p>
+2007-07-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/html.c (WriteHTMLImage): Eliminate use of strncat().
+  <LI> coders/locale.c (ReadConfigureFile): Eliminate use of strncat().
+  <LI> coders/png.c (ReadOnePNGImage): Eliminate use of strncat().
+  <LI> magick/fx.c (ConvolveImage): Eliminate use of strncat().
+  <LI> coders/tiff.c (WriteTIFFImage): Eliminate use of strncat().
+  <LI> magick/delegate.c (InvokePostscriptDelegate): Eliminate
+        doubled-output when running in verbose mode.
+
+</UL>
+<p>
+2007-07-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/delegate.c (InvokePostscriptDelegate): MagickSpawnVP()
+        requires three parameters.
+
+</UL>
+<p>
 2007-07-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

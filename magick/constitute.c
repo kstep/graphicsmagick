@@ -2951,6 +2951,7 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %    o options: Additional options specific to quantum_type (may be NULL).
 %
 */
+
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   const unsigned char *source,const ImportPixelAreaOptions *options)

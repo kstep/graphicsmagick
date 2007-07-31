@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
+#include "magick/log.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/magick.h"
@@ -292,20 +293,30 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count == 0) || (format != 'P'))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     format=ReadBlobByte(image);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Format Id: P%c",
+                          format);
     if (format == '7')
       (void) PNMInteger(image,10);
     image->columns=PNMInteger(image,10);
     image->rows=PNMInteger(image,10);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Dimensions: %lux%lu",
+                          image->columns,image->rows);
     if ((format == '1') || (format == '4'))
       max_value=1;  /* bitmap */
     else
       max_value=PNMInteger(image,10);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %lu",
+                          max_value);
     image->depth=max_value < 256 ? 8 : QuantumDepth;
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image Depth: %u",
+                          image->depth); 
     if ((format != '3') && (format != '6'))
       {
         image->storage_class=PseudoClass;
         image->colors=
           max_value >= MaxColormapSize ? MaxColormapSize : max_value+1;
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colors: %u",
+                              image->colors);
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
@@ -389,6 +400,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (EOFBlob(image))
              break;
         }
+        image->is_grayscale=MagickTrue;
+        image->is_monochrome=MagickTrue;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -396,12 +409,18 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case '2':
       {
-        unsigned long
-          intensity;
-
         /*
           Convert PGM image to pixel packets.
         */
+        unsigned long
+          intensity;
+
+        MagickBool
+          is_grayscale,
+          is_monochrome;
+
+        is_grayscale=MagickTrue;
+        is_monochrome=MagickTrue;
         for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -419,7 +438,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=intensity;
             VerifyColormapIndex(image,index);
             indexes[x]=index;
-            *q++=image->colormap[index];
+            *q=image->colormap[index];
+            is_monochrome &= IsMonochrome(*q);
+            q++;
           }
           if (EOFBlob(image))
              break;
@@ -430,6 +451,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
+        image->is_monochrome=is_monochrome;
+        image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -440,6 +463,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
+        MagickBool
+          is_grayscale,
+          is_monochrome;
+
+        is_grayscale=MagickTrue;
+        is_monochrome=MagickTrue;
         for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -462,6 +491,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->red=(Quantum) pixel.red;
             q->green=(Quantum) pixel.green;
             q->blue=(Quantum) pixel.blue;
+            is_monochrome &= IsMonochrome(*q);
+            is_grayscale &= IsGray(*q);
             q++;
           }
           if (EOFBlob(image))
@@ -473,6 +504,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
+        image->is_monochrome=is_monochrome;
+        image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -518,6 +551,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
+        image->is_grayscale=MagickTrue;
+        image->is_monochrome=MagickTrue;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -529,6 +564,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
+        MagickBool
+          is_grayscale,
+          is_monochrome;
+
+        is_grayscale=MagickTrue;
+        is_monochrome=MagickTrue;
         packets=image->depth <= 8 ? 1 : 2;
         pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
@@ -556,7 +597,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=0;
                 }
               indexes[x]=index;
-              *q++=image->colormap[index];
+              *q=image->colormap[index];
+              is_monochrome &= IsMonochrome(*q);
+              q++;
             }
           else
             {
@@ -568,7 +611,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (EOFBlob(image))
                   break;
                 indexes[x]=index;
-                *q++=image->colormap[index];
+                *q=image->colormap[index];
+                is_monochrome &= IsMonochrome(*q);
+                q++;
               }
               if (EOFBlob(image))
                 break;
@@ -581,6 +626,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         MagickFreeMemory(pixels);
+        image->is_monochrome=is_monochrome;
+        image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -591,6 +638,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PPM raw raster image to pixel packets.
         */
+        MagickBool
+          is_grayscale,
+          is_monochrome;
+
+        is_grayscale=MagickTrue;
+        is_monochrome=MagickTrue;
         packets=image->depth <= 8 ? 3 : 6;
         pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
@@ -622,6 +675,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=(Quantum) pixel.red;
               q->green=(Quantum) pixel.green;
               q->blue=(Quantum) pixel.blue;
+              is_monochrome &= IsMonochrome(*q);
+              is_grayscale &= IsGray(*q);
               q++;
             }
           else
@@ -643,6 +698,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=(Quantum) pixel.red;
               q->green=(Quantum) pixel.green;
               q->blue=(Quantum) pixel.blue;
+              is_monochrome &= IsMonochrome(*q);
+              is_grayscale &= IsGray(*q);
               q++;
             }
           if (!SyncImagePixels(image))
@@ -655,6 +712,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickFreeMemory(pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
+        image->is_monochrome=is_monochrome;
+        image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);

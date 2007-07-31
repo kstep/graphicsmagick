@@ -747,14 +747,12 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
 #endif
   if (gs_func == (GhostscriptVectors *) NULL)
     {
-      if (verbose)
-        (void) fputs(command,stdout);
 #if defined(POSIX)
       {
         int arg_count;
         char **arg_array;
         arg_array = StringToArgv(command,&arg_count);
-        return MagickSpawnVP(arg_array[1],arg_array+1);
+        return MagickSpawnVP(verbose,arg_array[1],arg_array+1);
       }
 #else
       return(SystemCommand(verbose,command));

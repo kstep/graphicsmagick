@@ -250,7 +250,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) strlcpy(url,image_info->magick,MaxTextExtent);
           (void) strlcat(url,":",MaxTextExtent);
           url[strlen(url)+p-image->filename]='\0';
-          (void) strncat(url,image->filename,(size_t)(p-image->filename));
+          (void) strlcat(url,image->filename,(size_t)(p-image->filename+1));
           (void) strlcpy(image->filename,p,MaxTextExtent);
         }
     }

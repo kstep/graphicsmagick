@@ -2918,17 +2918,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     'B'  force MSB to LSB bit order (normal)
     '8'  64-bit offsets (BigTIFF)
   */
-  (void) strncpy(open_flags, "w", sizeof(open_flags));
+  (void) strlcpy(open_flags, "w", sizeof(open_flags));
   switch (image_info->endian)
     {
     case LSBEndian:
-      (void) strncat(open_flags, "l", sizeof(open_flags));
+      (void) strlcat(open_flags, "l", sizeof(open_flags));
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Using little endian byte order");
       break;
     case MSBEndian:
-      (void) strncat(open_flags, "b", sizeof(open_flags));
+      (void) strlcat(open_flags, "b", sizeof(open_flags));
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Using big endian byte order");
@@ -2943,7 +2943,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(HasBigTIFF)
   if (strcmp(image_info->magick,"BIGTIFF") == 0)
     {
-      (void) strncat(open_flags, "8", sizeof(open_flags));
+      (void) strlcat(open_flags, "8", sizeof(open_flags));
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Using 64-bit offsets (BigTIFF format)");
