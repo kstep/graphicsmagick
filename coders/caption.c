@@ -116,7 +116,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         length;
 
       /*
-        Read caption.
+        Read caption from file.
       */
       (void) strlcpy(image->filename,image_info->filename+1,MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -169,7 +169,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   /*
     Draw caption.
   */
-  (void) strcpy(draw_info->text,caption);
+  (void) CloneString(&draw_info->text,caption);
   FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   draw_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,draw_info);

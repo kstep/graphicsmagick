@@ -1,5 +1,9 @@
 2007-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ImportImagePixelArea): Improved read speed
+	for bilevel gray image.  Many thanks to Mark Mitchell for
+	inspiration and ideas.
+	* coders/caption.c (ReadCAPTIONImage): Eliminate use of strcpy().
 	* coders/pnm.c (ReadPNMImage): Add logging as well as support for
 	is_monochrome and is_grayscale flags.
 	* magick/color.h (IsMonochrome): Add parenthesis so macro is more

@@ -72,6 +72,9 @@ typedef enum {
   IDispatchType
 } DispatchType;
 
+static const PixelPacket BlackPixel = {0, 0, 0, OpaqueOpacity};
+
+static const PixelPacket WhitePixel = {MaxRGB, MaxRGB, MaxRGB, OpaqueOpacity};
 
 static SemaphoreInfo
   *constitute_semaphore = (SemaphoreInfo *) NULL;
@@ -3228,20 +3231,28 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             /*
                               Special fast support for bi-level gray.
                             */
-                            register int
+                           register int
                               bit = 8;
+
+                            PixelPacket
+                              min_val,
+                              max_val;
+                              
+                            if (grayscale_miniswhite)
+                              {
+                                min_val=WhitePixel;
+                                max_val=BlackPixel;
+                              }
+                            else
+                              {
+                                min_val=BlackPixel;
+                                max_val=WhitePixel;
+                              }
 
                             for (x = number_pixels ; x > 0 ; --x )
                               {
                                 --bit;
-                                unsigned_value=(*p >> bit) & 0x01;
-                                if (grayscale_miniswhite)
-                                  unsigned_value ^= 0x01;
-                                if (unsigned_value)
-                                  unsigned_value=MaxRGB;
-                                q->red=q->green=q->blue=unsigned_value;
-                                q->opacity=0U;
-                                q++;
+                                *q++=(((*p >> bit) & 0x01) ? max_val : min_val);
                                 if (bit == 0)
                                   {
                                     bit=8;
