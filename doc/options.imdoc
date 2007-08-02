@@ -4373,9 +4373,11 @@ and truecolor, the encoder will try to choose an efficient subformat.
 The <s>-type</s> option can be used to overrride this behavior.  For
 example, to prevent a JPEG from being written in grayscale format even
 though only gray pixels are present, use</pp>
+
 <pre>
     convert bird.pgm -type TrueColor bird.jpg
 </pre>
+
 <pp>
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
 to write an alpha channel even though the image is opaque, if the
@@ -4383,9 +4385,18 @@ output format supports transparency.</pp>
 <pp>Some pseudo-formats (e.g. the XC format) will respect the requested
 type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use</pp>
+
 <pre>
     convert -size 640x480 -type TrueColor xc:red red.miff
 </pre>
+
+<pp>
+Likewise, specify <s>-type</s> <s>Bilevel</s>, <s>Grayscale</s>,
+<s>TrueColor</s>, or <s>TrueColorMatte</s> prior to reading a Postscript
+(or PDF file) in order to influence the type of image that Ghostcript
+returns. Reading performance will be dramatically improved for
+black/white Postscript if <s>Bilevel</s> is specified, and will be
+considerably faster if <s>Grayscale</s> is specified.</pp>
 
 </utils>
 

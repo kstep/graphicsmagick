@@ -931,7 +931,7 @@ typedef struct _ImageInfo
     colorspace;              /* Colorspace representations of image pixels */
 
   ImageType
-    type;                    /* Desired image type (used while writing) */
+    type;                    /* Desired image type (used while reading or writing) */
 
   long
     group;                   /* X11 window group ID */

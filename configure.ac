@@ -2471,7 +2471,7 @@ then
   AC_MSG_RESULT($GSVersion)
 
   # GSColorDevice
-  AC_MSG_CHECKING(for gs color device)
+  AC_MSG_CHECKING([for gs color device])
   if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSColorDevice=pnmraw
@@ -2485,8 +2485,28 @@ then
   fi
   AC_MSG_RESULT($GSColorDevice)
 
+  # GSColorAlphaDevice
+  AC_MSG_CHECKING([for gs color+alpha device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSColorAlphaDevice=pngalpha
+  else
+    GSColorAlphaDevice=$GSColorDevice
+  fi
+  AC_MSG_RESULT($GSColorAlphaDevice)
+
+  # GSGrayDevice
+  AC_MSG_CHECKING([for gs gray device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSGrayDevice=pgmraw
+  else
+    GSGrayDevice=ppmraw
+  fi
+  AC_MSG_RESULT($GSGrayDevice)
+
   # GSMonoDevice
-  AC_MSG_CHECKING(for gs mono device)
+  AC_MSG_CHECKING([for gs mono device])
   if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSMonoDevice=pbmraw
@@ -2496,7 +2516,7 @@ then
   AC_MSG_RESULT($GSMonoDevice)
 
   # GSPDFDevice
-  AC_MSG_CHECKING(for gs PDF writing device)
+  AC_MSG_CHECKING([for gs PDF writing device])
   if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPDFDevice=pdfwrite
@@ -2506,7 +2526,7 @@ then
   AC_MSG_RESULT($GSPDFDevice)
 
   # GSPSDevice
-  AC_MSG_CHECKING(for gs PS writing device)
+  AC_MSG_CHECKING([for gs PS writing device])
   if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPSDevice=pswrite
@@ -2516,7 +2536,7 @@ then
   AC_MSG_RESULT($GSPSDevice)
 
   # GSEPSDevice
-  AC_MSG_CHECKING(for gs EPS writing device)
+  AC_MSG_CHECKING([for gs EPS writing device])
   if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSEPSDevice=epswrite
@@ -2528,9 +2548,11 @@ then
 fi
 
 AC_SUBST(GSMonoDevice)
+AC_SUBST(GSGrayDevice)
+AC_SUBST(GSColorDevice)
+AC_SUBST(GSColorAlphaDevice)
 AC_SUBST(GSPDFDevice)
 AC_SUBST(GSPSDevice)
-AC_SUBST(GSColorDevice)
 AC_SUBST(GSEPSDevice)
 AC_SUBST(GSVersion)
 

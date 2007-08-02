@@ -96,7 +96,9 @@ extern MagickExport char
 
 extern MagickExport const DelegateInfo
   *GetDelegateInfo(const char *decode,const char *encode,
-                   ExceptionInfo *exception);
+                   ExceptionInfo *exception),
+  *GetPostscriptDelegateInfo(const ImageInfo *image_info,
+                   unsigned int *antialias, ExceptionInfo *exception);
 
 extern MagickExport DelegateInfo
   *SetDelegateInfo(DelegateInfo *);

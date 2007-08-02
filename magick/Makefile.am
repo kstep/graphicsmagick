@@ -235,7 +235,6 @@ MAGICK_NOINST_HDRS = \
 	magick/bit_stream.h \
 	magick/display.h \
 	magick/locale_c.h \
-	magick/mac.h \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
@@ -245,18 +244,14 @@ MAGICK_NOINST_HDRS = \
 	magick/static.h \
 	magick/studio.h \
 	magick/unix_port.h \
-	magick/tempfile.h \
-	magick/vms.h
+	magick/tempfile.h
 
 MAGICK_EXTRA_DIST = \
 	magick/GraphicsMagick-config.in \
 	$(MAGICK_MANS) \
 	magick/GraphicsMagick.pc.in \
-	magick/Make.com \
-	magick/mac.c \
 	magick/nt_base.c \
-	magick/nt_feature.c \
-	magick/vms.c
+	magick/nt_feature.c
 
 # Install magick_config_api.h as magick_config.h
 MAGICK_INSTALL_DATA_LOCAL_TARGETS = magick-install-data-local

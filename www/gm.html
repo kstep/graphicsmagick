@@ -4265,6 +4265,13 @@ a DirectClass solid color canvas image rather than PsuedoClass, use</font></td><
 <pre>
     gm convert -size 640x480 -type TrueColor xc:red red.miff
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Likewise, specify <strong>-type</strong> <strong>Bilevel</strong>, <strong>Grayscale</strong>,
+<strong>TrueColor</strong>, or <strong>TrueColorMatte</strong> prior to reading a Postscript
+(or PDF file) in order to influence the type of image that Ghostcript
+returns. Reading performance will be dramatically improved for
+black/white Postscript if <strong>Bilevel</strong> is specified, and will be
+considerably faster if <strong>Grayscale</strong> is specified.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

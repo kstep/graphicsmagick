@@ -34,16 +34,28 @@
     %#  input image signature
     %b  image file size
     %c  input image comment
+    %d  original filename directory part
+    %e  original filename extension part
+    %f  original filename
+    %t  original filename top (base) part
     %g  window group
     %h  image rows (height)
     %k  input image number colors
-    %m  input image format
+    %l  input image label
+    %m  input image format ("magick")
+    %n  input image number of scenes
     %p  page number
     %q  input image depth
+    %r  input image storage class, colorspace, and matte
     %s  scene number
     %w  image columns (width)
     %x  input image x resolution
     %y  input image y resolution
+    %[  input image attribute (e.g. "%[EXIF:Orientation]")
+    %%  pass through literal %
+
+  Use 'gm convert -list delegates' to verify how the contents of this
+  file has been parsed.
 
  -->
 <delegatemap>
@@ -63,8 +75,19 @@
   <delegate decode="fig" command='/usr/X11R6/bin/fig2dev -L ps "%i" "%o"' />
   <delegate decode="gplt" command='/bin/echo "set size 1.25,0.62
     set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
-  <delegate decode="gs-color" restrain="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" restrain="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+
+  <!-- Read monochrome Postscript, EPS, and PDF  -->
+  <delegate decode="gs-mono" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read grayscale Postscript, EPS, and PDF  -->
+  <delegate decode="gs-gray" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSGrayDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read color Postscript, EPS, and PDF  -->
+  <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read color+alpha Postscript, EPS, and PDF  -->
+  <delegate decode="gs-color+alpha" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorAlphaDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
   <delegate decode="hpgl" command='"@HPGLDecodeDelegate@" -q -m eps -f "%o" "%i"' />
   <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />

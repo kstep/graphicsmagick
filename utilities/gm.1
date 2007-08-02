@@ -3058,6 +3058,13 @@ type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use
 
     gm convert -size 640x480 -type TrueColor xc:red red.miff
+
+Likewise, specify \fB-type\fP \fBBilevel\fP, \fBGrayscale\fP,
+\fBTrueColor\fP, or \fBTrueColorMatte\fP prior to reading a Postscript
+(or PDF file) in order to influence the type of image that Ghostcript
+returns. Reading performance will be dramatically improved for
+black/white Postscript if \fBBilevel\fP is specified, and will be
+considerably faster if \fBGrayscale\fP is specified.
 .TP
 .B "-update \fI<seconds>"\fP
 \fR

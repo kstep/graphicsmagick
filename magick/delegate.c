@@ -315,6 +315,64 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P o s t s c r i p t D e l e g a t e I n f o                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPostscriptDelegateInfo returns the Postscript delegate which
+%  best supports the image type requested via ImageInfo
+%
+%  The format of the GetPostscriptDelegateInfo method is:
+%
+%      const DelegateInfo *(const ImageInfo *image_info,
+%                           ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The 'monochrome' and 'type' fields of image_info are used
+%                  to select the best postscript delegate type.
+%
+%    o antialias: Set to best antialias setting for this delegate based on
+%                 user requested antialias setting, and rendering depth.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *image_info,
+                                                           unsigned int *antialias,
+                                                           ExceptionInfo *exception)
+{
+  char
+    delegate[MaxTextExtent];
+
+  strlcpy(delegate,"gs-color",sizeof(delegate));
+  *antialias=(image_info->antialias ? 4 : 1);
+  if ((image_info->monochrome) || (BilevelType == image_info->type))
+    {
+      strlcpy(delegate,"gs-mono",sizeof(delegate));
+      *antialias=1;
+    }
+  else if (GrayscaleType == image_info->type)
+    {
+      strlcpy(delegate,"gs-gray",sizeof(delegate));
+    }
+  else if ((GrayscaleMatteType == image_info->type) ||
+           (PaletteMatteType == image_info->type) ||
+           (TrueColorMatteType == image_info->type))
+    {
+      strlcpy(delegate,"gs-color+alpha",sizeof(delegate));
+    }
+  return GetDelegateInfo(delegate,(char *) NULL,exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n v o k e D e l e g a t e                                               %
 %                                                                             %
 %                                                                             %

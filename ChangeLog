@@ -1,3 +1,11 @@
+2007-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* config/delegates.mgk.in, VisualMagick/bin/delegates.mgk: Added
+	gs-gray and gs-color+alpha delegate definitions.
+	* coders/{ept.c, pdf.c, ps.c}: Respect a -type Bilevel, Grayscale,
+	TrueColor, or TrueColorMatte request by passing appropriate
+	options to Ghostscript for rendering..
+
 2007-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ImportImagePixelArea): Improved read speed

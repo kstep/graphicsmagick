@@ -82,10 +82,19 @@
   <delegate decode="eps" encode="ps" mode="bi" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ "-sOutputFile=%o" -- "%i" -c quit' />
   <delegate decode="fig" command='"@FIGDecodeDelegate@" -L ps "%i" "%o"' />
   <delegate decode="gplt" command='"@EchoDelegate@" "set size 1.25,0.62; set terminal postscript portrait color solid; set output "%o"; load "%i"" > "%u"; "@GnuplotDecodeDelegate@" "%u"' />
-  <!-- Read color Postscript, EPS, and PDF  -->
-  <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
   <!-- Read monochrome Postscript, EPS, and PDF  -->
   <delegate decode="gs-mono" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read grayscale Postscript, EPS, and PDF  -->
+  <delegate decode="gs-gray" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSGrayDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read color Postscript, EPS, and PDF  -->
+  <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
+  <!-- Read color+alpha Postscript, EPS, and PDF  -->
+  <delegate decode="gs-color+alpha" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorAlphaDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+
   <delegate decode="hpg" command='"@HPGLDecodeDelegate@" -q -m eps -f `basename "%o"` "%i" && mv -f `basename "%o"` "%o"' />
   <delegate decode="hpgl" command='"@HPGLDecodeDelegate@" -q -m eps -f `basename "%o"` "%i" && mv -f `basename "%o"` "%o"' />
   <!-- Read HTML file  -->
@@ -101,7 +110,7 @@
   <delegate encode="mpeg-encode" stealth="True" command='"@MPEGEncodeDelegate@" "%i" "%o"' />
   <!-- Convert PDF to Encapsulated Poscript using Ghostscript -->
   <delegate decode="pdf" encode="eps" mode="bi" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSEPSDevice@ "-sOutputFile=%o" -- "%i" -c quit' />
-  <!-- Convert PDF to Poscript using Ghostscript -->
+  <!-- Convert PDF to Postcript using Ghostscript -->
   <delegate decode="pdf" encode="ps" mode="bi" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ "-sOutputFile=%o" -- "%i" -c quit' />
   <!-- Convert PNM file to ILBM format using ppmtoilbm -->
   <delegate decode="pnm" encode="ilbm" mode="encode" command='"@ILBMEncodeDelegate@" -24if "%i" > "%o"' />

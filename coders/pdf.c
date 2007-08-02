@@ -304,6 +304,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count,
     status;
 
+  unsigned int
+    antialias=4;
+
   RectangleInfo
     box,
     page;
@@ -329,18 +332,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (image_info->monochrome)
-    {
-      delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
-        return((Image *) NULL);
-    }
-  else
-    {
-      delegate_info=GetDelegateInfo("gs-color",(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
-        return((Image *) NULL);
-    }
+
+  /*
+    Select Postscript delegate driver
+  */
+  delegate_info=GetPostscriptDelegateInfo(image_info,&antialias,exception);
+  if (delegate_info == (const DelegateInfo *) NULL)
+    return((Image *) NULL);
   /*
     Open image file.
   */
@@ -449,8 +447,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(clone_info->filename);
     }
-  FormatString(command,delegate_info->commands,clone_info->antialias ? 4 : 1,
-    clone_info->antialias ? 4 : 1,geometry,density,options,clone_info->filename,
+  FormatString(command,delegate_info->commands,antialias,
+    antialias,geometry,density,options,clone_info->filename,
     postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(clone_info->verbose,command);

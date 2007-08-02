@@ -1096,9 +1096,11 @@ RPM
 HAS_RPM_TRUE
 HAS_RPM_FALSE
 GSMonoDevice
+GSGrayDevice
+GSColorDevice
+GSColorAlphaDevice
 GSPDFDevice
 GSPSDevice
-GSColorDevice
 GSEPSDevice
 GSVersion
 PERL
@@ -8259,13 +8261,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:8262: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:8264: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8265: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:8267: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8268: output\"" >&5)
+  (eval echo "\"\$as_me:8270: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8918,7 +8920,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 8921 "configure"
+#line 8923 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11036,7 +11038,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 11039 "configure"' > conftest.$ac_ext
+  echo '#line 11041 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11600,11 +11602,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11603: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11605: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11607: \$? = $ac_status" >&5
+   echo "$as_me:11609: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11922,11 +11924,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11925: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11927: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11929: \$? = $ac_status" >&5
+   echo "$as_me:11931: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12027,11 +12029,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12030: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12032: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12034: \$? = $ac_status" >&5
+   echo "$as_me:12036: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12082,11 +12084,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12085: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12087: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12089: \$? = $ac_status" >&5
+   echo "$as_me:12091: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14791,7 +14793,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14794 "configure"
+#line 14796 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14891,7 +14893,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14894 "configure"
+#line 14896 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17644,11 +17646,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17647: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17649: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17651: \$? = $ac_status" >&5
+   echo "$as_me:17653: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17743,11 +17745,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17746: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17748: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17750: \$? = $ac_status" >&5
+   echo "$as_me:17752: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17795,11 +17797,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17798: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17800: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17802: \$? = $ac_status" >&5
+   echo "$as_me:17804: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -37927,6 +37929,30 @@ echo $ECHO_N "checking for gs color device... $ECHO_C" >&6; }
   { echo "$as_me:$LINENO: result: $GSColorDevice" >&5
 echo "${ECHO_T}$GSColorDevice" >&6; }
 
+  # GSColorAlphaDevice
+  { echo "$as_me:$LINENO: checking for gs color+alpha device" >&5
+echo $ECHO_N "checking for gs color+alpha device... $ECHO_C" >&6; }
+  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSColorAlphaDevice=pngalpha
+  else
+    GSColorAlphaDevice=$GSColorDevice
+  fi
+  { echo "$as_me:$LINENO: result: $GSColorAlphaDevice" >&5
+echo "${ECHO_T}$GSColorAlphaDevice" >&6; }
+
+  # GSGrayDevice
+  { echo "$as_me:$LINENO: checking for gs gray device" >&5
+echo $ECHO_N "checking for gs gray device... $ECHO_C" >&6; }
+  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSGrayDevice=pgmraw
+  else
+    GSGrayDevice=ppmraw
+  fi
+  { echo "$as_me:$LINENO: result: $GSGrayDevice" >&5
+echo "${ECHO_T}$GSGrayDevice" >&6; }
+
   # GSMonoDevice
   { echo "$as_me:$LINENO: checking for gs mono device" >&5
 echo $ECHO_N "checking for gs mono device... $ECHO_C" >&6; }
@@ -37976,6 +38002,8 @@ echo $ECHO_N "checking for gs EPS writing device... $ECHO_C" >&6; }
 echo "${ECHO_T}$GSEPSDevice" >&6; }
 
 fi
+
+
 
 
 
@@ -40046,9 +40074,11 @@ RPM!$RPM$ac_delim
 HAS_RPM_TRUE!$HAS_RPM_TRUE$ac_delim
 HAS_RPM_FALSE!$HAS_RPM_FALSE$ac_delim
 GSMonoDevice!$GSMonoDevice$ac_delim
+GSGrayDevice!$GSGrayDevice$ac_delim
+GSColorDevice!$GSColorDevice$ac_delim
+GSColorAlphaDevice!$GSColorAlphaDevice$ac_delim
 GSPDFDevice!$GSPDFDevice$ac_delim
 GSPSDevice!$GSPSDevice$ac_delim
-GSColorDevice!$GSColorDevice$ac_delim
 GSEPSDevice!$GSEPSDevice$ac_delim
 GSVersion!$GSVersion$ac_delim
 PERL!$PERL$ac_delim
@@ -40071,7 +40101,7 @@ MAGICK_API_LIBS!$MAGICK_API_LIBS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 61; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 63; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

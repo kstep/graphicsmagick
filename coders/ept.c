@@ -161,6 +161,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     c,
     status;
 
+  unsigned int
+    antialias=4;
+
   ExtendedSignedIntegralType
     filesize;
 
@@ -188,18 +191,13 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (image_info->monochrome)
-    {
-      delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
-        return((Image *) NULL);
-    }
-  else
-    {
-      delegate_info=GetDelegateInfo("gs-color",(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
-        return((Image *) NULL);
-    }
+
+  /*
+    Select Postscript delegate driver
+  */
+  delegate_info=GetPostscriptDelegateInfo(image_info,&antialias,exception);
+  if (delegate_info == (const DelegateInfo *) NULL)
+    return((Image *) NULL);
   /*
     Open image file.
   */
@@ -322,8 +320,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderTemporaryFileException(image_info->filename);
     }
-  FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
-    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
+  FormatString(command,delegate_info->commands,antialias,
+    antialias,geometry,density,options,image_info->filename,
     postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(image_info->verbose,command);
