@@ -657,7 +657,7 @@
 <lopt>-trim</opt>
 <abs>trim an image</abs>
 </utils>
-<utils apps=composite,convert,mogrify,montage>
+<utils apps=animate,composite,convert,display,mogrify,montage>
 <lopt>-type <type></opt>
 <abs>the image type</abs>
 </utils>

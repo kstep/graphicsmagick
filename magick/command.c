@@ -294,6 +294,7 @@ static void AnimateUsage(void)
       "-size geometry       width and height of image",
       "-treedepth value     color tree depth",
       "-trim                trim image edges",
+      "-type type           image type",
       "-verbose             print detailed information about the image",
       "-version             print version information",
       "-visual type         display image using this visual type",
@@ -1113,7 +1114,44 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("trim",option+1) == 0)
-          break;
+          {
+            break;
+          }
+        if (LocaleCompare("type",option+1) == 0)
+          {
+            resource_info.image_info->type=UndefinedType;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+                option=argv[i];
+                if (LocaleCompare("Bilevel",option) == 0)
+                  resource_info.image_info->type=BilevelType;
+                if (LocaleCompare("Grayscale",option) == 0)
+                  resource_info.image_info->type=GrayscaleType;
+                if (LocaleCompare("GrayscaleMatte",option) == 0)
+                  resource_info.image_info->type=GrayscaleMatteType;
+                if (LocaleCompare("Palette",option) == 0)
+                  resource_info.image_info->type=PaletteType;
+                if (LocaleCompare("PaletteMatte",option) == 0)
+                  resource_info.image_info->type=PaletteMatteType;
+                if (LocaleCompare("TrueColor",option) == 0)
+                  resource_info.image_info->type=TrueColorType;
+                if (LocaleCompare("TrueColorMatte",option) == 0)
+                  resource_info.image_info->type=TrueColorMatteType;
+                if (LocaleCompare("ColorSeparation",option) == 0)
+                  resource_info.image_info->type=ColorSeparationType;
+                if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                  resource_info.image_info->type=ColorSeparationMatteType;
+                if (LocaleCompare("Optimize",option) == 0)
+                  resource_info.image_info->type=OptimizeType;
+                if (resource_info.image_info->type == UndefinedType)
+                  MagickFatalError(OptionFatalError,UnrecognizedImageType,
+                                   option);
+              }
+            break;
+          }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
         break;
       }
@@ -5087,6 +5125,7 @@ static void DisplayUsage(void)
       "-texture filename    name of texture to tile onto the image background",
       "-treedepth value     color tree depth",
       "-trim                trim image edges",
+      "-type type           image type",
       "-update seconds      detect when image file is modified and redisplay",
       "-verbose             print detailed information about the image",
       "-version             print version information",
@@ -6333,7 +6372,44 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("trim",option+1) == 0)
-          break;
+          {
+            break;
+          }
+        if (LocaleCompare("type",option+1) == 0)
+          {
+            resource_info.image_info->type=UndefinedType;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+                option=argv[i];
+                if (LocaleCompare("Bilevel",option) == 0)
+                  resource_info.image_info->type=BilevelType;
+                if (LocaleCompare("Grayscale",option) == 0)
+                  resource_info.image_info->type=GrayscaleType;
+                if (LocaleCompare("GrayscaleMatte",option) == 0)
+                  resource_info.image_info->type=GrayscaleMatteType;
+                if (LocaleCompare("Palette",option) == 0)
+                  resource_info.image_info->type=PaletteType;
+                if (LocaleCompare("PaletteMatte",option) == 0)
+                  resource_info.image_info->type=PaletteMatteType;
+                if (LocaleCompare("TrueColor",option) == 0)
+                  resource_info.image_info->type=TrueColorType;
+                if (LocaleCompare("TrueColorMatte",option) == 0)
+                  resource_info.image_info->type=TrueColorMatteType;
+                if (LocaleCompare("ColorSeparation",option) == 0)
+                  resource_info.image_info->type=ColorSeparationType;
+                if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                  resource_info.image_info->type=ColorSeparationMatteType;
+                if (LocaleCompare("Optimize",option) == 0)
+                  resource_info.image_info->type=OptimizeType;
+                if (resource_info.image_info->type == UndefinedType)
+                  MagickFatalError(OptionFatalError,UnrecognizedImageType,
+                                   option);
+              }
+            break;
+          }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
         break;
       }

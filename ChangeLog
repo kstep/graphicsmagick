@@ -1,5 +1,8 @@
 2007-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (AnimateImageCommand): Add support for -type to
+	'animate'.
+	(DisplayImageCommand): Add support for -type to 'convert'
 	* config/delegates.mgk.in, VisualMagick/bin/delegates.mgk: Added
 	gs-gray and gs-color+alpha delegate definitions.
 	* coders/{ept.c, pdf.c, ps.c}: Respect a -type Bilevel, Grayscale,
