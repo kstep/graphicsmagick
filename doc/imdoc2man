@@ -2,7 +2,7 @@
 
 # imdoc2man utility utility.imdoc > utility.1
 
-echo ".TH $1 1 \"Date: 2003/01/01 01:00:00\" \"ImageMagick\""
+echo ".TH $1 1 \"`date '+%Y/%m/%d'`\" \"GraphicsMagick\""
 
 /usr/bin/sed  "
    : begin
