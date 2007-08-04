@@ -1,3 +1,11 @@
+2007-08-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/version.h.in: Added wrapping for copyright line to a
+	reasonable width.
+	* AUTHORS: Added Daniel Kobras.
+	* magick/command.c (VersionCommand): Added feature support list to
+	-version output.
+
 2007-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (AnimateImageCommand): Add support for -type to

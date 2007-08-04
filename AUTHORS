@@ -73,7 +73,8 @@ Jaroslav Fojtik
                 coder modules.
 
 Kelly Bergougnoux
-		Authored the Cineon coder.
+		Authored the initial Cineon coder (which has since been
+		replaced).
 
 Christopher R. Hawks
 		Authored the PALM coder.
@@ -108,6 +109,10 @@ Milan Votava
 
 Mike Edmonds
 		Contributed the median filter algorithm.
+
+Daniel Kobras
+		Provided many security patches and fixes from the Debian
+		project.
 
 Additional Acknowledgements
 ===========================
