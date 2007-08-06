@@ -46,6 +46,7 @@
 #include "magick/log.h"
 #include "magick/map.h"
 #include "magick/magick.h"
+#include "magick/magick_endian.h"
 #include "magick/module.h"
 #include "magick/pixel_cache.h"
 #include "magick/resource.h"
@@ -2933,31 +2934,15 @@ MagickExport double ReadBlobLSBdouble(Image * image)
     unsigned char chars[8];
   } dbl_buffer;
 
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(sizeof(dbl_buffer) == sizeof(double));
 
   if (ReadBlob(image, 8, dbl_buffer.chars) != 8)
-    return (0.0);
+    dbl_buffer.d = 0.0;
 
 #if defined(WORDS_BIGENDIAN)
-  {
-    char
-      c;
-    
-    c = dbl_buffer.chars[0];
-    dbl_buffer.chars[0] = dbl_buffer.chars[7];
-    dbl_buffer.chars[7] = c;
-    c = dbl_buffer.chars[1];
-    dbl_buffer.chars[1] = dbl_buffer.chars[6];
-    dbl_buffer.chars[6] = c;
-    c = dbl_buffer.chars[2];
-    dbl_buffer.chars[2] = dbl_buffer.chars[5];
-    dbl_buffer.chars[5] = c;
-    c = dbl_buffer.chars[3];
-    dbl_buffer.chars[3] = dbl_buffer.chars[4];
-    dbl_buffer.chars[4] = c;
-  }
+  MagickSwabDouble(&dbl_buffer.d);
 #endif
 
   return (dbl_buffer.d);
@@ -3107,32 +3092,16 @@ MagickExport double ReadBlobMSBdouble(Image * image)
     double d;
     unsigned char chars[8];
   } dbl_buffer;
-
+  
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(sizeof(dbl_buffer) == sizeof(double));
 
   if (ReadBlob(image, 8, dbl_buffer.chars) != 8)
-    return (0.0);
+    dbl_buffer.d = 0.0;
 
 #if !defined(WORDS_BIGENDIAN)
-  {
-    char
-      c;
-    
-    c = dbl_buffer.chars[0];
-    dbl_buffer.chars[0] = dbl_buffer.chars[7];
-    dbl_buffer.chars[7] = c;
-    c = dbl_buffer.chars[1];
-    dbl_buffer.chars[1] = dbl_buffer.chars[6];
-    dbl_buffer.chars[6] = c;
-    c = dbl_buffer.chars[2];
-    dbl_buffer.chars[2] = dbl_buffer.chars[5];
-    dbl_buffer.chars[5] = c;
-    c = dbl_buffer.chars[3];
-    dbl_buffer.chars[3] = dbl_buffer.chars[4];
-    dbl_buffer.chars[4] = c;
-  }
+  MagickSwabDouble(&dbl_buffer.d);
 #endif
 
   return (dbl_buffer.d);
