@@ -2903,6 +2903,71 @@ MagickExport int ReadBlobByte(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b L S B D o u b l e                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBDouble reads a double value as a 64 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the ReadBlobLSBDouble method is:
+%
+%      double ReadBlobLSBDouble(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBDouble returns a double read from
+%      the file.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport double ReadBlobLSBdouble(Image * image)
+{
+  union
+  {
+    double d;
+    unsigned char chars[8];
+  } dbl_buffer;
+
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (ReadBlob(image, 8, dbl_buffer.chars) != 8)
+    return (0.0);
+
+#if defined(WORDS_BIGENDIAN)
+  {
+    char
+      c;
+    
+    c = dbl_buffer.chars[0];
+    dbl_buffer.chars[0] = dbl_buffer.chars[7];
+    dbl_buffer.chars[7] = c;
+    c = dbl_buffer.chars[1];
+    dbl_buffer.chars[1] = dbl_buffer.chars[6];
+    dbl_buffer.chars[6] = c;
+    c = dbl_buffer.chars[2];
+    dbl_buffer.chars[2] = dbl_buffer.chars[5];
+    dbl_buffer.chars[5] = c;
+    c = dbl_buffer.chars[3];
+    dbl_buffer.chars[3] = dbl_buffer.chars[4];
+    dbl_buffer.chars[4] = c;
+  }
+#endif
+
+  return (dbl_buffer.d);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b L S B L o n g                                              %
 %                                                                             %
 %                                                                             %
@@ -3006,6 +3071,71 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
   value=source[1] << 8;
   value|=source[0];
   return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B D o u b l e                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBDouble reads a double value as a 64 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the ReadBlobMSBDouble method is:
+%
+%      double ReadBlobMSBDouble(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBDouble returns a double read from
+%      the file.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport double ReadBlobMSBdouble(Image * image)
+{
+  union
+  {
+    double d;
+    unsigned char chars[8];
+  } dbl_buffer;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(sizeof(dbl_buffer) == sizeof(double));
+
+  if (ReadBlob(image, 8, dbl_buffer.chars) != 8)
+    return (0.0);
+
+#if !defined(WORDS_BIGENDIAN)
+  {
+    char
+      c;
+    
+    c = dbl_buffer.chars[0];
+    dbl_buffer.chars[0] = dbl_buffer.chars[7];
+    dbl_buffer.chars[7] = c;
+    c = dbl_buffer.chars[1];
+    dbl_buffer.chars[1] = dbl_buffer.chars[6];
+    dbl_buffer.chars[6] = c;
+    c = dbl_buffer.chars[2];
+    dbl_buffer.chars[2] = dbl_buffer.chars[5];
+    dbl_buffer.chars[5] = c;
+    c = dbl_buffer.chars[3];
+    dbl_buffer.chars[3] = dbl_buffer.chars[4];
+    dbl_buffer.chars[4] = c;
+  }
+#endif
+
+  return (dbl_buffer.d);
 }
 
 /*

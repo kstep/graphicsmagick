@@ -1,3 +1,13 @@
+2007-08-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c (ReadWPGImage): Support WPG files which use XOR
+	operator.
+
+2007-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (ReadBlobLSBdouble): Migrate from mat.c.
+	(ReadBlobMSBdouble): Migrate from mat.c.
+
 2007-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ExportImagePixelArea): Add optimized

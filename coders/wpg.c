@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                                 June 2000                                   %
+%                              June 2000 - 2007                               %
 %                         Rework for GraphicsMagick                           %
 %                              Bob Friesenhahn                                %
 %                               Feb-May 2003                                  %
@@ -513,7 +513,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
 #define InsertByte6(b) \
 { \
   if(XorMe)\
-    BImgBuff[x] = (unsigned char)~b;\
+    BImgBuff[x] = b ^ UpImgBuff[x];\
   else\
     BImgBuff[x] = b;\
   x++; \
@@ -522,8 +522,13 @@ static int UnpackWPGRaster(Image *image,int bpp)
     InsertRow(BImgBuff,(long) y,image,bpp); \
     x=0; \
     y++; \
+    XorMe = 0; \
+    tmpImgBuff = BImgBuff; \
+    BImgBuff = UpImgBuff; \
+    UpImgBuff = tmpImgBuff; \
    } \
 }
+
 /* WPG2 raster reader. */
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
@@ -532,7 +537,9 @@ static int UnpackWPG2Raster(Image *image,int bpp)
 
   unsigned char
     bbuf,
-    *BImgBuff,
+    *BImgBuff,		/* Buffer for a current line. */
+    *UpImgBuff,		/* Buffer for previous line. */
+    *tmpImgBuff,
     RunCount,
     SampleBuffer[8];
 
@@ -554,6 +561,13 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
   if(BImgBuff==NULL)
     return(-2);
+  UpImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+  if(UpImgBuff==NULL)
+  {
+    MagickFreeMemory(BImgBuff);
+    return(-2);
+  }
+  memset(UpImgBuff,0,ldblk);
 
   while( y< image->rows)
     {
@@ -569,8 +583,9 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             return(-2);
           break;
         case 0x7E:
-          (void) fprintf(stderr,"\nUnsupported WPG token XOR, please report!");
-	  XorMe=!XorMe;
+          if(y==0)			   /* XOR */
+	    (void)fprintf(stderr,"\nWPG token XOR on the first line is not supported, please report!");
+	  XorMe=!XorMe; /* or XorMe=1 ?? */
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
@@ -598,7 +613,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(BImgBuff,(long) (image->rows >= y ? y : image->rows-1),
+                InsertRow(UpImgBuff,(long) (image->rows >= y ? y : image->rows-1),
                           image,bpp);
                 y++;
               }    
@@ -632,6 +647,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         }
     }
   MagickFreeMemory(BImgBuff);
+  MagickFreeMemory(UpImgBuff);
   return(0);
 }
 
@@ -966,12 +982,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError,EncryptedWPGImageFileNotSupported,image);
 
   image->colors = 0;
-  bpp=0;
-  BitmapHeader2.RotAngle = 0;
+  bpp=0;  
 
   switch(Header.FileType)
     {
     case 1:     /* WPG level 1 */
+      BitmapHeader2.RotAngle = 0;
+
       while(!EOFBlob(image)) /* object parser loop */
         {
           (void) SeekBlob(image,Header.DataOffset,SEEK_SET);

@@ -360,41 +360,6 @@ static void ReadBlobWordMSB(Image * image, size_t len, unsigned short *data)
     (void) SeekBlob(image, len, SEEK_CUR);
 }
 
-static double ReadBlobLSBdouble(Image * image)
-{
-  typedef union
-  {
-    double d;
-    char chars[8];
-  }
-  dbl;
-  static unsigned long lsb_first = 1;
-  dbl buffer;
-  char c;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if (ReadBlob(image, 8, (unsigned char *) &buffer) == 0)
-    return (0.0);
-  if (*(char *) &lsb_first == 1)
-    return (buffer.d);
-
-  c = buffer.chars[0];
-  buffer.chars[0] = buffer.chars[7];
-  buffer.chars[7] = c;
-  c = buffer.chars[1];
-  buffer.chars[1] = buffer.chars[6];
-  buffer.chars[6] = c;
-  c = buffer.chars[2];
-  buffer.chars[2] = buffer.chars[5];
-  buffer.chars[5] = c;
-  c = buffer.chars[3];
-  buffer.chars[3] = buffer.chars[4];
-  buffer.chars[4] = c;
-  return (buffer.d);
-}
-
 static void ReadBlobDoublesLSB(Image * image, size_t len, double *data)
 {
   while (len >= 8)
@@ -404,41 +369,6 @@ static void ReadBlobDoublesLSB(Image * image, size_t len, double *data)
   }
   if (len > 0)
     (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-static double ReadBlobMSBdouble(Image * image)
-{
-  typedef union
-  {
-    double d;
-    char chars[8];
-  }
-  dbl;
-  static unsigned long lsb_first = 1;
-  dbl buffer;
-  char c;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if (ReadBlob(image, 8, (unsigned char *) &buffer) == 0)
-    return (0.0);
-  if (*(char *) &lsb_first != 1)
-    return (buffer.d);
-
-  c = buffer.chars[0];
-  buffer.chars[0] = buffer.chars[7];
-  buffer.chars[7] = c;
-  c = buffer.chars[1];
-  buffer.chars[1] = buffer.chars[6];
-  buffer.chars[6] = c;
-  c = buffer.chars[2];
-  buffer.chars[2] = buffer.chars[5];
-  buffer.chars[5] = c;
-  c = buffer.chars[3];
-  buffer.chars[3] = buffer.chars[4];
-  buffer.chars[4] = c;
-  return (buffer.d);
 }
 
 static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)

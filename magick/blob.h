@@ -233,11 +233,16 @@ extern MagickExport unsigned char *GetBlobStreamData(const Image *image);
 extern MagickExport int ReadBlobByte(Image *image);
 
 /*
-  Read a string from the file or blob until a newline character is
-  read or an end-of-file condition is encountered.
+  Read a 16-bit unsigned "short" value from the file or BLOB in
+  little-endian order.
 */
-extern MagickExport char *ReadBlobString(Image *image,
-                                         char *string);
+extern MagickExport unsigned short ReadBlobLSBShort(Image *image);
+
+/*
+  Read a 16-bit unsigned "short" value from the file or BLOB in
+  big-endian order.
+*/
+extern MagickExport unsigned short ReadBlobMSBShort(Image *image);
 
 /*
   Read a 32-bit unsigned "long" value from the file or BLOB in
@@ -252,16 +257,23 @@ extern MagickExport unsigned long ReadBlobLSBLong(Image *image);
 extern MagickExport unsigned long ReadBlobMSBLong(Image *image);
 
 /*
-  Read a 16-bit unsigned "short" value from the file or BLOB in
+  Read a 64-bit "double" value from the file or BLOB in
   little-endian order.
 */
-extern MagickExport unsigned short ReadBlobLSBShort(Image *image);
+extern MagickExport double ReadBlobLSBdouble(Image * image);
 
 /*
-  Read a 16-bit unsigned "short" value from the file or BLOB in
+  Read a 64-bit "double" value from the file or BLOB in
   big-endian order.
 */
-extern MagickExport unsigned short ReadBlobMSBShort(Image *image);
+extern MagickExport double ReadBlobMSBdouble(Image * image);
+
+/*
+  Read a string from the file or blob until a newline character is
+  read or an end-of-file condition is encountered.
+*/
+extern MagickExport char *ReadBlobString(Image *image,
+                                         char *string);
 
 /*
   Write a single byte to the file or BLOB.
@@ -269,17 +281,20 @@ extern MagickExport unsigned short ReadBlobMSBShort(Image *image);
 extern MagickExport size_t WriteBlobByte(Image *image,
                                          const unsigned long value);
 
-/*
-  Write a 32-bit "long" value to the file or BLOB in little-endian order.
-*/
-extern MagickExport size_t WriteBlobLSBLong(Image *image,
-                                            const unsigned long value);
 
 /*
   Write a 16-bit "short" value to the  file or BLOB in little-endian order.
 */
 extern MagickExport size_t WriteBlobLSBShort(Image *image,
                                              const unsigned long value);
+
+/*
+  Write a 32-bit "long" value to the file or BLOB in little-endian order.
+*/
+extern MagickExport size_t WriteBlobLSBLong(Image *image,
+                                            const unsigned long value);
+
+
 
 /*
   Write a 32-bit "long" value to the file or BLOB in big-endian order.
