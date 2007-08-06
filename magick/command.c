@@ -14299,7 +14299,7 @@ static void ImportUsage(void)
 */
 static void PrintFeature(const char* feature,MagickBool support)
 {
-  (void) fprintf(stdout,"  %-20s %s\n", feature, (support ? "yes" : "no"));
+  (void) fprintf(stdout,"  %-22s %s\n", feature, (support ? "yes" : "no"));
 }
 static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   int ARGUNUSED(argc),char **ARGUNUSED(argv),char **ARGUNUSED(metadata),
@@ -14319,6 +14319,10 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   supported=MagickTrue;
 #endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
   PrintFeature("Thread Safe", supported);
+
+  /* Large File Support */
+  supported=(sizeof(off_t) > 4);
+  PrintFeature("Large Files", supported);
 
   /* BZIP */
   supported=MagickFalse;

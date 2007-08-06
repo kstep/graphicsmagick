@@ -38,6 +38,7 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/constitute.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/log.h"
@@ -460,14 +461,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     logging;
 
   long
-    bit,
     y;
 
   unsigned long
@@ -478,9 +475,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ExtendedSignedIntegralType
     start_position;
-
-  register IndexPacket
-    *indexes;
 
   register long
     x;
@@ -967,27 +961,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
-          for (x=0; x < ((long) image->columns-7); x+=8)
-          {
-            for (bit=0; bit < 8; bit++)
-            {
-              index=((*p) & (0x80 >> bit)) ? 0x01 : 0x00;
-              indexes[x+bit]=index;
-              *q++=image->colormap[index];
-            }
-            p++;
-          }
-          if ((image->columns % 8) != 0)
-            {
-              for (bit=0; bit < (long) (image->columns % 8); bit++)
-              {
-                index=((*p) & (0x80 >> bit)) ? 0x01 : 0x00;
-                indexes[x+bit]=index;
-                *q++=image->colormap[index];
-              }
-              p++;
-            }
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+              == MagickFail)
+            break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1012,27 +988,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
-          for (x=0; x < ((long) image->columns-1); x+=2)
-          {
-            index=(IndexPacket) ((*p >> 4) & 0xf);
-            VerifyColormapIndex(image,index);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-            index=(IndexPacket) (*p & 0xf);
-            VerifyColormapIndex(image,index);
-            indexes[x+1]=index;
-            *q++=image->colormap[index];
-            p++;
-          }
-          if ((image->columns % 2) != 0)
-            {
-              index=(IndexPacket) ((*p >> 4) & 0xf);
-              VerifyColormapIndex(image,index);
-              indexes[x]=index;
-              *q++=image->colormap[index];
-              p++;
-            }
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+              == MagickFail)
+            break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1060,16 +1018,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
-          for (x = (long)image->columns; x != 0; --x)
-          {
-            index=(IndexPacket)*p;
-            VerifyColormapIndex(image,index);
-            *indexes++=index;
-            *q=image->colormap[index];
-            p++;
-            q++;
-          }
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+              == MagickFail)
+            break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1422,9 +1373,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -1584,87 +1532,55 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     {
       case 1:
       {
-        register unsigned char
-          bit,
-          byte;
+          ExportPixelAreaOptions
+            export_options;
 
-        /*
-          Convert PseudoClass image to a BMP monochrome image.
-        */
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          q=pixels+(image->rows-y-1)*bytes_per_line;
-          bit=0;
-          byte=0;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            byte<<=1;
-            byte|=indexes[x] ? 0x01 : 0x00;
-            bit++;
-            if (bit == 8)
-              {
-                *q++=byte;
-                bit=0;
-                byte=0;
-              }
-           }
-         if (bit != 0)
-           {
-             *q++=byte << (8-bit);
-             x++;
-           }
-         /* initialize padding bytes */
-         for (x=(long) (image->columns+7)/8; x < (long) bytes_per_line; x++)
-           *q++=0x00;
-         if (image->previous == (Image *) NULL)
-           if (QuantumTick(y,image->rows))
-             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-               break;
-        }
-        break;
+          /*
+            Convert PseudoClass image to a BMP monochrome image.
+          */
+          ExportPixelAreaOptionsInit(&export_options);
+          export_options.pad_bytes=(bytes_per_line - ((image->columns+7)/8));
+          export_options.pad_value=0x00;
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              q=pixels+(image->rows-y-1)*bytes_per_line;
+              if (ExportImagePixelArea(image,IndexQuantum,1,q,&export_options)
+                  == MagickFail)
+                {
+                  break;
+                }
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
+            }
+          break;
       }
       case 4:
       {
-        register unsigned char
-          nibble,
-          byte;
+        ExportPixelAreaOptions
+          export_options;
 
         /*
           Convert PseudoClass image to a BMP monochrome image.
         */
+        ExportPixelAreaOptionsInit(&export_options);
+        export_options.pad_bytes=(bytes_per_line - ((image->columns+1)/2));
+        export_options.pad_value=0x00;
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          nibble=0;
-          byte=0;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            byte<<=4;
-            byte|=(indexes[x] & 0x0f);
-            nibble++;
-            if (nibble == 2)
-              {
-                *q++=byte;
-                nibble=0;
-                byte=0;
-              }
-           }
-         if (nibble != 0)
-           {
-             *q++=byte << 4;
-             x++;
-           }
-         /* initialize padding bytes */
-         for (x=(long) (image->columns+1)/2; x < (long) bytes_per_line; x++)
-           *q++=0x00;
+          if (ExportImagePixelArea(image,IndexQuantum,4,q,&export_options)
+              == MagickFail)
+            {
+              break;
+            }
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1674,21 +1590,25 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       }
       case 8:
       {
+        ExportPixelAreaOptions
+          export_options;
+
         /*
           Convert PseudoClass packet to BMP pixel.
         */
+        ExportPixelAreaOptionsInit(&export_options);
+        export_options.pad_bytes=(bytes_per_line - image->columns);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          for (x=0; x < (long) image->columns; x++)
-            *q++=indexes[x];
-          /* initialize padding bytes */
-          for (; x < (long) bytes_per_line; x++)
-            *q++=0x00;
+          if (ExportImagePixelArea(image,IndexQuantum,8,q,&export_options)
+              == MagickFail)
+            {
+              break;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))

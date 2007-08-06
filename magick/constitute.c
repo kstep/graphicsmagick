@@ -1110,7 +1110,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -1133,7 +1133,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
     unsigned_maxvalue=MaxRGB,
     sample_bits;
 
-  long
+  unsigned long
     number_pixels;
 
   float
@@ -1189,7 +1189,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         }
     }
 
-  number_pixels=(long) GetPixelCacheArea(image);
+  number_pixels=(unsigned long) GetPixelCacheArea(image);
   p=GetPixels(image);
   indexes=GetIndexes(image);
   q=destination;
@@ -1205,10 +1205,65 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     ExportModulo8Quantum(q,quantum_size,*indexes);
                     indexes++;
+                  }
+              }
+            else if (quantum_size == 1)
+              {
+                /*
+                  Special "fast" support for two-color PsudeoClass.
+                */
+                register unsigned int
+                  bit,
+                  byte;
+
+                bit=0;
+                byte=0;
+                for (x = number_pixels; x != 0; --x)
+                  {
+                    byte<<=1;
+                    byte |= (*indexes++ ? 0x01 : 0x00);
+                    bit++;
+                    if (bit == 8)
+                    {
+                      *q++=byte;
+                      bit=0;
+                      byte=0;
+                    }
+                  }
+                if (bit != 0)
+                  {
+                    *q++=byte << (8-bit);
+                  }
+              }
+            else if (quantum_size == 4)
+              {
+                /*
+                  Special "fast" support for four-color PsudeoClass.
+                */
+                register unsigned int
+                  state = 0;
+
+                for (x = number_pixels ; x != 0 ; --x )
+                  {
+                    state ^= 1; /* Produces 1 0 1 0 ... */
+                    if (state)
+                      {
+                        *q = ((*indexes & 0xf) << 4);
+                      }
+                    else
+                      {
+                        *q |= ((*indexes & 0xf));
+                        q++;
+                      }
+                    indexes++;
+                  }
+                if (1 == state)
+                  {
+                    q++;
                   }
               }
             else
@@ -1220,11 +1275,12 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
             
                 BitStreamInitializeWrite(&stream,q);
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     BitStreamMSBWrite(&stream,quantum_size,*indexes);
                     indexes++;
                   }
+                q=stream.bytes;
               }
           }
         break;
@@ -1239,7 +1295,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     ExportModulo8Quantum(q,quantum_size,*indexes);
                     unsigned_value=MaxRGB-p->opacity;
@@ -1261,7 +1317,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
             
                 BitStreamInitializeWrite(&stream,q);
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     BitStreamMSBWrite(&stream,quantum_size,*indexes);
                     unsigned_value=MaxRGB-p->opacity;
@@ -1273,6 +1329,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     indexes++;
                     p++;
                   }
+                q=stream.bytes;
               }
           }
         break;
@@ -1289,7 +1346,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1304,7 +1361,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1320,7 +1377,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1352,7 +1409,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   }
             
                 *q=0;
-                for (x = number_pixels ; x > 0 ; --x )
+                for (x = number_pixels ; x != 0 ; --x )
                   {
                     --bit;
                     if (image->is_grayscale)
@@ -1381,7 +1438,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1396,7 +1453,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1412,7 +1469,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1425,6 +1482,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -1433,7 +1491,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) PixelIntensity(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -1443,7 +1501,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) PixelIntensity(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -1469,7 +1527,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1486,7 +1544,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1504,7 +1562,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1532,7 +1590,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1548,7 +1606,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1566,7 +1624,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
                           unsigned_value=p->red;
@@ -1581,7 +1639,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-            
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -1590,7 +1648,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) PixelIntensity(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -1602,7 +1660,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) PixelIntensity(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -1631,7 +1689,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->red);
                         p++;
@@ -1640,7 +1698,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1650,7 +1708,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1670,7 +1728,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->red);
@@ -1680,7 +1738,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->red/unsigned_scale);
@@ -1690,13 +1748,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->red*unsigned_scale);
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -1705,7 +1764,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->red*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -1715,7 +1774,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->red*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -1742,7 +1801,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->green);
                         p++;
@@ -1751,7 +1810,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->green/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1761,7 +1820,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->green*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1781,7 +1840,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->green);
@@ -1791,7 +1850,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->green/unsigned_scale);
@@ -1801,13 +1860,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->green*unsigned_scale);
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -1816,7 +1876,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->green*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -1826,7 +1886,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->green*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -1853,7 +1913,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->blue);
                         p++;
@@ -1862,7 +1922,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->blue/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1872,7 +1932,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->blue*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1892,7 +1952,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->blue);
@@ -1902,7 +1962,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->blue/unsigned_scale);
@@ -1912,13 +1972,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->blue*unsigned_scale);
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -1927,7 +1988,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->blue*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -1937,7 +1998,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->blue*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -1965,7 +2026,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=MaxRGB-*indexes;
                             ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1975,7 +2036,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=(MaxRGB-*indexes)/unsigned_scale;
                             ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -1985,7 +2046,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     else
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=(MaxRGB-*indexes)*unsigned_scale;
                             ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2005,7 +2066,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             BitStreamMSBWrite(&stream,quantum_size,
                                               MaxRGB-*indexes);
@@ -2015,7 +2076,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             BitStreamMSBWrite(&stream,quantum_size,
                                               (MaxRGB-*indexes)/unsigned_scale);
@@ -2025,13 +2086,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     else
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             BitStreamMSBWrite(&stream,quantum_size,
                                               (MaxRGB-*indexes)*unsigned_scale);
                             indexes++;
                           }
                       }
+                    q=stream.bytes;
                   }
               }
             else if (sample_type == FloatQuantumSampleType)
@@ -2040,7 +2102,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   {
                   case 32:
                     {
-                      for (x = number_pixels; x > 0; --x)
+                      for (x = number_pixels; x != 0; --x)
                         {
                           float_value=(float) ((double) (MaxRGB-*indexes)*double_scale+double_minvalue);
                           ExportFloatQuantum(q,float_value);
@@ -2050,7 +2112,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     break;
                   case 64:
                     {
-                      for (x = number_pixels; x > 0; --x)
+                      for (x = number_pixels; x != 0; --x)
                         {
                           double_value=(double) (MaxRGB-*indexes)*double_scale+double_minvalue;
                           ExportDoubleQuantum(q,double_value);
@@ -2075,7 +2137,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,MaxRGB-p->opacity);
                         p++;
@@ -2084,7 +2146,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=(MaxRGB-p->opacity)/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2094,7 +2156,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=(MaxRGB-p->opacity)*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2114,7 +2176,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           MaxRGB-p->opacity);
@@ -2124,7 +2186,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           (MaxRGB-p->opacity)/unsigned_scale);
@@ -2134,13 +2196,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           (MaxRGB-p->opacity)*unsigned_scale);
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2149,7 +2212,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) (MaxRGB-p->opacity)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2159,7 +2222,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) (MaxRGB-p->opacity)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2185,7 +2248,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->opacity);
                         p++;
@@ -2194,7 +2257,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->opacity/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2204,7 +2267,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->opacity*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2224,7 +2287,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->opacity);
@@ -2234,7 +2297,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->opacity/unsigned_scale);
@@ -2244,13 +2307,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
                                           p->opacity*unsigned_scale);
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2259,7 +2323,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->opacity*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2269,7 +2333,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->opacity*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2296,7 +2360,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->red);
                         ExportModulo8Quantum(q,quantum_size,p->green);
@@ -2307,7 +2371,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2321,7 +2385,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2345,7 +2409,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red);
                         BitStreamMSBWrite(&stream,quantum_size,p->green);
@@ -2356,7 +2420,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
@@ -2367,7 +2431,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
@@ -2375,6 +2439,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2383,7 +2448,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->red*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2397,7 +2462,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->red*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2427,7 +2492,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->red);
                         ExportModulo8Quantum(q,quantum_size,p->green);
@@ -2440,7 +2505,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2456,7 +2521,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2482,7 +2547,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red);
                         BitStreamMSBWrite(&stream,quantum_size,p->green);
@@ -2494,7 +2559,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
@@ -2507,7 +2572,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
@@ -2518,6 +2583,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2526,7 +2592,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->red*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2542,7 +2608,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->red*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2575,7 +2641,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->red);
                         ExportModulo8Quantum(q,quantum_size,p->green);
@@ -2587,7 +2653,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2603,7 +2669,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2629,7 +2695,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red);
                         BitStreamMSBWrite(&stream,quantum_size,p->green);
@@ -2641,7 +2707,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
@@ -2653,7 +2719,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
@@ -2662,6 +2728,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2670,7 +2737,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->red*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2686,7 +2753,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->red*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2718,7 +2785,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ExportModulo8Quantum(q,quantum_size,p->red);
                         ExportModulo8Quantum(q,quantum_size,p->green);
@@ -2733,7 +2800,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red/unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2752,7 +2819,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         unsigned_value=p->red*unsigned_scale;
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
@@ -2781,7 +2848,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red);
                         BitStreamMSBWrite(&stream,quantum_size,p->green);
@@ -2795,7 +2862,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
@@ -2810,7 +2877,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 else
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
@@ -2822,6 +2889,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
+                q=stream.bytes;
               }
           }
         else if (sample_type == FloatQuantumSampleType)
@@ -2830,7 +2898,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       float_value=(float) ((double) p->red*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2848,7 +2916,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       double_value=(double) p->red*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -2871,6 +2939,12 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         break;
       }
     }
+  /*
+    Appended any requested padding bytes.
+  */
+  if (options)
+    for (x = options->pad_bytes; x != 0; --x)
+      *q++=options->pad_value;
   return(MagickPass);
 }
 
@@ -2906,6 +2980,8 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
   options->double_minvalue=0.0;
   options->double_maxvalue=1.0;
   options->grayscale_miniswhite=MagickFalse;
+  options->pad_bytes=0;
+  options->pad_value=0;
   options->signature=MagickSignature;
 }
 
@@ -2970,7 +3046,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -2986,7 +3062,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
     unsigned_maxvalue=MaxRGB,
     sample_bits;
 
-  long
+  unsigned long
     number_pixels;
 
   float
@@ -3058,7 +3134,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     ImportModulo8Quantum(index,quantum_size,p);
                     VerifyColormapIndex(image,index);
@@ -3073,11 +3149,12 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 */
                 register int
                   bit = 8;
-            
-                for (x = number_pixels ; x > 0 ; --x )
+
+                for (x = number_pixels ; x != 0 ; --x )
                   {
                     --bit;
                     index=(*p >> bit) & 0x01;
+                    VerifyColormapIndex(image,index);
                     *indexes++=index;
                     *q++=image->colormap[index];
                     if (bit == 0)
@@ -3085,6 +3162,23 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         bit=8;
                         p++;
                       }
+                  }
+              }
+            else if (quantum_size == 4)
+              {
+                /*
+                  Special fast support for 16 colors.
+                */
+                register unsigned int
+                  state = 0;
+
+                for (x = number_pixels ; x != 0 ; --x )
+                  {
+                    state ^= 1; /* Produces 1 0 1 0 ... */
+                    index=(IndexPacket) ((state ? (*p >> 4) : (*p++)) & 0xf);
+                    VerifyColormapIndex(image,index);
+                    *indexes++=index;
+                    *q++=image->colormap[index];
                   }
               }
             else
@@ -3096,7 +3190,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     index=BitStreamMSBRead(&stream,quantum_size);
                     VerifyColormapIndex(image,index);
@@ -3117,7 +3211,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     ImportModulo8Quantum(index,quantum_size,p);
                     VerifyColormapIndex(image,index);
@@ -3142,7 +3236,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
             
                 BitStreamInitializeRead(&stream,p);
-                for (x = number_pixels; x > 0; --x)
+                for (x = number_pixels; x != 0; --x)
                   {
                     index=BitStreamMSBRead(&stream,quantum_size);
                     VerifyColormapIndex(image,index);
@@ -3178,7 +3272,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             if (grayscale_miniswhite)
@@ -3191,7 +3285,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value *= unsigned_scale;
@@ -3205,7 +3299,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value /= unsigned_scale;
@@ -3249,7 +3343,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                                 max_val=WhitePixel;
                               }
 
-                            for (x = number_pixels ; x > 0 ; --x )
+                            for (x = number_pixels ; x != 0 ; --x )
                               {
                                 --bit;
                                 *q++=(((*p >> bit) & 0x01) ? max_val : min_val);
@@ -3262,7 +3356,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           }
                         else
                           {
-                            for (x = number_pixels; x > 0; --x)
+                            for (x = number_pixels; x != 0; --x)
                               {
                                 unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                                 if (grayscale_miniswhite)
@@ -3276,7 +3370,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                             if (grayscale_miniswhite)
@@ -3308,7 +3402,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     */
                     if (indexes_scale == 1U)
                       {
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(index,quantum_size,p);
                             VerifyColormapIndex(image,index);
@@ -3320,7 +3414,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       }
                     else
                       {
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(index,quantum_size,p);
                             index /= indexes_scale;
@@ -3340,7 +3434,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     register int
                       bit = 8;
 
-                    for (x = number_pixels ; x > 0 ; --x )
+                    for (x = number_pixels ; x != 0 ; --x )
                       {
                         --bit;
                         index=(*p >> bit) & 0x01;
@@ -3364,7 +3458,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       stream;
             
                     BitStreamInitializeRead(&stream,p);
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         index=BitStreamMSBRead(&stream,quantum_size);
                         index /= indexes_scale;
@@ -3383,7 +3477,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -3395,7 +3489,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -3428,7 +3522,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             if (grayscale_miniswhite)
@@ -3443,7 +3537,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value *= unsigned_scale;
@@ -3460,7 +3554,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value /= unsigned_scale;
@@ -3484,7 +3578,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                             if (grayscale_miniswhite)
@@ -3500,7 +3594,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                             if (grayscale_miniswhite)
@@ -3540,7 +3634,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     */
                     if (indexes_scale == 1U)
                       {
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(index,quantum_size,p);
                             VerifyColormapIndex(image,index);
@@ -3560,7 +3654,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       }
                     else
                       {
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(index,quantum_size,p);
                             index /= indexes_scale;
@@ -3589,7 +3683,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       stream;
             
                     BitStreamInitializeRead(&stream,p);
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         index=BitStreamMSBRead(&stream,quantum_size);
                         index /= indexes_scale;
@@ -3616,7 +3710,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -3632,7 +3726,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -3665,7 +3759,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value;
@@ -3675,7 +3769,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value*unsigned_scale;
@@ -3685,7 +3779,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value/unsigned_scale;
@@ -3705,7 +3799,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
@@ -3714,7 +3808,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
@@ -3728,7 +3822,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -3740,7 +3834,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -3769,7 +3863,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->green=unsigned_value;
@@ -3779,7 +3873,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->green=unsigned_value*unsigned_scale;
@@ -3789,7 +3883,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->green=unsigned_value/unsigned_scale;
@@ -3809,7 +3903,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
@@ -3818,7 +3912,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
@@ -3832,7 +3926,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -3844,7 +3938,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -3873,7 +3967,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->blue=unsigned_value;
@@ -3883,7 +3977,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->blue=unsigned_value*unsigned_scale;
@@ -3893,7 +3987,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->blue=unsigned_value/unsigned_scale;
@@ -3913,7 +4007,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
@@ -3922,7 +4016,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
@@ -3936,7 +4030,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -3948,7 +4042,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -3978,7 +4072,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             *indexes++=(IndexPacket) MaxRGB-unsigned_value;
@@ -3987,7 +4081,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             *indexes++=(IndexPacket) MaxRGB-unsigned_value*unsigned_scale;
@@ -3996,7 +4090,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             *indexes++=(IndexPacket) MaxRGB-unsigned_value/unsigned_scale;
@@ -4015,7 +4109,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                           }
@@ -4023,7 +4117,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     else
                       {
                         /* Scale down */
-                        for (x = number_pixels; x > 0; --x)
+                        for (x = number_pixels; x != 0; --x)
                           {
                             *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                           }
@@ -4036,7 +4130,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   {
                   case 32:
                     {
-                      for (x = number_pixels; x > 0; --x)
+                      for (x = number_pixels; x != 0; --x)
                         {
                           ImportFloatQuantum(float_value,p);
                           float_value -= double_minvalue;
@@ -4047,7 +4141,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     break;
                   case 64:
                     {
-                      for (x = number_pixels; x > 0; --x)
+                      for (x = number_pixels; x != 0; --x)
                         {
                           ImportDoubleQuantum(double_value,p);
                           double_value -= double_minvalue;
@@ -4073,7 +4167,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=MaxRGB-unsigned_value;
@@ -4083,7 +4177,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=MaxRGB-unsigned_value*unsigned_scale;
@@ -4093,7 +4187,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=MaxRGB-unsigned_value/unsigned_scale;
@@ -4113,7 +4207,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
@@ -4122,7 +4216,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
@@ -4136,7 +4230,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4148,7 +4242,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4176,7 +4270,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value;
@@ -4186,7 +4280,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value*unsigned_scale;
@@ -4196,7 +4290,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value/unsigned_scale;
@@ -4216,7 +4310,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->opacity=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
@@ -4225,7 +4319,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->opacity=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
@@ -4239,7 +4333,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4251,7 +4345,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4280,7 +4374,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value;
@@ -4295,7 +4389,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value*unsigned_scale;
@@ -4310,7 +4404,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value/unsigned_scale;
@@ -4335,7 +4429,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
@@ -4347,7 +4441,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
@@ -4364,7 +4458,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4385,7 +4479,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4422,7 +4516,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value;
@@ -4438,7 +4532,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value*unsigned_scale;
@@ -4454,7 +4548,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value/unsigned_scale;
@@ -4480,7 +4574,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
@@ -4492,7 +4586,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
@@ -4509,7 +4603,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4533,7 +4627,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4573,7 +4667,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value;
@@ -4590,7 +4684,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value*unsigned_scale;
@@ -4607,7 +4701,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value/unsigned_scale;
@@ -4634,7 +4728,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
@@ -4647,7 +4741,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
@@ -4665,7 +4759,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4690,7 +4784,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4731,7 +4825,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value;
@@ -4749,7 +4843,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value*unsigned_scale;
@@ -4767,7 +4861,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->red=unsigned_value/unsigned_scale;
@@ -4795,7 +4889,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
@@ -4808,7 +4902,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
-                    for (x = number_pixels; x > 0; --x)
+                    for (x = number_pixels; x != 0; --x)
                       {
                         q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
@@ -4826,7 +4920,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
               case 32:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
@@ -4854,7 +4948,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               case 64:
                 {
-                  for (x = number_pixels; x > 0; --x)
+                  for (x = number_pixels; x != 0; --x)
                     {
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
@@ -4898,7 +4992,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               y_sample,
               z_sample;
 
-            for (x = number_pixels; x > 0; --x)
+            for (x = number_pixels; x != 0; --x)
               {
                 switch (quantum_size)
                   {
@@ -4943,7 +5037,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
       {
         if (sample_type == FloatQuantumSampleType)
           {
-            for (x = number_pixels; x > 0; --x)
+            for (x = number_pixels; x != 0; --x)
               {
                 switch (quantum_size)
                   {

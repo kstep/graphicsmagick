@@ -85,6 +85,12 @@ typedef struct _ExportPixelAreaOptions
     grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
 
   unsigned long
+    pad_bytes;            /* Number of pad bytes to output after pixel data */
+
+  unsigned char
+    pad_value;            /* Value to use when padding end of pixel data */
+
+  unsigned long
     signature;
 } ExportPixelAreaOptions;
 

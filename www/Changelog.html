@@ -21,9 +21,22 @@
 </tr>
 </table>
 <p>
-2007-08-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2007-08-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (ExportImagePixelArea): Add optimized
+        support for 2 and 16 color PseudoClass.
+        (ImportImagePixelArea): Add optimized support for 2 and 16 color
+        PseudoClass.<BR>
+  <LI> magick/constitute.c (ImportImagePixelArea): Add option to output
+        pad bytes at end of pixel data.  Added optimized implementation of
+        IndexQuantum for bilevel images.
+  <LI> coders/tiff.c (WriteTIFFImage): Be smarter when writing gray
+        Palette and grayscale TIFF images in order to not waste time.
+  <LI> coders/bmp.c (ReadBMPImage): Use ImportImagePixelArea() when
+        reading and writing bilevel and colormapped images.
+        (WriteBMPImage): Use ExportImagePixelArea() when writing bilevel
+        images.<BR>
   <LI> magick/version.h.in: Added wrapping for copyright line to a
         reasonable width.<BR>
   <LI> AUTHORS: Added Daniel Kobras.

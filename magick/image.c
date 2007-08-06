@@ -1574,9 +1574,10 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
                      (long) ceil(fmod(elapsed_time,60.0)));
       /*
         Only display pixel read rate if the time accumulated is at
-        least the timer's resolution.
+        least six times the timer's resolution (typically 0.01 on
+        Unix).
       */
-      if (elapsed_time >= GetTimerResolution())
+      if (elapsed_time >= GetTimerResolution()*6)
         {
           pixels_per_second=(magick_int64_t) ((double) rows*columns/ elapsed_time);
           FormatSize(pixels_per_second,format);

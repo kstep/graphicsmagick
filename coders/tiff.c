@@ -3117,6 +3117,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               (compress_tag != COMPRESSION_JPEG))
             {
               if ((image_info->type != PaletteType) &&
+                  (image->storage_class != PseudoClass) &&
                   IsGrayImage(image,&image->exception))
                 {
                   /*
@@ -3129,7 +3130,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   */
                   photometric=PHOTOMETRIC_MINISBLACK;
                   samples_per_pixel=1;
-                  depth=GetImageDepth(image,&image->exception);
+                  if (image->is_monochrome)
+                    {
+                      depth=1;
+                    }
+                  else
+                    {
+                      depth=GetImageDepth(image,&image->exception);
+                    }
 
                   if (depth == 1)
                     {
