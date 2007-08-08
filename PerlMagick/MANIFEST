@@ -29,7 +29,6 @@ Makefile.nt
 Makefile.PL
 Makefile.PL.in
 MANIFEST			This list of files
-PerlMagick
 README.txt
 t/blob.t
 t/bzlib/input.miff

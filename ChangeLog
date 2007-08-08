@@ -1,3 +1,8 @@
+2007-08-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/read.t: Update MAT read tests according to
+	instructions from Fojtik Jaroslav.
+
 2007-08-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/wpg.c (ReadWPGImage): Support WPG files which use XOR
