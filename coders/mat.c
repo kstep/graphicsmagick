@@ -196,8 +196,8 @@ static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
 }
 
 
-/* Update one word row inside image. */
-static void InsertWordRow(unsigned char *p, int y, Image * image, int channel)
+/* Update one word (uint16) row inside image. */
+static void InsertWordRow(magick_uint16_t *p, int y, Image * image, int channel)
 {
   int x;
   register PixelPacket *q;
@@ -212,33 +212,33 @@ static void InsertWordRow(unsigned char *p, int y, Image * image, int channel)
         {
         q->red =
           q->green =
-          q->blue = ScaleShortToQuantum(*(unsigned short *) p);    
+          q->blue = ScaleShortToQuantum(*p);
         q->opacity = OpaqueOpacity;
-        p += 2;
+        p++;
         q++;
         }
        break;
     case 1:
        for (x = 0; x < (long) image->columns; x++)        
          { 
-         q->blue = ScaleShortToQuantum(*(unsigned short *) p);
-         p += 2;
+         q->blue = ScaleShortToQuantum(*p);
+         p++;
          q++;
          }
        break;
     case 2:
        for (x = 0; x < (long) image->columns; x++)        
          {
-         q->green = ScaleShortToQuantum(*(unsigned short *) p);
-         p += 2;
+         q->green = ScaleShortToQuantum(*p);
+         p++;
          q++;
          }
        break;
     case 3:
        for (x = 0; x < (long) image->columns; x++)        
 	 {
-         q->red = ScaleShortToQuantum(*(unsigned short *) p);
-         p += 2;
+         q->red = ScaleShortToQuantum(*p);
+         p++;
          q++;
          }
        break;
@@ -429,11 +429,19 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   double MinVal, MaxVal,
    *dblrow;
   unsigned long z, Unknown5;
+  int logging;
 
   unsigned long (*ReadBlobXXXLong)(Image *image);
   unsigned short (*ReadBlobXXXShort)(Image *image);
   void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
-  
+
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter"); 
+
   /*
      Open image file.
    */
@@ -449,6 +457,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.Version = ReadBlobLSBShort(image);
   (void) ReadBlob(image, 2, &MATLAB_HDR.EndianIndicator);
 
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"  Endian %c%c",
+        MATLAB_HDR.EndianIndicator[0],MATLAB_HDR.EndianIndicator[1]);
   if (!strncmp(MATLAB_HDR.EndianIndicator, "IM", 2))
   {
     ReadBlobXXXLong = ReadBlobLSBLong;
@@ -500,7 +510,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.Flag1 = ReadBlobXXXShort(image);
   MATLAB_HDR.NameFlag = ReadBlobXXXShort(image);
 
-  /* printf("MATLAB_HDR.StructureClass %ld\n",MATLAB_HDR.StructureClass); */
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+          "MATLAB_HDR.StructureClass %d",MATLAB_HDR.StructureClass);
   if (MATLAB_HDR.StructureClass != mxCHAR_CLASS && 
       MATLAB_HDR.StructureClass != mxDOUBLE_CLASS &&	     /* double / complex double */      
       MATLAB_HDR.StructureClass != mxUINT8_CLASS &&           /* uint8 3D */
@@ -525,11 +536,11 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   CellType = ReadBlobXXXLong(image);    /* Additional object type */
-  /* fprintf(stdout,"Cell type:%ld\n",CellType); */
+  /* fprintf(stdout,"Cell type:%d\n",CellType); */
   (void) ReadBlob(image, 4, &size);     /* data size */
 
-    /* Image is gray when no complex flag is set and z==1 */
-  image->is_grayscale = (z==1) && 
+    /* Image is gray when no complex flag is set and 2D Matrix */
+  image->is_grayscale = (MATLAB_HDR.DimFlag==8) && 
            ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0);
 
   switch (CellType)
@@ -552,7 +563,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
         ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
       {                         /* complex double type cell */        
-      }      
+      }
       ldblk = (long) (8 * MATLAB_HDR.SizeX);
       break;
     default:
@@ -641,7 +652,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
             ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
           else
             ReadBlobWordMSB(image, ldblk, (unsigned short *) BImgBuff);
-          InsertWordRow(BImgBuff, i, image,0);
+          InsertWordRow((magick_uint16_t *)BImgBuff, i, image,0);
           break;
         case miDOUBLE:
           ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);          
@@ -666,7 +677,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
             ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
           else
             ReadBlobWordMSB(image, ldblk, (unsigned short *) BImgBuff);
-          InsertWordRow(BImgBuff, i, image, z);
+          InsertWordRow((magick_uint16_t *)BImgBuff, i, image, z);
           break;
         case miDOUBLE:
           goto MATLAB_KO;
@@ -713,6 +724,11 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
   }
 
+    /* Image is gray when no complex flag is set and 2D Matrix AGAIN!!! */
+  image->is_grayscale = (MATLAB_HDR.DimFlag==8) && 
+           ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0);
+
+
   /*  Rotate image. */
   rotated_image = RotateImage(image, 90.0, exception);
   if (rotated_image != (Image *) NULL)
@@ -728,11 +744,12 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       DestroyImage(rotated_image);
   }
 
- done_reading:
+done_reading:
 
   MagickFreeMemory(BImgBuff);
   CloseBlob(image);
 
+  if (logging) (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return (image);
 }
 

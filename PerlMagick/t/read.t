@@ -80,7 +80,7 @@ testReadCompare('input_gray_msb_08bit.mat', 'reference/read/input_gray_msb_08bit
 
 print("MAT (MatLab gray 64-bit LSB double) ...\n");
 ++$test;
-testReadCompare('input_gray_lsb_double.mat', 'reference/read/input_gray_lsb_double_mat.miff', q//, 0, 0);
+testReadCompare('input_gray_lsb_double.mat', 'reference/read/input_gray_lsb_double_mat.miff', q//, 0.002, 0.004);
 
 print("MAT (MatLab RGB 8-bit LSB integer) ...\n");
 ++$test;

@@ -3283,28 +3283,6 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static inline PixelPacket BlendComposite(const PixelPacket *p,
-  const PixelPacket *q,const double alpha)
-{
-  double
-    color;
-
-  PixelPacket
-    composite;
-
-  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  composite.opacity=p->opacity;
-  return(composite);
-}
-
 MagickExport MagickPassFail GradientImage(Image *image,
   const PixelPacket *start_color,const PixelPacket *stop_color)
 {
@@ -4295,23 +4273,24 @@ MagickExport MagickPassFail SetImageClipMask(Image *image,const Image *clip_mask
 %
 %
 */
+#define ScaleQuantumDepth(quantum,scale) (scale*(quantum/scale))
 MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth)
 {
-  long
+  unsigned long
     y;
 
   unsigned long
-    current_depth,
     desired_depth;
 
-  register long
+  register unsigned long
     x;
 
   register unsigned long
     scale;
 
-  unsigned int
-    is_grayscale;
+  MagickBool
+    is_grayscale,
+    is_monochrome;
 
   MagickPassFail
     status=MagickPass;
@@ -4322,78 +4301,75 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  is_monochrome=image->is_monochrome;
 
-  desired_depth=depth;
-  if (desired_depth > QuantumDepth)
-    desired_depth=QuantumDepth;
+  desired_depth=Min(depth,QuantumDepth);
+  scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
 
-  current_depth=GetImageDepth(image,&image->exception);
+  /* fprintf(stdout, "SetImageDepth: depth=%lu, scale=%lu\n",desired_depth,scale); */
 
-  if (current_depth > desired_depth)
+  if (desired_depth < QuantumDepth)
     {
-      scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
-
-      for (y=0; y < (long) image->rows; y++)
-        {
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFail;
-              break;
-            }
-          for (x=0; x < (long) image->columns; x++)
-            {
-              q->red=scale*(q->red/scale);
-              q->green=scale*(q->green/scale);
-              q->blue=scale*(q->blue/scale);
-              q->opacity=scale*(q->opacity/scale);
-              q++;
-            }
-          if (!SyncImagePixels(image))
-            {
-              status=MagickFail;
-              break;
-            }
-        }
-
-      /*
-        Note that this approach may lead to multiple occurances of the
-        same color in the colormap.
-      */
       if (image->storage_class == PseudoClass)
         {
-          register long
+          /*
+            Update PseudoClass colormap.
+
+            Note that this approach may lead to multiple occurances of the
+            same color in the colormap.
+          */
+          register unsigned long
             i;
 
           assert(image->colormap != (PixelPacket *) NULL);
           q=image->colormap;
-          for (i=0; i < (long) image->colors; i++)
+          for (i=image->colors; i != 0; i--)
             {
-              q->red=scale*(q->red/scale);
-              q->green=scale*(q->green/scale);
-              q->blue=scale*(q->blue/scale);
-              q->opacity=scale*(q->opacity/scale);
+              q->red=ScaleQuantumDepth(q->red,scale);
+              q->green=ScaleQuantumDepth(q->green,scale);
+              q->blue=ScaleQuantumDepth(q->blue,scale);
+              q->opacity=ScaleQuantumDepth(q->opacity,scale);
               q++;
+            }
+
+          /*
+            Update DirectClass pixels.
+          */
+          (void) SyncImage(image);
+        }
+      else
+        {
+          /*
+            Update DirectClass pixels.
+          */
+          for (y=0; y < image->rows; y++)
+            {
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                {
+                  status=MagickFail;
+                  break;
+                }
+              for (x=image->columns; x != 0; x--)
+                {
+                  q->red=ScaleQuantumDepth(q->red,scale);
+                  q->green=ScaleQuantumDepth(q->green,scale);
+                  q->blue=ScaleQuantumDepth(q->blue,scale);
+                  q->opacity=ScaleQuantumDepth(q->opacity,scale);
+                  q++;
+                }
+              if (!SyncImagePixels(image))
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
         }
     }
 
   image->depth=desired_depth;
-
-  /*
-    Ensure that image->depth is 8/16/32 until such time that the rest
-    of the code handles arbitrary depth.
-  */
-#if 0
-  if (image->depth < 8)
-    image->depth=8;
-  else if (image->depth > 8 && image->depth < 16)
-    image->depth=16;
-  else if (image->depth > 16 && image->depth < 32)
-    image->depth=32;
-#endif
-
   image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
   return(status);
 }
 
@@ -4707,17 +4683,18 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 */
 MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 {
-  long
+  unsigned long
     y;
 
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
-  unsigned int
-    is_grayscale;
+  MagickBool
+    is_grayscale,
+    is_monochrome;
 
   register PixelPacket
     *q;
@@ -4725,70 +4702,74 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  is_monochrome=image->is_monochrome;
   image->storage_class=DirectClass;
-  if (image->matte && (opacity != OpaqueOpacity) && (opacity != TransparentOpacity))
+  if (image->matte && (opacity != OpaqueOpacity) &&
+      (opacity != TransparentOpacity))
     {
       /*
         Attenuate existing opacity channel
       */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
+      for (y=0; y < image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
 
-        if (image->colorspace == CMYKColorspace)
-          {
-            for (x=(long) image->columns; x > 0; --x)
-              {
-              *indexes=(IndexPacket)
-                ((unsigned long) (opacity*(*indexes))/MaxRGB);
-              indexes++;
-              }
-          }
-        else
-          {
-            for (x=(long) image->columns; x > 0; --x)
-              {
-                q->opacity=(Quantum)
-                  ((unsigned long) (opacity*q->opacity)/MaxRGB);
-                q++;
-              }
-          }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      image->is_grayscale=is_grayscale;
-      return;
+          if (image->colorspace == CMYKColorspace)
+            {
+              for (x=image->columns; x != 0; --x)
+                {
+                  *indexes=(IndexPacket)
+                    ((unsigned long) (opacity*(*indexes))/MaxRGB);
+                  indexes++;
+                }
+            }
+          else
+            {
+              for (x=image->columns; x != 0; --x)
+                {
+                  q->opacity=(Quantum)
+                    ((unsigned long) (opacity*q->opacity)/MaxRGB);
+                  q++;
+                }
+            }
+          if (!SyncImagePixels(image))
+            break;
+        }
     }
-  /*
-    Add new opacity channel or make existing opacity channel opaque
-  */
-  image->matte=True;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if (image->colorspace == CMYKColorspace)
-      {
-        for (x=(long) image->columns; x > 0; --x)
-          *indexes++=opacity;
-      }
-    else
-      {
-        for (x=(long) image->columns; x > 0; --x)
-          {
-            q->opacity=opacity;
-            q++;
-          }
-      }
-    if (!SyncImagePixels(image))
-      break;
-  }
+  else
+    {
+      /*
+        Add new opacity channel or make existing opacity channel opaque
+      */
+      image->matte=True;
+      for (y=0; y < image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
+          if (image->colorspace == CMYKColorspace)
+            {
+              for (x=image->columns; x != 0; --x)
+                *indexes++=opacity;
+            }
+          else
+            {
+              for (x=image->columns; x != 0; --x)
+                {
+                  q->opacity=opacity;
+                  q++;
+                }
+            }
+          if (!SyncImagePixels(image))
+            break;
+        }
+    }
   image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
 }
 
 /*
@@ -5099,13 +5080,13 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 */
 MagickExport MagickPassFail SyncImage(Image *image)
 {
-  long
+  unsigned long
     y;
 
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -5114,8 +5095,9 @@ MagickExport MagickPassFail SyncImage(Image *image)
   register const PixelPacket
     *p;
 
-  unsigned int
-    is_grayscale;
+  MagickBool
+    is_grayscale,
+    is_monochrome;
 
   MagickPassFail
     status=MagickPass;
@@ -5124,8 +5106,10 @@ MagickExport MagickPassFail SyncImage(Image *image)
   assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
     return (status);
+  assert(image->colormap != (PixelPacket *) NULL);
   is_grayscale=image->is_grayscale;
-  for (y=0; y < (long) image->rows; y++)
+  is_monochrome=image->is_monochrome;
+  for (y=0; y < image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -5135,15 +5119,35 @@ MagickExport MagickPassFail SyncImage(Image *image)
       }
     indexes=GetIndexes(image);
     assert(indexes != (IndexPacket *) NULL);
-    for (x=(long) image->columns; x > 0; x--)
-    {
-      VerifyColormapIndex(image,*indexes);
-      p=&image->colormap[*indexes++];
-      q->red=p->red;
-      q->green=p->green;
-      q->blue=p->blue;
-      q++;
-    }
+    if (image->matte)
+      {
+        for (x=image->columns; x != 0; x--)
+          {
+            VerifyColormapIndex(image,*indexes);
+            /*
+              Explicit member assignment is used in order to support a colormap
+              simultaneous with with pixel opacity.
+            */
+            p=&image->colormap[*indexes++];
+            q->red=p->red;
+            q->green=p->green;
+            q->blue=p->blue;
+            q++;
+          }
+      }
+    else
+      {
+        for (x=image->columns; x != 0; x--)
+          {
+            VerifyColormapIndex(image,*indexes);
+            /*
+              Use structure assignment for improved performance.
+              Trash whatever is in the opacity channel.
+            */
+            *q++=image->colormap[*indexes++];
+          }
+      }
+     
     if (!SyncImagePixels(image))
       {
         status=MagickFail;
@@ -5151,6 +5155,7 @@ MagickExport MagickPassFail SyncImage(Image *image)
       }
   }
   image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
   return (status);
 }
 

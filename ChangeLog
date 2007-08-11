@@ -1,3 +1,25 @@
+2007-08-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c (ReadMATImage): Support image is_grayscale flag.
+	Add some coder logging.
+
+2007-08-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{paint.c, render.c, annotate.c}: Use AlphaComposite()
+	from alpha_composite.h.
+	* magick/alpha_composite.h (BlendComposite): Move inline
+	BlendComposite() to a header file since it is used in multiple
+	places.
+	* magick/{shear.c, image.c}: Use BlendComposite() from
+	alpha_composite.h.	
+	* magick/image.c (SetImageDepth): Don't bother to test current
+	depth in advance. Preserve is_monochrome flag.  Encapsulate
+	bit-reduction algorithm in a macro. Be a bit smarter with
+	PseudoClass images.
+	(SyncImage): Preserve is_monochrome flag.  Improve performance
+	when image does not have an opacity channel.
+	* PerlMagick/t/read.t: Allow some error when reading double MAT.
+
 2007-08-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/read.t: Update MAT read tests according to

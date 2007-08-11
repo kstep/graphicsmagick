@@ -42,6 +42,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/alpha_composite.h"
 #include "magick/color.h"
 #include "magick/decorate.h"
 #include "magick/monitor.h"
@@ -480,28 +481,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 %      to shear.
 %
 */
-
-static inline PixelPacket BlendComposite(const PixelPacket *p,
-  const PixelPacket *q,const double alpha)
-{
-  double
-    color;
-
-  PixelPacket
-    composite;
-
-  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  composite.opacity=p->opacity;
-  return(composite);
-}
 
 static void XShearImage(Image *image,const double degrees,
   const unsigned long width,const unsigned long height,const long x_offset,

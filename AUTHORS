@@ -2,12 +2,8 @@ The following people have contributed substantially to the development
 of GraphicsMagick.  Please let us know if an author is missing, or a
 significant contribution was made and not recorded.
 
-GraphicsMagick Group Member Authors
-===================================
-
-Mike Chiarappa
-		Created and maintains the Borland C++ Builder 6.0 build
-		environment for GraphicsMagick.
+Active GraphicsMagick Contributors
+==================================
 
 Bob Friesenhahn
 		Principal maintainer of GraphicsMagick. Author of
@@ -18,6 +14,37 @@ Bob Friesenhahn
 		installer, WMF renderer, C API documentation formatter,
 		and the C, C++, and Perl test suites used by ImageMagick
 		and GraphicsMagick.
+
+Glenn Randers-Pehrson
+		Contributed significantly to the utilities, including
+		writing the 'gm' utility wrapper. Authored support for
+		JNG, MNG, and PNG formats. Provided significant support
+		for the BMP format. Significant improvements to the
+		documentation, including creating a documentation
+		authoring environment based on the <imdoc> format.
+		Maintains the SourceForge mailing lists.
+
+Daniel Kobras
+		Provided many security patches and fixes from the Debian
+		project.
+
+Jaroslav Fojtik
+		Authored the ART, CUT, MATLAB, TOPOL, and WPG
+                coder modules.
+
+Rolf Schroedter
+		Principal author of TclMagick.
+
+David N. Welton
+		Co-author of TclMagick, particularly in the Unix environment.
+
+
+Former GraphicsMagick Contributors
+==================================
+
+Mike Chiarappa
+		Created and maintains the Borland C++ Builder 6.0 build
+		environment for GraphicsMagick.
 
 William Radcliffe
 		Author of the VisualMagick project configure facility for
@@ -30,14 +57,6 @@ William Radcliffe
 		Windows. Significantly improved polygon rendering
 		performance.
 
-Glenn Randers-Pehrson
-		Contributed significantly to the utilities, including
-		writing the 'gm' utility wrapper. Authored support for
-		JNG, MNG, and PNG formats. Provided significant support
-		for the BMP format. Significant improvements to the
-		documentation, including creating a documentation
-		authoring environment based on the <imdoc> format.
-
 Leonard Rosenthol
 		Authored the 'conjure' utility and associated MSL
 		execution environment. Provided MacOS support. Authored
@@ -46,20 +65,13 @@ Leonard Rosenthol
 		support for dash patterns, linecap stroking, clipping
 		masks and a mask image.
 
-
 Lars Ruben Skyum
 		Contributed the -clippath functionality, added
 		-define support, improved color profile support,
 		and re-wrote the PS3 coder.
 
-Rolf Schroedter
-		Principal author of TclMagick.
-
-David N. Welton
-		Co-author of TclMagick, particularly in the Unix environment.
-
-Non-Member Authors
-==================
+Other Contributors (via ImageMagick)
+====================================
 
 John Cristy
 		Creator, principal author, and principal maintainer of
@@ -67,10 +79,6 @@ John Cristy
 		derived (from ImageMagick 5.5.2).  Also the author of
 		the Wand API to ImageMagick which is incorporated as
 		a stand-alone library by GraphicsMagick.
-
-Jaroslav Fojtik
-		Authored the ART, CUT, MATLAB, TOPOL, and WPG
-                coder modules.
 
 Kelly Bergougnoux
 		Authored the initial Cineon coder (which has since been
@@ -109,10 +117,6 @@ Milan Votava
 
 Mike Edmonds
 		Contributed the median filter algorithm.
-
-Daniel Kobras
-		Provided many security patches and fixes from the Debian
-		project.
 
 Additional Acknowledgements
 ===========================

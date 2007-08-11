@@ -231,6 +231,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/xwindow.h
 
 MAGICK_NOINST_HDRS = \
+	magick/alpha_composite.h \
 	magick/animate.h \
 	magick/bit_stream.h \
 	magick/display.h \

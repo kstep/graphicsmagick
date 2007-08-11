@@ -16,6 +16,29 @@ extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 #if defined(MAGICK_IMPLEMENTATION)
+
+static inline PixelPacket BlendComposite(const PixelPacket *p,
+  const PixelPacket *q,const double alpha)
+{
+  double
+    color;
+
+  PixelPacket
+    composite;
+
+  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
+  composite.red=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
+  composite.green=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
+  composite.blue=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  composite.opacity=p->opacity;
+  return(composite);
+}
+
 static inline PixelPacket AlphaComposite(const PixelPacket *p,
   const double alpha,const PixelPacket *q,const double beta)
 {
