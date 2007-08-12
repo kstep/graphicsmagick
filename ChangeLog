@@ -1,3 +1,9 @@
+2007-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchMarkSubCommand): Added a new 'benchmark'
+	GraphicsMagick command which can be used to perform benchmarking
+	on any other GraphicsMagick command.
+
 2007-08-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c (ReadMATImage): Support image is_grayscale flag.

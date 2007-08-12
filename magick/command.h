@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2007 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -17,6 +17,8 @@ extern "C" {
 
 extern MagickExport unsigned int
   AnimateImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
+  BenchmarkImageCommand(ImageInfo *image_info,int argc,char **argv,
                       char **metadata,ExceptionInfo *exception),
   CompositeImageCommand(ImageInfo *image_info,int argc,char **argv,
                         char **metadata,ExceptionInfo *exception),
