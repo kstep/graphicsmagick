@@ -1459,9 +1459,10 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
     
     if (duration > 0)
       {
-        for (iteration=0; iteration < LONG_MAX; iteration++)
+        for (iteration=0; iteration < LONG_MAX; )
           {
             status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            iteration++;
             if (!status)
               break;
             if (GetElapsedTime(&timer) > duration)
@@ -1472,9 +1473,10 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
     else if (iterations > 0)
       {
 
-        for (iteration=0; iteration < iterations; iteration++)
+        for (iteration=0; iteration < iterations; )
           {
             status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            iteration++;
             if (!status)
               break;
           }
