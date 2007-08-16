@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2007-08-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/{api.h, studio.h}: Strip out legacy MacOS 9 and VMS "support".
+  <LI> magick/{nt_base.c, unix_port.c} (MagickGetMMUPageSize): New function to obtain
+        the VM page size.<BR>
+  <LI> magick/pixel_cache.c (PersistCache): Fix a terrible memory leak
+        when reading MPC files.  Added Cache reference-count logging.
+
+</UL>
+<p>
 2007-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

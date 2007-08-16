@@ -684,7 +684,6 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   return(length);
 }
 
-#if !defined(macintosh)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1296,7 +1295,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   CloseBlob(image);
   return(image);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

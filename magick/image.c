@@ -4535,10 +4535,6 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   p=image_info->filename;
   while (isalnum((int) *p))
     p++;
-#if defined(vms)
-  if (*(p+1) == ':')
-    p+=2;  /* skip DECnet node spec */
-#endif
   if ((*p == ':') && ((p-image_info->filename) < (long) sizeof(magic)))
     {
       char

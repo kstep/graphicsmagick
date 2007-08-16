@@ -40,9 +40,6 @@
 /*
   Define declarations.
 */
-#if defined(macintosh)
-#define CLK_TCK  CLOCKS_PER_SEC
-#endif
 #if !defined(CLK_TCK)
 #define CLK_TCK  sysconf(_SC_CLK_TCK)
 #endif

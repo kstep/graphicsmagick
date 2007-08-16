@@ -1659,11 +1659,7 @@ static void formatString(Image *ofile, const char *s, int len)
 #if defined(MSWINDOWS)
   (void) WriteBlobString(ofile,"\"\r\n");
 #else
-#if defined(macintosh)
-  (void) WriteBlobString(ofile,"\"\r");
-#else
   (void) WriteBlobString(ofile,"\"\n");
-#endif
 #endif
 }
 

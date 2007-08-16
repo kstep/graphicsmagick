@@ -45,11 +45,11 @@
 #include "magick/monitor.h"
 #include "magick/utility.h"
 #if defined(HasFPX)
-#if !defined(vms) && !defined(macintosh) && !defined(MSWINDOWS)
-#include <fpxlib.h>
-#else
-#include "Fpxlib.h"
-#endif
+#  if defined(POSIX)
+#    include <fpxlib.h>
+#  else
+#    include "Fpxlib.h"
+#  endif
 #endif
 
 /*
@@ -222,15 +222,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
   {
-#if defined(macintosh)
-    FSSpec
-      fsspec;
-
-    FilenameToFSSpec(image->filename,&fsspec);
-    fpx_status=FPX_OpenImageByFilename((const FSSpec &) fsspec,(char *) NULL,
-#else
     fpx_status=FPX_OpenImageByFilename(image->filename,(char *) NULL,
-#endif
       &width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
   }
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
@@ -832,15 +824,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
   {
-#if defined(macintosh)
-    FSSpec
-      fsspec;
-
-    FilenameToFSSpec(filename,&fsspec);
-    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,image->columns,
-#else
     fpx_status=FPX_CreateImageByFilename(image->filename,image->columns,
-#endif
       image->rows,tile_width,tile_height,colorspace,background_color,
       compression,&flashpix);
   }

@@ -238,6 +238,30 @@ MagickExport int Exit(int status)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t M M U P a g e S i z e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetMMUPageSize() returns the VM pagesize used by the MMU. The VM
+%  pagesize is the number of bytes retrieved due to one page fault.
+%
+%  The format of the MagickGetMMUPageSize method is:
+%
+%      long MagickGetMMUPageSize()
+%
+*/
+MagickExport long MagickGetMMUPageSize()
+{
+  return 4096;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s W i n d o w s 9 5                                                     %
 %                                                                             %
 %                                                                             %

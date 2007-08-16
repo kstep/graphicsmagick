@@ -37,9 +37,9 @@ extern "C" {
   Macros for testing a pixel to see if it is grayscale or bilevel.
 */
 #define IsGray(color)  \
-  (((color).red == (color).green) && ((color).green == (color).blue))
+  (((color).red == (color).green) && ((color).red == (color).blue))
 #define IsMonochrome(color) \
-  (IsGray(color) && ((0 == (color).red) || (MaxRGB == (color).red)))
+  (((0 == (color).red) || (MaxRGB == (color).red)) && IsGray(color))
 
 /*
   Compare two colors

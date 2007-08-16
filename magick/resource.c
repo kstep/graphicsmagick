@@ -307,7 +307,7 @@ MagickExport void InitializeMagickResources(void)
     files=sysconf(_SC_OPEN_MAX);
 #  endif
 
-#  if defined(_SC_PHYS_PAGES) && (defined(_SC_PAGE_SIZE) || defined(HAVE_GETPAGESIZE))
+#  if  defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
     {
     long
       pagesize=-1,
@@ -316,18 +316,8 @@ MagickExport void InitializeMagickResources(void)
       Compute total physical memory based on number of memory pages,
       and page size.
     */
-#    if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
     pages=sysconf(_SC_PHYS_PAGES);
-#    endif /* defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) */
-
-#    if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-    pagesize=sysconf(_SC_PAGE_SIZE);
-#    endif /* defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) */
-
-#    if defined(HAVE_GETPAGESIZE)
-    if (pagesize <= 0)
-      pagesize=getpagesize();
-#    endif /* defined(HAVE_GETPAGESIZE) */
+    pagesize = MagickGetMMUPageSize();
 
     if (pages > 0 && pagesize > 0)
       total_memory=((pages+512)/1024)*((pagesize+512)/1024);

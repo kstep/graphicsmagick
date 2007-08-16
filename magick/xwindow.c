@@ -1756,14 +1756,6 @@ MagickExport void MagickXDelay(Display *display,const unsigned long milliseconds
     return;
 #if defined(MSWINDOWS)
   Sleep(milliseconds);
-#elif defined(vms)
-  {
-    float
-      timer;
-
-    timer=milliseconds/1000.0;
-    lib$wait(&timer);
-  }
 #elif defined(HAVE_SELECT)
   {
     struct timeval

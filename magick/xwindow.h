@@ -20,33 +20,16 @@ extern "C" {
 #undef False
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
-#if !defined(macintosh)
-# include <X11/Xos.h>
-# include <X11/Xlib.h>
-# include <X11/Xutil.h>
-# include <X11/Xresource.h>
-# include <X11/Xproto.h>
-# include <X11/Xatom.h>
-# include <X11/Xlocale.h>
-# include <X11/cursorfont.h>
-# include <X11/keysym.h>
-# if !defined(vms)
-#  include <X11/XWDFile.h>
-# else
-#  include "XWDFile.h"
-# endif
-#else
-# include <Xos.h>
-# include <Xlib.h>
-# include <Xutil.h>
-# include <Xresource.h>
-# include <Xproto.h>
-# include <Xatom.h>
-# include <cursorfont.h>
-# include <keysym.h>
-# include <XWDFile.h>
-#endif
-
+#include <X11/Xos.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xresource.h>
+#include <X11/Xproto.h>
+#include <X11/Xatom.h>
+#include <X11/Xlocale.h>
+#include <X11/cursorfont.h>
+#include <X11/keysym.h>
+#include <X11/XWDFile.h>
 
 /*
   Remove X11 defines so enums are used

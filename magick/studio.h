@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2007 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -21,12 +21,12 @@ extern "C" {
   the Windows compiler are _WIN32 and _WIN64.
 */
 #if defined(WIN32) || defined(WIN64)
-# define MSWINDOWS
-#endif
+#  define MSWINDOWS
+#endif /* defined(WIN32) || defined(WIN64) */
 
-#if !defined(vms) && !defined(macintosh) && !defined(MSWINDOWS)
-# define POSIX
-#endif
+#if !defined(MSWINDOWS)
+#  define POSIX
+#endif /* !defined(MSWINDOWS) */
 
 /*
   Private functions and types which are not part of the published API
@@ -34,17 +34,10 @@ extern "C" {
 */
 #define MAGICK_IMPLEMENTATION 1
 
-#if !defined(_MAGICK_CONFIG_H)
-# define _MAGICK_CONFIG_H
-# if !defined(vms) && !defined(macintosh)
-#  include "magick/magick_config.h"
-# else
-#  include "magick_config.h"
-# endif
-# if defined(__cplusplus) || defined(c_plusplus)
+#include "magick/magick_config.h"
+#if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
-# endif
-#endif
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 /*
   Support library symbol prefixing
@@ -59,7 +52,7 @@ extern "C" {
     under AIX unless STDC is defined.
   */
 #  define STDC
-#endif
+#endif /* !defined(const) */
 
 /**
  ** Borland C++ Builder DLL compilation defines
@@ -73,56 +66,54 @@ extern "C" {
 #endif 
 
 #if defined(MSWINDOWS) && !defined(__CYGWIN__)
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
+#    define _MAGICKDLL_
 #  endif
-#  if !defined(_MAGICKLIB_)
-#   define MagickExport  __declspec(dllimport)
-#   if defined(_VISUALC_)
-#    pragma message( "Magick lib DLL import interface" )
-#   endif
+#  if defined(_MAGICKDLL_)
+#    if defined(_VISUALC_)
+#      pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
+#    endif
+#    if !defined(_MAGICKLIB_)
+#      define MagickExport  __declspec(dllimport)
+#      if defined(_VISUALC_)
+#        pragma message( "Magick lib DLL import interface" )
+#      endif
+#    else
+#      define MagickExport  __declspec(dllexport)
+#      if defined(_VISUALC_)
+#         pragma message( "Magick lib DLL export interface" )
+#      endif
+#    endif
 #  else
-#   define MagickExport  __declspec(dllexport)
-#   if defined(_VISUALC_)
-#    pragma message( "Magick lib DLL export interface" )
-#   endif
+#    define MagickExport
+#    if defined(_VISUALC_)
+#      pragma message( "Magick lib static interface" )
+#    endif
 #  endif
-# else
-#  define MagickExport
+#  if defined(_DLL) && !defined(_LIB)
+#    define ModuleExport  __declspec(dllexport)
+#    if defined(_VISUALC_)
+#      pragma message( "Magick module DLL export interface" ) 
+#    endif
+#  else
+#    define ModuleExport
+#    if defined(_VISUALC_)
+#      pragma message( "Magick module static interface" ) 
+#    endif
+#  endif
+#  define MagickGlobal __declspec(thread)
 #  if defined(_VISUALC_)
-#   pragma message( "Magick lib static interface" )
+#    pragma warning(disable : 4018)
+#    pragma warning(disable : 4244)
+#    pragma warning(disable : 4142)
+#    pragma warning(disable : 4800)
+#    pragma warning(disable : 4786)
+#    pragma warning(disable : 4996) /* function deprecation warnings */
 #  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#  define ModuleExport  __declspec(dllexport)
-#  if defined(_VISUALC_)
-#   pragma message( "Magick module DLL export interface" ) 
-#  endif
-# else
-#  define ModuleExport
-#  if defined(_VISUALC_)
-#   pragma message( "Magick module static interface" ) 
-#  endif
-
-# endif
-# define MagickGlobal __declspec(thread)
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996) /* function deprecation warnings */
-# endif
 #else
-# define MagickExport
-# define ModuleExport
-# define MagickGlobal
+#  define MagickExport
+#  define ModuleExport
+#  define MagickGlobal
 #endif
 
 /*
@@ -131,7 +122,7 @@ extern "C" {
  */
 #define MAGICK_IDBASED_MESSAGES 1
 #if defined(MAGICK_IDBASED_MESSAGES)
-#include "magick/locale_c.h"
+#  include "magick/locale_c.h"
 #endif
 
 /*
@@ -154,16 +145,16 @@ extern "C" {
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MSWINDOWS) && defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
+#  define _CRTDBG_MAP_ALLOC
 #endif
 #include <stdlib.h>
 #if !defined(MSWINDOWS)
-# include <unistd.h>
+#  include <unistd.h>
 #else
-# include <direct.h>
-# if !defined(HAVE_STRERROR)
-#  define HAVE_STRERROR
-# endif
+#  include <direct.h>
+#  if !defined(HAVE_STRERROR)
+#    define HAVE_STRERROR
+#  endif
 #endif
 
 /*
@@ -178,10 +169,10 @@ extern "C" {
 #endif
 
 #if !defined(ExtendedSignedIntegralType)
-# define ExtendedSignedIntegralType magick_int64_t
+#  define ExtendedSignedIntegralType magick_int64_t
 #endif
 #if !defined(ExtendedUnsignedIntegralType)
-# define ExtendedUnsignedIntegralType magick_uint64_t
+#  define ExtendedUnsignedIntegralType magick_uint64_t
 #endif
 
 #define MagickPassFail unsigned int
@@ -203,75 +194,70 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
-#if defined(MSWINDOWS) || defined(POSIX)
-# include <sys/types.h>
-# include <sys/stat.h>
-# if defined(HAVE_FTIME)
-# include <sys/timeb.h>
-# endif
-# if defined(POSIX)
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#if defined(HAVE_FTIME)
+#  include <sys/timeb.h>
+#endif
+
+#if defined(POSIX)
 #  if defined(HAVE_SYS_NDIR_H) || defined(HAVE_SYS_DIR_H) || defined(HAVE_NDIR_H)
-#   define dirent direct
-#   define NAMLEN(dirent) (dirent)->d_namlen
-#   if defined(HAVE_SYS_NDIR_H)
-#    include <sys/ndir.h>
-#   endif
-#   if defined(HAVE_SYS_DIR_H)
-#    include <sys/dir.h>
-#   endif
-#   if defined(HAVE_NDIR_H)
-#    include <ndir.h>
-#   endif
+#    define dirent direct
+#    define NAMLEN(dirent) (dirent)->d_namlen
+#    if defined(HAVE_SYS_NDIR_H)
+#      include <sys/ndir.h>
+#    endif
+#    if defined(HAVE_SYS_DIR_H)
+#      include <sys/dir.h>
+#    endif
+#    if defined(HAVE_NDIR_H)
+#      include <ndir.h>
+#    endif
 #  else
-#   include <dirent.h>
-#   define NAMLEN(dirent) strlen((dirent)->d_name)
+#    include <dirent.h>
+#    define NAMLEN(dirent) strlen((dirent)->d_name)
 #  endif
 #  include <sys/wait.h>
 #  include <pwd.h>
-# endif
-# if !defined(S_ISDIR)
+#endif
+
+#if !defined(S_ISDIR)
 #  define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
-# endif
-# if !defined(S_ISREG)
+#endif
+
+#if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
-# endif
-# include "magick/magick_types.h"
-# include "magick/image.h"
-# include "magick/list.h"
-# if !defined(MSWINDOWS)
+#endif
+
+#include "magick/magick_types.h"
+#include "magick/image.h"
+#include "magick/list.h"
+
+#if !defined(MSWINDOWS)
 #  include <sys/time.h>
-#if defined(HAVE_SYS_TIMES_H)
-#  include <sys/times.h>
+#  if defined(HAVE_SYS_TIMES_H)
+#    include <sys/times.h>
+#  endif
 #endif
-# endif
-#else
-# include <types.h>
-# include <stat.h>
-# if defined(macintosh)
-#  include <SIOUX.h>
-#  include <console.h>
-#  include <unix.h>
-# endif
-# include "magick/magick_types.h"
-# include "magick/image.h"
-# include "magick/list.h"
-#endif
+
+
+#if defined(POSIX)
+# include "magick/unix_port.h"
+#endif /* defined(POSIX) */
 
 #if defined(MSWINDOWS)
 # include "magick/nt_base.h"
-#endif
-#if defined(macintosh)
-# include "magick/mac.h"
-#endif
-#if defined(vms)
-# include "magick/vms.h"
-#endif
+#endif /* defined(MSWINDOWS) */
+
 #if defined(HAVE_MMAP_FILEIO) && !defined(MSWINDOWS)
 # include <sys/mman.h>
 #endif
+
 #if defined(HAVE_PTHREAD)
 # include <pthread.h>
 #endif
+
 #if defined(HAVE_POLL)
 # include <sys/poll.h>
 #endif
@@ -316,60 +302,26 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
   Review these platform specific definitions.
 */
 #if defined(POSIX)
-# define DirectorySeparator  "/"
-# define DirectoryListSeparator  ':'
-# define EditorOptions  " -title \"Edit Image Comment\" -e vi"
-# define Exit  exit
-# define IsBasenameSeparator(c)  ((c) == '/')
-# define PreferencesDefaults  "~/."
-# define ProcessPendingEvents(text)
-# define ReadCommandlLine(argc,argv)
-# define SetNotifyHandlers
-#else
-
-# if defined(vms)
-#  define ApplicationDefaults  "decw$system_defaults:"
-#  define DirectorySeparator  ""
-#  define DirectoryListSeparator  ';'
-#  define EditorOptions  ""
+#  define DirectorySeparator  "/"
+#  define DirectoryListSeparator  ':'
+#  define EditorOptions  " -title \"Edit Image Comment\" -e vi"
 #  define Exit  exit
-#  define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
-#  define MagickLibPath  "sys$login:"
-#  define MagickCoderModulesPath  "sys$login:"
-#  define MagickFilterModulesPath  "sys$login:"
-#  define MagickSharePath  "sys$login:"
-#  define PreferencesDefaults  "decw$user_defaults:"
+#  define IsBasenameSeparator(c)  ((c) == '/')
+#  define PreferencesDefaults  "~/."
 #  define ProcessPendingEvents(text)
 #  define ReadCommandlLine(argc,argv)
 #  define SetNotifyHandlers
-# endif
+#endif
 
-# if defined(macintosh)
-#  define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
-#  define DirectorySeparator  ":"
-#  define DirectoryListSeparator  ';'
-#  define EditorOptions ""
-#  define IsBasenameSeparator(c)  ((c) == ':')
-#  define MagickLibPath  ""
-#  define MagickCoderModulesPath  ""
-#  define MagickFilterModulesPath  ""
-#  define MagickSharePath  ""
-#  define PreferencesDefaults  "~/."
-#  define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
-#  define SetNotifyHandlers \
-    SetErrorHandler(MACErrorHandler); \
-    SetWarningHandler(MACWarningHandler)
-# endif
-
-# if defined(MSWINDOWS)
+#if defined(MSWINDOWS)
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
 #  define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
 #  define ProcessPendingEvents(text)
-#if !defined(PreferencesDefaults)
-#  define PreferencesDefaults  "~\\."
-#endif /* PreferencesDefaults */
+#  if !defined(PreferencesDefaults)
+#     define PreferencesDefaults  "~\\."
+#  endif /* PreferencesDefaults */
 #  define ReadCommandlLine(argc,argv)
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \
@@ -379,9 +331,8 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  if !defined(HAVE_TIFFCONF_H)
 #    define HAVE_TIFFCONF_H
 #  endif
-# endif
+#endif /* defined(MSWINDOWS) */
 
-#endif
 
 /*
   Define declarations.
@@ -453,20 +404,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #endif
 
 #if !defined(HAVE_POPEN) && defined(HAVE__POPEN)
-# define HAVE_POPEN 1
-# define popen _popen
-#endif
+#  define HAVE_POPEN 1
+#  define popen _popen
+#endif /* !defined(HAVE_POPEN) && defined(HAVE__POPEN) */
 
 #if !defined(HAVE_PCLOSE) && defined(HAVE__PCLOSE)
-# define HAVE_PCLOSE 1
-# define pclose _pclose
-#endif
+#  define HAVE_PCLOSE 1
+#  define pclose _pclose
+#endif /* !defined(HAVE_PCLOSE) && defined(HAVE__PCLOSE) */
 
-# if defined(HAVE__EXIT)
-#   define SignalHandlerExit _exit
-# else
-#   define SignalHandlerExit Exit
-# endif /* defined(HAVE__EXIT) */
+#if defined(HAVE__EXIT)
+#  define SignalHandlerExit _exit
+#else
+#  define SignalHandlerExit Exit
+#endif /* defined(HAVE__EXIT) */
 
 
 /*
@@ -492,6 +443,6 @@ extern MagickExport const unsigned long
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
-#endif
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
-#endif
+#endif /* ifndef _MAGICK_STUDIO_H */

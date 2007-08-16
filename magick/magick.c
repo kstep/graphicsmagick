@@ -882,12 +882,6 @@ MagickExport void InitializeMagick(const char *path)
 MagickExport int unsigned IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
-#if defined(macintosh)
-  return(MACIsMagickConflict(magick));
-#endif
-#if defined(vms)
-  return(VMSIsMagickConflict(magick));
-#endif
 #if defined(MSWINDOWS) || defined(__CYGWIN__)
   return(NTIsMagickConflict(magick));
 #endif

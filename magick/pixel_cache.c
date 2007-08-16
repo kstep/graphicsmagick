@@ -1500,6 +1500,10 @@ MagickExport void DestroyCacheInfo(Cache cache_info)
   cache_info->reference_count--;
   if (cache_info->reference_count > 0)
     {
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                            "destroy skipped (still referenced %ld times) %.1024s",
+                            cache_info->reference_count,
+                            cache_info->filename);
       LiberateSemaphoreInfo(&cache_info->semaphore);
       return;
     }
@@ -3242,14 +3246,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   assert(image->cache != (void *) NULL);
   assert(filename != (const char *) NULL);
   assert(offset != (magick_off_t *) NULL);
-  pagesize=0;
-#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-  pagesize=sysconf(_SC_PAGE_SIZE);
-#elif defined(HAVE_GETPAGESIZE) && defined(POSIX)
-  pagesize=getpagesize();
-#endif
-  if (pagesize <= 0)
-    pagesize=16384;
+  pagesize=MagickGetMMUPageSize();
   cache_info=(CacheInfo *) image->cache;
   if (attach)
     {
@@ -3261,10 +3258,10 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       cache_info->offset=(*offset);
       if (!OpenCache(image,ReadMode))
         return(False);
-      cache_info=(CacheInfo*) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-        "Attach persistent cache");
+                            "Attach persistent cache %.1024s",
+                            cache_info->filename);
       return(True);
     }
   AcquireSemaphoreInfo(&cache_info->semaphore);
@@ -3644,6 +3641,9 @@ MagickExport Cache ReferenceCache(Cache cache_info)
   assert(cache_info->signature == MagickSignature);
   AcquireSemaphoreInfo(&cache_info->semaphore);
   cache_info->reference_count++;
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                        "reference (reference count now %ld) %.1024s",
+                        cache_info->reference_count, cache_info->filename);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   return(cache_info);
 }

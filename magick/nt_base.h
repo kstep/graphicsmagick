@@ -291,6 +291,9 @@ extern MagickExport void
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *);
 
+extern MagickExport long
+  MagickGetMMUPageSize();
+
 #endif /* !XS_VERSION */
 
 #if defined(__cplusplus) || defined(c_plusplus)

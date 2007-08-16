@@ -735,11 +735,7 @@ void WriteBlobStringEOL(Image *image)
 #if defined(MSWINDOWS)
   (void) WriteBlobString(image,"\r\n");
 #else
-#if defined(macintosh)
-  (void) WriteBlobString(image,"\r");
-#else
   (void) WriteBlobString(image,"\n");
-#endif
 #endif
 }
 
@@ -749,11 +745,7 @@ void WriteBlobStringWithEOL(Image *image,const char *s)
 #if defined(MSWINDOWS)
   (void) WriteBlobString(image,"\r\n");
 #else
-#if defined(macintosh)
-  (void) WriteBlobString(image,"\r");
-#else
   (void) WriteBlobString(image,"\n");
-#endif
 #endif
 }
 

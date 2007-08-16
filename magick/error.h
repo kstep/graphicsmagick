@@ -276,10 +276,6 @@ extern MagickExport WarningHandler
 
 #include <magick/log.h>
 
-#if defined(macintosh)
-#define ExceptionInfo MagickExceptionInfo
-#endif
-
 #if defined(MAGICK_IMPLEMENTATION)
 #  if defined(MAGICK_IDBASED_MESSAGES)
 

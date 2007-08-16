@@ -3039,22 +3039,6 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
                 return((char **) NULL);
               }
           }
-#if defined(vms)
-        {
-          register char
-            *p;
-
-          p=strchr(entry->d_name,';');
-          if (p)
-            *p='\0';
-          if (*number_entries > 0)
-            if (LocaleCompare(entry->d_name,filelist[*number_entries-1]) == 0)
-              {
-                entry=readdir(current_directory);
-                continue;
-              }
-        }
-#endif
         filelist[*number_entries]=MagickAllocateMemory(char *,
           strlen(entry->d_name)+MaxTextExtent);
         if (filelist[*number_entries] == (char *) NULL)
@@ -4286,14 +4270,6 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
       message[sizeof(message)-1]='\0';
       message_p=message;
     }
-#elif defined(vms)
-  status=!system(command);
-  if (!status)
-    message_p=strerror(status);
-#elif defined(macintosh)
-  status=MACSystemCommand(command);
-  if (!status)
-    message_p=strerror(status);
 #elif defined(MSWINDOWS)
   status=NTSystemComman(command);
   if (!status)

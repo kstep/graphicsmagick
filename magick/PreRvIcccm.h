@@ -48,9 +48,6 @@ extern MagickExport XrmDatabase
 /*
   Compatability defines for pre X11R4 ICCCM.
 */
-#if defined(vms)
-#define XMaxRequestSize(display)  16384
-#endif
 
 #define WithdrawnState  0
 #define XInductColormap(display,colormap)  XInstallColormap(display,colormap)

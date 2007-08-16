@@ -119,7 +119,6 @@ magick/image.c
 magick/list.c
 magick/locale.c
 magick/log.c
-magick/mac.c
 magick/magic.c
 magick/magick.c
 magick/magick_endian.c
@@ -153,7 +152,6 @@ magick/tsd.c
 magick/type.c
 magick/utility.c
 magick/version.c
-magick/vms.c
 magick/widget.c
 magick/xwindow.c
 utilities/gm.c

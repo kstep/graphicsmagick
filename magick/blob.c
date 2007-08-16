@@ -2348,10 +2348,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             */
             FormMultiPartFilename(image,image_info);
             (void) strcpy(filename,image->filename);
-#if defined(macintosh)
-            /* What is this for? */
-            SetApplicationType(filename,image_info->magick,'8BIM');
-#endif
           }
 #if defined(HasZLIB)
         if (((strlen(filename) > 2) &&
