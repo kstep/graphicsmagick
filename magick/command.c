@@ -14261,14 +14261,153 @@ MagickExport void ImportUsage(void)
 %
 %
 */
+static void PrintFeature(const char* feature,MagickBool support)
+{
+  (void) fprintf(stdout,"  %-22s %s\n", feature, (support ? "yes" : "no"));
+}
 static unsigned int VersionCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
-  (void) fprintf(stdout,"Version: %.1024s\n",GetMagickVersion(0));
-  (void) fprintf(stdout,"Copyright: %.1024s\n",GetMagickCopyright());
+  MagickBool
+    supported;
+
+  (void) fprintf(stdout,"%.1024s\n",GetMagickVersion(0));
+  (void) fprintf(stdout,"%.1024s\n",GetMagickCopyright());
+
+  (void) fprintf(stdout,"\nFeature Support:\n");
+
+  /* Thread Safe */
+  supported=MagickFalse;
+#if defined(MSWINDOWS) || defined(HAVE_PTHREAD)
+  supported=MagickTrue;
+#endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
+  PrintFeature("Thread Safe", supported);
+
+  /* Large File Support */
+  supported=(sizeof(off_t) > 4);
+  PrintFeature("Large Files", supported);
+
+  /* BZIP */
+  supported=MagickFalse;
+#if defined(HasBZLIB)
+  supported=MagickTrue;
+#endif /* defined(HasBZLIB) */
+  PrintFeature("BZIP", supported);
+
+  /* DPS */
+  supported=MagickFalse;
+#if defined(HasDPS)
+  supported=MagickTrue;
+#endif /* defined(HasDPS) */
+  PrintFeature("DPS", supported);
+
+  /* FlashPix */
+  supported=MagickFalse;
+#if defined(HasFPX)
+  supported=MagickTrue;
+#endif /* defined(HasFPX) */
+  PrintFeature("FlashPix", supported);
+
+  /* Ghostscript Library */
+  supported=MagickFalse;
+#if defined(HasGS)
+  supported=MagickTrue;
+#endif /* defined(HasGS) */
+  PrintFeature("Ghostscript (Library)", supported);
+
+  /* JBIG */
+  supported=MagickFalse;
+#if defined(HasJBIG)
+  supported=MagickTrue;
+#endif /* defined(HasJBIG) */
+  PrintFeature("JBIG",supported);
+
+  /* JPEG-2000 */
+  supported=MagickFalse;
+#if defined(HasJP2)
+  supported=MagickTrue;
+#endif /* defined(HasJP2) */
+  PrintFeature("JPEG-2000", supported);
+
+  /* JPEG */
+  supported=MagickFalse;
+#if defined(HasJPEG)
+  supported=MagickTrue;
+#endif /* defined(HasJPEG) */
+  PrintFeature("JPEG", supported);
+
+  /* Little CMS */
+  supported=MagickFalse;
+#if defined(HasLCMS)
+  supported=MagickTrue;
+#endif /* defined(HasLCMS) */
+  PrintFeature("Little CMS", supported);
+
+  /* Loadable Modules */
+  supported=MagickFalse;
+#if defined(SupportMagickModules)
+  supported=MagickTrue;
+#endif /* defined(SupportMagickModules) */
+  PrintFeature("Loadable Modules", supported);
+
+  /* PNG */
+  supported=MagickFalse;
+#if defined(HasPNG)
+  supported=MagickTrue;
+#endif /* defined(HasPNG) */
+  PrintFeature("PNG", supported);
+
+  /* TIFF */
+  supported=MagickFalse;
+#if defined(HasTIFF)
+  supported=MagickTrue;
+#endif /* defined(HasTIFF) */
+  PrintFeature("TIFF", supported);
+
+  /* TRIO */
+  supported=MagickFalse;
+#if defined(HasTRIO)
+  supported=MagickTrue;
+#endif /* defined(HasTRIO) */
+  PrintFeature("TRIO", supported);
+
+  /* FreeType */
+  supported=MagickFalse;
+#if defined(HasTTF)
+  supported=MagickTrue;
+#endif /* defined(HasTTF) */
+  PrintFeature("FreeType", supported);
+
+  /* WMF */
+  supported=MagickFalse;
+#if defined(HasWMF) || defined(HasWMFlite)
+  supported=MagickTrue;
+#endif /* defined(HasWMF) || defined(HasWMFlite) */
+  PrintFeature("WMF", supported);
+
+  /* X11 */
+  supported=MagickFalse;
+#if defined(HasX11)
+  supported=MagickTrue;
+#endif /* defined(HasX11) */
+  PrintFeature("X11", supported);
+
+  /* XML */
+  supported=MagickFalse;
+#if defined(HasXML)
+  supported=MagickTrue;
+#endif /* defined(HasXML) */
+  PrintFeature("XML", supported);
+
+  /* ZLIB */
+  supported=MagickFalse;
+#if defined(HasZLIB)
+  supported=MagickTrue;
+#endif /* defined(HasZLIB) */
+  PrintFeature("ZLIB", supported);
 
 #if defined(GM_BUILD_HOST)
-  (void) fprintf(stdout,"Host type: %.1024s\n", GM_BUILD_HOST);
+  (void) fprintf(stdout,"\nHost type: %.1024s\n", GM_BUILD_HOST);
 #endif /* defined(GM_BUILD_HOST) */
 
 #if defined(GM_BUILD_CONFIGURE_ARGS)

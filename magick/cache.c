@@ -1056,6 +1056,10 @@ MagickExport void DestroyCacheInfo(Cache cache)
   cache_info->reference_count--;
   if (cache_info->reference_count > 0)
     {
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                            "destroy skipped (still referenced %ld times) %.1024s",
+                            cache_info->reference_count,
+                            cache_info->filename);
       LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
       return;
     }
@@ -2427,10 +2431,10 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       cache_info->offset=(*offset);
       if (!OpenCache(image,ReadMode))
         return(False);
-      cache_info=ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-        "Attach persistent cache");
+                            "Attach persistent cache %.1024s",
+                            cache_info->filename);
       return(True);
     }
   AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
@@ -2756,6 +2760,9 @@ MagickExport Cache ReferenceCache(Cache cache)
   assert(cache_info->signature == MagickSignature);
   AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   cache_info->reference_count++;
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                        "reference (reference count now %ld) %.1024s",
+                        cache_info->reference_count, cache_info->filename);
   LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   return(cache_info);
 }

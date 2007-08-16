@@ -746,8 +746,6 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
 #endif
   if (gs_func == (GhostscriptVectors *) NULL)
     {
-      if (verbose)
-        (void) fputs(command,stdout);
 #if defined(POSIX)
       {
         int arg_count;
