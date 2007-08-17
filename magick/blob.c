@@ -2021,6 +2021,9 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
       if (map != (void *) MAP_FAILED)
         {
 #if defined(MADV_SEQUENTIAL)
+          /* Note: It has been noticed that madvise() wastes time if
+             the file has been accessed recently so pages are already
+             in RAM. ... */
           (void) madvise(map,length,MADV_SEQUENTIAL);
 #endif /* defined(MADV_SEQUENTIAL) */
 #if defined(MADV_WILLNEED)

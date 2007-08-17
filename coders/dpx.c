@@ -2598,7 +2598,7 @@ ModuleExport void RegisterDPXImage(void)
     *DPXNote =
     {
       "File Format for Digital Moving-Picture Exchange (DPX) Version 2.0.\n"
-      "The SMPTE 268M-2003 specification is available from http://www.smtpe.org\n"
+      "The SMPTE 268M-2003 specification is available from http://www.smtpe.org/"
     };
 
   entry=SetMagickInfo("DPX");
