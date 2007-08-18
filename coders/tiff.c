@@ -1851,6 +1851,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   uint16
     bits_per_sample,
     compress_tag,
+    fill_order,
     photometric,
     samples_per_pixel;
 
@@ -1925,6 +1926,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     depth=image->depth;
     bits_per_sample=8;
     compress_tag=COMPRESSION_NONE;
+    fill_order=FILLORDER_MSB2LSB;
     switch (image->compression)
     {
 #ifdef CCITT_SUPPORT
@@ -1935,6 +1937,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Set image type to BilevelType");
         compress_tag=COMPRESSION_CCITTFAX3;
+        fill_order=FILLORDER_LSB2MSB;
         break;
       }
       case Group4Compression:
@@ -1944,6 +1947,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Set image type to BilevelType");
         compress_tag=COMPRESSION_CCITTFAX4;
+        fill_order=FILLORDER_LSB2MSB;
         break;
       }
 #endif
@@ -2196,6 +2200,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
+    if (FILLORDER_MSB2LSB != fill_order)
+      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
     (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
@@ -2224,8 +2230,38 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
         break;
       }
+    case COMPRESSION_CCITTFAX3:
+      {
+        /*
+          Set Group 3 Options.  Group 3 options are arranged as 32 flag bits.
+          Specify byte-aligned EOL padding option.
+          
+          Group3Options = 4,5. LONG. Data may be one- or
+          two-dimensional, but EOLs must be
+          byte-aligned. Uncompressed data is not allowed.
+          
+          bit 0 = 0 for 1-Dimensional, 1 for 2-Dimensional
+          
+          bit 1 = must be 0 (uncompressed data not allowed)
+          
+          bit 2 = 1 for byte-aligned EOLs
+          
+        */
+        (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,4);
+        
+        /*
+          It is recommended (but not required) to output FAX as
+          one strip.
+        */
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        break;
+      }
       case COMPRESSION_CCITTFAX4:
       {
+        /*
+          It is recommended (but not required) to output FAX as
+          one strip.
+        */
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
         break;
       }
@@ -2299,12 +2335,25 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (image_info->adjoin && (GetImageListLength(image) > 1))
       {
-        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        if (image->scene != 0)
-          (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
-            image->scene,GetImageListLength(image));
+        /*
+          Page and Page number tags.  Page is the current page number
+          (0 based) and pages is the total number of pages.*/
+
+        uint16
+          page,
+          pages;
+
+        page=(uint16) scene;
+        pages=GetImageListLength(image);
+
+        if (image_info->adjoin && pages > 1)
+        {
+          /* SubFileType = 2. LONG. The value 2 identifies a single page of a multi-page image. */
+          (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+        }
+
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (const ImageAttribute *) NULL)

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003, 2004, 2007 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -112,8 +112,13 @@ typedef struct _CommandInfo
 } CommandInfo;
 
 static void
+  BenchmarkUsage(),
   LiberateArgumentList(const int argc,char **argv),
   GMUsage(void);
+
+static unsigned int
+    BenchmarkImageCommand(ImageInfo *image_info,int argc,char **argv,
+                          char **metadata,ExceptionInfo *exception);
 
 static unsigned int
   HelpCommand(ImageInfo *image_info,int argc,char **argv,
@@ -131,6 +136,8 @@ static const CommandInfo commands[] =
     { "animate", "animate a sequence of images",
       AnimateImageCommand, AnimateUsage, 0 },
 #endif
+    { "benchmark", "benchmark one of the other commands",
+      BenchmarkImageCommand, BenchmarkUsage, 0 },
     { "composite", "composite images together",
       CompositeImageCommand, CompositeUsage, 0 },
     { "conjure", "execute a Magick Scripting Language (MSL) XML script",
@@ -1199,6 +1206,222 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
     (char *) NULL);
   return(False);
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B e n c h m a r k U s a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BenchmarkUsage() displays the program command syntax.
+%
+%  The format of the BenchmarkUsage method is:
+%
+%      void BenchmarkUsage()
+%
+%  A description of each parameter follows:
+%
+%
+*/
+static void BenchmarkUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-duration duration  duration to run the benchmark (in seconds)",
+      "-iterations loops   number of iterations to execute",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s options command ... ",GetClientName());
+  (void) printf("\nWhere options include one of:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) printf("Followed by some other GraphicsMagick command\n");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  B e n c h m a r k I m a g e C o m m a n d                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BenchmarkImageCommand() executes a specified GraphicsMagick sub-command
+%  (e.g. 'convert') for a specified number of interations or for a specified
+%  elapsed time. When the command completes, various statistics are printed
+%  including the number of iterations per second as a floating point value.
+%
+%  The format of the BenchmarkImageCommand method is:
+%
+%      unsigned int BenchmarkImageCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static unsigned int BenchMarkSubCommand(const ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  unsigned int
+    status;
+
+  ImageInfo
+    *clone_info;
+  
+  clone_info=CloneImageInfo(image_info);
+  status=MagickCommand(clone_info,argc,argv,metadata,exception);
+  DestroyImageInfo(clone_info);
+  return status;
+}
+MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  double
+    duration;
+
+  long
+    iterations;
+
+  unsigned int
+    status=True;
+
+  int
+    i;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+                                  LocaleCompare("-?",argv[1]) == 0)))
+    {
+      BenchmarkUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return MagickFail;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return MagickFail;
+    }
+
+  /*
+    Skip over our command name argv[0].
+  */
+  argc--;
+  argv++;
+  i=0;
+  duration=-1.0;
+  iterations=-1L;
+  if (argc)
+    {
+      if (LocaleCompare("-duration",argv[0]) == 0)
+        {
+          argc--;
+          argv++;
+          if (argc)
+            {
+              duration=atof(*argv);
+              argc--;
+              argv++;
+            }
+        }
+      else if (LocaleCompare("-iterations",argv[0]) == 0)
+        {
+          argc--;
+          argv++;
+          if (argc)
+            {
+              iterations=atol(argv[0]);
+              argc--;
+              argv++;
+            }
+        }
+    }
+
+  if ((argc < 1) ||
+      ((duration <= 0) && (iterations <= 0)))
+    {
+      BenchmarkUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return MagickFail;
+    }
+
+  {
+    long
+      iteration=0;
+    
+    TimerInfo
+      timer;
+    
+    GetTimerInfo(&timer);
+    
+    if (duration > 0)
+      {
+        for (iteration=0; iteration < LONG_MAX; )
+          {
+            status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            iteration++;
+            if (!status)
+              break;
+            if (GetElapsedTime(&timer) > duration)
+              break;
+            ContinueTimer(&timer);
+          }
+      }
+    else if (iterations > 0)
+      {
+
+        for (iteration=0; iteration < iterations; )
+          {
+            status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            iteration++;
+            if (!status)
+              break;
+          }
+      }
+    {
+      double
+        user_time;
+
+      double
+        elapsed_time;
+
+      user_time=GetUserTime(&timer);
+      elapsed_time=GetElapsedTime(&timer);
+      printf("Iterations: %ld, UserTime: %g, ElapsedTime: %g, Iterations/second: %g\n",
+             iteration,user_time, elapsed_time,(((double) iteration)/elapsed_time));
+    }
+  }
+
+  return status;
 }
 
 /*
