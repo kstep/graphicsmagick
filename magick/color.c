@@ -1177,17 +1177,18 @@ static void HistogramToFile(const Image *image,CubeInfo *cube_info,
 MagickExport unsigned int IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
-  long
+  unsigned long
     y;
 
   register const PixelPacket
     *p;
 
-  register long
+  register unsigned long
     x;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   if (image->colorspace == CMYKColorspace)
     return(False);
   if (image->is_grayscale)
@@ -1197,12 +1198,13 @@ MagickExport unsigned int IsGrayImage(const Image *image,
     case DirectClass:
     case UndefinedClass:
     {
-      for (y=0; y < (long) image->rows; y++)
+/*       printf("IsGrayImage: Exhaustive pixel test!\n"); */
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           return(False);
-        for (x=(long) image->columns; x > 0; x--)
+        for (x=image->columns; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue))
             return(False);
@@ -1214,7 +1216,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
     case PseudoClass:
     {
       p=image->colormap;
-      for (x=(long) image->colors; x > 0; x--)
+      for (x=image->colors; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue))
             return(False);
@@ -1268,6 +1270,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   if (image->colorspace == CMYKColorspace)
     return(False);
   if (image->is_monochrome)
@@ -1277,6 +1280,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     case DirectClass:
     case UndefinedClass:
     {
+/*       printf("IsMonochromeImage: Exhaustive pixel test!\n"); */
       for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -1337,7 +1341,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 %
 %
 */
-MagickExport unsigned int IsOpaqueImage(const Image *image,
+MagickExport MagickBool IsOpaqueImage(const Image *image,
   ExceptionInfo *exception)
 {
   long
@@ -1355,16 +1359,16 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (!image->matte)
-    return(True);
+    return(MagickTrue);
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
-      return(False);
+      return(MagickFalse);
     for (x=(long) image->columns; x > 0; x--)
     {
       if (p->opacity != OpaqueOpacity)
-        return(False);
+        return(MagickFalse);
       p++;
     }
   }

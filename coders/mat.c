@@ -43,6 +43,8 @@
 #include "magick/shear.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
+#include "magick/constitute.h"
+
 
 /* Auto coloring method, sorry this creates some artefact inside data
 MinReal+j*MaxComplex = red  MaxReal+j*MaxComplex = black
@@ -784,8 +786,7 @@ done_reading:
 static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
 {
   long y;
-  register long x;
-  register const PixelPacket *q;
+  const PixelPacket *q;
   unsigned int status;
   int logging;
   unsigned long DataSize;
@@ -793,6 +794,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   char MATLAB_HDR[0x84];
   time_t current_time;
   const struct tm *t;
+  unsigned char *pixels;
 
   current_time=time((time_t *) NULL);
   t=localtime(&current_time);
@@ -807,7 +809,11 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);  
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  pixels=MagickAllocateMemory(unsigned char *,image->rows);
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
   /*
     Store MAT header.
@@ -848,35 +854,30 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
   (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
 
+  pixels=MagickAllocateMemory(unsigned char *,image->columns);
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
   /*
     Store image data.
   */
   for (y=0; y<(long)image->columns; y++)
   {
-    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);    
-    for (x=0; x < (long) image->rows; x++)
-    {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(q->red));
-      q++;
-    }
+    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+   (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0);
+   (void) WriteBlob(image,image->rows,pixels);
   }
   for (y=0; y<(long)image->columns; y++)
   {
-    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
-    for (x=0; x < (long) image->rows; x++)
-    {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(q->green));
-      q++;
-    }
+    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+    (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0);
+    (void) WriteBlob(image,image->rows,pixels);
   }
   for (y=0; y<(long)image->columns; y++)
   {
-    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
-    for (x=0; x < (long) image->rows; x++)
-    {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(q->blue));
-      q++;
-    }
+    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+    (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0);
+    (void) WriteBlob(image,image->rows,pixels);
   }
 
   while(padding-->0) (void) WriteBlobByte(image,0);
@@ -884,6 +885,8 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   status=True;
 
   CloseBlob(image);
+  MagickFreeMemory(pixels);
+
   if (logging)
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return MAT");
   

@@ -2771,6 +2771,7 @@ MagickExport unsigned long GetImageDepth(const Image *image,
       /*
         Directclass
       */
+/*       printf("GetImageDepth: Exhaustive pixel test!\n"); */
       for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -2846,6 +2847,168 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
       CopyException(exception,&next->exception);
     next->exception.severity=UndefinedException;
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e C h a r a c t e r i s t i c s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageCharacteristics obtains the basic characteristics of the image
+%  and stores the characterisistics in the user provided
+%  ImageCharacteristics structure.  If optimize is set to MagickTrue, then
+%  exhaustive testing of the image pixels is performed (as required).
+%  MagickPass is returned if this method executes without error.
+%
+%  The format of the GetImageCharacteristics method is:
+%
+%      MagickPassFail GetImageCharacteristics(const Image *image,
+%                               ImageCharacteristics *characteristics,
+%                               MagickBool optimize,
+%                               ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o characteristics: An ImageCharacteristics structure to update.
+%
+%    o optimize: Inspect image pixels (if required)
+%
+%    o exception: Any errors are reported here.
+%
+*/
+MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
+                                                    ImageCharacteristics *characteristics,
+                                                    const MagickBool optimize,
+                                                    ExceptionInfo *exception)
+{
+  unsigned long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register unsigned long
+    x;
+
+  MagickPassFail
+    status = MagickPass;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(characteristics != (ImageCharacteristics *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+
+  characteristics->cmyk = (image->colorspace == CMYKColorspace ? MagickTrue : MagickFalse);
+  characteristics->grayscale = (image->is_grayscale ? MagickTrue : MagickFalse);
+  characteristics->monochrome = (image->is_monochrome ? MagickTrue : MagickFalse);
+  characteristics->opaque = (image->matte ? MagickFalse : MagickTrue);
+  characteristics->palette = (image->storage_class == PseudoClass ? MagickTrue : MagickFalse);
+
+  if ((optimize))
+    {
+      MagickBool
+        grayscale,
+        monochrome,
+        opaque;
+
+      /* Predicate to test */
+      grayscale=(image->is_grayscale ? MagickFalse : MagickTrue);
+      monochrome=(image->is_monochrome ? MagickFalse : MagickTrue);
+      opaque=(image->matte ? MagickTrue : MagickFalse);
+      switch (image->storage_class)
+        {
+        case DirectClass:
+        case UndefinedClass:
+          {
+            for (y=0; y < image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+                if (p == (const PixelPacket *) NULL)
+                  {
+                    status = MagickFail;
+                    break;
+                  }
+                for (x=image->columns; x != 0; x--)
+                  {
+                    grayscale = ((grayscale) &&
+                                 (p->red == p->green) && (p->red == p->blue));
+                    monochrome = ((monochrome) && (grayscale) &&
+                                  ((0 == p->red) || (MaxRGB == p->red)));
+                    opaque = ((opaque) &&
+                              (p->opacity == OpaqueOpacity));
+                    if (!grayscale &&
+                        !monochrome &&
+                        !opaque)
+                      break;
+                    p++;
+                  }
+              }
+            break;
+          }
+        case PseudoClass:
+          {
+            p=image->colormap;
+            for (x=image->colors; x != 0; x--)
+              {
+                grayscale = ((grayscale) &&
+                             (p->red == p->green) && (p->red == p->blue));
+                monochrome = ((monochrome) && (grayscale) &&
+                              ((0 == p->red) || (MaxRGB == p->red)));
+                if (!grayscale &&
+                    !monochrome)
+                  break;
+                p++;
+              }
+            if (!opaque)
+              {
+                for (y=0; y < image->rows; y++)
+                  {
+                    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+                    if (p == (const PixelPacket *) NULL)
+                      {
+                        status = MagickFail;
+                        break;
+                      }
+                    for (x=image->columns; x != 0; x--)
+                      {
+                        opaque = ((opaque) &&
+                                  (p->opacity == OpaqueOpacity));
+                        if (!opaque)
+                          break;
+                        p++;
+                      }
+                  }
+              }
+            break;
+          }
+        }
+      if (!characteristics->grayscale)
+        {
+          characteristics->grayscale=grayscale;
+          ((Image *)image)->is_grayscale=grayscale; /* Intentionally ignore const */
+        }
+      if (!characteristics->monochrome)
+        {
+          characteristics->monochrome=monochrome;
+          ((Image *)image)->is_monochrome=monochrome; /* Intentionally ignore const */
+        }
+      if (!characteristics->opaque)
+        characteristics->opaque=opaque;
+    }
+
+/*   printf("status=%s, cmyk=%u, grayscale=%u, monochrome=%u, opaque=%u, palette=%u\n", */
+/*          (status == MagickFail ? "Fail" : "Pass"),characteristics->cmyk,characteristics->grayscale, */
+/*          characteristics->monochrome,characteristics->opaque,characteristics->palette); */
+
+  return status;
 }
 
 /*
@@ -3222,33 +3385,76 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
 %
 %
 */
+MagickExport const char *ImageTypeToString(const ImageType image_type)
+{
+  const char
+    *p = "Unknown";
+
+  switch (image_type)
+    {
+    case UndefinedType:
+      p="Undefined";
+      break;
+    case BilevelType:
+      p="Bilevel";
+      break;
+    case GrayscaleType:
+      p="Grayscale";
+      break;
+    case GrayscaleMatteType:
+      p="GrayscaleMatte";
+      break;
+    case PaletteType:
+      p="Palette";
+      break;
+    case PaletteMatteType:
+      p="PaletteMatte";
+      break;
+    case TrueColorType:
+      p="TrueColor";
+      break;
+    case TrueColorMatteType:
+      p="TrueColorMatte";
+      break;
+    case ColorSeparationType:
+      p="ColorSeparation";
+      break;
+    case ColorSeparationMatteType:
+      p="ColorSeparationMatte";
+      break;
+    case OptimizeType:
+      p="Optimize";
+      break;
+    }
+
+  return p;
+}
 MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 {
+  ImageCharacteristics
+    characteristics;
+
+  ImageType
+    image_type;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->colorspace == CMYKColorspace)
+
+  image_type=UndefinedType;
+  if (GetImageCharacteristics(image,&characteristics,MagickTrue,exception))
     {
-      if (!image->matte)
-        return(ColorSeparationType);
-      return(ColorSeparationMatteType);
+      if (characteristics.cmyk)
+        image_type=(characteristics.opaque ? ColorSeparationType : ColorSeparationMatteType);
+      else if (characteristics.monochrome)
+        image_type=BilevelType;
+      else if (characteristics.grayscale)
+        image_type=(characteristics.opaque ? GrayscaleType : GrayscaleMatteType);
+      else if (characteristics.palette)
+        image_type=(characteristics.opaque ? PaletteType : PaletteMatteType);
+      else
+        image_type=(characteristics.opaque ? TrueColorType : TrueColorMatteType);
     }
-  if (IsGrayImage(image,exception))
-    {
-      if (IsMonochromeImage(image,exception))
-        return(BilevelType);
-      if (image->matte)
-        return(GrayscaleMatteType);
-      return(GrayscaleType);
-    }
-  if (IsPaletteImage(image,exception))
-    {
-      if (image->matte)
-        return(PaletteMatteType);
-      return(PaletteType);
-    }
-  if (!IsOpaqueImage(image,exception))
-    return(TrueColorMatteType);
-  return(TrueColorType);
+  return image_type;
 }
 
 /*
@@ -4814,7 +5020,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     {
       if (image->colorspace != RGBColorspace)
         (void) TransformColorspace(image,RGBColorspace);
-      if ((!IsMonochromeImage(image,&image->exception)) &&
+      if ((!image->is_monochrome) &&
           (image->dither != MagickFalse))
         {
           /*
@@ -4843,7 +5049,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     {
       if (image->colorspace != RGBColorspace)
         (void) TransformColorspace(image,RGBColorspace);
-      if (!IsGrayImage(image,&image->exception))
+      if (!image->is_grayscale)
         (void) TransformColorspace(image,GRAYColorspace);
       image->is_grayscale=True;
       break;
@@ -4852,8 +5058,8 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     {
       if (image->colorspace != RGBColorspace)
         (void) TransformColorspace(image,RGBColorspace);
-      if (!IsGrayImage(image,&image->exception))
-          (void) TransformColorspace(image,GRAYColorspace);
+      if (!image->is_grayscale)
+        (void) TransformColorspace(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       image->is_grayscale=True;
@@ -4888,7 +5094,6 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case TrueColorType:
     {
-
       (void) TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       break;

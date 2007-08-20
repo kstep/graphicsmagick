@@ -4936,19 +4936,8 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       }
       case 'r':
       {
-        /* Image storage class and colorspace
-           (e.g. "DirectClassRGB") */
-        static char
-          *ClassTypes[] =
-          {
-            (char *) "Undefined", (char *) "DirectClass",
-            (char *) "PseudoClass", (char *) NULL
-          };
-
-        FormatString(buffer,"%s%s%s",ClassTypes[image->storage_class],
-                     ColorspaceTypeToString(image->colorspace),
-                     (image->matte ? "Matte" : ""));
-        q+=(translate)(q,buffer,MaxTextExtent);
+        /* Image type */
+        q+=(translate)(q,ImageTypeToString(GetImageType(image,&image->exception)),MaxTextExtent);
         break;
       }
       case 's':

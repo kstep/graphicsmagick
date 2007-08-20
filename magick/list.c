@@ -399,7 +399,7 @@ MagickExport unsigned long GetImageListLength(const Image *images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t L a s t I m a g e I n L i s t                                     %
+%   G e t L a s t I m a g e I n L i s t                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %

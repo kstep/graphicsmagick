@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2007-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (IdentifyImageCommand): If "%r" is present in
+        -format specifier, then read whole image.
+  <LI> magick/utility.c (TranslateTextEx): Undocumented "%r"
+        substitution now returns a string based on GetImageType() rather
+        than a concatentation of image class and "Matte".
+  <LI> coders/tiff.c (WriteTIFFImage): Use GetImageCharacteristics().
+  <LI> magick/image.c (GetImageCharacteristics): New function to
+        evaluate the basic characteristics of the image.
+        (GetImageType): Use GetImageCharacteristics().
+
+</UL>
+<p>
 2007-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

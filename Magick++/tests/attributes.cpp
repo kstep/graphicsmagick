@@ -1414,11 +1414,13 @@ int main( int /*argc*/, char ** argv)
     //
     // type
     //
+    image.type(PaletteType);
     if ( image.type() != PaletteType )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", type is not PaletteType as expected" << endl;
+             << ", type is not PaletteType as expected. Reported type "
+             << (int) image.type() << endl;
       }
 
     //

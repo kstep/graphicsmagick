@@ -667,6 +667,16 @@ typedef struct _ImageStatistics
    ImageChannelStatistics opacity;
  } ImageStatistics;
 
+typedef struct _ImageCharacteristics
+{
+  MagickBool
+    cmyk,               /* CMYK(A) image */
+    grayscale,          /* Grayscale image */
+    monochrome,         /* Black/white image */
+    opaque,             /* Opaque image */
+    palette;            /* Colormapped image */
+} ImageCharacteristics;
+
 typedef struct _Image
 {
   ClassType
@@ -1018,7 +1028,8 @@ extern MagickExport ImageType
 
 extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
-   const char *key);
+     const char *key),
+  *ImageTypeToString(const ImageType image_type);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
@@ -1044,9 +1055,11 @@ extern MagickExport MagickPassFail
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
-  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
+  GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
+    const MagickBool optimize,ExceptionInfo *exception),
   GetImageStatistics(const Image *image,ImageStatistics *statistics,
     ExceptionInfo *exception),
+  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,

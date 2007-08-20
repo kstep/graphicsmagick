@@ -2960,6 +2960,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
     {
+      ImageCharacteristics
+        characteristics;
+
       /*
         Initialize TIFF fields.
       */
@@ -3093,14 +3096,32 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             bits_per_sample*=2;
         }
 
-      if (((image_info->colorspace == UndefinedColorspace) &&
-           (image->colorspace == CMYKColorspace)) ||
-          (image_info->colorspace == CMYKColorspace))
+      /*
+        Ensure that image is in desired output space
+      */
+      if ((image_info->colorspace == CMYKColorspace) ||
+          (image_info->type == ColorSeparationType) ||
+          (image_info->type == ColorSeparationMatteType))
+        (void) TransformColorspace(image,CMYKColorspace);
+      else
+        (void) TransformColorspace(image,RGBColorspace);
+
+      /*
+        Analyze image to be written.
+      */
+      if (!GetImageCharacteristics(image,&characteristics,
+                                   (OptimizeType == image_info->type),
+                                   &image->exception))
+        {
+          status=MagickFail;
+          break;
+        }
+
+      if (characteristics.cmyk)
         {
           /*
             CMYK Image
           */
-          (void) TransformColorspace(image,CMYKColorspace);
           photometric=PHOTOMETRIC_SEPARATED;
           samples_per_pixel=4;
           (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
@@ -3108,62 +3129,60 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "Using INKSET_CMYK");
         }
+      else if ((characteristics.monochrome) &&
+               (compress_tag != COMPRESSION_JPEG) &&
+               (image_info->type != TrueColorType) &&
+               (image_info->type != TrueColorMatteType) &&
+               (image_info->type != PaletteType) && 
+               (image_info->type != PaletteMatteType))
+        {
+          /*
+            Bi-level monochrome image.
+          */
+          photometric=PHOTOMETRIC_MINISBLACK;
+          if ((compress_tag == COMPRESSION_CCITTFAX3) ||
+              (compress_tag == COMPRESSION_CCITTFAX4))
+            photometric=PHOTOMETRIC_MINISWHITE;
+
+          depth=1;
+          samples_per_pixel=1;
+          bits_per_sample=1;
+        }
+      else if ((characteristics.grayscale) &&
+               (compress_tag != COMPRESSION_JPEG) &&
+               (image_info->type != TrueColorType) &&
+               (image_info->type != TrueColorMatteType) &&
+               (image_info->type != PaletteType) && 
+               (image_info->type != PaletteMatteType))
+        {
+          /*
+            Grayscale image
+          */
+          photometric=PHOTOMETRIC_MINISBLACK;
+          samples_per_pixel=1;
+
+          for (bits_per_sample=1; bits_per_sample < depth; )
+            bits_per_sample*=2;
+        }
+      else if ((characteristics.palette) &&
+               (image_info->type != TrueColorType))
+        {
+          /*
+            Colormapped image
+          */
+          photometric=PHOTOMETRIC_PALETTE;
+          samples_per_pixel=1;
+          bits_per_sample=1;
+          while ((1UL << bits_per_sample) < image->colors)
+            bits_per_sample*=2;
+        }
       else
         {
           /*
-            RGB or Gray Image.
+            RGB image.
           */
-          (void) TransformColorspace(image,RGBColorspace);
           photometric=PHOTOMETRIC_RGB;
           samples_per_pixel=3;
-          if ((image_info->type != TrueColorType) &&
-              (compress_tag != COMPRESSION_JPEG))
-            {
-              if ((image_info->type != PaletteType) &&
-                  IsGrayImage(image,&image->exception))
-                {
-                  /*
-                    Grayscale Image
-                  
-                    Produce a compact gray image by testing the
-                    image pixels for depth and storing with a
-                    portable bits-per-sample value which is the best
-                    match for the depth.
-                  */
-                  photometric=PHOTOMETRIC_MINISBLACK;
-                  samples_per_pixel=1;
-                  if (image->is_monochrome)
-                    {
-                      depth=1;
-                    }
-                  else
-                    {
-                      depth=GetImageDepth(image,&image->exception);
-                    }
-
-                  if (depth == 1)
-                    {
-                      if ((compress_tag == COMPRESSION_CCITTFAX3) ||
-                          (compress_tag == COMPRESSION_CCITTFAX4))
-                        photometric=PHOTOMETRIC_MINISWHITE;
-                    }
-
-                  for (bits_per_sample=1; bits_per_sample < depth; )
-                    bits_per_sample*=2;
-                }
-              else
-                if (image->storage_class == PseudoClass)
-                  {
-                    /*
-                      Colormapped Image.
-                    */
-                    photometric=PHOTOMETRIC_PALETTE;
-                    samples_per_pixel=1;
-                    bits_per_sample=1;
-                    while ((1UL << bits_per_sample) < image->colors)
-                      bits_per_sample*=2;
-                  }
-            }
         }
 
       if (logging)
@@ -3328,12 +3347,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLEFORMAT,sample_format);
       (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,planar_config);
       (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-
-/*       TIFFTAG_SUBFILETYPE             254      subfile data descriptor */
-/* SubFileType (254) LONG (4) 1<2> */
-
-/*       TIFFTAG_PAGENUMBER              297      page numbers of multi-page */
-/* PageNumber (297) SHORT (3) 2<0 0> */
 
       /*
         Obtain recommended rows per strip given current image width,
