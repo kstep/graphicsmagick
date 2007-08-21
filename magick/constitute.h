@@ -116,6 +116,11 @@ typedef struct _ImportPixelAreaOptions
     signature;
 } ImportPixelAreaOptions;
 
+extern MagickExport const char
+  *StorageTypeToString(const StorageType storage_type),
+  *QuantumSampleTypeToString(const QuantumSampleType sample_type),
+  *QuantumTypeToString(const QuantumType quantum_type);
+
 extern MagickExport Image
   *ConstituteImage(const unsigned long width,const unsigned long height,
      const char *map,const StorageType type,const void *pixels,

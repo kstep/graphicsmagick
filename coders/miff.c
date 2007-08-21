@@ -2229,6 +2229,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             quantum_type=RGBQuantum;
         }
     status=True;
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Using QuantumType %s, depth %u",QuantumTypeToString(quantum_type),depth);
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

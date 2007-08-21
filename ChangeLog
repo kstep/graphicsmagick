@@ -1,3 +1,9 @@
+2007-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ExportImagePixelArea): Performance
+	improvements.
+	(ImportImagePixelArea): Performance improvements.
+
 2007-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (IdentifyImageCommand): If "%r" is present in

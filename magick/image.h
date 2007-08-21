@@ -460,31 +460,31 @@ typedef struct _ChromaticityInfo
 # define GetBlueSample(p) (p->blue)
 # define GetOpacitySample(p) (p->opacity)
 
-# define SetRedSample(q,value) (q->red=value)
-# define SetGreenSample(q,value) (q->green=value)
-# define SetBlueSample(q,value) (q->blue=value)
-# define SetOpacitySample(q,value) (q->opacity=value)
+# define SetRedSample(q,value) (q->red=(value))
+# define SetGreenSample(q,value) (q->green=(value))
+# define SetBlueSample(q,value) (q->blue=(value))
+# define SetOpacitySample(q,value) (q->opacity=(value))
 
-# define GetGraySample(p) (p->green)
-# define SetGraySample(q,value) (q->red=q->green=q->blue=value)
+# define GetGraySample(p) (p->red)
+# define SetGraySample(q,value) (q->red=q->green=q->blue=(value))
 
 # define GetYSample(p) (p->red)
 # define GetCbSample(p) (p->green)
 # define GetCrSample(p) (p->blue)
 
-# define SetYSample(q,value) (q->red=value)
-# define SetCbSample(q,value) (q->green=value)
-# define SetCrSample(q,value) (q->blue=value)
+# define SetYSample(q,value) (q->red=(value))
+# define SetCbSample(q,value) (q->green=(value))
+# define SetCrSample(q,value) (q->blue=(value))
 
 # define GetCyanSample(p) (p->red)
 # define GetMagentSample(p) (p->green)
 # define GetYellowSample(p) (p->blue)
 # define GetBlackSample(p) (p->opacity)
 
-# define SetCyanSample(q,value) (q->red=value)
-# define SetMagentaSample(q,value) (q->green=value)
-# define SetYellowSample(q,value) (q->blue=value)
-# define SetBlackSample(q,value) (q->opacity=value)
+# define SetCyanSample(q,value) (q->red=(value))
+# define SetMagentaSample(q,value) (q->green=(value))
+# define SetYellowSample(q,value) (q->blue=(value))
+# define SetBlackSample(q,value) (q->opacity=(value))
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

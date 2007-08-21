@@ -289,10 +289,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   {
                     for (x=(long) image->columns; x != 0; x--)
                       {
-                        q->blue=ScaleCharToQuantum(*p++);
-                        q->green=ScaleCharToQuantum(*p++);
-                        q->red=ScaleCharToQuantum(*p++);
-                        q->opacity=OpaqueOpacity;
+                        SetBlueSample(q,ScaleCharToQuantum(*p++));
+                        SetGreenSample(q,ScaleCharToQuantum(*p++));
+                        SetRedSample(q,ScaleCharToQuantum(*p++));
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                     break;
@@ -301,10 +301,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   { 
                     for (x=(long) image->columns; x != 0; x--)
                       {
-                        q->blue=ScaleCharToQuantum(*p++);
-                        q->green=ScaleCharToQuantum(*p++);
-                        q->red=ScaleCharToQuantum(*p++);
-                        q->opacity=(Quantum) MaxRGB-ScaleCharToQuantum(*p++);
+                        SetBlueSample(q,ScaleCharToQuantum(*p++));
+                        SetGreenSample(q,ScaleCharToQuantum(*p++));
+                        SetRedSample(q,ScaleCharToQuantum(*p++));
+                        SetOpacitySample(q,(Quantum) MaxRGB-ScaleCharToQuantum(*p++));
                         q++;
                       }
                     break;
@@ -313,11 +313,11 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   {
                     for (x=(long) image->columns; x != 0; x--)
                       {
-                        q->blue=ScaleCharToQuantum(*p++);
-                        q->green=ScaleCharToQuantum(*p++);
-                        q->red=ScaleCharToQuantum(*p++);
+                        SetBlueSample(q,ScaleCharToQuantum(*p++));
+                        SetGreenSample(q,ScaleCharToQuantum(*p++));
+                        SetRedSample(q,ScaleCharToQuantum(*p++));
                         p++;
-                        q->opacity=OpaqueOpacity;
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                     break;
@@ -326,10 +326,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   {
                     for (x=(long) image->columns; x != 0; x--)
                       {
-                        q->red=ScaleCharToQuantum(*p++);
-                        q->green=ScaleCharToQuantum(*p++);
-                        q->blue=ScaleCharToQuantum(*p++);
-                        q->opacity=OpaqueOpacity;
+                        SetRedSample(q,ScaleCharToQuantum(*p++));
+                        SetGreenSample(q,ScaleCharToQuantum(*p++));
+                        SetBlueSample(q,ScaleCharToQuantum(*p++));
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                     break;
@@ -338,10 +338,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   {
                     for (x=(long) image->columns; x != 0; x--)
                       {
-                        q->red=ScaleCharToQuantum(*p++);
-                        q->green=ScaleCharToQuantum(*p++);
-                        q->blue=ScaleCharToQuantum(*p++);
-                        q->opacity=MaxRGB-ScaleCharToQuantum(*p++);
+                        SetRedSample(q,ScaleCharToQuantum(*p++));
+                        SetGreenSample(q,ScaleCharToQuantum(*p++));
+                        SetBlueSample(q,ScaleCharToQuantum(*p++));
+                        SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(*p++));
                         q++;
                       }
                     break;
@@ -351,8 +351,8 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     for (x=(long) image->columns; x != 0; x--)
                       {
                         *indexes=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
-                        q->red=q->green=q->blue=image->colormap[*indexes].red;
-                        q->opacity=OpaqueOpacity;;
+                        SetGraySample(q,image->colormap[*indexes].red);
+                        SetOpacitySample(q,OpaqueOpacity);
                         indexes++;
                         q++;
                       }
@@ -473,17 +473,17 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       indexes=GetIndexes(image);
       for (x=0; x < (long) image->columns; x++)
         {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
+	  SetRedSample(q,0);
+	  SetGreenSample(q,0);
+	  SetBlueSample(q,0);
           if (image->colorspace == CMYKColorspace)
             {
-              q->opacity=0;
+              SetBlackSample(q,0);
               *indexes=OpaqueOpacity;
             }
           else
             {
-              q->opacity=OpaqueOpacity;
+              SetOpacitySample(q,OpaqueOpacity);
             }
           for (i=0; i < (long) length; i++)
             {
@@ -549,33 +549,33 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                 {
                 case RedMapQuantum:
                   {
-                    q->red=quantum;
+                    SetRedSample(q,quantum);
                     break;
                   }
                 case GreenMapQuantum:
                   {
-                    q->green=quantum;
+                    SetGreenSample(q,quantum);
                     break;
                   }
                 case BlueMapQuanum:
                   {
-                    q->blue=quantum;
+                    SetBlueSample(q,quantum);
                     break;
                   }
                 case OpacityMapQuantum:
                   {
-                    q->opacity=quantum;
+                    SetOpacitySample(q,quantum);
                     break;
                   }
                 case OpacityInvertedMapQuantum:
                   {
-                    q->opacity=MaxRGB-quantum;
+                    SetOpacitySample(q,MaxRGB-quantum);
                     break;
                   }
                 case IntensityMapQuantum:
                   {
                     *indexes=ScaleQuantumToIndex(quantum);
-                    q->red=q->green=q->blue=image->colormap[*indexes].red;
+                    SetGraySample(q,image->colormap[*indexes].red);
                     break;
                   }
                 case PadMapQuantum:
@@ -771,9 +771,9 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(p->blue);
-                        *q++=ScaleQuantumToChar(p->green);
-                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(GetGreenSample(p));
+                        *q++=ScaleQuantumToChar(GetRedSample(p));
                         p++;
                       }
                     break;
@@ -782,10 +782,10 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(p->blue);
-                        *q++=ScaleQuantumToChar(p->green);
-                        *q++=ScaleQuantumToChar(p->red);
-                        *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(GetGreenSample(p));
+                        *q++=ScaleQuantumToChar(GetRedSample(p));
+                        *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
                         p++;
                       }
                     break;
@@ -794,9 +794,9 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(p->blue);
-                        *q++=ScaleQuantumToChar(p->green);
-                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(GetGreenSample(p));
+                        *q++=ScaleQuantumToChar(GetRedSample(p));
                         *q++=0;
                         p++;
                       }
@@ -806,9 +806,9 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(p->red);
-                        *q++=ScaleQuantumToChar(p->green);
-                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(GetRedSample(p));
+                        *q++=ScaleQuantumToChar(GetGreenSample(p));
+                        *q++=ScaleQuantumToChar(GetBlueSample(p));
                         p++;
                       }
                     break;
@@ -817,10 +817,10 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
-                        *q++=ScaleQuantumToChar(p->red);
-                        *q++=ScaleQuantumToChar(p->green);
-                        *q++=ScaleQuantumToChar(p->blue);
-                        *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                        *q++=ScaleQuantumToChar(GetRedSample(p));
+                        *q++=ScaleQuantumToChar(GetGreenSample(p));
+                        *q++=ScaleQuantumToChar(GetBlueSample(p));
+                        *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
                         p++;
                       }
                     break;
@@ -831,7 +831,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                       {
                         for (x=(long) columns; x != 0; x--)
                           {
-                            *q++=ScaleQuantumToChar(p->red);
+                            *q++=ScaleQuantumToChar(GetGraySample(p));
                             p++;
                           }
                       }
@@ -960,24 +960,24 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                 {
                 case RedMapQuantum:
                   {
-                    quantum=p->red;
+                    quantum=GetRedSample(p);
                     break;
                   }
                 case GreenMapQuantum:
                   {
-                    quantum=p->green;
+                    quantum=GetGreenSample(p);
                     break;
                   }
                 case BlueMapQuanum:
                   {
-                    quantum=p->blue;
+                    quantum=GetBlueSample(p);
                     break;
                   }
                 case IntensityMapQuantum:
                   {
                     if (image->is_grayscale)
                       {
-                        quantum=p->red;
+                        quantum=GetRedSample(p);
                       }
                     else
                       {
@@ -989,14 +989,14 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                 case OpacityInvertedMapQuantum:
                   {
                     if (image->matte)
-                      quantum=p->opacity;
+                      quantum=GetOpacitySample(p);
                     quantum=MaxRGB-quantum;
                     break;
                   }
                 case OpacityMapQuantum:
                   {
                     if (image->matte)
-                      quantum=p->opacity;
+                      quantum=GetOpacitySample(p);
                     break;
                   }
                 case PadMapQuantum:
@@ -1103,6 +1103,123 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %
 %
 */
+MagickExport const char *StorageTypeToString(const StorageType storage_type)
+{
+    const char
+    *p = "Unknown";
+
+    switch (storage_type)
+      {
+      case CharPixel:
+        p="CharPixel";
+        break;
+      case ShortPixel:
+        p="ShortPixel";
+        break;
+      case IntegerPixel:
+        p="IntegerPixel";
+        break;
+      case LongPixel:
+        p="LongPixel";
+        break;
+      case FloatPixel:
+        p="FloatPixel";
+        break;
+      case DoublePixel:
+        p="DoublePixel";
+        break;
+      }
+
+    return p;
+}
+MagickExport const char *QuantumSampleTypeToString(const QuantumSampleType sample_type)
+{
+    const char
+    *p = "Unknown";
+
+    switch (sample_type)
+      {
+      case UndefinedQuantumSampleType:
+        p="UndefinedQuantumSampleType";
+        break;
+      case UnsignedQuantumSampleType:
+        p="UnsignedQuantumSampleType";
+        break;
+      case FloatQuantumSampleType:
+        p="FloatQuantumSampleType";
+        break;
+      }
+
+    return p;
+}
+MagickExport const char *QuantumTypeToString(const QuantumType quantum_type)
+{
+  const char
+    *p = "Unknown";
+
+  switch (quantum_type)
+    {
+    case UndefinedQuantum:
+      p="UndefinedQuantum";
+      break;
+    case IndexQuantum:
+      p="IndexQuantum";
+      break;
+    case GrayQuantum:
+      p="GrayQuantum";
+      break;
+    case IndexAlphaQuantum:
+      p="IndexAlphaQuantum";
+      break;
+    case GrayAlphaQuantum:
+      p="GrayAlphaQuantum";
+      break;
+    case RedQuantum:
+      p="RedQuantum";
+      break;
+    case CyanQuantum:
+      p="CyanQuantum";
+      break;
+    case GreenQuantum:
+      p="GreenQuantum";
+      break;
+    case YellowQuantum:
+      p="YellowQuantum";
+      break;
+    case BlueQuantum:
+      p="BlueQuantum";
+      break;
+    case MagentaQuantum:
+      p="MagentaQuantum";
+      break;
+    case AlphaQuantum:
+      p="AlphaQuantum";
+      break;
+    case BlackQuantum:
+      p="BlackQuantum";
+      break;
+    case RGBQuantum:
+      p="RGBQuantum";
+      break;
+    case RGBAQuantum:
+      p="RGBAQuantum";
+      break;
+    case CMYKQuantum:
+      p="CMYKQuantum";
+      break;
+    case CMYKAQuantum:
+      p="CMYKAQuantum";
+      break;
+    case CIEYQuantum:
+      p="CIEYQuantum";
+      break;
+    case CIEXYZQuantum:
+      p="CIEXYZQuantum";
+      break;
+    }
+
+  return p;
+}
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   unsigned char *destination,const ExportPixelAreaOptions *options)
@@ -1205,10 +1322,27 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x != 0; --x)
+                switch (quantum_size)
                   {
-                    ExportModulo8Quantum(q,quantum_size,*indexes);
-                    indexes++;
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=*indexes;
+                          indexes++;
+                        }
+                      break;
+                    }
+                  case 16:
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ExportModulo8Quantum(q,quantum_size,*indexes);
+                          indexes++;
+                        }
+                      break;
+                    }
                   }
               }
             else if (quantum_size == 1)
@@ -1298,7 +1432,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 for (x = number_pixels; x != 0; --x)
                   {
                     ExportModulo8Quantum(q,quantum_size,*indexes);
-                    unsigned_value=MaxRGB-p->opacity;
+                    unsigned_value=MaxRGB-GetOpacitySample(p);
                     if (QuantumDepth >  quantum_size)
                       unsigned_value /= unsigned_scale;
                     else if (QuantumDepth <  quantum_size)
@@ -1320,7 +1454,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 for (x = number_pixels; x != 0; --x)
                   {
                     BitStreamMSBWrite(&stream,quantum_size,*indexes);
-                    unsigned_value=MaxRGB-p->opacity;
+                    unsigned_value=MaxRGB-GetOpacitySample(p);
                     if (QuantumDepth >  quantum_size)
                       unsigned_value /= unsigned_scale;
                     else if (QuantumDepth <  quantum_size)
@@ -1343,52 +1477,142 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        unsigned_value /= unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        unsigned_value *= unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetGraySample(p));
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(GetGraySample(p));
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p));
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetGraySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(GetGraySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetGraySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(GetGraySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
                   }
               }
             else if (quantum_size == 1)
@@ -1397,23 +1621,23 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   Special "fast" support for bi-level gray.
                   Performs 50% thresholding for best appearance.
                 */
-                register int
+                register unsigned int
                   bit = 8,
                   black=0,
                   white=1;
-
+                
                 if (grayscale_miniswhite)
                   {
                     black=1;
                     white=0;
                   }
-            
+                
                 *q=0;
                 for (x = number_pixels ; x != 0 ; --x )
                   {
                     --bit;
                     if (image->is_grayscale)
-                      unsigned_value=p->red;
+                      unsigned_value=GetGraySample(p);
                     else
                       unsigned_value=PixelIntensityToQuantum(p);
                     *q |= ((unsigned_value > MaxRGB/2 ? white : black) << bit);
@@ -1435,13 +1659,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == sample_bits)
+                if(QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetGraySample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
@@ -1456,7 +1680,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetGraySample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
@@ -1472,7 +1696,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetGraySample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
@@ -1524,58 +1748,162 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=MaxRGB-p->opacity;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        unsigned_value /= unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-p->opacity)/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        if (image->is_grayscale)
-                          unsigned_value=p->red;
-                        else
-                          unsigned_value=PixelIntensityToQuantum(p);
-                        if (grayscale_miniswhite)
-                          unsigned_value=MaxRGB-unsigned_value;
-                        unsigned_value *= unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-p->opacity)*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetRedSample(p));
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(GetRedSample(p));
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p));
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                                  *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetRedSample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(GetRedSample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      if (image->is_grayscale)
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetRedSample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(GetRedSample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  unsigned_value=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
+                                  ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                                  p++;
+                                }
+                            }
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -1593,13 +1921,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetRedSample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
                           unsigned_value=MaxRGB-unsigned_value;
                         BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
-                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
+                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
                         p++;
                       }
                   }
@@ -1609,7 +1937,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetRedSample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
@@ -1617,7 +1945,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         unsigned_value /= unsigned_scale;
                         BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)/unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                         p++;
                       }
                   }
@@ -1627,7 +1955,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         if (image->is_grayscale)
-                          unsigned_value=p->red;
+                          unsigned_value=GetRedSample(p);
                         else
                           unsigned_value=PixelIntensityToQuantum(p);
                         if (grayscale_miniswhite)
@@ -1635,7 +1963,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         unsigned_value *= unsigned_scale;
                         BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)*unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                         p++;
                       }
                   }
@@ -1652,7 +1980,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     {
                       float_value=(float) ((double) PixelIntensity(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) (((double) (MaxRGB-p->opacity)*double_scale+double_minvalue));
+                      float_value=(float) (((double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -1664,7 +1992,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     {
                       double_value=(double) PixelIntensity(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(((double) (MaxRGB-p->opacity)*double_scale+double_minvalue));
+                      double_value=(((double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -1686,34 +2014,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetRedSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetRedSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToLong(GetRedSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -1731,7 +2062,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red);
+                                          GetRedSample(p));
                         p++;
                       }
                   }
@@ -1741,7 +2072,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red/unsigned_scale);
+                                          GetRedSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -1751,7 +2082,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->red*unsigned_scale);
+                                          GetRedSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -1766,7 +2097,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->red*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetRedSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -1776,7 +2107,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->red*double_scale+double_minvalue;
+                      double_value=(double) GetRedSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -1798,34 +2129,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->green);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->green/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->green*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetGreenSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetGreenSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToLong(GetGreenSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -1843,7 +2177,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->green);
+                                          GetGreenSample(p));
                         p++;
                       }
                   }
@@ -1853,7 +2187,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->green/unsigned_scale);
+                                          GetGreenSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -1863,7 +2197,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->green*unsigned_scale);
+                                          GetGreenSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -1878,7 +2212,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->green*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetGreenSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -1888,7 +2222,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->green*double_scale+double_minvalue;
+                      double_value=(double) GetGreenSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -1910,34 +2244,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->blue);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->blue/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->blue*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetBlueSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetBlueSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToLong(GetBlueSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -1955,7 +2292,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->blue);
+                                          GetBlueSample(p));
                         p++;
                       }
                   }
@@ -1965,7 +2302,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->blue/unsigned_scale);
+                                          GetBlueSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -1975,7 +2312,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->blue*unsigned_scale);
+                                          GetBlueSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -1990,7 +2327,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->blue*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlueSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2000,7 +2337,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->blue*double_scale+double_minvalue;
+                      double_value=(double) GetBlueSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2023,35 +2360,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == sample_bits)
+                    switch (quantum_size)
                       {
-                        /* Unity scale */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            unsigned_value=MaxRGB-*indexes;
-                            ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                            indexes++;
-                          }
-                      }
-                    else if (QuantumDepth >  sample_bits)
-                      {
-                        /* Scale down */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            unsigned_value=(MaxRGB-*indexes)/unsigned_scale;
-                            ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                            indexes++;
-                          }
-                      }
-                    else
-                      {
-                        /* Scale up */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            unsigned_value=(MaxRGB-*indexes)*unsigned_scale;
-                            ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                            indexes++;
-                          }
+                      case 8:
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              *q++=ScaleQuantumToChar(MaxRGB-*indexes);
+                              indexes++;
+                            }
+                          break;
+                        }
+                      case 16:
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              unsigned_value=ScaleQuantumToShort(MaxRGB-*indexes);
+                              ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                              indexes++;
+                            }
+                          break;
+                        }
+                      case 32:
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              unsigned_value=ScaleQuantumToLong(MaxRGB-*indexes);
+                              ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                              indexes++;
+                            }
+                        }
+                        break;
                       }
                   }
                 else
@@ -2134,34 +2473,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,MaxRGB-p->opacity);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=(MaxRGB-p->opacity)/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=(MaxRGB-p->opacity)*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -2179,7 +2521,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          MaxRGB-p->opacity);
+                                          MaxRGB-GetOpacitySample(p));
                         p++;
                       }
                   }
@@ -2189,7 +2531,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)/unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                         p++;
                       }
                   }
@@ -2199,7 +2541,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)*unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                         p++;
                       }
                   }
@@ -2214,7 +2556,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) (MaxRGB-p->opacity)*double_scale+double_minvalue);
+                      float_value=(float) ((double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2224,7 +2566,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) (MaxRGB-p->opacity)*double_scale+double_minvalue;
+                      double_value=(double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2245,34 +2587,37 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ExportModulo8Quantum(q,quantum_size,p->opacity);
-                        p++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->opacity/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->opacity*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetBlackSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetBlackSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToLong(GetBlackSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -2290,7 +2635,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->opacity);
+                                          GetBlackSample(p));
                         p++;
                       }
                   }
@@ -2300,7 +2645,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->opacity/unsigned_scale);
+                                          GetBlackSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -2310,7 +2655,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          p->opacity*unsigned_scale);
+                                          GetBlackSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -2325,7 +2670,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->opacity*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlackSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2335,7 +2680,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->opacity*double_scale+double_minvalue;
+                      double_value=(double) GetBlackSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2357,44 +2702,47 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetRedSample(p));
+                          *q++=ScaleQuantumToChar(GetGreenSample(p));
+                          *q++=ScaleQuantumToChar(GetBlueSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetRedSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetGreenSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetBlueSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
                       {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        ExportModulo8Quantum(q,quantum_size,p->green);
-                        ExportModulo8Quantum(q,quantum_size,p->blue);
+                        unsigned_value=ScaleQuantumToLong(GetRedSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetGreenSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetBlueSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
                         p++;
                       }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                    }
+                    break;
                   }
               }
             else
@@ -2411,9 +2759,9 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Unity scale */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
                         p++;
                       }
                   }
@@ -2422,9 +2770,9 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -2433,9 +2781,9 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -2450,11 +2798,11 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->red*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetRedSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->green*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetGreenSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->blue*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlueSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2464,11 +2812,11 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->red*double_scale+double_minvalue;
+                      double_value=(double) GetRedSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->green*double_scale+double_minvalue;
+                      double_value=(double) GetGreenSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->blue*double_scale+double_minvalue;
+                      double_value=(double) GetBlueSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2489,50 +2837,52 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetRedSample(p));
+                          *q++=ScaleQuantumToChar(GetGreenSample(p));
+                          *q++=ScaleQuantumToChar(GetBlueSample(p));
+                          *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetRedSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetGreenSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetBlueSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(MaxRGB-GetOpacitySample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
                       {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        ExportModulo8Quantum(q,quantum_size,p->green);
-                        ExportModulo8Quantum(q,quantum_size,p->blue);
-                        unsigned_value=MaxRGB-p->opacity;
+                        unsigned_value=ScaleQuantumToLong(GetRedSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetGreenSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetBlueSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(MaxRGB-GetOpacitySample(p));
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
                         p++;
                       }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-p->opacity)/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-p->opacity)*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                    }
+                    break;
                   }
               }
             else
@@ -2549,10 +2899,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Unity scale */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue);
-                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-p->opacity);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
                         p++;
                       }
                   }
@@ -2561,11 +2911,11 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)/unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                         p++;
                       }
                   }
@@ -2574,11 +2924,11 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,
-                                          (MaxRGB-p->opacity)*unsigned_scale);
+                                          (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                         p++;
 
                       }
@@ -2594,13 +2944,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->red*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetRedSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->green*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetGreenSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->blue*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlueSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) (MaxRGB-p->opacity)*double_scale+double_minvalue);
+                      float_value=(float) ((double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2610,13 +2960,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->red*double_scale+double_minvalue;
+                      double_value=(double) GetRedSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->green*double_scale+double_minvalue;
+                      double_value=(double) GetGreenSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->blue*double_scale+double_minvalue;
+                      double_value=(double) GetBlueSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) (MaxRGB-p->opacity)*double_scale+double_minvalue;
+                      double_value=(double) (MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2638,49 +2988,52 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetCyanSample(p));
+                          *q++=ScaleQuantumToChar(GetMagentSample(p));
+                          *q++=ScaleQuantumToChar(GetYellowSample(p));
+                          *q++=ScaleQuantumToChar(GetBlackSample(p));
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetCyanSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetMagentSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetYellowSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetBlackSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
                       {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        ExportModulo8Quantum(q,quantum_size,p->green);
-                        ExportModulo8Quantum(q,quantum_size,p->blue);
-                        ExportModulo8Quantum(q,quantum_size,p->opacity);
+                        unsigned_value=ScaleQuantumToLong(GetCyanSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetMagentSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetYellowSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetBlackSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
                         p++;
                       }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->opacity/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->opacity*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        p++;
-                      }
+                    }
+                    break;
                   }
               }
             else
@@ -2697,10 +3050,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Unity scale */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
                         p++;
                       }
                   }
@@ -2709,10 +3062,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
                         p++;
                       }
                   }
@@ -2721,10 +3074,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
                         p++;
                       }
                   }
@@ -2739,13 +3092,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->red*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetCyanSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->green*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetMagentSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->blue*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetYellowSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->opacity*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlackSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       p++;
                     }
@@ -2755,13 +3108,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->red*double_scale+double_minvalue;
+                      double_value=(double) GetCyanSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->green*double_scale+double_minvalue;
+                      double_value=(double) GetMagentSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->blue*double_scale+double_minvalue;
+                      double_value=(double) GetYellowSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->opacity*double_scale+double_minvalue;
+                      double_value=(double) GetBlackSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       p++;
                     }
@@ -2782,58 +3135,60 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          *q++=ScaleQuantumToChar(GetCyanSample(p));
+                          *q++=ScaleQuantumToChar(GetMagentSample(p));
+                          *q++=ScaleQuantumToChar(GetYellowSample(p));
+                          *q++=ScaleQuantumToChar(GetBlackSample(p));
+                          *q++=ScaleQuantumToChar(MaxRGB-*indexes);
+                          indexes++;
+                          p++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          unsigned_value=ScaleQuantumToShort(GetCyanSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetMagentSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetYellowSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(GetBlackSample(p));
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          unsigned_value=ScaleQuantumToShort(MaxRGB-*indexes);
+                          ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                          indexes++;
+                          p++;
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
                       {
-                        ExportModulo8Quantum(q,quantum_size,p->red);
-                        ExportModulo8Quantum(q,quantum_size,p->green);
-                        ExportModulo8Quantum(q,quantum_size,p->blue);
-                        ExportModulo8Quantum(q,quantum_size,p->opacity);
-                        unsigned_value=MaxRGB-*indexes;
+                        unsigned_value=ScaleQuantumToLong(GetCyanSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetMagentSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetYellowSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(GetBlackSample(p));
+                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
+                        unsigned_value=ScaleQuantumToLong(MaxRGB-*indexes);
                         ExportModulo8Quantum(q,quantum_size,unsigned_value);
                         indexes++;
                         p++;
                       }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->opacity/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-*indexes)/unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        indexes++;
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        unsigned_value=p->red*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->green*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->blue*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=p->opacity*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        unsigned_value=(MaxRGB-*indexes)*unsigned_scale;
-                        ExportModulo8Quantum(q,quantum_size,unsigned_value);
-                        indexes++;
-                        p++;
-                      }
+                    }
+                    break;
                   }
               }
             else
@@ -2850,10 +3205,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Unity scale */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
                         BitStreamMSBWrite(&stream,quantum_size,MaxRGB-*indexes);
                         indexes++;
                         p++;
@@ -2864,10 +3219,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue/unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,
                                           (MaxRGB-*indexes)/unsigned_scale);
                         indexes++;
@@ -2879,10 +3234,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        BitStreamMSBWrite(&stream,quantum_size,p->red*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->green*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->blue*unsigned_scale);
-                        BitStreamMSBWrite(&stream,quantum_size,p->opacity*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
+                        BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
                         BitStreamMSBWrite(&stream,quantum_size,
                                           (MaxRGB-*indexes)*unsigned_scale);
                         indexes++;
@@ -2900,13 +3255,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      float_value=(float) ((double) p->red*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetCyanSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->green*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetMagentSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->blue*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetYellowSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
-                      float_value=(float) ((double) p->opacity*double_scale+double_minvalue);
+                      float_value=(float) ((double) GetBlackSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
                       float_value=(float) ((double) (MaxRGB-*indexes)*double_scale+double_minvalue);
                       ExportFloatQuantum(q,float_value);
@@ -2918,13 +3273,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      double_value=(double) p->red*double_scale+double_minvalue;
+                      double_value=(double) GetCyanSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->green*double_scale+double_minvalue;
+                      double_value=(double) GetMagentSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->blue*double_scale+double_minvalue;
+                      double_value=(double) GetYellowSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
-                      double_value=(double) p->opacity*double_scale+double_minvalue;
+                      double_value=(double) GetBlackSample(p)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
                       double_value=(double) (MaxRGB-*indexes)*double_scale+double_minvalue;
                       ExportDoubleQuantum(q,double_value);
@@ -3097,11 +3452,12 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
 
   /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
 
+  /* Maximum value which may be represented by a sample */
+  unsigned_maxvalue=MaxValueGivenBits(sample_bits);
   double_scale=(double) MaxRGB/(double_maxvalue-double_minvalue);
   if (sample_type != FloatQuantumSampleType)
     {
-      /* Maximum value which may be represented by a sample */
-      unsigned_maxvalue=MaxValueGivenBits(sample_bits);
+      
       
       if (QuantumDepth == sample_bits)
         {
@@ -3127,6 +3483,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
     case IndexQuantum:
       {
         assert(image->colors <= MaxColormapSize);
+        assert(image->colors != 0);
+        assert(indexes != (IndexPacket *) NULL);
         if (sample_type == UnsignedQuantumSampleType)
           {
             if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
@@ -3134,12 +3492,47 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                for (x = number_pixels; x != 0; --x)
+                switch (quantum_size)
                   {
-                    ImportModulo8Quantum(index,quantum_size,p);
-                    VerifyColormapIndex(image,index);
-                    *indexes++=index;
-                    *q++=image->colormap[index];
+                  case 8:
+                    {
+                      if (unsigned_maxvalue == (unsigned int) (image->colors-1))
+                        {
+                          /*
+                            Special case for when it is impossible to
+                            overflow the colormap range.
+                          */
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              index=*p++;
+                              *indexes++=index;
+                              *q++=image->colormap[index];
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              index=*p++;
+                              VerifyColormapIndex(image,index);
+                              *indexes++=index;
+                              *q++=image->colormap[index];
+                            }
+                        }
+                      break;
+                    }
+                  case 16:
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(index,quantum_size,p);
+                          VerifyColormapIndex(image,index);
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
                   }
               }
             else if (quantum_size == 1)
@@ -3223,7 +3616,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       unsigned_value *= unsigned_scale;
                     else if (QuantumDepth <  sample_bits)
                       unsigned_value /= unsigned_scale;
-                    q->opacity=MaxRGB-unsigned_value;
+                    SetOpacitySample(q,MaxRGB-unsigned_value);
                     q++;
                   }
               }
@@ -3248,7 +3641,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       unsigned_value *= unsigned_scale;
                     else if (QuantumDepth <  sample_bits)
                       unsigned_value /= unsigned_scale;
-                    q->opacity=MaxRGB-unsigned_value;
+                    SetOpacitySample(q,MaxRGB-unsigned_value);
                     q++;
                   }
               }
@@ -3269,46 +3662,78 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == sample_bits)
+                    switch (quantum_size)
                       {
-                        /* Unity scale */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            if (grayscale_miniswhite)
-                              unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
-                            q->opacity=0U;
-                            q++;
-                          }
-                      }
-                    else if (QuantumDepth >  sample_bits)
-                      {
-                        /* Scale up */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            unsigned_value *= unsigned_scale;
-                            if (grayscale_miniswhite)
-                              unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
-                            q->opacity=0U;
-                            q++;
-                          }
-                      }
-                    else
-                      {
-                        /* Scale down */
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            unsigned_value /= unsigned_scale;
-                            if (grayscale_miniswhite)
-                              unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
-                            q->opacity=0U;
-                            q++;
-                          }
+                      case 8:
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  SetGraySample(q,MaxRGB-ScaleCharToQuantum(*p++));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  SetGraySample(q,ScaleCharToQuantum(*p++));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          break;
+                        }
+                      case 16:
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                                  SetGraySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                                  SetGraySample(q,ScaleShortToQuantum(unsigned_value));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          break;
+                        }
+                      case 32:
+                        {
+                          if (grayscale_miniswhite)
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                                  SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          else
+                            {
+                              for (x = number_pixels; x != 0; --x)
+                                {
+                                  ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                                  SetGraySample(q,ScaleLongToQuantum(unsigned_value));
+                                  SetOpacitySample(q,OpaqueOpacity);
+                                  q++;
+                                }
+                            }
+                          break;
+                        }
                       }
                   }
                 else
@@ -3361,8 +3786,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                                 unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                                 if (grayscale_miniswhite)
                                   unsigned_value = MaxRGB-unsigned_value;
-                                q->red=q->green=q->blue=unsigned_value;
-                                q->opacity=0U;
+                                SetGraySample(q,unsigned_value);
+                                SetOpacitySample(q,OpaqueOpacity);
                                 q++;
                               }
                           }
@@ -3375,8 +3800,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                             if (grayscale_miniswhite)
                               unsigned_value = MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
-                            q->opacity=0U;
+                            SetGraySample(q,unsigned_value);
+                            SetOpacitySample(q,OpaqueOpacity);
                             q++;
                           }
                       }
@@ -3482,7 +3907,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=q->green=q->blue=RoundSignedToQuantum(float_value);
+                      SetGraySample(q,RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -3494,7 +3919,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=q->green=q->blue=RoundSignedToQuantum(double_value);
+                      SetGraySample(q,RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -3527,10 +3952,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             if (grayscale_miniswhite)
                               unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
+                            SetGraySample(q,unsigned_value);
 
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3543,11 +3968,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             unsigned_value *= unsigned_scale;
                             if (grayscale_miniswhite)
                               unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
+                            SetGraySample(q,unsigned_value);
 
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value *= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3560,11 +3985,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             unsigned_value /= unsigned_scale;
                             if (grayscale_miniswhite)
                               unsigned_value=MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
+                            SetGraySample(q,unsigned_value);
 
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
                             unsigned_value /= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3583,11 +4008,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                             if (grayscale_miniswhite)
                               unsigned_value = MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
+                            SetGraySample(q,unsigned_value);
 
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size);
                             unsigned_value *= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3599,11 +4024,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                             if (grayscale_miniswhite)
                               unsigned_value = MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
+                            SetGraySample(q,unsigned_value);
 
                             unsigned_value=BitStreamMSBRead(&stream,quantum_size);
                             unsigned_value /= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3648,7 +4073,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                               unsigned_value *= unsigned_scale;
                             else if (QuantumDepth <  sample_bits)
                               unsigned_value /= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3669,7 +4094,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                               unsigned_value *= unsigned_scale;
                             else if (QuantumDepth <  sample_bits)
                               unsigned_value /= unsigned_scale;
-                            q->opacity=MaxRGB-unsigned_value;
+                            SetOpacitySample(q,MaxRGB-unsigned_value);
                             q++;
                           }
                       }
@@ -3698,7 +4123,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           unsigned_value *= unsigned_scale;
                         else if (QuantumDepth <  sample_bits)
                           unsigned_value /= unsigned_scale;
-                        q->opacity=MaxRGB-unsigned_value;
+                        SetOpacitySample(q,MaxRGB-unsigned_value);
                         q++;
                       }
                   }
@@ -3715,11 +4140,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=q->green=q->blue=RoundSignedToQuantum(float_value);
+                      SetGraySample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=MaxRGB-RoundSignedToQuantum(float_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -3731,11 +4156,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=q->green=q->blue=RoundSignedToQuantum(double_value);
+                      SetGraySample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=MaxRGB-RoundSignedToQuantum(double_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -3756,35 +4181,37 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value*unsigned_scale;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value/unsigned_scale;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetRedSample(q,ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleShortToQuantum(unsigned_value));
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -3801,7 +4228,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -3810,7 +4237,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -3827,7 +4254,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=RoundSignedToQuantum(float_value);
+                      SetRedSample(q,RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -3839,7 +4266,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=RoundSignedToQuantum(double_value);
+                      SetRedSample(q,RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -3860,35 +4287,37 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value*unsigned_scale;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value/unsigned_scale;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetGreenSample(q,ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -3905,7 +4334,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -3914,7 +4343,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -3931,7 +4360,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->green=RoundSignedToQuantum(float_value);
+                      SetGreenSample(q,RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -3943,7 +4372,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->green=RoundSignedToQuantum(double_value);
+                      SetGreenSample(q,RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -3964,36 +4393,39 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetBlueSample(q,ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                          q++;
+                        }
+                      break;
+                    }
                   }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value*unsigned_scale;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value/unsigned_scale;
-                        q++;
-                      }
-                  }
+
               }
             else
               {
@@ -4009,7 +4441,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -4018,7 +4450,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -4035,7 +4467,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(float_value);
+                      SetBlueSample(q,RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -4047,7 +4479,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(double_value);
+                      SetBlueSample(q,RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4170,7 +4602,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-unsigned_value;
+                        SetOpacitySample(q,MaxRGB-unsigned_value);
                         q++;
                       }
                   }
@@ -4180,7 +4612,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-unsigned_value*unsigned_scale;
+                        SetOpacitySample(q,MaxRGB-unsigned_value*unsigned_scale);
                         q++;
                       }
                   }
@@ -4190,7 +4622,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     for (x = number_pixels; x != 0; --x)
                       {
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-unsigned_value/unsigned_scale;
+                        SetOpacitySample(q,MaxRGB-unsigned_value/unsigned_scale);
                         q++;
                       }
                   }
@@ -4209,7 +4641,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -4218,7 +4650,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -4235,7 +4667,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=(IndexPacket) MaxRGB-RoundSignedToQuantum(float_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -4247,7 +4679,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4267,35 +4699,37 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value*unsigned_scale;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value/unsigned_scale;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetBlackSample(q,ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,ScaleShortToQuantum(unsigned_value));
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -4312,7 +4746,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -4321,7 +4755,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -4338,7 +4772,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(float_value);
+                      SetBlackSample(q,RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -4350,7 +4784,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(double_value);
+                      SetBlackSample(q,RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4371,50 +4805,50 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value;
-                        q->opacity=0U;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value*unsigned_scale;
-                        q->opacity=0U;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value/unsigned_scale;
-                        q->opacity=0U;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetRedSample(q,ScaleCharToQuantum(*p++));
+                          SetGreenSample(q,ScaleCharToQuantum(*p++));
+                          SetBlueSample(q,ScaleCharToQuantum(*p++));
+                          SetOpacitySample(q,OpaqueOpacity);
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
+                          SetOpacitySample(q,OpaqueOpacity);
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                          SetOpacitySample(q,OpaqueOpacity);
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -4431,10 +4865,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->opacity=0U;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                   }
@@ -4443,10 +4877,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->opacity=0U;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                   }
@@ -4463,16 +4897,16 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=RoundSignedToQuantum(float_value);
+                      SetRedSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->green=RoundSignedToQuantum(float_value);
+                      SetGreenSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(float_value);
-                      q->opacity=0U;
+                      SetBlueSample(q,RoundSignedToQuantum(float_value));
+                      SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
                 }
@@ -4484,16 +4918,16 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=RoundSignedToQuantum(double_value);
+                      SetRedSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->green=RoundSignedToQuantum(double_value);
+                      SetGreenSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(double_value);
-                      q->opacity=0U;
+                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
                 }
@@ -4513,53 +4947,52 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-unsigned_value;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-(unsigned_value*unsigned_scale);
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=MaxRGB-(unsigned_value/unsigned_scale);
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetRedSample(q,ScaleCharToQuantum(*p++));
+                          SetGreenSample(q,ScaleCharToQuantum(*p++));
+                          SetBlueSample(q,ScaleCharToQuantum(*p++));
+                          SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetOpacitySample(q,MaxRGB-unsigned_value);
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetOpacitySample(q,MaxRGB-unsigned_value);
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -4576,10 +5009,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -4588,10 +5021,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->opacity=MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -4608,19 +5041,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=RoundSignedToQuantum(float_value);
+                      SetRedSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->green=RoundSignedToQuantum(float_value);
+                      SetGreenSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(float_value);
+                      SetBlueSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=MaxRGB-RoundSignedToQuantum(float_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(float_value));
                       q++;
                     }
                 }
@@ -4632,19 +5065,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=RoundSignedToQuantum(double_value);
+                      SetRedSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->green=RoundSignedToQuantum(double_value);
+                      SetGreenSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(double_value);
+                      SetBlueSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=MaxRGB-RoundSignedToQuantum(double_value);
+                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4664,56 +5097,52 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value;
-                        *indexes++=OpaqueOpacity;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value*unsigned_scale;
-                        *indexes++=OpaqueOpacity;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value/unsigned_scale;
-                        *indexes++=OpaqueOpacity;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetCyanSample(q,ScaleCharToQuantum(*p++));
+                          SetMagentaSample(q,ScaleCharToQuantum(*p++));
+                          SetYellowSample(q,ScaleCharToQuantum(*p++));
+                          SetBlackSample(q,ScaleCharToQuantum(*p++));
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetCyanSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetMagentaSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetYellowSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,unsigned_value);
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,unsigned_value);
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -4730,10 +5159,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         *indexes++=OpaqueOpacity;
                         q++;
                       }
@@ -4743,10 +5172,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         *indexes++=OpaqueOpacity;
                         q++;
                       }
@@ -4764,19 +5193,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=RoundSignedToQuantum(float_value);
+                      SetCyanSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->green=RoundSignedToQuantum(float_value);
+                      SetMagentaSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(float_value);
+                      SetYellowSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(float_value);
+                      SetBlackSample(q,RoundSignedToQuantum(float_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -4789,19 +5218,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=RoundSignedToQuantum(double_value);
+                      SetCyanSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->green=RoundSignedToQuantum(double_value);
+                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(double_value);
+                      SetYellowSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(double_value);
+                      SetBlackSample(q,RoundSignedToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -4822,59 +5251,57 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == sample_bits)
+                switch (quantum_size)
                   {
-                    /* Unity scale */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        *indexes++=(IndexPacket) MaxRGB-unsigned_value;
-                        q++;
-                      }
-                  }
-                else if (QuantumDepth >  sample_bits)
-                  {
-                    /* Scale up */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value*unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        *indexes++=(IndexPacket) MaxRGB-unsigned_value*unsigned_scale;
-                        q++;
-                      }
-                  }
-                else
-                  {
-                    /* Scale down */
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->red=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->green=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->blue=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        q->opacity=unsigned_value/unsigned_scale;
-                        ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                        *indexes++=(IndexPacket) MaxRGB-unsigned_value/unsigned_scale;
-                        q++;
-                      }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          SetCyanSample(q,ScaleCharToQuantum(*p++));
+                          SetMagentaSample(q,ScaleCharToQuantum(*p++));
+                          SetYellowSample(q,ScaleCharToQuantum(*p++));
+                          SetBlackSample(q,ScaleCharToQuantum(*p++));
+                          *indexes++=(IndexPacket) MaxRGB-ScaleCharToQuantum(*p++);
+                          q++;
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetCyanSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetMagentaSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetYellowSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,ScaleShortToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          *indexes++=(IndexPacket) MaxRGB-ScaleShortToQuantum(unsigned_value);
+                          q++;
+                        }
+                       break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
+                          ImportModulo8Quantum(unsigned_value,quantum_size,p);
+                          *indexes++=(IndexPacket) MaxRGB-ScaleLongToQuantum(unsigned_value);
+                          q++;
+                        }
+                      break;
+                    }
                   }
               }
             else
@@ -4891,10 +5318,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q++;
                       }
@@ -4904,10 +5331,10 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        q->red=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
-                        q->opacity=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q++;
                       }
@@ -4925,19 +5352,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->red=RoundSignedToQuantum(float_value);
+                      SetCyanSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->green=RoundSignedToQuantum(float_value);
+                      SetMagentaSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(float_value);
+                      SetYellowSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(float_value);
+                      SetBlackSample(q,RoundSignedToQuantum(float_value));
                       ImportFloatQuantum(float_value,p);
                       float_value -= double_minvalue;
                       float_value *= double_scale;
@@ -4953,19 +5380,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->red=RoundSignedToQuantum(double_value);
+                      SetCyanSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->green=RoundSignedToQuantum(double_value);
+                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->blue=RoundSignedToQuantum(double_value);
+                      SetYellowSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      q->opacity=RoundSignedToQuantum(double_value);
+                      SetBlackSample(q,RoundSignedToQuantum(double_value));
                       ImportDoubleQuantum(double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
@@ -5022,12 +5449,13 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 blue  = 0.061*x_sample  + -0.224*y_sample +  1.163*z_sample;
 
                 /* assume 2.0 gamma for speed */
-                q->red   = (Quantum) ((red <= 0.0) ? 0.0 : (red >= 1.0) ? MaxRGB :
-                                      ((MaxRGB * sqrt(red))+0.5));
-                q->green = (Quantum) ((green <= 0.0) ? 0.0 : (green >= 1.0) ? MaxRGB :
-                                      ((MaxRGB * sqrt(green))+0.5));
-                q->blue  = (Quantum) ((blue <= 0.0) ? 0.0 : (blue >= 1.0) ? MaxRGB :
-                                      ((MaxRGB * sqrt(blue))+0.5));
+                SetRedSample(q,(Quantum) ((red <= 0.0) ? 0.0 : (red >= 1.0) ? MaxRGB :
+                                          ((MaxRGB * sqrt(red))+0.5)));
+                SetGreenSample(q,(Quantum) ((green <= 0.0) ? 0.0 : (green >= 1.0) ? MaxRGB :
+                                            ((MaxRGB * sqrt(green))+0.5)));
+                SetBlueSample(q,(Quantum) ((blue <= 0.0) ? 0.0 : (blue >= 1.0) ? MaxRGB :
+                                           ((MaxRGB * sqrt(blue))+0.5)));
+                SetOpacitySample(q,OpaqueOpacity);
                 q++;
               }
           }
@@ -5055,10 +5483,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     }
                   }
                 /* assume 2.0 gamma for speed */
-                q->red=q->green=q->blue=
-                  (Quantum) ((double_value <= 0.0) ? 0.0 :
-                             (double_value >= 1.0) ? MaxRGB :
-                             ((MaxRGB * sqrt(double_value))+0.5));
+                SetGraySample(q,(Quantum) ((double_value <= 0.0) ? 0.0 :
+                                           (double_value >= 1.0) ? MaxRGB :
+                                           ((MaxRGB * sqrt(double_value))+0.5)));
                 q++;
               }
           }
