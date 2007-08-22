@@ -1,3 +1,13 @@
+2007-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (WritePNMImage): Use '-quality 0' rather than
+	'-compress none' to select the PNM ASCII subformats.  This change
+	is made based on the principle of least surprise.
+	* magick/constitute.c (ExportImagePixelArea): Add a GrayQuantum
+	implementation for exporting from two color PsuedoClass.
+	* coders/pnm.c (WritePNMImage): Use GetImageCharacteristics() and
+	ExportImagePixelArea() in implementation.
+
 2007-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ExportImagePixelArea): Performance

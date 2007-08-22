@@ -1351,15 +1351,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   Special "fast" support for two-color PsudeoClass.
                 */
                 register unsigned int
-                  bit,
-                  byte;
+                  bit=0,
+                  byte=0;
 
-                bit=0;
-                byte=0;
                 for (x = number_pixels; x != 0; --x)
                   {
                     byte<<=1;
-                    byte |= (*indexes++ ? 0x01 : 0x00);
+                    byte |= (*indexes++ ? 1U : 0U);
                     bit++;
                     if (bit == 8)
                     {
@@ -1617,37 +1615,75 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
               }
             else if (quantum_size == 1)
               {
-                /*
-                  Special "fast" support for bi-level gray.
-                  Performs 50% thresholding for best appearance.
-                */
-                register unsigned int
-                  bit = 8,
-                  black=0,
-                  white=1;
-                
-                if (grayscale_miniswhite)
+                if (image->storage_class == PseudoClass)
                   {
-                    black=1;
-                    white=0;
-                  }
-                
-                *q=0;
-                for (x = number_pixels ; x != 0 ; --x )
-                  {
-                    --bit;
-                    if (image->is_grayscale)
-                      unsigned_value=GetGraySample(p);
-                    else
-                      unsigned_value=PixelIntensityToQuantum(p);
-                    *q |= ((unsigned_value > MaxRGB/2 ? white : black) << bit);
-                    if (bit == 0)
+                    /*
+                      Special "fast" support for two-color PsudeoClass.
+                    */
+                    register unsigned int
+                      bit=0,
+                      byte=0,
+                      polarity;
+
+                    polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
+                    if (image->colors == 2)
+                      polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+                        PixelIntensityToQuantum(&image->colormap[1]);
+                    if (grayscale_miniswhite)
+                      polarity=!polarity;
+                      
+                    for (x = number_pixels; x != 0; --x)
                       {
-                        bit=8;
-                        q++;
-                        *q=0;
+                        byte<<=1;
+                        if (*indexes++ == polarity)
+                          byte|=0x01;
+                        bit++;
+                        if (bit == 8)
+                          {
+                            *q++=byte;
+                            bit=0;
+                            byte=0;
+                          }
                       }
-                    p++;
+                    if (bit != 0)
+                      {
+                        *q++=byte << (8-bit);
+                      }
+                  }
+                else
+                  {
+                    /*
+                      Special "fast" support for bi-level gray.
+                      Performs 50% thresholding for best appearance.
+                    */
+                    register unsigned int
+                      bit = 8,
+                      black=0,
+                      white=1;
+                    
+                    if (grayscale_miniswhite)
+                      {
+                        black=1;
+                        white=0;
+                      }
+                    
+                    *q=0;
+                    for (x = number_pixels ; x != 0 ; --x )
+                      {
+                        --bit;
+                        if (image->is_grayscale)
+                          unsigned_value=GetGraySample(p);
+                        else
+                          unsigned_value=PixelIntensityToQuantum(p);
+                        *q |= ((unsigned_value > MaxRGB/2 ? white : black) << bit);
+                        if (bit == 0)
+                          {
+                            bit=8;
+                            q++;
+                            *q=0;
+                          }
+                        p++;
+                      }
                   }
               }
             else

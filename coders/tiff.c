@@ -3131,6 +3131,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
       else if ((characteristics.monochrome) &&
                (compress_tag != COMPRESSION_JPEG) &&
+               (image_info->type != GrayscaleType) &&
+               (image_info->type != GrayscaleMatteType) &&
                (image_info->type != TrueColorType) &&
                (image_info->type != TrueColorMatteType) &&
                (image_info->type != PaletteType) && 

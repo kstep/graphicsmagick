@@ -3446,6 +3446,12 @@ opacity channel.  These are written as a single integer equal to the main
 image quality plus 1000 times the opacity quality.  For example, if you
 want to use quality 75 for the main image and quality 90 to compress 
 the opacity data, use <tt>-quality 90075</tt>.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For the PNM family of formats (PNM, PGM, and PPM) specify a quality
+factor of zero in order to obtain the ASCII variant of the format. Note
+that -compress <em>none</em> used to be used to trigger ASCII output but
+provided the opposite result of what was expected as compared with other
+formats.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
+#include "magick/constitute.h"
 #include "magick/log.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
@@ -293,7 +294,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count == 0) || (format != 'P'))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     format=ReadBlobByte(image);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Format Id: P%c",
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"PNM Format Id: P%c",
                           format);
     if (format == '7')
       (void) PNMInteger(image,10);
@@ -896,7 +897,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   int
     format;
 
-  long
+  unsigned int
+    depth;
+
+  unsigned long
     j,
     y;
 
@@ -906,7 +910,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     i,
     x;
 
@@ -927,29 +931,76 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
+    /*
+      Make sure that image is in an RGB type space.
+    */
+    (void) TransformColorspace(image,RGBColorspace);
+
+    /*
+      Analyze image to be written.
+    */
+    if (!GetImageCharacteristics(image,&characteristics,
+                                 (OptimizeType == image_info->type),
+                                 &image->exception))
+      {
+        CloseBlob(image);
+        return MagickFail;
+      }    
+
+    depth=(image->depth <= 8 ? 8 : 16);
+
     /*
       Write PNM file header.
     */
-    (void) TransformColorspace(image,RGBColorspace);
     format=6;
     if (LocaleCompare(image_info->magick,"PGM") == 0)
-      format=5;
-    else
-      if (LocaleCompare(image_info->magick,"PBM") == 0)
+      {
+        format=5;
+      }
+    else if (LocaleCompare(image_info->magick,"PBM") == 0)
+      {
         format=4;
-      else
-        if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
+      }
+    else if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
+             (image_info->type != TrueColorType) &&
+             IsGrayImage(image,&image->exception))
+      {
+        if ((characteristics.monochrome) &&
+            (image_info->type != GrayscaleType) &&
+            (image_info->type != GrayscaleMatteType) &&
             (image_info->type != TrueColorType) &&
-            IsGrayImage(image,&image->exception))
+            (image_info->type != TrueColorMatteType))
           {
-            format=5;
-            if (IsMonochromeImage(image,&image->exception))
-              format=4;
+            /* PBM */
+            format=4;
           }
-    if (image_info->compression == NoCompression)
-      format-=3;
+        else if ((characteristics.grayscale) &&
+                 (image_info->type != TrueColorType) &&
+                 (image_info->type != TrueColorMatteType))
+        {
+          /* PGM */
+          format=5;
+        }
+        else
+          {
+            /* PPM */
+            format=6;
+          }
+      }
+    /*
+      If quality is set to zero, then select an ASCII subformat.
+    */
+    if (image_info->quality == 0)
+      {
+        format-=3;
+      }
     if (LocaleCompare(image_info->magick,"P7") != 0)
-      FormatString(buffer,"P%d\n",format);
+      {
+        FormatString(buffer,"P%d\n",format);
+      }
     else
       {
         format=7;
@@ -982,6 +1033,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Convert runlength encoded to PNM raster pixels.
     */
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"PNM Format Id: P%d",
+                          format);
     switch (format)
     {
       case 1:
@@ -998,13 +1051,13 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) <
             PixelIntensityToQuantum(&image->colormap[1]);
         i=0;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             FormatString(buffer,"%u ",indexes[x] == polarity ? 0x00 : 0x01);
             (void) WriteBlobString(image,buffer);
@@ -1029,20 +1082,20 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        if (image->depth <= 8)
+        if (depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
           (void) WriteBlobString(image,"65535\n");
         i=0;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             index=PixelIntensityToQuantum(p);
-            if (image->depth <= 8)
+            if (depth <= 8)
               FormatString(buffer," %u",ScaleQuantumToChar(index));
             else
               FormatString(buffer," %u",ScaleQuantumToShort(index));
@@ -1069,19 +1122,19 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        if (image->depth <= 8)
+        if (depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
           (void) WriteBlobString(image,"65535\n");
         i=0;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
-            if (image->depth <= 8)
+            if (depth <= 8)
               FormatString(buffer,"%u %u %u ",ScaleQuantumToChar(p->red),
                 ScaleQuantumToChar(p->green),ScaleQuantumToChar(p->blue));
             else
@@ -1107,48 +1160,48 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case 4:
       {
-        register unsigned char
-          bit,
-          byte,
-          polarity;
-
         /*
           Convert image to a PBM image.
         */
-        (void) SetImageType(image,BilevelType);
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
-        if (image->colors == 2)
-          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
-            PixelIntensityToQuantum(&image->colormap[1]);
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          bit=0;
-          byte=0;
-          for (x=0; x < (long) image->columns; x++)
+        size_t
+          octets;
+
+        unsigned char
+          *pixels;
+        
+        ExportPixelAreaOptions
+          export_options;
+        
+        /*
+          Allocate memory for pixels.
+        */
+        octets=((image->columns/8)+(image->columns%8 ? 1 : 0));
+        pixels=MagickAllocateMemory(unsigned char *,octets);
+        if (pixels == (unsigned char *) NULL)
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
+        
+        ExportPixelAreaOptionsInit(&export_options);
+        export_options.grayscale_miniswhite=MagickTrue;
+        
+        for (y=0; y < image->rows; y++)
           {
-            byte<<=1;
-            if (indexes[x] != polarity)
-              byte|=0x01;
-            bit++;
-            if (bit == 8)
-              {
-                (void) WriteBlobByte(image,byte);
-                bit=0;
-                byte=0;
-              }
-            p++;
-          }
-          if (bit != 0)
-            (void) WriteBlobByte(image,byte << (8-bit));
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
+              break;
+            if (image->storage_class == PseudoClass)
+              
+              if (ExportImagePixelArea(image,GrayQuantum,1,pixels,
+                                       &export_options) == MagickFail)
                 break;
-        }
+            if (WriteBlob(image,octets,(char *) pixels) != octets)
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  break;
+          }
+        MagickFreeMemory(pixels);
         break;
       }
       case 5:
@@ -1156,43 +1209,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        if (image->depth <= 8)
-          (void) WriteBlobString(image,"255\n");
-        else
-          (void) WriteBlobString(image,"65535\n");
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          if (image->depth <= 8)
-            for (x=0; x < (long) image->columns; x++)
-            {
-              (void) WriteBlobByte(image,
-                ScaleQuantumToChar(PixelIntensityToQuantum(p)));
-              p++;
-            }
-          else
-            for (x=0; x < (long) image->columns; x++)
-            {
-              (void) WriteBlobMSBShort(image,
-                ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-              p++;
-            }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                break;
-        }
-        break;
-      }
-      case 6:
-      {
-        register unsigned char
-          *q;
 
         size_t
-          packets;
+          octets;
 
         unsigned char
           *pixels;
@@ -1200,44 +1219,68 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate memory for pixels.
         */
-        packets=image->depth <= 8 ? 3 : 6;
-        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
+        octets=(depth <= 8 ? 1 : 2)*image->columns;
+        pixels=MagickAllocateMemory(unsigned char *,octets);
+        if (pixels == (unsigned char *) NULL)
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+            image);
+
+        if (depth <= 8)
+          (void) WriteBlobString(image,"255\n");
+        else
+          (void) WriteBlobString(image,"65535\n");
+        for (y=0; y < image->rows; y++)
+        {
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          if (ExportImagePixelArea(image,GrayQuantum,depth,pixels,0) == MagickFail)
+            break;
+          if (WriteBlob(image,octets,(char *) pixels) != octets)
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
+        }
+        MagickFreeMemory(pixels);
+        break;
+      }
+      case 6:
+      {
+        /*
+          Convert image to a PPM image.
+        */
+        size_t
+          octets;
+
+        unsigned char
+          *pixels;
+
+        /*
+          Allocate memory for pixels.
+        */
+        octets=(depth <= 8 ? 3 : 6)*image->columns;
+        pixels=MagickAllocateMemory(unsigned char *,octets);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Convert image to a PNM image.
         */
-        if (image->depth <= 8)
+        if (depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
           (void) WriteBlobString(image,"65535\n");
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          q=pixels;
-          if (image->depth <= 8)
-            for (x=0; x < (long) image->columns; x++)
-            {
-              *q++=ScaleQuantumToChar(p->red);
-              *q++=ScaleQuantumToChar(p->green);
-              *q++=ScaleQuantumToChar(p->blue);
-              p++;
-            }
-          else
-            for (x=0; x < (long) image->columns; x++)
-            {
-              *q++=(unsigned char) (ScaleQuantumToShort(p->red) >> 8);
-              *q++=(unsigned char) ScaleQuantumToShort(p->red);
-              *q++=(unsigned char) (ScaleQuantumToShort(p->green) >> 8);
-              *q++=(unsigned char) ScaleQuantumToShort(p->green);
-              *q++=(unsigned char) (ScaleQuantumToShort(p->blue) >> 8);
-              *q++=(unsigned char) ScaleQuantumToShort(p->blue);
-              p++;
-            }
-          (void) WriteBlob(image,q-pixels,(char *) pixels);
+          if (ExportImagePixelArea(image,RGBQuantum,depth,pixels,0) == MagickFail)
+            break;
+          if (WriteBlob(image,octets,(char *) pixels) != octets)
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1328,12 +1371,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         i=0;
         j=0;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             if (!image_info->dither)
               pixel=(Quantum) ((ScaleQuantumToChar(p->red) & 0xe0) |

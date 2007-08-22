@@ -3449,6 +3449,13 @@ image quality plus 1000 times the opacity quality.  For example, if you
 want to use quality 75 for the main image and quality 90 to compress 
 the opacity data, use <tt>-quality 90075</tt>.</pp>
 
+<pp>
+For the PNM family of formats (PNM, PGM, and PPM) specify a quality
+factor of zero in order to obtain the ASCII variant of the format. Note
+that -compress <i>none</i> used to be used to trigger ASCII output but
+provided the opposite result of what was expected as compared with other
+formats.</pp>
+
 </utils>
 
 
