@@ -101,15 +101,33 @@ static Image
     } while( shift > 0U); \
 }
 
+#define ExportCharQuantum(q,quantum) \
+{ \
+  *q++=(quantum); \
+}
+#define ExportShortQuantum(q,quantum) \
+{ \
+  register unsigned int value_ = quantum; \
+  *q++=(unsigned char) (value_ >> 8); \
+  *q++=(unsigned char) value_; \
+}
+#define ExportLongQuantum(q,quantum) \
+{ \
+  register unsigned int value_ = quantum; \
+  *q++=(unsigned char) (value_ >> 24); \
+  *q++=(unsigned char) (value_ >> 16); \
+  *q++=(unsigned char) (value_ >> 8); \
+  *q++=(unsigned char) value_; \
+}
 #define ExportFloatQuantum(q,quantum) \
 { \
-  *((float *) q) = quantum; \
+  *((float *) q) = (quantum); \
   q += sizeof(float); \
 }
 
 #define ExportDoubleQuantum(q,quantum) \
 { \
-  *((double *) q) = quantum; \
+  *((double *) q) = (quantum); \
   q += sizeof(double); \
 }
 #define ImportModulo8Quantum(quantum,quantum_size,p) \
@@ -124,13 +142,27 @@ static Image
       quantum |= (*p++ << shift); \
     } while( shift > 0U); \
 }
-
+#define ImportCharQuantum(quantum,p) \
+{ \
+  quantum=*p++; \
+}
+#define ImportShortQuantum(quantum,p) \
+{ \
+  quantum=(*p++ << 8); \
+  quantum|=(*p++); \
+}
+#define ImportLongQuantum(quantum,p) \
+{ \
+  quantum=(*p++ << 24); \
+  quantum|=(*p++ << 16); \
+  quantum|=(*p++ << 8); \
+  quantum|=(*p++); \
+}
 #define ImportFloatQuantum(value,p) \
 { \
   value=*((float *) p); \
   p += sizeof(float); \
 }
-
 #define ImportDoubleQuantum(value,p) \
 { \
   value=*((double *) p); \

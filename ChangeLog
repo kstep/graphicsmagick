@@ -1,3 +1,8 @@
+2007-08-23  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c (WriteMATLABImage): MAT writer uses
+	ExportImagePixelArea() now.  Fix issues noticed by valgrind.
+
 2007-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (WritePNMImage): Use '-quality 0' rather than

@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..53\n"; }
+BEGIN { $| = 1; $test=1; print "1..54\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -77,6 +77,10 @@ testReadCompare('input_gray_lsb_08bit.mat', 'reference/read/input_gray_lsb_08bit
 print("MAT (MatLab gray 8-bit MSB integer) ...\n");
 ++$test;
 testReadCompare('input_gray_msb_08bit.mat', 'reference/read/input_gray_msb_08bit_mat.miff', q//, 0, 0);
+
+print("MAT (MatLab gray 16-bit LSB integer) ...\n");
+++$test;
+testReadCompare('input_gray_lsb_16bit.mat', 'reference/read/input_gray_lsb_16bit_mat.miff', q//, 0, 0);
 
 print("MAT (MatLab gray 64-bit LSB double) ...\n");
 ++$test;

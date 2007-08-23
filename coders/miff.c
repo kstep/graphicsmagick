@@ -2143,9 +2143,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->storage_class == PseudoClass)
       {
-        register unsigned char
-          *q;
-
         unsigned char
           *colormap;
 

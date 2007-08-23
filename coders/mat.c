@@ -821,7 +821,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   DataSize = image->rows /*Y*/ * image->columns /*X*/ * 3 /*Z*/;
   padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
-  (void) memset(MATLAB_HDR,' ',124);
+  (void) memset(MATLAB_HDR,' ',Min(sizeof(MATLAB_HDR),124));
   FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
     OsDesc,
     DayOfWTab[t->tm_wday],
@@ -853,10 +853,6 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
   (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
   (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
-
-  pixels=MagickAllocateMemory(unsigned char *,image->columns);
-  if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
   /*
     Store image data.
