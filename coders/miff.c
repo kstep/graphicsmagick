@@ -1823,7 +1823,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     i,
     x;
 
-  register unsigned char
+  unsigned char
     *q;
 
   size_t
@@ -1834,6 +1834,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
+    depth,
     status;
 
   unsigned long
@@ -1872,15 +1873,24 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       TransformColorspace(image,RGBColorspace);
     else
       TransformColorspace(image,CMYKColorspace);
-    packet_size=image->depth/8;
+    /*
+      Valid depths are 8/16/32
+    */
+    if (image->depth > 16)
+      depth=32;
+    else if (image->depth > 8)
+      depth=16;
+    else
+      depth=8;
+    packet_size=depth/8;
     if (image->storage_class == DirectClass)
-      packet_size=3*image->depth/8;
+      packet_size=3*depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     if (image->matte)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     if (compression == RLECompression)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     length=packet_size*image->columns;
     pixels=MagickAllocateMemory(unsigned char *,length);
     length=(size_t) (1.01*packet_size*image->columns+600);
@@ -1930,8 +1940,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"columns=%lu  rows=%lu  depth=%lu\n",image->columns,
-      image->rows,image->depth);
+    FormatString(buffer,"columns=%lu  rows=%lu  depth=%u\n",image->columns,
+      image->rows,depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
@@ -2110,9 +2120,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->storage_class == PseudoClass)
       {
-        register unsigned char
-          *q;
-
         unsigned char
           *colormap;
 
@@ -2122,7 +2129,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=3*image->depth/8;
+        packet_size=3*depth/8;
         colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
@@ -2131,7 +2138,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        if (image->depth <= 8)
+        if (depth <= 8)
           for (i=0; i < (long) image->colors; i++)
           {
             *q++=ScaleQuantumToChar(image->colormap[i].red);
@@ -2139,7 +2146,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(image->colormap[i].blue);
           }
         else
-          if (image->depth <= 16)
+          if (depth <= 16)
             for (i=0; i < (long) image->colors; i++)
             {
               *q++=ScaleQuantumToShort(image->colormap[i].red) >> 8;

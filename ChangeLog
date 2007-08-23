@@ -1,3 +1,14 @@
+2007-08-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c: Eliminate crash when image->depth is not the
+	expected 8/16/32/.
+
+2007-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Handle text response
+	from 'identify -format'. Benchmark output is now a bit more like
+	Unix time.
+
 2007-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (BenchmarkImageCommand): Added a new 'benchmark'

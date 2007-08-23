@@ -137,7 +137,7 @@ static const CommandInfo commands[] =
       AnimateImageCommand, AnimateUsage, 0 },
 #endif
     { "benchmark", "benchmark one of the other commands",
-      BenchmarkImageCommand, BenchmarkUsage, 0 },
+      BenchmarkImageCommand, BenchmarkUsage, 1 },
     { "composite", "composite images together",
       CompositeImageCommand, CompositeUsage, 0 },
     { "conjure", "execute a Magick Scripting Language (MSL) XML script",
@@ -1294,9 +1294,25 @@ static unsigned int BenchMarkSubCommand(const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
+
+  char
+    *text = (char *) NULL;;
   
   clone_info=CloneImageInfo(image_info);
   status=MagickCommand(clone_info,argc,argv,metadata,exception);
+  if (metadata != (char **) NULL)
+    text=*metadata;
+  if (text != (char *) NULL)
+    {
+      if (strlen(text))
+        {
+          (void) fputs(text,stdout);
+          (void) fputc('\n',stdout);
+          (void) fflush(stdout);
+        }
+      MagickFreeMemory(text);
+      *metadata=text;
+    }
   DestroyImageInfo(clone_info);
   return status;
 }
@@ -1416,7 +1432,7 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
 
       user_time=GetUserTime(&timer);
       elapsed_time=GetElapsedTime(&timer);
-      printf("Iterations: %ld, UserTime: %g, ElapsedTime: %g, Iterations/second: %g\n",
+      printf("Results: %ld iter %.2fs user %.2fs total %.3f iter/s\n",
              iteration,user_time, elapsed_time,(((double) iteration)/elapsed_time));
     }
   }
@@ -9399,7 +9415,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               image_type;
 
             option=argv[++i];
-            image_type=GetImageType(*image,&(*image)->exception);
+            image_type=UndefinedType;
             if (LocaleCompare("Bilevel",option) == 0)
               image_type=BilevelType;
             if (LocaleCompare("Grayscale",option) == 0)
@@ -9421,7 +9437,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("Optimize",option) == 0)
               image_type=OptimizeType;
             (*image)->dither=image_info->dither;
-            SetImageType(*image,image_type);
+            if (UndefinedType != image_type)
+              SetImageType(*image,image_type);
             continue;
           }
         break;
