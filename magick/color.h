@@ -20,17 +20,7 @@ extern "C" {
 #define VerifyColormapIndex(image,index) \
 { \
   if (index >= image->colors) \
-    { \
-      char \
-        colormapIndexBuffer[MaxTextExtent]; \
-      \
-      FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s", \
-        (unsigned int) index, image->colors, image->filename); \
-      errno=0; \
-      index=0U; \
-      ThrowException(&image->exception,CorruptImageError, \
-        InvalidColormapIndex,colormapIndexBuffer); \
-    } \
+    index=MagickConstrainColormapIndex(image,index); \
 }
 
 /*
@@ -74,6 +64,7 @@ extern MagickExport HistogramColorPacket
   *GetColorHistogram(const Image *, unsigned long *colors, ExceptionInfo *);
 
 extern MagickExport unsigned int
+  MagickConstrainColormapIndex(Image *image, unsigned int index),
   FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   IsGrayImage(const Image *,ExceptionInfo *),
   IsMonochromeImage(const Image *,ExceptionInfo *),

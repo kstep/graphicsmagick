@@ -1347,10 +1347,7 @@ the value obtained from the file's SMinSampleValue tag (if present).
 <dd>If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 images with the specified bits per sample, overriding any existing depth
 value. The range of the value is 1 to 32 when the default 'unsigned'
-format is written, or 32/64 if IEEEFP format is written. If an image to
-be read contains smaller unsigned samples stored in larger samples (e.g.
-12 bits in a 16 bit sample) then this option may be used to specify the
-sub-sample size so the image has the correct contrast. Please note that
+format is written, or 32/64 if IEEEFP format is written. Please note that
 the baseline TIFF 6.0 specification only requires readers to handle
 certain powers of two, and the values to be handled depend on the nature
 of the image (e.g. colormapped, grayscale, RGB, CMYK).

@@ -211,7 +211,7 @@ static char
   },
   *EndianTypes[] =
   {
-    "Undefined", "LSB", "MSB", (char *) NULL
+    "Undefined", "LSB", "MSB", "Native", (char *) NULL
   },
   *FilterTypess[] =
   {

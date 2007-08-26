@@ -74,12 +74,9 @@ typedef struct _ExportPixelAreaOptions
   QuantumSampleType
     sample_type;          /* Quantum sample type */
 
-  unsigned int
-    sample_bits;          /* Valid bits in unsigned quantum (e.g. 12 bits in 16 bit quantum) */
-
   double
-    double_minvalue,      /* Minimum value for linear floating point samples */
-    double_maxvalue;      /* Maximum value for linear floating point samples */
+    double_minvalue,      /* Minimum value (default 0.0) for linear floating point samples */
+    double_maxvalue;      /* Maximum value (default 1.0) for linear floating point samples */
 
   MagickBool
     grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
@@ -89,6 +86,9 @@ typedef struct _ExportPixelAreaOptions
 
   unsigned char
     pad_value;            /* Value to use when padding end of pixel data */
+
+  EndianType
+    endian;               /* Endian orientation for 16/32/64 bit types (default MSBEndian) */
 
   unsigned long
     signature;
@@ -102,15 +102,15 @@ typedef struct _ImportPixelAreaOptions
   QuantumSampleType
     sample_type;          /* Quantum sample type */
 
-  unsigned int
-    sample_bits;          /* Valid bits in unsigned quantum (e.g. 12 bits in 16 bit quantum) */
-
   double
-    double_minvalue,      /* Minimum value for linear floating point samples */
-    double_maxvalue;      /* Maximum value for linear floating point samples */
+    double_minvalue,      /* Minimum value (default 0.0) for linear floating point samples */
+    double_maxvalue;      /* Maximum value (default 1.0) for linear floating point samples */
 
   MagickBool
     grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
+
+  EndianType
+    endian;               /* Endian orientation for 16/32/64 bit types (default MSBEndian) */
 
   unsigned long
     signature;

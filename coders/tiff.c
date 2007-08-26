@@ -528,6 +528,13 @@ static void SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
       TIFFSwabArrayOfLong((uint32*) data,
                           (size+sizeof(uint32)-1)/sizeof(uint32));
     }
+#if defined(HAVE_TIFFSWABARRAYOFTRIPLES)
+  /* New libtiff function to swap 24 bit values.  Grumble ... */
+  else if (bits_per_sample == 24U)
+    {
+      TIFFSwabArrayOfTriples(data,(size+3-1)/3);
+    }
+#endif
   else if (bits_per_sample == 16U)
     {
       TIFFSwabArrayOfShort((uint16*) data,
@@ -553,6 +560,13 @@ static void SwabDataToNativeEndian(const uint16 bits_per_sample, tdata_t data,
       TIFFSwabArrayOfLong((uint32*) data,
                           (size+sizeof(uint32)-1)/sizeof(uint32));
     }
+#if defined(HAVE_TIFFSWABARRAYOFTRIPLES)
+  /* New libtiff function to swap 24 bit values.  Grumble ... */
+  else if (bits_per_sample == 24U)
+    {
+      TIFFSwabArrayOfTriples(data,(size+3-1)/3);
+    }
+#endif
   else if (bits_per_sample == 16)
     {
       TIFFSwabArrayOfShort((uint16*) data,
@@ -1525,27 +1539,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
 
       /*
-        Set extra import options for unsigned samples.
-      */
-      if (sample_format == SAMPLEFORMAT_UINT)
-        {
-          if ((definition_value=AccessDefinition(image_info,"tiff",
-                                                 "bits-per-sample")))
-            {
-              unsigned int
-                sample_bits=atoi(definition_value);
-
-              if ((sample_bits != 0) || (sample_bits <= bits_per_sample))
-                {
-                  import_options.sample_bits=sample_bits;
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "Bits per sample override (sub-sample): %u",
-                                        import_options.sample_bits);
-                }
-            }
-        }
-
-      /*
         Set extra import options for floating point.
       */
       if (sample_format == SAMPLEFORMAT_IEEEFP)
@@ -1567,6 +1560,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                 import_options.double_minvalue,
                                 import_options.double_maxvalue);
         }
+
+      /*
+        For sample sizes matching a CPU native word, use native endian
+        order for import.
+      */
+      if ((16 == bits_per_sample) || (32 == bits_per_sample) || (64 == bits_per_sample))
+        import_options.endian=NativeEndian;
       
       switch (method)
         {
@@ -1643,7 +1643,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         break;
                       }
 #if !defined(WORDS_BIGENDIAN)
-                    if (sample_format != SAMPLEFORMAT_IEEEFP)
+                    if (24 == bits_per_sample)
                       SwabDataToBigEndian(bits_per_sample,scanline,scanline_size);
 #endif
                     /*
@@ -1809,7 +1809,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             break;
                           }
 #if !defined(WORDS_BIGENDIAN)
-                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                        if (24 == bits_per_sample)
                           SwabDataToBigEndian(bits_per_sample,strip,strip_size);
 #endif
                         rows_remaining=rows_per_strip;
@@ -2010,7 +2010,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             break;
                           }
 #if !defined(WORDS_BIGENDIAN)
-                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                        if (24 == bits_per_sample)
                           SwabDataToBigEndian(bits_per_sample,tile,tile_size);
 #endif
                         p=tile;
@@ -3691,6 +3691,13 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
+        For sample sizes matching a CPU native word, use native endian
+        order for import.
+      */
+      if ((16 == bits_per_sample) || (32 == bits_per_sample) || (64 == bits_per_sample))
+        export_options.endian=NativeEndian;
+
+      /*
         Export pixels to TIFF.
       */
       switch (method)
@@ -3786,7 +3793,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       Write scanline.
                     */
 #if !defined(WORDS_BIGENDIAN)
-                    if (sample_format != SAMPLEFORMAT_IEEEFP)
+                    if (24 == bits_per_sample)
                       SwabDataToNativeEndian(bits_per_sample,scanline,scanline_size);
 #endif
                     if (TIFFWriteScanline(tiff, scanline,y,sample) == -1)
@@ -4013,7 +4020,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                           Write tile.
                         */
 #if !defined(WORDS_BIGENDIAN)
-                        if (sample_format != SAMPLEFORMAT_IEEEFP)
+                        if (24 == bits_per_sample)
                           SwabDataToNativeEndian(bits_per_sample,tile,tile_size_max);
 #endif
                         if ((tile_size=TIFFWriteTile(tiff,tile,x,y,0,sample)) == -1)

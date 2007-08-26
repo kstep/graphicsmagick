@@ -313,6 +313,9 @@
 /* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
 #undef HAVE_TIFFSETWARNINGHANDLEREXT
 
+/* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
+#undef HAVE_TIFFSWABARRAYOFTRIPLES
+
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
 

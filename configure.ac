@@ -1894,7 +1894,8 @@ then
 	    have_tiff='yes'
 	    AC_CHECK_HEADERS(tiffconf.h)
             AC_CHECK_FUNCS([TIFFMergeFieldInfo TIFFSetErrorHandlerExt \
-                            TIFFSetTagExtender TIFFSetWarningHandlerExt])
+                            TIFFSetTagExtender TIFFSetWarningHandlerExt \
+                            TIFFSwabArrayOfTriples])
         fi
     else
         AC_MSG_RESULT(no)

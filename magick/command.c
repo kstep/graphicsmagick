@@ -2178,6 +2178,14 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   ThrowCompositeException(OptionError,UnrecognizedEndianType,
                     option);
@@ -2849,7 +2857,7 @@ static void CompositeUsage(void)
       "-dissolve value      dissolve the two images a given percent",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-filter type         use this filter when resizing an image",
       "-font name           render text with this font",
       "-geometry geometry   location of the composite image",
@@ -3563,6 +3571,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   ThrowConvertException(OptionError,UnrecognizedEndianType,
                     option);
@@ -4980,7 +4996,7 @@ static void ConvertUsage(void)
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
       "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -5324,7 +5340,7 @@ static void DisplayUsage(void)
       "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-edge factor         apply a filter to detect edges in the image",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
@@ -6080,6 +6096,14 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   MagickFatalError(OptionFatalError,InvalidEndianType,option);
               }
@@ -8183,7 +8207,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                clone_info->endian=LSBEndian;
+                clone_info->endian=NativeEndian;
                 continue;
               }
             option=argv[++i];
@@ -8192,6 +8216,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               endian=LSBEndian;
             if (LocaleCompare("MSB",option) == 0)
               endian=MSBEndian;
+            if (LocaleCompare("NATIVE",option) == 0)
+              {
+#if defined(WORDS_BIGENDIAN)
+                endian=MSBEndian;
+#else
+                endian=LSBEndian;
+#endif
+              }
             clone_info->endian=endian;
             continue;
           }
@@ -10719,6 +10751,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   ThrowMogrifyException(OptionError,UnrecognizedEndianType,
                     option);
@@ -11980,7 +12020,7 @@ static void MogrifyUsage(void)
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
       "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -12642,6 +12682,14 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   ThrowMontageException(OptionError,UnrecognizedEndianType,
                     option);
@@ -13421,7 +13469,7 @@ static void MontageUsage(void)
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
       "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
@@ -13971,6 +14019,14 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
+                if (LocaleCompare("NATIVE",option) == 0)
+                  {
+#if defined(WORDS_BIGENDIAN)
+                    image_info->endian=MSBEndian;
+#else
+                    image_info->endian=LSBEndian;
+#endif
+                  }
                 if (image_info->endian == UndefinedEndian)
                   MagickFatalError(OptionFatalError,InvalidEndianType,option);
               }
@@ -14452,7 +14508,7 @@ static void ImportUsage(void)
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-frame               include window manager frame",
       "-encoding type       text encoding type",
-      "-endian type         LSB or MSB",
+      "-endian type         LSB, MSB, or Native",
       "-geometry geometry   perferred size or location of the image",
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",

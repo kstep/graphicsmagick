@@ -1,3 +1,16 @@
+2007-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Add support for "native" endian parameter
+	in PerlMagick.
+	* magick/command.c: Utilities now understand "native" as an
+	argument to -endian.
+	* magick/image.h (enum EndianType): Added NativeEndian enum value.
+	* configure.ac: Test libtiff for TIFFSwabArrayOfTriples().
+	* magick/constitute.c (ExportImagePixelArea): Support export in
+	little, big, and native endian.
+	(ImportImagePixelArea): Support import in little, big, and native
+	endian.
+
 2007-08-23  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c (WriteMATLABImage): MAT writer uses

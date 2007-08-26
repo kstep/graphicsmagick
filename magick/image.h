@@ -237,8 +237,9 @@ typedef enum
 typedef enum
 {
   UndefinedEndian,
-  LSBEndian,
-  MSBEndian
+  LSBEndian,            /* "little" endian */
+  MSBEndian,            /* "big" endian */
+  NativeEndian          /* native endian */
 } EndianType;
 
 typedef enum

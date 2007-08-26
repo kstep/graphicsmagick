@@ -153,6 +153,28 @@ static void
   DestroyColorList(NodeInfo *node_info),
   HistogramToFile(const Image *,CubeInfo *,const NodeInfo *,FILE *,ExceptionInfo *);
 
+/*
+  Suppordinate function for use by VerifyColormapIndex macro.
+*/
+MagickExport unsigned int
+MagickConstrainColormapIndex(Image *image, unsigned int index)
+{
+  if (index >= image->colors)
+    {
+      char
+        colormapIndexBuffer[MaxTextExtent];
+      
+      FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
+        (unsigned int) index, image->colors, image->filename);
+      errno=0;
+      index=0U;
+      ThrowException(&image->exception,CorruptImageError,
+        InvalidColormapIndex,colormapIndexBuffer);
+    }
+
+  return index;
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
