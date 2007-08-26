@@ -155,7 +155,8 @@ Return any errors or warnings in this structure.
 <P>
 </P>
 <h2><a name="exportimagepixelarea">ExportImagePixelArea</a></h2>
-<blockquote>ExportImagePixelArea() transfers one or more pixel components from the image pixel cache to a user supplied buffer. Unsigned values are written in network ( big-endian ) byte/bit order, while floating point values are written in the native order. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ExportImagePixelArea method is:</P>
+<blockquote>ExportImagePixelArea() transfers one or more pixel components from the image pixel cache to a user supplied buffer. By default, values are written in network ( big-endian ) byte/bit order. By setting the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be output as little ( LSBEndian ), big ( MSBEndian ), or host native ( NativeEndian ) endian values. This function is quite powerful in that besides common native CPU type sizes, it can support any integer bit depth from 1 to 32 ( e.g. 13 ) as well as 32 and 64-bit float. </blockquote><P>MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail.</P>
+<P>The format of the ExportImagePixelArea method is:</P>
 <blockquote>MagickPassFail ExportImagePixelArea ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, unsigned int quantum_size, unsigned char *destination, const ExportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_status_3a">status:</a></strong><br />
@@ -173,19 +174,19 @@ The image.
 <dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong><br />
 </dt>
 <DD>
-Declare which pixel components to transfer (RGB, RGBA, etc).
+Declare which pixel components to transfer (AlphaQuantum, BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum, GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum, IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum, RedQuantum, YellowQuantum)
 </dd>
 <P></P>
 <dt><strong><a name="item_o_quantum_size_3a">quantum_size:</a></strong><br />
 </dt>
 <DD>
-Bits per quantum sample.
+Bits per quantum sample (range 1-32, and 64).
 </dd>
 <P></P>
 <dt><strong><a name="item_o_destination_3a">destination:</a></strong><br />
 </dt>
 <DD>
-The components are transferred to this buffer.
+The components are transferred to this buffer.  The user is responsible for ensuring that the destination buffer is large enough.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_options_3a">options:</a></strong><br />
@@ -209,7 +210,8 @@ Options structure to initialize.
 <P>
 </P>
 <h2><a name="importimagepixelarea">ImportImagePixelArea</a></h2>
-<blockquote>ImportImagePixelArea() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. Unsigned values are read in network ( big-endian ) byte/bit order, while floating point values are read in the native order. MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail. </blockquote><P>The format of the ImportImagePixelArea method is:</P>
+<blockquote>ImportImagePixelArea() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. By default, values are read in network ( big-endian ) byte/bit order. By setting the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be output as little ( LSBEndian ), big ( MSBEndian ), or host native ( NativeEndian ) endian values. This function is quite powerful in that besides common native CPU type sizes, it can support any integer bit depth from 1 to 32 ( e.g. 13 ) as well as 32 and 64-bit float. </blockquote><P>MagickPass is returned if the pixels are successfully transferred, otherwise MagickFail.</P>
+<P>The format of the ImportImagePixelArea method is:</P>
 <blockquote>MagickPassFail ImportImagePixelArea ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned int quantum_size, const unsigned char *source, const ImportPixelAreaOptions *options ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>status:</strong><br />
@@ -233,7 +235,7 @@ Declare which pixel components to transfer (AlphaQuantum, BlackQuantum, BlueQuan
 <dt><strong>quantum_size:</strong><br />
 </dt>
 <DD>
-Bits per quantum sample (range 1-31)
+Bits per quantum sample (range 1-32, and 64).
 </dd>
 <P></P>
 <dt><strong><a name="item_o_source_3a">source:</a></strong><br />

@@ -26,7 +26,6 @@
 		<li><a href="#destroyblobinfo">DestroyBlobInfo</a></li>
 		<li><a href="#detachblob">DetachBlob</a></li>
 		<li><a href="#filetoblob">FileToBlob</a></li>
-		<li><a href="#getblobclosable">GetBlobClosable</a></li>
 		<li><a href="#getblobfilehandle">GetBlobFileHandle</a></li>
 		<li><a href="#getblobinfo">GetBlobInfo</a></li>
 		<li><a href="#getblobstatus">GetBlobStatus</a></li>
@@ -63,7 +62,6 @@
 <P>void  <strong>DestroyBlobInfo</strong>( BlobInfo *blob );</P>
 <P>void  <strong>DetachBlob</strong>( BlobInfo *blob_info );</P>
 <P>void * <strong>FileToBlob</strong>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>GetBlobClosable</strong>( const Image *image );</P>
 <P>FILE * <strong>GetBlobFileHandle</strong>( const Image *image );</P>
 <P>void  <strong>GetBlobInfo</strong>( BlobInfo *blob_info );</P>
 <P>int  <strong>GetBlobStatus</strong>( const Image *image );</P>
@@ -269,18 +267,6 @@ Return any errors or warnings in this structure.
 <P></P></dl>
 <P>
 </P>
-<h2><a name="getblobclosable">GetBlobClosable</a></h2>
-<blockquote>GetBlobClosable() returns True if the blob may be closed, or False if it is exempt from being closed. </blockquote><P>The format of the GetBlobClosable method is:</P>
-<blockquote>unsigned int GetBlobClosable ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-Image to query
-</dd>
-<P></P></dl>
-<P>
-</P>
 <h2><a name="getblobfilehandle">GetBlobFileHandle</a></h2>
 <blockquote>GetBlobFileHandle() returns the stdio file handle associated with the image blob. If there is no associated file handle, then a null pointer is returned. </blockquote><P>The format of the GetBlobFileHandle method is:</P>
 <blockquote>FILE *GetBlobFileHandle ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
@@ -318,7 +304,7 @@ The image.
 <P>
 </P>
 <h2><a name="getblobstreamdata">GetBlobStreamData</a></h2>
-<blockquote>GetBlobStreamData() returns the stream data for the image. The data is only available if the data is stored on the heap, or is memory mapped. otherwise a NULL value is returned. </blockquote><P>The format of the GetBlobStreamData method is:</P>
+<blockquote>GetBlobStreamData() returns the stream data for the image. The data is only available if the data is stored on the heap, or is memory mapped. Otherwise a NULL value is returned. </blockquote><P>The format of the GetBlobStreamData method is:</P>
 <blockquote>unsigned char *GetBlobStreamData ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
@@ -474,7 +460,7 @@ Return any errors or warnings in this structure.
 <P>
 </P>
 <h2><a name="referenceblob">ReferenceBlob</a></h2>
-<blockquote>ReferenceBlob() increments the reference count associated with the pixel blob returning a pointer to the blob. </blockquote><P>The format of the ReferenceBlob method is:</P>
+<blockquote>ReferenceBlob() increments the reference count associated with the pixel blob, returning a pointer to the blob. </blockquote><P>The format of the ReferenceBlob method is:</P>
 <blockquote><A HREF="types.html#BlobInfo">BlobInfo</A> ReferenceBlob ( <A HREF="types.html#BlobInfo">BlobInfo</A> *blob_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>blob_info:</strong><br />

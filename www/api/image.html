@@ -37,6 +37,7 @@
 		<li><a href="#getimageclipmask">GetImageClipMask</a></li>
 		<li><a href="#getimagedepth">GetImageDepth</a></li>
 		<li><a href="#getimageexception">GetImageException</a></li>
+		<li><a href="#getimagecharacteristics">GetImageCharacteristics</a></li>
 		<li><a href="#getimagegeometry">GetImageGeometry</a></li>
 		<li><a href="#getimageinfo">GetImageInfo</a></li>
 		<li><a href="#getimagestatistics">GetImageStatistics</a></li>
@@ -85,6 +86,7 @@
 <P>void  <strong>DestroyImage</strong>( Image *image );</P>
 <P>void  <strong>DestroyImageInfo</strong>( ImageInfo *image_info );</P>
 <P>unsigned int  <strong>DisplayImages</strong>( const ImageInfo *image_info, Image *image );</P>
+<P>MagickPassFail  <strong>GetImageCharacteristics</strong>( const Image *image, ImageCharacteristics *characteristics, MagickBool optimize, ExceptionInfo *exception );</P>
 <P>Image * <strong>GetImageClipMask</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned long  <strong>GetImageDepth</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <strong>GetImageException</strong>( Image *image, ExceptionInfo *exception );</P>
@@ -490,6 +492,37 @@ Specifies a pointer to a list of one or more images.
 </dt>
 <DD>
 return the highest severity exception.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getimagecharacteristics">GetImageCharacteristics</a></h2>
+<P>GetImageCharacteristics obtains the basic characteristics of the image and stores the characterisistics in the user provided ImageCharacteristics structure.  If optimize is set to MagickTrue, then exhaustive testing of the image pixels is performed (as required). MagickPass is returned if this method executes without error.</P>
+<P>The format of the GetImageCharacteristics method is:</P>
+<blockquote>MagickPassFail GetImageCharacteristics ( const <A HREF="types.html#Image">Image</A> *image, ImageCharacteristics *characteristics, MagickBool optimize, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_characteristics_3a">characteristics:</a></strong><br />
+</dt>
+<DD>
+An ImageCharacteristics structure to update.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_optimize_3a">optimize:</a></strong><br />
+</dt>
+<DD>
+Inspect image pixels (if required)
+</dd>
+<P></P>
+<dt><strong>exception:</strong><br />
+</dt>
+<DD>
+Any errors are reported here.
 </dd>
 <P></P></dl>
 <P>
