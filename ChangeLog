@@ -1,3 +1,9 @@
+2007-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c: Re-wrote Export/Import Float/Double macros
+	because they did not actually work right, and to eliminate the
+	performance penalty for native order.
+
 2007-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Add support for "native" endian parameter

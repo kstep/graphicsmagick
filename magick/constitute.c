@@ -89,6 +89,13 @@ static Image
 /*
   Macros
 */
+
+#if defined(WORDS_BIGENDIAN)
+#  define MyEndianType MSBEndian
+#else
+#  define MyEndianType LSBEndian
+#endif
+
 #define ExportCharQuantum(q,quantum) \
 { \
   *q++=(quantum); \
@@ -125,66 +132,44 @@ static Image
       *q++=(unsigned char) (value_ >> 24); \
     } \
 }
-#if 0
-#define ExportFloatQuantum(q,quantum) \
-{ \
-  *((float *) q) = ((float) quantum); \
-  q += sizeof(float); \
-}
-#endif
 #define ExportFloatQuantum(endian,q,quantum) \
 { \
-  union \
-  { \
-    float f; \
-    unsigned char c[4]; \
-  } fu_; \
-  \
-  fu_.f = (float) (quantum); \
-  if (LSBEndian != endian) \
+  if (MyEndianType == endian) \
     { \
-      *q++=fu_.c[0]; \
-      *q++=fu_.c[1]; \
-      *q++=fu_.c[2]; \
-      *q++=fu_.c[3]; \
+      *((float *) q) = (float) (quantum); \
+      q += sizeof(float); \
     } \
-  else \
+   else \
     { \
+      union \
+      { \
+        float f; \
+        unsigned char c[4]; \
+      } fu_; \
+      \
+      fu_.f=(float) (quantum); \
       *q++=fu_.c[3]; \
       *q++=fu_.c[2]; \
       *q++=fu_.c[1]; \
       *q++=fu_.c[0]; \
     } \
 }
-#if 0
-#define ExportDoubleQuantum(q,quantum) \
-{ \
-  *((double *) q) = ((double) quantum); \
-  q += sizeof(double); \
-}
-#endif
 #define ExportDoubleQuantum(endian,q,quantum) \
 { \
-  union \
-  { \
-    double d; \
-    unsigned char c[8]; \
-  } du_; \
-  \
-  du_.d = (double) (quantum); \
-  if (LSBEndian != endian) \
+  if (MyEndianType == endian) \
     { \
-      *q++=du_.c[0]; \
-      *q++=du_.c[1]; \
-      *q++=du_.c[2]; \
-      *q++=du_.c[3]; \
-      *q++=du_.c[4]; \
-      *q++=du_.c[5]; \
-      *q++=du_.c[6]; \
-      *q++=du_.c[7]; \
+      *((double *) q) = ((double) quantum); \
+      q += sizeof(double); \
     } \
   else \
     { \
+      union \
+      { \
+        double d; \
+        unsigned char c[8]; \
+      } du_; \
+      \
+      du_.d = (double) (quantum); \
       *q++=du_.c[7]; \
       *q++=du_.c[6]; \
       *q++=du_.c[5]; \
@@ -195,20 +180,6 @@ static Image
       *q++=du_.c[0]; \
     } \
 }
-#if 0
-#define ImportModulo8Quantum(quantum,quantum_size,p) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  quantum=0; \
-  do \
-    { \
-      shift -= 8U; \
-      quantum |= (*p++ << shift); \
-    } while( shift > 0U); \
-}
-#endif
 #define ImportModulo8Quantum(quantum,quantum_size,p) \
 { \
   register unsigned int \
@@ -268,65 +239,43 @@ static Image
       quantum|=(*p++ << 24); \
     } \
 }
-#if 0
-#define ImportFloatQuantum(value,p) \
-{ \
-  value=*((float *) p); \
-  p += sizeof(float); \
-}
-#endif
 #define ImportFloatQuantum(endian,value,p) \
 { \
-  union \
-  { \
-    float f; \
-    unsigned char c[4]; \
-  } fu_; \
-  \
-  if (LSBEndian != endian) \
+  if (MyEndianType == endian) \
     { \
-      fu_.c[0]=*p++; \
-      fu_.c[1]=*p++; \
-      fu_.c[2]=*p++; \
-      fu_.c[3]=*p++; \
+      value=*((float *) p); \
+      p += sizeof(float); \
     } \
   else \
     { \
+      union \
+      { \
+        float f; \
+        unsigned char c[4]; \
+      } fu_; \
+      \
       fu_.c[3]=*p++; \
       fu_.c[2]=*p++; \
       fu_.c[1]=*p++; \
       fu_.c[0]=*p++; \
+      value=fu_.f; \
     } \
-  value=fu_.f; \
 }
-#if 0
-#define ImportDoubleQuantum(value,p) \
-{ \
-  value=*((double *) p); \
-  p += sizeof(double); \
-}
-#endif
 #define ImportDoubleQuantum(endian,value,p) \
-{  \
-  union \
-  { \
-    double d; \
-    unsigned char c[8]; \
-  } du_; \
-  \
-  if (LSBEndian != endian) \
+{ \
+  if (MyEndianType == endian) \
     { \
-      du_.c[0]=*p++; \
-      du_.c[1]=*p++; \
-      du_.c[2]=*p++; \
-      du_.c[3]=*p++; \
-      du_.c[4]=*p++; \
-      du_.c[5]=*p++; \
-      du_.c[6]=*p++; \
-      du_.c[7]=*p++; \
+      value=*((double *) p); \
+      p += sizeof(double); \
     } \
   else \
     { \
+      union \
+      { \
+        double d; \
+        unsigned char c[8]; \
+      } du_; \
+      \
       du_.c[7]=*p++; \
       du_.c[6]=*p++; \
       du_.c[5]=*p++; \
@@ -335,8 +284,8 @@ static Image
       du_.c[2]=*p++; \
       du_.c[1]=*p++; \
       du_.c[0]=*p++; \
+      value=du_.d; \
     } \
-  value=du_.d; \
 }
 
 /*
