@@ -1,3 +1,7 @@
+2007-08-26  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: MAT reader now extensively uses ImportImagePixelArea.
+
 2007-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c: Re-wrote Export/Import Float/Double macros
