@@ -28,8 +28,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %Currently supported formats:
-%  2D matrices:       X*Y   byte, word, double, complex
-%  3D matrices: only X*Y*3  byte, word
+%  2D matrices:      X*Y    byte, word, dword, qword, single, double
+%  3D matrices: only X*Y*3  byte, word, dword, qword, single, double
+%  complex:          X*Y                              single, double
 */
 
 /*
@@ -137,121 +138,7 @@ typedef enum
 #define FLAG_LOGICAL 0x2
 
 
-/* Update one word (uint16) row inside image. */
-static void InsertWordRow(magick_uint16_t *p, int y, Image * image, int channel)
-{
-  int x;
-  register PixelPacket *q;
-
-  q = SetImagePixels(image, 0, y, image->columns, 1);
-  if (q == (PixelPacket *) NULL) return;
-
-  switch(channel)
-    {
-    case 0: 
-      for (x = 0; x < (long) image->columns; x++)
-        {
-        q->red =
-          q->green =
-          q->blue = ScaleShortToQuantum(*p);
-        q->opacity = OpaqueOpacity;
-        p++;
-        q++;
-        }
-       break;
-    case 1:
-       for (x = 0; x < (long) image->columns; x++)        
-         { 
-         q->blue = ScaleShortToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    case 2:
-       for (x = 0; x < (long) image->columns; x++)        
-         {
-         q->green = ScaleShortToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    case 3:
-       for (x = 0; x < (long) image->columns; x++)        
-	 {
-         q->red = ScaleShortToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    }   
-         
-  if (!SyncImagePixels(image))
-    return;
-        /*          if (image->previous == (Image *) NULL)
-           if (QuantumTick(y,image->rows))
-           MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
-  return; 
-}
-
-
-/* Update one dword (uint32) row inside image. */
-static void InsertDwordRow(magick_uint32_t *p, int y, Image * image, int channel)
-{
-  int x;
-  register PixelPacket *q;
-
-  q = SetImagePixels(image, 0, y, image->columns, 1);
-  if (q == (PixelPacket *) NULL) return;
-
-  switch(channel)
-    {
-    case 0: 
-      for (x = 0; x < (long) image->columns; x++)
-        {
-        q->red =
-          q->green =
-          q->blue = ScaleLongToQuantum(*p);
-        q->opacity = OpaqueOpacity;
-        p++;
-        q++;
-        }
-       break;
-    case 1:
-       for (x = 0; x < (long) image->columns; x++)        
-         { 
-         q->blue = ScaleLongToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    case 2:
-       for (x = 0; x < (long) image->columns; x++)        
-         {
-         q->green = ScaleLongToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    case 3:
-       for (x = 0; x < (long) image->columns; x++)        
-	 {
-         q->red = ScaleLongToQuantum(*p);
-         p++;
-         q++;
-         }
-       break;
-    }   
-         
-  if (!SyncImagePixels(image))
-    return;
-        /*          if (image->previous == (Image *) NULL)
-           if (QuantumTick(y,image->rows))
-           MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
-  return; 
-}
-
-
-static void InsertComplexFloatRow(double *p, int y, Image * image, double MinVal,
+static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVal,
                                   double MaxVal)
 {
   double f;
@@ -305,53 +192,6 @@ static void InsertComplexFloatRow(double *p, int y, Image * image, double MinVal
 
 
 /************** READERS ******************/
-
-/* This function reads one block of unsigned shortS*/
-static void ReadBlobWordLSB(Image * image, size_t len, magick_uint16_t *data)
-{
-  while (len >= 2)
-  {
-    *data++ = ReadBlobLSBShort(image);
-    len -= 2;
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-static void ReadBlobWordMSB(Image * image, size_t len, magick_uint16_t *data)
-{
-  while (len >= 2)
-  {
-    *data++ = ReadBlobMSBShort(image);
-    len -= 2;
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-/* This function reads one block of unsigned shortS*/
-static void ReadBlobDwordLSB(Image * image, size_t len, magick_uint32_t *data)
-{
-  while (len >= 4)
-  {
-    *data++ = ReadBlobLSBLong(image);
-    len -= 4;
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-static void ReadBlobDwordMSB(Image * image, size_t len, magick_uint32_t *data)
-{
-  while (len >= 4)
-  {
-    *data++ = ReadBlobMSBLong(image);
-    len -= 4;
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
 
 MagickExport float ReadBlobLSBfloat(Image * image)
 {
@@ -494,6 +334,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   float *fltrow;
   unsigned long z, Unknown5;
   int logging;
+  int sample_size;
 
   unsigned long (*ReadBlobXXXLong)(Image *image);
   unsigned short (*ReadBlobXXXShort)(Image *image);
@@ -522,6 +363,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.Version = ReadBlobLSBShort(image);
   (void) ReadBlob(image, 2, &MATLAB_HDR.EndianIndicator);
 
+  ImportPixelAreaOptionsInit(&import_options);
+
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"  Endian %c%c",
         MATLAB_HDR.EndianIndicator[0],MATLAB_HDR.EndianIndicator[1]);
   if (!strncmp(MATLAB_HDR.EndianIndicator, "IM", 2))
@@ -530,6 +373,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     ReadBlobXXXShort = ReadBlobLSBShort;
     ReadBlobDoublesXXX = ReadBlobDoublesLSB;
     ReadBlobFloatsXXX = ReadBlobFloatsLSB;
+    import_options.endian = LSBEndian;
   } 
   else if (!strncmp(MATLAB_HDR.EndianIndicator, "MI", 2))
   {
@@ -537,6 +381,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     ReadBlobXXXShort = ReadBlobMSBShort;
     ReadBlobDoublesXXX = ReadBlobDoublesMSB;
     ReadBlobFloatsXXX = ReadBlobFloatsMSB;
+    import_options.endian = MSBEndian;
   }
   else 
     goto MATLAB_KO;    /* unsupported endian */
@@ -584,8 +429,9 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       MATLAB_HDR.StructureClass != mxDOUBLE_CLASS &&	     /* double + complex double */
       MATLAB_HDR.StructureClass != mxUINT8_CLASS &&          /* uint8 + uint8 3D */
       MATLAB_HDR.StructureClass != mxUINT16_CLASS &&	     /* uint16 + uint16 3D */
-      MATLAB_HDR.StructureClass != mxUINT32_CLASS)	     /* uint32 + uint32 3D */
-    goto MATLAB_KO;
+      MATLAB_HDR.StructureClass != mxUINT32_CLASS &&	     /* uint32 + uint32 3D */
+      MATLAB_HDR.StructureClass != mxUINT64_CLASS)	     /* uint64 + uint64 3D */
+    ThrowReaderException(CoderError,UnsupportedCellTypeInTheMatrix,image);
 
   switch (MATLAB_HDR.NameFlag)
   {
@@ -617,25 +463,52 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   switch (CellType)
   {
     case miUINT8:
+      sample_size = 8;
       image->depth = Min(QuantumDepth,8);         /* Byte type cell */
+      import_options.sample_type = UnsignedQuantumSampleType;
       ldblk = (long) MATLAB_HDR.SizeX;      
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
         goto MATLAB_KO;
       break;
     case miUINT16:
+      sample_size = 16;
       image->depth = Min(QuantumDepth,16);        /* Word type cell */
-      ldblk = (long) (2 * MATLAB_HDR.SizeX);      
+      ldblk = (long) (2 * MATLAB_HDR.SizeX);
+      import_options.sample_type = UnsignedQuantumSampleType;      
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
         goto MATLAB_KO;
       break;
     case miUINT32:
+      sample_size = 32;
       image->depth = Min(QuantumDepth,32);        /* Dword type cell */
       ldblk = (long) (4 * MATLAB_HDR.SizeX);      
+      import_options.sample_type = UnsignedQuantumSampleType;
+      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
+        goto MATLAB_KO;
+      break;
+    case miUINT64:
+      sample_size = 64;
+      image->depth = Min(QuantumDepth,32);        /* Qword type cell */
+      ldblk = (long) (8 * MATLAB_HDR.SizeX);      
+      import_options.sample_type = UnsignedQuantumSampleType;
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
         goto MATLAB_KO;
       break;   
-    case miDOUBLE:
+   case miSINGLE:
+      sample_size = 32;
       image->depth = Min(QuantumDepth,32);        /* double type cell */
+      import_options.sample_type = FloatQuantumSampleType;
+      //if (sizeof(float) != 4)
+      //  ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
+      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
+      {                         /* complex double type cell */        
+      }
+      ldblk = (long) (4 * MATLAB_HDR.SizeX);
+      break;
+    case miDOUBLE:
+      sample_size = 64; 
+      image->depth = Min(QuantumDepth,32);        /* double type cell */
+      import_options.sample_type = FloatQuantumSampleType;
       if (sizeof(double) != 8)
         ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
@@ -681,9 +554,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       image->columns = image->rows;
       image->rows = temp;
       goto done_reading;
-    }
-
-  ImportPixelAreaOptionsInit(&import_options);
+    }  
 
   /* ----- Load raster data ----- */
   BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /* Ldblk was set in the check phase */
@@ -735,110 +606,32 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     (void) SeekBlob(image, filepos, SEEK_SET);
 
     import_options.double_minvalue = MinVal;
-    import_options.double_maxvalue = MaxVal;
-    import_options.sample_type = FloatQuantumSampleType;
+    import_options.double_maxvalue = MaxVal;    
   }
 
   /* Main loop for reading all scanlines */
   if(z==1)
-  {  
+  {	        /* read grey scanlines */
     for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
     {
-      //if(CellType==miUINT8) /*THIS CONDITION WILL BE REMOVED AFTER ALL TYPES WILL BE SUPPORTED*/
-        {
-        q=SetImagePixels(image,0,i,image->columns,1);
-        if (q == (PixelPacket *) NULL) break;      
-        }
-
-      switch (CellType)
-      {     
-        case miUINT8:	/* Byte order */
-          (void)ReadBlob(image, ldblk, (char *)BImgBuff);
-          (void)ImportImagePixelArea(image,GrayQuantum,8,BImgBuff,0);
-          break;
-        case miUINT16:	/* Word order */
-          if (MATLAB_HDR.EndianIndicator[0]=='I')
-            ReadBlobWordLSB(image, ldblk, (magick_uint16_t *)BImgBuff);
-          else
-            ReadBlobWordMSB(image, ldblk, (magick_uint16_t *)BImgBuff);
-          //(void)ImportImagePixelArea(image,GrayQuantum,16,BImgBuff,0);
-          InsertWordRow((magick_uint16_t *)BImgBuff, i, image,0);
-          break;
-        case miUINT32:	/* Dword order */
-          if (MATLAB_HDR.EndianIndicator[0]=='I')
-            ReadBlobDwordLSB(image, ldblk, (magick_uint32_t *)BImgBuff);
-          else
-            ReadBlobDwordMSB(image, ldblk, (magick_uint32_t *)BImgBuff);
-          InsertDwordRow((magick_uint32_t *)BImgBuff, i, image,0);
-          //(void)ImportImagePixelArea(image,GrayQuantum,32,BImgBuff,0);
-          break;
-        case miSINGLE:
-          ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
-          //InsertDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal, 0);
-          (void)ImportImagePixelArea(image,GrayQuantum,32,BImgBuff,&import_options);
-          break;      
-        case miDOUBLE:
-          ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
-          //InsertDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal, 0);
-          (void)ImportImagePixelArea(image,GrayQuantum,64,BImgBuff,&import_options);
-          break;      
-      }
-
-      //if(CellType==miUINT8) /*THIS CONDITION WILL BE REMOVED AFTER ALL TYPES WILL BE SUPPORTED*/
-      {
-        if (!SyncImagePixels(image)) break;
-      }
+      q=SetImagePixels(image,0,i,image->columns,1);
+      if (q == (PixelPacket *)NULL) break;
+      (void)ReadBlob(image, ldblk, (char *)BImgBuff);	  
+      (void)ImportImagePixelArea(image,GrayQuantum,sample_size,BImgBuff,&import_options);
+      if (!SyncImagePixels(image)) break;     
     }
   }
   else
-   while(z>=1)
+   while(z>=1)  /* read color scanlines */
    {
    for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
     {
-      switch (CellType)
-      {
-        case miUINT8:	/* Byte order */
-          q=SetImagePixels(image,0,i,image->columns,1);
-          if (q == (PixelPacket *) NULL) break;
-          (void) ReadBlob(image, ldblk, (char *) BImgBuff);
-          (void)ImportImagePixelArea(image,z2qtype[z],8,BImgBuff,0);
-          if (!SyncImagePixels(image)) break;
-          break;
-        case miUINT16: 	/* Word order */          
-          if (MATLAB_HDR.EndianIndicator[0]=='I')
-            ReadBlobWordLSB(image, ldblk, (magick_uint16_t *)BImgBuff);
-          else
-            ReadBlobWordMSB(image, ldblk, (magick_uint16_t *)BImgBuff);
-          InsertWordRow((magick_uint16_t *)BImgBuff, i, image, z);
-          break;
-        case miUINT32: 	/* Dword order */
-          if (MATLAB_HDR.EndianIndicator[0]=='I')
-            ReadBlobDwordLSB(image, ldblk, (magick_uint32_t *)BImgBuff);
-          else
-            ReadBlobDwordMSB(image, ldblk, (magick_uint32_t *)BImgBuff);
-          InsertDwordRow((magick_uint32_t *)BImgBuff, i, image, z);
-          break;
-       case miSINGLE:
-          q=SetImagePixels(image,0,i,image->columns,1);
-          if (q == (PixelPacket *) NULL) break;
-          ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
-          //InsertDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal, z);
-          (void)ImportImagePixelArea(image,z2qtype[z],32,BImgBuff,&import_options);
-          if (!SyncImagePixels(image)) break;
-          break;
-        case miDOUBLE:
-          q=SetImagePixels(image,0,i,image->columns,1);
-          if (q == (PixelPacket *) NULL) break;
-          ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
-          //InsertDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal, z);
-          (void)ImportImagePixelArea(image,z2qtype[z],64,BImgBuff,&import_options);
-          if (!SyncImagePixels(image)) break;
-          break;
-        default:
-          goto MATLAB_KO;
-      }
+      q=SetImagePixels(image,0,i,image->columns,1);
+      if (q == (PixelPacket *)NULL) break;
+      (void) ReadBlob(image, ldblk, (char *) BImgBuff);      
+      (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options);
+      if (!SyncImagePixels(image)) break;     
     }
-
    z--;
    } 
 
@@ -870,8 +663,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {
-        ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);        
-        InsertComplexFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
+        ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
+        InsertComplexDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal);
       }
     }
   }
