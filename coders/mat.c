@@ -243,7 +243,7 @@ static void ReadBlobFloatsLSB(Image * image, size_t len, float *data)
   while (len >= 4)
   {
     *data++ = ReadBlobLSBfloat(image);
-    len -= sizeof(double);
+    len -= sizeof(float);
   }
   if (len > 0)
     (void) SeekBlob(image, len, SEEK_CUR);
@@ -254,7 +254,7 @@ static void ReadBlobFloatsMSB(Image * image, size_t len, float *data)
   while (len >= 4)
   {
     *data++ = ReadBlobMSBfloat(image);
-    len -= sizeof(double);
+    len -= sizeof(float);
   }
   if (len > 0)
     (void) SeekBlob(image, len, SEEK_CUR);
