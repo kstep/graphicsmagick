@@ -96,6 +96,19 @@ static Image
 #  define MyEndianType LSBEndian
 #endif
 
+#if 0
+#define ExportModulo8Quantum(q,quantum_size,quantum) \
+{ \
+  register unsigned int \
+    shift=quantum_size; \
+\
+  do \
+    { \
+      shift -= 8U; \
+      *q++=(unsigned char) (((unsigned int) quantum) >> shift); \
+    } while( shift > 0U); \
+}
+#endif
 #define ExportCharQuantum(q,quantum) \
 { \
   *q++=(quantum); \
@@ -222,6 +235,10 @@ static Image
       quantum|=(*p++ << 8); \
     } \
 }
+/*
+  This algorithm has been compared with several others and did best
+  overall on SPARC, PowerPC, and Intel Xeon.
+*/
 #define ImportLongQuantum(endian,quantum,p) \
 { \
   if (LSBEndian != endian) \

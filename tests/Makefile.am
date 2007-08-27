@@ -336,6 +336,10 @@ TESTS_TESTS = \
 	tests/rwblob_JPEG_gray.sh \
 	tests/rwblob_JPEG_pallette.sh \
 	tests/rwblob_JPEG_truecolor.sh \
+	tests/rwblob_MAT_bilevel.sh \
+	tests/rwblob_MAT_gray.sh \
+	tests/rwblob_MAT_pallette.sh \
+	tests/rwblob_MAT_truecolor.sh \
 	tests/rwblob_MIFF_bilevel.sh \
 	tests/rwblob_MIFF_gray.sh \
 	tests/rwblob_MIFF_pallette.sh \
@@ -596,6 +600,13 @@ TESTS_TESTS = \
 	tests/rwfile_JPEG_truecolor12.sh \
 	tests/rwfile_JPEG_truecolor16.sh \
 	tests/rwfile_JPEG_truecolor.sh \
+	tests/rwfile_MAT_bilevel.sh \
+	tests/rwfile_MAT_gray.sh \
+	tests/rwfile_MAT_pallette.sh \
+	tests/rwfile_MAT_truecolor10.sh \
+	tests/rwfile_MAT_truecolor12.sh \
+	tests/rwfile_MAT_truecolor16.sh \
+	tests/rwfile_MAT_truecolor.sh \
 	tests/rwfile_MIFF_bilevel_bzip.sh \
 	tests/rwfile_MIFF_bilevel_none.sh \
 	tests/rwfile_MIFF_bilevel_rle.sh \
@@ -866,6 +877,7 @@ CHECK_BLOB_FORMATS = \
 	JBIG \
 	JPEG \
 	JP2 \
+	MAT \
 	MIFF \
 	MNG \
 	MTV \
@@ -916,6 +928,7 @@ CHECK_FILE_FORMATS = \
 	JBIG \
 	JPEG \
 	JP2 \
+	MAT \
 	MIFF \
 	MNG \
 	MTV \

@@ -445,6 +445,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   }
   rotate_image->page=page;
   rotate_image->is_grayscale=image->is_grayscale;
+  rotate_image->is_monochrome=image->is_monochrome;
   return(rotate_image);
 }
 

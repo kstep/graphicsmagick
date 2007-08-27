@@ -1,9 +1,14 @@
+2007-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/read.t: Added read test for LSB 'float' MAT.
+
 2007-08-26  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: MAT reader now extensively uses ImportImagePixelArea.
 
 2007-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/Makefile.am: Add rwblob and rwfile tests for MAT format.
 	* magick/constitute.c: Re-wrote Export/Import Float/Double macros
 	because they did not actually work right, and to eliminate the
 	performance penalty for native order.
