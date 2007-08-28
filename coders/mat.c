@@ -617,7 +617,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       q=SetImagePixels(image,0,i,image->columns,1);
       if (q == (PixelPacket *)NULL) break;
       (void)ReadBlob(image, ldblk, (char *)BImgBuff);	  
-      (void)ImportImagePixelArea(image,GrayQuantum,sample_size,BImgBuff,&import_options);
+      (void)ImportImagePixelArea(image,GrayQuantum,sample_size,BImgBuff,&import_options,0);
       if (!SyncImagePixels(image)) break;     
     }
   }
@@ -629,7 +629,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       q=SetImagePixels(image,0,i,image->columns,1);
       if (q == (PixelPacket *)NULL) break;
       (void) ReadBlob(image, ldblk, (char *) BImgBuff);      
-      (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options);
+      (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
       if (!SyncImagePixels(image)) break;     
     }
    z--;
@@ -803,19 +803,19 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   for (y=0; y<(long)image->columns; y++)
   {
     q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-   (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0);
+   (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0,0);
    (void) WriteBlob(image,image->rows,pixels);
   }
   for (y=0; y<(long)image->columns; y++)
   {
     q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-    (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0);
+    (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0,0);
     (void) WriteBlob(image,image->rows,pixels);
   }
   for (y=0; y<(long)image->columns; y++)
   {
     q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-    (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0);
+    (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0,0);
     (void) WriteBlob(image,image->rows,pixels);
   }
 

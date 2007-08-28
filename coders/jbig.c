@@ -37,6 +37,7 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/constitute.h"
 #include "magick/pixel_cache.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
@@ -92,21 +93,12 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     status;
 
-  long
+  unsigned long
     length,
     y;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
 
   register PixelPacket
     *q;
@@ -121,11 +113,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     jbig_info;
 
   unsigned char
-    bit,
     *buffer;
-
-  unsigned int
-    byte;
 
   /*
     Open image file.
@@ -146,9 +134,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     (unsigned long) image->rows);
   image->columns= jbg_dec_getwidth(&jbig_info);
   image->rows= jbg_dec_getheight(&jbig_info);
-  image->depth=8;
-  image->storage_class=PseudoClass;
-  image->colors=2;
+  image->depth=1;
   /*
     Read JBIG file.
   */
@@ -175,53 +161,58 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   image->columns=jbg_dec_getwidth(&jbig_info);
   image->rows=jbg_dec_getheight(&jbig_info);
-  if (!AllocateImageColormap(image,2))
+  if ((image_info->type != GrayscaleType) &&
+      (image_info->type != TrueColorType))
     {
-      MagickFreeMemory(buffer);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+      if (!AllocateImageColormap(image,2))
+        {
+          MagickFreeMemory(buffer);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+            }
+      image->colormap[0].red=0;
+      image->colormap[0].green=0;
+      image->colormap[0].blue=0;
+      image->colormap[1].red=MaxRGB;
+      image->colormap[1].green=MaxRGB;
+      image->colormap[1].blue=MaxRGB;
     }
-  image->colormap[0].red=0;
-  image->colormap[0].green=0;
-  image->colormap[0].blue=0;
-  image->colormap[1].red=MaxRGB;
-  image->colormap[1].green=MaxRGB;
-  image->colormap[1].blue=MaxRGB;
   image->x_resolution=300;
   image->y_resolution=300;
+  image->is_grayscale=MagickTrue;
+  image->is_monochrome=MagickTrue;
+  image->colorspace=GRAYColorspace;
   if (image_info->ping)
     {
       CloseBlob(image);
       return(image);
     }
   /*
-    Convert X bitmap image to pixel packets.
+    Convert bitmap image to pixel packets.
   */
+  {
+    ImportPixelAreaOptions
+      import_options;
+    
+    ImportPixelAreaInfo
+      import_info;
+
+  ImportPixelAreaOptionsInit(&import_options);
+  import_options.grayscale_miniswhite=MagickTrue;
   p=jbg_dec_getimage(&jbig_info,0);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
-    bit=0;
-    byte=0;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (bit == 0)
-        byte=(*p++);
-      index=(byte & 0x80) ? 0 : 1;
-      bit++;
-      byte<<=1;
-      if (bit == 8)
-        bit=0;
-      indexes[x]=index;
-      *q++=image->colormap[index];
-    }
+    if (ImportImagePixelArea(image,GrayQuantum,1,p,&import_options,&import_info) == MagickFail)
+      break;
+    p+=import_info.bytes_imported;
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
+  }
   }
   /*
     Free scale resource.
@@ -229,6 +220,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   jbg_dec_free(&jbig_info);
   MagickFreeMemory(buffer);
   CloseBlob(image);
+  image->is_grayscale=MagickTrue;
+  image->is_monochrome=MagickTrue;
   return(image);
 }
 #endif
@@ -374,17 +367,11 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   double
     jbig_lib_version;
 
-  long
+  unsigned long
     y;
 
   register const PixelPacket
     *p;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
 
   register unsigned char
     *q;
@@ -393,10 +380,10 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     jbig_info;
 
   unsigned char
-    bit,
-    byte,
-    *pixels,
-    polarity;
+    *pixels;
+
+  size_t
+    bytes_per_row;
 
   unsigned int
     status;
@@ -420,48 +407,44 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Allocate pixel data.
+      Ensure that image is in an RGB space.
     */
     (void) TransformColorspace(image,RGBColorspace);
-    number_packets=((image->columns+7) >> 3)*image->rows;
+    /*
+      Allocate pixel data.
+    */
+    bytes_per_row=((image->columns+7) >> 3);
+    number_packets=bytes_per_row*image->rows;
     pixels=MagickAllocateMemory(unsigned char *,number_packets);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert pixels to a bitmap.
     */
-    (void) SetImageType(image,BilevelType);
-    polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
-    if (image->colors == 2)
-      polarity=PixelIntensityToQuantum(&image->colormap[0]) >
-        PixelIntensityToQuantum(&image->colormap[1]);
-    q=pixels;
-    for (y=0; y < (long) image->rows; y++)
     {
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      bit=0;
-      byte=0;
-      for (x=0; x < (long) image->columns; x++)
-      {
-        byte<<=1;
-        if (indexes[x] == polarity)
-          byte|=0x01;
-        bit++;
-        if (bit == 8)
-          {
-            *q++=byte;
-            bit=0;
-            byte=0;
-          }
-       }
-      if (bit != 0)
-        *q++=byte << (8-bit);
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-          break;
+      ExportPixelAreaOptions
+        export_options;
+
+      ExportPixelAreaInfo
+        export_info;
+
+      ExportPixelAreaOptionsInit(&export_options);
+      export_options.grayscale_miniswhite=MagickTrue;
+      q=pixels;
+      for (y=0; y < image->rows; y++)
+        {
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          if (ExportImagePixelArea(image,GrayQuantum,1,q,
+                                   &export_options,&export_info) == MagickFail)
+            break;
+          q+=export_info.bytes_exported;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
+        }
     }
     /*
       Initialize JBIG info structure.

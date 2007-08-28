@@ -829,6 +829,15 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
+    /*
+      Analyze image to be written.
+    */
+    (void) GetImageCharacteristics(image,&characteristics,
+                                   (OptimizeType == image_info->type),
+                                   &image->exception);
     /*
       Scale image to size of Portable Document page.
     */
@@ -1057,7 +1066,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_pixels=image->columns*image->rows;
     if ((compression == FaxCompression) ||
         ((image_info->type != TrueColorType) &&
-         IsGrayImage(image,&image->exception)))
+         characteristics.grayscale))
       {
         switch (compression)
         {
@@ -1425,7 +1434,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     else
       if ((compression == FaxCompression) ||
           ((image_info->type != TrueColorType) &&
-           IsGrayImage(image,&image->exception)))
+           (characteristics.grayscale)))
           (void) strcpy(buffer,"/DeviceGray\n");
       else
         if ((image->storage_class == DirectClass) || (image->colors > 256) ||
@@ -1507,7 +1516,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_pixels=tile_image->columns*tile_image->rows;
     if ((compression == FaxCompression) ||
         ((image_info->type != TrueColorType) &&
-         IsGrayImage(tile_image,&image->exception)))
+         (characteristics.grayscale)))
       {
         switch (compression)
         {

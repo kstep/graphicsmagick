@@ -263,7 +263,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     if (!SetImagePixels(image,0,y,image->columns,1))
       break;
     (void) ReadBlob(image,image->columns,scanline);
-    (void) ImportImagePixelArea(image,GrayQuantum,image->depth,scanline,0);
+    (void) ImportImagePixelArea(image,GrayQuantum,image->depth,scanline,0,0);
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
@@ -423,7 +423,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   {
     if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
       break;
-    (void) ExportImagePixelArea(image,GrayQuantum,8,scanline,0);
+    (void) ExportImagePixelArea(image,GrayQuantum,8,scanline,0,0);
     (void) WriteBlob(image,image->columns,scanline);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))

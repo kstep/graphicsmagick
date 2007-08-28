@@ -694,10 +694,26 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
+    /*
+      Ensure that image is in an RGB space.
+    */
+    (void) TransformColorspace(image,RGBColorspace);
+    /*
+      Analyze image to be written.
+    */
+    if (!GetImageCharacteristics(image,&characteristics,
+                                 (OptimizeType == image_info->type),
+                                 &image->exception))
+      {
+        CloseBlob(image);
+        return MagickFail;
+      }
     /*
       Initialize SUN raster file header.
     */
-    (void) TransformColorspace(image,RGBColorspace);
     sun_info.magic=0x59a66a95;
     sun_info.width=image->columns;
     sun_info.height=image->rows;
@@ -716,7 +732,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         sun_info.length+=image->columns & 0x01U ? image->rows : 0U;
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (characteristics.monochrome)
         {
           /*
             Monochrome SUN raster.
@@ -801,7 +817,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         MagickFreeMemory(pixels);
       }
     else
-      if (IsMonochromeImage(image,&image->exception))
+      if (characteristics.monochrome)
         {
           register unsigned char
             bit,

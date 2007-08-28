@@ -819,8 +819,6 @@ ModuleExport void UnregisterVIFFImage(void)
 %
 %
 */
-static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
-{
 #define VFF_CM_genericRGB  15
 #define VFF_CM_NONE  0
 #define VFF_DEP_IEEEORDER  0x2
@@ -832,6 +830,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 #define VFF_MS_ONEPERBAND  1
 #define VFF_TYP_BIT  0
 #define VFF_TYP_1_BYTE  1
+static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
+{
 
   typedef struct _ViffInfo
   {
@@ -924,10 +924,22 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
+    /*
+      Ensure that image is in an RGB space.
+    */
+    (void) TransformColorspace(image,RGBColorspace);
+    /*
+      Analyze image to be written.
+    */
+    GetImageCharacteristics(image,&characteristics,
+                            (OptimizeType == image_info->type),
+                            &image->exception);
     /*
       Initialize VIFF image structure.
     */
-    (void) TransformColorspace(image,RGBColorspace);
     viff_info.identifier=(char) 0xab;
     viff_info.file_type=1;
     viff_info.release=1;
@@ -973,7 +985,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if (!IsGrayImage(image,&image->exception))
+        if (!characteristics.grayscale)
           {
             /*
               Colormapped VIFF raster.
@@ -1066,7 +1078,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (!IsGrayImage(image,&image->exception))
+      if (!characteristics.grayscale)
         {
           unsigned char
             *viff_colormap;

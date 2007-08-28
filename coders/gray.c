@@ -182,7 +182,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      (void) ImportImagePixelArea(image,GrayQuantum,quantum_size,scanline+x,0);
+      (void) ImportImagePixelArea(image,GrayQuantum,quantum_size,scanline+x,0,0);
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
@@ -458,7 +458,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,scanline,0);
+      (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,scanline,0,0);
       (void) WriteBlob(image,packet_size*image->columns,scanline);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))

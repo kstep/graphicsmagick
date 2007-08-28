@@ -5012,34 +5012,51 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
   unsigned int
     status = MagickPass;
 
+  MagickBool
+    logging;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  logging=IsEventLogging();
   switch (image_type)
   {
     case BilevelType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
-      if ((!image->is_monochrome) &&
-          (image->dither != MagickFalse))
+      if (!IsRGBColorspace(image->colorspace))
         {
-          /*
-            Dither image to bilevel
-          */
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.colorspace=GRAYColorspace;
-          quantize_info.dither=image->dither;
-          quantize_info.tree_depth=8;
-          quantize_info.number_colors=2;
-          (void) QuantizeImage(&quantize_info,image);
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Bilevel) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
         }
-      if ((image->is_monochrome == MagickFalse) ||
-          (image->storage_class != PseudoClass))
+      if ((!image->is_monochrome) ||
+          (PseudoClass != image->storage_class))
         {
-          /*
-            Threshold image to bilevel
-          */
-          (void) ThresholdImage(image,(double)MaxRGB/2);
+          if (image->dither)
+            {
+              /*
+                Dither image to bilevel (very slow!)
+              */
+              if (logging)
+                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                      "SetImageType(Bilevel) Dithering to bilevel using Quantize method ...");
+              GetQuantizeInfo(&quantize_info);
+              quantize_info.colorspace=GRAYColorspace;
+              quantize_info.dither=image->dither;
+              quantize_info.tree_depth=8;
+              quantize_info.number_colors=2;
+              (void) QuantizeImage(&quantize_info,image);
+            }
+          else
+            {
+              /*
+                Threshold image to bilevel
+              */
+              if (logging)
+                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                      "SetImageType(Bilevel) Smashing to bilevel using Threshold method ...");
+              (void) ThresholdImage(image,(double)MaxRGB/2);
+            }
         }
       image->is_grayscale=True;
       image->is_monochrome=True;
@@ -5047,30 +5064,63 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case GrayscaleType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Grayscale) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       if (!image->is_grayscale)
-        (void) TransformColorspace(image,GRAYColorspace);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Grayscale) Transforming to gray colorspace ...");
+          (void) TransformColorspace(image,GRAYColorspace);
+        }
       image->is_grayscale=True;
       break;
     }
     case GrayscaleMatteType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(GrayscaleMatte) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       if (!image->is_grayscale)
-        (void) TransformColorspace(image,GRAYColorspace);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(GrayscaleMatte) Transforming to gray colorspace ...");
+          (void) TransformColorspace(image,GRAYColorspace);
+        }
       if (!image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(GrayscaleMatte) Adding opaque matte channel ...");
+          SetImageOpacity(image,OpaqueOpacity);
+        }
       image->is_grayscale=True;
       break;
     }
     case PaletteType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Palette) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       if (image->storage_class != PseudoClass)
         {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Palette) Using Quantize method ...");
           GetQuantizeInfo(&quantize_info);
           quantize_info.dither=image->dither;
           (void) QuantizeImage(&quantize_info,image);
@@ -5079,12 +5129,25 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case PaletteMatteType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(PaletteMatte) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       if (!image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(PaletteMatte) Adding opaque matte channel ...");
+          SetImageOpacity(image,OpaqueOpacity);
+        }
       if (image->storage_class != PseudoClass)
         {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(PaletteMatteType) Using Quantize method ...");
           GetQuantizeInfo(&quantize_info);
           quantize_info.colorspace=TransparentColorspace;
           quantize_info.dither=image->dither;
@@ -5094,29 +5157,63 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case TrueColorType:
     {
-      (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(TrueColor) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       image->storage_class=DirectClass;
       break;
     }
     case TrueColorMatteType:
     {
 
-      (void) TransformColorspace(image,RGBColorspace);
+      if (!IsRGBColorspace(image->colorspace))
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(TrueColorMatte) Transforming to RGB colorspace ...");
+          (void) TransformColorspace(image,RGBColorspace);
+        }
       image->storage_class=DirectClass;
       if (!image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(TrueColorMatte) Adding opaque matte channel ...");
+          SetImageOpacity(image,OpaqueOpacity);
+        }
       break;
     }
     case ColorSeparationType:
     {
-      (void) TransformColorspace(image,CMYKColorspace);
+      if (image->colorspace != CMYKColorspace)
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(ColorSeparation) Transforming to CMYK colorspace ...");
+          (void) TransformColorspace(image,CMYKColorspace);
+        }
       break;
     }
     case ColorSeparationMatteType:
     {
-      (void) TransformColorspace(image,CMYKColorspace);
+      if (image->colorspace != CMYKColorspace)
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(ColorSeparationMatte) Transforming to CMYK colorspace ...");
+          (void) TransformColorspace(image,CMYKColorspace);
+        }
       if (!image->matte)
-        SetImageOpacity(image,OpaqueOpacity);
+        {
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(ColorSeparationMatte) Adding opaque matte channel ...");
+          SetImageOpacity(image,OpaqueOpacity);
+        }
       break;
     }
     case OptimizeType:

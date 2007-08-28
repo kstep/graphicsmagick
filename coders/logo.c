@@ -5329,6 +5329,9 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   void
     *blob;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Write logo image.
   */
@@ -5342,7 +5345,13 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   logo_image=CloneImage(image,0,0,True,&image->exception);
   if (logo_image == (Image *) NULL)
     ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
-  if (IsMonochromeImage(logo_image,&image->exception) &&
+  /*
+    Analyze image to be written.
+  */
+  (void) GetImageCharacteristics(logo_image,&characteristics,
+                                 (OptimizeType == image_info->type),
+                                 &image->exception);
+  if ((characteristics.monochrome) &&
       (logo_image->columns*logo_image->rows < 4097))
     {
       (void) strcpy(logo_image->magick,"PBM");

@@ -574,6 +574,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
     /*
       Scale image to size of Postscript page.
     */
@@ -750,9 +753,16 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         MagickFreeMemory(labels);
       }
     number_pixels=image->columns*image->rows;
+
+    /*
+      Analyze image to be written.
+    */
+    (void) GetImageCharacteristics(image,&characteristics,
+                                   (OptimizeType == image_info->type),
+                                   &image->exception);
     if ((compression == FaxCompression) ||
         ((image_info->type != TrueColorType) &&
-         IsGrayImage(image,&image->exception)))
+         (characteristics.grayscale)))
       {
         FormatString(buffer,"%lu %lu\n1\n%d\n",image->columns,image->rows,
           (int) (image->colorspace == CMYKColorspace));

@@ -596,13 +596,15 @@ static unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
 %    o image: The image for which the RGB or CMYK channels should be
 %             serialized.
 %
+%    o characteristics: Already populated image characteristics.
+%
 %    o pixels: the serialized image channels.
 %
 %    o length: the length of the pixels mamory area.
 %
 */
 static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
-  Image *image, unsigned char **pixels, size_t *length)
+  Image *image,unsigned char **pixels, size_t *length)
 {
   unsigned long
     x,

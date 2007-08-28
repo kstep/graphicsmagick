@@ -792,6 +792,9 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   unsigned int
     number_components;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open image file.
   */
@@ -809,6 +812,17 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   (void) TransformColorspace(image,RGBColorspace);
 
   /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
+
+  /*
     Obtain a JP2 stream.
   */
   jp2_stream=JP2StreamManager(image);
@@ -816,7 +830,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError,UnableToManageJP2Stream,image);
   number_components=image->matte ? 4 : 3;
   if ((image_info->type != TrueColorType) &&
-      IsGrayImage(image,&image->exception))
+      (characteristics.grayscale))
     number_components=1;
 
   jp2_image=jas_image_create0();

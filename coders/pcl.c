@@ -209,6 +209,9 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   unsigned long
     density;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open output image file.
   */
@@ -219,7 +222,20 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Ensure that image is in an RGB space.
+  */
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
   /*
     Initialize the printer.
   */
@@ -229,7 +245,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) GetGeometry("75x75",&sans,&sans,&density,&density);
   if (image_info->density != (char *) NULL)
     (void) GetGeometry(image_info->density,&sans,&sans,&density,&density);
-  if (IsMonochromeImage(image,&image->exception))
+  if (characteristics.monochrome)
     {
       register unsigned char
         bit,

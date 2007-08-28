@@ -21,9 +21,30 @@
 </tr>
 </table>
 <p>
-2007-08-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2007-08-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (ExportImagePixelArea): Added an optional
+        export_info parameter for returning information back to the user.
+        (ImportImagePixelArea): Added an optional import_info parameter
+        for returning information back to the user.
+  <LI> coders/jbig.c (ReadJBIGImage): Use ImportImagePixelArea().
+        (WriteJBIGImage): Use ExportImagePixelArea();
+  <LI> coders/tiff.c (WriteTIFFImage): Make compression logic a bit
+        more tidy.<BR>
+  <LI> coders/pcx.c (WritePCXImage): Use GetImageCharacteristics().
+  <LI> coders/pcl.c (WritePCLImage): Use GetImageCharacteristics().
+  <LI> coders/dib.c (WriteDIBImage): Use GetImageCharacteristics().
+  <LI> coders/xpm.c (WritePICONImage): Use GetImageCharacteristics().
+  <LI> coders/viff.c (WriteVIFFImage): Use GetImageCharacteristics().
+  <LI> coders/tga.c (WriteTGAImage): Use GetImageCharacteristics().
+  <LI> coders/sgi.c (WriteSGIImage): Use GetImageCharacteristics().
+  <LI> coders/ps2.c (WritePS2Image): Use GetImageCharacteristics().
+  <LI> coders/pdf.c (WritePDFImage): Use GetImageCharacteristics().
+  <LI> coders/palm.c (WritePALMImage): Use GetImageCharacteristics().
+  <LI> coders/ps.c (WritePSImage): Use GetImageCharacteristics().
+  <LI> coders/jp2.c (WriteJP2Image): Use GetImageCharacteristics().
+  <LI> coders/jpeg.c (WriteJPEGImage): Use GetImageCharacteristics().
   <LI> PerlMagick/t/read.t: Added read test for LSB 'float' MAT.
 
 </UL>

@@ -95,6 +95,16 @@ typedef struct _ExportPixelAreaOptions
 } ExportPixelAreaOptions;
 
 /*
+  Optional results info for ExportImagePixelArea()
+*/
+typedef struct _ExportPixelAreaInfo
+{
+  size_t
+    bytes_exported;       /* Number of bytes which were exported */
+
+} ExportPixelAreaInfo;
+
+/*
   Additional options for ImportImagePixelArea()
 */
 typedef struct _ImportPixelAreaOptions
@@ -116,6 +126,16 @@ typedef struct _ImportPixelAreaOptions
     signature;
 } ImportPixelAreaOptions;
 
+/*
+  Optional results info for ImportImagePixelArea()
+*/
+typedef struct _ImportPixelAreaInfo
+{
+  size_t
+    bytes_imported;       /* Number of bytes which were imported */
+
+} ImportPixelAreaInfo;
+
 extern MagickExport const char
   *StorageTypeToString(const StorageType storage_type),
   *QuantumSampleTypeToString(const QuantumSampleType sample_type),
@@ -136,12 +156,12 @@ extern MagickExport MagickPassFail
     const StorageType type,void *pixels,ExceptionInfo *exception),
   ExportImagePixelArea(const Image *image,const QuantumType quantum_type,
     const unsigned int quantum_size,unsigned char *destination,
-    const ExportPixelAreaOptions *options);
+    const ExportPixelAreaOptions *options,ExportPixelAreaInfo *export_info);
 
 extern MagickExport MagickPassFail
   ImportImagePixelArea(Image *image,const QuantumType quantum_type,
     const unsigned int quantum_size,const unsigned char *source,
-    const ImportPixelAreaOptions *options),
+    const ImportPixelAreaOptions *options,ImportPixelAreaInfo *import_info),
   WriteImage(const ImageInfo *image_info,Image *image),
   WriteImages(const ImageInfo *image_info,Image *image,const char *filename,
     ExceptionInfo *exception);

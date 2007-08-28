@@ -752,7 +752,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,0);
+    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,0,0);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {

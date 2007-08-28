@@ -961,7 +961,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0,0)
               == MagickFail)
             break;
           if (!SyncImagePixels(image))
@@ -988,7 +988,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0,0)
               == MagickFail)
             break;
           if (!SyncImagePixels(image))
@@ -1018,7 +1018,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0)
+          if (ImportImagePixelArea(image,IndexQuantum,bmp_info.bits_per_pixel,p,0,0)
               == MagickFail)
             break;
           if (!SyncImagePixels(image))
@@ -1547,7 +1547,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               if (p == (const PixelPacket *) NULL)
                 break;
               q=pixels+(image->rows-y-1)*bytes_per_line;
-              if (ExportImagePixelArea(image,IndexQuantum,1,q,&export_options)
+              if (ExportImagePixelArea(image,IndexQuantum,1,q,&export_options,0)
                   == MagickFail)
                 {
                   break;
@@ -1576,7 +1576,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          if (ExportImagePixelArea(image,IndexQuantum,4,q,&export_options)
+          if (ExportImagePixelArea(image,IndexQuantum,4,q,&export_options,0)
               == MagickFail)
             {
               break;
@@ -1604,7 +1604,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          if (ExportImagePixelArea(image,IndexQuantum,8,q,&export_options)
+          if (ExportImagePixelArea(image,IndexQuantum,8,q,&export_options,0)
               == MagickFail)
             {
               break;

@@ -939,6 +939,9 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   unsigned long
     bytes_per_line;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open output image file.
   */
@@ -950,9 +953,22 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
-    Initialize DIB raster file header.
+    Ensure that image is in an RGB space.
   */
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
+  /*
+    Initialize DIB raster file header.
+  */
   if (image->storage_class == DirectClass)
     {
       /*
@@ -967,7 +983,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         Colormapped DIB raster.
       */
       dib_info.bits_per_pixel=8;
-      if (IsMonochromeImage(image,&image->exception))
+      if (characteristics.monochrome)
         dib_info.bits_per_pixel=1;
       dib_info.number_colors=1 << dib_info.bits_per_pixel;
     }

@@ -948,7 +948,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       {
         CloseBlob(image);
         return MagickFail;
-      }    
+      }
 
     depth=(image->depth <= 8 ? 8 : 16);
 
@@ -964,9 +964,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       {
         format=4;
       }
-    else if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
-             (image_info->type != TrueColorType) &&
-             IsGrayImage(image,&image->exception))
+    else if (LocaleCompare(image_info->magick,"PNM") == 0)
       {
         if ((characteristics.monochrome) &&
             (image_info->type != GrayscaleType) &&
@@ -1189,11 +1187,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            if (image->storage_class == PseudoClass)
-              
-              if (ExportImagePixelArea(image,GrayQuantum,1,pixels,
-                                       &export_options) == MagickFail)
-                break;
+            if (ExportImagePixelArea(image,GrayQuantum,1,pixels,
+                                     &export_options,0) == MagickFail)
+              break;
             if (WriteBlob(image,octets,(char *) pixels) != octets)
               break;
             if (image->previous == (Image *) NULL)
@@ -1234,7 +1230,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          if (ExportImagePixelArea(image,GrayQuantum,depth,pixels,0) == MagickFail)
+          if (ExportImagePixelArea(image,GrayQuantum,depth,pixels,0,0) == MagickFail)
             break;
           if (WriteBlob(image,octets,(char *) pixels) != octets)
             break;
@@ -1277,7 +1273,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          if (ExportImagePixelArea(image,RGBQuantum,depth,pixels,0) == MagickFail)
+          if (ExportImagePixelArea(image,RGBQuantum,depth,pixels,0,0) == MagickFail)
             break;
           if (WriteBlob(image,octets,(char *) pixels) != octets)
             break;

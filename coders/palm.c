@@ -773,7 +773,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   unsigned short
     color16,
     flags = 0;
-  
+
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open output image file.
   */
@@ -786,13 +789,25 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   if (attribute != (ImageAttribute *)NULL)
     if (LocaleCompare("COLORMAP",attribute->value) == 0)
       flags |= PALM_HAS_COLORMAP_FLAG;
+
   count = GetNumberColors(image, NULL, &exception);
   for (bits_per_pixel=1;  (1UL << bits_per_pixel) < count;  bits_per_pixel*=2);
+
   if (bits_per_pixel < 16)
     (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
   if (bits_per_pixel < 8)
     {
-      if(IsGrayImage(image, &exception))   /* gray scale */
+      if (characteristics.grayscale)   /* gray scale */
         (void) SortColormapByIntensity(image);
       else                                 /* is color */
         bits_per_pixel = 8;

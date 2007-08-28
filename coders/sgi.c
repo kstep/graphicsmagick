@@ -988,10 +988,22 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
+    /*
+      Ensure that image is in an RGB space.
+    */
+    (void) TransformColorspace(image,RGBColorspace);
+    /*
+      Analyze image to be written.
+    */
+    GetImageCharacteristics(image,&characteristics,
+                            (OptimizeType == image_info->type),
+                            &image->exception);
     /*
       Initialize SGI raster file header.
     */
-    (void) TransformColorspace(image,RGBColorspace);
     iris_info.magic=0x01DA;
     if (image_info->compression == NoCompression)
       iris_info.storage=0x00;
@@ -1006,7 +1018,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     else
       {
         if ((image_info->type != TrueColorType) &&
-            (IsGrayImage(image,&image->exception) != False))
+            (characteristics.grayscale))
           {
             iris_info.dimension=2;
             iris_info.zsize=1;

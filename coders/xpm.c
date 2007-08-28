@@ -587,24 +587,40 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     characters_per_pixel,
     colors;
 
-  /*
-    Open output image file.
-  */
+    ImageCharacteristics
+      characteristics;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  /*
+    Open output image file.
+  */
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Ensure that image is in an RGB space.
+  */
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
   picon=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,1.0,
     &image->exception);
   if ((image_info->type != TrueColorType) &&
-      IsGrayImage(image,&image->exception))
+      (characteristics.grayscale))
     map=BlobToImage(image_info,Graymap,GraymapExtent,&image->exception);
   else
     map=BlobToImage(image_info,Colormap,ColormapExtent,&image->exception);

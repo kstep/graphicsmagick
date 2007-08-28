@@ -826,6 +826,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   unsigned long
     scene;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open output image file.
   */
@@ -836,7 +839,20 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Ensure that image is in RGB space.
+  */
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
   page_table=(ExtendedSignedIntegralType *) NULL;
   if (image_info->adjoin)
     {
@@ -863,8 +879,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.version=5;
     pcx_info.encoding=1;
     pcx_info.bits_per_pixel=8;
-    if ((image->storage_class == PseudoClass) &&
-        IsMonochromeImage(image,&image->exception))
+    if (characteristics.palette && characteristics.monochrome)
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;

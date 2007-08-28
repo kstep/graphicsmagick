@@ -711,112 +711,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
   return(True);
 }
 #endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I m a g e I s G r a y                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%   Like IsGrayImage except does not change DirectClass to PseudoClass        %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
-static unsigned int ImageIsGray(Image *image)
-{
-  register const PixelPacket
-    *p;
-
-  register long
-    i,
-    x,
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if (image->storage_class == PseudoClass)
-    {
-      for (i=0; i < (long) image->colors; i++)
-        if (!IsGray(image->colormap[i]))
-          return(False);
-      return(True);
-    }
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      return(False);
-    for (x=(long) image->columns; x > 0; x--)
-    {
-       if (!IsGray(*p))
-          return(False);
-       p++;
-    }
-  }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I m a g e I s M o n o c h r o m e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%   Like IsMonochromeImage except does not change DirectClass to PseudoClass  %
-%   and is more accurate.                                                     %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/
-static unsigned int ImageIsMonochrome(Image *image)
-{
-  register const PixelPacket
-    *p;
-
-  register long
-    i,
-    x,
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if (image->storage_class == PseudoClass)
-    {
-      for (i=0; i < (long) image->colors; i++)
-      {
-        if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != 0)
-            && (image->colormap[i].red != MaxRGB)))
-          return(False);
-      }
-      return(True);
-    }
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      return(False);
-    for (x=(long) image->columns; x > 0; x--)
-    {
-      if ((p->red != 0) && (p->red != MaxRGB))
-        return(False);
-      if (!IsGray(*p))
-        return(False);
-      p++;
-    }
-  }
-  return(True);
-}
 #endif /* PNG_LIBPNG_VER > 95 */
 #endif /* HasPNG */
 
@@ -2295,46 +2189,46 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           (void) ImportImagePixelArea(image,(QuantumType) GrayQuantum,
-            image->depth,png_pixels+row_offset,0);
+            image->depth,png_pixels+row_offset,0,0);
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY ||
             ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           {
             image->depth=8;
             (void) ImportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
             image->depth=depth;
           }
         else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
            (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
         else if (ping_info->color_type == PNG_COLOR_TYPE_RGB ||
               ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           {
             image->depth=8;
             (void) ImportImagePixelArea(image,(QuantumType) RGBAQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
             image->depth=depth;
           }
         else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
             (void) ImportImagePixelArea(image,(QuantumType) IndexQuantum,
-              ping_info->bit_depth,png_pixels+row_offset,0); /* FIXME, sample size ??? */
+              ping_info->bit_depth,png_pixels+row_offset,0,0); /* FIXME, sample size ??? */
 #else /* (QuantumDepth != 8) */
 
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           (void) ImportImagePixelArea(image,(QuantumType) GrayQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
         else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
           (void) ImportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
         else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
           (void) ImportImagePixelArea(image,(QuantumType) RGBAQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
         else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           (void) ImportImagePixelArea(image,(QuantumType) IndexQuantum,
-              ping_info->bit_depth,png_pixels+row_offset,0); /* FIXME, sample size ??? */
+              ping_info->bit_depth,png_pixels+row_offset,0,0); /* FIXME, sample size ??? */
         else
           (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
-              image->depth,png_pixels+row_offset,0);
+              image->depth,png_pixels+row_offset,0,0);
 #endif
         if (!SyncImagePixels(image))
           break;
@@ -6354,7 +6248,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       if (mng_info->optimize || mng_info->IsPalette || image_info->type ==
           BilevelType)
         {
-          if (ImageIsMonochrome(image))
+          if (IsMonochromeImage(image,&image->exception))
             {
               if (!image->matte)
                 ping_info->bit_depth=1;
@@ -6509,7 +6403,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
     if ((mng_info->optimize || mng_info->IsPalette) &&
-        ImageIsGray(image) && (!image->matte || image->depth >= 8))
+        IsGrayImage(image,&image->exception) && (!image->matte || image->depth >= 8))
       {
         if (image->matte)
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
@@ -6996,7 +6890,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       else if (mng_info->write_png32)
         rowbytes*=4;
       else if (!mng_info->write_png8 &&
-          ((mng_info->optimize || mng_info->IsPalette) && ImageIsGray(image)))
+          ((mng_info->optimize || mng_info->IsPalette) && IsGrayImage(image,&image->exception)))
         rowbytes*=(image->matte ? 2 : 1);
       else
         {
@@ -7007,7 +6901,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   else
     {
       if ((mng_info->optimize || mng_info->IsPalette) &&
-          ImageIsGray(image))
+          IsGrayImage(image,&image->exception))
         rowbytes*=(image->matte ? 4 : 2);
       else
         rowbytes*=(image->matte ? 8 : 6);
@@ -7025,7 +6919,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
       !mng_info->write_png32) && (mng_info->optimize ||
        mng_info->IsPalette || image_info->type == BilevelType) &&
-      !image->matte && ImageIsMonochrome(image))
+      !image->matte && IsMonochromeImage(image,&image->exception))
     for (pass=0; pass < num_passes; pass++)
     {
       /*
@@ -7040,10 +6934,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           break;
         if (mng_info->IsPalette)
               (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                quantum_size,png_pixels,0);
+                quantum_size,png_pixels,0,0);
         else
           (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
-            quantum_size,png_pixels,0);
+            quantum_size,png_pixels,0,0);
         for (i=0; i < (long) image->columns; i++)
            *(png_pixels+i)=(*(png_pixels+i) > 128) ? 255 : 0;
         png_write_row(ping,png_pixels);
@@ -7058,7 +6952,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       if ((!mng_info->write_png8 && !mng_info->write_png24 &&
          !mng_info->write_png32) &&
          (!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
-         (mng_info->optimize || mng_info->IsPalette) && ImageIsGray(image))
+         (mng_info->optimize || mng_info->IsPalette) && IsGrayImage(image,&image->exception))
       {
          if (logging)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7072,15 +6966,15 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             {
               if (mng_info->IsPalette)
                 (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                   quantum_size,png_pixels,0);
+                   quantum_size,png_pixels,0,0);
               else
                 (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
-                   quantum_size,png_pixels,0);
+                   quantum_size,png_pixels,0,0);
             }
           else /* PNG_COLOR_TYPE_GRAY_ALPHA */
             {
               (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-                 quantum_size,png_pixels,0);
+                 quantum_size,png_pixels,0,0);
             }
           png_write_row(ping,png_pixels);
         }
@@ -7108,21 +7002,21 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               {
                 if (image->storage_class == DirectClass)
                   (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
-                     quantum_size,png_pixels,0);
+                     quantum_size,png_pixels,0,0);
                 else
                   (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                    quantum_size,png_pixels,0);
+                    quantum_size,png_pixels,0,0);
               }
             else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
               (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-                 quantum_size,png_pixels,0);
+                 quantum_size,png_pixels,0,0);
             else if (image->matte)
               (void) ExportImagePixelArea(image,(QuantumType) RGBAQuantum,
-                quantum_size,png_pixels,0);
+                quantum_size,png_pixels,0,0);
             else
               {
                (void) ExportImagePixelArea(image,(QuantumType) RGBQuantum,
-                quantum_size,png_pixels,0);
+                quantum_size,png_pixels,0,0);
               }
             png_write_row(ping,png_pixels);
           }
@@ -7142,13 +7036,13 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             break;
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-              quantum_size,png_pixels,0);
+              quantum_size,png_pixels,0,0);
           else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-              quantum_size,png_pixels,0);
+              quantum_size,png_pixels,0,0);
           else
             (void) ExportImagePixelArea(image,(QuantumType) IndexQuantum,
-              quantum_size,png_pixels,0);
+              quantum_size,png_pixels,0,0);
           png_write_row(ping,png_pixels);
         }
         }
@@ -7466,7 +7360,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
   /* Check if image is grayscale. */
   if (image_info->type != TrueColorMatteType && image_info->type !=
-    TrueColorType && ImageIsGray(image))
+    TrueColorType && IsGrayImage(image,&image->exception))
     jng_color_type-=2;
 
   if (transparent)
@@ -8195,7 +8089,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
            need_local_plte=True;
         if (!need_local_plte)
           {
-            if (!ImageIsGray(image))
+            if (!IsGrayImage(image,&image->exception))
               all_images_are_gray=False;
             mng_info->equal_palettes=PalettesAreEqual(image,next_image);
             if (!use_global_plte)

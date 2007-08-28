@@ -865,6 +865,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    ImageCharacteristics
+      characteristics;
+
     /*
       Scale image to size of Postscript page.
     */
@@ -1112,13 +1115,19 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     i=0;
     index=0;
     x=0;
+    /*
+      Analyze image to be written.
+    */
+    (void) GetImageCharacteristics(image,&characteristics,
+                                   (OptimizeType == image_info->type),
+                                   &image->exception);
     if ((image_info->type != TrueColorType) &&
-        IsGrayImage(image,&image->exception))
+        (characteristics.grayscale))
       {
         FormatString(buffer,"%lu %lu\n1\n1\n1\n%d\n",image->columns,
-          image->rows,IsMonochromeImage(image,&image->exception) ? 1 : 8);
+          image->rows,((characteristics.monochrome) ? 1 : 8));
         (void) WriteBlobString(image,buffer);
-        if (!IsMonochromeImage(image,&image->exception))
+        if (!characteristics.monochrome)
           {
             /*
               Dump image as grayscale.

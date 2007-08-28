@@ -1474,6 +1474,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   unsigned long
     quality;
 
+  ImageCharacteristics
+    characteristics;
+
   /*
     Open image file.
   */
@@ -1484,7 +1487,17 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-
+  
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+      return MagickFail;
+    }
 
   /*
     Initialize JPEG parameters.
@@ -1613,7 +1626,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       (image_info->type != ColorSeparationType) &&
       (image_info->type != ColorSeparationMatteType) &&
       (image->colorspace != CMYKColorspace) &&
-      IsGrayImage(image,&image->exception))
+      (characteristics.grayscale))
     {
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;

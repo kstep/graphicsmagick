@@ -1667,7 +1667,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       Import scanline into image.
                     */
                     if (ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline,
-                                             &import_options) == MagickFail)
+                                             &import_options,0) == MagickFail)
                       {
                         status=MagickFail;
                         break;
@@ -1829,7 +1829,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       Import strip row into image.
                     */
                     if (ImportImagePixelArea(image,quantum_type,bits_per_sample,p,
-                                             &import_options) == MagickFail)
+                                             &import_options,0) == MagickFail)
                       {
                         status=MagickFail;
                         break;
@@ -2040,7 +2040,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             */
                             if (ImportImagePixelArea(image,quantum_type,
                                                      bits_per_sample,p,
-                                                     &import_options)
+                                                     &import_options,0)
                                 == MagickFail)
                               {
                                 status=MagickFail;
@@ -2864,6 +2864,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   AlphaType
     alpha_type;
 
+  CompressionType
+    compression=UndefinedCompression;
+
   TIFFMethod
     method;
 
@@ -2937,6 +2940,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     case UndefinedEndian:
       {
         /* Default is native byte order */
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Using native endian byte order");
       }
     }
 
@@ -2950,6 +2956,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
 #endif
 
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Opening TIFF file \"%s\" using open flags \"%s\".",
+                          filename,open_flags);
   tiff=TIFFOpen(filename,open_flags);
   if (tiff == (TIFF *) NULL)
     {
@@ -2986,43 +2996,85 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (AccessDefinition(image_info,"tiff","tile-width")) ||
           (AccessDefinition(image_info,"tiff","tile-height")))
         method=TiledMethod;
+
+      /*
+        Decide how to compress the image.
+      */
+      compression=image->compression;
+      if (image_info->compression != UndefinedCompression)
+        compression=image_info->compression;
+
+      /*
+        Ensure that only supported compression types are requested.
+      */
+      switch(compression)
+        {
+        case FaxCompression:
+        case Group4Compression:
+          {
+#if !defined(CCITT_SUPPORT)
+            compression=NoCompression;
+#endif
+            break;
+          }
+        case JPEGCompression:
+          {
+#if !defined(YCBCR_SUPPORT) || !defined(JPEG_SUPPORT)
+            compression=NoCompression;
+#endif
+            break;
+          }
+        case LZWCompression:
+          {
+#if !defined(LZW_SUPPORT)
+            compression=NoCompression;
+#endif
+            break;
+          }
+        case RLECompression:
+          {
+#if !defined(PACKBITS_SUPPORT)
+            compression=NoCompression;
+#endif
+            break;
+          }
+        case ZipCompression:
+          {
+#if !defined(ZIP_SUPPORT)
+            compression=NoCompression;
+#endif
+            break;
+          }
+        default:
+          {
+            break;
+          }
+        }
+
+      /*
+        Determine libtiff compression settings.
+      */
       compress_tag=COMPRESSION_NONE;
       fill_order=FILLORDER_MSB2LSB;
-      switch (image->compression)
+      switch (compression)
         {
-#ifdef CCITT_SUPPORT
         case FaxCompression:
           {
-            (void) SetImageType(image,BilevelType);
-            if (logging)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Set image type to BilevelType");
             compress_tag=COMPRESSION_CCITTFAX3;
             fill_order=FILLORDER_LSB2MSB;
             break;
           }
         case Group4Compression:
           {
-            (void) SetImageType(image,BilevelType);
-            if (logging)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Set image type to BilevelType");
             compress_tag=COMPRESSION_CCITTFAX4;
             fill_order=FILLORDER_LSB2MSB;
             break;
           }
-#endif
-#ifdef YCBCR_SUPPORT
         case JPEGCompression:
           {
             compress_tag=COMPRESSION_JPEG;
-            image->storage_class=DirectClass;
-            if (logging)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Set image type to DirectClass");
             break;
           }
-#endif
         case LZWCompression:
           {
             compress_tag=COMPRESSION_LZW;
@@ -3033,13 +3085,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             compress_tag=COMPRESSION_PACKBITS;
             break;
           }
-#ifdef ZIP_SUPPORT
         case ZipCompression:
           {
             compress_tag=COMPRESSION_ADOBE_DEFLATE;
             break;
           }
-#endif
         default:
           {
             compress_tag=COMPRESSION_NONE;
@@ -3047,33 +3097,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         }
 
-      switch (image_info->compression)
-        {
-        case NoCompression: compress_tag=COMPRESSION_NONE; break;
-#ifdef CCITT_SUPPORT
-        case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
-        case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
-#endif
-#ifdef JPEG_SUPPORT
-        case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
-#endif
-#ifdef LZW_SUPPORT
-        case LZWCompression: compress_tag=COMPRESSION_LZW; break;
-#endif
-#ifdef PACKBITS_SUPPORT
-        case RLECompression:
-          compress_tag=COMPRESSION_PACKBITS; break;
-#endif
-#ifdef ZIP_SUPPORT
-        case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
-#endif
-        default: break;
-        }
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Using %s compression", CompressionTagToString(compress_tag));
 
-      if (image->compression == JPEGCompression)
+      if (COMPRESSION_JPEG == compress_tag)
         {
           /*
             JPEG compression can only use size specified by BITS_IN_JSAMPLE.
@@ -3129,7 +3157,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "Using INKSET_CMYK");
         }
-      else if ((characteristics.monochrome) &&
+      else if (((characteristics.monochrome) ||
+                (compress_tag == COMPRESSION_CCITTFAX3) ||
+                (compress_tag == COMPRESSION_CCITTFAX4)) &&
                (compress_tag != COMPRESSION_JPEG) &&
                (image_info->type != GrayscaleType) &&
                (image_info->type != GrayscaleMatteType) &&
@@ -3783,7 +3813,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       Export pixels to scanline.
                     */
                     if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
-                                             scanline,&export_options)
+                                             scanline,&export_options,0)
                         == MagickFail)
                       {
                         status=MagickFail;
@@ -4006,7 +4036,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                             */
                             if (ExportImagePixelArea(image,quantum_type,
                                                      bits_per_sample,q,
-                                                     &export_options)
+                                                     &export_options,0)
                                 == MagickFail)
                               {
                                 status=MagickFail;

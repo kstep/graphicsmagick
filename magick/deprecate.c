@@ -106,7 +106,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
                           "Method has been deprecated");
   
-  return ExportImagePixelArea(image,quantum_type,quantum_size,destination,0);
+  return ExportImagePixelArea(image,quantum_type,quantum_size,destination,0,0);
 }
 
 /*
@@ -171,7 +171,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
   if (image->logging)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
                           "Method has been deprecated");
-  return ImportImagePixelArea(image,quantum_type,quantum_size,source,0);
+  return ImportImagePixelArea(image,quantum_type,quantum_size,source,0,0);
 }
 
 

@@ -1,5 +1,26 @@
-2007-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2007-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ExportImagePixelArea): Added an optional
+	export_info parameter for returning information back to the user.
+	(ImportImagePixelArea): Added an optional import_info parameter
+	for returning information back to the user.
+	* coders/jbig.c (ReadJBIGImage): Use ImportImagePixelArea().
+	(WriteJBIGImage): Use ExportImagePixelArea();
+	* coders/tiff.c (WriteTIFFImage): Make compression logic a bit
+	more tidy.
+	* coders/pcx.c (WritePCXImage): Use GetImageCharacteristics().
+	* coders/pcl.c (WritePCLImage): Use GetImageCharacteristics().
+	* coders/dib.c (WriteDIBImage): Use GetImageCharacteristics().
+	* coders/xpm.c (WritePICONImage): Use GetImageCharacteristics().
+	* coders/viff.c (WriteVIFFImage): Use GetImageCharacteristics().
+	* coders/tga.c (WriteTGAImage): Use GetImageCharacteristics().
+	* coders/sgi.c (WriteSGIImage): Use GetImageCharacteristics().
+	* coders/ps2.c (WritePS2Image): Use GetImageCharacteristics().
+	* coders/pdf.c (WritePDFImage): Use GetImageCharacteristics().
+	* coders/palm.c (WritePALMImage): Use GetImageCharacteristics().
+	* coders/ps.c (WritePSImage): Use GetImageCharacteristics().
+	* coders/jp2.c (WriteJP2Image): Use GetImageCharacteristics().
+	* coders/jpeg.c (WriteJPEGImage): Use GetImageCharacteristics().
 	* PerlMagick/t/read.t: Added read test for LSB 'float' MAT.
 
 2007-08-26  Fojtik Jaroslav  <JaFojtik@seznam.cz>

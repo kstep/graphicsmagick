@@ -1259,7 +1259,8 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %                                          const QuantumType quantum_type,
 %                                          unsigned int quantum_size,
 %                                          unsigned char *destination,
-%                                          const ExportPixelAreaOptions *options)
+%                                          const ExportPixelAreaOptions *options,
+%                                          ExportPixelAreaInfo *export_info)
 %
 %  A description of each parameter follows:
 %
@@ -1277,10 +1278,13 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %    o quantum_size: Bits per quantum sample (range 1-32, and 64).
 %
 %    o destination:  The components are transferred to this buffer.  The user
-%      is responsible for ensuring that the destination buffer is large enough.
+%        is responsible for ensuring that the destination buffer is large
+%        enough.
 %
 %    o options: Additional options specific to quantum_type (may be NULL).
 %
+%    o export_info : Populated with information regarding the pixels
+%        exported (may be NULL)
 %
 */
 MagickExport const char *StorageTypeToString(const StorageType storage_type)
@@ -1402,7 +1406,8 @@ MagickExport const char *QuantumTypeToString(const QuantumType quantum_type)
 }
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
-  unsigned char *destination,const ExportPixelAreaOptions *options)
+  unsigned char *destination,const ExportPixelAreaOptions *options,
+  ExportPixelAreaInfo *export_info)
 {
   register IndexPacket
     *indexes;
@@ -1482,6 +1487,11 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
             break;
           }
         }
+    }
+
+  if (export_info)
+    {
+      export_info->bytes_exported=0;
     }
 
   /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
@@ -1741,14 +1751,14 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         Performs 50% thresholding for best appearance.
                       */
                       register unsigned int
-                        bit = 8,
-                        black=0,
-                        white=1;
+                        bit=8U,
+                        black=0U,
+                        white=1U;
                     
                       if (grayscale_miniswhite)
                         {
-                          black=1;
-                          white=0;
+                          black=1U;
+                          white=0U;
                         }
                     
                       *q=0;
@@ -1760,14 +1770,16 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                           else
                             unsigned_value=PixelIntensityToQuantum(p);
                           *q |= ((unsigned_value > MaxRGB/2 ? white : black) << bit);
-                          if (bit == 0)
+                          if (bit == 0U)
                             {
-                              bit=8;
+                              bit=8U;
                               q++;
                               *q=0;
                             }
                           p++;
                         }
+                      if (bit != 8U)
+                        q++;
                     }
                   break;
                 }
@@ -3392,6 +3404,15 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   if (options)
     for (x = options->pad_bytes; x != 0; --x)
       *q++=options->pad_value;
+
+  /*
+    Collect export info.
+  */
+  if (export_info)
+    {
+      export_info->bytes_exported=(q-destination);
+    }
+
   return(MagickPass);
 }
 
@@ -3461,7 +3482,8 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %                                          const QuantumType quantum_type,
 %                                          const unsigned int quantum_size,
 %                                          const unsigned char *source,
-%                                          const ImportPixelAreaOptions *options)
+%                                          const ImportPixelAreaOptions *options,
+%                                          ImportPixelAreaInfo *import_info)
 %
 %  A description of each parameter follows:
 %
@@ -3482,11 +3504,15 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %
 %    o options: Additional options specific to quantum_type (may be NULL).
 %
+%    o import_info : Populated with information regarding the pixels
+%               imported (may be NULL)
+%
 */
 
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
-  const unsigned char *source,const ImportPixelAreaOptions *options)
+  const unsigned char *source,const ImportPixelAreaOptions *options,
+  ImportPixelAreaInfo *import_info)
 {
   register const unsigned char
     *p;
@@ -3568,7 +3594,12 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
             break;
           }
         }
-    }    
+    } 
+
+  if (import_info)
+    {
+      import_info->bytes_imported=0;
+    }
 
   /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
 
@@ -3847,6 +3878,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                               p++;
                             }
                         }
+                      if (bit != 8)
+                        p++;
                       break;
                     }
                   case 8:
@@ -4008,6 +4041,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             p++;
                           }
                       }
+                    if (bit != 8)
+                      p++;
                   }
                 else
                   {
@@ -5600,6 +5635,12 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
         break;
       }
     }
+
+  if (import_info)
+    {
+      import_info->bytes_imported=p-source;
+    }
+
   return(True);
 }
 

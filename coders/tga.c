@@ -750,6 +750,9 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
     {
+      ImageCharacteristics
+        characteristics;        
+
       write_grayscale=False;
 
       /*
@@ -765,6 +768,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       (void) TransformColorspace(image,RGBColorspace);
 
       /*
+        Analyze image to be written.
+      */
+      GetImageCharacteristics(image,&characteristics,
+                              (OptimizeType == image_info->type),
+                              &image->exception);
+
+      /*
         If some other type has not been requested and the image is
         grayscale, then write a grayscale image unless the image
         contains an alpha channel.
@@ -773,7 +783,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
            (image_info->type != TrueColorMatteType) &&
            (image_info->type != PaletteType) &&
            (image->matte == False)) &&
-          IsGrayImage(image,&image->exception))
+          (characteristics.grayscale))
         write_grayscale=True;
 
       /*
@@ -785,7 +795,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
            (image->colors > 256)) ||
           (image->matte == True))
         {
-          (void) SyncImage(image);
+          /* (void) SyncImage(image); */
           image->storage_class=DirectClass;
         }
 

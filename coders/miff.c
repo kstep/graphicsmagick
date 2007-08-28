@@ -1425,7 +1425,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=inflateEnd(&zip_info);
                   status|=code >= 0;
                 }
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -1472,7 +1472,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=BZ2_bzDecompressEnd(&bzip_info);
                   status|=code >= 0;
                 }
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -1511,7 +1511,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,(const unsigned char*) pixels_p,0);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,(const unsigned char*) pixels_p,0,0);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -2250,7 +2250,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2297,7 +2297,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
@@ -2362,7 +2362,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }
