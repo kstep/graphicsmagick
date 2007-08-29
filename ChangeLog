@@ -1,3 +1,7 @@
+2007-08-29  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/art.c InsertRow has been replaced by ImportImagePixelArea
+
 2007-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): PNM "raw" formats are now read

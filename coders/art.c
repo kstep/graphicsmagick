@@ -40,55 +40,8 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
+#include "magick/constitute.h"
 
-
-static void InsertRow(unsigned char *p,int y,Image *image)
-{
-int bit; long x;
-register PixelPacket *q;
-IndexPacket index;
-register IndexPacket *indexes;
-
-
- switch (image->depth)
-      {
-      case 1:  /* Convert bitmap scanline. */
-       {
-       q=SetImagePixels(image,0,y,image->columns,1);
-       if (q == (PixelPacket *) NULL)
-       break;
-       indexes=GetIndexes(image);
-       for (x=0; x < ((long) image->columns-7); x+=8)
-    {
-    for (bit=0; bit < 8; bit++)
-       {
-       index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-       indexes[x+bit]=index;
-       *q++=image->colormap[index];
-       }
-    p++;
-    }
-       if ((image->columns % 8) != 0)
-     {
-     for (bit=0; bit < (long) (image->columns % 8); bit++)
-         {
-         index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-         indexes[x+bit]=index;
-         *q++=image->colormap[index];
-         }
-     p++;
-     }
-        if (!SyncImagePixels(image))
-     break;
-/*            if (image->previous == (Image *) NULL)
-     if (QuantumTick(y,image->rows))
-       ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
-      break;
-      }
-       }
-}
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,6 +83,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char *BImgBuff=NULL;
   unsigned char k;
   unsigned int status;
+  const PixelPacket *q;
 
   /*
     Open image file.
@@ -174,11 +128,15 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     NoMemory:
   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
-  for(i=0;i< (int) height;i++)
+  for(i=0; i<(int)height; i++)
     {
       (void) ReadBlob(image,(size_t)ldblk,(char *)BImgBuff);
-      (void) ReadBlob(image,k,(char *)&dummy);
-      InsertRow(BImgBuff,i,image);
+      (void) ReadBlob(image,k,(char *)&dummy);      
+
+      q=SetImagePixels(image,0,i,image->columns,1);
+      if (q == (PixelPacket *)NULL) break;
+      (void)ImportImagePixelArea(image,GrayQuantum,1,BImgBuff,NULL,0);
+      if (!SyncImagePixels(image)) break;
     }
   if(BImgBuff!=NULL)
     MagickFreeMemory(BImgBuff);
