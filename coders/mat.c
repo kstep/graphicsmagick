@@ -193,7 +193,7 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 
 /************** READERS ******************/
 
-MagickExport float ReadBlobLSBfloat(Image * image)
+static float ReadBlobLSBfloat(Image * image)
 {
   union
   {
@@ -215,7 +215,7 @@ MagickExport float ReadBlobLSBfloat(Image * image)
   return (flt_buffer.f);
 }
 
-MagickExport float ReadBlobMSBfloat(Image * image)
+static float ReadBlobMSBfloat(Image * image)
 {
   union
   {
