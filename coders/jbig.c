@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2007 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -204,7 +204,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    if (ImportImagePixelArea(image,GrayQuantum,1,p,&import_options,&import_info) == MagickFail)
+    if (!ImportImagePixelArea(image,GrayQuantum,1,p,&import_options,&import_info))
       break;
     p+=import_info.bytes_imported;
     if (!SyncImagePixels(image))

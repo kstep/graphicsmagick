@@ -1,5 +1,7 @@
 2007-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pnm.c (ReadPNMImage): PNM "raw" formats are now read
+	using ImportImagePixelArea()
 	* magick/constitute.c (ExportImagePixelArea): Added an optional
 	export_info parameter for returning information back to the user.
 	(ImportImagePixelArea): Added an optional import_info parameter

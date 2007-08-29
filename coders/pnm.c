@@ -250,9 +250,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned long
     i;
 
-  register unsigned char
-    *p;
-
   size_t
     count,
     number_pixels;
@@ -262,9 +259,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     index,
+    raw_sample_bits,
     status;
 
-  unsigned long
+  unsigned int
     max_value,
     packets;
 
@@ -306,9 +304,20 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       max_value=1;  /* bitmap */
     else
       max_value=PNMInteger(image,10);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %lu",
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
                           max_value);
-    image->depth=max_value < 256 ? 8 : QuantumDepth;
+    if (max_value <= 1)
+      image->depth=1;
+    else if (max_value <= 255U)
+      image->depth=8;
+    else if (max_value <= 65535U)
+      image->depth=16;
+    else if (max_value <= 4294967295U)
+      image->depth=32;
+    raw_sample_bits=image->depth;
+    
+    image->depth=Min(image->depth,QuantumDepth);
+
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image Depth: %u",
                           image->depth); 
     if ((format != '3') && (format != '6'))
@@ -514,36 +523,33 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case '4':
       {
-        unsigned char
-          bit,
-          byte;
+        ImportPixelAreaOptions
+          import_options;
+        
+        ImportPixelAreaInfo
+          import_info;
+
+        size_t
+          bytes_per_row;
 
         /*
           Convert PBM raw image to pixel packets.
         */
+        bytes_per_row=((image->columns+7) >> 3);
+        pixels=MagickAllocateMemory(unsigned char *,bytes_per_row);
+        if (pixels == (unsigned char *) NULL)
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
+        ImportPixelAreaOptionsInit(&import_options);
+        import_options.grayscale_miniswhite=MagickTrue;
         for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
-          bit=0;
-          byte=0;
-          for (x=0; x < image->columns; x++)
-          {
-            if (bit == 0)
-              byte=ReadBlobByte(image);
-            if (EOFBlob(image))
-               break;
-            index=(byte & 0x80) ? 0x00 : 0x01;
-            indexes[x]=index;
-            *q++=image->colormap[index];
-            bit++;
-            if (bit == 8)
-              bit=0;
-            byte<<=1;
-          }
-          if (EOFBlob(image))
+          if (ReadBlob(image,bytes_per_row,pixels) != bytes_per_row)
+            break;
+          if (!ImportImagePixelArea(image,GrayQuantum,1,pixels,&import_options,&import_info))
             break;
           if (!SyncImagePixels(image))
             break;
@@ -554,6 +560,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         image->is_grayscale=MagickTrue;
         image->is_monochrome=MagickTrue;
+        MagickFreeMemory(pixels);
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
@@ -565,60 +572,42 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
+        size_t
+          bytes_per_row;
+
         MagickBool
-          is_grayscale,
           is_monochrome;
 
-        is_grayscale=MagickTrue;
         is_monochrome=MagickTrue;
-        packets=image->depth <= 8 ? 1 : 2;
-        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
+        packets=(raw_sample_bits+7)/8;
+        bytes_per_row=packets*image->columns;
+        pixels=MagickAllocateMemory(unsigned char *,bytes_per_row);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (y=0; y < image->rows; y++)
         {
-          count=ReadBlob(image,packets*image->columns,pixels);
-          if (count == 0)
-            ThrowReaderException(CorruptImageError,UnableToReadImageData,
-              image);
-          p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
-          if (image->depth <= 8)
-            for (x=0; x < image->columns; x++)
-            {
-              index=(*p++);
-              if (index >= image->colors)
-                {
-                  ThrowException(&image->exception,CorruptImageError,
-                    InvalidColormapIndex,image->filename);
-                  index=0;
-                }
-              indexes[x]=index;
-              *q=image->colormap[index];
-              is_monochrome &= IsMonochrome(*q);
-              q++;
-            }
-          else
-            {
-              for (x=0; x < image->columns; x++)
+          if (ReadBlob(image,bytes_per_row,pixels) != bytes_per_row)
+            break;
+          if (!ImportImagePixelArea(image,GrayQuantum,raw_sample_bits,pixels,0,0))
+            break;
+          /*
+            Check all pixels for gray/monochrome status since this
+            format is often used for input from Ghostscript, which may
+            output bilevel in a gray format.  It is easier to check
+            now while the pixels are still "hot" in memory.
+          */
+          if (is_monochrome)
+            for (x=image->columns; x; x--)
               {
-                index=(*p << 8) | *(p+1);
-                p+=2;
-                VerifyColormapIndex(image,index);
-                if (EOFBlob(image))
+                is_monochrome = is_monochrome && IsMonochrome(*q);
+                if (!is_monochrome)
                   break;
-                indexes[x]=index;
-                *q=image->colormap[index];
-                is_monochrome &= IsMonochrome(*q);
                 q++;
               }
-              if (EOFBlob(image))
-                break;
-            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -627,11 +616,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         MagickFreeMemory(pixels);
+        image->is_grayscale=MagickTrue;
         image->is_monochrome=is_monochrome;
-        image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
+
         break;
       }
       case '6':
@@ -639,70 +629,45 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PPM raw raster image to pixel packets.
         */
+        size_t
+          bytes_per_row;
+
         MagickBool
           is_grayscale,
           is_monochrome;
 
         is_grayscale=MagickTrue;
         is_monochrome=MagickTrue;
-        packets=image->depth <= 8 ? 3 : 6;
-        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
+        packets=((raw_sample_bits+7)/8)*3;
+        bytes_per_row=packets*image->columns;
+        pixels=MagickAllocateMemory(unsigned char *,bytes_per_row);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (y=0; y < image->rows; y++)
         {
-          count=ReadBlob(image,packets*image->columns,pixels);
-          if (count == 0)
-            ThrowReaderException(CorruptImageError,UnableToReadImageData,
-              image);
-          p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          if (image->depth <= 8)
-            for (x=0; x < image->columns; x++)
-            {
-              pixel.red=(*p++);
-              pixel.green=(*p++);
-              pixel.blue=(*p++);
-              ValidateScalingPixel(image, pixel, max_value);
-              if (scale != (Quantum *) NULL)
-                {
-                  pixel.red=scale[pixel.red];
-                  pixel.green=scale[pixel.green];
-                  pixel.blue=scale[pixel.blue];
-                }
-              q->red=(Quantum) pixel.red;
-              q->green=(Quantum) pixel.green;
-              q->blue=(Quantum) pixel.blue;
-              is_monochrome &= IsMonochrome(*q);
-              is_grayscale &= IsGray(*q);
-              q++;
-            }
-          else
-            for (x=0; x < image->columns; x++)
-            {
-              pixel.red=(*p << 8) | *(p+1);
-              p+=2;
-              pixel.green=(*p << 8) | *(p+1);
-              p+=2;
-              pixel.blue=(*p << 8) | *(p+1);
-              p+=2;
-              ValidateScalingPixel(image, pixel, max_value);
-              if (scale != (Quantum *) NULL)
-                {
-                  pixel.red=scale[pixel.red];
-                  pixel.green=scale[pixel.green];
-                  pixel.blue=scale[pixel.blue];
-                }
-              q->red=(Quantum) pixel.red;
-              q->green=(Quantum) pixel.green;
-              q->blue=(Quantum) pixel.blue;
-              is_monochrome &= IsMonochrome(*q);
-              is_grayscale &= IsGray(*q);
-              q++;
-            }
+          if (ReadBlob(image,bytes_per_row,pixels) != bytes_per_row)
+            break;
+          if (!ImportImagePixelArea(image,RGBQuantum,raw_sample_bits,pixels,0,0))
+            break;
+          /*
+            Check all pixels for gray/monochrome status since this
+            format is often used for input from Ghostscript, which may
+            output bilevel or gray in an RGB format.  It is easier to
+            check now while the pixels are still "hot" in memory.
+          */
+          if (is_grayscale || is_monochrome)
+            for (x=image->columns; x; x--)
+              {
+                is_grayscale = is_grayscale && IsGray(*q);
+                is_monochrome = is_monochrome && IsMonochrome(*q);
+                if (!is_grayscale && !is_monochrome)
+                  break;
+                q++;
+              }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1187,8 +1152,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            if (ExportImagePixelArea(image,GrayQuantum,1,pixels,
-                                     &export_options,0) == MagickFail)
+            if (!ExportImagePixelArea(image,GrayQuantum,1,pixels,
+                                      &export_options,0))
               break;
             if (WriteBlob(image,octets,(char *) pixels) != octets)
               break;
@@ -1230,7 +1195,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          if (ExportImagePixelArea(image,GrayQuantum,depth,pixels,0,0) == MagickFail)
+          if (!ExportImagePixelArea(image,GrayQuantum,depth,pixels,0,0))
             break;
           if (WriteBlob(image,octets,(char *) pixels) != octets)
             break;
