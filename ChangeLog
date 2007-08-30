@@ -1,3 +1,7 @@
+2007-08-30  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/art.c Added ART writer
+
 2007-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlobLSBFloat): Promoted to be a public

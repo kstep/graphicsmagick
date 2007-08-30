@@ -81,7 +81,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned width,height,dummy;
   long ldblk;
   unsigned char *BImgBuff=NULL;
-  unsigned char k;
+  unsigned char Padding;
   unsigned int status;
   const PixelPacket *q;
 
@@ -105,9 +105,9 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   height=ReadBlobLSBShort(image);
 
   ldblk=(long) ((width+7) / 8);
-  k=(unsigned char) ((-ldblk) & 0x01);
+  Padding=(unsigned char) ((-ldblk) & 0x01);
 
-  if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
+  if(GetBlobSize(image)!=(8+((long)ldblk+Padding)*height))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   image->columns=width;
@@ -131,7 +131,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for(i=0; i<(int)height; i++)
     {
       (void) ReadBlob(image,(size_t)ldblk,(char *)BImgBuff);
-      (void) ReadBlob(image,k,(char *)&dummy);      
+      (void) ReadBlob(image,Padding,(char *)&dummy);      
 
       q=SetImagePixels(image,0,i,image->columns,1);
       if (q == (PixelPacket *)NULL) break;
@@ -149,6 +149,94 @@ DONE_READING:
   return(image);
 }
 
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e A R T I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Function WriteARTImage writes an ART image to a file.  
+%
+%  The format of the WriteARTImage method is:
+%
+%      unsigned int WriteARTImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Function WriteARTImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure.
+%
+%    o image:  A pointer to an Image structure.
+%
+*/
+static unsigned int WriteARTImage(const ImageInfo *image_info,Image *image)
+{
+  long y;
+  unsigned dummy = 0;
+  long DataSize;
+  const PixelPacket *q;
+  unsigned int status;
+  unsigned char Padding;
+  int logging;
+  unsigned char *pixels;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ART");
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  DataSize = (long)((image->columns+7) / 8);
+  Padding = (unsigned char)((-DataSize) & 0x01);  
+
+  pixels=MagickAllocateMemory(unsigned char *,DataSize);
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
+ /*
+    Write ART hader.
+  */
+  WriteBlobLSBShort(image,0);
+  WriteBlobLSBShort(image,image->columns);
+  WriteBlobLSBShort(image,0);
+  WriteBlobLSBShort(image,image->rows);
+
+  /*
+    Store image data.
+  */
+  for(y=0; y<(long)image->rows; y++)
+  {
+    q = AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    (void)ExportImagePixelArea(image,GrayQuantum,1,pixels,0,0);
+    (void)WriteBlob(image,DataSize,pixels);
+    (void)WriteBlob(image,Padding,(char *)&dummy);
+  }
+
+  status=True;
+
+  CloseBlob(image);
+  MagickFreeMemory(pixels);
+
+  if (logging)
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return ART");
+  
+  return(status);
+}
 
 
 /*
@@ -187,7 +275,8 @@ ModuleExport void RegisterARTImage(void)
     };
 
   entry=SetMagickInfo("ART");
-  entry->decoder=(DecoderHandler) ReadARTImage;
+  entry->decoder = (DecoderHandler)ReadARTImage;
+  entry->encoder = (EncoderHandler)WriteARTImage;
   entry->description=AcquireString("PFS: 1st Publisher");
   entry->module=AcquireString("ART");
   entry->note=AcquireString(ARTNote);
