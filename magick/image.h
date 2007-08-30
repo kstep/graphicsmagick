@@ -140,6 +140,28 @@ typedef unsigned int Quantum;
 #define MaxRGBGivenBits(bits) ((0x01U << (bits-1)) +((0x01U << (bits-1))-1))
 
 /*
+  Tests for colorspace classification.
+*/
+#define IsCMYKColorspace(colorspace) \
+  ( \
+    (colorspace == CMYKColorspace) \
+  )
+#define IsGrayColorspace(colorspace) \
+  ( \
+    (colorspace == GRAYColorspace) \
+  )
+#define IsRGBColorspace(colorspace) \
+  ( \
+    (IsGrayColorspace(colorspace)) || \
+    (colorspace == RGBColorspace) || \
+    (colorspace == TransparentColorspace) \
+  )
+#define IsYCbCrColorspace(colorspace) \
+  ( \
+    (colorspace == YCbCrColorspace) \
+  )
+
+/*
   Deprecated defines.
 */
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)

@@ -1383,8 +1383,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
+    /*
+      Constrain reported image depth to values 8/16/32
+    if (image->depth > 16)
+      image->depth=32;
+    else if (image->depth > 8)
+      image->depth=16;
+    else
+      image->depth=8;
     if (image->depth > QuantumDepth)
       image->depth=QuantumDepth;
+
     /*
       Proceed to next image.
     */

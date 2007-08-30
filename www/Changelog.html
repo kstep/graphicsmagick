@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2007-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageType): Import the implementation from
+<STRONG>HEAD.</STRONG>
+
+</UL>
+<p>
+2007-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Don't allow returned TIFF image
+        depth to be anything other than 8/16/32 since it seems that some
+        coders in this release may not deal with other values correctly.
+
+</UL>
+<p>
 2007-08-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1,3 +1,14 @@
+2007-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageType): Import the implementation from
+	HEAD.
+
+2007-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Don't allow returned TIFF image
+	depth to be anything other than 8/16/32 since it seems that some
+	coders in this release may not deal with other values correctly.
+
 2007-08-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c: Eliminate crash when image->depth is not the
