@@ -5032,7 +5032,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
       if ((!image->is_monochrome) ||
           (PseudoClass != image->storage_class))
         {
-          if (image->dither)
+          if (image->dither && !IsMonochromeImage(image,&image->exception))
             {
               /*
                 Dither image to bilevel (very slow!)

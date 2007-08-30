@@ -2927,7 +2927,7 @@ MagickExport int ReadBlobByte(Image *image)
 %
 %
 */
-MagickExport double ReadBlobLSBdouble(Image * image)
+MagickExport double ReadBlobLSBDouble(Image * image)
 {
   union
   {
@@ -3064,6 +3064,104 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b L S B F l o a t                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBFloat reads a float value as a 32 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the ReadBlobLSBFloat method is:
+%
+%      float ReadBlobLSBFloat(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBFloat returns a float read from
+%      the file.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport float ReadBlobLSBFloat(Image * image)
+{
+  union
+  {
+    float f;
+    unsigned char chars[4];
+  } flt_buffer;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(sizeof(flt_buffer) == sizeof(float));
+
+  if (ReadBlob(image, 4, flt_buffer.chars) != 4)
+    flt_buffer.f = 0.0;
+
+#if defined(WORDS_BIGENDIAN)
+  MagickSwabFloat(&flt_buffer.f);
+#endif
+
+  return (flt_buffer.f);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B F l o a t                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBFloat reads a float value as a 32 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the ReadBlobMSBFloat method is:
+%
+%      float ReadBlobMSBFloat(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBFloat returns a float read from
+%      the file.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport float ReadBlobMSBFloat(Image * image)
+{
+  union
+  {
+    float f;
+    unsigned char chars[4];
+  } flt_buffer;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(sizeof(flt_buffer) == sizeof(float));
+
+  if (ReadBlob(image, 4, flt_buffer.chars) != 4)
+    flt_buffer.f = 0.0;
+
+#if !defined(WORDS_BIGENDIAN)
+  MagickSwabFloat(&flt_buffer.f);
+#endif
+
+  return (flt_buffer.f);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b M S B D o u b l e                                          %
 %                                                                             %
 %                                                                             %
@@ -3086,7 +3184,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 %
 %
 */
-MagickExport double ReadBlobMSBdouble(Image * image)
+MagickExport double ReadBlobMSBDouble(Image * image)
 {
   union
   {

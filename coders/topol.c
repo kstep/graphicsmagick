@@ -373,13 +373,13 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
     {
       Header.Komprese = ReadBlobLSBShort(image);
       Header.Stav = ReadBlobLSBShort(image);
-      Header.xRasMin = ReadBlobLSBdouble(image);
-      Header.yRasMin = ReadBlobLSBdouble(image);
-      Header.xRasMax = ReadBlobLSBdouble(image);
-      Header.yRasMax = ReadBlobLSBdouble(image);
+      Header.xRasMin = ReadBlobLSBDouble(image);
+      Header.yRasMin = ReadBlobLSBDouble(image);
+      Header.xRasMax = ReadBlobLSBDouble(image);
+      Header.yRasMax = ReadBlobLSBDouble(image);
       if (Header.Version >= 2)	/* from release 2 */
         {
-          Header.Scale = ReadBlobLSBdouble(image);
+          Header.Scale = ReadBlobLSBDouble(image);
           Header.TileWidth = ReadBlobLSBShort(image);
           Header.TileHeight = ReadBlobLSBShort(image);
           Header.TileOffsets = ReadBlobLSBLong(image);

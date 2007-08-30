@@ -193,56 +193,12 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 
 /************** READERS ******************/
 
-static float ReadBlobLSBfloat(Image * image)
-{
-  union
-  {
-    float f;
-    unsigned char chars[4];
-  } flt_buffer;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(sizeof(flt_buffer) == sizeof(float));
-
-  if (ReadBlob(image, 4, flt_buffer.chars) != 4)
-    flt_buffer.f = 0.0;
-
-#if defined(WORDS_BIGENDIAN)
-  MagickSwabFloat(&flt_buffer.f);
-#endif
-
-  return (flt_buffer.f);
-}
-
-static float ReadBlobMSBfloat(Image * image)
-{
-  union
-  {
-    float f;
-    unsigned char chars[4];
-  } flt_buffer;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(sizeof(flt_buffer) == sizeof(float));
-
-  if (ReadBlob(image, 4, flt_buffer.chars) != 4)
-    flt_buffer.f = 0.0;
-
-#if !defined(WORDS_BIGENDIAN)
-  MagickSwabFloat(&flt_buffer.f);
-#endif
-
-  return (flt_buffer.f);
-}
-
 /* This function reads one block of floats*/
 static void ReadBlobFloatsLSB(Image * image, size_t len, float *data)
 {
   while (len >= 4)
   {
-    *data++ = ReadBlobLSBfloat(image);
+    *data++ = ReadBlobLSBFloat(image);
     len -= sizeof(float);
   }
   if (len > 0)
@@ -253,7 +209,7 @@ static void ReadBlobFloatsMSB(Image * image, size_t len, float *data)
 {
   while (len >= 4)
   {
-    *data++ = ReadBlobMSBfloat(image);
+    *data++ = ReadBlobMSBFloat(image);
     len -= sizeof(float);
   }
   if (len > 0)
@@ -265,7 +221,7 @@ static void ReadBlobDoublesLSB(Image * image, size_t len, double *data)
 {
   while (len >= 8)
   {
-    *data++ = ReadBlobLSBdouble(image);
+    *data++ = ReadBlobLSBDouble(image);
     len -= sizeof(double);
   }
   if (len > 0)
@@ -276,7 +232,7 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 {
   while (len >= 8)
   {
-    *data++ = ReadBlobMSBdouble(image);
+    *data++ = ReadBlobMSBDouble(image);
     len -= sizeof(double);
   }
   if (len > 0)

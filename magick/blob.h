@@ -257,16 +257,28 @@ extern MagickExport unsigned long ReadBlobLSBLong(Image *image);
 extern MagickExport unsigned long ReadBlobMSBLong(Image *image);
 
 /*
+  Read a 32-bit "float" value from the file or BLOB in
+  little-endian order.
+*/
+extern MagickExport float ReadBlobLSBFloat(Image *image);
+
+/*
+  Read a 32-bit "float" value from the file or BLOB in
+  big-endian order.
+*/
+extern MagickExport float ReadBlobMSBFloat(Image *image);
+
+/*
   Read a 64-bit "double" value from the file or BLOB in
   little-endian order.
 */
-extern MagickExport double ReadBlobLSBdouble(Image * image);
+extern MagickExport double ReadBlobLSBDouble(Image *image);
 
 /*
   Read a 64-bit "double" value from the file or BLOB in
   big-endian order.
 */
-extern MagickExport double ReadBlobMSBdouble(Image * image);
+extern MagickExport double ReadBlobMSBDouble(Image *image);
 
 /*
   Read a string from the file or blob until a newline character is

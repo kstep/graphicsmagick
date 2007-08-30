@@ -1,3 +1,10 @@
+2007-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (ReadBlobLSBFloat): Promoted to be a public
+	interface (was in mat.c).
+	(ReadBlobMSBFloat):Promoted to be a public interface (was in
+	mat.c).
+
 2007-08-29  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/art.c InsertRow has been replaced by ImportImagePixelArea
