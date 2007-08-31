@@ -1,3 +1,10 @@
+2007-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (ClonePixelCacheMethods): Remove DLL export.
+	(DestroyCacheInfo): Remove DLL export.
+	(GetCacheInfo): Remove DLL export.
+	(ReferenceCache): Remove DLL export.
+
 2007-08-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageType): More tweaks to obtain the desired

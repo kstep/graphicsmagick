@@ -279,13 +279,13 @@ static unsigned long
   GetNexus(Cache cache);
 
 static void
+  DestroyCacheNexus(Cache cache,const unsigned long nexus),
+  DestroyPixelCache(Image *),
   SetPixelCacheMethods(Cache cache,AcquirePixelHandler acquire_pixel,
     GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
     GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
     AcquireOnePixelFromHandler acquire_one_pixel_from,
-    GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel),
-  DestroyCacheNexus(Cache cache,const unsigned long nexu),
-  DestroyPixelCache(Image *);
+    GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel);
 
 /*
   Cache view interfaces.
@@ -1426,7 +1426,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
 %
 %
 */
-MagickExport void ClonePixelCacheMethods(Cache clone_info,const Cache cache_info)
+void ClonePixelCacheMethods(Cache clone_info,const Cache cache_info)
 {
   assert(clone_info != (Cache) NULL);
   assert(clone_info->signature == MagickSignature);
@@ -1440,7 +1440,7 @@ MagickExport void ClonePixelCacheMethods(Cache clone_info,const Cache cache_info
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e C a c h e V i e w                                               %
++   C l o s e C a c h e V i e w                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1492,7 +1492,7 @@ MagickExport void CloseCacheView(ViewInfo *view)
 %
 %
 */
-MagickExport void DestroyCacheInfo(Cache cache_info)
+void DestroyCacheInfo(Cache cache_info)
 {
   assert(cache_info != (Cache) NULL);
   assert(cache_info->signature == MagickSignature);
@@ -1815,7 +1815,7 @@ static ColorspaceType GetCacheColorspace(const Cache cache)
 %
 %
 */
-MagickExport void GetCacheInfo(Cache *cache)
+void GetCacheInfo(Cache *cache)
 {
   CacheInfo
     *cache_info;
@@ -1981,40 +1981,6 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
   return(GetNexusIndexes(view_info->image->cache,view_info->id));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w P i x e l s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewPixels() returns the pixels associated with the specified
-%  specified view.
-%
-%  The format of the GetCacheViewPixels method is:
-%
-%      PixelPacket *GetCacheViewPixels(const ViewInfo *view)
-%
-%  A description of each parameter follows:
-%
-%    o view: The address of a structure of type ViewInfo.
-%
-%
-*/
-MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
-{
-  const View
-    *view_info = (const View *) view;
-
-  assert(view_info != (View *) NULL);
-  assert(view_info->signature == MagickSignature);
-  return(GetNexusPixels(view_info->image->cache,view_info->id));
 }
 
 /*
@@ -3635,7 +3601,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 %
 %
 */
-MagickExport Cache ReferenceCache(Cache cache_info)
+Cache ReferenceCache(Cache cache_info)
 {
   assert(cache_info != (_CacheInfoPtr_) NULL);
   assert(cache_info->signature == MagickSignature);

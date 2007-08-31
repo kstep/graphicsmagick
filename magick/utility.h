@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2004 GraphicsMagick Group
+  Copyright (C) 2003, 2004, 2007 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -7,7 +7,7 @@
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  
-  ImageMagick Utility Methods.
+  GraphicsMagick Utility Methods.
 */
 #ifndef _MAGICK_UTILITY_H
 #define _MAGICK_UTILITY_H
