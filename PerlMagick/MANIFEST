@@ -75,7 +75,6 @@ t/input_70x46.yuv
 t/input_8888.bmp
 t/input_888.bmp
 t/input_888flip.bmp
-t/input8.mat
 t/input.art
 t/input.avs
 t/input.bie
@@ -287,7 +286,6 @@ t/reference/read/input_ico.miff
 t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff
 t/reference/read/input_im8.miff
-t/reference/read/input_mat.miff
 t/reference/read/input_miff.miff
 t/reference/read/input_mtv.miff
 t/reference/read/input_null_black.miff
