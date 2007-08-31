@@ -21,6 +21,33 @@
 </tr>
 </table>
 <p>
+2007-08-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageType): More tweaks to obtain the desired
+        behavior when converting to a bilevel image.
+  <LI> coders/tiff.c (WriteTIFFImage): Logic which decided the output
+        subformat to write was too convoluted to understand, and in fact
+        palette images were not be written sometimes when they should be
+        (bug added on 2007-08-19).  Deleted the convoluted code and
+        replaced with a different design which should be more correct and
+        flexible.<BR>
+        (ReadTIFFImage): Decided to read bilevel TIFF using a colormap
+        since there are significant internal advantages to doing so.
+        However, the writer is carefully designed to output normal bilevel
+        TIFF so this should not annoy TIFF users.
+  <LI> magick/constitute.c (ImportImagePixelArea): Re-wrote grayscale
+        pseudoclass import to be more efficient and more tidy.
+
+</UL>
+<p>
+2007-08-30  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/art.c Added ART writer
+
+</UL>
+<p>
 2007-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

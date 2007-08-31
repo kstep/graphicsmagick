@@ -626,35 +626,12 @@ static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
       switch (photometric)
         {
         case PHOTOMETRIC_MINISBLACK:
-          {
-            Quantum
-              quantum;
-        
-            for (i=0; i < image->colors; i++)
-              {
-                quantum = (Quantum) (i*(MaxRGB/Max(image->colors-1,1)));
-                image->colormap[i].red=quantum;
-                image->colormap[i].green=quantum;
-                image->colormap[i].blue=quantum;
-                image->colormap[i].opacity=OpaqueOpacity;
-              }
-            status = MagickPass;
-            break;
-          }
         case PHOTOMETRIC_MINISWHITE:
         default:
           {
-            Quantum
-              quantum;
-        
-            for (i=0; i < image->colors; i++)
-              {
-                quantum = (Quantum) (MaxRGB - (i*(MaxRGB/Max(image->colors-1,1))));
-                image->colormap[i].red=quantum;
-                image->colormap[i].green=quantum;
-                image->colormap[i].blue=quantum;
-                image->colormap[i].opacity=OpaqueOpacity;
-              }
+            /*
+              Ascending order produced by AllocateImageColormap() is sufficient.
+            */
             status = MagickPass;
             break;
           }
@@ -1472,7 +1449,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
 
-      if (photometric == PHOTOMETRIC_PALETTE)
+      if ((photometric == PHOTOMETRIC_PALETTE) ||
+          ((PHOTOMETRIC_MINISWHITE || PHOTOMETRIC_MINISBLACK) && (1 == bits_per_sample)))
         {
           /*
             Palette image
@@ -1481,7 +1459,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             {
               (void) InitializeImageColormap(image,tiff);
             }
-          else if (photometric == PHOTOMETRIC_PALETTE)
+          else
             {
               TIFFClose(tiff);
               if (filename_is_temporary)
@@ -3097,9 +3075,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         }
 
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Using %s compression", CompressionTagToString(compress_tag));
 
       if (COMPRESSION_JPEG == compress_tag)
         {
@@ -3145,81 +3120,182 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           break;
         }
 
+      /*
+        Choose best photometric.
+      */
       if (characteristics.cmyk)
         {
-          /*
-            CMYK Image
-          */
           photometric=PHOTOMETRIC_SEPARATED;
-          samples_per_pixel=4;
-          (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "Using INKSET_CMYK");
         }
-      else if (((characteristics.monochrome) ||
-                (compress_tag == COMPRESSION_CCITTFAX3) ||
-                (compress_tag == COMPRESSION_CCITTFAX4)) &&
-               (compress_tag != COMPRESSION_JPEG) &&
-               (image_info->type != GrayscaleType) &&
-               (image_info->type != GrayscaleMatteType) &&
-               (image_info->type != TrueColorType) &&
-               (image_info->type != TrueColorMatteType) &&
-               (image_info->type != PaletteType) && 
-               (image_info->type != PaletteMatteType))
+      else if (characteristics.monochrome)
         {
-          /*
-            Bi-level monochrome image.
-          */
-          photometric=PHOTOMETRIC_MINISBLACK;
-          if ((compress_tag == COMPRESSION_CCITTFAX3) ||
-              (compress_tag == COMPRESSION_CCITTFAX4))
-            photometric=PHOTOMETRIC_MINISWHITE;
-
-          depth=1;
-          samples_per_pixel=1;
-          bits_per_sample=1;
+          photometric=PHOTOMETRIC_MINISWHITE;
         }
-      else if ((characteristics.grayscale) &&
-               (compress_tag != COMPRESSION_JPEG) &&
-               (image_info->type != TrueColorType) &&
-               (image_info->type != TrueColorMatteType) &&
-               (image_info->type != PaletteType) && 
-               (image_info->type != PaletteMatteType))
+      else if (characteristics.palette)
         {
-          /*
-            Grayscale image
-          */
-          photometric=PHOTOMETRIC_MINISBLACK;
-          samples_per_pixel=1;
-
-          for (bits_per_sample=1; bits_per_sample < depth; )
-            bits_per_sample*=2;
-        }
-      else if ((characteristics.palette) &&
-               (image_info->type != TrueColorType))
-        {
-          /*
-            Colormapped image
-          */
           photometric=PHOTOMETRIC_PALETTE;
-          samples_per_pixel=1;
-          bits_per_sample=1;
-          while ((1UL << bits_per_sample) < image->colors)
-            bits_per_sample*=2;
+        }
+      else if (characteristics.grayscale)
+        {
+          photometric=PHOTOMETRIC_MINISBLACK;
         }
       else
         {
-          /*
-            RGB image.
-          */
           photometric=PHOTOMETRIC_RGB;
-          samples_per_pixel=3;
         }
 
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Image depth %lu bits",depth);
+      /*
+        Currently we only support JPEG compression with RGB.
+      */
+      if (compress_tag == COMPRESSION_JPEG)
+        photometric=PHOTOMETRIC_RGB;
+
+      /*
+        Allow user to override the photometric.
+      */
+      switch (image_info->type)
+        {
+        case BilevelType:
+          {
+            photometric=PHOTOMETRIC_MINISWHITE;
+            break;
+          }
+        case GrayscaleType:
+          {
+            photometric=PHOTOMETRIC_MINISBLACK;
+            break;
+          }
+        case GrayscaleMatteType:
+          {
+            photometric=PHOTOMETRIC_MINISBLACK;
+            if (!image->matte)
+              SetImageOpacity(image,OpaqueOpacity);
+            break;
+          }
+        case PaletteType:
+          {
+            photometric=PHOTOMETRIC_PALETTE;
+            break;
+          }
+        case PaletteMatteType:
+          {
+            photometric=PHOTOMETRIC_PALETTE;
+            if (!image->matte)
+              SetImageOpacity(image,OpaqueOpacity);
+            break;
+          }
+        case TrueColorType:
+          {
+            photometric=PHOTOMETRIC_RGB;
+            break;
+          }
+        case TrueColorMatteType:
+          {
+            photometric=PHOTOMETRIC_RGB;
+            if (!image->matte)
+              SetImageOpacity(image,OpaqueOpacity);
+            break;
+          }
+        case ColorSeparationType:
+          {
+            photometric=PHOTOMETRIC_SEPARATED;
+            break;
+          }
+        case ColorSeparationMatteType:
+          {
+            photometric=PHOTOMETRIC_SEPARATED;
+            if (!image->matte)
+              SetImageOpacity(image,OpaqueOpacity);
+            break;
+          }
+        case UndefinedType:
+        case OptimizeType:
+          {
+            /* No special handling */
+          }
+        }
+
+
+      /*
+        If the user has selected something other than RGB, then remove
+        JPEG compression.
+      */
+      if ((compress_tag == COMPRESSION_JPEG) &&
+          (photometric != PHOTOMETRIC_RGB))
+        compress_tag=COMPRESSION_NONE;
+
+      /*
+        Bilevel presents a bit of a quandary since the user is free to
+        change the type so we don't want to set depth in advance.  So
+        we will intuit the depth here.  For the moment, we assume that
+        if the photometric is PHOTOMETRIC_MINISWHITE that we are
+        probably outputting bilevel.  Note that the user is still able
+        to override bits_per_sample.
+      */
+      if (PHOTOMETRIC_MINISWHITE == photometric)
+        depth=1;
+
+      /*
+        Support writing bits per sample of 8, 16, & 32 by default.
+      */
+      for (bits_per_sample=8; bits_per_sample < depth; )
+        bits_per_sample*=2;
+
+      /*
+        Now chose appropriate settings for the photometric.
+      */
+      switch (photometric)
+        {
+        case PHOTOMETRIC_MINISWHITE:
+        case PHOTOMETRIC_MINISBLACK:
+          {
+            samples_per_pixel=1;
+            if (depth == 1)
+              bits_per_sample=1;
+            break;
+          }
+        case PHOTOMETRIC_RGB:
+          {
+            samples_per_pixel=3;
+            break;
+          }
+        case PHOTOMETRIC_PALETTE:
+          {
+            samples_per_pixel=1;
+            bits_per_sample=1;
+            /*
+              Support colormap indexes of 1, 2, 4, 8, and 16 by default.
+            */
+            while ((1UL << bits_per_sample) < image->colors)
+              bits_per_sample*=2;
+            break;
+          }
+        case PHOTOMETRIC_SEPARATED:
+          {
+            samples_per_pixel=4; /* CMYK */
+
+            (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Using INKSET_CMYK");
+            break;
+          }
+        }
+
+      if (COMPRESSION_JPEG == compress_tag)
+        {
+          /*
+            JPEG compression can only use size specified by BITS_IN_JSAMPLE.
+            FIXME
+          */
+#if BITS_IN_JSAMPLE == 12
+          depth=12;
+          bits_per_sample=12;
+#else
+          depth=8;
+          bits_per_sample=8;
+#endif
+        }
 
       alpha_type=UnspecifiedAlpha;
       if (image->matte)
@@ -3487,6 +3563,13 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           }
         }
+
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using %s compression", CompressionTagToString(compress_tag));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Image depth %lu bits",depth);
       if (method != TiledMethod)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),

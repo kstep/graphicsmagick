@@ -3979,90 +3979,109 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
               {
                 /*
                   PseudoClass representation.
+                  
+                  Note that this implementation assumes that the
+                  colormap is written in ascending levels of intensity
+                  as produced by AllocateImageColormap().  Some old
+                  code may assume that 'miniswhite' inverts the
+                  colormap order as well.
                 */
-                register unsigned int
-                  indexes_scale = 1U;
-
                 assert(image->colors <= MaxColormapSize);
-
-                if (unsigned_maxvalue > (image->colors-1))
-                  indexes_scale=(unsigned_maxvalue/(image->colors-1));
-
-                if ( (quantum_size >= 8) && (quantum_size % 8U == 0U) )
+                
+                switch (quantum_size)
                   {
-                    /*
-                      Modulo-8 sample sizes
-                    */
-                    if (indexes_scale == 1U)
-                      {
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            ImportModulo8Quantum(index,quantum_size,p);
-                            VerifyColormapIndex(image,index);
-                            if (grayscale_miniswhite)
-                              index=(image->colors-1)-index;
-                            *indexes++=index;
-                            *q++=image->colormap[index];
-                          }
-                      }
-                    else
-                      {
-                        for (x = number_pixels; x != 0; --x)
-                          {
-                            ImportModulo8Quantum(index,quantum_size,p);
-                            index /= indexes_scale;
-                            VerifyColormapIndex(image,index);
-                            if (grayscale_miniswhite)
-                              index=(image->colors-1)-index;
-                            *indexes++=index;
-                            *q++=image->colormap[index];
-                          }
-                      }
-                  }
-                else if (quantum_size == 1)
-                  {
-                    /*
-                      Special fast support for bi-level gray.
-                    */
-                    register int
-                      bit = 8;
+                  case 1:
+                    {
+                      /*
+                        Special fast support for bi-level gray.
+                      */
+                      register int
+                        bit = 8;
+                      
+                      for (x = number_pixels ; x != 0 ; --x )
+                        {
+                          --bit;
+                          index=(*p >> bit) & 0x01;
+                          if (grayscale_miniswhite)
+                            index ^= 0x01;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                          if (bit == 0)
+                            {
+                              bit=8;
+                              p++;
+                            }
+                        }
+                      if (bit != 8)
+                        p++;
+                      break;
+                    }
+                  case 8:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportCharQuantum(index,p);
+                          VerifyColormapIndex(image,index);
+                          if (grayscale_miniswhite)
+                            index=(image->colors-1)-index;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportShortQuantum(endian,index,p);
+                          VerifyColormapIndex(image,index);
+                          if (grayscale_miniswhite)
+                            index=(image->colors-1)-index;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
+                  case 32:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportLongQuantum(endian,index,p);
+                          VerifyColormapIndex(image,index);
+                          if (grayscale_miniswhite)
+                            index=(image->colors-1)-index;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
+                  default:
+                    {
+                      /*
+                        Arbitrary sample size
+                      */
+                      BitStreamReadHandle
+                        stream;
 
-                    for (x = number_pixels ; x != 0 ; --x )
-                      {
-                        --bit;
-                        index=(*p >> bit) & 0x01;
-                        if (grayscale_miniswhite)
-                          index ^= 0x01;
-                        *indexes++=index;
-                        *q++=image->colormap[index];
-                        if (bit == 0)
-                          {
-                            bit=8;
-                            p++;
-                          }
-                      }
-                    if (bit != 8)
-                      p++;
-                  }
-                else
-                  {
-                    /*
-                      Arbitrary sample size
-                    */
-                    BitStreamReadHandle
-                      stream;
-            
-                    BitStreamInitializeRead(&stream,p);
-                    for (x = number_pixels; x != 0; --x)
-                      {
-                        index=BitStreamMSBRead(&stream,quantum_size);
-                        index /= indexes_scale;
-                        VerifyColormapIndex(image,index);
-                        if (grayscale_miniswhite)
-                          index=(image->colors-1)-index;
-                        *indexes++=index;
-                        *q++=image->colormap[index];
-                      }
+                      register unsigned int
+                        indexes_scale = 1U;
+
+                      if (unsigned_maxvalue > (image->colors-1))
+                        indexes_scale=(unsigned_maxvalue/(image->colors-1));
+                
+                      BitStreamInitializeRead(&stream,p);
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          index=BitStreamMSBRead(&stream,quantum_size);
+                          index /= indexes_scale;
+                          VerifyColormapIndex(image,index);
+                          if (grayscale_miniswhite)
+                            index=(image->colors-1)-index;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
                   }
               }
           }

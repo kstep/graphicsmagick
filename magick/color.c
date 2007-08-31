@@ -1220,7 +1220,8 @@ MagickExport unsigned int IsGrayImage(const Image *image,
     case DirectClass:
     case UndefinedClass:
     {
-/*       printf("IsGrayImage: Exhaustive pixel test!\n"); */
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "IsGrayImage(): Exhaustive pixel test!");
       for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -1278,7 +1279,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 %
 %
 */
-MagickExport unsigned int IsMonochromeImage(const Image *image,
+MagickExport MagickBool IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
   unsigned long
@@ -1296,23 +1297,24 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
   if (image->colorspace == CMYKColorspace)
     return(False);
   if (image->is_monochrome)
-    return(True);
+    return(True);                        
   switch (image->storage_class)
   {
     case DirectClass:
     case UndefinedClass:
     {
-/*       printf("IsMonochromeImage: Exhaustive pixel test!\n"); */
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "IsMonochromeImage(): Exhaustive pixel test!");
       for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
-          return(False);
+          return(MagickFalse);
         for (x=image->columns; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue) ||
               ((p->red != 0) && (p->red != MaxRGB)))
-            return(False);
+            return(MagickFalse);
           p++;
         }
       }
@@ -1325,7 +1327,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
       {
         if ((p->red != p->green) || (p->green != p->blue) ||
             ((p->red != 0) && (p->red != MaxRGB)))
-          return(False);
+          return(MagickFalse);
         p++;
       }
       break;
@@ -1382,6 +1384,8 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
   assert(image->signature == MagickSignature);
   if (!image->matte)
     return(MagickTrue);
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                        "IsOpaqueImage(): Exhaustive pixel test!");
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
