@@ -6480,6 +6480,9 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
   {
     case BilevelType:
     {
+      MagickBool
+        is_monochrome;
+      
       if (!IsRGBColorspace(image->colorspace))
         {
           if (logging)
@@ -6487,25 +6490,16 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
                                   "SetImageType(Bilevel) Transforming to RGB colorspace ...");
           (void) TransformColorspace(image,RGBColorspace);
         }
-      if ((!image->is_monochrome) ||
-          (PseudoClass != image->storage_class))
+
+       is_monochrome=image->is_monochrome;
+       if (!is_monochrome && image->dither)
+         is_monochrome=IsMonochromeImage(image,&image->exception);
+      if (is_monochrome || image->is_grayscale)
+        image->colorspace=GRAYColorspace;
+
+      if (!image->dither || is_monochrome)
         {
-          if (image->dither && !IsMonochromeImage(image,&image->exception))
-            {
-              /*
-                Dither image to bilevel (very slow!)
-              */
-              if (logging)
-                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                      "SetImageType(Bilevel) Dithering to bilevel using Quantize method ...");
-              GetQuantizeInfo(&quantize_info);
-              quantize_info.colorspace=GRAYColorspace;
-              quantize_info.dither=image->dither;
-              quantize_info.tree_depth=8;
-              quantize_info.number_colors=2;
-              (void) QuantizeImage(&quantize_info,image);
-            }
-          else
+          if (!is_monochrome || (image->storage_class != PseudoClass))
             {
               /*
                 Threshold image to bilevel
@@ -6514,8 +6508,25 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
                 (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                                       "SetImageType(Bilevel) Smashing to bilevel using Threshold method ...");
               (void) ThresholdImage(image,(double)MaxRGB/2);
+              (void) AllocateImageColormap(image,2);
             }
         }
+      else
+        {
+          /*
+            Dither image to bilevel (very slow!)
+          */
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.colorspace=GRAYColorspace;
+          quantize_info.dither=image->dither;
+          quantize_info.tree_depth=8;
+          quantize_info.number_colors=2;
+          if (logging)
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "SetImageType(Bilevel) Dithering to bilevel using Quantize method ...");
+          (void) QuantizeImage(&quantize_info,image);
+        }
+      image->colorspace=GRAYColorspace;
       image->is_grayscale=True;
       image->is_monochrome=True;
       break;
@@ -6536,6 +6547,7 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
                                   "SetImageType(Grayscale) Transforming to gray colorspace ...");
           (void) TransformColorspace(image,GRAYColorspace);
         }
+      image->colorspace=GRAYColorspace;
       image->is_grayscale=True;
       break;
     }
@@ -6562,6 +6574,7 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
                                   "SetImageType(GrayscaleMatte) Adding opaque matte channel ...");
           SetImageOpacity(image,OpaqueOpacity);
         }
+      image->colorspace=GRAYColorspace;
       image->is_grayscale=True;
       break;
     }
