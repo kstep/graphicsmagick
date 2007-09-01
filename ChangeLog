@@ -1,3 +1,8 @@
+2007-09-01  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/bmp.c Ability to read true color bitmap with invalid palette size
+	like other readers do.
+
 2007-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (ClonePixelCacheMethods): Remove DLL export.
