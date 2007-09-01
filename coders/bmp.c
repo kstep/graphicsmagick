@@ -776,7 +776,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
       ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
-      ThrowReaderException(CorruptImageWarning,UnrecognizedNumberOfColors,image);
+    {
+      if (bmp_info.bits_per_pixel<24)
+        ThrowReaderException(CorruptImageWarning,UnrecognizedNumberOfColors,image);
+      bmp_info.number_colors = 0;
+    }
     if (bmp_info.compression > 3)
       ThrowReaderException(CorruptImageWarning,UnrecognizedImageCompression,image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
