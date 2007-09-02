@@ -266,14 +266,14 @@ NextImageProfile(ImageProfileIterator profile_iterator,
   MagickMapIterator
     map_iterator;
 
+  MagickPassFail
+    status;
+
   assert(name != (const char **) NULL);
   assert(length != (size_t *) NULL);
 
   if (profile_iterator == 0)
     return (MagickFail);
-
-  MagickPassFail
-    status;
 
   map_iterator=(MagickMapIterator) profile_iterator;
   status=MagickMapIterateNext(map_iterator,name);
