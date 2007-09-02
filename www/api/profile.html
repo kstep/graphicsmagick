@@ -43,7 +43,7 @@
 <P>unsigned int  <strong>DeleteImageProfile</strong>( Image *image, const char *name );</P>
 <P>const unsigned char * <strong>GetImageProfile</strong>( const Image *image, const char *name, size_t *length );</P>
 <P>MagickPassFail  <strong>NextImageProfile</strong>( ImageProfileIterator profile_iterator, const char ** name, const unsigned char ** profile, size_t *length );</P>
-<P>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone );</P>
+<P>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, unsigned char *profile, const size_t length, unsigned int clone );</P>
 <P>unsigned int  <strong>SetImageProfile</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length );</P>
 <P>
 </P>
@@ -157,7 +157,7 @@ Address of parameter to update with profile length.
 <P>If there is no ICM profile currently associated with the image, then the profile is simply associated with the image and the image pixels are not altered.</P>
 <P>If there is already a ICM profile associated with the image, then the colorspace transform described by the existing and new profiles is applied to the image pixels, and the new profile is associated with the image.</P>
 <P>The format of the ProfileImage method is:</P>
-<blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
 </dt>
@@ -174,7 +174,7 @@ Name of profile to add or remove: ICM, IPTC, or generic profile.
 <dt><strong>profile:</strong><br />
 </dt>
 <DD>
-The profile.
+The profile.  Can not be 'const' due to 'clone' option but is treated as 'const' if 'clone' is set to MagickTrue.
 </dd>
 <P></P>
 <dt><strong>length:</strong><br />

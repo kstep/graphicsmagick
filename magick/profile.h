@@ -31,7 +31,7 @@ extern MagickExport MagickPassFail
 */
 extern MagickExport MagickPassFail
   ProfileImage(Image *image,const char *name,unsigned char *profile,
-               const size_t length,unsigned int clone);
+               const size_t length,MagickBool clone);
 
 /*
   Add (or replace) profile to the image by name.

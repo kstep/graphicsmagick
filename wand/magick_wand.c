@@ -5643,7 +5643,7 @@ WandExport unsigned int MagickProfileImage(MagickWand *wand,const char *name,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=ProfileImage(wand->image,name,profile,length,True);
+  status=ProfileImage(wand->image,name,(unsigned char *)profile,length,True);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);

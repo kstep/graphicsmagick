@@ -314,7 +314,7 @@ NextImageProfile(ImageProfileIterator profile_iterator,
 %  The format of the ProfileImage method is:
 %
 %      unsigned int ProfileImage(Image *image,const char *name,
-%        const unsigned char *profile,const size_t length,unsigned int clone)
+%        unsigned char *profile,const size_t length,unsigned int clone)
 %
 %  A description of each parameter follows:
 %
@@ -322,7 +322,8 @@ NextImageProfile(ImageProfileIterator profile_iterator,
 %
 %    o name: Name of profile to add or remove: ICM, IPTC, or generic profile.
 %
-%    o profile: The profile.
+%    o profile: The profile.  Can not be 'const' due to 'clone' option but
+%             is treated as 'const' if 'clone' is set to MagickTrue.
 %
 %    o length: The length of the profile.
 %
@@ -359,12 +360,8 @@ lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
 
 MagickExport MagickPassFail
 ProfileImage(Image *image,const char *name,unsigned char *profile,
-             const size_t length,unsigned int clone)
+             const size_t length,MagickBool clone)
 {
-  register long
-    i,
-    j;
-
   MagickPassFail
     status=MagickPass;
 
