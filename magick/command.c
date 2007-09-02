@@ -115,7 +115,7 @@ typedef struct _CommandInfo
 
 static void
   AnimateUsage(void),
-  BenchmarkUsage(),
+  BenchmarkUsage(void),
   CompositeUsage(void),
   ConjureUsage(void),
   ConvertUsage(void),

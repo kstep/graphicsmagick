@@ -20,12 +20,10 @@
 		<li><a href="#acquirecacheview">AcquireCacheView</a></li>
 		<li><a href="#acquireimagepixels">AcquireImagePixels</a></li>
 		<li><a href="#acquireonepixel">AcquireOnePixel</a></li>
-		<li><a href="#closecacheview">CloseCacheView</a></li>
 		<li><a href="#destroycacheinfo">DestroyCacheInfo</a></li>
 		<li><a href="#destroyimagepixels">DestroyImagePixels</a></li>
 		<li><a href="#getcacheview">GetCacheView</a></li>
 		<li><a href="#getcacheviewindexes">GetCacheViewIndexes</a></li>
-		<li><a href="#getcacheviewpixels">GetCacheViewPixels</a></li>
 		<li><a href="#getimagepixels">GetImagePixels</a></li>
 		<li><a href="#getimagevirtualpixelmethod">GetImageVirtualPixelMethod</a></li>
 		<li><a href="#getindexes">GetIndexes</a></li>
@@ -57,12 +55,10 @@
 <P>const PixelPacket * <strong>AcquireCacheView</strong>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>const PixelPacket * <strong>AcquireImagePixels</strong>( const Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>PixelPacket  <strong>AcquireOnePixel</strong>( const Image image, const long x, const long y, ExceptionInfo exception );</P>
-<P>void  <strong>CloseCacheView</strong>( ViewInfo *view );</P>
 <P>void  <strong>DestroyCacheInfo</strong>( Cache cache );</P>
 <P>void  <strong>DestroyImagePixels</strong>( Image *image );</P>
 <P>PixelPacket * <strong>GetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>IndexPacket * <strong>GetCacheViewIndexes</strong>( const ViewInfo *view );</P>
-<P>PixelPacket * <strong>GetCacheViewPixels</strong>( const ViewInfo *view );</P>
 <P>PixelPacket * <strong>GetImagePixels</strong>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>VirtualPixelMethod  <strong>GetImageVirtualPixelMethod</strong>( const Image *image );</P>
 <P>IndexPacket * <strong>GetIndexes</strong>( const Image *image );</P>
@@ -175,18 +171,6 @@ Return any errors or warnings in this structure.
 <P></P></dl>
 <P>
 </P>
-<h2><a name="closecacheview">CloseCacheView</a></h2>
-<blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><P>The format of the CloseCacheView method is:</P>
-<blockquote>void CloseCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>view:</strong><br />
-</dt>
-<DD>
-The address of a structure of type ViewInfo.
-</dd>
-<P></P></dl>
-<P>
-</P>
 <h2><a name="destroycacheinfo">DestroyCacheInfo</a></h2>
 <blockquote>DestroyCacheInfo() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyCacheInfo() method is: </blockquote><blockquote>void DestroyCacheInfo ( <A HREF="types.html#Cache">Cache</A> cache ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -244,18 +228,6 @@ These values define the perimeter of a region of pixels.
 Method GetCacheViewIndexes returns the indexes associated with the specified view.
 </dd>
 <P></P>
-<dt><strong>view:</strong><br />
-</dt>
-<DD>
-The address of a structure of type ViewInfo.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="getcacheviewpixels">GetCacheViewPixels</a></h2>
-<blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><P>The format of the GetCacheViewPixels method is:</P>
-<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
 <dt><strong>view:</strong><br />
 </dt>
 <DD>
