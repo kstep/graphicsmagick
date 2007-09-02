@@ -2080,9 +2080,6 @@ static int format8BIM(Image *ifile, Image *ofile)
 
 static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 {
-  register long
-    i;
-
   const unsigned char
     *profile;
 
@@ -2205,30 +2202,14 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       /*
         Write APP1 image.
       */
-      for (i=0; i < (int) image->generic_profiles; i++)
-      {
-        char
-          *name;
-
-        long
-          length;
-
-        length=(long) image->generic_profile[i].length;
-        if (length == 0)
-          ThrowWriterException(CoderError,NoAPP1DataIsAvailable,image);
-        name=image->generic_profile[i].name;
-        if (LocaleCompare(name,image_info->magick) == 0)
-          {
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-            if (status == False)
-              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-            (void) WriteBlob(image,(int) length,
-              (char *) image->generic_profile[i].info);
-            CloseBlob(image);
-            return(True);
-          }
-      }
-      ThrowWriterException(CoderError,NoAPP1DataIsAvailable,image)
+      if((profile=GetImageProfile(image,image_info->magick,&profile_length)) == 0)
+        ThrowWriterException(CoderError,NoAPP1DataIsAvailable,image);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+      if (status == False)
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+      (void) WriteBlob(image,(int) profile_length, (char *) profile);
+      CloseBlob(image);
+      return(True);
     }
   if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
       (LocaleCompare(image_info->magick,"ICM") == 0))

@@ -44,6 +44,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/tempfile.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
@@ -774,6 +775,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+  pixmap.bits_per_pixel=0;
+  pixmap.component_count=0;
   /*
     Read PICT header.
   */
@@ -1164,24 +1167,18 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 if (length == 0)
                   break;
-                image->color_profile.info=MagickAllocateMemory(unsigned char *,
-                  length);
-                if (image->color_profile.info == (unsigned char *) NULL)
+                if (SetImageProfile(image,"ICM",info,length) == MagickFail)
                   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-                image->color_profile.length=length;
-                (void) memcpy(image->color_profile.info,info,length);
+                MagickFreeMemory(info);
                 break;
               }
               case 0x1f2:
               {
                 if (length == 0)
                   break;
-                image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
-                  length);
-                if (image->iptc_profile.info == (unsigned char *) NULL)
+                if (SetImageProfile(image,"IPTC",info,length) == MagickFail)
                   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-                image->iptc_profile.length=length;
-                (void) memcpy(image->iptc_profile.info,info,length);
+                MagickFreeMemory(info);
                 break;
               }
               default:
@@ -1428,6 +1425,12 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     size_rectangle,
     source_rectangle;
 
+  const unsigned char
+    *profile_info;
+  
+  size_t
+    profile_length;
+
   register const PixelPacket
     *p;
 
@@ -1552,23 +1555,31 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,frame_rectangle.bottom);
   (void) WriteBlobMSBShort(image,frame_rectangle.right);
   (void) WriteBlobMSBLong(image,0x00000000L);
-  if (image->iptc_profile.info != (unsigned char *) NULL)
+  /*
+    Output 8BIM profile.
+  */
+  profile_info=GetImageProfile(image,"8BIM",&profile_length);
+  if (profile_info != (unsigned char *) NULL)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0x1f2);
-      (void) WriteBlobMSBShort(image,image->iptc_profile.length+4);
+      (void) WriteBlobMSBShort(image,profile_length+4);
       (void) WriteBlobString(image,"8BIM");
-      (void) WriteBlob(image,image->iptc_profile.length,
-        image->iptc_profile.info);
+      (void) WriteBlob(image,profile_length,
+                       profile_info);
     }
-  if (image->color_profile.info != (unsigned char *) NULL)
+  /*
+    Ouput ICM profile.
+  */
+  profile_info=GetImageProfile(image,"ICM",&profile_length);
+  if (profile_info != (unsigned char *) NULL)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
-      (void) WriteBlobMSBShort(image,image->color_profile.length+4);
+      (void) WriteBlobMSBShort(image,profile_length+4);
       (void) WriteBlobMSBLong(image,0x00000000UL);
-      (void) WriteBlob(image,image->color_profile.length,
-        image->color_profile.info);
+      (void) WriteBlob(image,profile_length,
+                       profile_info);
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
       (void) WriteBlobMSBShort(image,4);

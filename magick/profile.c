@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004, 2005 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -39,6 +39,7 @@
 #include "magick/studio.h"
 #include "magick/color.h"
 #include "magick/composite.h"
+#include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/resize.h"
@@ -54,6 +55,67 @@
 #include "lcms.h"
 #endif
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     A l l o c a t e I m a g e P r o f i l e I t e r a t o r                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AllocateImageProfileIterator allocates an iterator to traverse the
+%  image profile list.
+%
+%  The format of the AllocateImageProfileIterator method is:
+%
+%      ImageProfileIterator AllocateImageProfileIterator(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+*/
+MagickExport ImageProfileIterator
+AllocateImageProfileIterator(const Image *image)
+{
+  if (!image->profiles)
+    return 0;
+
+  return (ImageProfileIterator) MagickMapAllocateIterator(image->profiles);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     D e a l l o c a t e I m a g e P r o f i l e I t e r a t o r             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DeallocateImageProfileIterator deallocates an image profile iterator.
+%
+%  The format of the DeallocateImageProfileIterator method is:
+%
+%      void DeallocateImageProfileIterator(ImageProfileIterator profile_iterator)
+%
+%  A description of each parameter follows:
+%
+%    o profile_iterator: Profile iterator to deallocate.
+%
+*/
+MagickExport void
+DeallocateImageProfileIterator(ImageProfileIterator profile_iterator)
+{
+  if (profile_iterator != 0)
+    MagickMapDeallocateIterator((MagickMapIterator) profile_iterator);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,6 +162,11 @@ DeleteImageProfile(Image *image,const char *name)
 %  GetImageProfile returns a pointer to the named image profile if it is
 %  present. A null pointer is returned if the named profile is not present.
 %
+%  Older versions of this function stored profiles named "8BIM" and "IPTC"
+%  in the same storage location.  This is no longer the case.  However,
+%  GetImageProfile() will try the alternate name if the specifically
+%  requested profile name is not available.
+%
 %  The format of the GetImageProfile method is:
 %
 %      const unsigned char *GetImageProfile(const Image* image,
@@ -109,64 +176,110 @@ DeleteImageProfile(Image *image,const char *name)
 %
 %    o image: The image.
 %
-%    o name: Profile name. Valid names are "8BIM", "ICM", & "IPTC" or an
-%                          existing generic profile name.
+%    o name: Profile name. Valid names are "8BIM", "ICM", "IPTC", "XMP" or any
+%                          unique text string.
 %
-%    o length: Updated with profile length if profile is present.
+%    o length: Updated with profile length if profile is present.  Set to NULL
+%              if length is not needed.
 %
 */
 MagickExport const unsigned char *
 GetImageProfile(const Image* image, const char *name, size_t *length)
 {
-  long
-    i;
-  
-  const ProfileInfo
-    *profile=0;
-  
-  *length=0;
+  const unsigned char
+    *profile = 0;
+
+  size_t
+    profile_length=0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(name != NULL);
+
+  if (length)
+    *length=0;
+
+  if (!image->profiles)
+    return 0;
+
+  profile=MagickMapAccessEntry(image->profiles,name,&profile_length);
+
+  if (!profile)
+    {
+      /*
+        Support common alias names and work-alikes.
+      */
+      if (LocaleCompare("ICC",name) == 0)
+        profile=MagickMapAccessEntry(image->profiles,"ICM",&profile_length);
+      else if (LocaleCompare("ICM",name) == 0)
+        profile=MagickMapAccessEntry(image->profiles,"ICC",&profile_length);
+      else if (LocaleCompare("IPTC",name) == 0)
+        profile=MagickMapAccessEntry(image->profiles,"8BIM",&profile_length);
+      else if (LocaleCompare("8BIM",name) == 0)
+        profile=MagickMapAccessEntry(image->profiles,"IPTC",&profile_length);
+    }
+
+  if (length)
+    *length=profile_length;
+
+  return profile;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     N e x t I m a g e P r o f i l e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NextImageProfile iterates forward to the next image profile. The profile
+%  name is returned along with the profile data, and length.  If there are
+%  no more entries in the list, then MagickFail is returned.
+%
+%  The format of the AllocateImageProfileIterator method is:
+%
+%      MagickPassFail NextImageProfile(ImageProfileIterator profile_iterator,
+%                             const char **name, const unsigned char **profile,
+%                             size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o profile_iterator: Profile iterator.
+%
+%    o name: Address of pointer to update with address of name.
+%
+%    o profile: Address of pointer to update with location of profile data.
+%
+%    o length: Address of parameter to update with profile length.
+%
+*/
+MagickExport MagickPassFail
+NextImageProfile(ImageProfileIterator profile_iterator,
+                 const char **name,
+                 const unsigned char **profile,
+                 size_t *length)
+{
+  MagickMapIterator
+    map_iterator;
+
+  assert(name != (const char **) NULL);
   assert(length != (size_t *) NULL);
 
-  /* ICC color profile ("ICM") */
-  if (((LocaleCompare("ICC",name) == 0) ||
-       (LocaleCompare("ICM",name) == 0))
-      &&
-      (image->color_profile.info != 0))
-    {
-      profile=&image->color_profile;
-    }
+  if (profile_iterator == 0)
+    return (MagickFail);
 
-  /* IPTC profile ("8BIM" or "IPTC") */
-  if (((LocaleCompare("8BIM",name) == 0) ||
-      (LocaleCompare("IPTC",name) == 0)) &&
-       (image->iptc_profile.info != 0))
-    {
-      profile=&image->iptc_profile;
-    }
+  MagickPassFail
+    status;
 
-  /* Generic profiles */
-  if ((image->generic_profiles != 0) && (image->generic_profile))
-    {
-      for (i=0; i < (long) image->generic_profiles; i++)
-        {
-          if (LocaleCompare(image->generic_profile[i].name,name) != 0)
-            continue;
-          if(image->generic_profile[i].info)
-            profile=&image->generic_profile[i];
-          break;
-        }
-    }
-  if (profile)
-    {
-      *length=profile->length;
-      return (profile->info);
-    }
-
-  return (0);
+  map_iterator=(MagickMapIterator) profile_iterator;
+  status=MagickMapIterateNext(map_iterator,name);
+  if (status != MagickFail)
+    *profile=MagickMapDereferenceIterator(map_iterator,length);
+  return (status);
 }
 
 /*
@@ -245,7 +358,7 @@ lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
 #endif
 
 MagickExport MagickPassFail
-ProfileImage(Image *image,const char *name,const unsigned char *profile,
+ProfileImage(Image *image,const char *name,unsigned char *profile,
              const size_t length,unsigned int clone)
 {
   register long
@@ -265,35 +378,31 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
       /*
         Remove an ICM, IPTC, or generic profile from the image.
       */
-      if (GlobExpression("8bim",name) || GlobExpression("iptc",name))
+      const char
+        *profile_name;
+      
+      size_t
+        profile_length;
+      
+      const unsigned char *
+        profile_info;
+      
+      ImageProfileIterator
+        profile_iterator;
+
+      profile_iterator=AllocateImageProfileIterator(image);
+      while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                             &profile_length) != MagickFail)
         {
-          MagickFreeMemory(image->iptc_profile.name);
-          if (image->iptc_profile.length != 0)
-            MagickFreeMemory(image->iptc_profile.info);
-          image->iptc_profile.length=0;
-          image->iptc_profile.info=(unsigned char *) NULL;
+          /* FIXME, this might just crash */
+          if (GlobExpression(profile_name,name))
+            {
+              (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                    "Removing %s profile",profile_name);
+              DeleteImageProfile(image,profile_name);
+            }
         }
-      if (GlobExpression("icm",name))
-        {
-          MagickFreeMemory(image->color_profile.name);
-          if (image->color_profile.length != 0)
-            MagickFreeMemory(image->color_profile.info);
-          image->color_profile.length=0;
-          image->color_profile.info=(unsigned char *) NULL;
-        }
-      for (i=0; i < (long) image->generic_profiles; i++)
-      {
-        if (!GlobExpression(image->generic_profile[i].name,name))
-          continue;
-        if (image->generic_profile[i].name != (char *) NULL)
-          MagickFreeMemory(image->generic_profile[i].name);
-        if (image->generic_profile[i].length != 0)
-          MagickFreeMemory(image->generic_profile[i].info);
-        image->generic_profiles--;
-        for (j=i; j < (long) image->generic_profiles; j++)
-          image->generic_profile[j]=image->generic_profile[j+1];
-        i--;
-      }
+      DeallocateImageProfileIterator(profile_iterator);
       return(MagickPass);
     }
   /*
@@ -301,40 +410,41 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
   */
   if ((LocaleCompare("8bim",name) == 0) || (LocaleCompare("iptc",name) == 0))
     {
-      if (image->iptc_profile.length != 0)
-        MagickFreeMemory(image->iptc_profile.info);
       if (clone)
         {
-          image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
-          if (image->iptc_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-              UnableToAddIPTCProfile);
-          image->iptc_profile.length=length;
-          (void) memcpy(image->iptc_profile.info,profile,length);
+          SetImageProfile(image,name,profile,length);
         }
       else
         {
-          image->iptc_profile.length=length;
-          image->iptc_profile.info=(unsigned char *) profile;
+          SetImageProfile(image,name,profile,length);
+          MagickFreeMemory(profile);
         }
       return(MagickPass);
     }
   if (LocaleCompare("icm",name) == 0)
     {
+      const unsigned char
+        *existing_profile;
+
+      size_t
+        existing_profile_length=0;
+
+      /* Check for identical input and output profiles. Return on identity. */
+      existing_profile=GetImageProfile(image,"ICM",&existing_profile_length);
+
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Profile1: %lu bytes, Profile2: %lu bytes",
                             (unsigned long) length,
-                            (unsigned long) image->color_profile.length);
+                            (unsigned long) existing_profile_length);
 
-      /* Check for identical input and output profiles. Return on identity. */
-      if ((length != 0) && (length == image->color_profile.length) &&
-          (memcmp(image->color_profile.info,profile,length) == 0))
+      if ((length != 0) && (length == existing_profile_length) &&
+          (memcmp(existing_profile,profile,length) == 0))
         {
           return(MagickPass);
         }
 
       /* Convert to new colors if we have both an old and a new profile. */
-      if ((image->color_profile.length != 0) && (length != 0))
+      if ((existing_profile_length != 0) && (length != 0))
         {
 #if defined(HasLCMS)
 
@@ -392,8 +502,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
 #else
           (void) cmsErrorAction(LCMS_ERROR_SHOW);
 #endif
-          source_profile=cmsOpenProfileFromMem(image->color_profile.info,
-            image->color_profile.length);
+          source_profile=cmsOpenProfileFromMem((unsigned char *) existing_profile,
+            existing_profile_length);
           target_profile=cmsOpenProfileFromMem((unsigned char *) profile,
             length);
           if ((source_profile == (cmsHPROFILE) NULL) ||
@@ -716,9 +826,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
             Throw away the old profile after conversion before we
             assign a new one.
           */
-          MagickFreeMemory(image->color_profile.info);
-          image->color_profile.info=(unsigned char *) NULL;
-          image->color_profile.length=0;
+          DeleteImageProfile(image,"ICM");
 #else
           ThrowBinaryException(MissingDelegateError,LCMSLibraryIsNotAvailable,
             image->filename);
@@ -734,57 +842,17 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
         We might be trying to assign a CMYK profile to an RGB image,
         for instance.
       */
-      if (clone)
-        {
-          image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
-          if (image->color_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-              UnableToAddColorProfile);
-          image->color_profile.length=length;
-          (void) memcpy(image->color_profile.info,profile,length);
-        }
-      else
-        {
-          image->color_profile.length=length;
-          image->color_profile.info=(unsigned char *) profile;
-        }
+      
+      SetImageProfile(image,"ICM",profile,length);
+      if (!clone)
+        MagickFreeMemory(profile);
       return(status);
     }
-  for (i=0; i < (long) image->generic_profiles; i++)
-    if (LocaleCompare(image->generic_profile[i].name,name) == 0)
-      break;
-  if (i == (long) image->generic_profiles)
-    {
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-          (i+1)*sizeof(ProfileInfo));
-      else
-        MagickReallocMemory(image->generic_profile,
-          (i+1)*sizeof(ProfileInfo));
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,MemoryAllocationFailed,
-          (char *) NULL)
-      image->generic_profiles++;
-      image->generic_profile[i].length=0;
-      image->generic_profile[i].info=(unsigned char *) NULL;
-      image->generic_profile[i].name=AllocateString(name);
-    }
-  if (image->generic_profile[i].length != 0)
-    MagickFreeMemory(image->generic_profile[i].info);
-  if (clone)
-    {
-      image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,length);
-      if (image->generic_profile[i].info == (unsigned char *) NULL)
-        ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToAddGenericProfile);
-      image->generic_profile[i].length=length;
-      (void) memcpy(image->generic_profile[i].info,profile,length);
-    }
-  else
-    {
-      image->generic_profile[i].length=length;
-      image->generic_profile[i].info=(unsigned char *) profile;
-    }
+
+  status &= SetImageProfile(image,name,profile,length);
+  if (!clone)
+    MagickFreeMemory(profile);
+
   return(status);
 }
 
@@ -806,6 +874,13 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
 %  profiles. Any existing CMS color profile is simply replaced. Use the
 %  ProfileImage() function in order to execute a CMS color profile.
 %
+%  Older versions of this function stored profiles named "8BIM" and "IPTC"
+%  in the same storage location.  This is no longer the case.  However,
+%  GetImageProfile() will try the alternate name if the specifically
+%  requested profile name is not available.  Note that when trying to remove
+%  a profile, it may be necessary to remove both names in order for an
+%  "IPTC" profile to no longer be included in output file formats.
+%
 %  The format of the SetImageProfile method is:
 %
 %      unsigned int SetImageProfile(Image *image,const char *name,
@@ -815,8 +890,8 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
 %
 %    o image: The image.
 %
-%    o name: Profile name. Valid names are "8BIM", "ICM", & "IPTC" or an
-%                          generic profile name.
+%    o name: Profile name. Valid names are "8BIM", "ICM", "IPTC", XMP, or any
+%                          unique text string.
 %
 %    o profile: Address of profile to add. Pass zero to remove an existing
 %               profile.
@@ -828,92 +903,31 @@ MagickExport MagickPassFail
 SetImageProfile(Image *image,const char *name, const unsigned char *profile,
                 const size_t length)
 {
-  long
-    i;
-  
-  ProfileInfo
-    *image_profile=0;
-
-  MagickPassFail
-    status=MagickPass;
+  unsigned int
+    status = MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(name != NULL);
 
-  /* ICC color profile ("ICC" or "ICM") */
-  if ((LocaleCompare("ICC",name) == 0) ||
-      (LocaleCompare("ICM",name) == 0))
-    image_profile=&image->color_profile;
-
-  /* IPTC profile ("8BIM" or "IPTC") */
-  if ((LocaleCompare("8BIM",name) == 0) ||
-      (LocaleCompare("IPTC",name) == 0))
-    image_profile=&image->iptc_profile;
-
-  /* Generic profiles */
-  if (!image_profile)
+  if ((profile == 0) && (image->profiles != 0))
     {
-      if ((image->generic_profiles != 0) && (image->generic_profile))
-        {
-          /* Search for an existing profile entry using name */
-          for (i=0; i < (long) image->generic_profiles; i++)
-            {
-              if (LocaleCompare(image->generic_profile[i].name,name) == 0)
-                {
-                  image_profile=&image->generic_profile[i];
-                  break;
-                }
-            }
-        }
-      if (!image_profile && profile)
-        {
-          /* Need to add a new generic profile */
-          if (!image->generic_profile)
-            {
-              /* Initial generic profile */
-              image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-                sizeof(ProfileInfo));
-              image->generic_profiles=1;
-            }
-          else
-            {
-              /* Extend generic profiles */
-              image->generic_profiles++;
-              MagickReallocMemory(image->generic_profile,
-                image->generic_profiles*sizeof(ProfileInfo));
-            }
-          if (!image->generic_profile)
-            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-              UnableToAddColorProfile);
-          image_profile=&image->generic_profile[image->generic_profiles-1];
-          image_profile->info=0;
-          image_profile->length=0;
-	  image_profile->name=NULL;
-        }
+      /*
+        Remove existing entry.
+      */
+      status &= MagickMapRemoveEntry(image->profiles,name);
     }
-  if (image_profile)
+  else
     {
-      /* Clear existing profile */
-      MagickFreeMemory(image_profile->info);
-      image_profile->length=0;
-      if (image_profile->name)
-        MagickFreeMemory(image_profile->name);
-
-      if (profile)
-        {
-          /* Clone user-supplied profile */
-          (void) CloneString(&image_profile->name, name);
-	  if (!image_profile->name)
-            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-              UnableToAddColorProfile);
-          image_profile->info=MagickAllocateMemory(unsigned char *,length);
-          if (!image_profile->info)
-            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-              UnableToAddColorProfile);
-          image_profile->length=length;
-          (void) memcpy(image_profile->info,profile,length);
-        }
+      /*
+        Add or replace entry.
+      */
+      if (image->profiles == 0)
+        image->profiles=MagickMapAllocateMap(MagickMapCopyBlob,
+                                             MagickMapDeallocateBlob);
+      
+      status &= MagickMapAddEntry(image->profiles,name,profile,length,
+                                  &image->exception);
     }
   return (status);
 }

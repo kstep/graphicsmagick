@@ -42,6 +42,7 @@
 #include "magick/color.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/utility.h"
 
 /*
@@ -152,6 +153,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     quantum_depth;
+
+  ProfileInfo
+    *profiles=0;
+
+  unsigned int
+    number_of_profiles=0;
 
   /*
     Open image file.
@@ -496,29 +503,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleNCompare(keyword,"profile-",8) == 0)
                   {
-                    if (LocaleCompare(keyword,"profile-icc") == 0)
-                      {
-                        image->color_profile.length=atol(values);
-                        break;
-                      }
-                    if (LocaleCompare(keyword,"profile-iptc") == 0)
-                      {
-                        image->iptc_profile.length=atol(values);
-                        break;
-                      }
-                    i=(long) image->generic_profiles;
-                    if (image->generic_profile == (ProfileInfo *) NULL)
-                      image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-                        sizeof(ProfileInfo));
-                    else
-                      MagickReallocMemory(image->generic_profile,
-                        (i+1)*sizeof(ProfileInfo));
-                    if (image->generic_profile == (ProfileInfo *) NULL)
+                    i=(long) number_of_profiles;
+                    MagickReallocMemory(profiles,(i+1)*sizeof(ProfileInfo));
+                    if (profiles == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-                    image->generic_profile[i].name=AllocateString(keyword+8);
-                    image->generic_profile[i].length=atol(values);
-                    image->generic_profile[i].info=(unsigned char *) NULL;
-                    image->generic_profiles++;
+                    profiles[i].name=AllocateString(keyword+8);
+                    profiles[i].length=atol(values);
+                    profiles[i].info=(unsigned char *) NULL;
+                    number_of_profiles++;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -690,50 +682,30 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *p++=c;
         } while (c != '\0');
       }
-    if (image->color_profile.length != 0)
+
+    /*
+      Attached profiles.
+    */
+    if (number_of_profiles > 0)
       {
-        /*
-          Color profile.
-        */
-        image->color_profile.info=MagickAllocateMemory(unsigned char *,
-          image->color_profile.length);
-        if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,UnableToReadColorProfile,
-            image);
-        (void) ReadBlob(image,image->color_profile.length,
-          image->color_profile.info);
-      }
-    if (image->iptc_profile.length != 0)
-      {
-        /*
-          IPTC profile.
-        */
-        image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
-          image->iptc_profile.length);
-        if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,UnableToReadIPTCProfile,
-            image);
-        (void) ReadBlob(image,image->iptc_profile.length,
-          image->iptc_profile.info);
-      }
-    if (image->generic_profiles != 0)
-      {
-        /*
-          Generic profile.
-        */
-        for (i=0; i < (long) image->generic_profiles; i++)
+        for (i=0; i < (long) number_of_profiles; i++)
         {
-          if (image->generic_profile[i].length == 0)
+          if (profiles[i].length == 0)
             continue;
-          image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,
-            image->generic_profile[i].length);
-          if (image->generic_profile[i].info == (unsigned char *) NULL)
+          profiles[i].info=MagickAllocateMemory(unsigned char *,profiles[i].length);
+          if (profiles[i].info == (unsigned char *) NULL)
             ThrowReaderException(CorruptImageError,UnableToReadGenericProfile,
               image);
-          (void) ReadBlob(image,image->generic_profile[i].length,
-            image->generic_profile[i].info);
+          (void) ReadBlob(image,profiles[i].length,profiles[i].info);
+          (void) SetImageProfile(image,profiles[i].name,profiles[i].info,
+                                 profiles[i].length);
+          MagickFreeMemory(profiles[i].name);
+          MagickFreeMemory(profiles[i].info);
         }
+        MagickFreeMemory(profiles);
+        number_of_profiles=0;
       }
+
     if (image->storage_class == PseudoClass)
       {
         /*
@@ -950,6 +922,18 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   unsigned long
     scene;
 
+  ImageProfileIterator
+    profile_iterator;
+  
+  const char
+    *profile_name;
+  
+  const unsigned char
+    *profile_info;
+  
+  size_t
+    profile_length;
+
   /*
     Open persistent cache.
   */
@@ -1149,32 +1133,25 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
-    if (image->color_profile.length != 0)
+    /*
+      Attached profiles.
+    */    
+    profile_iterator=AllocateImageProfileIterator(image);
+    if (profile_iterator)
       {
-        FormatString(buffer,"profile-icc=%lu\n",(unsigned long)
-          image->color_profile.length);
-        (void) WriteBlobString(image,buffer);
+        while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                               &profile_length)
+              != MagickFail)
+          {
+            FormatString(buffer,"profile-%.1024s=%lu\n",
+                         profile_name == (char *) NULL ? "generic" :
+                         profile_name,(unsigned long)
+                         profile_length);
+            (void) WriteBlobString(image,buffer);
+          }
+        DeallocateImageProfileIterator(profile_iterator);
       }
-    if (image->iptc_profile.length != 0)
-      {
-        FormatString(buffer,"profile-iptc=%lu\n",(unsigned long)
-          image->iptc_profile.length);
-        (void) WriteBlobString(image,buffer);
-      }
-    if (image->generic_profiles != 0)
-      {
-        /*
-          Generic profile.
-        */
-        for (i=0; i < (long) image->generic_profiles; i++)
-        {
-          FormatString(buffer,"profile-%s=%lu\n",
-            image->generic_profile[i].name == (char *) NULL ? "generic" :
-            image->generic_profile[i].name,(unsigned long)
-            image->generic_profile[i].length);
-          (void) WriteBlobString(image,buffer);
-        }
-      }
+
     if (image->montage != (char *) NULL)
       {
         FormatString(buffer,"montage=%.1024s\n",image->montage);
@@ -1211,25 +1188,22 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,image->directory);
         (void) WriteBlobByte(image,'\0');
       }
-    if (image->color_profile.length != 0)
-      (void) WriteBlob(image,image->color_profile.length,
-        image->color_profile.info);
-    if (image->iptc_profile.length != 0)
-      (void) WriteBlob(image,image->iptc_profile.length,
-        image->iptc_profile.info);
-    if (image->generic_profiles != 0)
+
+    /*
+      Attached profiles.
+    */
+    profile_iterator=AllocateImageProfileIterator(image);
+    if (profile_iterator)
       {
-        /*
-          Generic profile.
-        */
-        for (i=0; i < (long) image->generic_profiles; i++)
-        {
-          if (image->generic_profile[i].length == 0)
-            continue;
-          (void) WriteBlob(image,image->generic_profile[i].length,
-            image->generic_profile[i].info);
-        }
+        while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                               &profile_length) != MagickFail)
+          {
+            if (profile_length != 0)
+              WriteBlob(image,profile_length,profile_info);
+          }
+        DeallocateImageProfileIterator(profile_iterator);
       }
+
     if (image->storage_class == PseudoClass)
       {
         register unsigned char

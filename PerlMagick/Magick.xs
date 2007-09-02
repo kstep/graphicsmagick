@@ -3030,6 +3030,12 @@ Get(ref,...)
     Image
       *image;
 
+    const unsigned char *
+      profile_info;
+
+    size_t
+      profile_length;
+
     int
       j;
 
@@ -3504,8 +3510,10 @@ Get(ref,...)
           if (LocaleCompare(attribute,"icm") == 0)
             {
               if (image)
-                s=newSVpv((const char *) image->color_profile.info,
-                  image->color_profile.length);
+                {
+                  profile_info=GetImageProfile(image,"ICM",&profile_length);
+                  s=newSVpv((const char *) profile_info,profile_length);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3547,8 +3555,10 @@ Get(ref,...)
           if (LocaleCompare(attribute,"iptc") == 0)
             {
               if (image)
-                s=newSVpv((const char *) image->iptc_profile.info,
-                  image->iptc_profile.length);
+                {
+                  profile_info=GetImageProfile(image,"IPTC",&profile_length);
+                  s=newSVpv((const char *) profile_info,profile_length);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5762,7 +5772,7 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
-            (const unsigned char *) argument_list[1].string_reference,
+            (unsigned char *) argument_list[1].string_reference,
             argument_list[1].length,True);
           break;
         }

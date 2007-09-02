@@ -849,9 +849,6 @@
       <Message name="UnableToAddOrRemoveProfile">
         Unable to add or remove profile
       </Message>
-      <Message name="UnableToAllocateICCProfile">
-        unable to allocate ICC profile
-      </Message>
       <Message name="UnableToAverageImageSequence">
         unable to average image sequence
       </Message>
@@ -1120,6 +1117,9 @@
         </Message>
         <Message name="UnableToAllocateCoefficients">
           unable to allocate coefficients
+        </Message>
+         <Message name="UnableToAllocateICCProfile">
+          unable to allocate ICC profile
         </Message>
         <Message name="UnableToAllocateString">
           unable to allocate string

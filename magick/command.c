@@ -8914,7 +8914,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   Remove a ICM, IPTC, or generic profile from the image.
                 */
                 (void) ProfileImage(*image,argv[++i],
-                  (const unsigned char *) NULL,0,True);
+                  (unsigned char *) NULL,0,True);
                 continue;
               }
             else if (*option == '-')
@@ -8926,17 +8926,32 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Image
                 *profile_image;
               
-              register long
-                j;
+              ProfileInfo
+                profile_info;
+
+              const char
+                *profile_name;
 
               size_t
                 profile_length;
               
               const unsigned char *
-                profile;
+                profile_data;
+
+              ImageProfileIterator
+                profile_iterator;
               
               client_data=clone_info->client_data;
-              clone_info->client_data=(void *) &(*image)->iptc_profile;
+
+              /*
+                 FIXME: Next three lines replace:
+                  clone_info->client_data=(void *) &(*image)->iptc_profile;
+              */
+              profile_info.name="IPTC";
+              profile_info.info=(unsigned char *) GetImageProfile(*image,profile_info.name,
+                                                                  &profile_info.length);
+              clone_info->client_data=&profile_info;
+
               (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
               profile_image=ReadImage(clone_info,&(*image)->exception);
               if (profile_image == (Image *) NULL)
@@ -8946,36 +8961,23 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                                        clone_info->filename);
                   continue;
                 }
-
-              /* IPTC NewsPhoto Profile */
-              profile=GetImageProfile(profile_image,"IPTC",&profile_length);
-              if (profile)
+              /*
+                Transfer profile(s) to image.
+              */
+              profile_iterator=AllocateImageProfileIterator(profile_image);
+              while(NextImageProfile(profile_iterator,&profile_name,&profile_data,
+                                     &profile_length) != MagickFail)
                 {
                   (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                        "Adding IPTC profile to image");
-                  (void) SetImageProfile(*image,"IPTC",profile,profile_length);
+                                        "Adding %s profile to image",profile_name);
+                  if ((LocaleCompare(profile_name,"ICC") == 0) ||
+                      (LocaleCompare(profile_name,"ICM") == 0))
+                    (void) ProfileImage(*image,profile_name,(unsigned char *) profile_data,
+                                        profile_length,True);
+                  else
+                    (void) SetImageProfile(*image,profile_name,profile_data,profile_length);
                 }
-
-              /* ICC ICM Profile */
-              profile=GetImageProfile(profile_image,"ICM",&profile_length);
-              if (profile)
-                {
-                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                        "Adding ICM profile to image");
-                  (void) ProfileImage(*image,"ICM",profile,profile_length,True);
-                }
-
-              /* Generic Profiles */
-              for (j=0; j < (long) profile_image->generic_profiles; j++)
-                {
-                  ProfileInfo
-                    *generic;
-                  
-                  generic=profile_image->generic_profile+j;
-                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                        "Adding %s profile to image",generic->name);
-                  (void) SetImageProfile(*image,generic->name,generic->info,generic->length);
-                }
+              DeallocateImageProfileIterator(profile_iterator);
               DestroyImage(profile_image);
               clone_info->client_data=client_data;
             }

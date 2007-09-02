@@ -65,6 +65,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/static.h"
 #include "magick/semaphore.h"
@@ -1315,6 +1316,10 @@ static int
 png_read_raw_profile(Image *image, const ImageInfo *image_info,
    png_textp text,int ii)
 {
+  char
+    profile_description[MaxTextExtent],
+    profile_name[MaxTextExtent];
+
   unsigned char
     *info;
 
@@ -1386,37 +1391,32 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   }
 
   /* We have already read "Raw profile type " */
-  if (!memcmp(&text[ii].key[17], "iptc\0",5))
+  if(!memcmp(&text[ii].key[17], "iptc\0",5))
     {
-      image->iptc_profile.length=length;
-      image->iptc_profile.info=info;
-      if (image_info->verbose)
-        (void) printf(" Found an IPTC profile.\n");
+      strlcpy(profile_name,"IPTC",sizeof(profile_name));
+      strlcpy(profile_description,"IPTC profile.",sizeof(profile_description));
     }
   else if (!memcmp(&text[ii].key[17], "icm\0",4))
     {
-      image->color_profile.length=length;
-      image->color_profile.info=info;
-      if (image_info->verbose)
-        (void) printf(" Found an ICM (ICCP) profile.\n");
+      strlcpy(profile_name,"ICM",sizeof(profile_name));
+      strlcpy(profile_description,"ICM (ICCP) profile.",sizeof(profile_description));
     }
   else
     {
-      i=(long) image->generic_profiles;
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-           sizeof(ProfileInfo));
-      else
-        MagickReallocMemory(image->generic_profile,
-           (i+1)*sizeof(ProfileInfo));
-      image->generic_profile[i].length=length;
-      image->generic_profile[i].name=AllocateString(&text[ii].key[17]);
-      image->generic_profile[i].info=info;
-      image->generic_profiles++;
-      if (image_info->verbose)
-        (void) printf(" Found a generic profile, type %.1024s\n",
-           &text[ii].key[17]);
+      strlcpy(profile_name,&text[ii].key[17],sizeof(profile_name));
+      strlcpy(profile_description,"generic profile, type ",sizeof(profile_description));
+      strlcat(profile_description,&text[ii].key[17],sizeof(profile_description));
     }
+  if (image_info->verbose)
+    (void) printf(" Found a %.1024s\n",profile_description);
+  if(SetImageProfile(image,profile_name,info,length) == MagickFail)
+    {
+      MagickFreeMemory(info);
+      (void) ThrowException(&image->exception,ResourceLimitError,
+                            MemoryAllocationFailed,"unable to copy profile");
+      return (False);
+    }
+  MagickFreeMemory(info);
   return True;
 }
 
@@ -1674,45 +1674,26 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         info,
         name;
 
-      (void) png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
-        (png_uint_32 *) &image->color_profile.length);
+      png_uint_32
+        profile_length;
 
-      if (image->color_profile.name)
-         MagickFreeMemory(image->color_profile.name);
-      if (image->color_profile.info)
-          MagickFreeMemory(image->color_profile.info);
-      if (image->color_profile.length)
+      (void) png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
+        &profile_length);
+      if (profile_length)
         {
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    Reading PNG iCCP chunk.");
-#ifdef PNG_FREE_ME_SUPPORTED
-          image->color_profile.name=AllocateString("icm");
-          image->color_profile.info=(unsigned char *) info;
-          png_data_freer(ping, ping_info, PNG_USER_WILL_FREE_DATA,
-             PNG_FREE_ICCP);
-#else
-          /* libpng will destroy name and info so we must copy them now. */
-          image->color_profile.info=MagickAllocateMemory(unsigned char *,
-            length);
-          if (image->color_profile.info == (unsigned char *) NULL)
+          /* libpng will destroy name and info */
+          if (SetImageProfile(image,"ICM",(const unsigned char *) info,
+                              (size_t) profile_length) == MagickFail)
             {
-               MagickError3(ResourceLimitError,MemoryAllocationFailed,
+              MagickError3(ResourceLimitError,MemoryAllocationFailed,
                 UnableToAllocateICCProfile);
-               image->color_profile.length=0;
             }
-          else
-            {
-               (void) memcpy(image->color_profile.info,
-                  (unsigned char *) info,length);
-               image->color_profile.name=AllocateString("icm");
-               /* Note that the PNG iCCP profile name gets lost. */
-            }
-#endif
       }
-
     }
-#endif
+#endif /* #if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED) */
 #if defined(PNG_READ_sRGB_SUPPORTED)
   {
     int
@@ -5806,8 +5787,9 @@ png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
 
 static void
 png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
-   png_info *ping_info, unsigned char *profile_type, unsigned char
-   *profile_description, unsigned char *profile_data, png_uint_32 length)
+   png_info *ping_info, const char *profile_type,
+   const char *profile_description, const unsigned char *profile_data,
+   png_uint_32 length)
 {
 #if (PNG_LIBPNG_VER > 10005)
    png_textp
@@ -5816,7 +5798,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    register long
      i;
 
-   unsigned char
+   const unsigned char
      *sp;
 
    png_charp
@@ -5833,13 +5815,13 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #if (PNG_LIBPNG_VER <= 10005)
    if (image_info->verbose)
      (void) printf("Not ");
-   image_info=image_info;
-   ping=ping;
-   ping_info=ping_info;
-   profile_type=profile_type;
-   profile_description=profile_description;
-   profile_data=profile_data;
-   length=length;
+   (void) image_info;
+   (void) ping;
+   (void) ping_info;
+   (void) profile_type;
+   (void) profile_description;
+   (void) profile_data;
+   (void) length;
 #endif
    if (image_info->verbose)
      {
@@ -6736,70 +6718,75 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       }
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
   }
-
-  if (image->color_profile.length)
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
-    {
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Setting up iCCP chunk");
-      if (image->color_profile.name == (png_charp) NULL ||
-          *image->color_profile.name == '\0')
-        png_set_iCCP(ping,ping_info,(png_charp) "icm",
-           (int) 0, (png_charp) image->color_profile.info,
-           (png_uint_32) image->color_profile.length);
-      else
-        png_set_iCCP(ping,ping_info,(png_charp) image->color_profile.name,
-           (int) 0, (png_charp) image->color_profile.info,
-           (png_uint_32) image->color_profile.length);
-    }
-#else
-    {
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Setting up text chunk with iCCP Profile");
-      png_write_raw_profile(image_info,ping,ping_info,
-          (unsigned char *) "icm",
-          (unsigned char *) "ICC Profile",
-          (unsigned char *) image->color_profile.info,
-          (png_uint_32) image->color_profile.length);
-    }
-#endif
-  if (image->iptc_profile.length != 0)
-    {
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Setting up text chunk with iPTC Profile");
-      png_write_raw_profile(image_info,ping,ping_info,
-        (unsigned char *) "iptc",
-        (unsigned char *) "IPTC profile",
-        (unsigned char *) image->iptc_profile.info,
-        (png_uint_32) image->iptc_profile.length);
-    }
-  for (i=0; i < (long) image->generic_profiles; i++)
   {
-    if (image->generic_profile[i].name == (png_charp) NULL)
+    ImageProfileIterator
+      *profile_iterator;
+
+    profile_iterator=AllocateImageProfileIterator(image);
+    if (profile_iterator)
       {
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Setting up text chunk with generic profile");
-        png_write_raw_profile(image_info,ping,ping_info,
-          (unsigned char *) "generic",
-          (unsigned char *) "generic profile",
-          (unsigned char *) image->generic_profile[i].info,
-          (png_uint_32) image->generic_profile[i].length);
-      }
-    else
-      {
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Setting up text chunk with %s profile",
-            image->generic_profile[i].name);
-        png_write_raw_profile(image_info,ping,ping_info,
-          (unsigned char *) image->generic_profile[i].name,
-          (unsigned char *) "generic profile",
-          (unsigned char *) image->generic_profile[i].info,
-          (png_uint_32) image->generic_profile[i].length);
+        const char
+          *profile_name;
+
+        const unsigned char
+          *profile_info;
+
+        size_t
+          profile_length;
+
+        while (NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                                &profile_length) != MagickFail)
+          {
+            if (LocaleCompare(profile_name,"ICM") == 0)
+              {
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+                {
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "  Setting up iCCP chunk");
+                  png_set_iCCP(ping,ping_info,(png_charp) "icm",
+                               (int) 0, (png_charp) profile_info,
+                               (png_uint_32) profile_length);
+                }
+#else
+                {
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "  Setting up text chunk with iCCP Profile");
+                  png_write_raw_profile(image_info,ping,ping_info,
+                                        "icm",
+                                        "ICC Profile",
+                                        profile_info,
+                                        (png_uint_32) profile_length);
+                }
+#endif
+              }
+            else if (LocaleCompare(profile_name,"IPTC") == 0)
+              {
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "  Setting up text chunk with iPTC Profile");
+                png_write_raw_profile(image_info,ping,ping_info,
+                                      "iptc",
+                                      "IPTC profile",
+                                      profile_info,
+                                      (png_uint_32) profile_length);
+              }
+            else
+              {
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "  Setting up text chunk with %s profile",
+                                        profile_name);
+                png_write_raw_profile(image_info,ping,ping_info,
+                                      profile_name,
+                                      "generic profile",
+                                      profile_info,
+                                      (png_uint_32) profile_length);
+              }
+          }
+
+        DeallocateImageProfileIterator(profile_iterator);
       }
   }
 

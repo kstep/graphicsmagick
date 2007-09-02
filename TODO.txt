@@ -8,8 +8,6 @@ For 1.2 Branch
 
   o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.
 
-  o Fix/improve PSD reader.
-
   o Fix Scitex RGB reader to handle files written by Photoshop.
 
   o Fix polyline renderering (improperly closes shape) when line is very thick.
@@ -32,10 +30,13 @@ For 1.2 Branch
     is not updated. This was first noted with -lat when the image is
     entirely disk-based.
 
-  o Update to libtool 2.0 (now using development libtool 2.0).
+  o Update to libtool 2.0 (now using development libtool 2.0) if it
+    happens to be released.
+
+  o Improve performance of Cineon coder.
 
   o Re-write metadata handling to use accessor functions rather
-    than accessing Image members directly (90% complete).
+    than accessing Image members directly. (done)
 
   o Update Windows libtiff to version 3.8.2. (done)
 

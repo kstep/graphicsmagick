@@ -398,7 +398,11 @@ MagickExport MagickPassFail AllocateImageColormap(Image *image,
   else
     MagickReallocMemory(image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
-    return(MagickFail);
+    {
+      image->colors=0;
+      image->storage_class=DirectClass;
+      return(MagickFail);
+    }
   for (i=0; i < (long) image->colors; i++)
   {
     quantum=(Quantum) (i*(MaxRGB/Max(colors-1,1)));
@@ -1024,9 +1028,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   Image
     *clone_image;
 
-  register long
-    i;
-
   size_t
     length;
 
@@ -1072,67 +1073,12 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->matte_color=image->matte_color;
   clone_image->gamma=image->gamma;
   clone_image->chromaticity=image->chromaticity;
+  /*
+    Clone attached profiles.
+  */
+  if (image->profiles)
+    clone_image->profiles=MagickMapCloneMap(image->profiles,exception);
   clone_image->orientation=image->orientation;
-  if (image->color_profile.length != 0)
-    {
-      /*
-        Allocate and clone any ICM profile.
-      */
-      clone_image->color_profile.name=AllocateString(image->color_profile.name);
-      clone_image->color_profile.length=image->color_profile.length;
-      clone_image->color_profile.info=MagickAllocateMemory(unsigned char *,
-        clone_image->color_profile.length);
-      if (clone_image->color_profile.info == (unsigned char *) NULL)
-        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToCloneImage);
-      (void) memcpy(clone_image->color_profile.info,
-        image->color_profile.info,clone_image->color_profile.length);
-    }
-  if (image->iptc_profile.length != 0)
-    {
-      /*
-        Allocate and clone any IPTC profile.
-      */
-      clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
-      clone_image->iptc_profile.length=image->iptc_profile.length;
-      clone_image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
-        clone_image->iptc_profile.length);
-      if (clone_image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToCloneImage);
-      (void) memcpy(clone_image->iptc_profile.info,
-        image->iptc_profile.info,clone_image->iptc_profile.length);
-    }
-  clone_image->generic_profiles=image->generic_profiles;
-  if (image->generic_profiles != 0)
-    {
-      /*
-        Allocate and clone any generic profiles.
-      */
-      clone_image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-        image->generic_profiles*sizeof(ProfileInfo));
-      if (clone_image->generic_profile == (ProfileInfo *) NULL)
-        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToCloneImage);
-      length=image->generic_profiles*sizeof(ProfileInfo);
-      (void) memcpy(clone_image->generic_profile,image->generic_profile,
-        length);
-      for (i=0; i < (long) image->generic_profiles; i++)
-      {
-        clone_image->generic_profile[i].name=
-          AllocateString(image->generic_profile[i].name);
-        if (image->generic_profile[i].length == 0)
-          continue;
-        length=image->generic_profile[i].length;
-        clone_image->generic_profile[i].info=
-          MagickAllocateMemory(unsigned char *,length);
-        if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
-          ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-            UnableToCloneImage);
-        (void) memcpy(clone_image->generic_profile[i].info,
-          image->generic_profile[i].info,length);
-      }
-    }
   clone_image->rendering_intent=image->rendering_intent;
   clone_image->units=image->units;
   clone_image->montage=(char *) NULL;
@@ -2153,60 +2099,75 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         i+=length;
       }
     }
-  for (i=0; i < (long) image->generic_profiles; i++)
   {
-    if (image->generic_profile[i].length == 0)
-      continue;
-    (void) fprintf(file,"  Profile-%.1024s: %lu bytes\n",
-      image->generic_profile[i].name == (char *) NULL ? "generic" :
-      image->generic_profile[i].name,(unsigned long)
-      image->generic_profile[i].length);
-    if (LocaleCompare(image->generic_profile[i].name,"EXIF") == 0)
+    const char
+      *profile_name;
+    
+    size_t
+      profile_length;
+              
+    const unsigned char *
+      profile_info;
+    
+    ImageProfileIterator
+      profile_iterator;
+
+    profile_iterator=AllocateImageProfileIterator(image);
+    while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                           &profile_length) != MagickFail)
       {
-        attribute=GetImageAttribute(image,"EXIF:*");
-        if (attribute != (const ImageAttribute *) NULL)
+        if ((LocaleCompare(profile_name,"ICC") == 0) ||
+            (LocaleCompare(profile_name,"ICM") == 0) ||
+            (LocaleCompare(profile_name,"IPTC") == 0) ||
+            (LocaleCompare(profile_name,"8BIM") == 0))
+          continue;
+
+        if (profile_length == 0)
+          continue;
+        (void) fprintf(file,"  Profile-%.1024s: %lu bytes\n",
+                       profile_name == (char *) NULL ? "generic" : profile_name,
+                       (unsigned long) profile_length);
+        if (LocaleCompare(profile_name,"EXIF") == 0)
           {
-            char
-              **values;
-
-            register char
-              *p;
-
-            values=StringToList(attribute->value);
-            if (values != (char **) NULL)
+            attribute=GetImageAttribute(image,"EXIF:*");
+            if (attribute != (const ImageAttribute *) NULL)
               {
-                for (x=0; values[x] != (char *) NULL; x++)
-                {
-                  (void) fprintf(file,"    ");
-                  for (p=values[x]; *p != '\0'; p++)
+                char
+                  **values;
+                
+                register char
+                  *p;
+                
+                values=StringToList(attribute->value);
+                if (values != (char **) NULL)
                   {
-                    if (p > values[x])
-                      if ((isupper((int) ((unsigned char) *p)) != False) &&
-                          (islower((int) ((unsigned char) *(p+1))) != False))
-                        (void) fprintf(file," ");
-                    if (*p == '=')
+                    for (x=0; values[x] != (char *) NULL; x++)
                       {
-                        (void) fprintf(file,": ");
-                        for (p++; *p != '\0'; p++)
-                          (void) fputc(*p,file);
-                        break;
+                        (void) fprintf(file,"    ");
+                        for (p=values[x]; *p != '\0'; p++)
+                          {
+                            if (p > values[x])
+                              if ((isupper((int) ((unsigned char) *p)) != False) &&
+                                  (islower((int) ((unsigned char) *(p+1))) != False))
+                                (void) fprintf(file," ");
+                            if (*p == '=')
+                              {
+                                (void) fprintf(file,": ");
+                                for (p++; *p != '\0'; p++)
+                                  (void) fputc(*p,file);
+                                break;
+                              }
+                            (void) fputc(*p,file);
+                          }
+                        (void) fputc('\n',file);
+                        MagickFreeMemory(values[x]);
                       }
-                    (void) fputc(*p,file);
+                    MagickFreeMemory(values);
                   }
-                  (void) fputc('\n',file);
-                  MagickFreeMemory(values[x]);
-                }
-                MagickFreeMemory(values);
               }
-          }
+          } /* End of EXIF */
       }
-#if 0
-   if (LocaleCompare(image->generic_profile[i].name,"XMP") == 0)
-     {
-       fwrite(image->generic_profile[i].info,1,image->generic_profile[i].length,
-              file);
-     }
-#endif
+    DeallocateImageProfileIterator(profile_iterator);
   }
   if (image->montage != (char *) NULL)
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
@@ -2318,9 +2279,6 @@ MagickExport void DestroyImage(Image *image)
   int
     destroy;
 
-  register long
-    i;
-
   /*
     Dereference image.
   */
@@ -2352,21 +2310,10 @@ MagickExport void DestroyImage(Image *image)
   MagickFreeMemory(image->montage);
   MagickFreeMemory(image->directory);
   MagickFreeMemory(image->colormap);
-  MagickFreeMemory(image->color_profile.name);
-  if (image->color_profile.length != 0)
-    MagickFreeMemory(image->color_profile.info);
-  MagickFreeMemory(image->iptc_profile.name);
-  if (image->iptc_profile.length != 0)
-    MagickFreeMemory(image->iptc_profile.info);
-  if (image->generic_profiles != 0)
+  if (image->profiles)
     {
-      for (i=0; i < (long) image->generic_profiles; i++)
-      {
-        MagickFreeMemory(image->generic_profile[i].name);
-        if (image->generic_profile[i].length != 0)
-          MagickFreeMemory(image->generic_profile[i].info);
-      }
-      MagickFreeMemory(image->generic_profile);
+      MagickMapDeallocateMap(image->profiles);
+      image->profiles=0;
     }
   DestroyImageAttributes(image);
   DestroyExceptionInfo(&image->exception);

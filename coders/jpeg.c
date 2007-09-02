@@ -495,7 +495,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 #endif
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  if (image->iptc_profile.length == 0)
+  if (GetImageProfile(image,"IPTC",(size_t *) NULL) == 0)
     {
 #ifdef GET_ONLY_IPTC_DATA
       /*
@@ -1914,22 +1914,39 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         i,(int) Min(strlen(attribute->value+i),65533L));
   WriteICCProfile(&jpeg_info,image);
   WriteIPTCProfile(&jpeg_info,image);
-  for (i=0; i < (long) image->generic_profiles; i++)
   {
-    register long
-      j;
+    const char
+      *profile_name;
+    
+    size_t
+      profile_length;
+    
+    const unsigned char *
+      profile_info;
+    
+    ImageProfileIterator
+      profile_iterator;
 
-    if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
-      continue;
-    x=atol(image->generic_profile[i].name+3);
-    if (image->logging)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Profile: %s, %ld bytes",image->generic_profile[i].name,
-        (long) image->generic_profile[i].length);
-    for (j=0; j < (long) image->generic_profile[i].length; j+=65533L)
-      jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
-        image->generic_profile[i].info+j,(int)
-        Min(image->generic_profile[i].length-j,65533L));
+    profile_iterator=AllocateImageProfileIterator(image);
+    while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
+                           &profile_length) != MagickFail)
+      {
+        register long
+          j;
+
+        if (LocaleNCompare(profile_name,"APP",3) != 0)
+          continue;
+        x=atol(profile_name+3);
+        if (image->logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Profile: %s, %lu bytes",profile_name,
+                                (unsigned long) profile_length);
+        for (j=0; j < (long) profile_length; j+=65533L)
+          jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
+                            profile_info+j,(int)
+                            Min(profile_length-j,65533L));
+      }
+    DeallocateImageProfileIterator(profile_iterator);
   }
   /*
     Convert MIFF to JPEG raster pixels.

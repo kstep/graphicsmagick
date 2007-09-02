@@ -832,13 +832,9 @@ typedef struct _Image
   /*
     Only private members appear past this point
   */
-  ProfileInfo
-    color_profile,      /* ICC color profile */
-    iptc_profile,       /* IPTC newsphoto profile */
-    *generic_profile;   /* List of additional profiles */
 
-  unsigned long
-    generic_profiles;   /* Number of additional generic profiles */
+  void                  /* Private, Embedded profiles */
+    *profiles;
 
   unsigned int
     is_monochrome,      /* Private, True if image is known to be monochrome */

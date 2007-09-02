@@ -1511,12 +1511,6 @@ Unable to add or remove profile
 .
 
 MessageId       = +1
-SymbolicName    = OptionErrorUnableToAllocateICCProfile
-Language        = English
-unable to allocate ICC profile
-.
-
-MessageId       = +1
 SymbolicName    = OptionErrorUnableToAverageImageSequence
 Language        = English
 unable to average image sequence
@@ -2042,6 +2036,12 @@ MessageId       = +1
 SymbolicName    = LimitErrorUnableToAllocateColormap
 Language        = English
 Unable to allocate colormap
+.
+
+MessageId       = +1
+SymbolicName    = LimitErrorUnableToAllocateICCProfile
+Language        = English
+unable to allocate ICC profile
 .
 
 MessageId       = +1

@@ -1135,7 +1135,6 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     all;
 
   long
-    index,
     tag;
 
   register long
@@ -1158,22 +1157,19 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     destack[DE_STACK_SIZE],
     nde;
 
+  const unsigned char
+    *profile_info;
+  
+  size_t
+    profile_length;
+
   /*
     Determine if there is any EXIF data available in the image.
   */
   value=(char *) NULL;
   final=AllocateString("");
-  index=(-1);
-  for (i=0; i < (long) image->generic_profiles; i++)
-  {
-    if ((LocaleCompare(image->generic_profile[i].name,"EXIF") == 0) &&
-        (image->generic_profile[i].length != 0))
-      {
-        index=i;
-        break;
-      }
-  }
-  if (index < 0)
+  profile_info=GetImageProfile(image,"EXIF",&profile_length);
+  if (profile_info == 0)
     goto generate_attribute_failure;
   /*
     If EXIF data exists, then try to parse the request for a tag.
@@ -1264,9 +1260,9 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     }
   }
   if (tag < 0)
-    goto generate_attribute_failure;
-  length=image->generic_profile[index].length;
-  info=image->generic_profile[index].info;
+    goto generate_attribute_failure;;
+  length=profile_length;
+  info=(unsigned char *) profile_info;
   while (length != 0)
   {
     if (ReadByte(&info,&length) != 0x45)

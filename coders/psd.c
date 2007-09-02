@@ -43,6 +43,7 @@
 #include "magick/constitute.h"
 #include "magick/log.h"
 #include "magick/magick.h"
+#include "magick/profile.h"
 #include "magick/utility.h"
 
 /*
@@ -747,8 +748,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
         }
-      image->iptc_profile.info=data;
-      image->iptc_profile.length=length;
+      (void) SetImageProfile(image,"IPTC",data,length);
+      MagickFreeMemory(data)
     }
 
   /*
@@ -1799,13 +1800,23 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
 
   /* image resource block */
-  if ( image->iptc_profile.length > 0 )
-    {
-      (void) WriteBlobMSBLong( image, image->iptc_profile.length );
-      (void) WriteBlob( image, image->iptc_profile.length, image->iptc_profile.info );
-    }
-  else
-    (void) WriteBlobMSBLong(image,0);
+  {
+    const unsigned char
+      *iptc_profile;
+    
+    size_t
+      iptc_profile_length;
+    
+    iptc_profile=GetImageProfile(image,"IPTC",&iptc_profile_length);
+    
+    if ( iptc_profile != 0 )
+      {
+        (void) WriteBlobMSBLong( image, iptc_profile_length );
+        (void) WriteBlob( image, iptc_profile_length, iptc_profile );
+      }
+    else
+      (void) WriteBlobMSBLong(image,0);
+  }
 
  compute_layer_info:
   layer_count = 0;

@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2007-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/profile.c (AllocateImageProfileIterator): New function to
+        allocate an image profile iterator.
+        (DeallocateImageProfileIterator): New function to deallocate an
+        image profile iterator.<BR>
+        (NextImageProfile): New function to advance the image profile
+        iterator to the next profile.<BR>
+  <LI> magick/image.h (Image): Profiles are now stored in a generic
+        container.  As planned years ago, the color_profile, iptc_profile,
+        generic_profile, and generic_profiles members are now removed.
+
+</UL>
+<p>
+2007-09-01  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/bmp.c Ability to read true color bitmap with invalid palette size
+        like other readers do.
+
+</UL>
+<p>
 2007-08-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
