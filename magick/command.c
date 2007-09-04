@@ -112,7 +112,7 @@ typedef struct _CommandInfo
 } CommandInfo;
 
 static void
-  BenchmarkUsage(),
+  BenchmarkUsage(void),
   LiberateArgumentList(const int argc,char **argv),
   GMUsage(void);
 
@@ -9756,7 +9756,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     }
   }
   /*
-    Apply options to individual each image in the list.
+    Apply options individually to each image in the list.
   */
   status=True;
   mogrify_images=NewImageList();
@@ -10134,6 +10134,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         /*
           Write transmogrified image to disk.
         */
+        strcpy(filename,"");
         if (format != (char *) NULL)
           AppendImageFormat(format,image->filename);
         else
@@ -10149,8 +10150,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 }
             }
         status&=WriteImages(image_info,image,image->filename,&image->exception);
-        if ((status != False) && (LocaleCompare(image_info->filename,"-") != 0))
+        if ((status != False) && (LocaleCompare(image_info->filename,"-") != 0)
+            && strlen(filename))
           {
+            /*
+              Rename to final name.
+            */
             (void) remove(filename);
             (void) rename(image->filename,filename);
           }

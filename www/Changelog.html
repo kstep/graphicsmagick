@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2007-09-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImageCommand): Avoid use of
+        uninitialized filename.  Don't remove file name based on random
+        junk in memory.<BR>
+  <LI> magick/constitute.c (WriteImages): Avoid possible strncpy() of a
+        string onto itself.<BR>
+  <LI> magick/nt_base.c (NTGhostscriptGetString): Support "GPL Ghostscript".
+
+</UL>
+<p>
 2007-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1,3 +1,12 @@
+2007-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Avoid use of
+	uninitialized filename.  Don't remove file name based on random
+	junk in memory.
+	* magick/constitute.c (WriteImages): Avoid possible strncpy() of a
+	string onto itself.
+	* magick/nt_base.c (NTGhostscriptGetString): Support "GPL Ghostscript".
+
 2007-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageType): Import the implementation from

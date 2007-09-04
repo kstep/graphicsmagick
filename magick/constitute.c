@@ -3306,7 +3306,8 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
     {
       (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
       for (p=image; p != (Image *) NULL; p=p->next)
-        (void) strncpy(p->filename,filename,MaxTextExtent-1);
+        if (p->filename != filename)
+          (void) strncpy(p->filename,filename,MaxTextExtent-1);
     }
   (void) SetImageInfo(image_info,True,exception);
   status=True;
