@@ -1014,6 +1014,8 @@ static int NTGhostscriptGetString(int gs_revision, const char *name, char *ptr, 
     return TRUE;
   if (NTGhostscriptGetProductString(gs_revision, name, ptr, len, GS_PRODUCT_GNU))
     return TRUE;
+  if (NTGhostscriptGetProductString(gs_revision, name, ptr, len, GS_PRODUCT_GPL))
+    return TRUE;
   return FALSE;
 }
 

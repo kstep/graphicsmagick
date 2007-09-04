@@ -77,16 +77,16 @@
     set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
 
   <!-- Read monochrome Postscript, EPS, and PDF  -->
-  <delegate decode="gs-mono" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+  <delegate decode="gs-mono" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
   <!-- Read grayscale Postscript, EPS, and PDF  -->
-  <delegate decode="gs-gray" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSGrayDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+  <delegate decode="gs-gray" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=pgmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
   <!-- Read color Postscript, EPS, and PDF  -->
-  <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+  <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=ppmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
   <!-- Read color+alpha Postscript, EPS, and PDF  -->
-  <delegate decode="gs-color+alpha" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSColorAlphaDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit' />
+  <delegate decode="gs-color+alpha" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=pngalpha -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
   <delegate decode="hpgl" command='"@HPGLDecodeDelegate@" -q -m eps -f "%o" "%i"' />
   <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />

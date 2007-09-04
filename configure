@@ -37895,6 +37895,8 @@ fi
 # Ghostscript related configuration.
 #
 GSColorDevice=ppmraw
+GSColorAlphaDevice=pngalpha
+GSGrayDevice=pgmraw
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite

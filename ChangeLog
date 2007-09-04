@@ -1,3 +1,12 @@
+2007-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/bin/delegates.mgk: Adjust quoting to Ghostscript arguments
+	so that Ghostscript DLL is passed correct commands.
+	* config/delegates.mgk.in: Adjust quoting to Ghostscript arguments
+	so that Ghostscript DLL is passed correct commands.
+	* configure.ac: Provide defaults for GSColorAlphaDevice and GSGrayDevice.
+	* magick/nt_base.c (NTGhostscriptGetString): Support "GPL Ghostscript".
+
 2007-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/ps.c (WritePSImage): Improved Postscript writer

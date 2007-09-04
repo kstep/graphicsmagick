@@ -6596,8 +6596,9 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
             status &= MagickFail;
           /* Set file name in all image frames */
           for (p=image; p != (Image *) NULL; p=p->next)
-            if (strlcpy(p->filename,filename,MaxTextExtent) >= MaxTextExtent)
-              status &= MagickFail;
+            if (p->filename != filename)
+              if (strlcpy(p->filename,filename,MaxTextExtent) >= MaxTextExtent)
+                status &= MagickFail;
         }
       (void) SetImageInfo(clone_info,True,exception);
       for (p=image; p != (Image *) NULL; p=p->next)

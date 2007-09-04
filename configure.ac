@@ -2454,6 +2454,8 @@ AM_CONDITIONAL(HAS_RPM, test "x$RPM" != "x" )
 # Ghostscript related configuration.
 #
 GSColorDevice=ppmraw
+GSColorAlphaDevice=pngalpha
+GSGrayDevice=pgmraw
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
