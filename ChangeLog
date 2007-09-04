@@ -1,3 +1,8 @@
+2007-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/ps.c (WritePSImage): Improved Postscript writer
+	performance.
+
 2007-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/profile.c (AllocateImageProfileIterator): New function to

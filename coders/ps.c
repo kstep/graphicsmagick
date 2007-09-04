@@ -513,15 +513,67 @@ ModuleExport void UnregisterPSImage(void)
 %
 %
 */
-#define WriteRunlengthPacket(image,pixel,length,p) \
+#define WriteRunlengthPacket(image,bp,pixel,length,p) \
 { \
   if (image->matte && (p->opacity == TransparentOpacity)) \
-    FormatString(buffer,"ffffff%02lX",Min(length,0xff)); \
+    { \
+      bp=AppendHexTriplet(bp,0xff,0xff,0xff); \
+    } \
   else \
-    FormatString(buffer,"%02X%02X%02X%02lX",ScaleQuantumToChar(pixel.red), \
-      ScaleQuantumToChar(pixel.green),ScaleQuantumToChar(pixel.blue), \
-      Min(length,0xff)); \
-  (void) WriteBlobString(image,buffer); \
+    { \
+      bp=AppendHexTriplet(bp, \
+                          ScaleQuantumToChar(pixel.red), \
+                          ScaleQuantumToChar(pixel.green), \
+                          ScaleQuantumToChar(pixel.blue)); \
+    } \
+  bp=AppendHexVal(bp,Min(length,0xff)); \
+}
+
+static char* hexvals[] =
+  {
+    "00","01","02","03","04","05","06","07","08","09","0A","0B",
+    "0C","0D","0E","0F","10","11","12","13","14","15","16","17",
+    "18","19","1A","1B","1C","1D","1E","1F","20","21","22","23",
+    "24","25","26","27","28","29","2A","2B","2C","2D","2E","2F",
+    "30","31","32","33","34","35","36","37","38","39","3A","3B",
+    "3C","3D","3E","3F","40","41","42","43","44","45","46","47",
+    "48","49","4A","4B","4C","4D","4E","4F","50","51","52","53",
+    "54","55","56","57","58","59","5A","5B","5C","5D","5E","5F",
+    "60","61","62","63","64","65","66","67","68","69","6A","6B",
+    "6C","6D","6E","6F","70","71","72","73","74","75","76","77",
+    "78","79","7A","7B","7C","7D","7E","7F","80","81","82","83",
+    "84","85","86","87","88","89","8A","8B","8C","8D","8E","8F",
+    "90","91","92","93","94","95","96","97","98","99","9A","9B",
+    "9C","9D","9E","9F","A0","A1","A2","A3","A4","A5","A6","A7",
+    "A8","A9","AA","AB","AC","AD","AE","AF","B0","B1","B2","B3",
+    "B4","B5","B6","B7","B8","B9","BA","BB","BC","BD","BE","BF",
+    "C0","C1","C2","C3","C4","C5","C6","C7","C8","C9","CA","CB",
+    "CC","CD","CE","CF","D0","D1","D2","D3","D4","D5","D6","D7",
+    "D8","D9","DA","DB","DC","DD","DE","DF","E0","E1","E2","E3",
+    "E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF",
+    "F0","F1","F2","F3","F4","F5","F6","F7","F8","F9","FA","FB",
+    "FC","FD","FE","FF",NULL
+  };
+static inline char *AppendHexVal(char *q,unsigned int val)
+{
+  char
+    *hexval;
+
+  assert(val < 256);
+  hexval=hexvals[val];
+  *q++=*hexval++;
+  *q++=*hexval++;
+  return q;
+}
+static inline char* AppendHexTriplet(char *q,
+                                     unsigned int a,
+                                     unsigned int b,
+                                     unsigned int c)
+{
+  q=AppendHexVal(q,a);
+  q=AppendHexVal(q,b);
+  q=AppendHexVal(q,c);
+  return q;
 }
 static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
@@ -784,6 +836,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     };
 
   char
+    *bp,
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
@@ -997,6 +1050,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
             (void) WriteBlobString(image,buffer);
             count=0;
+            bp=buffer;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(preview_image,0,y,preview_image->columns,1,
@@ -1014,13 +1068,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 bit++;
                 if (bit == 8)
                   {
-                    FormatString(buffer,"%02X",byte & 0xff);
-                    (void) WriteBlobString(image,buffer);
+                    bp=AppendHexVal(bp,byte & 0xff);
                     count++;
                     if (count == 36)
                       {
-                        (void) WriteBlobString(image,"\n%  ");
                         count=0;
+                        *bp++='\n';
+                        *bp++='%';
+                        *bp++=' ';
+                        *bp++=' ';
+                        (void) WriteBlob(image,bp-buffer,buffer);
+                        bp=buffer;
                       };
                     bit=0;
                     byte=0;
@@ -1029,16 +1087,25 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (bit != 0)
                 {
                   byte<<=(8-bit);
-                  FormatString(buffer,"%02X",byte & 0xff);
-                  (void) WriteBlobString(image,buffer);
+                  bp=AppendHexVal(bp,byte & 0xff);
                   count++;
                   if (count == 36)
                     {
-                      (void) WriteBlobString(image,"\n%  ");
                       count=0;
+                      *bp++='\n';
+                      *bp++='%';
+                      *bp++=' ';
+                      *bp++=' ';
+                      (void) WriteBlob(image,bp-buffer,buffer);
+                      bp=buffer;
                     };
                 };
             }
+            if (bp != buffer)
+              {
+                (void) WriteBlob(image,bp-buffer,buffer);
+                bp=buffer;
+              }
             (void) WriteBlobString(image,"\n%%EndPreview\n");
             DestroyImage(preview_image);
           }
@@ -1133,6 +1200,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               Dump image as grayscale.
             */
             i++;
+            bp=buffer;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1141,14 +1209,22 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                FormatString(buffer,"%02X",
-                  ScaleQuantumToChar(PixelIntensityToQuantum(p)));
-                (void) WriteBlobString(image,buffer);
+                Quantum
+                  quantum;
+
+                if (image->is_grayscale)
+                  quantum=GetGraySample(p);
+                else
+                  quantum=PixelIntensityToQuantum(p);
+
+                bp=AppendHexVal(bp,ScaleQuantumToChar(quantum));
                 i++;
                 if (i == 36)
                   {
-                    (void) WriteBlobByte(image,'\n');
                     i=0;
+                    *bp++='\n';
+                    (void) WriteBlob(image,bp-buffer,buffer);
+                    bp=buffer;
                   }
                 p++;
               }
@@ -1157,7 +1233,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (!MagickMonitor(SaveImageText,y,image->rows,
                                      &image->exception))
                     break;
-            }
+            } 
+            if (bp != buffer)
+              {
+                *bp++='\n';
+                (void) WriteBlob(image,bp-buffer,buffer);
+                bp=buffer;
+              }
           }
         else
           {
@@ -1173,6 +1255,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               polarity=PixelIntensityToQuantum(&image->colormap[1]) <
                 PixelIntensityToQuantum(&image->colormap[0]);
             count=0;
+            bp=buffer;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1190,14 +1273,15 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 bit++;
                 if (bit == 8)
                   {
-                    FormatString(buffer,"%02X",byte & 0xff);
-                    (void) WriteBlobString(image,buffer);
+                    bp=AppendHexVal(bp,byte & 0xff);
                     count++;
                     if (count == 36)
                       {
-                        (void) WriteBlobByte(image,'\n');
                         count=0;
-                      };
+                        *bp++='\n';
+                        (void) WriteBlob(image,bp-buffer,buffer);
+                        bp=buffer;
+                      }
                     bit=0;
                     byte=0;
                   }
@@ -1206,13 +1290,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (bit != 0)
                 {
                   byte<<=(8-bit);
-                  FormatString(buffer,"%02X",byte & 0xff);
-                  (void) WriteBlobString(image,buffer);
+                  bp=AppendHexVal(bp,byte & 0xff);
                   count++;
                   if (count == 36)
                     {
-                      (void) WriteBlobByte(image,'\n');
                       count=0;
+                      *bp++='\n';
+                      (void) WriteBlob(image,bp-buffer,buffer);
+                      bp=buffer;
                     };
                 };
               if (image->previous == (Image *) NULL)
@@ -1221,6 +1306,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                                      &image->exception))
                     break;
             }
+            if (bp != buffer)
+              {
+                (void) WriteBlob(image,bp-buffer,buffer);
+                bp=buffer;
+              }
           }
         if (count != 0)
           (void) WriteBlobByte(image,'\n');
@@ -1241,6 +1331,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump runlength-encoded DirectColor packets.
               */
+              bp=buffer;
               for (y=0; y < (long) image->rows; y++)
               {
                 p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1259,11 +1350,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     {
                       if (x > 0)
                         {
-                          WriteRunlengthPacket(image,pixel,length,p);
+                          WriteRunlengthPacket(image,bp,pixel,length,p);
                           i++;
                           if (i == 9)
                             {
-                              (void) WriteBlobByte(image,'\n');
+                              *bp++='\n';
+                              (void) WriteBlob(image,bp-buffer,buffer);
+                              bp=buffer;
                               i=0;
                             }
                         }
@@ -1272,12 +1365,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel=(*p);
                   p++;
                 }
-                WriteRunlengthPacket(image,pixel,length,p);
+                WriteRunlengthPacket(image,bp,pixel,length,p);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                       break;
               }
+              if (bp != buffer)
+                {
+                  (void) WriteBlob(image,bp-buffer,buffer);
+                  bp=buffer;
+                }
               break;
             }
             case NoCompression:
@@ -1287,6 +1385,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed DirectColor packets.
               */
               i=0;
+              bp=buffer;
               for (y=0; y < (long) image->rows; y++)
               {
                 p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1296,17 +1395,19 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (long) image->columns; x++)
                 {
                   if (image->matte && (p->opacity == TransparentOpacity))
-                    (void) strcpy(buffer,"ffffff");
+                    bp=AppendHexTriplet(bp,0xff,0xff,0xff);
                   else
-                    FormatString(buffer,"%02X%02X%02X",
-                      ScaleQuantumToChar(p->red),ScaleQuantumToChar(p->green),
-                      ScaleQuantumToChar(p->blue));
-                  (void) WriteBlobString(image,buffer);
+                    bp=AppendHexTriplet(bp,
+                                        ScaleQuantumToChar(p->red),
+                                        ScaleQuantumToChar(p->green),
+                                        ScaleQuantumToChar(p->blue));
                   i++;
                   if (i == 12)
                     {
                       i=0;
-                      (void) WriteBlobByte(image,'\n');
+                      *bp++='\n';
+                      (void) WriteBlob(image,bp-buffer,buffer);
+                      bp=buffer;
                     }
                   p++;
                 }
@@ -1315,6 +1416,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                       break;
               }
+              if (bp != buffer)
+                {
+                  *bp++='\n';
+                  (void) WriteBlob(image,bp-buffer,buffer);
+                  bp=buffer;
+                }
               break;
             }
           }
@@ -1350,6 +1457,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump runlength-encoded PseudoColor packets.
               */
               i=0;
+              bp=buffer;
               for (y=0; y < (long) image->rows; y++)
               {
                 p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1368,13 +1476,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     {
                       if (x > 0)
                         {
-                          FormatString(buffer,"%02X%02lX",index,
-                            Min(length,0xff));
-                          (void) WriteBlobString(image,buffer);
+                          bp=AppendHexVal(bp,index);
+                          bp=AppendHexVal(bp,Min(length,0xff));
                           i++;
                           if (i == 18)
                             {
-                              (void) WriteBlobByte(image,'\n');
+                              *bp++='\n';
+                              (void) WriteBlob(image,bp-buffer,buffer);
+                              bp=buffer;
                               i=0;
                             }
                         }
@@ -1384,12 +1493,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel=(*p);
                   p++;
                 }
-                FormatString(buffer,"%02X%02lX",index,Min(length,0xff));
-                (void) WriteBlobString(image,buffer);
+                bp=AppendHexVal(bp,index);
+                bp=AppendHexVal(bp,Min(length,0xff));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                       break;
+              }
+              if (bp != buffer)
+              {
+                (void) WriteBlob(image,bp-buffer,buffer);
+                bp=buffer;
               }
               break;
             }
@@ -1400,6 +1514,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               i=0;
+              bp=buffer;
               for (y=0; y < (long) image->rows; y++)
               {
                 p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1409,12 +1524,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  FormatString(buffer,"%02X",indexes[x]);
-                  (void) WriteBlobString(image,buffer);
+                  bp=AppendHexVal(bp,indexes[x]);
                   i++;
                   if (i == 36)
                     {
-                      (void) WriteBlobByte(image,'\n');
+                      *bp++='\n';
+                      (void) WriteBlob(image,bp-buffer,buffer);
+                      bp=buffer;
                       i=0;
                     }
                   p++;
@@ -1424,6 +1540,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                       break;
               }
+              if (bp != buffer)
+                {
+                  (void) WriteBlob(image,bp-buffer,buffer);
+                  bp=buffer;
+                }
               break;
             }
           }

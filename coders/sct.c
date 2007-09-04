@@ -31,6 +31,16 @@
 %
 %
 */
+
+/*
+  The citex HandShake data format is specified in the document
+
+  HandShake Foreign File Transfer Protocol, Scitex Corporation, Ltd.,
+  Revision A: April 1988, Document No. 788-37898A, Catalog No. 399Z37898
+
+  http://www.oreilly.com/www/centers/gff/formats/scitex/
+*/
+
 
 /*
   Include declarations.

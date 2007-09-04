@@ -6,29 +6,20 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.
+  o MPC format related issues:
+
+    - gm identify cores
+    - convert from MPC to MPC removes input file.
+
+  o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.  (still true?)
 
   o Fix Scitex RGB reader to handle files written by Photoshop.
-
-  o Fix polyline renderering (improperly closes shape) when line is very thick.
-
-  o Look into problem reported by Rick Mabry, "Shear produces artifacts for
-    a 0 y-shear (e.g. 60x0)."
-
-  o Fix bug noticed when writing multiple image frames to a JPEG
-    file without an extension.
 
   o Fix PerlMagick BLOB reading (disable header magic checking if already
     specified).
 
   o Implement DrawableFillPattern and DrawableStrokePattern drawable objects
     in order to allow setting the fill and stroke patterns.
-
-  o It appears that SyncImagePixels() silently fails if the region
-    includes parts outside of the underlying image. The API supports
-    requesting areas outside of the image, but then the underlying image
-    is not updated. This was first noted with -lat when the image is
-    entirely disk-based.
 
   o Update to libtool 2.0 (now using development libtool 2.0) if it
     happens to be released.
@@ -51,4 +42,19 @@ For 1.2 Branch
   o Convert to using safe string copy and append (done).
 
   o Use non-recursive build for Unix (done).
+
+For later releases
+==================
+
+  o Fix polyline renderering (improperly closes shape) when line is very thick.
+
+  o Look into problem reported by Rick Mabry, "Shear produces artifacts for
+    a 0 y-shear (e.g. 60x0)."
+
+  o It appears that SyncImagePixels() silently fails if the region
+    includes parts outside of the underlying image. The API supports
+    requesting areas outside of the image, but then the underlying image
+    is not updated. This was first noted with -lat when the image is
+    entirely disk-based.
+
 

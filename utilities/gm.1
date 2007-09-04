@@ -1,4 +1,4 @@
-.TH gm 1 "2007/08/27" "GraphicsMagick"
+.TH gm 1 "2007/09/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1183,10 +1183,16 @@ size. Tiled TIFF organizes the image as an array of smaller images
 .in 20
  \fR
 .in 20
-Specify the tile size to use while writing tiled TIFF. Width and height
-should be a multiple of 16. If the value is not a multiple of 16, then it
-will be rounded down. Enables tiled TIFF if it has not already been
-enabled.
+Specify the tile size to use while writing tiled TIFF. Width and
+height should be a multiple of 16. If the value is not a multiple of 16,
+then it will be rounded down. Enables tiled TIFF if it has not already
+been enabled. GraphicsMagick does not use tiled storage internally so
+tiles need to be converted back and forth from the internal
+scanline-oriented storage to tile-oriented storage. Testing with typical
+RGB images shows that useful square tile size values range from 128x128
+to 1024x1024. Large images which require using a disk-based pixel cache
+benefit from large tile sizes while images which fit in memory work well
+with smaller tile sizes.
 
 .in 15
 .in 15

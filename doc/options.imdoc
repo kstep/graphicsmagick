@@ -1091,10 +1091,16 @@ size. Tiled TIFF organizes the image as an array of smaller images
 </dd>
 
 <dt>tiff:tile-geometry=<width>x<height></dt>
-<dd>Specify the tile size to use while writing tiled TIFF. Width and height
-should be a multiple of 16. If the value is not a multiple of 16, then it
-will be rounded down. Enables tiled TIFF if it has not already been
-enabled.
+<dd>Specify the tile size to use while writing tiled TIFF. Width and
+height should be a multiple of 16. If the value is not a multiple of 16,
+then it will be rounded down. Enables tiled TIFF if it has not already
+been enabled. GraphicsMagick does not use tiled storage internally so
+tiles need to be converted back and forth from the internal
+scanline-oriented storage to tile-oriented storage. Testing with typical
+RGB images shows that useful square tile size values range from 128x128
+to 1024x1024. Large images which require using a disk-based pixel cache
+benefit from large tile sizes while images which fit in memory work well
+with smaller tile sizes.
 </dd>
 
 <dt>tiff:tile-width=<width></dt>
