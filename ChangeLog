@@ -1,5 +1,7 @@
 2007-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: For Windows MinGW-based build, find Ghostscript
+	fonts installed under C:/Program Files/.
 	* VisualMagick/bin/delegates.mgk: Adjust quoting to Ghostscript arguments
 	so that Ghostscript DLL is passed correct commands.
 	* config/delegates.mgk.in: Adjust quoting to Ghostscript arguments

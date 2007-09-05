@@ -37703,13 +37703,33 @@ then
 else
   if test "${native_win32_build}" = 'yes'
   then
-    ghostscript_font_dir="c:\\gs\\fonts\\"
+    # Native Windows Build
+    #
+    # Ghostscript may install fonts to several default locations now.
+    # If the user does not select the default, then he is on his own.
+    #
+    # It would be nice to use reg.exe to obtain Ghostscript information
+    # but unfortunately MSYS seems to transform registry key paths into
+    # filesystem paths so it does not work.  Maybe there is a way to
+    # prevent that translation?
+    #
+    #   reg query "HKLM\Software\GPL Ghostscript" /s
+    for font_dir in "c:\\Program Files\\gs\\fonts\\" "c:\\gs\\fonts\\"
+    do
+      if test -f "${font_dir}a010013l.pfb"
+      then
+        ghostscript_font_dir="$font_dir"
+        break 1
+      fi
+    done
     if test "${PSDelegate}" != 'gswin32c'
     then
       ghostscript_font_dir=`echo "${PSDelegate}" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
     fi
 
   else
+    # Unix Build
+    #
     # Check ${prefix}/share/ghostscript/fonts first
     # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
     # Recent Cygwin puts Ghostscript fonts in /usr/share/ghostscript/fonts
