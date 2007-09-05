@@ -1,5 +1,7 @@
 2007-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: For Windows MinGW-based build, find Ghostscript
+	fonts installed under C:/Program Files/.
 	* magick/command.c (MogrifyImageCommand): Avoid use of
 	uninitialized filename.  Don't remove file name based on random
 	junk in memory.
