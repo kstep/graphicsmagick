@@ -46,6 +46,11 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
+#if defined(HAVE_MACH_O_DYLD_H)
+/* Needed for _NSGetExecutablePath */
+# include <mach-o/dyld.h>
+#endif
+
 /*
   Compute a value which is the next power of 2 larger than the
   requested value, or size+MaxTextExtent, whichever is larger.
@@ -1142,7 +1147,8 @@ MagickExport void FormatString(char *string,const char *format,...)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetExecutionPath() returns the pathname of the executable that started
-%  the process.  On success True is returned, otherwise False.
+%  the process. The user-supplied buffer must be at least MaxTextExtent
+%  bytes long.  On success True is returned, otherwise False.
 %
 %  The format of the GetExecutionPath method is:
 %
@@ -1153,14 +1159,22 @@ MagickExport void FormatString(char *string,const char *format,...)
 %    o path: The pathname of the executable that started the process.
 %
 */
-MagickExport unsigned int GetExecutionPath(char *path)
+MagickExport MagickPassFail GetExecutionPath(char *path)
 {
   *path='\0';
 #if defined(MSWINDOWS)
+  /*
+    Microsoft Windows provides an means to obtain the path to the
+    currently executing executable or DLL.
+  */
   return(NTGetExecutionPath(path));
 #endif
 #if defined(HAVE_GETEXECNAME)
   {
+    /*
+      Sun's Solaris provides a getexecname() for obtaining the path to
+      this executable.
+    */
     const char
       *execution_path;
 
@@ -1170,15 +1184,78 @@ MagickExport unsigned int GetExecutionPath(char *path)
         if (*execution_path != *DirectorySeparator)
           {
             (void) getcwd(path,MaxTextExtent-1);
-            (void) strcat(path,"/");
+            (void) strlcat(path,"/",MaxTextExtent);
           }
         (void) strlcat(path,execution_path,MaxTextExtent);
         if (IsAccessible(path))
-          return(True);
+          return(MagickPass);
       }
   }
 #endif
-  return(False);
+#if defined(HAVE__NSGETEXECUTABLEPATH) && defined(HAVE_REALPATH)
+  {
+    /*
+      Apple OS-X provides a _NSGetExecutablePath function for
+      obtaining the path to the executable.  The returned path may be
+      a symbolic link to the actual executable so use realpath() to
+      resolve the real path.  It is claimed that _NSGetExecutablePath
+      could possibly return a path longer than MAXPATHLEN.  Inspection
+      of <sys/param.h> on an OS-X system reveals that MAXPATHLEN is
+      defined to be PATH_MAX. So we will provide for PATH_MAX*2.
+    */
+    uint32_t
+      bufsize;
+
+    char
+      executable_path[PATH_MAX*2],
+      real_path[PATH_MAX+1];
+    
+    bufsize=sizeof(executable_path);
+    if (_NSGetExecutablePath(executable_path,&bufsize) == 0)
+      if (realpath(executable_path,real_path) != NULL)
+        if (strlcpy(path,real_path,MaxTextExtent) < MaxTextExtent)
+          if (IsAccessible(path))
+            return(MagickPass);
+  }
+#endif
+#if defined(HAVE_GETPID) && defined(HAVE_READLINK)
+  {
+    /*
+      On Linux, the symbolic link "/proc/PID/exe" (where 'PID' is the
+      integer process ID) points to the physical executable.  FreeBSD
+      is similar except that the link path is "/proc/PID/file".  Maybe
+      some other systems use compatible schemes.
+    */
+    int
+      length;
+
+    long
+      pid;
+
+    char 
+      link_path[MaxTextExtent],
+      real_path[PATH_MAX+1];
+
+    pid=(long) getpid();
+    /* Linux format */
+    FormatString(link_path,"/proc/%ld/exe",pid);
+    length=readlink(link_path, real_path, PATH_MAX);
+    if (length == -1)
+      {
+        /* Try FreeBSD format */
+        FormatString(link_path,"/proc/%ld/file",pid);
+        length=readlink(link_path, real_path, PATH_MAX);
+      }
+    if ((length > 0) && (length <= PATH_MAX))
+      {
+        real_path[length]=0;
+        if (strlcpy(path,real_path,MaxTextExtent) < MaxTextExtent)
+          if (IsAccessible(path))
+            return(MagickPass);
+      }
+  }
+#endif
+  return(MagickFail);
 }
 
 /*

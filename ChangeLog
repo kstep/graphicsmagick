@@ -1,3 +1,8 @@
+2007-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetExecutionPath): Add support for Apple OS-X,
+	Linux, and FreeBSD.
+
 2007-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: For Windows MinGW-based build, find Ghostscript

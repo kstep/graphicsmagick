@@ -131,6 +131,9 @@
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 
+/* Define to 1 if you have the `getpid' function. */
+#undef HAVE_GETPID
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -220,6 +223,12 @@
 
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
+
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
+
+/* Define to 1 if you have the `realpath' function. */
+#undef HAVE_REALPATH
 
 /* Define to 1 if you have the `seekdir' function. */
 #undef HAVE_SEEKDIR
@@ -333,6 +342,9 @@
 
 /* Define to 1 if you have the `_exit' function. */
 #undef HAVE__EXIT
+
+/* Define to 1 if you have the `_NSGetExecutablePath' function. */
+#undef HAVE__NSGETEXECUTABLEPATH
 
 /* Define to 1 if you have the `_pclose' function. */
 #undef HAVE__PCLOSE

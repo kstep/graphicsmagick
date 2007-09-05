@@ -794,8 +794,8 @@ AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
 AC_HEADER_STDC
 AC_HEADER_DIRENT
 
-# Check additional headers
-AC_CHECK_HEADERS(machine/param.h sys/times.h sys/types.h)
+# Check additional headers 
+AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/times.h sys/types.h)
 
 ########
 #
@@ -974,10 +974,11 @@ AC_SUBST(UINT64_T)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([_exit ftime getexecname getc_unlocked getpagesize madvise \
-  mkstemp _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
-  rand_r select tempnam times seekdir sigemptyset sigaction strerror \
-  strlcat strlcpy sysconf telldir vsprintf vsnprintf])
+AC_CHECK_FUNCS([_exit ftime getexecname getc_unlocked getpagesize getpid \
+  madvise mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen pread \
+  pwrite putc_unlocked raise rand_r readlink realpath select seekdir \
+  sigemptyset sigaction strerror strlcat strlcpy sysconf tempnam times telldir \
+  vsprintf vsnprintf])
 
 ########
 #
