@@ -694,6 +694,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   time_t current_time;
   const struct tm *t;
   unsigned char *pixels;
+  int is_gray;
 
   current_time=time((time_t *) NULL);
   t=localtime(&current_time);
@@ -714,10 +715,13 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
+  is_gray = IsGrayImage(image,&image->exception);
+
   /*
     Store MAT header.
   */
-  DataSize = image->rows /*Y*/ * image->columns /*X*/ * 3 /*Z*/;
+  DataSize = image->rows /*Y*/ * image->columns /*X*/;
+  if(!is_gray) DataSize *= 3 /*Z*/;
   padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
   (void) memset(MATLAB_HDR,' ',Min(sizeof(MATLAB_HDR),124));
@@ -741,12 +745,15 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
   (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */  
   (void) WriteBlobLSBLong(image, 0);   
-  (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */  
-  (void) WriteBlobLSBLong(image, 0xC); /* 0x9C */      
+  (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */
+  (void) WriteBlobLSBLong(image, is_gray?0x8:0xC); /* 0x9C - DimFlag */
   (void) WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
   (void) WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
-  (void) WriteBlobLSBLong(image, 3);              /* z: 0xA8 */  
-  (void) WriteBlobLSBLong(image, 0);
+  if(!is_gray)
+  {
+    (void) WriteBlobLSBLong(image, 3); /* z: 0xA8 */  
+    (void) WriteBlobLSBLong(image, 0);
+  }
   (void) WriteBlobLSBShort(image, 1);  /* 0xB0 */  
   (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
   (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
@@ -756,23 +763,33 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   /*
     Store image data.
   */
-  for (y=0; y<(long)image->columns; y++)
+  if(is_gray)
+    for (y=0; y<(long)image->columns; y++)
+    {
+      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+      (void) ExportImagePixelArea(image,GrayQuantum,8,pixels,0,0);
+      (void) WriteBlob(image,image->rows,pixels);
+    }
+  else
   {
-    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-   (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0,0);
-   (void) WriteBlob(image,image->rows,pixels);
-  }
-  for (y=0; y<(long)image->columns; y++)
-  {
-    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-    (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0,0);
-    (void) WriteBlob(image,image->rows,pixels);
-  }
-  for (y=0; y<(long)image->columns; y++)
-  {
-    q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-    (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0,0);
-    (void) WriteBlob(image,image->rows,pixels);
+    for (y=0; y<(long)image->columns; y++)
+    {
+      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+      (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0,0);
+      (void) WriteBlob(image,image->rows,pixels);
+    }    
+    for (y=0; y<(long)image->columns; y++)
+    {
+      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+      (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0,0);
+      (void) WriteBlob(image,image->rows,pixels);
+    }
+    for (y=0; y<(long)image->columns; y++)
+    {
+      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+      (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0,0);
+      (void) WriteBlob(image,image->rows,pixels);
+    }
   }
 
   while(padding-->0) (void) WriteBlobByte(image,0);

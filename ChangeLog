@@ -1,3 +1,7 @@
+2007-09-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Write native gray MAT data when gray image is detected.
+
 2007-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetExecutionPath): Add support for Apple OS-X,
