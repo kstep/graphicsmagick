@@ -4220,6 +4220,10 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
               status=MagickFail;
               break;
             }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
     }
   

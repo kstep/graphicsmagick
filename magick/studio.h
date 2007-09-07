@@ -347,7 +347,8 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #define QuantumTick(i,span) \
-  ((((i) & 0xff) == 0) || ((magick_int64_t) (i) == ((magick_int64_t) (span)-1)))
+  ((((i) % ((Max(101,span)-1)/100)) == 0) || \
+    ((magick_int64_t) (i) == ((magick_int64_t) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))

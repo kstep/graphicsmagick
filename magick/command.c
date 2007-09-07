@@ -181,6 +181,54 @@ static const CommandInfo commands[] =
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o m m a n d P r o g r e s s M o n i t o r                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CommandProgressMonitor displays the progress a task is making in
+%  completing a task.
+%
+%  The format of the CommandProgressMonitor method is:
+%
+%      MagickBool CommandProgressMonitor(const char *task,
+%        const magick_int64_t quantum,const magick_uint64_t span,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o task: Identifies the task in progress.
+%
+%    o quantum: Specifies the quantum position within the span which represents
+%      how much progress has been made in completing a task.
+%
+%    o span: Specifies the span relative to completing a task.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+static MagickBool CommandProgressMonitor(const char *task,
+  const magick_int64_t quantum,const magick_uint64_t span,
+  ExceptionInfo *ARGUNUSED(exception))
+{
+  if ((span > 1) && (quantum >= 0) && ((magick_uint64_t) quantum < span))
+    {
+      (void) fprintf(stderr,"  %3lu%% %s\r",
+                     (unsigned long) ((double) 100.0*quantum/(span-1)),
+                     task);
+      if ((magick_uint64_t) quantum == (span-1))
+        (void) fprintf(stderr,"\n");
+      (void) fflush(stderr);
+    }
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   N o r m a l i z e S a m p l i n g F a c t o r                             %
 %                                                                             %
 %                                                                             %
@@ -2429,6 +2477,14 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("matte",option+1) == 0)
           break;
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
         if (LocaleCompare("monochrome",option+1) == 0)
           break;
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
@@ -2869,6 +2925,7 @@ static void CompositeUsage(void)
       "-limit type value    Disk, Map, or Memory resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-page geometry       size and location of an image canvas",
@@ -4112,6 +4169,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
         if (LocaleCompare("monochrome",option+1) == 0)
           {
             image_info->monochrome=(*option == '-');
@@ -5028,6 +5093,7 @@ static void ConvertUsage(void)
       "-matte               store matte channel if the image has one",
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
@@ -7250,6 +7316,18 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           }
         ThrowIdentifyException(OptionError,UnrecognizedOption,option)
       }
+      case 'm':
+      {
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
+        ThrowIdentifyException(OptionError,UnrecognizedOption,option)
+      }
       case 'p':
       {
         if (LocaleCompare("ping",option+1) == 0)
@@ -7854,22 +7932,20 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             char
               type;
 
+            ColorspaceType
+              colorspace;
+
             type=(*option);
             option=argv[++i];
-            quantize_info.colorspace=StringToColorspaceType(option);
-            if ((quantize_info.colorspace == CMYKColorspace) ||
-                (IsGrayColorspace(quantize_info.colorspace)))
-              {
-                (void) TransformColorspace(*image,quantize_info.colorspace);
-                if (quantize_info.colorspace == CMYKColorspace)
-                  {
-                    /* Ignore request to quantize in CMYK colorspace */
-                    quantize_info.colorspace=RGBColorspace;
-                  }
-              }
-            clone_info->colorspace=quantize_info.colorspace;
+            colorspace=StringToColorspaceType(option);
+            quantize_info.colorspace=colorspace;
+            /* Never quantize in CMYK colorspace */
+            if (IsCMYKColorspace(colorspace))
+              quantize_info.colorspace=RGBColorspace;
+            (void) TransformColorspace(*image,colorspace);
+            clone_info->colorspace=colorspace;
             if (type == '+')
-              (*image)->colorspace=clone_info->colorspace;
+              (*image)->colorspace=colorspace;
             continue;
           }
         if (LocaleCompare("comment",option+1) == 0)
@@ -9793,8 +9869,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  MonitorHandler
-    handler;
+/*   MonitorHandler */
+/*     handler; */
 
   register long
     i;
@@ -9846,9 +9922,9 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   for (i=0; i < (long) number_images; i++)
   {
     image=RemoveFirstImageFromList(images);
-    handler=SetMonitorHandler((MonitorHandler) NULL);
+/*     handler=SetMonitorHandler((MonitorHandler) NULL); */
     status&=MogrifyImage(image_info,argc,argv,&image);
-    (void) SetMonitorHandler(handler);
+/*     (void) SetMonitorHandler(handler); */
     if (scene)
       image->scene+=i;
     /*
@@ -9857,8 +9933,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     if (image_info->verbose)
       (void) DescribeImage(image,stdout,False);
     AppendImageToList(&mogrify_images,image);
-    if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception))
-      break;
+/*     if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception)) */
+/*       break; */
   }
   /*
     Apply options to the entire image list.
@@ -11276,6 +11352,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
         if (LocaleCompare("monochrome",option+1) == 0)
           {
             image_info->monochrome=(*option == '-');
@@ -12052,6 +12136,7 @@ static void MogrifyUsage(void)
       "-matte               store matte channel if the image has one",
       "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-noop                do not apply options to image"
@@ -13027,6 +13112,14 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
         if (LocaleCompare("monochrome",option+1) == 0)
           {
             image_info->monochrome=(*option == '-');
@@ -13488,6 +13581,7 @@ static void MontageUsage(void)
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-noop                do not apply options to image",
       "-page geometry       size and location of an image canvas",

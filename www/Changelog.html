@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2007-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageCharacteristics): Add progress monitor support.
+  <LI> magick/color.c (IsMonochromeImage): Add progress monitor support.
+        (IsGrayImage): Add progress monitor support.
+        (IsOpaqueImage): Add progress monitor support.
+  <LI> coders/dpx.c (ReadDPXImage): Added progress indication.
+  <LI> coders/cineon.c (WriteCINEONImage): Added progress indication.
+  <LI> magick/command.c : Added a -monitor command option for
+        'composite', 'convert', 'identify', 'mogrify', and 'montage' in
+        order to enable a simple progress indicator.
+
+</UL>
+<p>
+2007-09-06  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Write native gray MAT data when gray image is detected.
+
+</UL>
+<p>
 2007-09-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

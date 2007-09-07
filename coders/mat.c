@@ -41,6 +41,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/magick.h"
+#include "magick/monitor.h"
 #include "magick/shear.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
@@ -769,26 +770,49 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
       q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
       (void) ExportImagePixelArea(image,GrayQuantum,8,pixels,0,0);
       (void) WriteBlob(image,image->rows,pixels);
+      if (QuantumTick(y,image->columns))
+        if (!MagickMonitor(SaveImageText,y,image->columns,&image->exception))
+          break;
     }
   else
   {
+    magick_uint64_t
+      progress_span;
+
+    magick_int64_t
+      progress_quantum;
+
+    progress_span=image->columns*3;
+    progress_quantum=0;
     for (y=0; y<(long)image->columns; y++)
     {
+      progress_quantum++;
       q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
       (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0,0);
       (void) WriteBlob(image,image->rows,pixels);
+      if (QuantumTick(progress_quantum,progress_span))
+        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+          break;
     }    
     for (y=0; y<(long)image->columns; y++)
     {
+      progress_quantum++;
       q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
       (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0,0);
       (void) WriteBlob(image,image->rows,pixels);
+      if (QuantumTick(progress_quantum,progress_span))
+        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+          break;
     }
     for (y=0; y<(long)image->columns; y++)
     {
+      progress_quantum++;
       q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
       (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0,0);
       (void) WriteBlob(image,image->rows,pixels);
+      if (QuantumTick(progress_quantum,progress_span))
+        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+          break;
     }
   }
 

@@ -385,6 +385,10 @@
 <lopt>-modulate brightness[,saturation[,hue]]</opt>
 <abs>vary the brightness, saturation, and hue of an image</abs>
 </utils>
+<utils apps=composite,convert,mogrify,montage>
+<opt>-monitor</opt>
+<abs>show progress indication</abs>
+</utils>
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <opt>-monochrome</opt>
 <abs>transform the image to black and white</abs>

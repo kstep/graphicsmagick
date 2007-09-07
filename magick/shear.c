@@ -288,7 +288,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   Image
     *rotate_image;
 
-  long
+  unsigned long
     y;
 
   RectangleInfo
@@ -301,7 +301,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   register const PixelPacket
     *p;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -329,7 +329,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       /*
         Rotate 0 degrees.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
@@ -355,10 +355,10 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       /*
         Rotate 90 degrees.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,(long) (image->rows-y-1),0,1,
+        q=SetImagePixels(rotate_image,(long)(image->rows-y-1),0,1,
           rotate_image->rows);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
@@ -385,7 +385,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       /*
         Rotate 180 degrees.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,0,(long) (image->rows-y-1),
@@ -397,9 +397,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         rotate_indexes=GetIndexes(rotate_image);
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < image->columns; x++)
           *--q=(*p++);
         if (!SyncImagePixels(rotate_image))
           break;
@@ -416,20 +416,20 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       /*
         Rotate 270 degrees.
       */
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,y,0,1,rotate_image->rows);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < image->columns; x++)
           *--q=(*p++);
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
             rotate_indexes[image->columns-x-1]=indexes[x];
         if (!SyncImagePixels(rotate_image))
           break;

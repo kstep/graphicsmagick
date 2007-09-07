@@ -1334,6 +1334,11 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
             break;
           }
         offset += written;
+
+        if (image->previous == (Image *) NULL)
+          if (QuantumTick(y,image->rows))
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
       }
     MagickFreeMemory(scanline);
   }

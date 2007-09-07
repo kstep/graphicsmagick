@@ -2831,6 +2831,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 %    o exception: Any errors are reported here.
 %
 */
+#define AnalyzeImageText "  Analyze image...  "
 MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                                                     ImageCharacteristics *characteristics,
                                                     const MagickBool optimize,
@@ -2844,6 +2845,9 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
 
   register unsigned long
     x;
+
+  MagickBool
+    broke_loop = MagickFalse;
 
   MagickPassFail
     status = MagickPass;
@@ -2894,9 +2898,19 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                     if (!grayscale &&
                         !monochrome &&
                         !opaque)
-                      break;
+                      {
+                        broke_loop=MagickTrue;
+                        break;
+                      }
                     p++;
                   }
+                if (!grayscale &&
+                    !monochrome &&
+                    !opaque)
+                  break;
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(AnalyzeImageText,y,image->rows,exception))
+                    break;
               }
             break;
           }
@@ -2911,7 +2925,10 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                               ((0 == p->red) || (MaxRGB == p->red)));
                 if (!grayscale &&
                     !monochrome)
-                  break;
+                  {
+                    broke_loop=MagickTrue;
+                    break;
+                  }
                 p++;
               }
             if (!opaque)
@@ -2929,9 +2946,17 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                         opaque = ((opaque) &&
                                   (p->opacity == OpaqueOpacity));
                         if (!opaque)
-                          break;
+                          {
+                            broke_loop=MagickTrue;
+                            break;
+                          }
                         p++;
                       }
+                    if (!opaque)
+                      break;
+                    if (QuantumTick(y,image->rows))
+                      if (!MagickMonitor(AnalyzeImageText,y,image->rows,exception))
+                        break;
                   }
               }
             break;
@@ -2951,6 +2976,11 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
         characteristics->opaque=opaque;
     }
 
+  /*
+    Force progress indication to 100%
+  */
+  if (broke_loop)
+    (void) MagickMonitor(AnalyzeImageText,image->rows-1,image->rows,exception);
 /*   printf("status=%s, cmyk=%u, grayscale=%u, monochrome=%u, opaque=%u, palette=%u\n", */
 /*          (status == MagickFail ? "Fail" : "Pass"),characteristics->cmyk,characteristics->grayscale, */
 /*          characteristics->monochrome,characteristics->opaque,characteristics->palette); */
@@ -3436,6 +3466,7 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 */
 
+#define GradientImageText "  Gradient image...  "
 MagickExport MagickPassFail GradientImage(Image *image,
   const PixelPacket *start_color,const PixelPacket *stop_color)
 {
@@ -3484,7 +3515,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitor(GradientImageText,y,image->rows,&image->exception))
         break;
   }
   return(status);

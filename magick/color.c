@@ -1196,7 +1196,8 @@ static void HistogramToFile(const Image *image,CubeInfo *cube_info,
 %
 %
 */
-MagickExport unsigned int IsGrayImage(const Image *image,
+#define AnalyzeGrayImageText "  Analyze for gray image...  "
+MagickExport MagickBool IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
   unsigned long
@@ -1208,13 +1209,17 @@ MagickExport unsigned int IsGrayImage(const Image *image,
   register unsigned long
     x;
 
+  MagickBool
+    is_grayscale;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   if (image->colorspace == CMYKColorspace)
-    return(False);
+    return(MagickFalse);
   if (image->is_grayscale)
-    return(True);
+    return(MagickTrue);
+  is_grayscale=MagickTrue;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1226,13 +1231,21 @@ MagickExport unsigned int IsGrayImage(const Image *image,
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
-          return(False);
+          return(MagickFalse);
         for (x=image->columns; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue))
-            return(False);
+            {
+              is_grayscale=MagickFalse;
+              break;
+            }
           p++;
         }
+        if (!is_grayscale)
+          break;
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitor(AnalyzeGrayImageText,y,image->rows,exception))
+            break;
       }
       break;
     }
@@ -1242,14 +1255,24 @@ MagickExport unsigned int IsGrayImage(const Image *image,
       for (x=image->colors; x != 0; x--)
         {
           if ((p->red != p->green) || (p->green != p->blue))
-            return(False);
+            {
+              is_grayscale=MagickFalse;
+              break;
+            }
           p++;
         }
       break;
     }
   }
-  ((Image *)image)->is_grayscale=True;
-  return(True);
+
+  /*
+    Force progress indication to 100%
+  */
+  if (!is_grayscale)
+    (void) MagickMonitor(AnalyzeGrayImageText,image->rows-1,image->rows,exception);
+
+  ((Image *)image)->is_grayscale=is_grayscale;
+  return(is_grayscale);
 }
 
 /*
@@ -1279,6 +1302,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 %
 %
 */
+#define AnalyzeBilevelImageText "  Analyze for bilevel image...  "
 MagickExport MagickBool IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1291,13 +1315,17 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
   register unsigned long
     x;
 
+  MagickBool
+    is_monochrome;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   if (image->colorspace == CMYKColorspace)
     return(False);
   if (image->is_monochrome)
-    return(True);                        
+    return(True); 
+  is_monochrome=MagickTrue;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1314,9 +1342,17 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
         {
           if ((p->red != p->green) || (p->green != p->blue) ||
               ((p->red != 0) && (p->red != MaxRGB)))
-            return(MagickFalse);
+            {
+              is_monochrome=MagickFalse;
+              break;
+            }
           p++;
         }
+        if (!is_monochrome)
+          break;
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitor(AnalyzeBilevelImageText,y,image->rows,exception))
+            break;
       }
       break;
     }
@@ -1327,14 +1363,24 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
       {
         if ((p->red != p->green) || (p->green != p->blue) ||
             ((p->red != 0) && (p->red != MaxRGB)))
-          return(MagickFalse);
+          {
+            is_monochrome=MagickFalse;
+            break;
+          }
         p++;
       }
       break;
     }
   }
-  ((Image *)image)->is_monochrome=True;
-  return(True);
+
+  /*
+    Force progress indication to 100%
+  */
+  if (!is_monochrome)
+    (void) MagickMonitor(AnalyzeBilevelImageText,image->rows-1,image->rows,exception);
+
+  ((Image *)image)->is_monochrome=is_monochrome;
+  return(is_monochrome);
 }
 
 /*
@@ -1365,17 +1411,21 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
 %
 %
 */
+#define AnalyzeOpaqueImageText "  Analyze for opaque image...  "
 MagickExport MagickBool IsOpaqueImage(const Image *image,
   ExceptionInfo *exception)
 {
-  long
+  unsigned long
     y;
 
   register const PixelPacket
     *p;
 
-  register long
+  register unsigned long
     x;
+
+  MagickBool
+    is_opaque;
 
   /*
     Determine if image is opaque.
@@ -1384,21 +1434,37 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
   assert(image->signature == MagickSignature);
   if (!image->matte)
     return(MagickTrue);
+  is_opaque=MagickTrue;
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                         "IsOpaqueImage(): Exhaustive pixel test!");
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      return(MagickFalse);
-    for (x=(long) image->columns; x > 0; x--)
+  for (y=0; y < image->rows; y++)
     {
-      if (p->opacity != OpaqueOpacity)
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
         return(MagickFalse);
-      p++;
+      for (x=image->columns; x > 0; x--)
+        {
+          if (p->opacity != OpaqueOpacity)
+            {
+              is_opaque=MagickFalse;
+              break;
+            }
+          p++;
+        }
+      if (!is_opaque)
+        break;
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitor(AnalyzeOpaqueImageText,y,image->rows,exception))
+          break;
     }
-  }
-  return(True);
+
+  /*
+    Force progress indication to 100%
+  */
+  if (!is_opaque)
+    (void) MagickMonitor(AnalyzeOpaqueImageText,image->rows-1,image->rows,exception);
+
+  return(is_opaque);
 }
 
 /*
@@ -1430,6 +1496,7 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
 %
 %
 */
+#define AnalyzePaletteImageText "  Analyze for palette image...  "
 MagickExport MagickBool IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1542,6 +1609,9 @@ MagickExport MagickBool IsPaletteImage(const Image *image,
         }
       p++;
     }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(AnalyzePaletteImageText,y,image->rows,exception))
+        break;
   }
   DestroyCubeInfo(cube_info);
   cube_info=(CubeInfo *) NULL;

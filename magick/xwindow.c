@@ -8336,8 +8336,9 @@ MagickExport void MagickXMakeWindow(Display *display,Window parent,char **argv,
 %
 %  The format of the MagickXMagickMonitor method is:
 %
-%      void MagickXMagickMonitor(const char *task,const magick_int64_t quantum,
-%        const magick_uint64_t span,ExceptionInfo *exception)
+%      unsigned int MagickXMagickMonitor(const char *task,
+%        const magick_int64_t quantum,const magick_uint64_t span,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
