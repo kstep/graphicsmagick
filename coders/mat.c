@@ -138,6 +138,8 @@ typedef enum
 #define FLAG_GLOBAL  0x4
 #define FLAG_LOGICAL 0x2
 
+static const QuantumType z2qtype[4] = {GrayQuantum, BlueQuantum, GreenQuantum, RedQuantum};
+
 
 static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVal,
                                   double MaxVal)
@@ -273,7 +275,6 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 */
 static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
-  const QuantumType z2qtype[4] = {GrayQuantum, BlueQuantum, GreenQuantum, RedQuantum};
   Image *image,
    *rotated_image;
   const PixelPacket *q;
@@ -567,30 +568,20 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   /* Main loop for reading all scanlines */
-  if(z==1)
-  {	        /* read grey scanlines */
-    for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+  if(z==1) z=0; /* read grey scanlines */
+		/* else read color scanlines */
+  do
+  {
+  for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
     {
-      q=SetImagePixels(image,0,i,image->columns,1);
+      q=SetImagePixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1);
       if (q == (PixelPacket *)NULL) break;
       (void)ReadBlob(image, ldblk, (char *)BImgBuff);	  
-      (void)ImportImagePixelArea(image,GrayQuantum,sample_size,BImgBuff,&import_options,0);
-      if (!SyncImagePixels(image)) break;     
-    }
-  }
-  else
-   while(z>=1)  /* read color scanlines */
-   {
-   for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-    {
-      q=SetImagePixels(image,0,i,image->columns,1);
-      if (q == (PixelPacket *)NULL) break;
-      (void) ReadBlob(image, ldblk, (char *) BImgBuff);      
       (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
       if (!SyncImagePixels(image)) break;     
     }
-   z--;
-   } 
+  } while(z-- >= 2);
+
 
   /* Read complex part of numbers here */
   if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
@@ -639,11 +630,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     rotated_image->page.x=0;
     rotated_image->page.y=0;
     DestroyImage(image);
-    image = FlopImage(rotated_image, exception);
-    if (image == NULL)
-      image = rotated_image;    /* Obtain something if flop operation fails */
-    else
-      DestroyImage(rotated_image);
+    image = rotated_image;
   }
 
 done_reading:
@@ -686,6 +673,7 @@ done_reading:
 static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
 {
   long y;
+  char z;
   const PixelPacket *q;
   unsigned int status;
   int logging;
@@ -717,6 +705,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
   is_gray = IsGrayImage(image,&image->exception);
+  z = is_gray ? 0 : 3;
 
   /*
     Store MAT header.
@@ -764,17 +753,6 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   /*
     Store image data.
   */
-  if(is_gray)
-    for (y=0; y<(long)image->columns; y++)
-    {
-      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-      (void) ExportImagePixelArea(image,GrayQuantum,8,pixels,0,0);
-      (void) WriteBlob(image,image->rows,pixels);
-      if (QuantumTick(y,image->columns))
-        if (!MagickMonitor(SaveImageText,y,image->columns,&image->exception))
-          break;
-    }
-  else
   {
     magick_uint64_t
       progress_span;
@@ -782,39 +760,25 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     magick_int64_t
       progress_quantum;
 
-    progress_span=image->columns*3;
-    progress_quantum=0;
-    for (y=0; y<(long)image->columns; y++)
+    progress_span = image->columns;
+    if(!is_gray) progress_span *= 3;
+    progress_quantum = 0;
+
+    do
     {
-      progress_quantum++;
-      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-      (void) ExportImagePixelArea(image,RedQuantum,8,pixels,0,0);
-      (void) WriteBlob(image,image->rows,pixels);
-      if (QuantumTick(progress_quantum,progress_span))
-        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
-          break;
-    }    
-    for (y=0; y<(long)image->columns; y++)
-    {
-      progress_quantum++;
-      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-      (void) ExportImagePixelArea(image,GreenQuantum,8,pixels,0,0);
-      (void) WriteBlob(image,image->rows,pixels);
-      if (QuantumTick(progress_quantum,progress_span))
-        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
-          break;
-    }
-    for (y=0; y<(long)image->columns; y++)
-    {
-      progress_quantum++;
-      q=AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-      (void) ExportImagePixelArea(image,BlueQuantum,8,pixels,0,0);
-      (void) WriteBlob(image,image->rows,pixels);
-      if (QuantumTick(progress_quantum,progress_span))
-        if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
-          break;
-    }
+      for (y=0; y<(long)image->columns; y++)
+      {
+        progress_quantum++;
+        q = AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+        (void) ExportImagePixelArea(image,z2qtype[z],8,pixels,0,0);
+        (void) WriteBlob(image,image->rows,pixels);
+        if (QuantumTick(progress_quantum,progress_span))
+          if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+            goto BreakAll;
+      }    
+    } while(z-- >= 2);
   }
+BreakAll:
 
   while(padding-->0) (void) WriteBlobByte(image,0);
 
