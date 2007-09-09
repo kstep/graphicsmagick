@@ -60,7 +60,7 @@ typedef struct
   char identific[124];
   unsigned short Version;
   char EndianIndicator[2];
-  unsigned long unknown0;
+  unsigned long DataType;
   unsigned long ObjectSize;
   unsigned long unknown1;
   unsigned long unknown2;
@@ -194,6 +194,59 @@ static void InsertComplexDoubleRow(double *p, int y, Image * image, double MinVa
 }
 
 
+static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
+                                  double MaxVal)
+{
+  double f;
+  int x;
+  register PixelPacket *q;
+
+  if (MinVal == 0)
+    MinVal = -1;
+  if (MaxVal == 0)
+    MaxVal = 1;
+
+  q = SetImagePixels(image, 0, y, image->columns, 1);
+  if (q == (PixelPacket *) NULL)
+    return;
+  for (x = 0; x < (long) image->columns; x++)
+  {
+    if (*p > 0)
+    {
+      f = (*p / MaxVal) * (MaxRGB - q->red);
+      if (f + q->red > MaxRGB)
+        q->red = MaxRGB;
+      else
+        q->red += (int) f;
+      if ((int) f / 2.0 > q->green)
+        q->green = q->blue = 0;
+      else
+        q->green = q->blue -= (int) (f / 2.0);
+    }
+    if (*p < 0)
+    {
+      f = (*p / MaxVal) * (MaxRGB - q->blue);
+      if (f + q->blue > MaxRGB)
+        q->blue = MaxRGB;
+      else
+        q->blue += (int) f;
+      if ((int) f / 2.0 > q->green)
+        q->green = q->red = 0;
+      else
+        q->green = q->red -= (int) (f / 2.0);
+    }
+    p++;
+    q++;
+  }
+  if (!SyncImagePixels(image))
+    return;
+  /*          if (image->previous == (Image *) NULL)
+     if (QuantumTick(y,image->rows))
+     MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
+  return;
+}
+
+
 /************** READERS ******************/
 
 /* This function reads one block of floats*/
@@ -241,6 +294,71 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
   if (len > 0)
     (void) SeekBlob(image, len, SEEK_CUR);
 }
+
+
+/* Calculate minimum and maximum from a given block of data */
+static void CalcMinMax(Image *image, MATHeader *MATLAB_HDR, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+{
+ExtendedSignedIntegralType filepos;
+int i, x;
+void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
+void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
+double *dblrow;
+float *fltrow;
+
+  if (!strncmp(MATLAB_HDR->EndianIndicator, "IM", 2))
+  {    
+    ReadBlobDoublesXXX = ReadBlobDoublesLSB;
+    ReadBlobFloatsXXX = ReadBlobFloatsLSB;   
+  } 
+  else if (!strncmp(MATLAB_HDR->EndianIndicator, "MI", 2))
+  {    
+    ReadBlobDoublesXXX = ReadBlobDoublesMSB;
+    ReadBlobFloatsXXX = ReadBlobFloatsMSB;   
+  }
+
+  filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
+  (void) SeekBlob(image, filepos+4, SEEK_SET);
+  for (i = 0; i < (long) MATLAB_HDR->SizeY; i++)
+  {
+    if (CellType==miDOUBLE)
+    {
+      ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
+      dblrow = (double *)BImgBuff;
+      if (i == 0)
+      {
+        *Min = *Max = *dblrow;
+      }
+      for (x = 0; x < (long) MATLAB_HDR->SizeX; x++)
+      {
+        if (*Min > *dblrow)
+          *Min = *dblrow;
+        if (*Max < *dblrow)
+          *Max = *dblrow;
+        dblrow++;
+      }
+    }
+    if (CellType==miSINGLE)
+    {
+      ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
+      fltrow = (float *)BImgBuff;
+      if (i == 0)
+      {
+        *Min = *Max = *fltrow;
+      }
+    for (x = 0; x < (long) MATLAB_HDR->SizeX; x++)
+      {
+        if (*Min > *fltrow)
+          *Min = *fltrow;
+        if (*Max < *fltrow)
+          *Max = *fltrow;
+        fltrow++;
+      }
+    }
+  }
+  (void) SeekBlob(image, filepos, SEEK_SET);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,16 +398,13 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   const PixelPacket *q;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  unsigned long size;
-  ExtendedSignedIntegralType filepos;
+  unsigned long size;  
   magick_uint32_t CellType;
   ImportPixelAreaOptions import_options;
-  int i, x;
+  int i;
   long ldblk;
   unsigned char *BImgBuff = NULL;
-  double MinVal, MaxVal,
-   *dblrow;
-  float *fltrow;
+  double MinVal, MaxVal;
   unsigned long z, Unknown5;
   int logging;
   int sample_size;
@@ -345,10 +460,14 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     goto MATLAB_KO;    /* unsupported endian */
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
-  MATLAB_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
-  MATLAB_HDR.unknown0 = ReadBlobXXXLong(image);
+//NEXT_IMAGE:
+  MATLAB_HDR.DataType = ReadBlobXXXLong(image);
   MATLAB_HDR.ObjectSize = ReadBlobXXXLong(image);
+  if (MATLAB_HDR.DataType != miMATRIX)
+    goto MATLAB_KO;
+ 
   MATLAB_HDR.unknown1 = ReadBlobXXXLong(image);
   MATLAB_HDR.unknown2 = ReadBlobXXXLong(image);  
 
@@ -361,9 +480,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.DimFlag = ReadBlobXXXLong(image);
   MATLAB_HDR.SizeX = ReadBlobXXXLong(image);
   MATLAB_HDR.SizeY = ReadBlobXXXLong(image);  
-    
-  if (MATLAB_HDR.unknown0 != 0x0E)
-    goto MATLAB_KO;
+   
 
   switch(MATLAB_HDR.DimFlag)
   {
@@ -425,41 +542,33 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       image->depth = Min(QuantumDepth,8);         /* Byte type cell */
       import_options.sample_type = UnsignedQuantumSampleType;
       ldblk = (long) MATLAB_HDR.SizeX;      
-      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-        goto MATLAB_KO;
       break;
     case miUINT16:
       sample_size = 16;
       image->depth = Min(QuantumDepth,16);        /* Word type cell */
       ldblk = (long) (2 * MATLAB_HDR.SizeX);
-      import_options.sample_type = UnsignedQuantumSampleType;      
-      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-        goto MATLAB_KO;
+      import_options.sample_type = UnsignedQuantumSampleType;       
       break;
     case miUINT32:
       sample_size = 32;
       image->depth = Min(QuantumDepth,32);        /* Dword type cell */
       ldblk = (long) (4 * MATLAB_HDR.SizeX);      
-      import_options.sample_type = UnsignedQuantumSampleType;
-      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-        goto MATLAB_KO;
+      import_options.sample_type = UnsignedQuantumSampleType;      
       break;
     case miUINT64:
       sample_size = 64;
       image->depth = Min(QuantumDepth,32);        /* Qword type cell */
       ldblk = (long) (8 * MATLAB_HDR.SizeX);      
-      import_options.sample_type = UnsignedQuantumSampleType;
-      if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-        goto MATLAB_KO;
+      import_options.sample_type = UnsignedQuantumSampleType;      
       break;   
    case miSINGLE:
       sample_size = 32;
       image->depth = Min(QuantumDepth,32);        /* double type cell */
       import_options.sample_type = FloatQuantumSampleType;
-      //if (sizeof(float) != 4)
-      //  ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
+//      if (sizeof(float) != 4)
+//        ThrowReaderException(CoderError, IncompatibleSizeOfFloat, image);
       if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-      {                         /* complex double type cell */        
+      {                         /* complex float type cell */
       }
       ldblk = (long) (4 * MATLAB_HDR.SizeX);
       break;
@@ -523,48 +632,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MaxVal = 0;
   if (CellType==miDOUBLE || CellType==miSINGLE)        /* Find Min and Max Values for floats */
   {
-    filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
-    for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-    {
-      if (CellType==miDOUBLE)
-      {
-        ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);      
-        dblrow = (double *) BImgBuff;
-        if (i == 0)
-        {
-          MinVal = MaxVal = *dblrow;
-        }
-        for (x = 0; x < (long) MATLAB_HDR.SizeX; x++)
-        {
-          if (MinVal > *dblrow)
-            MinVal = *dblrow;
-          if (MaxVal < *dblrow)
-            MaxVal = *dblrow;
-          dblrow++;
-        }
-      }
-      if (CellType==miSINGLE)
-      {
-        ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
-        fltrow = (float *)BImgBuff;
-        if (i == 0)
-        {
-          MinVal = MaxVal = *fltrow;
-        }
-        for (x = 0; x < (long) MATLAB_HDR.SizeX; x++)
-        {
-          if (MinVal > *fltrow)
-            MinVal = *fltrow;
-          if (MaxVal < *fltrow)
-            MaxVal = *fltrow;
-          fltrow++;
-        }
-      }
-    }
-    (void) SeekBlob(image, filepos, SEEK_SET);
-
-    import_options.double_minvalue = MinVal;
-    import_options.double_maxvalue = MaxVal;    
+    CalcMinMax(image, &MATLAB_HDR, CellType, ldblk, BImgBuff, &import_options.double_minvalue, &import_options.double_maxvalue);
   }
 
   /* Main loop for reading all scanlines */
@@ -585,36 +653,28 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* Read complex part of numbers here */
   if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
-  {
-    if (CellType == miDOUBLE)        /* Find Min and Max Values for complex parts of floats */
+  {        /* Find Min and Max Values for complex parts of floats */
+    CellType = ReadBlobXXXLong(image);    /* Additional object type */
+    i = ReadBlobXXXLong(image);           /* size of a complex part - toss away*/
+
+    if (CellType==miDOUBLE || CellType==miSINGLE)
     {
-      filepos = TellBlob(image);
-      for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-      {        
-        ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);        
+      CalcMinMax(image, &MATLAB_HDR, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);      
+    }
 
-        dblrow = (double *) BImgBuff;
-        if (i == 0)
-        {
-          MinVal = MaxVal = *dblrow;
-        }
-        for (x = 0; x < (long) MATLAB_HDR.SizeX; x++)
-        {
-          if (MinVal > *dblrow)
-            MinVal = *dblrow;
-          if (MaxVal < *dblrow)
-            MaxVal = *dblrow;
-          dblrow++;
-        }
-      }
-      (void) SeekBlob(image, filepos, SEEK_SET);
-
+    if (CellType==miDOUBLE)
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {
-        ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
-        InsertComplexDoubleRow((double *) BImgBuff, i, image, MinVal, MaxVal);
+        ReadBlobDoublesXXX(image, ldblk, (double *)BImgBuff);
+        InsertComplexDoubleRow((double *)BImgBuff, i, image, MinVal, MaxVal);
       }
-    }
+
+    if (CellType==miSINGLE)
+      for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+      {
+        ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
+        InsertComplexFloatRow((float *)BImgBuff, i, image, MinVal, MaxVal);
+      }    
   }
 
     /* Image is gray when no complex flag is set and 2D Matrix AGAIN!!! */
