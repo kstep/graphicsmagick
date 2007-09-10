@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2007 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -50,6 +50,7 @@
 #include "magick/render.h"
 #include "magick/shear.h"
 #include "magick/transform.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -288,24 +289,50 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   Image
     *rotate_image;
 
-  unsigned long
+  long
     y;
 
   RectangleInfo
     page;
 
-  register IndexPacket
-    *indexes,
+  register const IndexPacket
+    *indexes;
+
+  IndexPacket
     *rotate_indexes;
 
   register const PixelPacket
     *p;
 
-  register unsigned long
+  register long
     x;
 
   register PixelPacket
     *q;
+
+  const PixelPacket
+    *tile_pixels;
+              
+  register IndexPacket
+    *iq;
+  
+  register const IndexPacket
+    *ip;
+                          
+  unsigned long
+    tile_width_max=128,
+    tile_height_max=128;
+  
+  long
+    tile_width,
+    tile_height;
+  
+  long
+    tile_x,
+    tile_y;
+
+  MagickPassFail
+    status;
 
   /*
     Initialize rotated image attributes.
@@ -314,135 +341,285 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   page=image->page;
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
-    rotate_image=CloneImage(image,image->rows,image->columns,True,exception);
+    {
+      rotate_image=CloneImage(image,image->rows,image->columns,True,exception);
+
+      {
+        const char *
+          value;
+
+        /*
+          Allow override of tile geometry for testing.
+        */
+        if ((value=getenv("MAGICK_ROTATE_TILE_GEOMETRY")))
+          {
+            double
+              width,
+              height;
+            
+            if (GetMagickDimension(value,&width,&height) == 2)
+              {
+                tile_height_max=(unsigned long) height;
+                tile_width_max=(unsigned long) width;
+              }
+          }
+      }
+    }
   else
-    rotate_image=CloneImage(image,image->columns,image->rows,True,exception);
+    {
+      rotate_image=CloneImage(image,image->columns,image->rows,True,exception);
+    }
   if (rotate_image == (Image *) NULL)
     return((Image *) NULL);
   /*
     Integral rotate the image.
   */
   switch (rotations)
-  {
+    {
     case 0:
-    {
-      /*
-        Rotate 0 degrees.
-      */
-      for (y=0; y < image->rows; y++)
       {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (rotate_indexes != (IndexPacket *) NULL))
-          (void) memcpy(rotate_indexes,indexes,image->columns*
-            sizeof(IndexPacket));
-        if (!SyncImagePixels(rotate_image))
-          break;
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-            break;
+        /*
+          Rotate 0 degrees.
+        */
+        for (y=0; y < (long) image->rows; y++)
+          {
+            p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+            q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
+            if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              break;
+            (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+            indexes=GetIndexes(image);
+            rotate_indexes=GetIndexes(rotate_image);
+            if ((indexes != (IndexPacket *) NULL) &&
+                (rotate_indexes != (IndexPacket *) NULL))
+              (void) memcpy(rotate_indexes,indexes,image->columns*
+                            sizeof(IndexPacket));
+            if (!SyncImagePixels(rotate_image))
+              break;
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+                break;
+          }
+        break;
       }
-      break;
-    }
     case 1:
-    {
-      /*
-        Rotate 90 degrees.
-      */
-      for (y=0; y < image->rows; y++)
       {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,(long)(image->rows-y-1),0,1,
-          rotate_image->rows);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (rotate_indexes != (IndexPacket *) NULL))
-          (void) memcpy(rotate_indexes,indexes,image->columns*
-            sizeof(IndexPacket));
-        if (!SyncImagePixels(rotate_image))
-          break;
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-            break;
+        /*
+          Rotate 90 degrees.
+        */
+        status=MagickPass;
+        for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
+          {
+            for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
+              {
+                long
+                  dest_tile_x,
+                  dest_tile_y;
+              
+                /*
+                  Compute image region corresponding to tile.
+                */
+                if (tile_x+tile_width_max > image->columns)
+                  tile_width=(tile_width_max-(tile_x+tile_width_max-image->columns));
+                else
+                  tile_width=tile_width_max;
+                if (tile_y+tile_height_max > image->rows)
+                  tile_height=(tile_height_max-(tile_y+tile_height_max-image->rows));
+                else
+                  tile_height=tile_height_max;
+                /*
+                  Acquire tile
+                */
+                tile_pixels=AcquireImagePixels(image,tile_x,tile_y,
+                                               tile_width,tile_height,exception);
+                if (tile_pixels == (const PixelPacket *) NULL)
+                  {
+                    status=MagickFail;
+                    break;
+                  }
+                /*
+                  Compute destination tile coordinates.
+                */
+                dest_tile_x=rotate_image->columns-(tile_y+tile_height);
+                dest_tile_y=tile_x;
+                /*
+                  Rotate tile
+                */
+                for (y=0; y < tile_width; y++)
+                  {
+                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,tile_height,1);
+                    if (q == (PixelPacket *) NULL)
+                      {
+                        status=MagickFail;
+                        break;
+                      }
+                    /*
+                      DirectClass pixels
+                    */
+                    p=tile_pixels+(tile_height-1)*tile_width + y;
+                    for (x=tile_height; x != 0; x--) 
+                      {
+                        *q = *p;
+                        q++;
+                        p-=tile_width;
+                      }
+                    /*
+                      Indexes
+                    */
+                    indexes=GetIndexes(image);
+                    if (indexes != (IndexPacket *) NULL)
+                      {
+                        rotate_indexes=GetIndexes(rotate_image);
+                        if (rotate_indexes != (IndexPacket *) NULL)
+                          {
+                            iq=rotate_indexes;
+                            ip=indexes+(tile_height-1)*tile_width + y;
+                            for (x=tile_height; x != 0; x--) 
+                              {
+                                *iq = *ip;
+                                iq++;
+                                ip -= tile_width;
+                              }
+                          }
+                      }
+                    if (!SyncImagePixels(rotate_image))
+                      {
+                        status=MagickFail;
+                        break;
+                      }
+                  }
+                if (status == MagickFail)
+                  break;
+              }
+            if (status == MagickFail)
+              break;
+          }
+        Swap(page.width,page.height);
+        Swap(page.x,page.y);
+        page.x=(long) (page.width-rotate_image->columns-page.x);
+        break;
       }
-      Swap(page.width,page.height);
-      Swap(page.x,page.y);
-      page.x=(long) (page.width-rotate_image->columns-page.x);
-      break;
-    }
     case 2:
-    {
-      /*
-        Rotate 180 degrees.
-      */
-      for (y=0; y < image->rows; y++)
       {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,0,(long) (image->rows-y-1),
-          image->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        q+=image->columns;
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (rotate_indexes != (IndexPacket *) NULL))
-          for (x=0; x < image->columns; x++)
-            rotate_indexes[image->columns-x-1]=indexes[x];
-        for (x=0; x < image->columns; x++)
-          *--q=(*p++);
-        if (!SyncImagePixels(rotate_image))
-          break;
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-            break;
+        /*
+          Rotate 180 degrees.
+        */
+        for (y=0; y < (long) image->rows; y++)
+          {
+            p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+            q=SetImagePixels(rotate_image,0,(long) (image->rows-y-1),
+                             image->columns,1);
+            if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              break;
+            q+=image->columns;
+            indexes=GetIndexes(image);
+            rotate_indexes=GetIndexes(rotate_image);
+            if ((indexes != (IndexPacket *) NULL) &&
+                (rotate_indexes != (IndexPacket *) NULL))
+              for (x=0; x < (long) image->columns; x++)
+                rotate_indexes[image->columns-x-1]=indexes[x];
+            for (x=0; x < (long) image->columns; x++)
+              *--q=(*p++);
+            if (!SyncImagePixels(rotate_image))
+              break;
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+                break;
+          }
+        page.x=(long) (page.width-rotate_image->columns-page.x);
+        page.y=(long) (page.height-rotate_image->rows-page.y);
+        break;
       }
-      page.x=(long) (page.width-rotate_image->columns-page.x);
-      page.y=(long) (page.height-rotate_image->rows-page.y);
-      break;
-    }
     case 3:
-    {
-      /*
-        Rotate 270 degrees.
-      */
-      for (y=0; y < image->rows; y++)
       {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,y,0,1,rotate_image->rows);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        q+=image->columns;
-        for (x=0; x < image->columns; x++)
-          *--q=(*p++);
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (rotate_indexes != (IndexPacket *) NULL))
-          for (x=0; x < image->columns; x++)
-            rotate_indexes[image->columns-x-1]=indexes[x];
-        if (!SyncImagePixels(rotate_image))
-          break;
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-            break;
+        /*
+          Rotate 180 degrees.
+        */
+        status=MagickPass;
+        for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
+          {
+            for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
+              {
+                /*
+                  Compute image region corresponding to tile.
+                */
+                if (tile_x+tile_width_max > image->columns)
+                  tile_width=(tile_width_max-(tile_x+tile_width_max-image->columns));
+                else
+                  tile_width=tile_width_max;
+                if (tile_y+tile_height_max > image->rows)
+                  tile_height=(tile_height_max-(tile_y+tile_height_max-image->rows));
+                else
+                  tile_height=tile_height_max;
+                /*
+                  Acquire tile
+                */
+                tile_pixels=AcquireImagePixels(image,tile_x,tile_y,
+                                               tile_width,tile_height,exception);
+                if (tile_pixels == (const PixelPacket *) NULL)
+                  {
+                    status=MagickFail;
+                    break;
+                  }
+                /*
+                  Rotate tile
+                */
+                for (y=tile_width-1; y >= 0; y--)
+                  {
+                    q=SetImagePixels(rotate_image,tile_y,tile_x+y,tile_height,1);
+                    if (q == (PixelPacket *) NULL)
+                      {
+                        status=MagickFail;
+                        break;
+                      }
+                    /*
+                      DirectClass pixels
+                    */
+                    p=tile_pixels+y;
+                    for (x=0; x < tile_height; x++)
+                      {
+                        *q = *p;
+                        q++;
+                        p += tile_width;
+                      }
+                    /*
+                      Indexes
+                    */
+                    indexes=GetIndexes(image);
+                    if (indexes != (IndexPacket *) NULL)
+                      {
+                        rotate_indexes=GetIndexes(rotate_image);
+                        if (rotate_indexes != (IndexPacket *) NULL)
+                          {
+                            iq=rotate_indexes;
+                            ip=indexes+y;
+                            for (x=0; x < tile_height; x++)
+                              {
+                                *iq = *ip;
+                                iq++;
+                                ip += tile_width;
+                              }
+                          }
+                      }
+                    if (!SyncImagePixels(rotate_image))
+                      {
+                        status=MagickFail;
+                        break;
+                      }
+                  }
+                if (status == MagickFail)
+                  break;
+              }
+            if (status == MagickFail)
+              break;
+          }
+        Swap(page.width,page.height);
+        Swap(page.x,page.y);
+        page.y=(long) (page.height-rotate_image->rows-page.y);
+        break;
       }
-      Swap(page.width,page.height);
-      Swap(page.x,page.y);
-      page.y=(long) (page.height-rotate_image->rows-page.y);
-      break;
     }
-  }
+
   rotate_image->page=page;
   rotate_image->is_grayscale=image->is_grayscale;
   rotate_image->is_monochrome=image->is_monochrome;

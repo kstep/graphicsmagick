@@ -1,8 +1,12 @@
+2007-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c (IntegralRotateImage): Use tiles to speed up
+	rotation by 90 or 270 degrees.
+
 2007-09-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c The flop image has been eliminated in a reader.
 	Code has been shrinked a little bit.
-
 
 2007-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
