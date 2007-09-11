@@ -2992,6 +2992,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
 #if !defined(CCITT_SUPPORT)
             compression=NoCompression;
+            if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "CCITTFAX compression not supported.  Compression request removed");
 #endif
             break;
           }
@@ -2999,6 +3002,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
 #if !defined(YCBCR_SUPPORT) || !defined(JPEG_SUPPORT)
             compression=NoCompression;
+            if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "JPEG compression not supported.  Compression request removed");
 #endif
             break;
           }
@@ -3006,6 +3012,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
 #if !defined(LZW_SUPPORT)
             compression=NoCompression;
+            if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "LZW compression not supported.  Compression request removed");
 #endif
             break;
           }
@@ -3013,6 +3022,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
 #if !defined(PACKBITS_SUPPORT)
             compression=NoCompression;
+            if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "PACKBITS compression not supported.  Compression request removed");
 #endif
             break;
           }
@@ -3020,6 +3032,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
 #if !defined(ZIP_SUPPORT)
             compression=NoCompression;
+            if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "ZIP compression not supported.  Compression request removed");
 #endif
             break;
           }
@@ -3145,10 +3160,30 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
-        Currently we only support JPEG compression with RGB.
+        Currently we only support JPEG compression with RGB.  FAX
+        compression types require PHOTOMETRIC_MINISWHITE.
       */
       if (compress_tag == COMPRESSION_JPEG)
-        photometric=PHOTOMETRIC_RGB;
+        {
+          photometric=PHOTOMETRIC_RGB;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Using RGB photometric due to request for JPEG compression.");
+        }
+      else if (compress_tag == COMPRESSION_CCITTFAX3)
+        {
+          photometric=PHOTOMETRIC_MINISWHITE;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Using MINISWHITE photometric due to request for Group3 FAX compression.");
+        }
+      else if (compress_tag == COMPRESSION_CCITTFAX4)
+        {
+          photometric=PHOTOMETRIC_MINISWHITE;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Using MINISWHITE photometric due to request for Group4 FAX compression.");
+        }
 
       /*
         Allow user to override the photometric.
@@ -3218,11 +3253,35 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
       /*
         If the user has selected something other than RGB, then remove
-        JPEG compression.
+        JPEG compression.  Also remove fax compression if photometric
+        is not compatible.
       */
       if ((compress_tag == COMPRESSION_JPEG) &&
           (photometric != PHOTOMETRIC_RGB))
-        compress_tag=COMPRESSION_NONE;
+        {
+          compress_tag=COMPRESSION_NONE;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Ignoring request for JPEG compression due to incompatible photometric.");
+        }
+      else if ((compress_tag == COMPRESSION_CCITTFAX3) &&
+               (photometric != PHOTOMETRIC_MINISWHITE))
+        {
+          compress_tag=COMPRESSION_NONE;
+          fill_order=FILLORDER_MSB2LSB;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Ignoring request for Group3 FAX compression due to incompatible photometric.");
+        }
+      else if ((compress_tag == COMPRESSION_CCITTFAX4) &&
+               (photometric != PHOTOMETRIC_MINISWHITE))
+        {
+          compress_tag=COMPRESSION_NONE;
+          fill_order=FILLORDER_MSB2LSB;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Ignoring request for Group4 FAX compression due to incompatible photometric.");
+        }
 
       /*
         Bilevel presents a bit of a quandary since the user is free to

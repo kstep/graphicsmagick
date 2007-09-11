@@ -1,3 +1,10 @@
+2007-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Ensure that selected photometric
+	most closely matches the user's expectation.  Remove compression
+	if requested compression type is not compatible with the selected
+	photometric.
+
 2007-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Use tiles to speed up
