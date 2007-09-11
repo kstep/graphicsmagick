@@ -1,3 +1,8 @@
+2007-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Don't leak memory in the
+	case where the image file contains multiple frames.
+
 2007-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetExecutionPath): Add support for Apple OS-X,

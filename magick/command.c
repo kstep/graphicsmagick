@@ -10159,7 +10159,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             (void) remove(filename);
             (void) rename(image->filename,filename);
           }
-        DestroyImage(image);
+        DestroyImageList(image);
         continue;
       }
     j=k+1;
