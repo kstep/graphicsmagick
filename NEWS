@@ -1,138 +1,205 @@
-This file was last updated on December 26, 2005.
+This file was last updated on September 11, 2007
 
 Please note that this file records news for the associated development
-branch and that each development branch has its own NEWS file.
+branch and that each development branch has its own NEWS file. See the
+ChangeLog file for full details.
 
 Significant changes associated with GraphicsMagick 1.2 (not yet released)
 
   Security fixes:
+
     * Fixes for CERT security alert TA04-217A described at
-    "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
+      "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
     * AVI, BMP, & DIB security fixes.
     * PSD security fixes.
     * P7 format security fix.
+    * Fix EXIF IFD stack overflow vulnerability.
+    * SGI security fix for RLE encoding (CVE-2006-4144)
+    * XCF security fix (CVE-2006-3743)
+    * PALM heap overflow fix (CVE-2006-5456)
+    * DCM security fix (CVE-2006-5456)
+    * Fix for shell command injection in delegate code via file names)
+      (CVE-2005-4601).  Delegate execution is much more secure now.
+    * Don't use filenames as printf specifications (CVE-2006-0082).
+    * Fix integer overflow in DCM coder (CVE-2007-1797).
+    * XWD integer overflow fix (CVE-2007-1797).
     * Implementation has replaced usage of strcpy, strcat, and strncat
-    with the more security conscious strlcat and strlcpy.
+      with the more security conscious strlcat and strlcpy.
 
   Bug fixes:
+
     * The configure script now searches for a web browser in the order
-    mozilla, firefox, and finally netscape.
+      mozilla, firefox, and finally netscape.
     * When the user specifies the -units option, the current image
-    resolution values are now re-scaled to match the new units.
+      resolution values are now re-scaled to match the new units.
     * Properly determine Ghostscript font location for Ghostscript 8.0 and later.
     * GraphicsMagick now successfully builds and passes all tests under
-    Digital Unix 5.1, using the vendor compiler.
+      Digital Unix 5.1, using the vendor compiler.
     * Ghostscript sometimes displays an error message and fails, yet it
-    returns a success error code to GraphicsMagick. Verify that
-    Ghostscript has updated the output file before attempting to use it.
+      returns a success error code to GraphicsMagick. Verify that
+      Ghostscript has updated the output file before attempting to use it.
     * Fixed a configure script syntax error when testing for trio.
     * When requesting a list of formats, all of the modules in the module
-    search path are considered. Previously only the modules in the same
-    directory as the LOGO module were listed.
+      search path are considered. Previously only the modules in the same
+      directory as the LOGO module were listed.
     * Ensure that an image clip mask is respected by the negate algorithm.
     * The BMP writer was sometimes writing incorrect BMP v4 files.
     * Support reading and writing large PCX files.
     * The Red Hat source RPM was failing to install the *-config scripts
-    with execute permissions.
+      with execute permissions.
     * Fixed a bug which could cause possible truncation while cloning the
-    image cache.
+      image cache.
     * Ensure that MIFF files indicate the compression which was actually used.
     * Properly handle errors from libtiff so that corrupted images are not
-    output.
+      output.
     * Fix for stripped-TIFF reader. Discard extra samples beyond alpha in
-    scanline TIFFs.
+      scanline TIFFs.
+    * Endian option now controls TIFF byte-order rather than bit-order.
     * JBIG writer was writing empty files for some libjbig releases.
     * Improved handling of corrupt GIF files.
     * Handle large SUN format images.
+    * Properly compute image depth for 16-bit SGI image files.
     * For the gmdisplay program, ensure that only RGB data is sent to Windows.
-    * Memory leak fixes.
+    * Many memory leak fixes.
     * PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.
+    * Properly use fseeko() and ftello() if they are available.
     * Fixed a infinite loop bug in the XWD reader.
     * Fix minor memory leak in ProfileImage().
     * Fixed -level command parsing when a percent symbol is supplied within the
-    argument rather than at the end.
+      argument rather than at the end.
+    * Fix pixel scaling problem caused by floating point
+      rounding error (noticed under AIX).
     * Fixed a memory leak in the GIF coder in the error return path.
+    * Fix for SourceForge bug id 1353744 "MagickGetQuantumDepth doesn't work".
+    * Fix for SourceForge bug id 1315109 "segfault in InitializeMagick(NULL)".
+    * Fix for SourceForge bug id 1391421 "problem doing resize on 273x1 JPEG".
+    * Fix for SourceForge bug id 1510075 "Failed to write PDF with JPEG compression".
+    * Fix for SourceForge bug id 1572357 "GetOnePixel definition appears incorrect".
+    * Fix for SourceForge bug id 1576616 Fix includedir variable in pkg-config files".
+    * Fix for SourceForge bug id 1173713 "segfault in ModifyCache".
+    * Fix for SourceForge bug id 1431805 "clip art wpg files cause access violation
+      in graphics magick".
+    * Fix for SourceForge bug id 1743141 "Affine matrix option parsing".
+    * Fix for SourceForge bug id 1625477 "Memory leak reading layered PSD Image".
+    * Fix reading 12-bit grayscale JPEG.
+    * Set image depth appropriately when importing image from X11 display.
+    * Fix map resource tracking.
+    * Fix reading recent variants of ImageMagick's MIFF format.
+    * Output bilevel TIFF meeting the TIFF Class F specification.
+
+  New Utilities:
+
+    * A 'benchmark' subcommand is now available to benchmark the
+      performance of any other arbitrary subcommand (e.g. 'convert').
 
   Feature improvements:
+
     * LZW compression is now enabled by default.
+    * Support industry-standard subsampling notation like "4:2:2".
     * If gm is executed under a traditional alternate name (e.g.
-    convert), it will invoke the appropriate sub-command. This allows use
-    of hard links, symbolic links, or just copying 'gm' to the desired
-    sub-command name in order to achieve 100% ImageMagick 5.5.2 utility
-    compatibility.
+      convert), it will invoke the appropriate sub-command. This allows
+      use of hard links, symbolic links, or just copying 'gm' to the
+      desired sub-command name in order to achieve 100% ImageMagick 5.5.2
+      utility compatibility.
     * Provide the --enable-magick-compat option when configuring to install
-    ImageMagick utilities compatibility links.
+      ImageMagick utilities compatibility links.
     * Identify -verbose output includes normalized (0.0-1.0) statistics.
     * Identify and convert now print "pixels per second" rates to help
-    evaluate performance.
+      evaluate performance.
     * Added the identify +ping option to force reading the complete file.
     * The display program now supports the +progress option to disable any
-    visual progress indication (and hourglass cursor) while loading images.
+      visual progress indication (and hourglass cursor) while loading images.
     * Support writing grayscale TGA files.
     * Provide explicit support for Rec 601 and Rec 709 grayscale spaces.
     * Include some support for a log RGB space based on the 2.048 density
-    range as defined for the Cineon Digital Film System.
+      range as defined for the Cineon Digital Film System.
     * Added utilities command-line support for industry standard subsampling
-    notation like 4:4:4 and 4:2:2.
+      notation like 4:4:4 and 4:2:2.
+    * Use MAGICK_IOBUF_SIZE to tune the size of the I/O buffer.
+    * Use -type Bilevel, Grayscale, TrueColor, or TrueColorMatte to
+      influence the type of image that Ghostscript returns.
+    * The -version option now dumps a feature list as well as the build
+      options.
+    * The -endian option now supports the option 'native'.
+    * A -monitor is added to enable progress monitoring for the command line
+      utilities.
+    * The already supported option '-type Optimize' is now honored by
+      formats that need to choose a subformat based on the properties of
+      the image. Grueling tests of many/all pixels are not performed
+      unless '-type Optimize' is supplied.
 
   Coder additions/improvements:
 
     * Replaced existing DPX "support" with all-new DPX support conforming
-    to the SMPTE 268M-2003 standard.
+      to the SMPTE 268M-2003 standard.
+    * Cineon reader completely rewritten.
     * TIFF coder is completely re-written. Now supports reading and
-    writing RGB, CMYK, and grayscale, scanline-oriented TIFF images with
-    arbitrary (1 to 32 bits) depth. Includes support for tiled TIFF,
-    floating point TIFF, LogLuv TIFF, arbitrary depths, and associated
-    alpha.
+      writing RGB, CMYK, and grayscale, scanline-oriented TIFF images
+      with arbitrary (1 to 32 bits) depth. Includes support for tiled
+      TIFF, floating point TIFF, LogLuv TIFF, BigTIFF, arbitrary depths,
+      and associated alpha.
     * TIFF coder now supports retrieving and saving XMP profiles.
+    * MATLAB support is much improved and supports writing as well.
+    * WPG reader now supports CTM translations.
+    * ART format now supports writing.
     * Support 32-bit raw RGB images.
     * Support 32-bit raw CMYK images.
     * Support 32-bit raw gray images.
     * JP2 coder reads images in YCBCR colorspace and retrieves an embedded
-    ICC ICM color profile if present.
+      ICC ICM color profile if present.
 
   API enhancements:
+
     * Added ExportImageChannel() and ImportImageChannel() APIs to support
-    exporting and importing pixel regions with an arbitary range of (1 to
-    32) bits per quantum.
+      exporting and importing pixel regions with an arbitary range of (1
+      to 32) bits per quantum.
     * Added image leveling methods for Magick++.
     * Generalized GetImageAttribute() support for retrieving wildcarded
-    attributes so that an identify -format specification like '%[dpx:*]'
-    works as expected.
+      attributes so that an identify -format specification like
+      '%[dpx:*]' works as expected.
     * Incorporated changes changes necessary so that GraphicsMagick can
-    work with the Ch C/C++ interpreter from SoftIntegration at
-    http://www.softintegration.com/.
+      work with the Ch C/C++ interpreter from SoftIntegration at
+      http://www.softintegration.com/.
 
   Performance improvments:
 
-    * The DispatchImage() and ConstituteImage() functions incorporate special
-    case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8 bit only) in
-    order to improve performance dramatically.
+    * The DispatchImage() and ConstituteImage() functions incorporate
+      special case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8
+      bit only) in order to improve performance dramatically.
     * When writing very large JPEG images, don't enable Huffman compression
-    since doing so requires libjpeg to buffer the entire image in memory.
+      since doing so requires libjpeg to buffer the entire image in memory.
     * When using the 'identify' -verbose option, -verbose must be specified
       twice in order to obtain the color count.  This makes normal use of
       -verbose much faster.
+    * Significantly improved read/write speed for bilevel and gray images.
+    * TIFF I/O is considerably faster.
+    * Postscript writer is 10-15X faster.
+    * PNM formats writer is 10-100X faster.
+    * Rotate by 90 or 270 degrees is 2-9X faster.
 
   Windows-specific improvements/changes:
 
     * For the MinGW and Cygwin builds, the Magick++ library is forced to
-    build as a static library since otherwise C++ exceptions don't work.
+      build as a static library since otherwise C++ exceptions don't work.
     * Determine location of Ghostscript fonts only once in order to improve
-    performance.
-    * Updated LCMS to version 1.15.
-    * Updated Jasper library to version 1.701.0.
-    * Updated libpng to 1.2.8.
+      performance.
+    * Updated bzip2 to 1.0.4.
+    * Updated Jasper library to version 1.900.1.
+    * Updated jbigkit to 1.6
+    * Updated lcms to 1.16
+    * Updated libpng to 1.2.18.
+    * Updated libtiff to 3.8.2
     * Updated zlib to 1.2.3.
-    * Updated libtiff to 3.7.4.
-    * Libtiff updated to support LZW compression.
-    * Use GlobalMemoryStatusEx(), if available, to determine how much physical
-    memory is available.  Important for large-memory machines.
+    * Libtiff supports LZW compression.
+    * Find latest Ghostscript which idenfies itself as "GPL Ghostscript".
+    * Use GlobalMemoryStatusEx(), if available, to determine how much
+      physical memory is available. Important for large-memory machines.
     * Fixed NTreaddir() so that it does not write beyond its buffer.
     * Fixed opendir() emulation function so it can't overwrite the stack.
-    o FlashPIX library sources are no longer distributed in the Windows
-    source package and building FlashPIX is disabled by default.  FlashPIX
-    may still be built by adding the library (separately distributed).
+    * FlashPIX library sources are no longer distributed in the Windows
+      source package and building FlashPIX is disabled by default.
+      FlashPIX may still be built by adding the library (separately
+      distributed).
 
 Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
 
