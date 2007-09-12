@@ -319,12 +319,11 @@ float *fltrow;
   }
 
   filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
-  (void) SeekBlob(image, filepos+4, SEEK_SET);
   for (i = 0; i < (long) MATLAB_HDR->SizeY; i++)
   {
     if (CellType==miDOUBLE)
     {
-      ReadBlobDoublesXXX(image, ldblk, (double *) BImgBuff);
+      ReadBlobDoublesXXX(image, ldblk, (double *)BImgBuff);
       dblrow = (double *)BImgBuff;
       if (i == 0)
       {
