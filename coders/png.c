@@ -1211,11 +1211,15 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 
 static void png_flush_data(png_structp png_ptr)
 {
+  (void) png_ptr;
+  /* There is currently no safe API to "flush" a blob. */
+#if 0
   Image
     *image;
 
   image=(Image *) png_get_io_ptr(png_ptr);
   (void) SyncBlob(image);
+#endif
 }
 
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
