@@ -1,3 +1,4 @@
+
 /*
 % Copyright (C) 2003, 2006 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
@@ -359,6 +360,21 @@ float *fltrow;
   (void) SeekBlob(image, filepos, SEEK_SET);
 }
 
+
+static void FixSignedValues(PixelPacket *q, int y)
+{
+  while(y-->0)
+  {
+     /* Please note that negative values will overflow
+        Q=8; MaxRGB=255: <0;127> + 127+1 = <128; 255> 
+		       <-1;-128> + 127+1 = <0; 127> */
+    q->red += MaxRGB/2 + 1;
+    q->green += MaxRGB/ + 1;
+    q->blue += MaxRGB/ + 1;
+    q++;
+  }
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -395,7 +411,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 {
   Image *image,
    *rotated_image;
-  const PixelPacket *q;
+  PixelPacket *q;
   unsigned int status;
   MATHeader MATLAB_HDR;
   unsigned long size;  
@@ -502,9 +518,13 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (MATLAB_HDR.StructureClass != mxCHAR_CLASS && 
       MATLAB_HDR.StructureClass != mxSINGLE_CLASS &&	     /* float + complex float */
       MATLAB_HDR.StructureClass != mxDOUBLE_CLASS &&	     /* double + complex double */
+      MATLAB_HDR.StructureClass != mxINT8_CLASS &&
       MATLAB_HDR.StructureClass != mxUINT8_CLASS &&          /* uint8 + uint8 3D */
+      MATLAB_HDR.StructureClass != mxINT16_CLASS &&
       MATLAB_HDR.StructureClass != mxUINT16_CLASS &&	     /* uint16 + uint16 3D */
+      MATLAB_HDR.StructureClass != mxINT32_CLASS &&
       MATLAB_HDR.StructureClass != mxUINT32_CLASS &&	     /* uint32 + uint32 3D */
+      MATLAB_HDR.StructureClass != mxINT64_CLASS &&
       MATLAB_HDR.StructureClass != mxUINT64_CLASS)	     /* uint64 + uint64 3D */
     ThrowReaderException(CoderError,UnsupportedCellTypeInTheMatrix,image);
 
@@ -537,24 +557,28 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   switch (CellType)
   {
+    case miINT8:
     case miUINT8:
       sample_size = 8;
       image->depth = Min(QuantumDepth,8);         /* Byte type cell */
       import_options.sample_type = UnsignedQuantumSampleType;
       ldblk = (long) MATLAB_HDR.SizeX;      
       break;
+    case miINT16:
     case miUINT16:
       sample_size = 16;
       image->depth = Min(QuantumDepth,16);        /* Word type cell */
       ldblk = (long) (2 * MATLAB_HDR.SizeX);
       import_options.sample_type = UnsignedQuantumSampleType;       
       break;
+    case miINT32:
     case miUINT32:
       sample_size = 32;
       image->depth = Min(QuantumDepth,32);        /* Dword type cell */
       ldblk = (long) (4 * MATLAB_HDR.SizeX);      
       import_options.sample_type = UnsignedQuantumSampleType;      
       break;
+    case miINT64:
     case miUINT64:
       sample_size = 64;
       image->depth = Min(QuantumDepth,32);        /* Qword type cell */
@@ -643,12 +667,16 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
     {
       q=SetImagePixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1);
-      if (q == (PixelPacket *)NULL) break;
+      if (q == (PixelPacket *)NULL) goto ExitLoop;
       (void)ReadBlob(image, ldblk, (char *)BImgBuff);	  
       (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
-      if (!SyncImagePixels(image)) break;     
+      if (z<=1 &&			 // fix only during a last pass z==0 || z==1
+	      (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
+	FixSignedValues(q,MATLAB_HDR.SizeX);
+      if (!SyncImagePixels(image)) goto ExitLoop;
     }
   } while(z-- >= 2);
+ExitLoop:
 
 
   /* Read complex part of numbers here */
