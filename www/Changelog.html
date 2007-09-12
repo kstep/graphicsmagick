@@ -24,6 +24,9 @@
 2007-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/shear.c (IntegralRotateImage): Import implementation from
+        CVS HEAD in order to obtain much faster rotation by 90 and 270
+        degrees.<BR>
   <LI> coders/png.c (png_flush_data): Don't invoke SyncBlob()
         since it does far more than force data to the output file.
   <LI> coders/jpeg.c (TerminateDestination): Don't invoke SyncBlob()
