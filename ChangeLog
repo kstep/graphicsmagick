@@ -1,3 +1,8 @@
+2007-09-12  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Allowed to read signed integer matrices.
+	Fixed loop break.
+
 2007-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Ensure that selected photometric
