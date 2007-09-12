@@ -183,13 +183,6 @@ extern MagickExport magick_off_t SeekBlob(Image *image,
 extern MagickExport magick_off_t TellBlob(const Image *image);
 
 /*
-  Ensure that all images in an image list are pointing to the same
-  BlobInfo object as the first image.  Then flush all unwritten data
-  to the output file or blob.
-*/
-extern MagickExport int SyncBlob(Image *image);
-
-/*
   Test to see if EOF has been detected while reading the file or BLOB.
 */
 extern MagickExport int EOFBlob(const Image *image);

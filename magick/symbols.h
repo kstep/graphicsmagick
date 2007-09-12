@@ -715,7 +715,6 @@
 #define Strip GmStrip
 #define SubstituteString GmSubstituteString
 #define SwirlImage GmSwirlImage
-#define SyncBlob GmSyncBlob
 #define SyncCacheView GmSyncCacheView
 #define SyncImage GmSyncImage
 #define SyncImagePixels GmSyncImagePixels

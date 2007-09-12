@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2007-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/png.c (png_flush_data): Don't invoke SyncBlob()
+        since it does far more than force data to the output file.
+  <LI> coders/jpeg.c (TerminateDestination): Don't invoke SyncBlob()
+        since it does far more than force data to the output file.
+  <LI> magick/blob.c (SyncBlob): Remove from public interface.
+
+</UL>
+<p>
+2007-09-12  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Allowed to read signed integer matrices.
+        Fixed loop break.
+
+</UL>
+<p>
 2007-09-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

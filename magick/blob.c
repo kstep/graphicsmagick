@@ -131,6 +131,11 @@ struct _BlobInfo
 };
 
 /*
+  Forward Declarations
+*/
+static int SyncBlob(Image *image);
+
+/*
   Some systems have unlocked versions of getc & putc which are faster
   when multi-threading is enabled.  Blobs do not require multi-thread
   support since Images are only allowed to be accessed by one thread at
@@ -3622,7 +3627,7 @@ MagickExport void SetBlobTemporary(Image *image, unsigned int isTemporary)
 %
 %
 */
-MagickExport int SyncBlob(Image *image)
+static int SyncBlob(Image *image)
 {
   int
     status;

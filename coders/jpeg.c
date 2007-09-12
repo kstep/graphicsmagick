@@ -1302,8 +1302,6 @@ static void TerminateDestination(j_compress_ptr cinfo)
       if (number_bytes != (MaxBufferExtent-destination->manager.free_in_buffer))
         ERREXIT(cinfo,JERR_FILE_WRITE);
     }
-  if (SyncBlob(destination->image))
-    ERREXIT(cinfo,JERR_FILE_WRITE);
 }
 
 static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
