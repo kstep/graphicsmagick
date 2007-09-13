@@ -24,8 +24,10 @@
 2007-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> coders/png.c (png_flush_data): Don't invoke SyncBlob()
-        since it does far more than force data to the output file.
+  <LI> coders/png.c (png_flush_data): Don't invoke SyncBlob() since it
+        does far more than force data to the output file.
+        (ReadPNGImage): Make sure that PNG read errors are reported to the
+        user.<BR>
   <LI> coders/jpeg.c (TerminateDestination): Don't invoke SyncBlob()
         since it does far more than force data to the output file.
   <LI> magick/blob.c (SyncBlob): Remove from public interface.
