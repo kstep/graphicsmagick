@@ -1,5 +1,7 @@
 2007-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/png.c (ReadPNGImage): Make sure that PNG read errors are
+	reported to the user.
 	* magick/shear.c (IntegralRotateImage): Import implementation from
 	CVS HEAD in order to obtain much faster rotation by 90 and 270
 	degrees.

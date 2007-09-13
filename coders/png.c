@@ -1675,7 +1675,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage() with error.");
       if (image != (Image *) NULL)
-        image->columns=0;
+        {
+          if (image->exception.severity > exception->severity)
+            CopyException(exception,&image->exception);
+          image->columns=0;
+        }
+
       return(image);
     }
   /*
@@ -2780,6 +2785,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   if (image->columns == 0 || image->rows == 0)
     {
+      if (image->exception.severity > exception->severity)
+        CopyException(exception,&image->exception);
       DestroyImageList(image);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
