@@ -52,7 +52,7 @@
 <P>
 </P>
 <h2><a name="allocateimageprofileiterator">AllocateImageProfileIterator</a></h2>
-<P>AllocateImageProfileIterator allocates an iterator to traverse the image profile list.</P>
+<P>AllocateImageProfileIterator allocates an iterator to traverse the image profile list.  It is an error (i.e.  will surely crash) to invoke <code>DeleteImageProfile()</code> on the profile that the iterator is currently referencing.  However, it is safe to delete a profile that the iterator is not currently referencing.  Inserting additional profiles does not invalidate the current iterator.</P>
 <P>The format of the AllocateImageProfileIterator method is:</P>
 <blockquote>ImageProfileIterator AllocateImageProfileIterator ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>

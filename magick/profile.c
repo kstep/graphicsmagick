@@ -68,7 +68,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AllocateImageProfileIterator allocates an iterator to traverse the
-%  image profile list.
+%  image profile list.  It is an error (i.e. will surely crash) to invoke
+%  DeleteImageProfile() on the profile that the iterator is currently
+%  referencing.  However, it is safe to delete a profile that the iterator
+%  is not currently referencing. Inserting additional profiles does not
+%  invalidate the current iterator.
+%  
 %
 %  The format of the AllocateImageProfileIterator method is:
 %
@@ -375,6 +380,9 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
       /*
         Remove an ICM, IPTC, or generic profile from the image.
       */
+      char
+        profile_remove[MaxTextExtent];
+
       const char
         *profile_name;
       
@@ -388,18 +396,21 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
         profile_iterator;
 
       profile_iterator=AllocateImageProfileIterator(image);
+      profile_remove[0]=0;
       while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
                              &profile_length) != MagickFail)
         {
-          /* FIXME, this might just crash */
-          if (GlobExpression(profile_name,name))
+          if (strlen(profile_remove))
             {
-              (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                    "Removing %s profile",profile_name);
-              DeleteImageProfile(image,profile_name);
+              DeleteImageProfile(image,profile_remove);
+              profile_remove[0]=0;
             }
+          if (GlobExpression(profile_name,name))
+            strlcpy(profile_remove,profile_name,sizeof(profile_remove));
         }
       DeallocateImageProfileIterator(profile_iterator);
+      if (strlen(profile_remove))
+        DeleteImageProfile(image,profile_remove);
       return(MagickPass);
     }
   /*
@@ -912,6 +923,8 @@ SetImageProfile(Image *image,const char *name, const unsigned char *profile,
       /*
         Remove existing entry.
       */
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Removing %s profile",name);
       status &= MagickMapRemoveEntry(image->profiles,name);
     }
   else
@@ -922,7 +935,9 @@ SetImageProfile(Image *image,const char *name, const unsigned char *profile,
       if (image->profiles == 0)
         image->profiles=MagickMapAllocateMap(MagickMapCopyBlob,
                                              MagickMapDeallocateBlob);
-      
+
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Adding %s profile",name);
       status &= MagickMapAddEntry(image->profiles,name,profile,length,
                                   &image->exception);
     }

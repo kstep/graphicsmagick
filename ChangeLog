@@ -1,3 +1,7 @@
+2007-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c (ProfileImage): Fix removing profiles.
+
 2007-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (png_flush_data): Don't invoke SyncBlob() since it

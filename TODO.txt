@@ -6,9 +6,6 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o The PNG coder does report errors but to the wrong ExceptionInfo object so
-    they are never returned to the invoking environment.  Must fix!
-
   o MPC format related issues:
 
     - gm identify cores
