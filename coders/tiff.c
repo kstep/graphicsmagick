@@ -1882,11 +1882,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if (!(BlobIsSeekable(image)))
+  if (!(GetBlobFileHandle(image)) || !(BlobIsSeekable(image)))
     {
       /*
-        If output is not to a stdio file descriptor, then use a
-        temporary file for the output so that it is.
+        If output is not to a stdio file descriptor or not seekable,
+        then use a temporary file for the output so that it is.
       */
       filename_is_temporary=True;
       if(!AcquireTemporaryFileName(filename))
