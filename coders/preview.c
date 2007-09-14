@@ -245,8 +245,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   threshold=0.0;
   x=0;
   y=0;
-  master_image=ResizeImage(image,geometry.width,geometry.height,
-                           TriangleFilter,1.0,&image->exception);
+  master_image=ThumbnailImage(image,geometry.width,geometry.height,
+                              &image->exception);
   if (master_image == (Image *) NULL)
     return False;
   for (i=0; i < NumberTiles; i++)

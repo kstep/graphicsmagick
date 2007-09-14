@@ -1451,8 +1451,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     SetGeometry(image,&geometry);
     (void) GetMagickGeometry("106x106+0+0>",&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
-      1.0,&image->exception);
+    tile_image=ThumbnailImage(image,geometry.width,geometry.height,
+      &image->exception);
     if (tile_image == (Image *) NULL)
       ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
     xref[object++]=TellBlob(image);

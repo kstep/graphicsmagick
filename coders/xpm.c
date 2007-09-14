@@ -617,8 +617,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
-  picon=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,1.0,
-    &image->exception);
+  picon=ThumbnailImage(image,geometry.width,geometry.height,&image->exception);
   if ((image_info->type != TrueColorType) &&
       (characteristics.grayscale))
     map=BlobToImage(image_info,Graymap,GraymapExtent,&image->exception);
