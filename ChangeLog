@@ -1,5 +1,9 @@
 2007-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (WriteTIFFImage): Fix writing to pipes and other
+	non-seekable output destinations.
+	* magick/blob.c (WriteBlobFile): New function to copy a disk file
+	to a blob stream.
 	* magick/profile.c (ProfileImage): Fix removing profiles.
 
 2007-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

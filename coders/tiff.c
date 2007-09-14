@@ -2877,15 +2877,18 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strlcpy(filename,image->filename,MaxTextExtent);
-  if (!(GetBlobFileHandle(image)))
+  if (!(GetBlobFileHandle(image)) || !(BlobIsSeekable(image)))
     {
       /*
-        If output is not to a stdio file descriptor, then use a
-        temporary file for the output so that it is.
+        If output is not to a stdio file descriptor or not seekable,
+        then use a temporary file for the output so that it is.
       */
       filename_is_temporary=MagickTrue;
       if(!AcquireTemporaryFileName(filename))
         ThrowWriterTemporaryFileException(filename);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using temporary file \"%s\"",filename);
     }
   else
     CloseBlob(image);
@@ -4246,73 +4249,18 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Copy temporary file to image blob.
       */
-      int
-        file;
-
-      struct stat
-        attributes;
-
-      unsigned char
-        *buffer;
-
-      void
-        *map;
-
-      size_t
-        length;
-
-      file=open(filename,O_RDONLY | O_BINARY,0777);
-      if (file == -1)
-        {
-          ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-        }
-      /* st_size has type off_t */
-      if ((fstat(file,&attributes) != 0) ||
-          (attributes.st_size != (off_t) ((size_t) attributes.st_size)) ||
-          (attributes.st_size <= (off_t) ((size_t) 0)))
-        {
-          (void) close(file);
-          ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-        }
-      length=(size_t) attributes.st_size;
-      map=MapBlob(file,ReadMode,0,length);
-      if (map != (void *) NULL)
-        {
-          (void) WriteBlob(image,length,map);
-          (void) UnmapBlob(map,length);
-        }
-      else
-        {
-          size_t
-            count;
-
-          ssize_t
-            result;
-
-          register size_t
-            i;
-
-          count = 32768;
-          if (count > length)
-            count = length;
-          buffer=MagickAllocateMemory(unsigned char *,count);
-          if (buffer == (unsigned char *) NULL)
-            {
-              (void) close(file);
-              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                                   image);
-            }
-          for (i=0; i < length; i+=count)
-            {
-              result=read(file,buffer,count);
-              if (result <= 0)
-                break;
-              (void) WriteBlob(image,result,buffer);
-            }
-          MagickFreeMemory(buffer);
-        }
-      (void) close(file);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Copying temporary file %s to blob",filename);
+      if (!WriteBlobFile(image,filename))
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
       (void) LiberateTemporaryFile(filename);
+      /*
+        We do CloseBlob() here because libtiff normally uses our
+        registered callback to close the blob.  But when we are using
+        a temporary file, the blob to the output is left open and must
+        now be closed.
+      */
       CloseBlob(image);
     }
   return(MagickPass);

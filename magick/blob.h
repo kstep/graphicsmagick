@@ -286,6 +286,11 @@ extern MagickExport char *ReadBlobString(Image *image,
 extern MagickExport size_t WriteBlobByte(Image *image,
                                          const unsigned long value);
 
+/*
+  Write the content of an entire disk file to the file or BLOB.
+*/
+extern MagickExport MagickPassFail WriteBlobFile(Image *image,
+                                                 const char *filename);
 
 /*
   Write a 16-bit "short" value to the  file or BLOB in little-endian order.

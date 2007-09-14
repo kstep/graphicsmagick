@@ -3942,6 +3942,94 @@ MagickExport size_t WriteBlobByte(Image *image,const unsigned long value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  W r i t e B l o b F i l e                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobFile writes the content of a disk file to a blob stream.
+%  MagickPass is returned if the file is copied successfully.
+%
+%  The format of the WriteBlobFile method is:
+%
+%     MagickPassFail WriteBlobFile(Image *image,const char *filename)
+%
+%  A description of each parameter follows.
+%
+%    o count:  Method WriteBlobByte returns the number of bytes written.
+%
+%    o image: The image.
+%
+%    o filename: The filename to copy to blob.
+%
+%
+*/
+MagickExport MagickPassFail WriteBlobFile(Image *image,const char *filename)
+{
+  int
+    file;
+  
+  struct stat
+    attributes;
+  
+  unsigned char
+    *buffer;
+
+  size_t
+    length;
+
+  size_t
+    count;
+  
+  ssize_t
+    result;
+  
+  register size_t
+    i;
+
+  MagickPassFail
+    status;
+
+  status=MagickFail;
+  file=open(filename,O_RDONLY | O_BINARY,0777);
+  if (file != -1)
+    {
+      /* st_size has type off_t */
+      if ((fstat(file,&attributes) == 0) &&
+          (attributes.st_size == (off_t) ((size_t) attributes.st_size)) &&
+          (attributes.st_size > (off_t) ((size_t) 0)))
+        {
+          length=(size_t) attributes.st_size;
+  
+          count = 32768;
+          if (count > length)
+            count = length;
+          buffer=MagickAllocateMemory(unsigned char *,count);
+          if (buffer != (unsigned char *) NULL)
+            {
+              for (i=0; i < length; i+=count)
+                {
+                  result=read(file,buffer,count);
+                  if (result <= 0)
+                    break;
+                  if (WriteBlob(image,result,buffer) != (size_t) result)
+                    break;
+                }
+              MagickFreeMemory(buffer);
+            }
+          (void) close(file);
+          status = MagickPass;
+        }
+    }
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  W r i t e B l o b L S B L o n g                                            %
 %                                                                             %
 %                                                                             %
