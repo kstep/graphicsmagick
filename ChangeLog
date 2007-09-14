@@ -1,3 +1,8 @@
+2007-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Support writing TIFF to a pipe
+	or other non-seekable destination.
+
 2007-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (ReadPNGImage): Make sure that PNG read errors are
