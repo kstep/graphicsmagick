@@ -312,7 +312,7 @@ float *fltrow;
     ReadBlobDoublesXXX = ReadBlobDoublesLSB;
     ReadBlobFloatsXXX = ReadBlobFloatsLSB;   
   } 
-  else if (!strncmp(MATLAB_HDR->EndianIndicator, "MI", 2))
+  else		/* MI */
   {    
     ReadBlobDoublesXXX = ReadBlobDoublesMSB;
     ReadBlobFloatsXXX = ReadBlobFloatsMSB;   
@@ -420,7 +420,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   long ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
-  unsigned long z, Unknown5;
+  magick_uint32_t Unknown6;
+  unsigned z;
   int logging;
   int sample_size;
 
@@ -501,7 +502,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   {
     case  8: z=1; break;	       /* 2D matrix*/
     case 12: z=ReadBlobXXXLong(image); /* 3D matrix RGB*/
-	     Unknown5 = ReadBlobXXXLong(image);
+	     Unknown6 = ReadBlobXXXLong(image);
 	     if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
 	     break;
@@ -760,7 +761,7 @@ done_reading:
 static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
 {
   long y;
-  char z;
+  unsigned z;
   const PixelPacket *q;
   unsigned int status;
   int logging;
