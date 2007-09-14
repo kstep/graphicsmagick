@@ -1,3 +1,12 @@
+2007-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/preview.c (WritePreviewImage): Use ThumbnailImage() to create
+	thumbnail.
+	* coders/xpm.c (WritePICONImage): Use ThumbnailImage() to create
+	thumbnail.
+	* coders/pdf.c (WritePDFImage): Use ThumbnailImage() to create
+	thumbnail.
+
 2007-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Support writing TIFF to a pipe
