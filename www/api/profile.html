@@ -17,11 +17,8 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#allocateimageprofileiterator">AllocateImageProfileIterator</a></li>
-		<li><a href="#deallocateimageprofileiterator">DeallocateImageProfileIterator</a></li>
 		<li><a href="#deleteimageprofile">DeleteImageProfile</a></li>
 		<li><a href="#getimageprofile">GetImageProfile</a></li>
-		<li><a href="#nextimageprofile">NextImageProfile</a></li>
 		<li><a href="#profileimage">ProfileImage</a></li>
 		<li><a href="#setimageprofile">SetImageProfile</a></li>
 	</ul>
@@ -38,12 +35,9 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>ImageProfileIterator  <strong>AllocateImageProfileIterator</strong>( const Image *image );</P>
-<P>void  <strong>DeallocateImageProfileIterator</strong>( ImageProfileIterator profile_iterator );</P>
 <P>unsigned int  <strong>DeleteImageProfile</strong>( Image *image, const char *name );</P>
 <P>const unsigned char * <strong>GetImageProfile</strong>( const Image *image, const char *name, size_t *length );</P>
-<P>MagickPassFail  <strong>NextImageProfile</strong>( ImageProfileIterator profile_iterator, const char ** name, const unsigned char ** profile, size_t *length );</P>
-<P>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, unsigned char *profile, const size_t length, unsigned int clone );</P>
+<P>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone );</P>
 <P>unsigned int  <strong>SetImageProfile</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length );</P>
 <P>
 </P>
@@ -51,38 +45,12 @@
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
 </P>
-<h2><a name="allocateimageprofileiterator">AllocateImageProfileIterator</a></h2>
-<P>AllocateImageProfileIterator allocates an iterator to traverse the image profile list.  It is an error (i.e.  will surely crash) to invoke <code>DeleteImageProfile()</code> on the profile that the iterator is currently referencing.  However, it is safe to delete a profile that the iterator is not currently referencing.  Inserting additional profiles does not invalidate the current iterator.</P>
-<P>The format of the AllocateImageProfileIterator method is:</P>
-<blockquote>ImageProfileIterator AllocateImageProfileIterator ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="deallocateimageprofileiterator">DeallocateImageProfileIterator</a></h2>
-<P>DeallocateImageProfileIterator deallocates an image profile iterator.</P>
-<P>The format of the DeallocateImageProfileIterator method is:</P>
-<blockquote>void DeallocateImageProfileIterator ( ImageProfileIterator profile_iterator ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_profile_iterator_3a">profile_iterator:</a></strong><br />
-</dt>
-<DD>
-Profile iterator to deallocate.
-</dd>
-<P></P></dl>
-<P>
-</P>
 <h2><a name="deleteimageprofile">DeleteImageProfile</a></h2>
 <P>DeleteImageProfile removes a named profile from the image.</P>
 <P>The format of the DeleteImageProfile method is:</P>
 <blockquote>unsigned int DeleteImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
 </dt>
 <DD>
 The image.
@@ -98,7 +66,7 @@ Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic pr
 </P>
 <h2><a name="getimageprofile">GetImageProfile</a></h2>
 <P>GetImageProfile returns a pointer to the named image profile if it is present.  A null pointer is returned if the named profile is not present.</P>
-<blockquote>Older versions of this function stored profiles named "8BIM" and "IPTC" in the same storage location. This is no longer the case. However, GetImageProfile() will try the alternate name if the specifically requested profile name is not available. </blockquote><P>The format of the GetImageProfile method is:</P>
+<P>The format of the GetImageProfile method is:</P>
 <blockquote>const unsigned char *GetImageProfile ( const <A HREF="types.html#Image">Image</A> *image, const char *name, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
@@ -110,44 +78,13 @@ The image.
 <dt><strong>name:</strong><br />
 </dt>
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', ``XMP'' or any unique text string.
+Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an existing generic profile name.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_length_3a">length:</a></strong><br />
 </dt>
 <DD>
-Updated with profile length if profile is present.  Set to NULL if length is not needed.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="nextimageprofile">NextImageProfile</a></h2>
-<P>NextImageProfile iterates forward to the next image profile.  The profile name is returned along with the profile data, and length.  If there are no more entries in the list, then MagickFail is returned.</P>
-<P>The format of the AllocateImageProfileIterator method is:</P>
-<blockquote>MagickPassFail NextImageProfile ( ImageProfileIterator profile_iterator, const char **name, const unsigned char **profile, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>profile_iterator:</strong><br />
-</dt>
-<DD>
-Profile iterator.
-</dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
-<DD>
-Address of pointer to update with address of name.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_profile_3a">profile:</a></strong><br />
-</dt>
-<DD>
-Address of pointer to update with location of profile data.
-</dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
-<DD>
-Address of parameter to update with profile length.
+Updated with profile length if profile is present.
 </dd>
 <P></P></dl>
 <P>
@@ -157,7 +94,7 @@ Address of parameter to update with profile length.
 <P>If there is no ICM profile currently associated with the image, then the profile is simply associated with the image and the image pixels are not altered.</P>
 <P>If there is already a ICM profile associated with the image, then the colorspace transform described by the existing and new profiles is applied to the image pixels, and the new profile is associated with the image.</P>
 <P>The format of the ProfileImage method is:</P>
-<blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
 </dt>
@@ -171,10 +108,10 @@ The image.
 Name of profile to add or remove: ICM, IPTC, or generic profile.
 </dd>
 <P></P>
-<dt><strong>profile:</strong><br />
+<dt><strong><a name="item_o_profile_3a">profile:</a></strong><br />
 </dt>
 <DD>
-The profile.  Can not be 'const' due to 'clone' option but is treated as 'const' if 'clone' is set to MagickTrue.
+The profile.
 </dd>
 <P></P>
 <dt><strong>length:</strong><br />
@@ -193,7 +130,6 @@ If set True, then copy the profile rather than taking ownership of it.
 </P>
 <h2><a name="setimageprofile">SetImageProfile</a></h2>
 <P>SetImageProfile adds a named profile to the image.  If a profile with the same name already exists, then it is replaced.  If a null profile address is supplied, then an existing profile is removed.  The profile is copied into the image.  Note that this function does not execute CMS color profiles.  Any existing CMS color profile is simply replaced.  Use the <code>ProfileImage()</code> function in order to execute a CMS color profile.</P>
-<P>Older versions of this function stored profiles named ``8BIM'' and ``IPTC'' in the same storage location.  This is no longer the case.  However, <code>GetImageProfile()</code> will try the alternate name if the specifically requested profile name is not available.  Note that when trying to remove a profile, it may be necessary to remove both names in order for an ``IPTC'' profile to no longer be included in output file formats.</P>
 <P>The format of the SetImageProfile method is:</P>
 <blockquote>unsigned int SetImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -206,7 +142,7 @@ The image.
 <dt><strong>name:</strong><br />
 </dt>
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', XMP, or any unique text string.
+Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an generic profile name.
 </dd>
 <P></P>
 <dt><strong>profile:</strong><br />
