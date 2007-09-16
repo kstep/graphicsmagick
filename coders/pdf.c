@@ -1551,6 +1551,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case FaxCompression:
           {
+            if (tile_image->blob)
+              {
+                DestroyBlob(tile_image);
+                tile_image->blob=0;
+              }
             tile_image->blob=ReferenceBlob(image->blob);
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
