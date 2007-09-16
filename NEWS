@@ -1,4 +1,33 @@
-This file was last updated on July 28, 2007.
+This file was last updated on September 16, 2007.
+
+Significant changes associated with GraphicsMagick 1.1.9 (released September 16, 2007)
+
+  Bugs Fixed:
+
+    o In mogrify command, don't remove file name based on random junk in
+      memory.
+    o Fixed memory leak when reading MPC files.
+    o Fixed crash when writing MIFF format and depth is not expected 8/16/32/.
+    o Find latest Ghostscript under Windows which identifies itself as
+      "GPL Ghostscript".
+    o In mogrify command, don't leak memory in the case where the image
+      file contains multiple frames.
+    o Fixed crash in PNG and JPEG coders when the image to be written is
+      part of an image list.
+    o PNG reader errors are not properly reported to the user.
+    o TIFF output can now be written to a pipe or other non-seekable
+      destination.
+    o Support writing PDF with CCITT compression.
+
+  Feature Improvements
+
+    o Added a new 'benchmark' command which can be used to perform
+      benchmarking on any other command.
+    o Image rotate in clockwise (90 degrees) or counter-clockwise (270
+      degrees) direction is now 2-9X faster than before.
+    o The -version option now includes a list of supported features.
+    o For Windows MinGW-based build, find Ghostscript fonts installed
+      under C:/Program Files/.
 
 Significant changes associated with GraphicsMagick 1.1.8 (released July 28, 2007)
 
