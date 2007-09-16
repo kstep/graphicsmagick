@@ -1316,7 +1316,7 @@ static unsigned int BenchMarkSubCommand(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   return status;
 }
-MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
+static unsigned int BenchmarkImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
   double
