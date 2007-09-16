@@ -14523,9 +14523,9 @@ static unsigned int VersionCommand(ImageInfo *image_info,
 
   /* Thread Safe */
   supported=MagickFalse;
-#if defined(MSWINDOWS) || defined(HAVE_PTHREAD)
+#if defined(WIN32) || defined(HAVE_PTHREAD)
   supported=MagickTrue;
-#endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
+#endif /* defined((WIN32) || defined(HAVE_PTHREAD) */
   PrintFeature("Thread Safe", supported);
 
   /* Large File Support */

@@ -1159,7 +1159,7 @@ MagickExport void FormatString(char *string,const char *format,...)
 MagickExport unsigned int GetExecutionPath(char *path)
 {
   *path='\0';
-#if defined(MSWINDOWS)
+#if defined(WIN32)
   /*
     Microsoft Windows provides an means to obtain the path to the
     currently executing executable or DLL.
