@@ -127,8 +127,10 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   unsigned int
     status;
 
+  uint32
+    *byte_count;
+
   unsigned long
-    *byte_count,
     strip_size;
 
   /*
@@ -138,57 +140,78 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
   if(!AcquireTemporaryFileName(filename))
     ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
       filename);
+
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  SetImageType(huffman_image,BilevelType);
+
+  (void) SetImageType(huffman_image,BilevelType);
   FormatString(huffman_image->filename,"tiff:%s",filename);
+
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);
-  if (status == False)
-    return(False);
+  if (status == MagickFalse)
+    return(MagickFalse);
+
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
+
   /*
     Allocate raw strip buffer.
   */
+  byte_count=0;
   (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
+  /* strip_size=TIFFStripSize(tiff); */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Allocating %lu bytes of memory for TIFF strip",
+                        (unsigned long) strip_size);
   buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
+
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Output 2D Huffman pixels.");
   (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
     count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Writing %lu strip bytes to blob ...",
+                          (unsigned long) count);
+    (void) WriteBlob(image,count,buffer);
   }
+
   MagickFreeMemory(buffer);
   TIFFClose(tiff);
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   return(True);
 }
 #else
@@ -1038,8 +1061,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       {
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
+        (void) strcpy(buffer,"/Interpolate false\n");
+        (void) WriteBlobString(image,buffer);
         FormatString(buffer,
-          "/DecodeParms [ << >> << /K %.1024s /Columns %ld /Rows %ld >> ]\n",
+          "/DecodeParms [ << /K %.1024s /BlackIs1 false /Columns %ld /Rows %ld >> ]\n",
           CCITTParam,image->columns,image->rows);
         break;
       }
@@ -1054,7 +1079,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Height %lu\n",image->rows);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/ColorSpace %lu 0 R\n",object+2);
+    if (compression == FaxCompression)
+      strlcpy(buffer,"/ColorSpace /DeviceGray\n",MaxTextExtent);
+    else
+      FormatString(buffer,"/ColorSpace %lu 0 R\n",object+2);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/BitsPerComponent %d\n",
       compression == FaxCompression ? 1 : 8);
@@ -1523,6 +1551,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case FaxCompression:
           {
+            tile_image->blob=ReferenceBlob(image->blob);
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
             else
