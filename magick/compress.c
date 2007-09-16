@@ -332,6 +332,70 @@ MagickExport unsigned int BlobWriteByteHook(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  C o m p r e s s i o n T y p e T o S t r i n g                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompressionTypeToString returns a string describing the specified
+%  compression type.
+%
+%  The format of the CompressionTypeToString method is:
+%
+%      const char* CompressionTypeToString(const CompressionType compression_type)
+%
+%  A description of each parameter follows:
+%
+%    o compression_type:  Compression type
+%
+*/
+MagickExport const char* CompressionTypeToString(const CompressionType compression_type)
+{
+  const char
+    *log_compression_type="Unknown";
+
+  switch (compression_type)
+    {
+    case UndefinedCompression:
+      log_compression_type="Undefined";
+      break;
+    case NoCompression:
+      log_compression_type="No";
+      break;
+    case BZipCompression:
+      log_compression_type="BZip";
+      break;
+    case FaxCompression:
+      log_compression_type="Fax";
+      break;
+    case Group4Compression:
+      log_compression_type="Group4";
+      break;
+    case JPEGCompression:
+      log_compression_type="JPEG";
+      break;
+    case LosslessJPEGCompression:
+      log_compression_type="Lossless JPEG";
+      break;
+    case LZWCompression:
+      log_compression_type="LZW";
+      break;
+    case RLECompression:
+      log_compression_type="RLE";
+      break;
+    case ZipCompression:
+      log_compression_type="Zip";
+      break;
+    }
+  return log_compression_type;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   H u f f m a n D e c o d e I m a g e                                       %
 %                                                                             %
 %                                                                             %

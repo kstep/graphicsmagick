@@ -84,7 +84,7 @@ static unsigned int
 %
 %  The format of the Huffman2DEncodeImage method is:
 %
-%      unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+%      MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
 %        Image *image)
 %
 %  A description of each parameter follows:
@@ -97,7 +97,7 @@ static unsigned int
 %    o image: The image.
 %
 */
-static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
   char
@@ -127,8 +127,10 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   unsigned int
     status;
 
+  uint32
+    *byte_count;
+
   unsigned long
-    *byte_count,
     strip_size;
 
   /*
@@ -138,21 +140,27 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
   if(!AcquireTemporaryFileName(filename))
     ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
       filename);
+
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
+
   (void) SetImageType(huffman_image,BilevelType);
   FormatString(huffman_image->filename,"tiff:%s",filename);
+
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);
-  if (status == False)
-    return(False);
+  if (status == MagickFalse)
+    return(MagickFalse);
+
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
@@ -160,14 +168,20 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
       ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
+
   /*
     Allocate raw strip buffer.
   */
+  byte_count=0;
   (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
+  /* strip_size=TIFFStripSize(tiff); */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Allocating %lu bytes of memory for TIFF strip",
+                        (unsigned long) strip_size);
   buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
@@ -176,16 +190,25 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
+
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Output 2D Huffman pixels.");
   (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
   {
     count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Writing %lu strip bytes to blob ...",
+                          (unsigned long) count);
+    (void) WriteBlob(image,count,buffer);
   }
+
   MagickFreeMemory(buffer);
   TIFFClose(tiff);
   (void) LiberateTemporaryFile(filename);
@@ -728,6 +751,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 #if !defined(HasJPEG)
     case JPEGCompression:
     {
+      /*
+        If JPEG compression is not supported, then use RLE compression
+        and report a warning to user.
+      */
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
       break;
@@ -736,6 +763,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 #if !defined(HasZLIB)
     case ZipCompression:
     {
+      /*
+        If ZIP compression is not supported, then use RLE compression
+        and report a warning to user.
+      */
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
       break;
@@ -744,6 +775,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     default:
       break;
   }
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "%s compression.",
+                        CompressionTypeToString(compression));
+
   /*
     Allocate X ref memory.
   */
@@ -981,8 +1016,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image," ]\n");
     (void) WriteBlobString(image,"endobj\n");
+#if 1
     /*
       Write Font object.
+
+      FIXME: This should be removed.
     */
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
@@ -996,6 +1034,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"/Encoding /MacRomanEncoding\n");
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
+#endif
     /*
       Write XObject object.
     */
@@ -1037,8 +1076,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       {
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
+        (void) strcpy(buffer,"/Interpolate false\n");
+        (void) WriteBlobString(image,buffer);
         FormatString(buffer,
-          "/DecodeParms [ << >> << /K %.1024s /Columns %ld /Rows %ld >> ]\n",
+          "/DecodeParms [ << /K %.1024s /BlackIs1 false /Columns %ld /Rows %ld >> ]\n",
           CCITTParam,image->columns,image->rows);
         break;
       }
@@ -1053,7 +1094,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Height %lu\n",image->rows);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/ColorSpace %lu 0 R\n",object+2);
+    if (compression == FaxCompression)
+      strlcpy(buffer,"/ColorSpace /DeviceGray\n",MaxTextExtent);
+    else
+      FormatString(buffer,"/ColorSpace %lu 0 R\n",object+2);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/BitsPerComponent %d\n",
       compression == FaxCompression ? 1 : 8);
@@ -1074,10 +1118,20 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           {
             if (LocaleCompare(CCITTParam,"0") == 0)
               {
-                (void) HuffmanEncodeImage(image_info,image);
-                break;
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "Executing HuffmanEncodeImage for CCITT Fax3 ...");
+                if (!HuffmanEncodeImage(image_info,image))
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "HuffmanEncodeImage reports failure!");
               }
-            (void) Huffman2DEncodeImage(image_info,image);
+            else
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "Executing Huffman2DEncodeImage for CCITT Fax4 ...");
+                if (!Huffman2DEncodeImage(image_info,image) )
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Huffman2DEncodeImage reports failure!");
+              }
             break;
           }
           case JPEGCompression:
@@ -1430,23 +1484,35 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     if (image->colorspace == CMYKColorspace)
-      (void) strcpy(buffer,"/DeviceCMYK\n");
+      {
+        (void) strcpy(buffer,"/DeviceCMYK\n");
+      }
     else
-      if ((compression == FaxCompression) ||
-          ((image_info->type != TrueColorType) &&
-           (characteristics.grayscale)))
-          (void) strcpy(buffer,"/DeviceGray\n");
-      else
-        if ((image->storage_class == DirectClass) || (image->colors > 256) ||
-            (compression == JPEGCompression))
-          (void) strcpy(buffer,"/DeviceRGB\n");
+      {
+        if ((compression == FaxCompression) ||
+            (compression == Group4Compression) ||
+            ((image_info->type != TrueColorType) &&
+             (characteristics.grayscale)))
+          {
+            (void) strcpy(buffer,"/DeviceGray\n");
+          }
         else
-          FormatString(buffer,"[ /Indexed /DeviceRGB %u %lu 0 R ]\n",
-            (unsigned int) image->colors-1,object+3);
+          {
+            if ((image->storage_class == DirectClass) || (image->colors > 256) ||
+                (compression == JPEGCompression))
+              (void) strcpy(buffer,"/DeviceRGB\n");
+            else
+              FormatString(buffer,"[ /Indexed /DeviceRGB %u %lu 0 R ]\n",
+                           (unsigned int) image->colors-1,object+3);
+          }
+      }
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Thumb object.
+
+      FIXME: The thumbnail object should be removed.  It is no longer
+      used by modern software.
     */
     SetGeometry(image,&geometry);
     (void) GetMagickGeometry("106x106+0+0>",&geometry.x,&geometry.y,
@@ -1522,6 +1588,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case FaxCompression:
           {
+            tile_image->blob=ReferenceBlob(image->blob);
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
             else

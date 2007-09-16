@@ -57,6 +57,29 @@ typedef float TransformQuantum;
   } \
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  C o l o r s p a c e T y p e T o S t r i n g                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ColorspaceTypeToString returns a string describing the specified
+%  colorspace type.
+%
+%  The format of the ColorspaceTypeToString method is:
+%
+%     const char *ColorspaceTypeToString(const ColorspaceType colorspace)
+%
+%  A description of each parameter follows:
+%
+%    o colorspace:  Colorspace type
+%
+*/
 MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
 {
   const char

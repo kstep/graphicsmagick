@@ -1,3 +1,9 @@
+2007-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Fix writing PDF with CCITT
+	compression.  Addresses SourceForge bug 1209177 "TIFF to PDF CCITT
+	compression fails".
+
 2007-09-14  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c Ability to read multiple images from one MAT file.

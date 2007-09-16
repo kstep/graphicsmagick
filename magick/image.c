@@ -851,6 +851,49 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  C l a s s T y p e T o S t r i n g                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ClassTypeToString returns a string describing the specified
+%  image storage class
+%
+%  The format of the ClassTypeToString method is:
+%
+%     const char* ClassTypeToString(const ClassType class_type)
+%
+%  A description of each parameter follows:
+%
+%    o class_type:  Storage class type
+%
+*/
+MagickExport const char* ClassTypeToString(const ClassType class_type)
+{
+  const char
+    *log_class_type="Unknown";
+
+  switch (class_type)
+    {
+    case UndefinedClass:
+      log_class_type="Undefined";
+      break;
+    case DirectClass:
+      log_class_type="DirectClass";
+      break;
+    case PseudoClass:
+      log_class_type="PseudoClass";
+      break;
+    }
+  return log_class_type;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l i p P a t h I m a g e                                                 %
 %                                                                             %
 %                                                                             %

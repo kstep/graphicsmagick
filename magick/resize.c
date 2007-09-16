@@ -547,6 +547,89 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e s i z e F i l t e r T o S t r i n g                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ResizeFilterToString returns a string describing the specified
+%  image resize filter
+%
+%  The format of the ResizeFilterToString method is:
+%
+%     const char *ResizeFilterToString(const FilterTypes filter)
+%
+%  A description of each parameter follows:
+%
+%    o filter:  Resize filter type
+%
+*/
+MagickExport const char *ResizeFilterToString(const FilterTypes filter)
+{
+  const char *
+    filter_string = "Unknown";
+
+  switch (filter)
+    {
+    case UndefinedFilter:
+      filter_string="Undefined";
+      break;
+    case PointFilter:
+      filter_string="Point";
+      break;
+    case BoxFilter:
+      filter_string="Box";
+      break;
+    case TriangleFilter:
+      filter_string="Triangle";
+      break;
+    case HermiteFilter:
+      filter_string="Hermite";
+      break;
+    case HanningFilter:
+      filter_string="Hanning";
+      break;
+    case HammingFilter:
+      filter_string="Hamming";
+      break;
+    case BlackmanFilter:
+      filter_string="Blackman";
+      break;
+    case GaussianFilter:
+      filter_string="Gaussian";
+      break;
+    case QuadraticFilter:
+      filter_string="Quadratic";
+      break;
+    case CubicFilter:
+      filter_string="Cubi";
+      break;
+    case CatromFilter:
+      filter_string="Catrom";
+      break;
+    case MitchellFilter:
+      filter_string="Mitchell";
+      break;
+    case LanczosFilter:
+      filter_string="Lanczos";
+      break;
+    case BesselFilter:
+      filter_string="Bessel";
+      break;
+    case SincFilter:
+      filter_string="Sinc";
+      break;
+    }
+
+  return filter_string;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e s i z e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -988,66 +1071,6 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     (*quantum)++;
   }
   return(y == (long) destination->rows);
-}
-
-static const char *ResizeFilterToString(const FilterTypes filter)
-{
-  const char *
-    filter_string = "Unknown";
-
-  switch (filter)
-    {
-    case UndefinedFilter:
-      filter_string="Undefined";
-      break;
-    case PointFilter:
-      filter_string="Point";
-      break;
-    case BoxFilter:
-      filter_string="Box";
-      break;
-    case TriangleFilter:
-      filter_string="Triangle";
-      break;
-    case HermiteFilter:
-      filter_string="Hermite";
-      break;
-    case HanningFilter:
-      filter_string="Hanning";
-      break;
-    case HammingFilter:
-      filter_string="Hamming";
-      break;
-    case BlackmanFilter:
-      filter_string="Blackman";
-      break;
-    case GaussianFilter:
-      filter_string="Gaussian";
-      break;
-    case QuadraticFilter:
-      filter_string="Quadratic";
-      break;
-    case CubicFilter:
-      filter_string="Cubi";
-      break;
-    case CatromFilter:
-      filter_string="Catrom";
-      break;
-    case MitchellFilter:
-      filter_string="Mitchell";
-      break;
-    case LanczosFilter:
-      filter_string="Lanczos";
-      break;
-    case BesselFilter:
-      filter_string="Bessel";
-      break;
-    case SincFilter:
-      filter_string="Sinc";
-      break;
-    }
-
-  return filter_string;
 }
 
 MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,

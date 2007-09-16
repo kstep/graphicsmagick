@@ -1026,6 +1026,7 @@ extern MagickExport ImageType
 extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
      const char *key),
+  *ClassTypeToString(const ClassType class_type),
   *ImageTypeToString(const ImageType image_type);
 
 extern MagickExport int

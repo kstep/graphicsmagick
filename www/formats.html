@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20070817;15074700">
+	<META NAME="CHANGED" CONTENT="20070914;16003700">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -485,12 +485,12 @@ Image Formats</B></FONT></P>
 				3 TIFF</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none">Note that FAX
+				<P ALIGN=LEFT STYLE="text-decoration: none">Note that FAX
 				machines use non-square pixels which are 1.5 times wider than
 				they are tall but computer displays use square pixels, so FAX
 				images may appear to be narrow unless they are explicitly resized
 				using a resize specification of &quot;150x100%&quot;. Please note
-				that this is *not* a TIFF format.</SPAN></P>
+				that this is *not* a TIFF format.</P>
 			</TD>
 		</TR>
 		<TR>
@@ -2139,7 +2139,10 @@ Image Formats</B></FONT></P>
 				of the image</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=47% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT>&nbsp;</P>
+				<P ALIGN=LEFT>Generate an RGB histogram of the input image.  The
+				output format is always ImageMagick MIFF (regardless of file
+				extension). For example:</P>
+				<P ALIGN=LEFT>gm convert file.tiff histogram:file.miff</P>
 			</TD>
 		</TR>
 		<TR>
@@ -2239,7 +2242,9 @@ Image Formats</B></FONT></P>
 				fractal image</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=47% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT>&nbsp;</P>
+				<P ALIGN=LEFT>Creates an image using the plasma fractal. For
+				example:</P>
+				<P ALIGN=LEFT>gm convert -size 640x480 plasma: file.miff</P>
 			</TD>
 		</TR>
 		<TR>
@@ -2260,7 +2265,11 @@ Image Formats</B></FONT></P>
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none">Creates a
 				preview montage of images prepared over a parameteric range in
 				order to assist with parameter selection. Specify the desired
-				preview type via the <TT>-preview</TT> option).</SPAN></P>
+				preview type via the <TT>-preview</TT> option). The output file
+				is always written in the ImageMagick MIFF format.</SPAN></P>
+				<P ALIGN=LEFT STYLE="text-decoration: none">For example:</P>
+				<P ALIGN=LEFT STYLE="text-decoration: none">gm convert file.tiff
+				-preview gamma preview:file.miff</P>
 			</TD>
 		</TR>
 		<TR>

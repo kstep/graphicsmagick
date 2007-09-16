@@ -31,6 +31,9 @@ extern MagickExport Image
   *ZoomImage(const Image *,const unsigned long,const unsigned long,
      ExceptionInfo *);
 
+extern MagickExport const char
+  *ResizeFilterToString(const FilterTypes filter);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

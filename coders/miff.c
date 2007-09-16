@@ -39,6 +39,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/pixel_cache.h"
 #include "magick/log.h"
@@ -132,66 +133,6 @@ static unsigned int IsMIFF(const unsigned char *magick,const size_t length)
 %
 */
 
-static const char* ClassTypeToString(const ClassType class_type)
-{
-  const char
-    *log_class_type="Unknown";
-
-  switch (class_type)
-    {
-    case UndefinedClass:
-      log_class_type="Undefined";
-      break;
-    case DirectClass:
-      log_class_type="Direct";
-      break;
-    case PseudoClass:
-      log_class_type="Pseudo";
-      break;
-    }
-  return log_class_type;
-}
-
-static const char* CompressionTypeToString(const CompressionType compression_type)
-{
-  const char
-    *log_compression_type="Unknown";
-
-  switch (compression_type)
-    {
-    case UndefinedCompression:
-      log_compression_type="Undefined";
-      break;
-    case NoCompression:
-      log_compression_type="No";
-      break;
-    case BZipCompression:
-      log_compression_type="BZip";
-      break;
-    case FaxCompression:
-      log_compression_type="Fax";
-      break;
-    case Group4Compression:
-      log_compression_type="Group4";
-      break;
-    case JPEGCompression:
-      log_compression_type="JPEG";
-      break;
-    case LosslessJPEGCompression:
-      log_compression_type="Lossless JPEG";
-      break;
-    case LZWCompression:
-      log_compression_type="LZW";
-      break;
-    case RLECompression:
-      log_compression_type="RLE";
-      break;
-    case ZipCompression:
-      log_compression_type="Zip";
-      break;
-    }
-  return log_compression_type;
-}
 
 static unsigned int PushImageRLEPixels(Image *image,
  const QuantumType quantum_type,const unsigned char *source)
@@ -1165,7 +1106,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%u",
+      "class=%s compression=%s matte=%s columns=%lu rows=%lu depth=%u",
       ClassTypeToString(image->storage_class),
       CompressionTypeToString(image->compression),
       image->matte ? "True" : "False",image->columns, image->rows, image->depth);
@@ -2231,7 +2172,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
     status=True;
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Using QuantumType %s, depth %u",QuantumTypeToString(quantum_type),depth);
+                          "Using QuantumType %s, depth %u",
+                          QuantumTypeToString(quantum_type),depth);
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
