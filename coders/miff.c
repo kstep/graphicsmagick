@@ -1340,6 +1340,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
             }
           break;
         } /* End case ZipCompression */
@@ -1387,6 +1391,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
             }
           break;
         } /* End case BZipCompression */
@@ -1411,6 +1419,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               (void) PushImageRLEPixels(image,quantum_type,pixels);
               if (!SyncImagePixels(image))
                 break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
+
             }
           break;
         } /* End case RLECompression */
@@ -1426,6 +1439,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               (void) ImportImagePixelArea(image,quantum_type,sample_size,(const unsigned char*) pixels_p,0,0);
               if (!SyncImagePixels(image))
                 break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
             }
           break;
         }

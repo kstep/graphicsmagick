@@ -277,7 +277,8 @@ static inline void XYZTransformPacket(PixelPacket *pixel,
 MagickExport MagickPassFail RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
 {
-#define RGBTransformImageText  "  Transform image colors...  "
+  char
+    progress_message[MaxTextExtent];
 
   XYZColorTransformPacket
     *x_map,
@@ -326,6 +327,9 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                         "Transform colorspace from %s to %s",
                         ColorspaceTypeToString(image->colorspace),
                         ColorspaceTypeToString(colorspace));
+  FormatString(progress_message,"  Transform colorspace from %s to %s...  ",
+               ColorspaceTypeToString(image->colorspace),
+               ColorspaceTypeToString(colorspace));
 
   /*
     Store colorspace in image.
@@ -556,7 +560,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                     break;
                   }
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,
+                  if (!MagickMonitor(progress_message,y,image->rows,
                                      &image->exception))
                     break;
               }
@@ -1054,7 +1058,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             break;
           }
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
+          if (!MagickMonitor(progress_message,y,image->rows,exception))
             break;
       }
       break;
@@ -1255,8 +1259,6 @@ static void RGBTransformPacket(PixelPacket *pixel,
 MagickExport MagickPassFail TransformRGBImage(Image *image,
   const ColorspaceType colorspace)
 {
-#define TransformRGBImageText  "  Transform image colors...  "
-
 
   static const unsigned char
     sRGBMap[351] =
@@ -1318,6 +1320,9 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       255, 255, 255, 255, 255, 255
     };
 
+  char
+    progress_message[MaxTextExtent];
+
   RGBColorTransformPacket
     *blue_map,
     *green_map,
@@ -1359,6 +1364,9 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                         "Transform colorspace from %s to RGB",
                         ColorspaceTypeToString(image->colorspace));
+
+  FormatString(progress_message,"  Transform colorspace from %s to RGB...  ",
+               ColorspaceTypeToString(image->colorspace));
 
   if (image->colorspace == CMYKColorspace)
     {
@@ -1575,7 +1583,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                     break;
                   }
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
+                  if (!MagickMonitor(progress_message,y,image->rows,exception))
                     {
                       status=MagickFail;
                       break;
@@ -1930,7 +1938,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             break;
           }
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(TransformRGBImageText,y,image->rows,exception))
+          if (!MagickMonitor(progress_message,y,image->rows,exception))
             {
               status=MagickFail;
               break;

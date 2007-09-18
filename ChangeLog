@@ -1,3 +1,12 @@
+2007-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CommandProgressMonitor): Remove any preceding
+	whitespace in the task descriptions so that we don't need to
+	update all of the task descriptions right away.
+	* magick/colorspace.c (RGBTransformImage): Improve progress monitor message.
+	(TransformRGBImage): Improve progress monitor message.
+	* coders/miff.c (ReadMIFFImage): Add read progress monitor support.
+
 2007-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (WritePDFImage): Fix writing PDF with CCITT

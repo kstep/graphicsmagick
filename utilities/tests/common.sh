@@ -1,3 +1,5 @@
+# Common code fragment for utilities tests
+#
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`
 TOPSRCDIR=`cd $srcdir && pwd`

@@ -214,9 +214,14 @@ static MagickBool CommandProgressMonitor(const char *task,
 {
   if ((span > 1) && (quantum >= 0) && ((magick_uint64_t) quantum < span))
     {
+      const char
+        *p;
+
+      /* Skip over any preceding white space */
+      for (p=task; (*p) && (isspace((int) *p)); p++);
       (void) fprintf(stderr,"  %3lu%% %s\r",
                      (unsigned long) ((double) 100.0*quantum/(span-1)),
-                     task);
+                     p);
       if ((magick_uint64_t) quantum == (span-1))
         (void) fprintf(stderr,"\n");
       (void) fflush(stderr);

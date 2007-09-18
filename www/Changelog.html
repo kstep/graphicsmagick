@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2007-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (CommandProgressMonitor): Remove any preceding
+        whitespace in the task descriptions so that we don't need to
+        update all of the task descriptions right away.
+  <LI> magick/colorspace.c (RGBTransformImage): Improve progress monitor message.
+        (TransformRGBImage): Improve progress monitor message.
+  <LI> coders/miff.c (ReadMIFFImage): Add read progress monitor support.
+
+</UL>
+<p>
 2007-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
