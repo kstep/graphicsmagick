@@ -531,13 +531,17 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     case 3:
       {
         /*
-          Rotate 180 degrees.
+          Rotate 270 degrees.
         */
         status=MagickPass;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
             for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
               {
+                long
+                  dest_tile_x,
+                  dest_tile_y;
+
                 /*
                   Compute image region corresponding to tile.
                 */
@@ -560,11 +564,16 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     break;
                   }
                 /*
+                  Compute destination tile coordinates.
+                */
+                dest_tile_x=tile_y;
+                dest_tile_y=rotate_image->rows-(tile_x+tile_width);
+                /*
                   Rotate tile
                 */
-                for (y=tile_width-1; y >= 0; y--)
+                for (y=0; y < tile_width; y++)
                   {
-                    q=SetImagePixels(rotate_image,tile_y,tile_x+y,tile_height,1);
+                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,tile_height,1);
                     if (q == (PixelPacket *) NULL)
                       {
                         status=MagickFail;
@@ -573,8 +582,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     /*
                       DirectClass pixels
                     */
-                    p=tile_pixels+y;
-                    for (x=0; x < tile_height; x++)
+                    p=tile_pixels+(tile_width-1-y);
+                    for (x=tile_height; x != 0; x--)
                       {
                         *q = *p;
                         q++;
@@ -590,8 +599,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                         if (rotate_indexes != (IndexPacket *) NULL)
                           {
                             iq=rotate_indexes;
-                            ip=indexes+y;
-                            for (x=0; x < tile_height; x++)
+                            ip=indexes+(tile_width-1-y);
+                            for (x=tile_height; x != 0; x--)
                               {
                                 *iq = *ip;
                                 iq++;

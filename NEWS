@@ -14,7 +14,7 @@ Significant changes associated with GraphicsMagick 1.1.9 (released September 16,
       file contains multiple frames.
     o Fixed crash in PNG and JPEG coders when the image to be written is
       part of an image list.
-    o PNG reader errors are not properly reported to the user.
+    o PNG reader errors are now properly reported to the user.
     o TIFF output can now be written to a pipe or other non-seekable
       destination.
     o Support writing PDF with CCITT compression.
