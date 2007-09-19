@@ -1,3 +1,8 @@
+2007-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c (IntegralRotateImage): Rotation by 270 degrees
+	was wrong.  It was flipped from what it should be.
+
 2007-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (CommandProgressMonitor): Remove any preceding

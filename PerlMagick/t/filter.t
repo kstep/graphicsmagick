@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..44\n"; }
+BEGIN { $| = 1; $test=1, print "1..48\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -152,8 +152,24 @@ testFilterCompare('input.miff', q//, 'reference/filter/Roll.miff', 'Roll',
   q/geometry=>"+10+10"/, 0, 0);
 
 ++$test;
-testFilterCompare('input.miff', q//, 'reference/filter/Rotate.miff', 'Rotate',
+testFilterCompare('input.miff', q//, 'reference/filter/Rotate10.miff', 'Rotate',
   q/degrees=>10,color=>"green"/, 0.003, 0.007);
+
+++$test;
+testFilterCompare('input.miff', q//, 'reference/filter/Rotate0.miff', 'Rotate',
+  q/degrees=>0/, 0, 0);
+
+++$test;
+testFilterCompare('input.miff', q//, 'reference/filter/Rotate90.miff', 'Rotate',
+  q/degrees=>90/, 0, 0);
+
+++$test;
+testFilterCompare('input.miff', q//, 'reference/filter/Rotate180.miff', 'Rotate',
+  q/degrees=>180/, 0, 0);
+
+++$test;
+testFilterCompare('input.miff', q//, 'reference/filter/Rotate270.miff', 'Rotate',
+  q/degrees=>270/, 0, 0);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Sample.miff', 'Sample',

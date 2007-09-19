@@ -221,7 +221,11 @@ t/reference/filter/Quantize.miff
 t/reference/filter/Raise.miff
 t/reference/filter/Resize.miff
 t/reference/filter/Roll.miff
-t/reference/filter/Rotate.miff
+t/reference/filter/Rotate0.miff
+t/reference/filter/Rotate10.miff
+t/reference/filter/Rotate90.miff
+t/reference/filter/Rotate180.miff
+t/reference/filter/Rotate270.miff
 t/reference/filter/Sample.miff
 t/reference/filter/Scale.miff
 t/reference/filter/Segment.miff
