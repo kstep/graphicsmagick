@@ -1,3 +1,8 @@
+2007-09-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh (PACKAGE_VERSION): Released version 1.1.10.
+	* NEWS: Updated NEWS.
+
 2007-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Rotation by 270 degrees

@@ -1,4 +1,10 @@
-This file was last updated on September 16, 2007.
+This file was last updated on September 19, 2007.
+
+Significant changes associated with GraphicsMagick 1.1.10 (released September 19, 2007)
+
+  Bugs Fixed:
+
+    o Image rotate by -90/270 degrees was producing wrong output.
 
 Significant changes associated with GraphicsMagick 1.1.9 (released September 16, 2007)
 
