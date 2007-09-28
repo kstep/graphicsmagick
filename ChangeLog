@@ -1,3 +1,8 @@
+2007-09-28  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Ability to write multiple images to one MAT file.
+        Fixed bug - incorrect matrix size for gray image.
+
 2007-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Rotation by 270 degrees

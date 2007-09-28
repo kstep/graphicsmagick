@@ -1,4 +1,3 @@
-
 /*
 % Copyright (C) 2003, 2006 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
@@ -822,12 +821,13 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   int logging;
   unsigned long DataSize;
   char padding;
-  char MATLAB_HDR[0x84];
+  char MATLAB_HDR[0x80];
   time_t current_time;
   const struct tm *t;
   unsigned char *pixels;
   int is_gray;
-
+  unsigned char ImageName = 'A';
+  
   current_time=time((time_t *) NULL);
   t=localtime(&current_time);
 
@@ -841,22 +841,11 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-
-  pixels=MagickAllocateMemory(unsigned char *,image->rows);
-  if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-
-  is_gray = IsGrayImage(image,&image->exception);
-  z = is_gray ? 0 : 3;
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);  
 
   /*
     Store MAT header.
   */
-  DataSize = image->rows /*Y*/ * image->columns /*X*/;
-  if(!is_gray) DataSize *= 3 /*Z*/;
-  padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
-
   (void) memset(MATLAB_HDR,' ',Min(sizeof(MATLAB_HDR),124));
   FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
     OsDesc,
@@ -868,64 +857,83 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   MATLAB_HDR[0x7C]=0;
   MATLAB_HDR[0x7D]=1;
   MATLAB_HDR[0x7E]='I';
-  MATLAB_HDR[0x7F]='M';
-  MATLAB_HDR[0x80]=0xE;
-  MATLAB_HDR[0x81]=0;  MATLAB_HDR[0x82]=0;   MATLAB_HDR[0x83]=0;
+  MATLAB_HDR[0x7F]='M';  
   (void) WriteBlob(image,sizeof(MATLAB_HDR),MATLAB_HDR);
 
-  (void) WriteBlobLSBLong(image, DataSize + 56l + padding); /* 0x84 */
-  (void) WriteBlobLSBLong(image, 0x6); /* 0x88 */
-  (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
-  (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */  
-  (void) WriteBlobLSBLong(image, 0);   
-  (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */
-  (void) WriteBlobLSBLong(image, is_gray?0x8:0xC); /* 0x9C - DimFlag */
-  (void) WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
-  (void) WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
-  if(!is_gray)
+
+  while(image!=NULL)
   {
-    (void) WriteBlobLSBLong(image, 3); /* z: 0xA8 */  
-    (void) WriteBlobLSBLong(image, 0);
-  }
-  (void) WriteBlobLSBShort(image, 1);  /* 0xB0 */  
-  (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
-  (void) WriteBlobLSBLong(image, 'M'); /* 0xB4 */
-  (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
-  (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
+    pixels=MagickAllocateMemory(unsigned char *,image->rows);
+    if (pixels == (unsigned char *) NULL)
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);  
 
-  /*
-    Store image data.
-  */
-  {
-    magick_uint64_t
-      progress_span;
+    is_gray = IsGrayImage(image,&image->exception);
+    z = is_gray ? 0 : 3;
 
-    magick_int64_t
-      progress_quantum;
+    DataSize = image->rows /*Y*/ * image->columns /*X*/;
+    if(!is_gray) DataSize *= 3 /*Z*/;
+    padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
-    progress_span = image->columns;
-    if(!is_gray) progress_span *= 3;
-    progress_quantum = 0;
-
-    do
+    (void) WriteBlobLSBLong(image, miMATRIX); /* 0x80 */
+    (void) WriteBlobLSBLong(image, DataSize + padding + (is_gray?48l:56l)); /* 0x84 */
+    (void) WriteBlobLSBLong(image, 0x6); /* 0x88 */
+    (void) WriteBlobLSBLong(image, 0x8); /* 0x8C */
+    (void) WriteBlobLSBLong(image, 0x6); /* 0x90 */  
+    (void) WriteBlobLSBLong(image, 0);   
+    (void) WriteBlobLSBLong(image, 0x5); /* 0x98 */
+    (void) WriteBlobLSBLong(image, is_gray?0x8:0xC); /* 0x9C - DimFlag */
+    (void) WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
+    (void) WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
+    if(!is_gray)
     {
-      for (y=0; y<(long)image->columns; y++)
+      (void) WriteBlobLSBLong(image, 3); /* z: 0xA8 */  
+      (void) WriteBlobLSBLong(image, 0);
+    }
+    (void) WriteBlobLSBShort(image, 1);  /* 0xB0 */  
+    (void) WriteBlobLSBShort(image, 1);  /* 0xB2 */
+    (void) WriteBlobLSBLong(image, ImageName++); /* 0xB4  - here is a small bug only 'A' .. 'Z images could be generated properly */
+    (void) WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
+    (void) WriteBlobLSBLong(image, DataSize); /* 0xBC */
+
+    /*
+      Store image data.
+    */
+    {
+      magick_uint64_t
+        progress_span;
+
+      magick_int64_t
+        progress_quantum;
+
+      progress_span = image->columns;
+      if(!is_gray) progress_span *= 3;
+      progress_quantum = 0;
+
+      do
       {
-        progress_quantum++;
-        q = AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
-        (void) ExportImagePixelArea(image,z2qtype[z],8,pixels,0,0);
-        (void) WriteBlob(image,image->rows,pixels);
-        if (QuantumTick(progress_quantum,progress_span))
-          if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
-            goto BreakAll;
-      }    
-    } while(z-- >= 2);
-  }
+        for (y=0; y<(long)image->columns; y++)
+	{
+          progress_quantum++;
+          q = AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+          (void) ExportImagePixelArea(image,z2qtype[z],8,pixels,0,0);
+          (void) WriteBlob(image,image->rows,pixels);
+          if (QuantumTick(progress_quantum,progress_span))
+            if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+              goto BreakAll;
+	}    
+      } while(z-- >= 2);
+    }
 BreakAll:
 
-  while(padding-->0) (void) WriteBlobByte(image,0);
+    while(padding-->0) (void) WriteBlobByte(image,0);
 
-  status=True;
+    status=True;
+
+    if(pixels) 
+     {MagickFreeMemory(pixels);pixels=NULL;}
+    if(image->next==NULL) break;
+    image=image->next;
+  }
 
   CloseBlob(image);
   MagickFreeMemory(pixels);
