@@ -517,9 +517,15 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         {
         case HSLColorspace:
         default:
-          transform=TransformHSL;
+          {
+            transform=TransformHSL;
+            break;
+          }
         case HWBColorspace:
-          transform=TransformHWB;
+          {
+            transform=TransformHWB;
+            break;
+          }
         }
 
       switch (image->storage_class)
@@ -1543,9 +1549,15 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         {
         case HSLColorspace:
         default:
-          transform=HSLTransform;
+          {
+            transform=HSLTransform;
+            break;
+          }
         case HWBColorspace:
-          transform=HWBTransform;
+          {
+            transform=HWBTransform;
+            break;
+          }
         }
 
       switch (image->storage_class)
