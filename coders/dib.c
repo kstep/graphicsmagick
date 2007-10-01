@@ -470,8 +470,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Microsoft Windows 3.X DIB image file.
   */
-  dib_info.width=(short) ReadBlobLSBLong(image);
-  dib_info.height=(short) ReadBlobLSBLong(image);
+  dib_info.width=(magick_int32_t) ReadBlobLSBLong(image);
+  dib_info.height=(magick_int32_t) ReadBlobLSBLong(image);
   dib_info.planes=ReadBlobLSBShort(image);
   dib_info.bits_per_pixel=ReadBlobLSBShort(image);
   dib_info.compression=ReadBlobLSBLong(image);
@@ -487,6 +487,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBShort(image);
       dib_info.blue_mask=ReadBlobLSBShort(image);
     }
+  if (dib_info.width <= 0)
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+  if (dib_info.height == 0)
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
   image->matte=dib_info.bits_per_pixel == 32;
   image->columns=dib_info.width;
   image->rows=AbsoluteValue(dib_info.height);

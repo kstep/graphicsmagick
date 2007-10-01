@@ -1,3 +1,24 @@
+2007-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dib.c (ReadDIBImage): Use appropriate sized cast for DIB
+	width and height values.  Validate width and height values.
+	* coders/bmp.c (ReadBMPImage): Use appropriate sized cast for BMP
+	width and height values.
+	* coders/sun.c (ReadSUNImage): Properly report SUN image depth.
+	* magick/image.c (RGBTransformImage): Use a better rounding
+	algorithm when converting to HSL/HWB colorspaces. Add missing
+	break HWB colorspace was used rather than HSL.
+	* magick/image.c (TransformRGBImage): Add missing break
+	statement. HWB colorspace was used rather than HSL.
+	* magick/gem.c (TransformHSL): Avoid GCC opimization bug on
+	Opteron which caused wrong results.  Ensure that returned values
+	fall within bounds 0.0 to 1.0.
+	(TransformHWB): Avoid GCC opimization bug on
+	Opteron which caused wrong results.  Ensure that returned values
+	fall within bounds 0.0 to 1.0.
+	* PerlMagick/t/ttf/read.t: Relax strictness quite a bit for TTF
+	read tests in order to allow somewhat different FreeType output.
+
 2007-09-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_VERSION): Released version 1.1.10.

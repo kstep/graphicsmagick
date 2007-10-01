@@ -366,6 +366,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->matte=(sun_info.depth == 32);
     image->columns=sun_info.width;
     image->rows=sun_info.height;
+    image->depth=8;
+    if (sun_info.depth < 8)
+      image->depth=sun_info.depth;
     if (image_info->ping)
       {
         CloseBlob(image);

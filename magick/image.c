@@ -5073,9 +5073,15 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         {
         case HSLColorspace:
         default:
-          transform=TransformHSL;
+          {
+            transform=TransformHSL;
+            break;
+          }
         case HWBColorspace:
-          transform=TransformHWB;
+          {
+            transform=TransformHWB;
+            break;
+          }
         }
 
       switch (image->storage_class)
@@ -5106,9 +5112,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
                       p3; /* L or B */
 
                     (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
-                    q->red=(Quantum) RndToInt(p1*MaxRGB);
-                    q->green=(Quantum) RndToInt(p2*MaxRGB);
-                    q->blue=(Quantum) RndToInt(p3*MaxRGB);
+                    p1*=MaxRGB;
+                    p2*=MaxRGB;
+                    p3*=MaxRGB;
+                    q->red=RoundToQuantum(p1);
+                    q->green=RoundToQuantum(p2);
+                    q->blue=RoundToQuantum(p3);
                     /* printf("Luminosity=%.07lf %u\n", p3, (unsigned int)q->blue); */
                     q++;
                   }
@@ -5137,9 +5146,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
                   p3; /* L or B */
                 
                 (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
-                q->red=(Quantum) RndToInt(p1*MaxRGB);
-                q->green=(Quantum) RndToInt(p2*MaxRGB);
-                q->blue=(Quantum) RndToInt(p3*MaxRGB);
+                p1*=MaxRGB;
+                p2*=MaxRGB;
+                p3*=MaxRGB;
+                q->red=RoundToQuantum(p1);
+                q->green=RoundToQuantum(p2);
+                q->blue=RoundToQuantum(p3);
                 q++;
               }
             SyncImage(image);
@@ -7324,9 +7336,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         {
         case HSLColorspace:
         default:
-          transform=HSLTransform;
+          {
+            transform=HSLTransform;
+            break;
+          }
         case HWBColorspace:
-          transform=HWBTransform;
+          {
+            transform=HWBTransform;
+            break;
+          }
         }
 
       switch (image->storage_class)
