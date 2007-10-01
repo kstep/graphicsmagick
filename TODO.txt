@@ -6,6 +6,25 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
+  o Investigage iDefense issues reported against ImageMagick:
+    
+    "Multiple Vendor ImageMagick Multiple Integer Overflow Vulnerabilities"
+      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=594
+
+    "Multiple Vendor ImageMagick Off-By-One Vulnerability"
+      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=595
+     Does not apply.  Yay!
+
+    "Multiple Vendor ImageMagick Multiple Denial of Service Vulnerabilities"
+      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=596
+
+    "Multiple Vendor ImageMagick Sign Extension Vulnerability"
+      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=597
+
+    "Multiple Vendor ImageMagick DCM and XWD Buffer Overflow Vulnerabilities"
+      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=496
+
+
   o MPC format related issues:
 
     - gm identify cores

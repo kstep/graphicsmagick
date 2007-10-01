@@ -555,9 +555,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                       p3; /* L or B */
 
                     (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
-                    q->red=(Quantum) RndToInt(p1*MaxRGB);
-                    q->green=(Quantum) RndToInt(p2*MaxRGB);
-                    q->blue=(Quantum) RndToInt(p3*MaxRGB);
+                    p1*=MaxRGB;
+                    p2*=MaxRGB;
+                    p3*=MaxRGB;
+                    q->red=RoundToQuantum(p1);
+                    q->green=RoundToQuantum(p2);
+                    q->blue=RoundToQuantum(p3);
                     q++;
                   }
                 if (!SyncImagePixels(image))
@@ -589,9 +592,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                   p3; /* L or B */
                 
                 (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
-                q->red=(Quantum) RndToInt(p1*MaxRGB);
-                q->green=(Quantum) RndToInt(p2*MaxRGB);
-                q->blue=(Quantum) RndToInt(p3*MaxRGB);
+                p1*=MaxRGB;
+                p2*=MaxRGB;
+                p3*=MaxRGB;
+                q->red=RoundToQuantum(p1);
+                q->green=RoundToQuantum(p2);
+                q->blue=RoundToQuantum(p3);
                 q++;
               }
             status &= SyncImage(image);

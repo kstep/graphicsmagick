@@ -120,8 +120,9 @@ typedef unsigned int Quantum;
   (value > MaxRGB) ? MaxRGB : value + 0.5))
 #define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
   value + 0.5))
-#define ConstrainToQuantum(value) (value < 0 ? 0 : \
-  (value > MaxRGB) ? MaxRGB : value)
+#define ConstrainToRange(min,max,value) (value < min ? min : \
+  (value > max) ? max : value)
+#define ConstrainToQuantum(value) ConstrainToRange(0,MaxRGB,value)
 #define ScaleAnyToQuantum(x,max_value) \
   ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
 

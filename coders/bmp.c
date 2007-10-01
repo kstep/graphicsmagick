@@ -563,8 +563,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Windows 2.X or OS/2 BMP image file.
         */
-        bmp_info.width=(short) ReadBlobLSBShort(image);
-        bmp_info.height=(short) ReadBlobLSBShort(image);
+        bmp_info.width=(magick_int16_t) ReadBlobLSBShort(image);
+        bmp_info.height=(magick_int16_t) ReadBlobLSBShort(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.x_pixels=0;
@@ -591,8 +591,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.size < 40)
           ThrowReaderException(CorruptImageWarning,NonOS2HeaderSizeError,
             image);
-        bmp_info.width=(short) ReadBlobLSBLong(image);
-        bmp_info.height=(short) ReadBlobLSBLong(image);
+
+        /*
+          BMP v3 defines width and hight as signed LONG (32 bit) values.  If
+          height is a positive number, then the image is a "bottom-up"
+          bitmap with origin in the lower-left corner.  If height is a
+          negative number, then the image is a "top-down" bitmap with the
+          origin in the upper-left corner.  The meaning of negative values
+          is not defined for width.
+        */
+        bmp_info.width=(magick_int32_t) ReadBlobLSBLong(image);
+        bmp_info.height=(magick_int32_t) ReadBlobLSBLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.compression=ReadBlobLSBLong(image);

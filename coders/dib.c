@@ -470,8 +470,17 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Microsoft Windows 3.X DIB image file.
   */
-  dib_info.width=(short) ReadBlobLSBLong(image);
-  dib_info.height=(short) ReadBlobLSBLong(image);
+
+  /*
+    BMP v3 defines width and hight as signed LONG (32 bit) values.  If
+    height is a positive number, then the image is a "bottom-up"
+    bitmap with origin in the lower-left corner.  If height is a
+    negative number, then the image is a "top-down" bitmap with the
+    origin in the upper-left corner.  The meaning of negative values
+    is not defined for width.
+  */
+  dib_info.width=(magick_int32_t) ReadBlobLSBLong(image);
+  dib_info.height=(magick_int32_t) ReadBlobLSBLong(image);
   dib_info.planes=ReadBlobLSBShort(image);
   dib_info.bits_per_pixel=ReadBlobLSBShort(image);
   dib_info.compression=ReadBlobLSBLong(image);
@@ -487,8 +496,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBShort(image);
       dib_info.blue_mask=ReadBlobLSBShort(image);
     }
+  if (dib_info.width <= 0)
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+  if (dib_info.height == 0)
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
   image->matte=dib_info.bits_per_pixel == 32;
-  image->columns=dib_info.width;
+  image->columns=AbsoluteValue(dib_info.width);
   image->rows=AbsoluteValue(dib_info.height);
   image->depth=8;
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))

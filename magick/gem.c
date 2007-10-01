@@ -368,8 +368,9 @@ MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method HSLTransform converts a (hue, saturation, luminosity) to a
-%  (red, green, blue) triple.
+%  Method HSLTransform converts a floating point (hue, saturation,
+%  luminosity) with range 0.0 to 1.0 to a (red, green, blue) triple
+%  with range 0 to MaxRGB.
 %
 %  The format of the HSLTransformImage method is:
 %
@@ -829,7 +830,7 @@ MagickExport void Modulate(const double percent_hue,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method TransformHSL converts a (red, green, blue) to a (hue, saturation,
-%  luminosity) triple.
+%  luminosity) triple with values in range 0.0 to 1.0.
 %
 %  The format of the TransformHSL method is:
 %
@@ -847,9 +848,12 @@ MagickExport void Modulate(const double percent_hue,
 %
 */
 MagickExport void TransformHSL(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue,double *saturation,double *luminosity)
+  const Quantum blue,double *hue_result,double *saturation_result,double *luminosity_result)
 {
   double
+    hue,
+    saturation,
+    luminosity,
     b,
     delta,
     g,
@@ -860,29 +864,35 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   /*
     Convert RGB to HSL colorspace.
   */
-  assert(hue != (double *) NULL);
-  assert(saturation != (double *) NULL);
-  assert(luminosity != (double *) NULL);
+  assert(hue_result != (double *) NULL);
+  assert(saturation_result != (double *) NULL);
+  assert(luminosity_result != (double *) NULL);
+
   r=(double) red/MaxRGB;
   g=(double) green/MaxRGB;
   b=(double) blue/MaxRGB;
   max=Max(r,Max(g,b));
   min=Min(r,Min(g,b));
-  *hue=0.0;
-  *saturation=0.0;
-  *luminosity=(min+max)/2.0;
+  hue=0.0;
+  saturation=0.0;
+  luminosity=(min+max)/2.0;
   delta=max-min;
-  if (delta == 0.0)
-    return;
-  *saturation=delta/((*luminosity <= 0.5) ? (min+max) : (2.0-max-min));
-  if (r == max)
-    *hue=(g == min ? 5.0+(max-b)/delta : 1.0-(max-g)/delta);
-  else
-    if (g == max)
-      *hue=(b == min ? 1.0+(max-r)/delta : 3.0-(max-b)/delta);
-    else
-      *hue=(r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
-  *hue/=6.0;
+  if (delta != 0.0)
+    {
+      saturation=delta/((luminosity <= 0.5) ? (min+max) : (2.0-max-min));
+      if (r == max)
+        hue=(g == min ? 5.0+(max-b)/delta : 1.0-(max-g)/delta);
+      else
+        if (g == max)
+          hue=(b == min ? 1.0+(max-r)/delta : 3.0-(max-b)/delta);
+        else
+          hue=(r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
+      hue/=6.0;
+    }
+
+  *hue_result=ConstrainToRange(0.0,1.0,hue);
+  *saturation_result=ConstrainToRange(0.0,1.0,saturation);
+  *luminosity_result=ConstrainToRange(0.0,1.0,luminosity);
 }
 
 /*
@@ -919,10 +929,13 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 */
 MagickExport void TransformHWB(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue,double *whiteness,double *blackness)
+  const Quantum blue,double *hue_result,double *whiteness_result,double *blackness_result)
 {
   double
-    f;
+    blackness,
+    f,
+    hue,
+    whiteness;
 
   register long
     i;
@@ -934,21 +947,26 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green,
   /*
     Convert RGB to HWB colorspace.
   */
-  assert(hue != (double *) NULL);
-  assert(whiteness != (double *) NULL);
-  assert(blackness != (double *) NULL);
+  assert(hue_result != (double *) NULL);
+  assert(whiteness_result != (double *) NULL);
+  assert(blackness_result != (double *) NULL);
   w=Min(red,Min(green,blue));
   v=Max(red,Max(green,blue));
-  *blackness=(double) (MaxRGB-v)/MaxRGB;
+  blackness=(double) (MaxRGB-v)/MaxRGB;
   if (v == w)
     {
-      *hue=0.0;
-      *whiteness=1.0-(*blackness);
-      return;
+      hue=0.0;
+      whiteness=1.0-(blackness);
     }
-  f=(red == w) ? (double) green-blue : ((green == w) ? (double) blue-red :
-    (double) red-green);
-  i=(red == w) ? 3 : ((green == w) ? 5 : 1);
-  *hue=i-f/(v-w);
-  *whiteness=(double) w/MaxRGB;
+  else
+    {
+      f=(red == w) ? (double) green-blue : ((green == w) ? (double) blue-red :
+                                            (double) red-green);
+      i=(red == w) ? 3 : ((green == w) ? 5 : 1);
+      hue=i-f/(v-w);
+      whiteness=(double) w/MaxRGB;
+    }
+  *hue_result=ConstrainToRange(0.0,1.0,hue);
+  *whiteness_result=ConstrainToRange(0.0,1.0,whiteness);
+  *blackness_result=ConstrainToRange(0.0,1.0,blackness);
 }

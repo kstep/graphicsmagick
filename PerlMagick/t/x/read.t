@@ -27,12 +27,12 @@ chdir 't/x' || die 'Cd failed';
 #
 if ( defined($ENV{'DISPLAY'}) ) {
 
-  $font   = '-*-courier-medium-*-*--14-*-*-*-*-*-*-*';
+  $font   = '-*-courier-bold-r-normal--14-100-100-100-m-90-iso8859-1';
 
   # Ensure that Ghostscript is out of the picture
   $SAVEDPATH=$ENV{'PATH'};
   $ENV{'PATH'}='';
-  
+
   $image=Graphics::Magick->new;
   $x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
   if( "$x" ) {
@@ -57,7 +57,7 @@ if ( defined($ENV{'DISPLAY'}) ) {
     }
   }
   undef $image;
-  
+
   $ENV{'PATH'}=$SAVEDPATH;
 } else {
   print "ok $test\n";

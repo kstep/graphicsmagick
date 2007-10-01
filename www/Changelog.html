@@ -21,6 +21,51 @@
 </tr>
 </table>
 <p>
+2007-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dib.c (ReadDIBImage): Use appropriate sized cast for DIB
+        width and height values.  Validate width and height values.
+  <LI> coders/bmp.c (ReadBMPImage): Use appropriate sized cast for BMP
+        width and height values.<BR>
+  <LI> magick/colorspace.c (RGBTransformImage): Use a better rounding
+        algorithm when converting to HSL/HWB colorspaces.
+  <LI> magick/gem.c (TransformHSL): Avoid GCC opimization bug on
+        Opteron which caused wrong results.  Ensure that returned values
+        fall within bounds 0.0 to 1.0.<BR>
+        (TransformHWB): Avoid GCC opimization bug on
+        Opteron which caused wrong results.  Ensure that returned values
+        fall within bounds 0.0 to 1.0.<BR>
+  <LI> PerlMagick/t/ttf/read.t: Relax strictness quite a bit for TTF
+        read tests in order to allow somewhat different FreeType output.
+
+</UL>
+<p>
+2007-09-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformImage): Add missing break
+        statement. HWB colorspace was used rather than HSL.
+        (TransformRGBImage): Add missing break
+        statement. HWB colorspace was used rather than HSL.
+
+</UL>
+<p>
+2007-09-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/sun.c (ReadSUNImage): Properly report SUN image depth.
+
+</UL>
+<p>
+2007-09-28  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Ability to write multiple images to one MAT file.
+        Fixed bug - incorrect matrix size for gray image.
+
+</UL>
+<p>
 2007-09-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
