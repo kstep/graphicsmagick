@@ -1,3 +1,7 @@
+2007-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+	* wpg.c: Monochrome images are not using palette - 
+	palette is discarded in this case.
+
 2007-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.h: Blob I/O APIs now use sized types so that passed

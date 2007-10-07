@@ -253,58 +253,31 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
 
 static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
 {
-  int
-    bit;
-
   long
     x;
-
   register PixelPacket
     *q;
 
-  IndexPacket
-    index;
+  IndexPacket index;
+  IndexPacket *indexes;
 
-  register IndexPacket
-    *indexes;
+
+  q = SetImagePixels(image,0,y,image->columns,1);
+  if(q == (PixelPacket *) NULL) return;          
 
   switch (bpp)
     {
-    case 1:  /* Convert bitmap scanline. */
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < ((long) image->columns-7); x+=8)
-          {
-            for (bit=0; bit < 8; bit++)
-              {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                indexes[x+bit]=index;
-                *q++=image->colormap[index];
-              }
-            p++;
-          }
-        if ((image->columns % 8) != 0)
-          {
-            for (bit=0; bit < (long) (image->columns % 8); bit++)
-              {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                indexes[x+bit]=index;
-                *q++=image->colormap[index];
-              }
-            p++;
-          }
-        if (!SyncImagePixels(image))
-          break;
-        break;
-      }
+    case 1:  /* Convert bitmap scanline. WP seems to ignore palette even if it is present. */
+       (void)ImportImagePixelArea(image,GrayQuantum,bpp,p,NULL,0);
+        break; 
+
+    case 4:  /* Convert PseudoColor scanline. */
+    case 8:  /* Convert PseudoColor scanline. */
+       (void)ImportImagePixelArea(image,IndexQuantum,bpp,p,NULL,0);
+       break;      
+
     case 2:  /* Convert PseudoColor scanline. */
       {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
         indexes=GetIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
@@ -349,75 +322,26 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
                   }
               }
             p++;
-          }
-        if (!SyncImagePixels(image))
-          break;
+          }       
         break;
       }
-      
-    case 4:  /* Convert PseudoColor scanline. */
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < ((long) image->columns-1); x+=2)
-          {
-            index=(IndexPacket) ((*p >> 4) & 0xf);
-            VerifyColormapIndex(image,index);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-            index=(IndexPacket) ((*p) & 0xf);
-            VerifyColormapIndex(image,index);
-            indexes[x+1]=index;
-            *q++=image->colormap[index];
-            p++;
-          }
-        if ((image->columns % 2) != 0)
-          {
-            index=(IndexPacket) ((*p >> 4) & 0xf);
-            VerifyColormapIndex(image,index);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-            p++;
-          }
-        if (!SyncImagePixels(image))
-          break;
-        break;
-      }
-    case 8: /* Convert PseudoColor scanline. */
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL) break;
-        indexes=GetIndexes(image);
-
-        for (x=0; x < (long) image->columns; x++)
-          {
-            index=(IndexPacket) (*p++);
-            VerifyColormapIndex(image,index);
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-     
-    case 24:     /*  Convert DirectColor scanline.  */
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
+          
+    case 24:     /*  Convert DirectColor scanline.  */      
       for (x=0; x < (long) image->columns; x++)
         {
           q->red=ScaleCharToQuantum(*p++);
           q->green=ScaleCharToQuantum(*p++);
           q->blue=ScaleCharToQuantum(*p++);
           q++;
-        }
-      if (!SyncImagePixels(image))
-        break;
-      break;     
+        }      
+      break;
+
+    default:
+       return;	/* emit some error here */
     }
+
+  if (!SyncImagePixels(image))
+          return;
 }
 
 
@@ -433,6 +357,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
     y++; \
     } \
 }
+
 /* WPG1 raster reader. */
 static int UnpackWPGRaster(Image *image,int bpp)
 {
@@ -1032,6 +957,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->colors=WPG_Palette.NumOfEntries;
               if (!AllocateImageColormap(image,image->colors))
                 goto NoMemory;
+              image->storage_class = PseudoClass;
               for (i=WPG_Palette.StartIndex;
                    i < (int)WPG_Palette.NumOfEntries; i++)
                 {
@@ -1088,7 +1014,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     NoMemory:
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                            image)
-                        }
+                    }
+                  image->storage_class = PseudoClass;
                   /* printf("Load default colormap \n"); */
                   for (i=0; (i < (int) image->colors) && (i < 256); i++)
                     {               
@@ -1238,20 +1165,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 continue; /*Unknown compression method */
               switch(Bitmap2Header1.Depth)
                 {
-                case 1:
-                  bpp=1;
+                case 1: bpp=1; 
                   break;
-                case 2:
-                  bpp=2;
+                case 2: bpp=2;
                   break;
-                case 3:
-                  bpp=4;
+                case 3: bpp=4;
                   break;
-                case 4:
-                  bpp=8;
+                case 4: bpp=8;
                   break;
-                case 8:
-                  bpp=24;
+                case 8: bpp=24;
                   break;
                 default:
                   continue;  /*Ignore raster with unknown depth*/
@@ -1264,6 +1186,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   image->colors=1 << bpp;
                   if (!AllocateImageColormap(image,image->colors))
                     goto NoMemory;
+                  image->storage_class = PseudoClass;
                 }
               else
                 {
