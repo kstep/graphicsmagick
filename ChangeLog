@@ -1,5 +1,8 @@
 2007-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.h: Blob I/O APIs now use sized types so that passed
+	and returned data values are a specific size rather than
+	architecture dependent.
 	* PerlMagick/t/read.t: Added read test for unsigned 32-bit LSB MAT
 	format.
 
