@@ -1,4 +1,19 @@
+2007-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (ReadBlob?SBFoo): Return 0 on EOF conditions
+	rather than a magic value concocted using ~0.  The magic value was
+	very sensitive to the size/range of the type used to pass and
+	store it, leading to increased possibility of error.  There was
+	also concern that sometimes a successfully read value may match
+	the magic value.  Added documentation that EOFBlob() may be used
+	to determine that the blob is in EOF state.
+	* coders/pix.c (ReadPIXImage): Avoid reliance on a particular
+	magic value being returned from ReadBlobMSBShort on EOF.
+	* coders/avs.c (ReadAVSImage): Avoid reliance on a particular
+	magic value being returned from ReadBlobMSBLong() on EOF.
+
 2007-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
 	* wpg.c: Monochrome images are not using palette - 
 	palette is discarded in this case.
 

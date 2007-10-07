@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>memory - Memory allocation/deallocation functions</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -49,52 +51,55 @@
 <blockquote>AcquireMemory() returns a pointer to a block of memory of at least size bytes suitably aligned for any use. </blockquote><P>The format of the AcquireMemory method is:</P>
 <blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_size_3a">size:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_size_3a">size:</a></strong>
+
 <DD>
-The size of the memory in bytes to allocate.
+<P>The size of the memory in bytes to allocate.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="clonememory">CloneMemory</a></h2>
 <blockquote>CloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the CloneMemory method is:</P>
 <blockquote>void *CloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>size:</strong><br />
-</dt>
+<dt><strong>size:</strong>
+
 <DD>
-The size of the memory in bytes to allocate.
+<P>The size of the memory in bytes to allocate.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="liberatememory">LiberateMemory</a></h2>
 <blockquote>LiberateMemory() frees memory that has already been allocated, and NULLs the pointer to it. </blockquote><P>The format of the LiberateMemory method is:</P>
 <blockquote>void LiberateMemory ( void **memory ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_memory_3a">memory:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_memory_3a">memory:</a></strong>
+
 <DD>
-A pointer to a block of memory to free for reuse.
+<P>A pointer to a block of memory to free for reuse.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="reacquirememory">ReacquireMemory</a></h2>
 <blockquote>ReacquireMemory() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. </blockquote><P>The format of the ReacquireMemory method is:</P>
 <blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>memory:</strong><br />
-</dt>
+<dt><strong>memory:</strong>
+
 <DD>
-A pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.
+<P>A pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.</P>
 </dd>
-<P></P>
-<dt><strong>size:</strong><br />
-</dt>
+</li>
+<dt><strong>size:</strong>
+
 <DD>
-The new size of the allocated memory.
+<P>The new size of the allocated memory.</P>
 </dd>
 </dl>
 

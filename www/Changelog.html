@@ -21,9 +21,37 @@
 </tr>
 </table>
 <p>
+2007-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (ReadBlob?SBFoo): Return 0 on EOF conditions
+        rather than a magic value concocted using ~0.  The magic value was
+        very sensitive to the size/range of the type used to pass and
+        store it, leading to increased possibility of error.  There was
+        also concern that sometimes a successfully read value may match
+        the magic value.  Added documentation that EOFBlob() may be used
+        to determine that the blob is in EOF state.
+  <LI> coders/pix.c (ReadPIXImage): Avoid reliance on a particular
+        magic value being returned from ReadBlobMSBShort on EOF.
+  <LI> coders/avs.c (ReadAVSImage): Avoid reliance on a particular
+        magic value being returned from ReadBlobMSBLong() on EOF.
+
+</UL>
+<p>
+2007-10-07  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> wpg.c: Monochrome images are not using palette -
+        palette is discarded in this case.
+
+</UL>
+<p>
 2007-10-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/blob.h: Blob I/O APIs now use sized types so that passed
+        and returned data values are a specific size rather than
+        architecture dependent.<BR>
   <LI> PerlMagick/t/read.t: Added read test for unsigned 32-bit LSB MAT
         format.
 

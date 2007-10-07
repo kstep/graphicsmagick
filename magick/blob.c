@@ -2860,6 +2860,8 @@ MagickExport  size_t ReadBlobZC(Image *image,const size_t length,void **data)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobByte reads a single byte from the image file and returns it.
+%  An EOF value is returned if there are no more bytes available on the input
+%  stream (similar to stdio's fgetc()).
 %
 %  The format of the ReadBlobByte method is:
 %
@@ -2922,7 +2924,9 @@ MagickExport int ReadBlobByte(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobLSBDouble reads a double value as a 64 bit quantity in
-%  least-significant byte first order.
+%  least-significant byte first order.  If insufficient octets are available
+%  to compose the value, then zero is returned, and EOFBlob() may be used to
+%  detect that the input is in EOF state.
 %
 %  The format of the ReadBlobLSBDouble method is:
 %
@@ -2931,7 +2935,7 @@ MagickExport int ReadBlobByte(Image *image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobLSBDouble returns a double read from
-%      the file.
+%      the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -2970,8 +2974,10 @@ MagickExport double ReadBlobLSBDouble(Image * image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobLSBLong reads an unsigned 32 bit quantity in
-%  least-significant byte first order.
+%  Method ReadBlobLSBLong reads an unsigned 32 bit value in least-significant
+%  byte first order.  If insufficient octets are available to compose the
+%  value, then zero is returned, and EOFBlob() may be used to detect that
+%  the input is in EOF state.
 %
 %  The format of the ReadBlobLSBLong method is:
 %
@@ -2980,7 +2986,7 @@ MagickExport double ReadBlobLSBDouble(Image * image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobLSBLong returns an unsigned 32-bit value from
-%      the file.
+%      the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -2998,7 +3004,7 @@ MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
   assert(image->signature == MagickSignature);
 
   if (ReadBlob(image,4,buffer) != 4)
-    return((magick_uint32_t) ~0);
+    return(0U);
 
   value=buffer[3] << 24;
   value|=buffer[2] << 16;
@@ -3018,8 +3024,10 @@ MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobLSBShort reads a 16-bit unsigned value in
-%  least-significant byte first order.
+%  Method ReadBlobLSBShort reads a 16-bit unsigned value in least-significant
+%  byte first order.  If insufficient octets are available to compose the
+%  value, then zero is returned, and EOFBlob() may be used to detect that
+%  the input is in EOF state.
 %
 %  The format of the ReadBlobLSBShort method is:
 %
@@ -3028,7 +3036,7 @@ MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobLSBShort returns an unsigned 16-bit value
-%      read from the file.
+%      read from the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3046,7 +3054,7 @@ MagickExport magick_uint16_t ReadBlobLSBShort(Image *image)
   assert(image->signature == MagickSignature);
 
   if (ReadBlob(image,2,buffer) != 2)
-    return((magick_uint16_t) ~0U);
+    return(0U);
 
   value=buffer[1] << 8;
   value|=buffer[0];
@@ -3065,7 +3073,9 @@ MagickExport magick_uint16_t ReadBlobLSBShort(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobLSBFloat reads a float value as a 32 bit quantity in
-%  least-significant byte first order.
+%  least-significant byte first order.  If insufficient octets are available
+%  to compose the value, then zero is returned, and EOFBlob() may be used to
+%  detect that the input is in EOF state.
 %
 %  The format of the ReadBlobLSBFloat method is:
 %
@@ -3074,7 +3084,7 @@ MagickExport magick_uint16_t ReadBlobLSBShort(Image *image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobLSBFloat returns a float read from
-%      the file.
+%      the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3107,14 +3117,16 @@ MagickExport float ReadBlobLSBFloat(Image * image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  R e a d B l o b M S B F l o a t                                          %
++  R e a d B l o b M S B F l o a t                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobMSBFloat reads a float value as a 32 bit quantity in
-%  most-significant byte first order.
+%  most-significant byte first order.  If insufficient octets are available
+%  to compose the value, then zero is returned, and EOFBlob() may be used to
+%  detect that the input is in EOF state.
 %
 %  The format of the ReadBlobMSBFloat method is:
 %
@@ -3123,7 +3135,7 @@ MagickExport float ReadBlobLSBFloat(Image * image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobMSBFloat returns a float read from
-%      the file.
+%      the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3163,7 +3175,9 @@ MagickExport float ReadBlobMSBFloat(Image * image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobMSBDouble reads a double value as a 64 bit quantity in
-%  most-significant byte first order.
+%  most-significant byte first order.  If insufficient octets are available
+%  to compose the value, then zero is returned, and EOFBlob() may be used
+%  to detect that the input is in EOF state.
 %
 %  The format of the ReadBlobMSBDouble method is:
 %
@@ -3172,7 +3186,7 @@ MagickExport float ReadBlobMSBFloat(Image * image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobMSBDouble returns a double read from
-%      the file.
+%      the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3212,7 +3226,9 @@ MagickExport double ReadBlobMSBDouble(Image * image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReadBlobMSBLong() reads a 32 bit unsigned value in most-significant byte
-%  first order.
+%  first order.  If insufficient octets are available to compose the value,
+%  then zero is returned, and EOFBlob() may be used to detect that the input
+%  is in EOF state.
 %
 %  The format of the ReadBlobMSBLong method is:
 %
@@ -3221,7 +3237,7 @@ MagickExport double ReadBlobMSBDouble(Image * image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobMSBLong returns an unsigned 32-bit value
-%      read from the file.
+%      read from the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3240,7 +3256,7 @@ MagickExport magick_uint32_t ReadBlobMSBLong(Image *image)
   assert(image->signature == MagickSignature);
 
   if (ReadBlob(image,4,buffer) != 4)
-    return((magick_uint32_t) ~0);
+    return(0U);
 
   value=buffer[0] << 24;
   value|=buffer[1] << 16;
@@ -3261,7 +3277,9 @@ MagickExport magick_uint32_t ReadBlobMSBLong(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlobMSBShort reads a 16 bit unsigned value in most-significant
-%  byte first order.
+%  byte first order.  If insufficient octets are available to compose the
+%  value, then zero is returned, and EOFBlob() may be used to detect that
+%  the input is in EOF state.
 %
 %  The format of the ReadBlobMSBShort method is:
 %
@@ -3270,7 +3288,7 @@ MagickExport magick_uint32_t ReadBlobMSBLong(Image *image)
 %  A description of each parameter follows.
 %
 %    o value:  Method ReadBlobMSBShort returns an unsigned 16-bit value read
-%      from the file.
+%      from the file.  Zero is returned if insufficient data is available.
 %
 %    o image: The image.
 %
@@ -3288,7 +3306,7 @@ MagickExport magick_uint16_t ReadBlobMSBShort(Image *image)
   assert(image->signature == MagickSignature);
 
   if (ReadBlob(image,2,buffer) != 2)
-    return((magick_uint16_t) ~0U);
+    return(0U);
 
   value=buffer[0] << 8;
   value|=buffer[1];

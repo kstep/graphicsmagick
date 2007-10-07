@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>resize - Resize an image</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -53,36 +55,38 @@
 <blockquote>MagnifyImage() is a convenience method that scales an image proportionally to twice its size. </blockquote><P>The format of the MagnifyImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *MagnifyImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="minifyimage">MinifyImage</a></h2>
 <blockquote>MinifyImage() is a convenience method that scales an image proportionally to half its size. </blockquote><P>The format of the MinifyImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *MinifyImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="resizeimage">ResizeImage</a></h2>
@@ -96,130 +100,133 @@ Return any errors or warnings in this structure.
 <blockquote>ResizeImage() was inspired by Paul Heckbert's zoom program. </blockquote><P>The format of the ResizeImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ResizeImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#FilterTypes">FilterTypes</A> filter, const double blur, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_columns_3a">columns:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_columns_3a">columns:</a></strong>
+
 <DD>
-The number of columns in the scaled image.
+<P>The number of columns in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_rows_3a">rows:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_rows_3a">rows:</a></strong>
+
 <DD>
-The number of rows in the scaled image.
+<P>The number of rows in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_filter_3a">filter:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_filter_3a">filter:</a></strong>
+
 <DD>
-Image filter to use.
+<P>Image filter to use.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_blur_3a">blur:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_blur_3a">blur:</a></strong>
+
 <DD>
-The blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
+<P>The blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="sampleimage">SampleImage</a></h2>
 <blockquote>SampleImage() scales an image to the desired dimensions with pixel sampling. Unlike other scaling methods, this method does not introduce any additional color into the scaled image. </blockquote><P>The format of the SampleImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *SampleImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>columns:</strong><br />
-</dt>
+</li>
+<dt><strong>columns:</strong>
+
 <DD>
-The number of columns in the sampled image.
+<P>The number of columns in the sampled image.</P>
 </dd>
-<P></P>
-<dt><strong>rows:</strong><br />
-</dt>
+</li>
+<dt><strong>rows:</strong>
+
 <DD>
-The number of rows in the sampled image.
+<P>The number of rows in the sampled image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="scaleimage">ScaleImage</a></h2>
 <blockquote>ScaleImage() changes the size of an image to the given dimensions. </blockquote><P>The format of the ScaleImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ScaleImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>columns:</strong><br />
-</dt>
+</li>
+<dt><strong>columns:</strong>
+
 <DD>
-The number of columns in the scaled image.
+<P>The number of columns in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong>rows:</strong><br />
-</dt>
+</li>
+<dt><strong>rows:</strong>
+
 <DD>
-The number of rows in the scaled image.
+<P>The number of rows in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="thumbnailimage">ThumbnailImage</a></h2>
 <blockquote>ThumbnailImage() changes the size of an image to the given dimensions. This method was designed by Bob Friesenhahn as a low cost thumbnail generator. </blockquote><P>The format of the ThumbnailImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ThumbnailImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>columns:</strong><br />
-</dt>
+</li>
+<dt><strong>columns:</strong>
+
 <DD>
-The number of columns in the scaled image.
+<P>The number of columns in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong>rows:</strong><br />
-</dt>
+</li>
+<dt><strong>rows:</strong>
+
 <DD>
-The number of rows in the scaled image.
+<P>The number of rows in the scaled image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
 </dl>
 

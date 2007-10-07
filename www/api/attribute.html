@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>attribute - Access key,value image attributes</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -49,30 +51,32 @@
 <blockquote>DestroyImageAttributes() deallocates memory associated with the image attribute list. </blockquote><P>The format of the DestroyImageAttributes method is:</P>
 <blockquote>DestroyImageAttributes ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getimageattribute">GetImageAttribute</a></h2>
 <blockquote>GetImageAttribute() searches the list of image attributes and returns a pointer to the attribute if it exists otherwise NULL. </blockquote><P>The format of the GetImageAttribute method is:</P>
 <blockquote>const ImageAttribute *GetImageAttribute ( const <A HREF="types.html#Image">Image</A> *image, const char *key ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_key_3a">key:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_key_3a">key:</a></strong>
+
 <DD>
-These character strings are the name of an image attribute to return.
+<P>These character strings are the name of an image attribute to return.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getimageclippingpathattribute">GetImageClippingPathAttribute</a></h2>
@@ -80,34 +84,35 @@ These character strings are the name of an image attribute to return.
 <P>The format of the GetImageClippingPathAttribute method is:</P>
 <blockquote>const ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_attribute_3a">attribute:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_attribute_3a">attribute:</a></strong>
+
 <DD>
-Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise NULL.
+<P>Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise NULL.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setimageattribute">SetImageAttribute</a></h2>
 <blockquote>SetImageAttribute() searches the list of image attributes and replaces the attribute value. If it is not found in the list, the attribute name and value is added to the list. If the attribute exists in the list, the value is concatenated to the attribute. SetImageAttribute returns True if the attribute is successfully concatenated or added to the list, otherwise False. If the value is NULL, the matching key is deleted from the list. </blockquote><P>The format of the SetImageAttribute method is:</P>
 <blockquote>unsigned int SetImageAttribute ( <A HREF="types.html#Image">Image</A> *image, const char *key, const char *value ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_key_2cvalue_3a">key,value:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_key_2cvalue_3a">key,value:</a></strong>
+
 <DD>
-These character strings are the name and value of an image attribute to replace or add to the list.
+<P>These character strings are the name and value of an image attribute to replace or add to the list.</P>
 </dd>
 </dl>
 

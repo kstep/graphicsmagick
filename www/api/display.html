@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>display - Interactively display and edit an image</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -45,64 +47,65 @@
 <blockquote>MagickXDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the MagickXDisplayBackgroundImage method is:</P>
 <blockquote>unsigned int MagickXDisplayBackgroundImage ( Display *display, MagickXResourceInfo *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_display_3a">display:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_display_3a">display:</a></strong>
+
 <DD>
-Specifies a connection to an X server; returned from XOpenDisplay.
+<P>Specifies a connection to an X server; returned from XOpenDisplay.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong>
+
 <DD>
-Specifies a pointer to a X11 MagickXResourceInfo structure.
+<P>Specifies a pointer to a X11 MagickXResourceInfo structure.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-Specifies a pointer to an Image structure; returned from ReadImage.
+<P>Specifies a pointer to an Image structure; returned from ReadImage.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="xdisplayimage">XDisplayImage</a></h2>
 <blockquote>MagickXDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the MagickXDisplayImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *MagickXDisplayImage ( Display *display, MagickXResourceInfo *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_nexus_3a">nexus:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_nexus_3a">nexus:</a></strong>
+
 <DD>
-Method MagickXDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.
+<P>Method MagickXDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.</P>
 </dd>
-<P></P>
-<dt><strong>display:</strong><br />
-</dt>
+</li>
+<dt><strong>display:</strong>
+
 <DD>
-Specifies a connection to an X server; returned from XOpenDisplay.
+<P>Specifies a connection to an X server; returned from XOpenDisplay.</P>
 </dd>
-<P></P>
-<dt><strong>resource_info:</strong><br />
-</dt>
+</li>
+<dt><strong>resource_info:</strong>
+
 <DD>
-Specifies a pointer to a X11 MagickXResourceInfo structure.
+<P>Specifies a pointer to a X11 MagickXResourceInfo structure.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_argv_3a">argv:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_argv_3a">argv:</a></strong>
+
 <DD>
-Specifies the application's argument list.
+<P>Specifies the application's argument list.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_argc_3a">argc:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_argc_3a">argc:</a></strong>
+
 <DD>
-Specifies the number of arguments.
+<P>Specifies the number of arguments.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-Specifies an address to an address of an Image structure; returned from ReadImage.
+<P>Specifies an address to an address of an Image structure; returned from ReadImage.</P>
 </dd>
 </dl>
 

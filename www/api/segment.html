@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>segment - Segment and image with thresholding using the fuzzy c-means method</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -45,28 +47,28 @@
 <P>The format of the SegmentImage method is:</P>
 <blockquote>unsigned int SegmentImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ColorspaceType">ColorspaceType</A> colorspace, const unsigned int verbose, const double cluster_threshold, const double smoothing_threshold ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong><a name="item_o_colors_3a">colors:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_colors_3a">colors:</a></strong>
+
 <DD>
-The SegmentImage function returns this integer value.  It is the actual number of colors allocated in the colormap.
+<P>The SegmentImage function returns this integer value.  It is the actual number of colors allocated in the colormap.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-Specifies a pointer to an Image structure; returned from ReadImage.
+<P>Specifies a pointer to an Image structure; returned from ReadImage.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_colorspace_3a">colorspace:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_colorspace_3a">colorspace:</a></strong>
+
 <DD>
-An unsigned integer value that indicates the colorspace.  Empirical evidence suggests that distances in YUV or YIQ correspond to perceptual color differences more closely than do distances in RGB space.  The image is then returned to RGB colorspace after color reduction.
+<P>An unsigned integer value that indicates the colorspace.  Empirical evidence suggests that distances in YUV or YIQ correspond to perceptual color differences more closely than do distances in RGB space.  The image is then returned to RGB colorspace after color reduction.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_verbose_3a">verbose:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_verbose_3a">verbose:</a></strong>
+
 <DD>
-A value greater than zero prints detailed information about the identified classes.
+<P>A value greater than zero prints detailed information about the identified classes.</P>
 </dd>
 </dl>
 

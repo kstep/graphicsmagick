@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>monitor - Progress monitor support</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -45,34 +47,35 @@
 <blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. The method returns True on success otherwise False if an error is encountered, e.g. if there was a user interrupt. </blockquote><P>The format of the MagickMonitor method is:</P>
 <blockquote>unsigned int MagickMonitor ( const char *text, const magick_int64_t quantum, const magick_uint64_t span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong>
+
 <DD>
-The position relative to the span parameter which represents how much progress has been made toward completing a task.
+<P>The position relative to the span parameter which represents how much progress has been made toward completing a task.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_span_3a">span:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_span_3a">span:</a></strong>
+
 <DD>
-The span relative to completing a task.
+<P>The span relative to completing a task.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setmonitorhandler">SetMonitorHandler</a></h2>
 <blockquote>SetMonitorHandler() sets the monitor handler to the specified method and returns the previous monitor handler. </blockquote><P>The format of the SetMonitorHandler method is:</P>
 <blockquote><A HREF="types.html#MonitorHandler">MonitorHandler</A> SetMonitorHandler ( <A HREF="types.html#MonitorHandler">MonitorHandler</A> handler ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_handler_3a">handler:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_handler_3a">handler:</a></strong>
+
 <DD>
-Specifies a pointer to a method to handle monitors.
+<P>Specifies a pointer to a method to handle monitors.</P>
 </dd>
 </dl>
 

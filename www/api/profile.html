@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>profile - Manipulate embedded profiles</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -56,12 +58,13 @@
 <P>The format of the AllocateImageProfileIterator method is:</P>
 <blockquote>ImageProfileIterator AllocateImageProfileIterator ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="deallocateimageprofileiterator">DeallocateImageProfileIterator</a></h2>
@@ -69,12 +72,13 @@ The image.
 <P>The format of the DeallocateImageProfileIterator method is:</P>
 <blockquote>void DeallocateImageProfileIterator ( ImageProfileIterator profile_iterator ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_profile_iterator_3a">profile_iterator:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_profile_iterator_3a">profile_iterator:</a></strong>
+
 <DD>
-Profile iterator to deallocate.
+<P>Profile iterator to deallocate.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="deleteimageprofile">DeleteImageProfile</a></h2>
@@ -82,18 +86,19 @@ Profile iterator to deallocate.
 <P>The format of the DeleteImageProfile method is:</P>
 <blockquote>unsigned int DeleteImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_name_3a">name:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_name_3a">name:</a></strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic profile name.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic profile name.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getimageprofile">GetImageProfile</a></h2>
@@ -101,24 +106,25 @@ Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic pr
 <blockquote>Older versions of this function stored profiles named "8BIM" and "IPTC" in the same storage location. This is no longer the case. However, GetImageProfile() will try the alternate name if the specifically requested profile name is not available. </blockquote><P>The format of the GetImageProfile method is:</P>
 <blockquote>const unsigned char *GetImageProfile ( const <A HREF="types.html#Image">Image</A> *image, const char *name, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', ``XMP'' or any unique text string.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', ``XMP'' or any unique text string.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_length_3a">length:</a></strong>
+
 <DD>
-Updated with profile length if profile is present.  Set to NULL if length is not needed.
+<P>Updated with profile length if profile is present.  Set to NULL if length is not needed.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="nextimageprofile">NextImageProfile</a></h2>
@@ -126,30 +132,31 @@ Updated with profile length if profile is present.  Set to NULL if length is not
 <P>The format of the AllocateImageProfileIterator method is:</P>
 <blockquote>MagickPassFail NextImageProfile ( ImageProfileIterator profile_iterator, const char **name, const unsigned char **profile, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>profile_iterator:</strong><br />
-</dt>
+<dt><strong>profile_iterator:</strong>
+
 <DD>
-Profile iterator.
+<P>Profile iterator.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Address of pointer to update with address of name.
+<P>Address of pointer to update with address of name.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_profile_3a">profile:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_profile_3a">profile:</a></strong>
+
 <DD>
-Address of pointer to update with location of profile data.
+<P>Address of pointer to update with location of profile data.</P>
 </dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
+</li>
+<dt><strong>length:</strong>
+
 <DD>
-Address of parameter to update with profile length.
+<P>Address of parameter to update with profile length.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="profileimage">ProfileImage</a></h2>
@@ -159,36 +166,37 @@ Address of parameter to update with profile length.
 <P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Name of profile to add or remove: ICM, IPTC, or generic profile.
+<P>Name of profile to add or remove: ICM, IPTC, or generic profile.</P>
 </dd>
-<P></P>
-<dt><strong>profile:</strong><br />
-</dt>
+</li>
+<dt><strong>profile:</strong>
+
 <DD>
-The profile.  Can not be 'const' due to 'clone' option but is treated as 'const' if 'clone' is set to MagickTrue.
+<P>The profile.  Can not be 'const' due to 'clone' option but is treated as 'const' if 'clone' is set to MagickTrue.</P>
 </dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
+</li>
+<dt><strong>length:</strong>
+
 <DD>
-The length of the profile.
+<P>The length of the profile.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_clone_3a">clone:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_clone_3a">clone:</a></strong>
+
 <DD>
-If set True, then copy the profile rather than taking ownership of it.
+<P>If set True, then copy the profile rather than taking ownership of it.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setimageprofile">SetImageProfile</a></h2>
@@ -197,28 +205,28 @@ If set True, then copy the profile rather than taking ownership of it.
 <P>The format of the SetImageProfile method is:</P>
 <blockquote>unsigned int SetImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', XMP, or any unique text string.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', ``IPTC'', XMP, or any unique text string.</P>
 </dd>
-<P></P>
-<dt><strong>profile:</strong><br />
-</dt>
+</li>
+<dt><strong>profile:</strong>
+
 <DD>
-Address of profile to add.  Pass zero to remove an existing profile.
+<P>Address of profile to add.  Pass zero to remove an existing profile.</P>
 </dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
+</li>
+<dt><strong>length:</strong>
+
 <DD>
-The length of the profile.
+<P>The length of the profile.</P>
 </dd>
 </dl>
 

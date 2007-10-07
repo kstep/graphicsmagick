@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>paint - Methods to fill image pixel regions</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -51,36 +53,37 @@
 <P>The format of the ColorFloodfillImage method is:</P>
 <blockquote>unsigned int ColorFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_target_3a">target:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_target_3a">target:</a></strong>
+
 <DD>
-The RGB value of the target color.
+<P>The RGB value of the target color.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_2cy_3a">x,y:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_2cy_3a">x,y:</a></strong>
+
 <DD>
-The starting location of the operation.
+<P>The starting location of the operation.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_method_3a">method:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_method_3a">method:</a></strong>
+
 <DD>
-Choose either FloodfillMethod or FillToBorderMethod.
+<P>Choose either FloodfillMethod or FillToBorderMethod.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="mattefloodfillimage">MatteFloodfillImage</a></h2>
@@ -89,36 +92,37 @@ Choose either FloodfillMethod or FillToBorderMethod.
 <P>The format of the MatteFloodfillImage method is:</P>
 <blockquote>unsigned int MatteFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>target:</strong><br />
-</dt>
+</li>
+<dt><strong>target:</strong>
+
 <DD>
-The RGB value of the target color.
+<P>The RGB value of the target color.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_opacity_3a">opacity:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_opacity_3a">opacity:</a></strong>
+
 <DD>
-The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
+<P>The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.</P>
 </dd>
-<P></P>
-<dt><strong>x,y:</strong><br />
-</dt>
+</li>
+<dt><strong>x,y:</strong>
+
 <DD>
-The starting location of the operation.
+<P>The starting location of the operation.</P>
 </dd>
-<P></P>
-<dt><strong>method:</strong><br />
-</dt>
+</li>
+<dt><strong>method:</strong>
+
 <DD>
-Choose either FloodfillMethod or FillToBorderMethod.
+<P>Choose either FloodfillMethod or FillToBorderMethod.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="opaqueimage">OpaqueImage</a></h2>
@@ -126,24 +130,25 @@ Choose either FloodfillMethod or FillToBorderMethod.
 <P>The format of the OpaqueImage method is:</P>
 <blockquote>unsigned int OpaqueImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const <A HREF="types.html#PixelPacket">PixelPacket</A> fill ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>target:</strong><br />
-</dt>
+</li>
+<dt><strong>target:</strong>
+
 <DD>
-The RGB value of the target color.
+<P>The RGB value of the target color.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_fill_3a">fill:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_fill_3a">fill:</a></strong>
+
 <DD>
-The replacement color.
+<P>The replacement color.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="transparentimage">TransparentImage</a></h2>
@@ -151,22 +156,22 @@ The replacement color.
 <P>The format of the TransparentImage method is:</P>
 <blockquote>unsigned int TransparentImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>target:</strong><br />
-</dt>
+</li>
+<dt><strong>target:</strong>
+
 <DD>
-The RGB value of the target color.
+<P>The RGB value of the target color.</P>
 </dd>
-<P></P>
-<dt><strong>opacity:</strong><br />
-</dt>
+</li>
+<dt><strong>opacity:</strong>
+
 <DD>
-The replacement opacity value.
+<P>The replacement opacity value.</P>
 </dd>
 </dl>
 

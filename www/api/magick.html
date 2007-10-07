@@ -1,8 +1,10 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>magick - Image format support interfaces</title>
-<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -75,60 +77,64 @@
 <blockquote>GetImageMagick() searches for an image format that matches the specified magick string. If one is found the name is returned otherwise NULL. </blockquote><P>The format of the GetImageMagick method is:</P>
 <blockquote>const char *GetImageMagick ( const unsigned char *magick, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_magick_3a">magick:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_magick_3a">magick:</a></strong>
+
 <DD>
-The image format we are searching for.
+<P>The image format we are searching for.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_length_3a">length:</a></strong>
+
 <DD>
-The length of the binary string.
+<P>The length of the binary string.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getmagickinfo">GetMagickInfo</a></h2>
 <blockquote>GetMagickInfo() returns a pointer <A HREF="types.html#MagickInfo">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. It is not safe to traverse the list by using the previous and next pointers in the <A HREF="types.html#MagickInfo">MagickInfo</A> structure since the list contents or order may be altered while the list is being traversed. If the list must be traversed, access it via the GetMagickInfoArray function instead. </blockquote><P>The format of the GetMagickInfo method is:</P>
 <blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> *GetMagickInfo ( const char *name, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_name_3a">name:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_name_3a">name:</a></strong>
+
 <DD>
-The image format we are looking for.
+<P>The image format we are looking for.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getmagickinfoarray">GetMagickInfoArray</a></h2>
 <blockquote>GetMagickInfoArray() returns a sorted null-terminated array of <A HREF="types.html#MagickInfo">MagickInfo</A> pointers corresponding to the available format registrations. If necessarly all modules are loaded in order to return a complete list. This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked. Once the returned array is no longer needed, the allocated array should be deallocated. Do not attempt to deallocate the <A HREF="types.html#MagickInfo">MagickInfo</A> structures based on pointers in the array! </blockquote><P>The format of the GetMagickList method is:</P>
 <blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> **GetMagickInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="initializemagick">InitializeMagick</a></h2>
 <blockquote>InitializeMagick() initializes the GraphicsMagick environment. </blockquote><P>The format of the InitializeMagick function is:</P>
 <blockquote>InitializeMagick ( const char *path ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_path_3a">path:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_path_3a">path:</a></strong>
+
 <DD>
-The execution path of the current GraphicsMagick client.
+<P>The execution path of the current GraphicsMagick client.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="ismagickconflict">IsMagickConflict</a></h2>
@@ -136,36 +142,38 @@ The execution path of the current GraphicsMagick client.
 <P>The format of the IsMagickConflict method is:</P>
 <blockquote>unsigned int IsMagickConflict ( const char *magick ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_status_3a">status:</a></strong>
+
 <DD>
-Method IsMagickConflict returns true if the image format conflicts with a logical drive.
+<P>Method IsMagickConflict returns true if the image format conflicts with a logical drive.</P>
 </dd>
-<P></P>
-<dt><strong>magick:</strong><br />
-</dt>
+</li>
+<dt><strong>magick:</strong>
+
 <DD>
-Specifies the image format.
+<P>Specifies the image format.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="listmagickinfo">ListMagickInfo</a></h2>
 <blockquote>ListMagickInfo() lists the image formats to a file. </blockquote><P>The format of the ListMagickInfo method is:</P>
 <blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong><a name="item_o_file_3a">file:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_file_3a">file:</a></strong>
+
 <DD>
-A file handle.
+<P>A file handle.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="listmodulemap">ListModuleMap</a></h2>
@@ -173,18 +181,19 @@ Return any errors or warnings in this structure.
 <P>The format of the ListModuleMap method is:</P>
 <blockquote>unsigned int ListModuleMap ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong>file:</strong><br />
-</dt>
+<dt><strong>file:</strong>
+
 <DD>
-An pointer to a FILE.
+<P>An pointer to a FILE.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="magicktomime">MagickToMime</a></h2>
@@ -192,24 +201,26 @@ Return any errors or warnings in this structure.
 <P>The format of the MagickToMime method is:</P>
 <blockquote>char *MagickToMime ( const char *magick ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong>magick:</strong><br />
-</dt>
+<dt><strong>magick:</strong>
+
 <DD>
-GraphicsMagick format specification ``magick'' tag.
+<P>GraphicsMagick format specification ``magick'' tag.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="registermagickinfo">RegisterMagickInfo</a></h2>
 <blockquote>RegisterMagickInfo() adds attributes for a particular image format to the list of supported formats. The attributes include the image format name, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory I/O, and a brief description of the format. </blockquote><P>The format of the RegisterMagickInfo method is:</P>
 <blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types.html#MagickInfo">MagickInfo</A> *magick_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_magick_info_3a">magick_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_magick_info_3a">magick_info:</a></strong>
+
 <DD>
-The magick info.
+<P>The magick info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setmagickinfo">SetMagickInfo</a></h2>
@@ -217,18 +228,19 @@ The magick info.
 <P>The format of the SetMagickInfo method is:</P>
 <blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> *SetMagickInfo ( const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>magick_info:</strong><br />
-</dt>
+<dt><strong>magick_info:</strong>
+
 <DD>
-Method SetMagickInfo returns the allocated and initialized MagickInfo structure.
+<P>Method SetMagickInfo returns the allocated and initialized MagickInfo structure.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-a character string that represents the image format associated with the MagickInfo structure.
+<P>a character string that represents the image format associated with the MagickInfo structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="unregistermagickinfo">UnregisterMagickInfo</a></h2>
@@ -236,16 +248,16 @@ a character string that represents the image format associated with the MagickIn
 <P>The format of the UnregisterMagickInfo method is:</P>
 <blockquote>unsigned int UnregisterMagickInfo ( const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>status:</strong><br />
-</dt>
+<dt><strong>status:</strong>
+
 <DD>
-Method UnregisterMagickInfo returns False if the name does not exist in the list otherwise True.
+<P>Method UnregisterMagickInfo returns False if the name does not exist in the list otherwise True.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-a character string that represents the image format we are looking for.
+<P>a character string that represents the image format we are looking for.</P>
 </dd>
 </dl>
 
