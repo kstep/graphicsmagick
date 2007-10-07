@@ -421,7 +421,7 @@ static void MvgAppendPointsCommand(DrawingWand *drawing_wand,
   size_t
     i;
 
-  (void) MvgPrintf(drawing_wand, command);
+  (void) MvgPrintf(drawing_wand, "%s", command);
   for (i=number_coordinates, coordinate=coordinates; i; i--)
     {
       (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",coordinate->x,coordinate->y);

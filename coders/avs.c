@@ -37,9 +37,10 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*
@@ -125,25 +126,31 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
-  if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "AVS dimensions %ldx%ld",width,height);
+  if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*
       Convert AVS raster image to pixel packets.
     */
+    size_t
+      row_bytes;
+
     image->columns=width;
     image->rows=height;
     image->depth=8;
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    pixels=MagickAllocateMemory(unsigned char *,4*image->columns);
+    row_bytes=4*image->columns;
+    pixels=MagickAllocateMemory(unsigned char *,row_bytes);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=0; y < (long) image->rows; y++)
     {
-      count=ReadBlob(image,4*image->columns,pixels);
+      count=ReadBlob(image,row_bytes,pixels);
       if (count == 0)
         ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
       p=pixels;
@@ -181,7 +188,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     width=ReadBlobMSBLong(image);
     height=ReadBlobMSBLong(image);
-    if ((width != (unsigned long) ~0) && (height != (unsigned long) ~0))
+    if (!(EOFBlob(image)))
       {
         /*
           Allocate next image structure.
@@ -198,7 +205,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           break;
       }
-  } while ((width != (unsigned long) ~0) && (height != (unsigned long) ~0));
+  } while (!(EOFBlob(image)));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

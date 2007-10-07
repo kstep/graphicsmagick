@@ -9512,9 +9512,10 @@ perl-sources:
 
 @WITH_PERL_TRUE@clean-perl:
 @WITH_PERL_TRUE@	(cd $(PERLMAGICK) && \
-@WITH_PERL_TRUE@	( if test -f Makefile.old ; then $(MAKE) -f Makefile.old CC='@CC@' clean ; fi ) && \
-@WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) && \
-@WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick && \
+@WITH_PERL_TRUE@	( if test -f Makefile.old ; then $(MAKE) -f Makefile.old CC='@CC@' clean ; fi ) ; \
+@WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
+@WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
+@WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick ; \
 @WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
 @WITH_PERL_TRUE@	rm -f perl-sources
 

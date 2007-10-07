@@ -464,6 +464,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
 
           /*
             FIXME: Math seems to be expecting data with gamma 1.0 rather than 1.7.
+            Also, quantizing to 64K levels does not do justice to the Q32 build at all.
           */
           logval=685+log10(pow((((double) linearval+Offset)/Gain),
                                (1.7/DisplayGamma)))/(0.002/NegativeFilmGamma);

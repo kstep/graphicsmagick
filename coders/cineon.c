@@ -408,7 +408,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   unsigned char
     *scandata;
   
-  unsigned char
+  void
     *scanline;
 
   const char *
@@ -645,7 +645,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
           scandata_bytes=4;
           scale_to_short=64;
           scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
-          scanline=(unsigned char*) scandata;
+          scanline=scandata;
           BitStreamInitializeRead(&bit_stream,scanline);
           for (y=0; y < (long) image->rows; y++)
             {
@@ -655,14 +655,14 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
               /*
                 Packed 10 bit samples with 2 bit pad at end of 32-bit word.
               */
-              scanline=(unsigned char *) scandata;
+              scanline=scandata;
               i=3;
               for (x=(long) image->columns; x > 0; x--, i++)
                 {
                   if (i > 2)
                     {
                       scanline=scandata;
-                      if (ReadBlobZC(image,scandata_bytes,(void **) &scanline) !=
+                      if (ReadBlobZC(image,scandata_bytes,&scanline) !=
                           scandata_bytes)
                         break;
                       BitStreamInitializeRead(&bit_stream,scanline);
@@ -698,7 +698,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
               if (q == (PixelPacket *) NULL)
                 break;
               scanline=scandata;
-              if (ReadBlobZC(image,scandata_bytes,(void **) &scanline) != scandata_bytes)
+              if (ReadBlobZC(image,scandata_bytes,&scanline) != scandata_bytes)
                 break;
               BitStreamInitializeRead(&bit_stream,scanline);
               for (x=0 ; x < (long) image->columns; x++)

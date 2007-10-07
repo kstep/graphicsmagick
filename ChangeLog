@@ -1,3 +1,8 @@
+2007-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/read.t: Added read test for unsigned 32-bit LSB MAT
+	format.
+
 2007-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dib.c (ReadDIBImage): Use appropriate sized cast for DIB

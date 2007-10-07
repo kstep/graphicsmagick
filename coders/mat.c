@@ -426,8 +426,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   magick_off_t filepos=0x80;
   BlobInfo *blob;
 
-  unsigned long (*ReadBlobXXXLong)(Image *image);
-  unsigned short (*ReadBlobXXXShort)(Image *image);
+  magick_uint32_t (*ReadBlobXXXLong)(Image *image);
+  magick_uint16_t (*ReadBlobXXXShort)(Image *image);
   void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
   void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
 

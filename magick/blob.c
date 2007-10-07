@@ -266,12 +266,13 @@ static const char *BlobStreamTypeToString(StreamType stream_type)
 %    o data: A pointer to where the address of the data should be returned.
 %
 */
-static inline size_t ReadBlobStream(Image *image,const size_t length,void **data)
+static inline size_t ReadBlobStream(Image *image,const size_t length,
+                                    void **data)
 {
   size_t
     available;
 
-  if (image->blob->offset >= image->blob->length)
+  if (image->blob->offset >= (magick_off_t) image->blob->length)
     {
       image->blob->eof=MagickTrue;
       return 0;
@@ -361,7 +362,8 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
     }
   return image->blob->data+image->blob->offset;
 }
-static inline size_t WriteBlobStream(Image *image,const size_t length,const void *data)
+static inline size_t WriteBlobStream(Image *image,const size_t length,
+                                     const void *data)
 {
   void
     *dest;
@@ -430,12 +432,12 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BlobIsSeekable() returns True if the blob supports seeks (SeekBlob() is
-%  functional).
+%  BlobIsSeekable() returns MagickTrue if the blob supports seeks
+%  (SeekBlob() is functional).
 %
 %  The format of the BlobIsSeekable method is:
 %
-%      unsigned int BlobIsSeekable(const Image *image)
+%      MagickBool BlobIsSeekable(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -443,7 +445,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 %
 %
 */
-MagickExport unsigned int BlobIsSeekable(const Image *image)
+MagickExport MagickBool BlobIsSeekable(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->blob != (const BlobInfo *) NULL);
@@ -463,18 +465,18 @@ MagickExport unsigned int BlobIsSeekable(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BlobToFile() writes a blob to a file.  It returns False if an error occurs
-%  otherwise True.
+%  BlobToFile() writes a blob to a file.  It returns MagickFail if an error
+%  occurs otherwise MagickPass.
 %
 %  The format of the BlobToFile method is:
 %
-%      unsigned int BlobToFile(const char *filename,const void *blob,
+%      MagickPassFail BlobToFile(const char *filename,const void *blob,
 %        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status:  BlobToFile returns True on success; otherwise,  it
-%      returns False if an error occurs.
+%    o status:  BlobToFile returns MagickPass on success; otherwise,  it
+%      returns MagickFail if an error occurs.
 %
 %    o filename: Write the blob to this file.
 %
@@ -486,7 +488,7 @@ MagickExport unsigned int BlobIsSeekable(const Image *image)
 %
 %
 */
-MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
+MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
   ssize_t
@@ -1387,13 +1389,13 @@ MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetBlobTemporary() returns True if the file associated with the blob is
-%  a temporary file and should be removed when the associated image is
+%  GetBlobTemporary() returns MagickTrue if the file associated with the blob
+%  is a temporary file and should be removed when the associated image is
 %  destroyed.
 %
 %  The format of the GetBlobTemporary method is:
 %
-%      unsigned int GetBlobTemporary(const Image *image)
+%      MagickBool GetBlobTemporary(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1401,7 +1403,7 @@ MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 %
 %
 */
-MagickExport unsigned int GetBlobTemporary(const Image *image)
+MagickExport MagickBool GetBlobTemporary(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->blob != (const BlobInfo *) NULL);
@@ -1898,13 +1900,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the ImageToFile method is:
 %
-%      unsigned int ImageToFile(Image *image,const char *filename,
+%      MagickPassFail ImageToFile(Image *image,const char *filename,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status:  ImageToFile returns True on success; otherwise,  it
-%      returns False if an error occurs.
+%    o status:  ImageToFile returns MagickPass on success; otherwise,  it
+%      returns MagickFail if an error occurs.
 %
 %    o image: The image.
 %
@@ -1914,7 +1916,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-MagickExport unsigned int ImageToFile(Image *image,const char *filename,
+MagickExport MagickPassFail ImageToFile(Image *image,const char *filename,
   ExceptionInfo *exception)
 {
 #define MaxBufferSize  65541
@@ -1945,7 +1947,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
   if (file == -1)
     {
       ThrowException(exception,BlobError,UnableToWriteBlob,filename);
-      return(False);
+      return(MagickFail);
     }
   buffer=MagickAllocateMemory(char *,MaxBufferSize);
   if (buffer == (char *) NULL)
@@ -1953,7 +1955,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
       (void) close(file);
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
         filename);
-      return(False);
+      return(MagickFail);
     }
   for (i=0; (length=ReadBlob(image,MaxBufferSize,buffer)) > 0; )
   {
@@ -2188,13 +2190,13 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %
 %  The format of the OpenBlob method is:
 %
-%      unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+%      MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 %        const BlobMode mode,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method OpenBlob returns True if the file is successfully
-%      opened otherwise False.
+%    o status:  Method OpenBlob returns MagickPass if the file is successfully
+%      opened otherwise MagickFail.
 %
 %    o image_info: The image info.
 %
@@ -2233,7 +2235,7 @@ static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
       }
 }
 
-MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
   const BlobMode mode,ExceptionInfo *ARGUNUSED(exception))
 {
   char
@@ -2265,7 +2267,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       AttachBlob(image->blob,image_info->blob,image_info->length);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                             "  attached image_info->blob to blob %p",&image->blob);
-      return(True);
+      return(MagickPass);
     }
   DetachBlob(image->blob);
   image->blob->mode=mode;
@@ -2290,7 +2292,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                 "  opened image_info->stream as FifoStream blob %p",
                                 &image->blob);
-          return(True);
+          return(MagickPass);
         }
     }
   /*
@@ -2763,10 +2765,14 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       break;
     case BlobStream:
     {
+      void
+        *source_void = 0;
+
       const unsigned char
         *source;
 
-      count=ReadBlobStream(image,length,(void **) (&source));
+      count=ReadBlobStream(image,length,&source_void);
+      source=source_void;
       if (count <= 10)
         {
           register size_t
@@ -2836,9 +2842,8 @@ MagickExport  size_t ReadBlobZC(Image *image,const size_t length,void **data)
   assert(data != (void *) NULL);
 
   if (image->blob->type == BlobStream)
-    {
-      return (ReadBlobStream(image,length,data));
-    }
+    return (ReadBlobStream(image,length,data));
+
   assert(*data != (void *) NULL);
   return ReadBlob(image,length,*data);
 }
@@ -2965,48 +2970,40 @@ MagickExport double ReadBlobLSBDouble(Image * image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobLSBLong reads a long value as a 32 bit quantity in
+%  Method ReadBlobLSBLong reads an unsigned 32 bit quantity in
 %  least-significant byte first order.
 %
 %  The format of the ReadBlobLSBLong method is:
 %
-%      unsigned long ReadBlobLSBLong(Image *image)
+%      magick_uint32_t ReadBlobLSBLong(Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o value:  Method ReadBlobLSBLong returns an unsigned long read from
+%    o value:  Method ReadBlobLSBLong returns an unsigned 32-bit value from
 %      the file.
 %
 %    o image: The image.
 %
 %
 */
-MagickExport unsigned long ReadBlobLSBLong(Image *image)
+MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
 {
   unsigned char
-    buffer[4],
-    *source;
+    buffer[4];
 
-  void
-    *source_v;
-
-  unsigned long
+  magick_uint32_t
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  source_v=buffer;
-  if (image->blob->type == BlobStream)
-    value=ReadBlobStream(image,4,&source_v);
-  else
-    value=ReadBlob(image,4,source_v);
-  source=(unsigned char*) source_v;
-  if (value < 4)
-    return((unsigned long) ~0);
-  value=source[3] << 24;
-  value|=source[2] << 16;
-  value|=source[1] << 8;
-  value|=source[0];
+
+  if (ReadBlob(image,4,buffer) != 4)
+    return((magick_uint32_t) ~0);
+
+  value=buffer[3] << 24;
+  value|=buffer[2] << 16;
+  value|=buffer[1] << 8;
+  value|=buffer[0];
   return(value);
 }
 
@@ -3021,7 +3018,7 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobLSBShort reads a short value as a 16 bit quantity in
+%  Method ReadBlobLSBShort reads a 16-bit unsigned value in
 %  least-significant byte first order.
 %
 %  The format of the ReadBlobLSBShort method is:
@@ -3030,37 +3027,29 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o value:  Method ReadBlobLSBShort returns an unsigned short read from
-%      the file.
+%    o value:  Method ReadBlobLSBShort returns an unsigned 16-bit value
+%      read from the file.
 %
 %    o image: The image.
 %
 %
 */
-MagickExport unsigned short ReadBlobLSBShort(Image *image)
+MagickExport magick_uint16_t ReadBlobLSBShort(Image *image)
 {
   unsigned char
-    buffer[2],
-    *source;
+    buffer[2];
 
-  void
-    *source_v;
-
-  unsigned short
+  magick_uint16_t
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  source_v=buffer;
-  if (image->blob->type == BlobStream)
-    value=ReadBlobStream(image,2,&source_v);
-  else
-    value=ReadBlob(image,2,source_v);
-  source=(unsigned char*) source_v;
-  if (value < 2)
-    return((unsigned short) ~0U);
-  value=source[1] << 8;
-  value|=source[0];
+
+  if (ReadBlob(image,2,buffer) != 2)
+    return((magick_uint16_t) ~0U);
+
+  value=buffer[1] << 8;
+  value|=buffer[0];
   return(value);
 }
 
@@ -3222,49 +3211,41 @@ MagickExport double ReadBlobMSBDouble(Image * image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBlobMSBLong() reads a long value as a 32 bit quantity in
-%  most-significant byte first order.
+%  ReadBlobMSBLong() reads a 32 bit unsigned value in most-significant byte
+%  first order.
 %
 %  The format of the ReadBlobMSBLong method is:
 %
-%      unsigned long ReadBlobMSBLong(Image *image)
+%      magick_uint32_t ReadBlobMSBLong(Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o value:  Method ReadBlobMSBLong returns an unsigned long read from
-%      the file.
+%    o value:  Method ReadBlobMSBLong returns an unsigned 32-bit value
+%      read from the file.
 %
 %    o image: The image.
 %
 %
 %
 */
-MagickExport unsigned long ReadBlobMSBLong(Image *image)
+MagickExport magick_uint32_t ReadBlobMSBLong(Image *image)
 {
   unsigned char
-    buffer[4],
-    *source;
+    buffer[4];
 
-  void
-    *source_v;
-
-  unsigned long
+  magick_uint32_t
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  source_v=buffer;
-  if (image->blob->type == BlobStream)
-    value=ReadBlobStream(image,4,&source_v);
-  else
-    value=ReadBlob(image,4,source_v);
-  source=(unsigned char*) source_v;
-  if (value < 4)
-    return((unsigned long) ~0);
-  value=source[0] << 24;
-  value|=source[1] << 16;
-  value|=source[2] << 8;
-  value|=source[3];
+
+  if (ReadBlob(image,4,buffer) != 4)
+    return((magick_uint32_t) ~0);
+
+  value=buffer[0] << 24;
+  value|=buffer[1] << 16;
+  value|=buffer[2] << 8;
+  value|=buffer[3];
   return(value);
 }
 
@@ -3279,46 +3260,38 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBlobMSBShort reads a short value as a 16 bit quantity in
-%  most-significant byte first order.
+%  Method ReadBlobMSBShort reads a 16 bit unsigned value in most-significant
+%  byte first order.
 %
 %  The format of the ReadBlobMSBShort method is:
 %
-%      unsigned short ReadBlobMSBShort(Image *image)
+%      magick_uint16_t ReadBlobMSBShort(Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o value:  Method ReadBlobMSBShort returns an unsigned short read from
-%      the file.
+%    o value:  Method ReadBlobMSBShort returns an unsigned 16-bit value read
+%      from the file.
 %
 %    o image: The image.
 %
 %
 */
-MagickExport unsigned short ReadBlobMSBShort(Image *image)
+MagickExport magick_uint16_t ReadBlobMSBShort(Image *image)
 {
   unsigned char
-    buffer[2],
-    *source;
+    buffer[2];
 
-  void
-    *source_v;
-
-  unsigned short
+  magick_uint16_t
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  source_v=buffer;
-  if (image->blob->type == BlobStream)
-    value=ReadBlobStream(image,2,&source_v);
-  else
-    value=ReadBlob(image,2,source_v);
-  source=(unsigned char*) source_v;
-  if (value < 2)
-    return((unsigned short) ~0U);
-  value=source[0] << 8;
-  value|=source[1];
+
+  if (ReadBlob(image,2,buffer) != 2)
+    return((magick_uint16_t) ~0U);
+
+  value=buffer[0] << 8;
+  value|=buffer[1];
   return(value);
 }
 
@@ -3356,7 +3329,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   int
     c;
 
-  register long
+  register unsigned int
     i;
 
   assert(image != (Image *) NULL);
@@ -3544,13 +3517,13 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetBlobClosable() enables closing the blob if True is passed, and exempts
-%  the blob from being closed if False is passed.  Blobs are closable by
-%  default (default True).
+%  SetBlobClosable() enables closing the blob if MagickTrue is passed, and
+%  exempts the blob from being closed if False is passed.  Blobs are closable
+%  by default (default MagickTrue).
 %
 %  The format of the SetBlobClosable method is:
 %
-%      void SetBlobClosable(Image *image, unsigned int closeable)
+%      void SetBlobClosable(Image *image, MagickBool closeable)
 %
 %  A description of each parameter follows:
 %
@@ -3559,7 +3532,7 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
 %    o closeable: Set to FALSE in order to disable closing the blob.
 %
 */
-MagickExport void SetBlobClosable(Image *image, unsigned int closeable)
+MagickExport void SetBlobClosable(Image *image, MagickBool closeable)
 {
   assert(image != (const Image *) NULL);
   assert(image->blob != (const BlobInfo *) NULL);
@@ -3583,7 +3556,7 @@ MagickExport void SetBlobClosable(Image *image, unsigned int closeable)
 %
 %  The format of the SetBlobTemporary method is:
 %
-%      void SetBlobTemporary(Image *image, unsigned int isTemporary)
+%      void SetBlobTemporary(Image *image, MagickBool isTemporary)
 %
 %  A description of each parameter follows:
 %
@@ -3593,7 +3566,7 @@ MagickExport void SetBlobClosable(Image *image, unsigned int closeable)
 %        the blob is temporary.
 %
 */
-MagickExport void SetBlobTemporary(Image *image, unsigned int isTemporary)
+MagickExport void SetBlobTemporary(Image *image, MagickBool isTemporary)
 {
   assert(image != (const Image *) NULL);
   assert(image->blob != (const BlobInfo *) NULL);
@@ -3760,12 +3733,12 @@ MagickExport magick_off_t TellBlob(const Image *image)
 %
 %  The format of the UnmapBlob method is:
 %
-%      unsigned int UnmapBlob(void *map,const size_t length)
+%      MagickPassFail UnmapBlob(void *map,const size_t length)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method UnmapBlob returns True on success; otherwise,  it
-%      returns False and sets errno to indicate the error.
+%    o status:  Method UnmapBlob returns MagickPass on success; otherwise,
+%      it returns MagickFail and sets errno to indicate the error.
 %
 %    o map: The address  of the binary large object.
 %
@@ -3773,7 +3746,7 @@ MagickExport magick_off_t TellBlob(const Image *image)
 %
 %
 */
-MagickExport unsigned int UnmapBlob(void *map,const size_t length)
+MagickExport MagickPassFail UnmapBlob(void *map,const size_t length)
 {
 #if defined(HAVE_MMAP_FILEIO)
   int
@@ -3785,7 +3758,7 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
   status=munmap(map,length);
   return(status == 0);
 #else
-  return(False);
+  return(MagickFail);
 #endif
 }
 
@@ -3892,12 +3865,12 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobByte write an integer to a blob.  It returns the number of
+%  Method WriteBlobByte writes an integer to a blob.  It returns the number of
 %  bytes written (either 0 or 1);
 %
 %  The format of the WriteBlobByte method is:
 %
-%      size_t WriteBlobByte(Image *image,const unsigned long value)
+%      size_t WriteBlobByte(Image *image,const unsigned int value)
 %
 %  A description of each parameter follows.
 %
@@ -3909,7 +3882,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-MagickExport size_t WriteBlobByte(Image *image,const unsigned long value)
+MagickExport size_t WriteBlobByte(Image *image,const magick_uint8_t value)
 {
   unsigned char
     c;
@@ -4036,17 +4009,16 @@ MagickExport MagickPassFail WriteBlobFile(Image *image,const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobLSBLong writes a long value as a 32 bit quantity in
-%  least-significant byte first order.
+%  Method WriteBlobLSBLong writes a 32 bit quantity in least-significant byte
+%  first order.
 %
 %  The format of the WriteBlobLSBLong method is:
 %
-%      size_t WriteBlobLSBLong(Image *image,const unsigned long value)
+%      size_t WriteBlobLSBLong(Image *image,const magick_uint32_t value)
 %
 %  A description of each parameter follows.
 %
-%    o count: Method WriteBlobLSBLong returns the number of unsigned longs
-%      written.
+%    o count: Method WriteBlobLSBLong returns the number of bytes written.
 %
 %    o image: The image.
 %
@@ -4054,7 +4026,7 @@ MagickExport MagickPassFail WriteBlobFile(Image *image,const char *filename)
 %
 %
 */
-MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
+MagickExport size_t WriteBlobLSBLong(Image *image,const magick_uint32_t value)
 {
   unsigned char
     buffer[4];
@@ -4079,17 +4051,16 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobLSBShort writes a long value as a 16 bit quantity in
-%  least-significant byte first order.
+%  Method WriteBlobLSBShort writes a 16 bit value in least-significant byte
+%  first order.
 %
 %  The format of the WriteBlobLSBShort method is:
 %
-%      size_t WriteBlobLSBShort(Image *image,const unsigned long value)
+%      size_t WriteBlobLSBShort(Image *image,const magick_uint16_t value)
 %
 %  A description of each parameter follows.
 %
-%    o count: Method WriteBlobLSBShort returns the number of unsigned longs
-%      written.
+%    o count: Method WriteBlobLSBShort returns the number of bytes written.
 %
 %    o image: The image.
 %
@@ -4097,7 +4068,7 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %
 %
 */
-MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
+MagickExport size_t WriteBlobLSBShort(Image *image,const magick_uint16_t value)
 {
   unsigned char
     buffer[2];
@@ -4120,17 +4091,16 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobMSBLong writes a long value as a 32 bit quantity in
-%  most-significant byte first order.
+%  Method WriteBlobMSBLong writes a 32 bit value in most-significant byte
+%  first order.
 %
 %  The format of the WriteBlobMSBLong method is:
 %
-%      size_t WriteBlobMSBLong(Image *image,const unsigned long value)
+%      size_t WriteBlobMSBLong(Image *image,const magick_uint32_t value)
 %
 %  A description of each parameter follows.
 %
-%    o count: Method WriteBlobMSBLong returns the number of unsigned longs
-%      written.
+%    o count: Method WriteBlobMSBLong returns the number of bytes written.
 %
 %    o value:  Specifies the value to write.
 %
@@ -4138,7 +4108,7 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 %
 %
 */
-MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
+MagickExport size_t WriteBlobMSBLong(Image *image,const magick_uint32_t value)
 {
   size_t
     count;
@@ -4171,14 +4141,16 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobMSBShort writes a long value as a 16 bit quantity in
-%  most-significant byte first order.
+%  Method WriteBlobMSBShort writes a 16 bit value in most-significant byte
+%  first order.
 %
 %  The format of the WriteBlobMSBShort method is:
 %
-%      size_t WriteBlobMSBShort(Image *image,const unsigned long value)
+%      size_t WriteBlobMSBShort(Image *image,const magick_uint16_t value)
 %
 %  A description of each parameter follows.
+%
+%    o count: Method WriteBlobMSBShort returns the number of bytes written.
 %
 %   o  value:  Specifies the value to write.
 %
@@ -4186,7 +4158,7 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 %
 %
 */
-MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned long value)
+MagickExport size_t WriteBlobMSBShort(Image *image,const magick_uint16_t value)
 {
   unsigned char
     buffer[2];

@@ -126,8 +126,9 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobMSBShort(image);  /* x-offset */
   (void) ReadBlobMSBShort(image);  /* y-offset */
   bits_per_pixel=ReadBlobMSBShort(image);
-  if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
-      ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
+  if ((EOFBlob(image)) ||
+      (width > 65535) || (height  > 65535) ||
+       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
@@ -203,7 +204,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobMSBShort(image);
     (void) ReadBlobMSBShort(image);
     bits_per_pixel=ReadBlobMSBShort(image);
-    status=(width != (unsigned long) ~0) && (height == (unsigned long) ~0) &&
+    status=(!EOFBlob(image)) && (width < 65536) && (height < 65536) &&
       ((bits_per_pixel == 8) || (bits_per_pixel == 24));
     if (status == True)
       {

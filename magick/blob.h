@@ -136,10 +136,10 @@ typedef enum
   Open an input or output stream for access.  May also use a stream
   provided via image_info->stream.
 */
-extern MagickExport unsigned int OpenBlob(const ImageInfo *image_info,
-                                          Image *image,
-                                          const BlobMode mode,
-                                          ExceptionInfo *exception);
+extern MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,
+                                            Image *image,
+                                            const BlobMode mode,
+                                            ExceptionInfo *exception);
 
 /*
   Close I/O to the file or BLOB.
@@ -229,25 +229,25 @@ extern MagickExport int ReadBlobByte(Image *image);
   Read a 16-bit unsigned "short" value from the file or BLOB in
   little-endian order.
 */
-extern MagickExport unsigned short ReadBlobLSBShort(Image *image);
+extern MagickExport magick_uint16_t ReadBlobLSBShort(Image *image);
 
 /*
   Read a 16-bit unsigned "short" value from the file or BLOB in
   big-endian order.
 */
-extern MagickExport unsigned short ReadBlobMSBShort(Image *image);
+extern MagickExport magick_uint16_t ReadBlobMSBShort(Image *image);
 
 /*
   Read a 32-bit unsigned "long" value from the file or BLOB in
   little-endian order.
 */
-extern MagickExport unsigned long ReadBlobLSBLong(Image *image);
+extern MagickExport magick_uint32_t ReadBlobLSBLong(Image *image);
 
 /*
   Read a 32-bit unsigned "long" value from the file or BLOB in
   big-endian order.
 */
-extern MagickExport unsigned long ReadBlobMSBLong(Image *image);
+extern MagickExport magick_uint32_t ReadBlobMSBLong(Image *image);
 
 /*
   Read a 32-bit "float" value from the file or BLOB in
@@ -284,7 +284,7 @@ extern MagickExport char *ReadBlobString(Image *image,
   Write a single byte to the file or BLOB.
 */
 extern MagickExport size_t WriteBlobByte(Image *image,
-                                         const unsigned long value);
+                                         const magick_uint8_t value);
 
 /*
   Write the content of an entire disk file to the file or BLOB.
@@ -296,13 +296,13 @@ extern MagickExport MagickPassFail WriteBlobFile(Image *image,
   Write a 16-bit "short" value to the  file or BLOB in little-endian order.
 */
 extern MagickExport size_t WriteBlobLSBShort(Image *image,
-                                             const unsigned long value);
+                                             const magick_uint16_t value);
 
 /*
   Write a 32-bit "long" value to the file or BLOB in little-endian order.
 */
 extern MagickExport size_t WriteBlobLSBLong(Image *image,
-                                            const unsigned long value);
+                                            const magick_uint32_t value);
 
 
 
@@ -310,13 +310,13 @@ extern MagickExport size_t WriteBlobLSBLong(Image *image,
   Write a 32-bit "long" value to the file or BLOB in big-endian order.
 */
 extern MagickExport size_t WriteBlobMSBLong(Image *image,
-                                            const unsigned long value);
+                                            const magick_uint32_t value);
 
 /*
   Write a 16-bit "short" value to the file or BLOB in big-endian order.
 */
 extern MagickExport size_t WriteBlobMSBShort(Image *image,
-                                             const unsigned long value);
+                                             const magick_uint16_t value);
 
 /*
   Write a C string to the file or BLOB, without the terminating NULL
@@ -335,25 +335,25 @@ extern MagickExport size_t WriteBlobString(Image *image,
   Blob supports seek operations.  BlobSeek() and BlobTell() may safely
   be used.
 */
-extern MagickExport unsigned int BlobIsSeekable(const Image *image);
+extern MagickExport MagickBool BlobIsSeekable(const Image *image);
 
 /*
   Allow file descriptor to be closed (if True).
 */
 extern MagickExport void SetBlobClosable(Image *image,
-                                         unsigned int closable);
+                                         MagickBool closable);
 
 /*
   Blob is for a temporary file which should be deleted (if True).
 */
 extern MagickExport void SetBlobTemporary(Image *image,
-                                          unsigned int isTemporary);
+                                          MagickBool isTemporary);
 
 /*
-  Returns True if the file associated with the blob is a temporary
+  Returns MagickTrue if the file associated with the blob is a temporary
   file and should be removed when the associated image is destroyed.
 */
-extern MagickExport unsigned int GetBlobTemporary(const Image *image);
+extern MagickExport MagickBool GetBlobTemporary(const Image *image);
 
 /*
  *
@@ -374,8 +374,8 @@ typedef enum
 /*
   Release memory mapping for a region.
 */
-extern MagickExport unsigned int UnmapBlob(void *map,
-                                           const size_t length);
+extern MagickExport MagickPassFail UnmapBlob(void *map,
+                                             const size_t length);
 
 /*
   Perform a requested memory mapping of a file descriptor.
@@ -394,10 +394,10 @@ extern MagickExport void *MapBlob(int file,
 /*
   Writes a buffer to a named file.
 */
-extern MagickExport unsigned int BlobToFile(const char *filename,
-                                            const void *blob,
-                                            const size_t length,
-                                            ExceptionInfo *exception);
+extern MagickExport MagickPassFail BlobToFile(const char *filename,
+                                              const void *blob,
+                                              const size_t length,
+                                              ExceptionInfo *exception);
 
 /*
   Read the contents of a file into memory.
@@ -422,9 +422,9 @@ extern MagickExport StreamHandler GetBlobStreamHandler(const Image *image);
   Copies data from the input stream to a file.  Useful in case it is
   necessary to perform seek operations on the input data.
 */
-extern MagickExport unsigned int ImageToFile(Image *image,
-                                             const char *filename,
-                                             ExceptionInfo *exception);
+extern MagickExport MagickPassFail ImageToFile(Image *image,
+                                               const char *filename,
+                                               ExceptionInfo *exception);
 
 /*
   Search for a configuration file (".mgk" file) using appropriate

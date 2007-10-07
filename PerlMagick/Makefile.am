@@ -89,9 +89,10 @@ endif # WTIH_PERL_DYNAMIC
 
 clean-perl:
 	(cd $(PERLMAGICK) && \
-	( if test -f Makefile.old ; then $(MAKE) -f Makefile.old CC='@CC@' clean ; fi ) && \
-	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) && \
-	rm -f Makefile.old PerlMagick && \
+	( if test -f Makefile.old ; then $(MAKE) -f Makefile.old CC='@CC@' clean ; fi ) ; \
+	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
+	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
+	rm -f Makefile.old PerlMagick ; \
 	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
 	rm -f perl-sources
 
