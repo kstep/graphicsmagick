@@ -1,3 +1,8 @@
+2007-10-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* mat.c: Attempt to read 'logic' type modification 
+        as monochrome image.
+
 2007-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlob?SBFoo): Return 0 on EOF conditions

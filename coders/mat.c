@@ -373,6 +373,32 @@ static void FixSignedValues(PixelPacket *q, int y)
   }
 }
 
+
+static void FixLogical(unsigned char *Buff,int ldblk)
+{
+unsigned char mask=128;
+unsigned char *BuffL = Buff;
+unsigned char val = 0;
+
+  while(ldblk-->0)
+  {
+    if(*Buff++ != 0)
+      val |= mask;    
+
+    mask >>= 1;
+    if(mask==0)
+    {
+      *BuffL++ = val;
+      val = 0;
+      mask = 128;
+    }   
+      
+  }
+  *BuffL = val;
+}
+
+
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -425,7 +451,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   int sample_size;
   magick_off_t filepos=0x80;
   BlobInfo *blob;
-
+  
   magick_uint32_t (*ReadBlobXXXLong)(Image *image);
   magick_uint16_t (*ReadBlobXXXShort)(Image *image);
   void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
@@ -569,7 +595,10 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       case miINT8:
       case miUINT8:
         sample_size = 8;
-        image->depth = Min(QuantumDepth,8);         /* Byte type cell */
+        if(MATLAB_HDR.StructureFlag & FLAG_LOGICAL) 
+          image->depth = 1;
+        else
+          image->depth = Min(QuantumDepth,8);         /* Byte type cell */
         import_options.sample_type = UnsignedQuantumSampleType;
         ldblk = (long) MATLAB_HDR.SizeX;      
         break;
@@ -621,8 +650,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     }
 
     image->columns = MATLAB_HDR.SizeX;
-    image->rows = MATLAB_HDR.SizeY;
-    image->colors = 1l >> 8;
+    image->rows = MATLAB_HDR.SizeY;    
+    image->colors = 1l << image->depth;
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
 
@@ -630,18 +659,12 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
     if (CellType==miUINT8 && z!=3)
     {
-      image->colors = 256;
+      if(image->colors>256) image->colors = 256;
+
       if (!AllocateImageColormap(image, image->colors))
       {
  NoMemory:ThrowReaderException(ResourceLimitError, MemoryAllocationFailed,
                            image)}
-
-      for (i = 0; i < (long) image->colors; i++)
-      {
-        image->colormap[i].red = ScaleCharToQuantum(i);
-        image->colormap[i].green = ScaleCharToQuantum(i);
-        image->colormap[i].blue = ScaleCharToQuantum(i);
-      }
     }
 
     /*
@@ -677,8 +700,15 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       {
         q=SetImagePixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1);
         if (q == (PixelPacket *)NULL) goto ExitLoop;
-        (void)ReadBlob(image, ldblk, (char *)BImgBuff);	  
-        (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
+        (void)ReadBlob(image, ldblk, (char *)BImgBuff);
+        if((CellType==miINT8 || CellType==miUINT8) && (MATLAB_HDR.StructureFlag & FLAG_LOGICAL))
+        {
+          FixLogical((unsigned char *)BImgBuff,ldblk);
+          (void)ImportImagePixelArea(image,z2qtype[z],1,BImgBuff,&import_options,0);
+        }
+        else
+          (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
+
         if (z<=1 &&			 // fix only during a last pass z==0 || z==1
 	        (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
 	  FixSignedValues(q,MATLAB_HDR.SizeX);
@@ -717,6 +747,9 @@ ExitLoop:
       /* Image is gray when no complex flag is set and 2D Matrix AGAIN!!! */
     image->is_grayscale = (MATLAB_HDR.DimFlag==8) && 
              ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0);
+    image->is_monochrome = image->depth==1;
+    if(image->is_monochrome)
+      image->colorspace=GRAYColorspace;
 
       /*  Rotate image. */
     rotated_image = RotateImage(image, 90.0, exception);
@@ -728,6 +761,7 @@ ExitLoop:
 
       blob = rotated_image->blob;
       rotated_image->blob = image->blob;
+      rotated_image->colors = image->colors;
       image->blob = blob;
       AppendImageToList(&image,rotated_image);      
       DeleteImageFromList(&image);      
