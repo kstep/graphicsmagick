@@ -1,3 +1,8 @@
+2007-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/ttf/read.t: Relax TrueType rendering tests so that
+	they pass with current FreeType built with default settings.
+
 2007-11-07  Andy Armstrong  <andy@hexten.net>
 
 	* PerlMagick/t/setattribute.t: Fix for typo which breaks
