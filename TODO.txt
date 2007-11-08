@@ -24,6 +24,9 @@ For 1.2 Branch
     "Multiple Vendor ImageMagick DCM and XWD Buffer Overflow Vulnerabilities"
       http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=496
 
+  o CineonLog patches from Kai-Uwe Behrmann
+
+  o FPX patches from Mikhail Teterin
 
   o MPC format related issues:
 

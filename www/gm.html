@@ -2870,9 +2870,11 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-A simple progress indication is shown while the command is running. The
-process indication shows the operation currently being performed and the
-percent completed.</font></td></tr></table>
+A simple command-line progress indication is shown while the command is
+running. The process indication shows the operation currently being
+performed and the percent completed. Commands using X11 may replace the
+command line progress indication with a graphical one once an image has
+been displayed.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5062,6 +5064,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-mattecolor">-mattecolor</a> <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the color to be used with the <strong>-frame</strong> option</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    -monitor
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8877,6 +8890,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    -monitor
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     -monochrome
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image to black and white</td></tr></table>
@@ -12289,6 +12313,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    -monitor
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     -monochrome
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image to black and white</td></tr></table>
@@ -15104,9 +15139,10 @@ width=15><b><font face="Helvetica, Arial"
     MAGICK_MMAP_WRITE
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_WRITE</strong> is set to <strong>TRUE</strong>, GraphicsMagick
-will attempt to memory-map the output file for writing. This is currently
-an experimental feature. Write performance is usually somewhat worse when
-using this approach rather than the default one.</td></tr></table>
+will attempt to memory-map the output file for writing. This is an
+experimental feature (which is currently broken). Write performance is
+usually somewhat worse when using this approach rather than the default
+one.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -15119,11 +15155,15 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and
 writing encoded files. The default is 16384, which is observed to work
-well for most cases. I/O performance to files accessed over a network is
-most likely to benefit by tuning this option. Larger values are not
-necessarily better (they may be slower!), and there is rarely any benefit
-from using values larger than 32768. Use convert's <strong>-verbose</strong> option
-in order to evaluate read and write rates in pixels per second.</td></tr></table>
+well for many cases. The best value for a local filesystem is usually the
+the native filesystem block size (e.g. 4096, 8192, or even 131,072 for
+ZFS) in order to minimize the number of physical disk I/O operations.
+I/O performance to files accessed over a network may benefit
+significantly by tuning this option. Larger values are not necessarily
+better (they may be slower!), and there is rarely any benefit from using
+values larger than 32768. Use convert's <strong>-verbose</strong> option in order
+to evaluate read and write rates in pixels per second while keeping in
+mind that the operating system will try to cache files in RAM.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

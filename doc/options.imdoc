@@ -2799,15 +2799,17 @@ degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
 
 <!-- ------------ -monitor --------------------------------------- -->
 
-<utils apps=composite,convert,mogrify,montage>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
 <opt>-monitor</opt>
 
 <abs>show progress indication</abs>
 
 <pp>
-A simple progress indication is shown while the command is running. The
-process indication shows the operation currently being performed and the
-percent completed.</pp>
+A simple command-line progress indication is shown while the command is
+running. The process indication shows the operation currently being
+performed and the percent completed. Commands using X11 may replace the
+command line progress indication with a graphical one once an image has
+been displayed.</pp>
 
 </utils>
 

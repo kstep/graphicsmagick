@@ -339,6 +339,7 @@ static void AnimateUsage(void)
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-noop                do not apply options to image",
       "-pause               seconds to pause before reanimating",
@@ -1009,6 +1010,14 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
               }
+            break;
+          }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -5427,6 +5436,7 @@ static void DisplayUsage(void)
       "-log format          format of debugging information",
       "-map type            display image using this Standard Colormap",
       "-matte               store matte channel if the image has one",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color",
       "-noop                do not apply options to image",
@@ -6455,6 +6465,14 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
               }
+            break;
+          }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
             break;
           }
           if (LocaleCompare("monochrome",option+1) == 0)
@@ -14256,6 +14274,14 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
         if (LocaleCompare("monochrome",option+1) == 0)
           {
             image_info->monochrome=(*option == '-');
@@ -14616,6 +14642,7 @@ static void ImportUsage(void)
       "-label name          assign a label to an image",
       "-limit type value    Disk, Map, or Memory resource limit",
       "-log format          format of debugging information",
+      "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-page geometry       size and location of an image canvas",

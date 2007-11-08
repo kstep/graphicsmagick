@@ -1528,28 +1528,32 @@ static void ReadRowSamples(const unsigned char *scanline,
 /*
   Apply a simple "Tent" filter to upsample chroma channels.
 */
-void TentUpsampleChroma(Image *image)
+void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
 {
-  PixelPacket
-    *max_pixels,
-    *pixels;
+  unsigned long
+    column;
 
-  pixels=GetPixels(image);
-  max_pixels=pixels+image->columns;
-  pixels++;
-
-  while(pixels < max_pixels)
+  for (column = 1; column < columns-2; column += 2)
     {
+#if QuantumDepth < 32
+      /*
+        Use integer computations if intermediate result will fit.
+      */
+      pixels->green=((unsigned long) pixels[column-1].green + pixels[column+1].green)/2;
+      pixels->blue=((unsigned long) pixels[column-1].blue + pixels[column+1].blue)/2;
+#else
+      /*
+        Use floating point computations.
+      */
       double
         result;
 
-      result=((double) (pixels-1)->green + (pixels+1)->green)/2;
+      result=((double) pixels[column-1].green + pixels[column+1].green)/2;
       pixels->green=RoundToQuantum(result);
 
-      result=((double) (pixels-1)->blue + (pixels+1)->blue)/2;
+      result=((double) pixels[column-1].blue + pixels[column+1].blue)/2;
       pixels->blue=RoundToQuantum(result);
-
-      pixels += 2;
+#endif
     }
 }
 
@@ -2214,13 +2218,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           for (y=0; y < (long) image->rows; y++)
             {
+              PixelPacket
+                *pixels;
 
               if (element == 0)
-                q=SetImagePixels(image,0,y,image->columns,1);
+                pixels=SetImagePixels(image,0,y,image->columns,1);
               else
-                q=GetImagePixels(image,0,y,image->columns,1);
-              if (q == (PixelPacket *) NULL)
+                pixels=GetImagePixels(image,0,y,image->columns,1);
+              if (pixels == (PixelPacket *) NULL)
                 break;
+
+              q = pixels;
+
               /*
                 Obtain a row's worth of samples.
               */
@@ -2350,7 +2359,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         SetCrSample(q,Cr);  /* Cr (false) */
                         q++;
                       }
-                    TentUpsampleChroma(image);
+                    TentUpsampleChroma(pixels,image->columns);
                     break;
                   }
                 case ImageElementRGB:
@@ -2414,7 +2423,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         q->opacity=OpaqueOpacity;
                         q++;
                       }
-                    TentUpsampleChroma(image);
+                    TentUpsampleChroma(pixels,image->columns);
                     break;
                   }
                 case ImageElementCbYACrYA4224:
@@ -2450,7 +2459,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         SetOpacitySample(q,A1); /* A1 */
                         q++;
                       }
-                    TentUpsampleChroma(image);
+                    TentUpsampleChroma(pixels,image->columns);
                     break;
                   }
                 case ImageElementCbYCr444:

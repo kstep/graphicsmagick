@@ -1,4 +1,4 @@
-.TH gm 1 "2007/09/06" "GraphicsMagick"
+.TH gm 1 "2007/10/31" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2207,9 +2207,11 @@ degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
 .B "-monitor"
 \fRshow progress indication
 
-A simple progress indication is shown while the command is running. The
-process indication shows the operation currently being performed and the
-percent completed.
+A simple command-line progress indication is shown while the command is
+running. The process indication shows the operation currently being
+performed and the percent completed. Commands using X11 may replace the
+command line progress indication with a graphical one once an image has
+been displayed.
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
@@ -3461,6 +3463,9 @@ Options, above.
 .TP
 .B "-mattecolor \fI<color>"\fP
 \fRspecify the color to be used with the \fB-frame\fP option
+.TP
+.B "-monitor"
+\fRshow progress indication
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
@@ -5233,6 +5238,9 @@ Options, above.
 .TP
 .B "-mattecolor \fI<color>"\fP
 \fRspecify the color to be used with the \fB-frame\fP option
+.TP
+.B "-monitor"
+\fRshow progress indication
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
@@ -7350,6 +7358,9 @@ Options, above.
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
 .TP
+.B "-monitor"
+\fRshow progress indication
+.TP
 .B "-monochrome"
 \fRtransform the image to black and white
 .TP
@@ -8252,18 +8263,23 @@ failed to do read-ahead over network mounts for memory mapped files.
 .TP
 .B "MAGICK_MMAP_WRITE"
 \fRIf \fBMAGICK_MMAP_WRITE\fP is set to \fBTRUE\fP, GraphicsMagick
-will attempt to memory-map the output file for writing. This is currently
-an experimental feature. Write performance is usually somewhat worse when
-using this approach rather than the default one.
+will attempt to memory-map the output file for writing. This is an
+experimental feature (which is currently broken). Write performance is
+usually somewhat worse when using this approach rather than the default
+one.
 .TP
 .B "MAGICK_IOBUF_SIZE"
 \fRThe amount of I/O buffering (in bytes) to use when reading and
 writing encoded files. The default is 16384, which is observed to work
-well for most cases. I/O performance to files accessed over a network is
-most likely to benefit by tuning this option. Larger values are not
-necessarily better (they may be slower!), and there is rarely any benefit
-from using values larger than 32768. Use convert's \fB-verbose\fP option
-in order to evaluate read and write rates in pixels per second.
+well for many cases. The best value for a local filesystem is usually the
+the native filesystem block size (e.g. 4096, 8192, or even 131,072 for
+ZFS) in order to minimize the number of physical disk I/O operations.
+I/O performance to files accessed over a network may benefit
+significantly by tuning this option. Larger values are not necessarily
+better (they may be slower!), and there is rarely any benefit from using
+values larger than 32768. Use convert's \fB-verbose\fP option in order
+to evaluate read and write rates in pixels per second while keeping in
+mind that the operating system will try to cache files in RAM.
 .TP
 .B "MAGICK_LIMIT_DISK"
 \fRMaximum amount of disk space allowed for use by the pixel cache.

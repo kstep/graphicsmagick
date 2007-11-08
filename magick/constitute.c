@@ -4992,9 +4992,12 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      SetRedSample(q,ScaleCharToQuantum(*p++));
-                      SetGreenSample(q,ScaleCharToQuantum(*p++));
-                      SetBlueSample(q,ScaleCharToQuantum(*p++));
+                      ImportCharQuantum(unsigned_value,p);
+                      SetRedSample(q,ScaleCharToQuantum(unsigned_value));
+                      ImportCharQuantum(unsigned_value,p);
+                      SetGreenSample(q,ScaleCharToQuantum(unsigned_value));
+                      ImportCharQuantum(unsigned_value,p);
+                      SetBlueSample(q,ScaleCharToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }

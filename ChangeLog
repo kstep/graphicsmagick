@@ -1,3 +1,16 @@
+2007-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Add support for -monitor option to 'animate',
+	'display', and 'import'.
+	* coders/fpx.c (WriteFPXImage): Fix compilation problem.
+	* coders/dpx.c (TentUpsampleChroma): Fix access beyond array.  Use
+	integer calculations where possible.
+
+2007-11-07  Andy Armstrong  <andy@hexten.net>
+
+	* PerlMagick/t/setattribute.t: Fix for typo which breaks
+	Test::Harness 3.00.
+
 2007-10-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* mat.c: Attempt to read 'logic' type modification 
