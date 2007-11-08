@@ -1,3 +1,13 @@
+2007-11-07  Andy Armstrong  <andy@hexten.net>
+
+	* PerlMagick/t/setattribute.t: Fix for typo which breaks
+	Test::Harness 3.00.
+
+2007-11-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (IdentifyImageCommand): Add support for +ping
+	to force 'identify' to read the image pixels.
+
 2007-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dib.c (ReadDIBImage): Use appropriate sized cast for DIB

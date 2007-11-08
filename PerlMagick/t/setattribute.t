@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..71)\n"; }
+BEGIN { $| = 1; $test=1, print "1..71\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;

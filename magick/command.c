@@ -6993,6 +6993,10 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         (void) CloneString(&format,argv[i]);
         break;
       }
+    else if (LocaleCompare("+ping",argv[i]) == 0)
+      {
+        ping=MagickFalse;
+      }
   }
   for (i=1; i < argc; i++)
   {
