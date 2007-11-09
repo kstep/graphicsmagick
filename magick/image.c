@@ -3679,7 +3679,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
       (image->columns != reference->columns))
     ThrowBinaryException3(ImageError,UnableToCompareImages,
       ImageSizeDiffers);
-  if (image->colorspace != reference->colorspace)
+  if ((image->colorspace != reference->colorspace) &&
+      (!IsRGBColorspace(image->colorspace) || !IsRGBColorspace(reference->colorspace)))
     ThrowBinaryException3(ImageError,UnableToCompareImages,
       ImageColorspaceDiffers);
   if(image->matte != reference->matte)

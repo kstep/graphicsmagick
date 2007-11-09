@@ -1,3 +1,9 @@
+2007-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (IsImagesEqual): Allow comparing images if the
+	colorspace enumeration is different but the images are both an RGB
+	type.
+
 2007-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Add support for -monitor option to 'animate',
