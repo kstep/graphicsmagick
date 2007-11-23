@@ -475,9 +475,11 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /*
      Read MATLAB image.
    */
-  (void) ReadBlob(image, 124, &MATLAB_HDR.identific);
+  if(ReadBlob(image,124,&MATLAB_HDR.identific) != 124)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);  
   MATLAB_HDR.Version = ReadBlobLSBShort(image);
-  (void) ReadBlob(image, 2, &MATLAB_HDR.EndianIndicator);
+  if(ReadBlob(image,2,&MATLAB_HDR.EndianIndicator) != 2)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   ImportPixelAreaOptionsInit(&import_options);
 
@@ -699,20 +701,45 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {
         q=SetImagePixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1);
-        if (q == (PixelPacket *)NULL) goto ExitLoop;
-        (void)ReadBlob(image, ldblk, (char *)BImgBuff);
+        if (q == (PixelPacket *)NULL)
+	{
+	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	  goto ExitLoop;
+	}
+        if(ReadBlob(image,ldblk,(char *)BImgBuff) != ldblk)
+	{
+	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	  goto ExitLoop;
+	}
         if((CellType==miINT8 || CellType==miUINT8) && (MATLAB_HDR.StructureFlag & FLAG_LOGICAL))
         {
           FixLogical((unsigned char *)BImgBuff,ldblk);
-          (void)ImportImagePixelArea(image,z2qtype[z],1,BImgBuff,&import_options,0);
+          if(ImportImagePixelArea(image,z2qtype[z],1,BImgBuff,&import_options,0) == MagickFail)
+	  {
+ImportImagePixelAreaFailed:
+	    if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  MAT failed to ImportImagePixelArea for a row %u", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	    break;
+	  }
         }
         else
-          (void)ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0);
+        {
+          if(ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0) == MagickFail)
+	    goto ImportImagePixelAreaFailed;
 
-        if (z<=1 &&			 // fix only during a last pass z==0 || z==1
+          if (z<=1 &&			 // fix only during a last pass z==0 || z==1
 	        (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
-	  FixSignedValues(q,MATLAB_HDR.SizeX);
-        if (!SyncImagePixels(image)) goto ExitLoop;
+	    FixSignedValues(q,MATLAB_HDR.SizeX);
+        }
+
+        if (!SyncImagePixels(image))
+	{
+	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  MAT failed to sync image pixels for a row %u", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	  goto ExitLoop;
+	}
       }
     } while(z-- >= 2);
 ExitLoop:
@@ -814,7 +841,7 @@ done_reading:
       p->scene=scene++;
   }
 
-  if (logging) (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return (image);
 }
 
