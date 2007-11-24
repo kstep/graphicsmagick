@@ -958,14 +958,14 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
-        image->colors,image->matte ? "True" : "False");
+                   image->colors,MagickBoolToString(image->matte));
     else
       if (image->colorspace == CMYKColorspace)
         FormatString(buffer,"class=DirectClass  colorspace=CMYK  matte=%s\n",
-          image->matte ? "True" : "False");
+                     MagickBoolToString(image->matte));
       else
         FormatString(buffer,"class=DirectClass  matte=%s\n",
-          image->matte ? "True" : "False");
+                     MagickBoolToString(image->matte));
     (void) WriteBlobString(image,buffer);
     switch (image->compression)
     {

@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2007-11-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ReadImage): Log colorspace of returned image.
+        (WriteImage): Log colorspace of image to be written.
+  <LI> coders/{miff.c,mpc.c,tga.c,tiff.c}: Use MagickBoolToString().
+  <LI> magick/{constitute.c,xwindow.c}: Use MagickBoolToString().
+  <LI> magick/image.h (MagickBoolToString): New macro to convert truth
+        value to a constant "True" or "False" string.
+
+</UL>
+<p>
 2007-11-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

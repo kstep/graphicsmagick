@@ -5994,14 +5994,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=(magick_info->decoder)(clone_info,exception);
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder, monochrome=%s, grayscale=%s, class=%s",
+          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
-                              ((image->is_monochrome != MagickFalse)
-                               ? "True" : "False"),
-                              ((image->is_grayscale != MagickFalse)
-                               ? "True" : "False"),
-                              ((image->storage_class == PseudoClass)
-                               ? "PsuedoClass" : "DirectClass"));
+                              MagickBoolToString(image->is_monochrome),
+                              MagickBoolToString(image->is_grayscale),
+                              ClassTypeToString(image->storage_class),
+                              ColorspaceTypeToString(image->colorspace));
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Returned from \"%.1024s\" decoder, returned image is NULL!",
@@ -6076,17 +6074,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=(magick_info->decoder)(clone_info,exception);
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder, monochrome=%s, grayscale=%s, class=%s",
+          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
-                              ((image->is_monochrome != MagickFalse)
-                               ? "True" : "False"),
-                              ((image->is_grayscale != MagickFalse)
-                               ? "True" : "False"),
-                              ((image->storage_class == PseudoClass)
-                               ? "PsuedoClass" : "DirectClass"));
+                              MagickBoolToString(image->is_monochrome),
+                              MagickBoolToString(image->is_grayscale),
+                              ClassTypeToString(image->storage_class),
+                              ColorspaceTypeToString(image->colorspace));
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder, returned image is NULL!",
+          "Returned from \"%.1024s\" decoder: returned image is NULL!",
                               magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
@@ -6482,12 +6478,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking \"%.1024s\" encoder (%.1024s), monochrome=%s, grayscale=%s, class=%s",
+        "Invoking \"%.1024s\" encoder (%.1024s): monochrome=%s grayscale=%s class=%s colorspace=%s",
                             magick_info->name,
                             magick_info->description,
-                            (image->is_monochrome != MagickFalse ? "True" : "False"),
-                            (image->is_grayscale != MagickFalse ? "True" : "False"),
-                            (image->storage_class == PseudoClass ? "PsuedoClass" : "DirectClass"));
+                            MagickBoolToString(image->is_monochrome),
+                            MagickBoolToString(image->is_grayscale),
+                            ClassTypeToString(image->storage_class),
+                            ColorspaceTypeToString(image->colorspace));
       status=(magick_info->encoder)(clone_info,image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" encoder",magick_info->name);

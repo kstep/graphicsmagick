@@ -125,6 +125,7 @@ typedef unsigned int Quantum;
 #define ConstrainToQuantum(value) ConstrainToRange(0,MaxRGB,value)
 #define ScaleAnyToQuantum(x,max_value) \
   ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
+#define MagickBoolToString(value) (value != MagickFalse ? "True" : "False")
 
 /*
   Deprecated defines.

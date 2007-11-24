@@ -1106,10 +1106,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "class=%s compression=%s matte=%s columns=%lu rows=%lu depth=%u",
-      ClassTypeToString(image->storage_class),
-      CompressionTypeToString(image->compression),
-      image->matte ? "True" : "False",image->columns, image->rows, image->depth);
+                          "class=%s compression=%s matte=%s columns=%lu rows=%lu depth=%u",
+                          ClassTypeToString(image->storage_class),
+                          CompressionTypeToString(image->compression),
+                          MagickBoolToString(image->matte),
+                          image->columns, image->rows, image->depth);
 
     /*
       Verify that required image information is defined.
@@ -1871,15 +1872,15 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%u  matte=%.1024s\n",
-        image->colors,image->matte ? "True" : "False");
+                   image->colors,MagickBoolToString(image->matte));
     else
       if (image->colorspace == CMYKColorspace)
         FormatString(buffer,
-          "class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
-          image->matte ? "True" : "False");
+                     "class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
+                     MagickBoolToString(image->matte));
       else
         FormatString(buffer,"class=DirectClass  matte=%.1024s\n",
-          image->matte ? "True" : "False");
+                     MagickBoolToString(image->matte));
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
     switch(compression)

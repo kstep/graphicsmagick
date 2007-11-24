@@ -2688,8 +2688,8 @@ static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Invoking \"%.1024s\" encoder, monochrome=%s, grayscale=%s",
                         "TIFF",
-                        (image->is_monochrome != MagickFalse ? "True" : "False"),
-                        (image->is_grayscale != MagickFalse ? "True" : "False"));
+                        MagickBoolToString(image->is_monochrome),
+                        MagickBoolToString(image->is_grayscale));
   status=WriteTIFFImage(clone_info,pyramid_image);
   DestroyImageList(pyramid_image);
   DestroyImageInfo(clone_info);

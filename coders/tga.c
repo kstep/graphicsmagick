@@ -289,8 +289,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "StorageClass=%s Matte=%s Depth=%u Grayscale=%s",
                             ((image->storage_class == DirectClass) ? "DirectClass" : "PseduoClass"),
-                            (image->matte ? "True" : "False"), image->depth,
-                            (is_grayscale ? "True" : "False"));
+                            MagickBoolToString(image->matte), image->depth,
+                            MagickBoolToString(is_grayscale));
     
       if (tga_info.id_length != 0)
         {
