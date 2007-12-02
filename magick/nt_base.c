@@ -1499,7 +1499,7 @@ MagickExport char *NTRegistryKeyLookup(const char *subkey)
     res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
     if (res == ERROR_MORE_DATA && type == REG_SZ)
       {
-        MagickReallocMemory(dest,size);
+        MagickReallocMemory(char *,dest,size);
         res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
       }
     

@@ -663,7 +663,7 @@ static MagickPassFail GetModuleListForDirectory
     if (i >= (long) *max_entries)
       {
         *max_entries<<=1;
-        MagickReallocMemory(list,*max_entries*sizeof(char *));
+        MagickReallocMemory(char **,list,*max_entries*sizeof(char *));
         if (list == (char **) NULL)
           break;
       }
