@@ -47,42 +47,46 @@ extern "C" {
 #endif
 
 extern MagickExport char
-  *PostscriptGeometry(const char *);
+  *PostscriptGeometry(const char *) __attribute__ ((deprecated));
 
 extern MagickExport magick_off_t
-  SizeBlob(const Image *image);
+  SizeBlob(const Image *image) __attribute__ ((deprecated));
 
 extern MagickExport Image
-  *GetImageList(const Image *,const long,ExceptionInfo *),
-  *GetNextImage(const Image *),
-  *GetPreviousImage(const Image *),
-  *PopImageList(Image **),
-  *ShiftImageList(Image **),
+  *GetImageList(const Image *,const long,ExceptionInfo *) __attribute__ ((deprecated)),
+  *GetNextImage(const Image *) __attribute__ ((deprecated)),
+  *GetPreviousImage(const Image *) __attribute__ ((deprecated)),
+  *PopImageList(Image **) __attribute__ ((deprecated)),
+  *ShiftImageList(Image **) __attribute__ ((deprecated)),
   *SpliceImageList(Image *,const long,const unsigned long,const Image *,
-    ExceptionInfo *);
+    ExceptionInfo *) __attribute__ ((deprecated));
 
 extern MagickExport long
-  GetImageListIndex(const Image *);
+  GetImageListIndex(const Image *) __attribute__ ((deprecated));
 
 extern MagickExport int
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
-    unsigned long *);
+    unsigned long *) __attribute__ ((deprecated));
 
 extern MagickExport unsigned int
-  DeleteImageList(Image *,const long offset),
-  GetNumberScenes(const Image *),
-  PopImagePixels(const Image *,const QuantumType,unsigned char *),
-  PushImagePixels(Image *,const QuantumType,const unsigned char *),
-  PushImageList(Image **,const Image *,ExceptionInfo *),
-  SetImageList(Image **,const Image *,const long,ExceptionInfo *),
-  UnshiftImageList(Image **,const Image *,ExceptionInfo *);
+  DeleteImageList(Image *,const long offset) __attribute__ ((deprecated)),
+  GetNumberScenes(const Image *) __attribute__ ((deprecated)),
+  PopImagePixels(const Image *,const QuantumType,unsigned char *) __attribute__ ((deprecated)),
+  PushImagePixels(Image *,const QuantumType,const unsigned char *) __attribute__ ((deprecated)),
+  PushImageList(Image **,const Image *,ExceptionInfo *) __attribute__ ((deprecated)),
+  SetImageList(Image **,const Image *,const long,ExceptionInfo *) __attribute__ ((deprecated)),
+  UnshiftImageList(Image **,const Image *,ExceptionInfo *) __attribute__ ((deprecated));
 
 extern MagickExport unsigned long
-  GetImageListSize(const Image *);
+  GetImageListSize(const Image *) __attribute__ ((deprecated));
 
 extern MagickExport void
-  DestroyImages(Image *),
-  SetCacheThreshold(const unsigned long);
+  *AcquireMemory(const size_t) __attribute__ ((deprecated)),
+  *CloneMemory(void *,const void *,const size_t) __attribute__ ((deprecated)),
+  DestroyImages(Image *) __attribute__ ((deprecated)),
+  LiberateMemory(void **) __attribute__ ((deprecated)),
+  ReacquireMemory(void **,const size_t) __attribute__ ((deprecated)),
+  SetCacheThreshold(const unsigned long) __attribute__ ((deprecated));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -129,21 +129,23 @@ extern MagickExport unsigned long
   MultilineCensus(const char *);
 
 extern MagickExport void
-  *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
-  *CloneMemory(void *,const void *,const size_t),
   DefineClientName(const char *),
   DefineClientPathAndName(const char *),
   ExpandFilename(char *),
   FormatSize(const magick_int64_t size,char *format),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
-  LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),
-  ReacquireMemory(void **,const size_t),
+  *MagickAcquireMemory(const size_t size),
+  *MagickAcquireMemoryArray(const size_t count,const size_t size),
+  *MagickCloneMemory(void *destination,const void *source,const size_t size),
+  *MagickReallocateMemory(void *memory,const size_t size),
+  MagickReleaseMemory(void *memory),
   Strip(char *),
-  SetGeometry(const Image *,RectangleInfo *);
+  SetGeometry(const Image *,RectangleInfo *),
+  *MagickAllocateMemoryArray(const size_t count,const size_t size);
 
 extern MagickExport void
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3))),
@@ -157,11 +159,28 @@ extern MagickExport size_t
 #if defined(MAGICK_IMPLEMENTATION)
 
 /*
+  Safe multiply for two size_t types.  Returns 0 if the multiply fails
+  due to a result out of range.
+*/
+static inline size_t MagickSafeMultiplySize_t(const size_t count,
+                                              const size_t size)
+{
+  size_t r = size * count;
+  if ((count != 0) && (size != r/count))
+    r = 0;
+  return r;
+}
+
+/*
   Allocate memory
 */
-#define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size)))
-/* #define MagickAllocateMemory(type,size) ((type) malloc((size))) */
-/* #define MagickAllocateMemory(type,size) ((size != ((size_t) size)) ? ((type) 0) : ((type) malloc((size_t) (size)))) */
+
+/* #define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size))) */
+#define MagickAllocateMemory(type,size) \
+  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : ((type) malloc((size_t) (size))))
+
+#define MagickAllocateMemoryElements(type,count,size) \
+  ( (type) MagickAcquireMemoryArray(count,size) )
 
 /*
   Free memory and set pointer to NULL

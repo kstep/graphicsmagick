@@ -1,3 +1,28 @@
+2007-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.h (MagickSafeMultiplySize_t): New function to
+	perform a safe multiply.  A multiplication overflow results in
+	zero.
+	(MagickAllocateMemory): Check for size_t value truncation/overflow
+	and zero size before deciding to allocate memory.  Any detected
+	failure results in a NULL pointer being returned.
+	* PerlMagick/Magick.xs: Eliminate use of deprecated methods.
+	* magick/memory.c (MagickAcquireMemory): New function to allocate
+	memory.
+	(MagickAcquireMemoryArray): New function to allocate memory for an
+	array of objects.
+	(MagickCloneMemory): New function to intelligently copy memory.
+	(MagickReallocateMemory): New function to re-allocate memory.
+	(MagickReleaseMemory): New function to deallocate memory.
+	* magick/deprecate.c (AcquireMemory): Deprecated in favor of new
+	function MagickAcquireMemory().
+	(CloneMemory): Deprecated in favor of new function
+	MagickCloneMemory().
+	(LiberateMemory): Deprecated in favor of new function
+	MagickReleaseMemory().
+	(ReacquireMemory): Deprecated in favor of new function
+	MagickReallocateMemory().
+
 2007-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ReadImage): Log colorspace of returned image.

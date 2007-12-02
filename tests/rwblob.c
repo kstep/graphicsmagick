@@ -241,7 +241,8 @@ int main ( int argc, char **argv )
       exit_status = 1;
       goto program_exit;
     }
-  LiberateMemory( (void**)&blob );
+  MagickReleaseMemory(blob);
+  blob=0;
 
   /*
    * Save image to BLOB
@@ -289,7 +290,8 @@ int main ( int argc, char **argv )
       exit_status = 1;
       goto program_exit;
     }
-  LiberateMemory( (void**)&blob );
+  MagickReleaseMemory(blob);
+  blob=0;
 
   if (check)
     {

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2007 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -49,64 +49,29 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P o p I m a g e P i x e l s                                               %
+%   A c q u i r e M e m o r y                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PopImagePixels() transfers one or more pixel components from the image pixel
-%  cache to a user supplied buffer.   True is returned if the pixels are
-%  successfully transferred, otherwise False.
+%  AcquireMemory() returns a pointer to a block of memory of at least size
+%  bytes suitably aligned for any use.  NULL is returned if insufficient
+%  memory is available or the requested size is zero.
 %
-%  The format of the PopImagePixels method is:
+%  The format of the AcquireMemory method is:
 %
-%      unsigned int PopImagePixels(const Image *,const QuantumType quantum,
-%        unsigned char *destination)
+%      void *AcquireMemory(const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method PopImagePixels returns True if the pixels are
-%      successfully transferred, otherwise False.
-%
-%    o image: The image.
-%
-%    o quantum: Declare which pixel components to transfer (RGB, RGBA, etc).
-%
-%    o destination:  The components are transferred to this buffer.
+%    o size: The size of the memory in bytes to allocate.
 %
 %
 */
-MagickExport unsigned int PopImagePixels(const Image *image,
-  const QuantumType quantum_type,unsigned char *destination)
+MagickExport void *AcquireMemory(const size_t size)
 {
-  unsigned int
-    quantum_size;
-  
-  quantum_size=image->depth;
-
-  if (quantum_size <= 8)
-    quantum_size=8;
-  else if (quantum_size <= 16)
-    quantum_size=16;
-  else
-    quantum_size=32;
-
-  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
-  {
-    if (image->colors <= 256)
-      quantum_size=8;
-    else if (image->colors <= 65536L)
-      quantum_size=16;
-    else
-      quantum_size=32;
-  }
-
-  if (image->logging)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
-                          "Method has been deprecated");
-  
-  return ExportImagePixelArea(image,quantum_type,quantum_size,destination,0,0);
+  return MagickAcquireMemory(size);
 }
 
 /*
@@ -114,66 +79,43 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P u s h I m a g e P i x e l s                                             %
+%   C l o n e M e m o r y                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PushImagePixels() transfers one or more pixel components from a user
-%  supplied buffer into the image pixel cache of an image.  It returns True if
-%  the pixels are successfully transferred, otherwise False.
+%  CloneMemory() copies size bytes from memory area source to the
+%  destination.  Copying between objects that overlap will take place
+%  correctly.  It returns destination.
 %
-%  The format of the PushImagePixels method is:
+%  The format of the CloneMemory method is:
 %
-%      unsigned int PushImagePixels(Image *image,
-%        const QuantumType quantum_type,
-%        const unsigned char *source)
+%      void *CloneMemory(void *destination,const void *source,const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method PushImagePixels returns True if the pixels are
-%      successfully transferred, otherwise False.
+%    o size: The size of the memory in bytes to allocate.
 %
-%    o image: The image.
-%
-%    o quantum_type: Declare which pixel components to transfer (red, green,
-%      blue, opacity, RGB, or RGBA).
-%
-%    o source:  The pixel components are transferred from this buffer.
 %
 */
-MagickExport unsigned int PushImagePixels(Image *image,
-  const QuantumType quantum_type,const unsigned char *source)
+MagickExport void *CloneMemory(void *destination,const void *source,
+  const size_t size)
 {
-  unsigned int
-    quantum_size;
+  unsigned char
+    *d=(unsigned char*) destination;
 
-  quantum_size=image->depth;
+  const unsigned char
+    *s=(const unsigned char*) source;
 
-  if (quantum_size <= 8)
-    quantum_size=8;
-  else if (quantum_size <= 16)
-    quantum_size=16;
-  else
-    quantum_size=32;
+  assert(destination != (void *) NULL);
+  assert(source != (const void *) NULL);
 
-  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
-  {
-    if (image->colors <= 256)
-      quantum_size=8;
-    else if (image->colors <= 65536L)
-      quantum_size=16;
-    else
-      quantum_size=32;
-  }
+  if (((d+size) < s) || (d > (s+size)))
+    return(memcpy(destination,source,size));
 
-  if (image->logging)
-    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
-                          "Method has been deprecated");
-  return ImportImagePixelArea(image,quantum_type,quantum_size,source,0,0);
+  return(memmove(destination,source,size));
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -457,6 +399,36 @@ MagickExport Image *GetPreviousImage(const Image *images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   L i b e r a t e M e m o r y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LiberateMemory() frees memory that has already been allocated, and
+%  NULLs the pointer to it.
+%
+%  The format of the LiberateMemory method is:
+%
+%      void LiberateMemory(void **memory)
+%
+%  A description of each parameter follows:
+%
+%    o memory: A pointer to a block of memory to free for reuse.
+%
+%
+*/
+MagickExport void LiberateMemory(void **memory)
+{
+  assert(memory != (void **) NULL);
+  MagickFreeMemory(*memory);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   P a r s e I m a g e G e o m e t r y                                       %
 %                                                                             %
 %                                                                             %
@@ -535,6 +507,71 @@ MagickExport Image *PopImageList(Image **images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P o p I m a g e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PopImagePixels() transfers one or more pixel components from the image pixel
+%  cache to a user supplied buffer.   True is returned if the pixels are
+%  successfully transferred, otherwise False.
+%
+%  The format of the PopImagePixels method is:
+%
+%      unsigned int PopImagePixels(const Image *,const QuantumType quantum,
+%        unsigned char *destination)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PopImagePixels returns True if the pixels are
+%      successfully transferred, otherwise False.
+%
+%    o image: The image.
+%
+%    o quantum: Declare which pixel components to transfer (RGB, RGBA, etc).
+%
+%    o destination:  The components are transferred to this buffer.
+%
+%
+*/
+MagickExport unsigned int PopImagePixels(const Image *image,
+  const QuantumType quantum_type,unsigned char *destination)
+{
+  unsigned int
+    quantum_size;
+  
+  quantum_size=image->depth;
+
+  if (quantum_size <= 8)
+    quantum_size=8;
+  else if (quantum_size <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
+  {
+    if (image->colors <= 256)
+      quantum_size=8;
+    else if (image->colors <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  if (image->logging)
+    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+                          "Method has been deprecated");
+  
+  return ExportImagePixelArea(image,quantum_type,quantum_size,destination,0,0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  P o s t s c r i p t G e o m e t r y                                        %
 %                                                                             %
 %                                                                             %
@@ -602,6 +639,105 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
     "Method has been deprecated");
   AppendImageToList(images,CloneImageList(image,exception));
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P u s h I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PushImagePixels() transfers one or more pixel components from a user
+%  supplied buffer into the image pixel cache of an image.  It returns True if
+%  the pixels are successfully transferred, otherwise False.
+%
+%  The format of the PushImagePixels method is:
+%
+%      unsigned int PushImagePixels(Image *image,
+%        const QuantumType quantum_type,
+%        const unsigned char *source)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PushImagePixels returns True if the pixels are
+%      successfully transferred, otherwise False.
+%
+%    o image: The image.
+%
+%    o quantum_type: Declare which pixel components to transfer (red, green,
+%      blue, opacity, RGB, or RGBA).
+%
+%    o source:  The pixel components are transferred from this buffer.
+%
+*/
+MagickExport unsigned int PushImagePixels(Image *image,
+  const QuantumType quantum_type,const unsigned char *source)
+{
+  unsigned int
+    quantum_size;
+
+  quantum_size=image->depth;
+
+  if (quantum_size <= 8)
+    quantum_size=8;
+  else if (quantum_size <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
+  {
+    if (image->colors <= 256)
+      quantum_size=8;
+    else if (image->colors <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  if (image->logging)
+    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+                          "Method has been deprecated");
+  return ImportImagePixelArea(image,quantum_type,quantum_size,source,0,0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a c q u i r e M e m o r y                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReacquireMemory() changes the size of the memory and returns a
+%  pointer to the (possibly moved) block.  The contents will be unchanged
+%  up to the lesser of the new and old sizes.
+%
+%  The format of the ReacquireMemory method is:
+%
+%      void ReacquireMemory(void **memory,const size_t size)
+%
+%  A description of each parameter follows:
+%
+%    o memory: A pointer to a memory allocation.  On return the pointer
+%      may change but the contents of the original allocation will not.
+%
+%    o size: The new size of the allocated memory.
+%
+%
+*/
+MagickExport void ReacquireMemory(void **memory,const size_t size)
+{
+  assert(memory != (void **) NULL);
+  MagickReallocMemory(*memory,size);
 }
 
 /*

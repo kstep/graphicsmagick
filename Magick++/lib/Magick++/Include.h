@@ -441,6 +441,13 @@ namespace Magick
   using MagickLib::OverlineDecoration;
   using MagickLib::LineThroughDecoration;
 
+  // Resource types
+  using MagickLib::ResourceType;
+  using MagickLib::FileResource;
+  using MagickLib::MemoryResource;
+  using MagickLib::MapResource;
+  using MagickLib::DiskResource;
+
 #if defined(MAGICK_IMPLEMENTATION)
   //
   // GraphicsMagick symbols used in implementation code
@@ -448,7 +455,6 @@ namespace Magick
   using MagickLib::AccessDefinition;
   using MagickLib::AcquireCacheView;
   using MagickLib::AcquireImagePixels;
-  using MagickLib::AcquireMemory;
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddDefinitions;
   using MagickLib::AddNoiseImage;
@@ -618,6 +624,7 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
+  using MagickLib::GetBlobSize;
   using MagickLib::GetCacheView;
   using MagickLib::GetCacheViewIndexes;
   using MagickLib::GetColorTuple;
@@ -667,10 +674,12 @@ namespace Magick
   using MagickLib::LessValue;
   using MagickLib::LevelImage;
   using MagickLib::LevelImageChannel;
-  using MagickLib::LiberateMemory;
   using MagickLib::LocaleCompare;
   using MagickLib::LogMagickEvent;
+  using MagickLib::MagickAcquireMemory;
   using MagickLib::MagickInfo;
+  using MagickLib::MagickReallocateMemory;
+  using MagickLib::MagickReleaseMemory;
   using MagickLib::MagickToMime;
   using MagickLib::MagnifyImage;
   using MagickLib::MapImage;
@@ -713,7 +722,6 @@ namespace Magick
   using MagickLib::QueryColorDatabase;
   using MagickLib::RGBTransformImage;
   using MagickLib::RaiseImage;
-  using MagickLib::ReacquireMemory;
   using MagickLib::ReadImage;
   using MagickLib::RectangleInfo;
   using MagickLib::RectangleInfo;
@@ -732,7 +740,6 @@ namespace Magick
   using MagickLib::SampleImage;
   using MagickLib::ScaleImage;
   using MagickLib::SegmentImage;
-  using MagickLib::SetCacheThreshold;
   using MagickLib::SetCacheView;
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
@@ -748,12 +755,13 @@ namespace Magick
   using MagickLib::SetLogEventMask;
   using MagickLib::SetMagickInfo;
   using MagickLib::SetMagickRegistry;
+  using MagickLib::SetMagickResourceLimit;
+  using MagickLib::SetMagickResourceLimit;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
   using MagickLib::ShaveImage;
   using MagickLib::ShearImage;
   using MagickLib::SignatureImage;
-  using MagickLib::SizeBlob;
   using MagickLib::SolarizeImage;
   using MagickLib::SpreadImage;
   using MagickLib::SteganoImage;

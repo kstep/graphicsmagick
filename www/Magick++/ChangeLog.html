@@ -21,7 +21,758 @@
 </tr>
 </table>
 <p>
+2007-12-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.h (MagickSafeMultiplySize_t): New function to
+        perform a safe multiply.  A multiplication overflow results in
+        zero.<BR>
+        (MagickAllocateMemory): Check for size_t value truncation/overflow
+        and zero size before deciding to allocate memory.  Any detected
+        failure results in a NULL pointer being returned.
+  <LI> PerlMagick/Magick.xs: Eliminate use of deprecated methods.
+  <LI> magick/memory.c (MagickAcquireMemory): New function to allocate
+        memory.<BR>
+        (MagickAcquireMemoryArray): New function to allocate memory for an
+        array of objects.<BR>
+        (MagickCloneMemory): New function to intelligently copy memory.
+        (MagickReallocateMemory): New function to re-allocate memory.
+        (MagickReleaseMemory): New function to deallocate memory.
+  <LI> magick/deprecate.c (AcquireMemory): Deprecated in favor of new
+        function MagickAcquireMemory().
+        (CloneMemory): Deprecated in favor of new function
+        MagickCloneMemory().<BR>
+        (LiberateMemory): Deprecated in favor of new function
+        MagickReleaseMemory().<BR>
+        (ReacquireMemory): Deprecated in favor of new function
+        MagickReallocateMemory().
+
+</UL>
+<p>
+2007-11-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ReadImage): Log colorspace of returned image.
+        (WriteImage): Log colorspace of image to be written.
+  <LI> coders/{miff.c,mpc.c,tga.c,tiff.c}: Use MagickBoolToString().
+  <LI> magick/{constitute.c,xwindow.c}: Use MagickBoolToString().
+  <LI> magick/image.h (MagickBoolToString): New macro to convert truth
+        value to a constant "True" or "False" string.
+
+</UL>
+<p>
+2007-11-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (IsImagesEqual): Allow comparing images if the
+        colorspace enumeration is different but the images are both an RGB
+        type.
+
+</UL>
+<p>
+2007-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c: Add support for -monitor option to 'animate',
+        'display', and 'import'.<BR>
+  <LI> coders/fpx.c (WriteFPXImage): Fix compilation problem.
+  <LI> coders/dpx.c (TentUpsampleChroma): Fix access beyond array.  Use
+        integer calculations where possible.
+
+</UL>
+<p>
+2007-11-07  Andy Armstrong  &lt;andy@hexten.net&gt;
+
+<UL>
+  <LI> PerlMagick/t/setattribute.t: Fix for typo which breaks
+        Test::Harness 3.00.
+
+</UL>
+<p>
+2007-10-20  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c: Attempt to read 'logic' type modification
+        as monochrome image.
+
+</UL>
+<p>
+2007-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (ReadBlob?SBFoo): Return 0 on EOF conditions
+        rather than a magic value concocted using ~0.  The magic value was
+        very sensitive to the size/range of the type used to pass and
+        store it, leading to increased possibility of error.  There was
+        also concern that sometimes a successfully read value may match
+        the magic value.  Added documentation that EOFBlob() may be used
+        to determine that the blob is in EOF state.
+  <LI> coders/pix.c (ReadPIXImage): Avoid reliance on a particular
+        magic value being returned from ReadBlobMSBShort on EOF.
+  <LI> coders/avs.c (ReadAVSImage): Avoid reliance on a particular
+        magic value being returned from ReadBlobMSBLong() on EOF.
+
+</UL>
+<p>
+2007-10-07  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> wpg.c: Monochrome images are not using palette -
+        palette is discarded in this case.
+
+</UL>
+<p>
+2007-10-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.h: Blob I/O APIs now use sized types so that passed
+        and returned data values are a specific size rather than
+        architecture dependent.<BR>
+  <LI> PerlMagick/t/read.t: Added read test for unsigned 32-bit LSB MAT
+        format.
+
+</UL>
+<p>
+2007-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dib.c (ReadDIBImage): Use appropriate sized cast for DIB
+        width and height values.  Validate width and height values.
+  <LI> coders/bmp.c (ReadBMPImage): Use appropriate sized cast for BMP
+        width and height values.<BR>
+  <LI> magick/colorspace.c (RGBTransformImage): Use a better rounding
+        algorithm when converting to HSL/HWB colorspaces.
+  <LI> magick/gem.c (TransformHSL): Avoid GCC opimization bug on
+        Opteron which caused wrong results.  Ensure that returned values
+        fall within bounds 0.0 to 1.0.<BR>
+        (TransformHWB): Avoid GCC opimization bug on
+        Opteron which caused wrong results.  Ensure that returned values
+        fall within bounds 0.0 to 1.0.<BR>
+  <LI> PerlMagick/t/ttf/read.t: Relax strictness quite a bit for TTF
+        read tests in order to allow somewhat different FreeType output.
+
+</UL>
+<p>
+2007-09-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformImage): Add missing break
+        statement. HWB colorspace was used rather than HSL.
+        (TransformRGBImage): Add missing break
+        statement. HWB colorspace was used rather than HSL.
+
+</UL>
+<p>
+2007-09-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/sun.c (ReadSUNImage): Properly report SUN image depth.
+
+</UL>
+<p>
+2007-09-28  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Ability to write multiple images to one MAT file.
+        Fixed bug - incorrect matrix size for gray image.
+
+</UL>
+<p>
+2007-09-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (IntegralRotateImage): Rotation by 270 degrees
+        was wrong.  It was flipped from what it should be.
+
+</UL>
+<p>
+2007-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (CommandProgressMonitor): Remove any preceding
+        whitespace in the task descriptions so that we don't need to
+        update all of the task descriptions right away.
+  <LI> magick/colorspace.c (RGBTransformImage): Improve progress monitor message.
+        (TransformRGBImage): Improve progress monitor message.
+  <LI> coders/miff.c (ReadMIFFImage): Add read progress monitor support.
+
+</UL>
+<p>
+2007-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pdf.c (WritePDFImage): Fix writing PDF with CCITT
+        compression.  Addresses SourceForge bug 1209177 "TIFF to PDF CCITT
+        compression fails".
+
+</UL>
+<p>
+2007-09-14  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Ability to read multiple images from one MAT file.
+        changed ExtendedSignedIntegralType to magick_off_t that better corresponds to file positioning.
+
+</UL>
+<p>
+2007-09-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pdf.c (WritePDFImage): Use ThumbnailImage() to create
+        thumbnail.<BR>
+  <LI> coders/preview.c (WritePreviewImage): Use ThumbnailImage() to
+        create thumbnail.<BR>
+  <LI> coders/xpm.c (WritePICONImage): Use ThumbnailImage() to create
+        thumbnail.
+
+</UL>
+<p>
+2007-09-14  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Several warnings has been suppressed.
+
+</UL>
+<p>
+2007-09-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Fix writing to pipes and other
+        non-seekable output destinations.
+  <LI> magick/blob.c (WriteBlobFile): New function to copy a disk file
+        to a blob stream.<BR>
+  <LI> magick/profile.c (ProfileImage): Fix removing profiles.
+
+</UL>
+<p>
+2007-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/png.c (png_flush_data): Don't invoke SyncBlob() since it
+        does far more than force data to the output file.
+        (ReadPNGImage): Make sure that PNG read errors are reported to the
+        user.<BR>
+  <LI> coders/jpeg.c (TerminateDestination): Don't invoke SyncBlob()
+        since it does far more than force data to the output file.
+  <LI> magick/blob.c (SyncBlob): Remove from public interface.
+
+</UL>
+<p>
+2007-09-12  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Allowed to read signed integer matrices.
+        Fixed loop break.
+
+</UL>
+<p>
+2007-09-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Ensure that selected photometric
+        most closely matches the user's expectation.  Remove compression
+        if requested compression type is not compatible with the selected
+        photometric.
+
+</UL>
+<p>
+2007-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (IntegralRotateImage): Use tiles to speed up
+        rotation by 90 or 270 degrees.
+
+</UL>
+<p>
+2007-09-07  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c The flop image has been eliminated in a reader.
+        Code has been shrinked a little bit.
+
+</UL>
+<p>
+2007-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageCharacteristics): Add progress monitor support.
+  <LI> magick/color.c (IsMonochromeImage): Add progress monitor support.
+        (IsGrayImage): Add progress monitor support.
+        (IsOpaqueImage): Add progress monitor support.
+  <LI> coders/dpx.c (ReadDPXImage): Added progress indication.
+  <LI> coders/cineon.c (WriteCINEONImage): Added progress indication.
+  <LI> magick/command.c : Added a -monitor command option for
+        'composite', 'convert', 'identify', 'mogrify', and 'montage' in
+        order to enable a simple progress indicator.
+
+</UL>
+<p>
+2007-09-06  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Write native gray MAT data when gray image is detected.
+
+</UL>
+<p>
+2007-09-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (GetExecutionPath): Add support for Apple OS-X,
+        Linux, and FreeBSD.
+
+</UL>
+<p>
+2007-09-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: For Windows MinGW-based build, find Ghostscript
+        fonts installed under C:/Program Files/.
+  <LI> VisualMagick/bin/delegates.mgk: Adjust quoting to Ghostscript arguments
+        so that Ghostscript DLL is passed correct commands.
+  <LI> config/delegates.mgk.in: Adjust quoting to Ghostscript arguments
+        so that Ghostscript DLL is passed correct commands.
+  <LI> configure.ac: Provide defaults for GSColorAlphaDevice and GSGrayDevice.
+  <LI> magick/nt_base.c (NTGhostscriptGetString): Support "GPL Ghostscript".
+
+</UL>
+<p>
+2007-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/ps.c (WritePSImage): Improved Postscript writer
+        performance.
+
+</UL>
+<p>
+2007-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/profile.c (AllocateImageProfileIterator): New function to
+        allocate an image profile iterator.
+        (DeallocateImageProfileIterator): New function to deallocate an
+        image profile iterator.<BR>
+        (NextImageProfile): New function to advance the image profile
+        iterator to the next profile.<BR>
+  <LI> magick/image.h (Image): Profiles are now stored in a generic
+        container.  As planned years ago, the color_profile, iptc_profile,
+        generic_profile, and generic_profiles members are now removed.
+
+</UL>
+<p>
+2007-09-01  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/bmp.c Ability to read true color bitmap with invalid palette size
+        like other readers do.
+
+</UL>
+<p>
+2007-08-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (ClonePixelCacheMethods): Remove DLL export.
+        (DestroyCacheInfo): Remove DLL export.
+        (GetCacheInfo): Remove DLL export.
+        (ReferenceCache): Remove DLL export.
+
+</UL>
+<p>
+2007-08-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageType): More tweaks to obtain the desired
+        behavior when converting to a bilevel image.
+  <LI> coders/tiff.c (WriteTIFFImage): Logic which decided the output
+        subformat to write was too convoluted to understand, and in fact
+        palette images were not be written sometimes when they should be
+        (bug added on 2007-08-19).  Deleted the convoluted code and
+        replaced with a different design which should be more correct and
+        flexible.<BR>
+        (ReadTIFFImage): Decided to read bilevel TIFF using a colormap
+        since there are significant internal advantages to doing so.
+        However, the writer is carefully designed to output normal bilevel
+        TIFF so this should not annoy TIFF users.
+  <LI> magick/constitute.c (ImportImagePixelArea): Re-wrote grayscale
+        pseudoclass import to be more efficient and more tidy.
+
+</UL>
+<p>
+2007-08-30  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/art.c Added ART writer
+
+</UL>
+<p>
+2007-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (ReadBlobLSBFloat): Promoted to be a public
+        interface (was in mat.c).<BR>
+        (ReadBlobMSBFloat):Promoted to be a public interface (was in
+        mat.c).
+
+</UL>
+<p>
+2007-08-29  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/art.c InsertRow has been replaced by ImportImagePixelArea
+
+</UL>
+<p>
+2007-08-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pnm.c (ReadPNMImage): PNM "raw" formats are now read
+        using ImportImagePixelArea()<BR>
+  <LI> magick/constitute.c (ExportImagePixelArea): Added an optional
+        export_info parameter for returning information back to the user.
+        (ImportImagePixelArea): Added an optional import_info parameter
+        for returning information back to the user.
+  <LI> coders/jbig.c (ReadJBIGImage): Use ImportImagePixelArea().
+        (WriteJBIGImage): Use ExportImagePixelArea();
+  <LI> coders/tiff.c (WriteTIFFImage): Make compression logic a bit
+        more tidy.<BR>
+  <LI> coders/pcx.c (WritePCXImage): Use GetImageCharacteristics().
+  <LI> coders/pcl.c (WritePCLImage): Use GetImageCharacteristics().
+  <LI> coders/dib.c (WriteDIBImage): Use GetImageCharacteristics().
+  <LI> coders/xpm.c (WritePICONImage): Use GetImageCharacteristics().
+  <LI> coders/viff.c (WriteVIFFImage): Use GetImageCharacteristics().
+  <LI> coders/tga.c (WriteTGAImage): Use GetImageCharacteristics().
+  <LI> coders/sgi.c (WriteSGIImage): Use GetImageCharacteristics().
+  <LI> coders/ps2.c (WritePS2Image): Use GetImageCharacteristics().
+  <LI> coders/pdf.c (WritePDFImage): Use GetImageCharacteristics().
+  <LI> coders/palm.c (WritePALMImage): Use GetImageCharacteristics().
+  <LI> coders/ps.c (WritePSImage): Use GetImageCharacteristics().
+  <LI> coders/jp2.c (WriteJP2Image): Use GetImageCharacteristics().
+  <LI> coders/jpeg.c (WriteJPEGImage): Use GetImageCharacteristics().
+  <LI> PerlMagick/t/read.t: Added read test for LSB 'float' MAT.
+
+</UL>
+<p>
+2007-08-26  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c: MAT reader now extensively uses ImportImagePixelArea.
+
+</UL>
+<p>
+2007-08-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am: Add rwblob and rwfile tests for MAT format.
+  <LI> magick/constitute.c: Re-wrote Export/Import Float/Double macros
+        because they did not actually work right, and to eliminate the
+        performance penalty for native order.
+
+</UL>
+<p>
+2007-08-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/Magick.xs: Add support for "native" endian parameter
+        in PerlMagick.<BR>
+  <LI> magick/command.c: Utilities now understand "native" as an
+        argument to -endian.<BR>
+  <LI> magick/image.h (enum EndianType): Added NativeEndian enum value.
+  <LI> configure.ac: Test libtiff for TIFFSwabArrayOfTriples().
+  <LI> magick/constitute.c (ExportImagePixelArea): Support export in
+        little, big, and native endian.
+        (ImportImagePixelArea): Support import in little, big, and native
+        endian.
+
+</UL>
+<p>
+2007-08-23  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c (WriteMATLABImage): MAT writer uses
+        ExportImagePixelArea() now.  Fix issues noticed by valgrind.
+
+</UL>
+<p>
+2007-08-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pnm.c (WritePNMImage): Use '-quality 0' rather than
+        '-compress none' to select the PNM ASCII subformats.  This change
+        is made based on the principle of least surprise.
+  <LI> magick/constitute.c (ExportImagePixelArea): Add a GrayQuantum
+        implementation for exporting from two color PsuedoClass.
+  <LI> coders/pnm.c (WritePNMImage): Use GetImageCharacteristics() and
+        ExportImagePixelArea() in implementation.
+
+</UL>
+<p>
+2007-08-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ExportImagePixelArea): Performance
+        improvements.<BR>
+        (ImportImagePixelArea): Performance improvements.
+
+</UL>
+<p>
+2007-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (IdentifyImageCommand): If "%r" is present in
+        -format specifier, then read whole image.
+  <LI> magick/utility.c (TranslateTextEx): Undocumented "%r"
+        substitution now returns a string based on GetImageType() rather
+        than a concatentation of image class and "Matte".
+  <LI> coders/tiff.c (WriteTIFFImage): Use GetImageCharacteristics().
+  <LI> magick/image.c (GetImageCharacteristics): New function to
+        evaluate the basic characteristics of the image.
+        (GetImageType): Use GetImageCharacteristics().
+
+</UL>
+<p>
+2007-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (RegisterDPXImage): Remove extra newline in usage
+        note.<BR>
+  <LI> coders/fax.c (RegisterFAXImage): Fix note to reflect that the
+        output from this coder is *not* a TIFF subformat as was previously
+        claimed.<BR>
+  <LI> coders/tiff.c (WriteTIFFImage): Output G3 TIFF FAX images as per
+        the TIFF Class F specification.
+
+</UL>
+<p>
+2007-08-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/{api.h, studio.h}: Strip out legacy MacOS 9 and VMS "support".
+  <LI> magick/{nt_base.c, unix_port.c} (MagickGetMMUPageSize): New function to obtain
+        the VM page size.<BR>
+  <LI> magick/pixel_cache.c (PersistCache): Fix a terrible memory leak
+        when reading MPC files.  Added Cache reference-count logging.
+
+</UL>
+<p>
+2007-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (BenchMarkSubCommand): Added a new 'benchmark'
+        GraphicsMagick command which can be used to perform benchmarking
+        on any other GraphicsMagick command.
+
+</UL>
+<p>
+2007-08-11  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c (ReadMATImage): Support image is_grayscale flag.
+        Add some coder logging.
+
+</UL>
+<p>
+2007-08-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/{paint.c, render.c, annotate.c}: Use AlphaComposite()
+        from alpha_composite.h.<BR>
+  <LI> magick/alpha_composite.h (BlendComposite): Move inline
+        BlendComposite() to a header file since it is used in multiple
+        places.<BR>
+  <LI> magick/{shear.c, image.c}: Use BlendComposite() from
+        alpha_composite.h.<BR>
+  <LI> magick/image.c (SetImageDepth): Don't bother to test current
+        depth in advance. Preserve is_monochrome flag.  Encapsulate
+        bit-reduction algorithm in a macro. Be a bit smarter with
+        PseudoClass images.<BR>
+        (SyncImage): Preserve is_monochrome flag.  Improve performance
+        when image does not have an opacity channel.
+  <LI> PerlMagick/t/read.t: Allow some error when reading double MAT.
+
+</UL>
+<p>
+2007-08-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/read.t: Update MAT read tests according to
+        instructions from Fojtik Jaroslav.
+
+</UL>
+<p>
+2007-08-06  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/wpg.c (ReadWPGImage): Support WPG files which use XOR
+        operator.
+
+</UL>
+<p>
+2007-08-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (ReadBlobLSBdouble): Migrate from mat.c.
+        (ReadBlobMSBdouble): Migrate from mat.c.
+
+</UL>
+<p>
+2007-08-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ExportImagePixelArea): Add optimized
+        support for 2 and 16 color PseudoClass.
+        (ImportImagePixelArea): Add optimized support for 2 and 16 color
+        PseudoClass.<BR>
+  <LI> magick/constitute.c (ImportImagePixelArea): Add option to output
+        pad bytes at end of pixel data.  Added optimized implementation of
+        IndexQuantum for bilevel images.
+  <LI> coders/tiff.c (WriteTIFFImage): Be smarter when writing gray
+        Palette and grayscale TIFF images in order to not waste time.
+  <LI> coders/bmp.c (ReadBMPImage): Use ImportImagePixelArea() when
+        reading and writing bilevel and colormapped images.
+        (WriteBMPImage): Use ExportImagePixelArea() when writing bilevel
+        images.<BR>
+  <LI> magick/version.h.in: Added wrapping for copyright line to a
+        reasonable width.<BR>
+  <LI> AUTHORS: Added Daniel Kobras.
+  <LI> magick/command.c (VersionCommand): Added feature support list to
+        -version output.
+
+</UL>
+<p>
+2007-08-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (AnimateImageCommand): Add support for -type to
+        'animate'.<BR>
+        (DisplayImageCommand): Add support for -type to 'convert'
+  <LI> config/delegates.mgk.in, VisualMagick/bin/delegates.mgk: Added
+        gs-gray and gs-color+alpha delegate definitions.
+  <LI> coders/{ept.c, pdf.c, ps.c}: Respect a -type Bilevel, Grayscale,
+        TrueColor, or TrueColorMatte request by passing appropriate
+        options to Ghostscript for rendering..
+
+</UL>
+<p>
+2007-07-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ImportImagePixelArea): Improved read speed
+        for bilevel gray image.  Many thanks to Mark Mitchell for
+        inspiration and ideas.<BR>
+  <LI> coders/caption.c (ReadCAPTIONImage): Eliminate use of strcpy().
+  <LI> coders/pnm.c (ReadPNMImage): Add logging as well as support for
+        is_monochrome and is_grayscale flags.
+  <LI> magick/color.h (IsMonochrome): Add parenthesis so macro is more
+        robust.
+
+</UL>
+<p>
+2007-07-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/html.c (WriteHTMLImage): Eliminate use of strncat().
+  <LI> coders/locale.c (ReadConfigureFile): Eliminate use of strncat().
+  <LI> coders/png.c (ReadOnePNGImage): Eliminate use of strncat().
+  <LI> magick/fx.c (ConvolveImage): Eliminate use of strncat().
+  <LI> coders/tiff.c (WriteTIFFImage): Eliminate use of strncat().
+  <LI> magick/delegate.c (InvokePostscriptDelegate): Eliminate
+        doubled-output when running in verbose mode.
+
+</UL>
+<p>
+2007-07-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/delegate.c (InvokePostscriptDelegate): MagickSpawnVP()
+        requires three parameters.
+
+</UL>
+<p>
+2007-07-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> bzlib: Updated bzip2 to 1.0.4.
+  <LI> jbig: Updated jbigkit to 1.6
+  <LI> jp2: Updated JasPer to 1.900.1.
+  <LI> lcms: Updated lcms to 1.16
+  <LI> png: Updated libpng to 1.2.18.
+
+</UL>
+<p>
+2007-07-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xc.c (ReadXCImage): If ImageInfo type field is set to
+        TrueColorType or TrueColorMatteType type, then return a
+        DirectClass image, otherwise a PseudoClass image is returned as
+        before.  From the command line this can be used like:
+          gm convert -size 640x480 -type TrueColor xc:red red.miff
+        Programs may also use this in order to obtain a DirectClass
+        canvas image to draw on.<BR>
+  <LI> magick/enhance.c (LevelImage): Fix potential buffer overflow
+        which was added since the 1.1 branch.
+
+</UL>
+<p>
+2007-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/delegate.c (UnixShellTextEscape): Don't escape newline
+        character since it performs the opposite of what is desired.
+
+</UL>
+<p>
+2007-07-23  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> magick/delegate.c (UnixShellTextEscape): Fix fencepost error
+          when checking whether escaping is safe.
+
+</UL>
+<p>
+2007-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am: Retire VMS and MacOS 9 support from package.
+
+</UL>
+<p>
+2007-07-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/{cmyk.c, gray.c, mono.c, rgb.c, uyvy.c, wbmp.c, yuv.c}
+        (ReadFOOImage): Check for EOF while searching for start of image
+        data.<BR>
+  <LI> tests/Makefile.am: Don't test PTIF format with blob I/O since it
+        is not possible to pass the rwblob test and it is really an output
+        driver rather than a format.<BR>
+  <LI> libtool: Update to latest CVS libtool.
+  <LI> magick/constitute.c (ExportModulo8Quantum): Move Import and
+        Export macros from header file since they are not used anywhere
+        else.<BR>
+  <LI> coders/dpx.c: Add underscore suffix to macro local variable
+        names in order to avoid conflict with names in code using the
+        macros.
+
+</UL>
+<p>
 2007-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c: Reduce the number of warnings when compiling
+        the Wand library.<BR>
+  <LI> coders/xwd.c (XWD_OVERFLOW): Eliminate comparison between signed
+        and unsigned.<BR>
+  <LI> coders/pnm.c (ValidateScalingIndex): Eliminate check to see if
+        unsigned type is less than zero.
+  <LI> magick/log.c (LogMagickEvent): Even though log file name comes
+        from a controlled source (log.mgk), perform safe numeric
+        substitution on it.<BR>
+  <LI> coders/xwd.c (ReadXWDImage): Eliminate conflict between locally
+        defined OVERFLOW macro and similarly named macro under Windows.
+
+</UL>
+<p>
+2007-07-18  Daniel Kobras  &lt;kobras@debian.org&gt;
 
 <UL>
   <LI> coders/xwd.c (ReadXWDImage): Integer overflow fix

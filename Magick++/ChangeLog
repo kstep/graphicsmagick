@@ -1,3 +1,11 @@
+2007-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/{Drawable.cpp, Geometry.cpp, BlobRef.cpp, Blob.cpp,
+	Montage.cpp, Options.cpp, Image.cpp}: Eliminate use of deprecated
+	GraphicsMagick functions.
+	* lib/Magick++/{STL.h, Include.h}: Eliminate use of deprecated
+	GraphicsMagick functions.
+
 2007-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp: Include <cstdlib>

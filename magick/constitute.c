@@ -5878,6 +5878,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Obtain file magick from filename
   */
   (void) SetImageInfo(clone_info,False,exception);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                        "Magick=%s, Filename=%s", clone_info->magick,clone_info->filename);
   (void) strlcpy(filename,clone_info->filename,MaxTextExtent);
   (void) strlcpy(magick,clone_info->magick,MaxTextExtent);
   /*

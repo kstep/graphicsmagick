@@ -2052,7 +2052,8 @@ Magick::Color Magick::Image::boxColor ( void ) const
 /* static */
 void Magick::Image::cacheThreshold ( const unsigned int threshold_ )
 {
-  SetCacheThreshold( threshold_ );
+  (void) SetMagickResourceLimit(MemoryResource,threshold_);
+  (void) SetMagickResourceLimit(MapResource,2*threshold_);
 }
 
 void Magick::Image::chromaBluePrimary ( const double x_, const double y_ )
@@ -2112,7 +2113,7 @@ void Magick::Image::classType ( const ClassType class_ )
       // color map and then set to DirectClass type.
       modifyImage();
       SyncImage( image() );
-      LiberateMemory( reinterpret_cast<void**>(&(image()->colormap)) );
+      MagickFreeMemory(image()->colormap);
       image()->storage_class = static_cast<MagickLib::ClassType>(DirectClass);
       return;
     }
@@ -2218,15 +2219,13 @@ void Magick::Image::colorMapSize ( const unsigned int entries_ )
   if( !imageptr->colormap )
     {
       // Allocate colormap
-      imageptr->colormap =
-        static_cast<PixelPacket*>(AcquireMemory(entries_*sizeof(PixelPacket)));
+      imageptr->colormap = MagickAllocateMemory(PixelPacket*,entries_*sizeof(PixelPacket));
       imageptr->colors = 0;
     }
   else if ( entries_ > imageptr->colors )
     {
       // Re-allocate colormap
-      ReacquireMemory(reinterpret_cast<void **>(&(imageptr->colormap)),
-                      (entries_)*sizeof(PixelPacket));
+      MagickReallocMemory(imageptr->colormap,(entries_)*sizeof(PixelPacket));
     }
 
   // Initialize any new new colormap entries as all black
@@ -2514,7 +2513,7 @@ std::string Magick::Image::fileName ( void ) const
 // Image file size
 off_t Magick::Image::fileSize ( void ) const
 {
-  return SizeBlob( constImage() );
+  return GetBlobSize( constImage() );
 }
 
 // Color to use when drawing inside an object
@@ -3563,7 +3562,20 @@ void Magick::Image::syncPixels ( void )
 void Magick::Image::readPixels ( const Magick::QuantumType quantum_,
                                  const  unsigned char *source_ )
 {
-  PushImagePixels( image(), quantum_, source_ );
+  unsigned int quantum_size=depth();
+
+  if ( (quantum_ == IndexQuantum) || (quantum_ == IndexAlphaQuantum) )
+  {
+    if (colorMapSize() <= 256)
+      quantum_size=8;
+    else if (colorMapSize() <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  (void) ImportImagePixelArea(image(),quantum_,quantum_size,source_,0,0);
+
   throwImageException();
 }
 
@@ -3573,7 +3585,20 @@ void Magick::Image::readPixels ( const Magick::QuantumType quantum_,
 void Magick::Image::writePixels ( const Magick::QuantumType quantum_,
                                   unsigned char *destination_ )
 {
-  PopImagePixels( image(), quantum_, destination_ );
+  unsigned int quantum_size=depth();
+
+  if ( (quantum_ == IndexQuantum) || (quantum_ == IndexAlphaQuantum) )
+  {
+    if (colorMapSize() <= 256)
+      quantum_size=8;
+    else if (colorMapSize() <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  (void) ExportImagePixelArea(image(),quantum_,quantum_size,destination_,0,0);
+
   throwImageException();
 }
 

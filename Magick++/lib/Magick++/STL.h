@@ -1926,7 +1926,8 @@ namespace Magick
             continue;
           }
       }
-    MagickLib::LiberateMemory((void **)&coder_list);
+    MagickLib::MagickReleaseMemory(coder_list);
+    coder_list=0;
     MagickLib::DestroyExceptionInfo( &exceptionInfo );
   }
 
@@ -1996,7 +1997,8 @@ namespace Magick
       }
     
     // Deallocate histogram array
-    MagickLib::LiberateMemory((void **)&histogram_array);
+    MagickLib::MagickReleaseMemory(histogram_array);
+    histogram_array = 0;
   }
                       
   // Break down an image sequence into constituent parts.  This is
@@ -2117,7 +2119,7 @@ namespace Magick
 		      const Montage &montageOpts_ ) {
 
     MagickLib::MontageInfo* montageInfo =
-      static_cast<MagickLib::MontageInfo*>(MagickLib::AcquireMemory(sizeof(MagickLib::MontageInfo)));
+      static_cast<MagickLib::MontageInfo*>(MagickLib::MagickAcquireMemory(sizeof(MagickLib::MontageInfo)));
 
     // Update montage options with those set in montageOpts_
     montageOpts_.updateMontageInfo( *montageInfo );

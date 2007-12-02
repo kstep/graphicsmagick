@@ -22,9 +22,9 @@
 
 // Constructor
 Magick::Options::Options( void )
-  : _imageInfo(static_cast<ImageInfo*>(AcquireMemory(sizeof(ImageInfo)))),
-    _quantizeInfo(static_cast<QuantizeInfo*>(AcquireMemory(sizeof(QuantizeInfo)))),
-    _drawInfo(static_cast<DrawInfo*>(AcquireMemory( sizeof(DrawInfo))))
+  : _imageInfo(MagickAllocateMemory(ImageInfo*,sizeof(ImageInfo))),
+    _quantizeInfo(MagickAllocateMemory(QuantizeInfo*,sizeof(QuantizeInfo))),
+    _drawInfo(MagickAllocateMemory(DrawInfo*,sizeof(DrawInfo)))
 {
   // Initialize image info with defaults
   GetImageInfo( _imageInfo );
@@ -109,9 +109,13 @@ Magick::Color Magick::Options::backgroundColor ( void ) const
 void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ )
 {
   if ( backgroundTexture_.length() == 0 )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->texture) );
+    {
+      MagickFreeMemory(_imageInfo->texture);
+    }
   else
-    Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
+    {
+      Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
+    }
 }
 std::string Magick::Options::backgroundTexture ( void ) const
 {
@@ -183,9 +187,13 @@ bool Magick::Options::debug ( void ) const
 void Magick::Options::density ( const Magick::Geometry &density_ )
 {
   if ( !density_.isValid() )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->density) );
+    {
+      MagickFreeMemory(_imageInfo->density);
+    }
   else
-    Magick::CloneString( &_imageInfo->density, density_ );
+    {
+      Magick::CloneString( &_imageInfo->density, density_ );
+    }
 }
 Magick::Geometry Magick::Options::density ( void ) const
 {
@@ -276,8 +284,8 @@ void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )
     {
-      LiberateMemory( reinterpret_cast<void**>(&_imageInfo->font) );
-      LiberateMemory( reinterpret_cast<void**>(&_drawInfo->font) );
+      MagickFreeMemory(_imageInfo->font);
+      MagickFreeMemory(_drawInfo->font);
     }
   else
     {
@@ -369,9 +377,13 @@ bool Magick::Options::monochrome ( void ) const
 void Magick::Options::page ( const Magick::Geometry &pageSize_ )
 {
   if ( !pageSize_.isValid() )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->page) );
+    {
+      MagickFreeMemory(_imageInfo->page);
+    }
   else
-    Magick::CloneString( &_imageInfo->page, pageSize_ );
+    {
+      Magick::CloneString( &_imageInfo->page, pageSize_ );
+    }
 }
 Magick::Geometry Magick::Options::page ( void ) const
 {
@@ -438,7 +450,7 @@ Magick::ResolutionType Magick::Options::resolutionUnits ( void ) const
 
 void Magick::Options::size ( const Geometry &geometry_ )
 {
-  LiberateMemory( reinterpret_cast<void**>(&_imageInfo->size) );
+  MagickFreeMemory(_imageInfo->size);
 
   if ( geometry_.isValid() )
     Magick::CloneString( &_imageInfo->size, geometry_ );
@@ -472,8 +484,7 @@ Magick::Color Magick::Options::strokeColor ( void ) const
 
 void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
 {
-  LiberateMemory(reinterpret_cast<void**>(&_drawInfo->dash_pattern));
-	_drawInfo->dash_pattern = NULL;
+  MagickFreeMemory(_drawInfo->dash_pattern);
 
   if(strokeDashArray_)
     {
@@ -481,8 +492,7 @@ void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
       unsigned int x;
       for (x=0; strokeDashArray_[x]; x++);
       // Allocate elements
-      _drawInfo->dash_pattern =
-        static_cast<double*>(AcquireMemory((x+1)*sizeof(double)));
+      _drawInfo->dash_pattern = MagickAllocateMemory(double*,(x+1)*sizeof(double));
       // Copy elements
       memcpy(_drawInfo->dash_pattern,strokeDashArray_,
              (x+1)*sizeof(double));
@@ -606,9 +616,13 @@ std::string Magick::Options::textEncoding ( void ) const
 void Magick::Options::tileName ( const std::string &tileName_ )
 {
   if ( tileName_.length() == 0 )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->tile) );
+    {
+      MagickFreeMemory(_imageInfo->tile);
+    }
   else
-    Magick::CloneString( &_imageInfo->tile, tileName_ );
+    {
+      Magick::CloneString( &_imageInfo->tile, tileName_ );
+    }
 }
 std::string Magick::Options::tileName ( void ) const
 {
@@ -769,9 +783,13 @@ bool Magick::Options::verbose ( void ) const
 void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->view) );
+    {
+      MagickFreeMemory(_imageInfo->view);
+    }
   else
-    Magick::CloneString( &_imageInfo->view, view_ );
+    {
+      Magick::CloneString( &_imageInfo->view, view_ );
+    }
 }
 std::string Magick::Options::view ( void ) const
 {
@@ -784,9 +802,13 @@ std::string Magick::Options::view ( void ) const
 void Magick::Options::x11Display ( const std::string &display_ )
 {
   if ( display_.length() == 0 )
-    LiberateMemory( reinterpret_cast<void**>(&_imageInfo->server_name) );
+    {
+      MagickFreeMemory(_imageInfo->server_name);
+    }
   else
-    Magick::CloneString( &_imageInfo->server_name, display_ );
+    {
+      Magick::CloneString( &_imageInfo->server_name, display_ );
+    }
 }
 std::string Magick::Options::x11Display ( void ) const
 {

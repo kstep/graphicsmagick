@@ -71,14 +71,14 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   if ( _font.length() != 0 )
     Magick::CloneString( &montageInfo_.font, _font );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.font));
+    MagickFreeMemory(montageInfo_.font);
   // frame
-  LiberateMemory(reinterpret_cast<void **>(&montageInfo_.frame));
+  MagickFreeMemory(montageInfo_.frame);
   // geometry
   if ( _geometry.isValid() )
     Magick::CloneString( &montageInfo_.geometry, _geometry );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.geometry));
+    MagickFreeMemory(montageInfo_.geometry);
   // gravity
   montageInfo_.gravity = _gravity;
   // matte_color
@@ -95,17 +95,17 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   if ( _texture.length() != 0 )
     Magick::CloneString( &montageInfo_.texture, _texture );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.texture));
+    MagickFreeMemory(montageInfo_.texture);
   // tile
   if ( _tile.isValid() )
     Magick::CloneString( &montageInfo_.tile, _tile );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.tile));
+    MagickFreeMemory(montageInfo_.tile);
   // title
   if ( _title.length() != 0 )
     Magick::CloneString( &montageInfo_.title, _title );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.title));
+    MagickFreeMemory(montageInfo_.title);
 }
 
 //
@@ -126,7 +126,7 @@ Magick::MontageFramed::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   if ( _frame.isValid() )
     Magick::CloneString( &montageInfo_.frame, _frame );
   else
-    LiberateMemory(reinterpret_cast<void **>(&montageInfo_.frame));
+    MagickFreeMemory(montageInfo_.frame);
   // matte_color
   montageInfo_.matte_color = _matteColor;
 }

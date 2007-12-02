@@ -826,7 +826,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
               if (0x7f < literal)
                 {
                   q=EncodeRLE(q,buffer,(literal < 0x80 ? literal : 0x80),0);
-                  (void) CloneMemory(buffer,buffer+literal+repeat,0x80);
+                  (void) memmove(buffer,buffer+literal+repeat,0x80);
                   literal-=0x80;
                 }
             }

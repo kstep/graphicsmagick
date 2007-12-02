@@ -1057,7 +1057,7 @@ Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 }
 void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 {
-  LiberateMemory(reinterpret_cast<void**>(&_dasharray));
+  MagickFreeMemory(_dasharray);
 
   if(dasharray_)
     {
@@ -1071,7 +1071,7 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
       _size = n;
 
       // Allocate elements
-      _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
+      _dasharray=MagickAllocateMemory(double*,(n+1)*sizeof(double));
       // Copy elements
       {
         double *q = _dasharray;
@@ -1086,7 +1086,7 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 // code to the const double* version.
 void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
 {
-  LiberateMemory(reinterpret_cast<void**>(&_dasharray));
+  MagickFreeMemory(_dasharray);
 
   if(dasharray_)
     {
@@ -1100,7 +1100,7 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
       _size = n;
 
       // Allocate elements
-      _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
+      _dasharray=MagickAllocateMemory(double*,(n+1)*sizeof(double));
       // Copy elements
       {
         double *q = _dasharray;

@@ -43,6 +43,6 @@ Magick::BlobRef::~BlobRef ( void )
     }
   else if ( _allocator == Magick::Blob::MallocAllocator )
     {
-      LiberateMemory(static_cast<void **>(&_data));
+      MagickFreeMemory(_data);
     }
 }

@@ -21,6 +21,34 @@
 </tr>
 </table>
 <p>
+2007-12-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.h (MagickSafeMultiplySize_t): New function to
+        perform a safe multiply.  A multiplication overflow results in
+        zero.<BR>
+        (MagickAllocateMemory): Check for size_t value truncation/overflow
+        and zero size before deciding to allocate memory.  Any detected
+        failure results in a NULL pointer being returned.
+  <LI> PerlMagick/Magick.xs: Eliminate use of deprecated methods.
+  <LI> magick/memory.c (MagickAcquireMemory): New function to allocate
+        memory.<BR>
+        (MagickAcquireMemoryArray): New function to allocate memory for an
+        array of objects.<BR>
+        (MagickCloneMemory): New function to intelligently copy memory.
+        (MagickReallocateMemory): New function to re-allocate memory.
+        (MagickReleaseMemory): New function to deallocate memory.
+  <LI> magick/deprecate.c (AcquireMemory): Deprecated in favor of new
+        function MagickAcquireMemory().
+        (CloneMemory): Deprecated in favor of new function
+        MagickCloneMemory().<BR>
+        (LiberateMemory): Deprecated in favor of new function
+        MagickReleaseMemory().<BR>
+        (ReacquireMemory): Deprecated in favor of new function
+        MagickReallocateMemory().
+
+</UL>
+<p>
 2007-11-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
