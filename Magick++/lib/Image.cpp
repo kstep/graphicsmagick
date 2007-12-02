@@ -2225,7 +2225,8 @@ void Magick::Image::colorMapSize ( const unsigned int entries_ )
   else if ( entries_ > imageptr->colors )
     {
       // Re-allocate colormap
-      MagickReallocMemory(imageptr->colormap,(entries_)*sizeof(PixelPacket));
+      imageptr->colormap=static_cast<PixelPacket*>(MagickReallocateMemory(imageptr->colormap,
+        (entries_)*sizeof(PixelPacket)));
     }
 
   // Initialize any new new colormap entries as all black
