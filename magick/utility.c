@@ -544,7 +544,7 @@ MagickExport MagickPassFail CloneString(char **destination,const char *source)
     }
   allocation_length=strlen(source)+1;
   MagickRoundUpStringLength(allocation_length);
-  MagickReallocMemory(*destination,allocation_length);
+  MagickReallocMemory(char *,*destination,allocation_length);
   if (*destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateString);
@@ -597,7 +597,7 @@ MagickExport MagickPassFail ConcatenateString(char **destination,
     destination_length=strlen(*destination);
   allocation_length=destination_length+source_length+1;
   MagickRoundUpStringLength(allocation_length);
-  MagickReallocMemory((*destination),allocation_length);
+  MagickReallocMemory(char *,(*destination),allocation_length);
   if (*destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConcatenateString);
@@ -988,7 +988,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       There's at least one matching filename.
       Transfer file list to argument vector.
     */
-    MagickReallocMemory(vector,
+    MagickReallocMemory(char **,vector,
                     (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
     if (vector == (char **) NULL)
       return(False);
@@ -3109,7 +3109,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
               Extend the file list.
             */
             max_entries<<=1;
-            MagickReallocMemory(filelist,max_entries*sizeof(char *));
+            MagickReallocMemory(char **,filelist,max_entries*sizeof(char *));
             if (filelist == (char **) NULL)
               {
                 (void) closedir(current_directory);
@@ -4241,7 +4241,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
         if (result_length >= allocated_length)
           {
             allocated_length+=copy_length+MaxTextExtent;
-            MagickReallocMemory(result,allocated_length);
+            MagickReallocMemory(char *,result,allocated_length);
             if (result == (char *) NULL)
               MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
               UnableToAllocateString);
@@ -4256,7 +4256,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
       if (result_length >= allocated_length)
         {
           allocated_length+=replace_length+MaxTextExtent;
-          MagickReallocMemory(result,allocated_length);
+          MagickReallocMemory(char *,result,allocated_length);
           if (result == (char *) NULL)
             MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
               UnableToAllocateString);
@@ -4278,7 +4278,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
   if (result_length >= allocated_length)
     {
       allocated_length+=copy_length+MaxTextExtent;
-      MagickReallocMemory(result,allocated_length);
+      MagickReallocMemory(char *,result,allocated_length);
       if (result == (char *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
           UnableToAllocateString);
@@ -4848,7 +4848,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
     if ((size_t) (q-translated_text+MaxTextExtent) >= length)
       {
         length<<=1;
-        MagickReallocMemory(translated_text,length);
+        MagickReallocMemory(char *,translated_text,length);
         if (translated_text == (char *) NULL)
           break;
         q=translated_text+strlen(translated_text);
@@ -5102,7 +5102,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
             if ((size_t) (q-translated_text+attribute_size+MaxTextExtent) >= length)
               {
                 length+=(attribute_size+2*MaxTextExtent);
-                MagickReallocMemory(translated_text,length);
+                MagickReallocMemory(char *,translated_text,length);
                 if (translated_text == (char *) NULL)
                   break;
                 q=translated_text+strlen(translated_text);

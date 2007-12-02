@@ -2053,7 +2053,7 @@ MagickExport MagickPassFail SetImageAttribute(Image *image,const char *key,
 
         min_l=p->length+attribute->length+1;
         for (realloc_l=2; realloc_l <= min_l; realloc_l *= 2);
-        MagickReallocMemory(p->value,realloc_l);
+        MagickReallocMemory(char *,p->value,realloc_l);
         if (p->value != (char *) NULL)
           (void) strcat(p->value+p->length,attribute->value);
         p->length += attribute->length;

@@ -564,8 +564,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
-  pixels=MagickAllocateMemory(unsigned char *,
-    Max(bytes_per_line,image->columns+1)*image->rows);
+  pixels=MagickAllocateMemoryElements(unsigned char *,
+                                      image->rows,
+                                      Max(bytes_per_line,image->columns+1));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if ((dib_info.compression == 0) || (dib_info.compression == 3))
@@ -574,6 +575,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       /*
         Convert run-length encoded raster pixels.
+        DecodeImage expects that pixels array is rows*columns bytes.
       */
       status=DecodeImage(image,dib_info.compression,pixels);
       if (status == False)

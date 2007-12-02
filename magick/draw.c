@@ -390,7 +390,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
     {
       size_t realloc_size = context->mvg_alloc + alloc_size;
 
-      MagickReallocMemory(context->mvg, realloc_size);
+      MagickReallocMemory(char *, context->mvg, realloc_size);
       if (context->mvg == NULL)
         {
           ThrowException3(&context->image->exception,ResourceLimitError,
@@ -4159,7 +4159,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   assert(context->signature == MagickSignature);
 
   context->index++;
-  MagickReallocMemory(context->graphic_context,
+  MagickReallocMemory(DrawInfo **,context->graphic_context,
                   (context->index+1)*sizeof(DrawInfo *));
   if (context->graphic_context == (DrawInfo **) NULL)
     {

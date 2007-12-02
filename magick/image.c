@@ -396,7 +396,7 @@ MagickExport MagickPassFail AllocateImageColormap(Image *image,
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=MagickAllocateMemory(PixelPacket *,length);
   else
-    MagickReallocMemory(image->colormap,length);
+    MagickReallocMemory(PixelPacket *,image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
     {
       image->colors=0;
@@ -4309,7 +4309,7 @@ ReplaceImageColormap(Image *image,
       */
       if (status == MagickPass)
         {
-          MagickReallocMemory(image->colormap,sizeof(PixelPacket)*colors);
+          MagickReallocMemory(PixelPacket *,image->colormap,sizeof(PixelPacket)*colors);
           if (image->colormap == (PixelPacket *) NULL)
             {
               ThrowException3(&image->exception,ResourceLimitError,

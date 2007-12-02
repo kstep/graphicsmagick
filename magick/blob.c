@@ -351,7 +351,7 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
           /* In-memory Blob */
           image->blob->quantum<<=1;
           image->blob->extent+=length+image->blob->quantum;
-          MagickReallocMemory(image->blob->data,image->blob->extent+1);
+          MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
           (void) SyncBlob(image);
         }
       if (image->blob->data == (unsigned char *) NULL)
@@ -1832,7 +1832,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
             "Exiting ImageToBlob");
           return((void *) NULL);
         }
-      MagickReallocMemory(image->blob->data,image->blob->length+1);
+      MagickReallocMemory(unsigned char *,image->blob->data,image->blob->length+1);
       blob=image->blob->data;
       *length=image->blob->length;
       DetachBlob(image->blob);
@@ -3510,7 +3510,7 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
         else
           {
             image->blob->extent=image->blob->offset+image->blob->quantum;
-            MagickReallocMemory(image->blob->data,image->blob->extent+1);
+            MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
             (void) SyncBlob(image);
             if (image->blob->data == (unsigned char *) NULL)
               {

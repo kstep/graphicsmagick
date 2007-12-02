@@ -216,7 +216,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 *p='\0';
                 length<<=1;
-                MagickReallocMemory(comment,length);
+                MagickReallocMemory(char *,comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -254,7 +254,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   *p='\0';
                   length<<=1;
-                  MagickReallocMemory(values,length);
+                  MagickReallocMemory(char *,values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+strlen(values);
@@ -504,7 +504,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleNCompare(keyword,"profile-",8) == 0)
                   {
                     i=(long) number_of_profiles;
-                    MagickReallocMemory(profiles,(i+1)*sizeof(ProfileInfo));
+                    MagickReallocMemory(ProfileInfo *,profiles,(i+1)*sizeof(ProfileInfo));
                     if (profiles == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                     profiles[i].name=AllocateString(keyword+8);
@@ -671,7 +671,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Allocate more memory for the image directory.
               */
-              MagickReallocMemory(image->directory,
+              MagickReallocMemory(char *,image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageError,UnableToReadImageData,

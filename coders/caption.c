@@ -132,7 +132,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           if ((p-caption+MaxTextExtent+1) < (long) length)
             continue;
           length<<=1;
-          MagickReallocMemory(caption,length);
+          MagickReallocMemory(char *,caption,length);
           if (caption == (char *) NULL)
             break;
           p=caption+strlen(caption);

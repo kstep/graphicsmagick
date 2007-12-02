@@ -274,7 +274,7 @@ static CubeInfo *ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
         if (node_info->number_unique == 0)
           node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
         else
-          MagickReallocMemory(node_info->list,
+          MagickReallocMemory(ColorPacket *,node_info->list,
             (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
@@ -1587,7 +1587,7 @@ MagickExport MagickBool IsPaletteImage(const Image *image,
             node_info->list=MagickAllocateMemory(ColorPacket *,
                                                  sizeof(ColorPacket));
           else
-            MagickReallocMemory(node_info->list,
+            MagickReallocMemory(ColorPacket *,node_info->list,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             {

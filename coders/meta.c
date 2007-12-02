@@ -247,7 +247,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
 
         tlen=q-p;
         len<<=1;
-        MagickReallocMemory(p,(len+2));
+        MagickReallocMemory(char *,p,(len+2));
         *b=(char *) p;
         if (p == (unsigned char *) NULL)
           break;
@@ -510,7 +510,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
 
         tlen=q-p;
         len<<=1;
-        MagickReallocMemory(p,(len+2));
+        MagickReallocMemory(char *,p,(len+2));
         *b=(char *) p;
         if (p == (unsigned char *) NULL)
           break;

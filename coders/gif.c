@@ -1295,7 +1295,7 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
               Set transparent pixel.
             */
             opacity=(long) image->colors++;
-            MagickReallocMemory(image->colormap,
+            MagickReallocMemory(PixelPacket *,image->colormap,
               image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
               {

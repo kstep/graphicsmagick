@@ -447,10 +447,10 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   assert(msl_info != (MSLInfo *) NULL);
   msl_info->n++;
   n=msl_info->n;
-  MagickReallocMemory(msl_info->image_info,(n+1)*sizeof(ImageInfo *));
-  MagickReallocMemory(msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
-  MagickReallocMemory(msl_info->attributes,(n+1)*sizeof(Image *));
-  MagickReallocMemory(msl_info->image,(n+1)*sizeof(Image *));
+  MagickReallocMemory(ImageInfo **,msl_info->image_info,(n+1)*sizeof(ImageInfo *));
+  MagickReallocMemory(DrawInfo **,msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
+  MagickReallocMemory(Image **,msl_info->attributes,(n+1)*sizeof(Image *));
+  MagickReallocMemory(Image **,msl_info->image,(n+1)*sizeof(Image *));
   if ((msl_info->image_info == (ImageInfo **) NULL) ||
     (msl_info->draw_info == (DrawInfo **) NULL) ||
     (msl_info->attributes == (Image **) NULL) ||
@@ -1783,7 +1783,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     else if (LocaleCompare((char *) name, "group") == 0)
     {
       msl_info->nGroups++;
-      MagickReallocMemory(msl_info->group_info,(msl_info->nGroups+1)*sizeof(MSLGroupInfo));
+      MagickReallocMemory(MSLGroupInfo *,msl_info->group_info,(msl_info->nGroups+1)*sizeof(MSLGroupInfo));
       break;
     }
       ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);

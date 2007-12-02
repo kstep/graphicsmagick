@@ -537,7 +537,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               length<<=1;
               length+=MaxTextExtent;
-              MagickReallocMemory(comment,length+1);
+              MagickReallocMemory(char *,comment,length+1);
               if (comment == (char *) NULL)
                 break;
               p=comment+strlen(comment);

@@ -169,7 +169,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                MagickReallocMemory(comment,length+strlen(P7Comment)+1);
+                MagickReallocMemory(char *,comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);

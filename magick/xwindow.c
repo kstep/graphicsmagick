@@ -4072,7 +4072,7 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
         window_info=MagickAllocateMemory(WindowInfo *,
           max_windows*sizeof(WindowInfo));
       else
-        MagickReallocMemory(window_info,max_windows*sizeof(WindowInfo));
+        MagickReallocMemory(WindowInfo *,window_info,max_windows*sizeof(WindowInfo));
     }
   if (window_info == (WindowInfo *) NULL)
     {

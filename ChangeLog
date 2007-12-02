@@ -6,6 +6,8 @@
 	(MagickAllocateMemory): Check for size_t value truncation/overflow
 	and zero size before deciding to allocate memory.  Any detected
 	failure results in a NULL pointer being returned.
+	(MagickReallocMemory): Add a type parameter to use in cast in
+	order to avoid C++ portability problem.
 	* PerlMagick/Magick.xs: Eliminate use of deprecated methods.
 	* magick/memory.c (MagickAcquireMemory): New function to allocate
 	memory.

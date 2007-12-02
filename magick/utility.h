@@ -203,23 +203,15 @@ static inline size_t MagickSafeMultiplySize_t(const size_t count,
   pointer, then free memory.  This interface behaves similar to
   realloc() except that memory is always freed (and pointer set to
   null) if a memory allocation failure occurs.
-
-  C++ does not accept the final memory=_magick_mp without a cast so
-  use smart casting.
 */
-#if defined(__cplusplus) || defined(c_plusplus)
-#define MagickTypeOf(var) __typeof__(var)
-#else
-#define MagickTypeOf(var) void*
-#endif
-#define MagickReallocMemory(memory,size) \
+#define MagickReallocMemory(type,memory,size)   \
 { \
     size_t _new_size = (size_t) (size); \
     void *_magick_mp = 0; \
     _magick_mp=realloc(memory,_new_size); \
     if ((_magick_mp == 0) && (memory != 0) && (_new_size != 0)) \
        free(memory); \
-    memory=(MagickTypeOf(memory))_magick_mp; \
+    memory=(type) _magick_mp; \
 }
 
 /*

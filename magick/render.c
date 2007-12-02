@@ -414,7 +414,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *ARGUNUSED(draw_info),
             if (edge == number_edges)
               {
                 number_edges<<=1;
-                MagickReallocMemory(polygon_info->edges,
+                MagickReallocMemory(EdgeInfo *,polygon_info->edges,
                   number_edges*sizeof(EdgeInfo));
                 if (polygon_info->edges == (EdgeInfo *) NULL)
                   return((PolygonInfo *) NULL);
@@ -465,7 +465,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *ARGUNUSED(draw_info),
         if (edge == number_edges)
           {
             number_edges<<=1;
-            MagickReallocMemory(polygon_info->edges,
+            MagickReallocMemory(EdgeInfo *,polygon_info->edges,
               number_edges*sizeof(EdgeInfo));
             if (polygon_info->edges == (EdgeInfo *) NULL)
               return((PolygonInfo *) NULL);
@@ -498,7 +498,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *ARGUNUSED(draw_info),
     if (n == number_points)
       {
         number_points<<=1;
-        MagickReallocMemory(points,number_points*sizeof(PointInfo));
+        MagickReallocMemory(PointInfo *,points,number_points*sizeof(PointInfo));
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
       }
@@ -521,7 +521,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *ARGUNUSED(draw_info),
           if (edge == number_edges)
             {
               number_edges<<=1;
-              MagickReallocMemory(polygon_info->edges,
+              MagickReallocMemory(EdgeInfo *,polygon_info->edges,
                 number_edges*sizeof(EdgeInfo));
               if (polygon_info->edges == (EdgeInfo *) NULL)
                 return((PolygonInfo *) NULL);
@@ -2326,7 +2326,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
-                MagickReallocMemory(graphic_context,
+                MagickReallocMemory(DrawInfo **,graphic_context,
                   (n+1)*sizeof(DrawInfo *));
                 if (graphic_context == (DrawInfo **) NULL)
                   {
@@ -2678,7 +2678,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (i < (long) number_points)
         continue;
       number_points<<=1;
-      MagickReallocMemory(primitive_info,
+      MagickReallocMemory(PrimitiveInfo *,primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
@@ -2717,7 +2717,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (i >= (long) (number_points-length))
       {
         number_points+=length;
-        MagickReallocMemory(primitive_info,
+        MagickReallocMemory(PrimitiveInfo *,primitive_info,
           number_points*sizeof(PrimitiveInfo));
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
@@ -2867,7 +2867,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (i > (long) (number_points-6*BezierQuantum*length/3-1))
           {
             number_points+=6*BezierQuantum*length/3;
-            MagickReallocMemory(primitive_info,
+            MagickReallocMemory(PrimitiveInfo *,primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
@@ -5164,8 +5164,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     if (q >= (max_strokes-6*BezierQuantum-360))
       {
          max_strokes+=6*BezierQuantum+360;
-         MagickReallocMemory(path_p,max_strokes*sizeof(PointInfo));
-         MagickReallocMemory(path_q,max_strokes*sizeof(PointInfo));
+         MagickReallocMemory(PointInfo *,path_p,max_strokes*sizeof(PointInfo));
+         MagickReallocMemory(PointInfo *,path_q,max_strokes*sizeof(PointInfo));
          if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
            {
              MagickFreeMemory(polygon_primitive);

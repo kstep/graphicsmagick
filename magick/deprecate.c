@@ -737,7 +737,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
 MagickExport void ReacquireMemory(void **memory,const size_t size)
 {
   assert(memory != (void **) NULL);
-  MagickReallocMemory(*memory,size);
+  MagickReallocMemory(void*,*memory,size);
 }
 
 /*

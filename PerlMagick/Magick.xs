@@ -834,7 +834,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
               *last+=256;
               if (*reference_vector)
                 {
-                  MagickReallocMemory(*reference_vector,*last*sizeof(*reference_vector));
+                  MagickReallocMemory(SV **,*reference_vector,*last*sizeof(*reference_vector));
                 }
               else
                 {

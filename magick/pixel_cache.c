@@ -1088,7 +1088,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
   else
     if (length != (size_t) stream_info->length)
-      MagickReallocMemory(stream_info->pixels,length);
+      MagickReallocMemory(void *,stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateCacheInfo);
@@ -2971,7 +2971,7 @@ static unsigned int OpenCache(Image *image,const MapMode mode)
        (cache_info->type == MemoryCache)) &&
       (AcquireMagickResource(MemoryResource,offset)))
     {
-      MagickReallocMemory(cache_info->pixels,(size_t) offset);
+      MagickReallocMemory(PixelPacket *,cache_info->pixels,(size_t) offset);
       pixels=cache_info->pixels;
       if (pixels == (PixelPacket *) NULL)
         LiberateMagickResource(MemoryResource,offset);
@@ -3960,7 +3960,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   else
     if (nexus_info->length < (magick_off_t) length)
       {
-        MagickReallocMemory(nexus_info->staging,length);
+        MagickReallocMemory(PixelPacket *,nexus_info->staging,length);
         nexus_info->length=length;
       }
   if (nexus_info->staging == (PixelPacket *) NULL)
@@ -4183,7 +4183,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   else
     if ((size_t) stream_info->length < length)
       {
-        MagickReallocMemory(stream_info->pixels,length);
+        MagickReallocMemory(void *,stream_info->pixels,length);
         stream_info->length=length;
       }
   if (stream_info->pixels == (void *) NULL)

@@ -689,7 +689,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     "  SAX.startElement(%.1024s",name);
   svg_info=(SVGInfo *) context;
   svg_info->n++;
-  MagickReallocMemory(svg_info->scale,(svg_info->n+1)*sizeof(double));
+  MagickReallocMemory(double *,svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
@@ -2345,7 +2345,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   svg_info=(SVGInfo *) context;
   if (svg_info->text != (char *) NULL)
     {
-      MagickReallocMemory(svg_info->text,strlen(svg_info->text)+length+1);
+      MagickReallocMemory(char *,svg_info->text,strlen(svg_info->text)+length+1);
     }
   else
     {
@@ -3791,7 +3791,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (i < (long) (number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
-      MagickReallocMemory(primitive_info,
+      MagickReallocMemory(PrimitiveInfo *,primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
@@ -3985,7 +3985,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (i > (long) (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
-            MagickReallocMemory(primitive_info,
+            MagickReallocMemory(PrimitiveInfo *,primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {

@@ -235,7 +235,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
         continue;
       length<<=1;
-      MagickReallocMemory(xpm_buffer,length);
+      MagickReallocMemory(char *,xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
       p=xpm_buffer+strlen(xpm_buffer);
@@ -667,7 +667,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      MagickReallocMemory(picon->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(PixelPacket *,picon->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) picon->rows; y++)
       {
         q=GetImagePixels(picon,0,y,picon->columns,1);
@@ -887,7 +887,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      MagickReallocMemory(image->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(PixelPacket *,image->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);

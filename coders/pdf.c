@@ -852,7 +852,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      MagickReallocMemory(xref,
+      MagickReallocMemory(ExtendedSignedIntegralType *,xref,
         (count+2048)*sizeof(ExtendedSignedIntegralType));
       if (xref == (ExtendedSignedIntegralType *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);

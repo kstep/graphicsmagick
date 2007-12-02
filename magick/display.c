@@ -4339,7 +4339,7 @@ static unsigned int MagickXDrawEditImage(Display *display,
               break;
             }
           max_coordinates<<=1;
-          MagickReallocMemory(coordinate_info,
+          MagickReallocMemory(XPoint *,coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError3(ResourceLimitError,MemoryAllocationFailed,
@@ -4366,7 +4366,7 @@ static unsigned int MagickXDrawEditImage(Display *display,
           if (number_coordinates < (int) max_coordinates)
             break;
           max_coordinates<<=1;
-          MagickReallocMemory(coordinate_info,
+          MagickReallocMemory(XPoint *,coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError3(ResourceLimitError,MemoryAllocationFailed,
