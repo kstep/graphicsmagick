@@ -3,14 +3,15 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Development Process</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20070722;18362500">
+	<META NAME="CHANGED" CONTENT="20071204;9195800">
 	<META NAME="CLASSIFICATION" CONTENT="Description of the GraphicsMagick development and release processes.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
@@ -27,8 +28,8 @@
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Development Process</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>GraphicsMagick
+			Development Process</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -116,8 +117,8 @@ Criteria: None</FONT></FONT></P>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Testing</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>GraphicsMagick
+			Testing</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -128,15 +129,15 @@ following environments:</FONT></FONT></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
 	<COL WIDTH=41*>
 	<COL WIDTH=32*>
-	<COL WIDTH=20*>
+	<COL WIDTH=21*>
 	<COL WIDTH=51*>
 	<COL WIDTH=15*>
-	<COL WIDTH=98*>
+	<COL WIDTH=96*>
 	<TR VALIGN=TOP>
 		<TH WIDTH=16%>
 			<P>OS</P>
 		</TH>
-		<TH WIDTH=12%>
+		<TH WIDTH=13%>
 			<P>Version</P>
 		</TH>
 		<TH WIDTH=8%>
@@ -156,7 +157,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>2.6</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -176,7 +177,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>7</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -196,7 +197,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>8</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -216,7 +217,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>9</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -236,7 +237,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>9</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -249,14 +250,14 @@ following environments:</FONT></FONT></P>
 			<P>32</P>
 		</TD>
 		<TD WIDTH=38%>
-			<P>GCC 4.2.0</P>
+			<P>GCC 4.2.1</P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>9</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -269,14 +270,14 @@ following environments:</FONT></FONT></P>
 			<P>64</P>
 		</TD>
 		<TD WIDTH=38%>
-			<P>GCC 4.2.0</P>
+			<P>GCC 4.2.1</P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>10</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -296,7 +297,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Solaris</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>10</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -314,9 +315,49 @@ following environments:</FONT></FONT></P>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>10</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>AMD64</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i386-pc-solaris2.10</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.2.1</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>10</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>AMD64</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i386-pc-solaris2.10</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>64</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.2.1</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
 			<P>HP-UX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>10.20</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -336,7 +377,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>HP-UX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>11.00</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -356,7 +397,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>HP-UX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>11.11</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -376,7 +417,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>HP-UX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>11.23</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -396,7 +437,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>HP-UX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>11.23</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -416,7 +457,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>AIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>4.3.3</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -436,7 +477,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>AIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5.1</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -456,7 +497,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>AIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5.2</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -476,7 +517,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>AIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5.3</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -496,7 +537,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Tru64 UNIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>4.0D</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -517,7 +558,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Tru64 UNIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5.1</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -538,7 +579,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>IRIX</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>6.5</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -559,7 +600,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Redhat Linux</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>7.1</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -580,7 +621,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Redhat Linux</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>9</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -601,7 +642,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>2.1</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -622,7 +663,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>3</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -643,7 +684,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>3</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -663,7 +704,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>4</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -684,7 +725,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>4</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -704,7 +745,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -725,7 +766,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>RHEL</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -746,7 +787,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>FreeBSD</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>5.4</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -766,27 +807,27 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Apple OS X</P>
 		</TD>
-		<TD WIDTH=12%>
-			<P>Tiger</P>
+		<TD WIDTH=13%>
+			<P>Leopard</P>
 		</TD>
 		<TD WIDTH=8%>
 			<P>G5</P>
 		</TD>
 		<TD WIDTH=20%>
-			<P>powerpc-apple-darwin8.10.0</P>
+			<P>powerpc-apple-darwin9.1.0</P>
 		</TD>
 		<TD WIDTH=6%>
 			<P>32</P>
 		</TD>
 		<TD WIDTH=38%>
-			<P>GCC 3.3</P>
+			<P>GCC 4.0.1</P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=16%>
 			<P>Windows XP</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>SP2</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -806,7 +847,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Windows XP</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>SP2</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -826,7 +867,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Windows XP</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>SP2</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -846,7 +887,7 @@ following environments:</FONT></FONT></P>
 		<TD WIDTH=16%>
 			<P>Windows XP</P>
 		</TD>
-		<TD WIDTH=12%>
+		<TD WIDTH=13%>
 			<P>SP2</P>
 		</TD>
 		<TD WIDTH=8%>
@@ -870,7 +911,7 @@ output of any tests which do not support self-validation (e.g. the
 Magick++ demos) is visually inspected for correctness.</FONT></FONT></P>
 <HR>
 <P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+</FONT><FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
 GraphicsMagick Group 2002, 2003, 2004, 2007</FONT></P>
 </BODY>
 </HTML>
