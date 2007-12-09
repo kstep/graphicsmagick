@@ -140,8 +140,8 @@ eval "eval MAN_DIR=$mandir"
 AC_SUBST(MAN_DIR)
 
 # Get full paths to source and build directories
-srcdirfull=`cd $srcdir && pwd`
-builddir=`pwd`
+srcdirfull="`cd $srcdir && pwd`"
+builddir="`pwd`"
 
 WinPathScript="${srcdirfull}/winpath.sh"
 AC_SUBST(WinPathScript)

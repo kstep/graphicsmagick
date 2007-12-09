@@ -122,6 +122,7 @@ extern MagickExport unsigned long
 
 extern MagickExport void
   *AcquireMemory(const size_t),
+  *MagickAcquireMemoryArray(const size_t count,const size_t size),
   AppendImageFormat(const char *,char *),
   *CloneMemory(void *,const void *,const size_t),
   DefineClientName(const char *),
@@ -152,6 +153,9 @@ extern MagickExport size_t
   Allocate memory
 */
 #define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size)))
+
+#define MagickAllocateMemoryElements(type,count,size) \
+  ( (type) MagickAcquireMemoryArray(count,size) )
 
 /*
   Free memory and set pointer to NULL

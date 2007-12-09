@@ -74,6 +74,52 @@ MagickExport void *AcquireMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k A c q u i r e M e m o r y A r r a y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickAcquireMemoryArray() returns a pointer to a block of memory of
+%  sufficient size to support an array of elements of a specified size.
+%  The returned memory is suitably aligned for any use.  NULL is returned
+%  if the required memory exceeds the range of size_t, the specified size
+%  is zero, or there is insufficient memory available.
+%
+%  The format of the MagickAcquireMemoryArray method is:
+%
+%      void *MagickAcquireMemoryArray(const size_t count,
+%                                     const size_t size);
+%
+%  A description of each parameter follows:
+%
+%    o count: The number of elements in the array.
+%
+%    o size: The size of one array element.
+%
+*/
+MagickExport void *MagickAcquireMemoryArray(const size_t count,const size_t size)
+{
+  size_t
+    allocation_size;
+
+  void
+    *allocation;
+
+  allocation = 0;
+  allocation_size = size * count;
+  if ((count != 0) && (size != allocation_size/count))
+    allocation_size = 0;
+  if (allocation_size)
+    allocation = malloc(allocation_size);
+  return allocation;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e M e m o r y                                                     %
 %                                                                             %
 %                                                                             %

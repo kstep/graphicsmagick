@@ -1,3 +1,8 @@
+2007-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.c (MagickAcquireMemoryArray): New function to
+	safely allocate the memory for an array.
+
 2007-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/ttf/read.t: Relax TrueType rendering tests so that
