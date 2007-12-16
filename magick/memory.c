@@ -115,7 +115,6 @@ MagickExport void *MagickAcquireMemoryArray(const size_t count,const size_t size
     allocation = malloc(allocation_size);
   return allocation;
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

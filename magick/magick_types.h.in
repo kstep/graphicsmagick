@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2007 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -48,6 +48,9 @@ extern "C" {
   typedef unsigned __int64 magick_uint64_t;
 #  endif
 
+  typedef magick_uint64_t magick_uintmax_t;
+  typedef unsigned long magick_uintptr_t;
+
 #else
 
   /* The following typedefs are subtituted when using Unixish configure */
@@ -62,6 +65,9 @@ extern "C" {
 
   typedef @INT64_T@  magick_int64_t;
   typedef @UINT64_T@ magick_uint64_t;
+
+  typedef @UINTMAX_T@ magick_uintmax_t;
+  typedef @UINTPTR_T@ magick_uintptr_t;
 
 #endif
 

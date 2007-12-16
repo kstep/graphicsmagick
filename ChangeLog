@@ -1,3 +1,10 @@
+2007-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Use some improved tests for POSIX standard types
+	available in Autoconf 2.61.
+	Add support for configuring a magick_uintmax_t type.
+	Added support for configuring a magick_uintptr_t type.
+
 2007-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickSafeMultiplySize_t): New function to

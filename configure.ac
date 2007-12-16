@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2007 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
@@ -151,8 +151,8 @@ eval "eval MAN_DIR=$mandir"
 AC_SUBST(MAN_DIR)
 
 # Get full paths to source and build directories
-srcdirfull=`cd $srcdir && pwd`
-builddir=`pwd`
+srcdirfull="`cd $srcdir && pwd`"
+builddir="`pwd`"
 
 WinPathScript="${srcdirfull}/winpath.sh"
 AC_SUBST(WinPathScript)
@@ -816,20 +816,20 @@ AC_C_INLINE
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 AC_C_BIGENDIAN
 
-# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
-AC_CHECK_TYPE(mode_t, unsigned int)
+# Define mode_t to a suitable type, if standard headers do not define it.
+AC_TYPE_MODE_T
 
-# If the system does not provide a 'off_t' type, use 'long' instead
-AC_CHECK_TYPE(off_t, long)
+# Define off_t to a suitable type, if standard headers do not define it.
+AC_TYPE_OFF_T
 
-# If the system does not provide a 'pid_t' type, use 'int' instead
-AC_CHECK_TYPE(pid_t, int)
+# Define pid_t to a suitable type, if standard headers do not define it.
+AC_TYPE_PID_T
 
-# If the system does not provide a 'size_t', use 'unsigned int' instead
-AC_CHECK_TYPE(size_t, unsigned int)
+# Define size_t to a suitable type, if standard headers do not define it.
+AC_TYPE_SIZE_T
 
-# If the system does not provide a 'ssize_t', use 'int' instead
-AC_CHECK_TYPE(ssize_t, int)
+# Define ssize_t to a suitable type, if standard headers do not define it.
+AC_TYPE_SSIZE_T
 
 # If the C compiler supports a working long double type with more range
 # or precision than the double type, define HAVE_LONG_DOUBLE.
@@ -872,6 +872,9 @@ AC_CHECK_SIZEOF(off_t)
 # Obtain size of size_t and define as SIZEOF_SIZE_T
 AC_CHECK_SIZEOF(size_t)
 
+# Obtain size of an unsigned int pointer and define as SIZEOF_UNSIGNED_INTP
+AC_CHECK_SIZEOF(unsigned int*)
+
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it
 # to be int.
@@ -897,7 +900,11 @@ fi
 fi
 
 #
-# Compute sized types for current CPU and compiler options
+# Compute sized types for current CPU and compiler options.
+#
+# The reason why we don't use autoconf's recent built-in support for
+# stdint.h types is because doing it ourself seems easier for dealing
+# with Windows builds which don't use configure.
 #
 
 AC_MSG_CHECKING(for signed 8-bit type)
@@ -967,6 +974,31 @@ then
 fi
 AC_MSG_RESULT($UINT64_T)
 AC_SUBST(UINT64_T)
+
+AC_MSG_CHECKING(for unsigned maximum type)
+UINTMAX_T='none'
+if test "$UINT64_T" != 'none'
+then
+  UINTMAX_T=$UINT64_T
+elif test "$UINT32_T" != 'none'
+then
+  UINTMAX_T=$UINT32_T
+fi
+AC_MSG_RESULT($UINTMAX_T)
+AC_SUBST(UINTMAX_T)
+
+AC_MSG_CHECKING(for pointer difference type)
+UINTPTR_T='none'
+if test $ac_cv_sizeof_unsigned_long -eq $ac_cv_sizeof_unsigned_intp
+then
+  UINTPTR_T='unsigned long'
+elif test $ac_cv_sizeof_unsigned_long_long -eq $ac_cv_sizeof_unsigned_intp
+then
+  UINTPTR_T='unsigned long long'
+fi
+AC_MSG_RESULT($UINTPTR_T)
+AC_SUBST(UINTPTR_T)
+
 
 ########
 #
