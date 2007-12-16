@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2007 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -9,7 +9,7 @@
 # GraphicsMagick Configure Script
 #
  
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 AC_INIT(magick/magick.h)
 
 #
@@ -823,20 +823,20 @@ AC_CHECK_SIZEOF(signed long long)
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
-# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
-AC_CHECK_TYPE(mode_t, unsigned int)
+# Define mode_t to a suitable type, if standard headers do not define it.
+AC_TYPE_MODE_T
 
-# If the system does not provide a 'off_t' type, use 'long' instead
-AC_CHECK_TYPE(off_t, long)
+# Define off_t to a suitable type, if standard headers do not define it.
+AC_TYPE_OFF_T
 
-# If the system does not provide a 'pid_t' type, use 'int' instead
-AC_CHECK_TYPE(pid_t, int)
+# Define pid_t to a suitable type, if standard headers do not define it.
+AC_TYPE_PID_T
 
-# If the system does not provide a 'size_t', use 'unsigned int' instead
-AC_CHECK_TYPE(size_t, unsigned int)
+# Define size_t to a suitable type, if standard headers do not define it.
+AC_TYPE_SIZE_T
 
-# If the system does not provide a 'ssize_t', use 'int' instead
-AC_CHECK_TYPE(ssize_t, int)
+# Define ssize_t to a suitable type, if standard headers do not define it.
+AC_TYPE_SSIZE_T
 
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it

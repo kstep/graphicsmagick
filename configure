@@ -22876,7 +22876,7 @@ _ACEOF
 
 
 
-# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
+# Define mode_t to a suitable type, if standard headers do not define it.
 { echo "$as_me:$LINENO: checking for mode_t" >&5
 echo $ECHO_N "checking for mode_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_mode_t+set}" = set; then
@@ -22935,13 +22935,13 @@ if test $ac_cv_type_mode_t = yes; then
 else
 
 cat >>confdefs.h <<_ACEOF
-#define mode_t unsigned int
+#define mode_t int
 _ACEOF
 
 fi
 
 
-# If the system does not provide a 'off_t' type, use 'long' instead
+# Define off_t to a suitable type, if standard headers do not define it.
 { echo "$as_me:$LINENO: checking for off_t" >&5
 echo $ECHO_N "checking for off_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_off_t+set}" = set; then
@@ -23000,13 +23000,13 @@ if test $ac_cv_type_off_t = yes; then
 else
 
 cat >>confdefs.h <<_ACEOF
-#define off_t long
+#define off_t long int
 _ACEOF
 
 fi
 
 
-# If the system does not provide a 'pid_t' type, use 'int' instead
+# Define pid_t to a suitable type, if standard headers do not define it.
 { echo "$as_me:$LINENO: checking for pid_t" >&5
 echo $ECHO_N "checking for pid_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_pid_t+set}" = set; then
@@ -23071,7 +23071,7 @@ _ACEOF
 fi
 
 
-# If the system does not provide a 'size_t', use 'unsigned int' instead
+# Define size_t to a suitable type, if standard headers do not define it.
 { echo "$as_me:$LINENO: checking for size_t" >&5
 echo $ECHO_N "checking for size_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_size_t+set}" = set; then
@@ -23136,7 +23136,7 @@ _ACEOF
 fi
 
 
-# If the system does not provide a 'ssize_t', use 'int' instead
+# Define ssize_t to a suitable type, if standard headers do not define it.
 { echo "$as_me:$LINENO: checking for ssize_t" >&5
 echo $ECHO_N "checking for ssize_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_ssize_t+set}" = set; then

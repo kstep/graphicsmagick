@@ -1,3 +1,8 @@
+2007-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Use some improved tests for POSIX standard types
+	available in Autoconf 2.61.
+
 2007-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.c (MagickAcquireMemoryArray): New function to
