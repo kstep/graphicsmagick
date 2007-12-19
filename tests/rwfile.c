@@ -212,10 +212,10 @@ int main ( int argc, char **argv )
   /*
    * Read image back from file
    */
-  strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+  (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
   strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
   if ( size[0] != '\0' )
-    CloneString( &imageInfo->size, size );
+    (void) CloneString( &imageInfo->size, size );
   (void) fflush(stdout);
   original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
@@ -254,7 +254,7 @@ int main ( int argc, char **argv )
   (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
   (void) strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
   if ( size[0] != '\0' )
-    CloneString( &imageInfo->size, size );
+    (void) CloneString( &imageInfo->size, size );
   (void) fflush(stdout);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Reading image %s", imageInfo->filename);

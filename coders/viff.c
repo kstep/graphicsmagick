@@ -934,9 +934,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Analyze image to be written.
     */
-    GetImageCharacteristics(image,&characteristics,
-                            (OptimizeType == image_info->type),
-                            &image->exception);
+    (void) GetImageCharacteristics(image,&characteristics,
+                                   (OptimizeType == image_info->type),
+                                   &image->exception);
     /*
       Initialize VIFF image structure.
     */

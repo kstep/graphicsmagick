@@ -770,9 +770,9 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       /*
         Analyze image to be written.
       */
-      GetImageCharacteristics(image,&characteristics,
-                              (OptimizeType == image_info->type),
-                              &image->exception);
+      (void) GetImageCharacteristics(image,&characteristics,
+                                     (OptimizeType == image_info->type),
+                                     &image->exception);
 
       /*
         If some other type has not been requested and the image is

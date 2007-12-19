@@ -1447,12 +1447,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             }
           break;
         }
-        /*
-          Verify that pixel transfer loops completed
-        */
-        if (y != (long) image->rows)
-          status=False;
       } /* End switch (image->compression) */
+
+    /*
+      Verify that pixel transfer loops completed
+    */
+    if (y != (long) image->rows)
+      status=False;
+
     MagickFreeMemory(pixels);
     MagickFreeMemory(compress_pixels);
     if (status == False)

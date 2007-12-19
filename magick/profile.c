@@ -402,15 +402,15 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
         {
           if (strlen(profile_remove))
             {
-              DeleteImageProfile(image,profile_remove);
+              (void) DeleteImageProfile(image,profile_remove);
               profile_remove[0]=0;
             }
           if (GlobExpression(profile_name,name))
-            strlcpy(profile_remove,profile_name,sizeof(profile_remove));
+            (void) strlcpy(profile_remove,profile_name,sizeof(profile_remove));
         }
       DeallocateImageProfileIterator(profile_iterator);
       if (strlen(profile_remove))
-        DeleteImageProfile(image,profile_remove);
+        (void) DeleteImageProfile(image,profile_remove);
       return(MagickPass);
     }
   /*
@@ -420,11 +420,11 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
     {
       if (clone)
         {
-          SetImageProfile(image,name,profile,length);
+          (void) SetImageProfile(image,name,profile,length);
         }
       else
         {
-          SetImageProfile(image,name,profile,length);
+          (void) SetImageProfile(image,name,profile,length);
           MagickFreeMemory(profile);
         }
       return(MagickPass);
@@ -851,7 +851,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
         for instance.
       */
       
-      SetImageProfile(image,"ICM",profile,length);
+      (void) SetImageProfile(image,"ICM",profile,length);
       if (!clone)
         MagickFreeMemory(profile);
       return(status);

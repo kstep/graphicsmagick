@@ -1545,7 +1545,7 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
               break;
             if (GetElapsedTime(&timer) > duration)
               break;
-            ContinueTimer(&timer);
+            (void) ContinueTimer(&timer);
           }
       }
     else if (iterations > 0)
@@ -1568,8 +1568,8 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
 
       user_time=GetUserTime(&timer);
       elapsed_time=GetElapsedTime(&timer);
-      printf("Results: %ld iter %.2fs user %.2fs total %.3f iter/s\n",
-             iteration,user_time, elapsed_time,(((double) iteration)/elapsed_time));
+      (void) printf("Results: %ld iter %.2fs user %.2fs total %.3f iter/s\n",
+                    iteration,user_time, elapsed_time,(((double) iteration)/elapsed_time));
     }
   }
 

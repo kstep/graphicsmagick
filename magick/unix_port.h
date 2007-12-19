@@ -19,7 +19,7 @@ extern MagickExport int
   MagickSpawnVP(const unsigned int verbose, const char *file, char *const argv[]);
 
 extern MagickExport long
-  MagickGetMMUPageSize();
+  MagickGetMMUPageSize(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

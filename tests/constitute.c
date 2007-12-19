@@ -186,7 +186,7 @@ int main ( int argc, char **argv )
     CatchException(&exception);
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read original image %s\n", imageInfo->filename );
+      (void) printf ( "Failed to read original image %s\n", imageInfo->filename );
       exit_status = 1;
       goto program_exit;
     }
@@ -194,7 +194,7 @@ int main ( int argc, char **argv )
   /*  If a CMYK map is specified, make sure that input image is CMYK */
   if (strchr(map,'c') || strchr(map,'C') || strchr(map,'m') || strchr(map,'M') ||
       strchr(map,'y') || strchr(map,'y') || strchr(map,'k') || strchr(map,'k'))
-    TransformColorspace(original,CMYKColorspace);
+    (void) TransformColorspace(original,CMYKColorspace);
 
   /*
    * Obtain original image size if format requires it
@@ -209,11 +209,11 @@ int main ( int argc, char **argv )
   pixels=MagickAcquireMemory(pixels_size);
   if( !pixels )
     {
-      printf ( "Failed to allocate memory for pixels\n");
+      (void) printf ( "Failed to allocate memory for pixels\n");
       exit_status = 1;
       goto program_exit;
     }
-  memset((void *) pixels, 0, pixels_size);
+  (void) memset((void *) pixels, 0, pixels_size);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Writing image to pixel array");
@@ -247,7 +247,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to pixel array
    */
-  memset((void *) pixels, 0, pixels_size);
+  (void) memset((void *) pixels, 0, pixels_size);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Writing image to pixel array");
   if( !DispatchImage(original,0,0,original->columns,original->rows,map,
@@ -314,7 +314,7 @@ int main ( int argc, char **argv )
   if (final)
     {
       if (getenv("SHOW_RESULT") != 0)
-        DisplayImages( imageInfo, final );
+        (void) DisplayImages( imageInfo, final );
       DestroyImage( final );
     }
   final = 0;

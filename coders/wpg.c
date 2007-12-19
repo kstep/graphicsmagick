@@ -492,7 +492,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     MagickFreeMemory(BImgBuff);
     return(-2);
   }
-  memset(UpImgBuff,0,ldblk);
+  (void) memset(UpImgBuff,0,ldblk);
 
   while( y< image->rows)
     {
@@ -1057,7 +1057,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
               if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
                 {  
-                  // flop command                
+                  /* flop command */
                   if(BitmapHeader2.RotAngle & 0x8000)
                     {
                       rotated_image = FlopImage(image, exception);
@@ -1066,7 +1066,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       (void) RemoveLastImageFromList(&image);
                       AppendImageToList(&image,rotated_image);
                     }
-                  // flip command
+                  /* flip command */
                   if(BitmapHeader2.RotAngle & 0x2000)
                     {
                       rotated_image = FlipImage(image, exception);
@@ -1076,7 +1076,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       AppendImageToList(&image,rotated_image);		
                     }
 		
-		  // rotate command
+		  /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
                       rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);

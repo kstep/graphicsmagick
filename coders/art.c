@@ -211,10 +211,10 @@ static unsigned int WriteARTImage(const ImageInfo *image_info,Image *image)
  /*
     Write ART hader.
   */
-  WriteBlobLSBShort(image,0);
-  WriteBlobLSBShort(image,image->columns);
-  WriteBlobLSBShort(image,0);
-  WriteBlobLSBShort(image,image->rows);
+  (void) WriteBlobLSBShort(image,0);
+  (void) WriteBlobLSBShort(image,image->columns);
+  (void) WriteBlobLSBShort(image,0);
+  (void) WriteBlobLSBShort(image,image->rows);
 
   /*
     Store image data.

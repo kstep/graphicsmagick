@@ -340,7 +340,7 @@ static void ScribbleImage ( Image *image)
   }
   DrawPopGraphicContext(context);
 
-  DrawRender(context);
+  (void) DrawRender(context);
   DrawDestroyContext(context);
 }
 
@@ -375,14 +375,14 @@ int main ( int argc, char **argv )
   image_info=CloneImageInfo((ImageInfo*)NULL);
   GetExceptionInfo( &exception );
   FormatString(size, "%dx%d", columns, rows);
-  CloneString(&image_info->size, size);
+  (void) CloneString(&image_info->size, size);
   (void) strcpy( image_info->filename, "xc:white");
   canvas = ReadImage ( image_info, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   if ( canvas == (Image *)NULL )
     {
-      printf ( "Failed to read canvas image %s\n", image_info->filename );
+      (void) printf ( "Failed to read canvas image %s\n", image_info->filename );
       exit(1);
     }
 
@@ -396,7 +396,7 @@ int main ( int argc, char **argv )
    */
   canvas->filename[MaxTextExtent-1]='\0';
   (void) strncpy( canvas->filename, outfile, MaxTextExtent-1);
-  WriteImage ( image_info, canvas );
+  (void) WriteImage ( image_info, canvas );
 
   DestroyExceptionInfo( &exception );
   DestroyImage( canvas );

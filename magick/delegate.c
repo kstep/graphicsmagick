@@ -348,22 +348,22 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
   char
     delegate[MaxTextExtent];
 
-  strlcpy(delegate,"gs-color",sizeof(delegate));
+  (void) strlcpy(delegate,"gs-color",sizeof(delegate));
   *antialias=(image_info->antialias ? 4 : 1);
   if ((image_info->monochrome) || (BilevelType == image_info->type))
     {
-      strlcpy(delegate,"gs-mono",sizeof(delegate));
+      (void) strlcpy(delegate,"gs-mono",sizeof(delegate));
       *antialias=1;
     }
   else if (GrayscaleType == image_info->type)
     {
-      strlcpy(delegate,"gs-gray",sizeof(delegate));
+      (void) strlcpy(delegate,"gs-gray",sizeof(delegate));
     }
   else if ((GrayscaleMatteType == image_info->type) ||
            (PaletteMatteType == image_info->type) ||
            (TrueColorMatteType == image_info->type))
     {
-      strlcpy(delegate,"gs-color+alpha",sizeof(delegate));
+      (void) strlcpy(delegate,"gs-color+alpha",sizeof(delegate));
     }
   return GetDelegateInfo(delegate,(char *) NULL,exception);
 }

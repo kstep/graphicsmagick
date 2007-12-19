@@ -510,8 +510,8 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   filepos = TellBlob(image);
   while(!EOFBlob(image)) /* object parser loop */
   {
-    SeekBlob(image,filepos,SEEK_SET);
-    //printf("pos=%X\n",TellBlob(image));
+    (void) SeekBlob(image,filepos,SEEK_SET);
+    /* printf("pos=%X\n",TellBlob(image)); */
 
     MATLAB_HDR.DataType = ReadBlobXXXLong(image);
     if(EOFBlob(image)) break;

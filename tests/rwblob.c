@@ -226,7 +226,7 @@ int main ( int argc, char **argv )
   (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
   (void) strcpy( imageInfo->filename, "" );
   if ( size[0] != '\0' )
-    CloneString( &imageInfo->size, size );
+    (void) CloneString( &imageInfo->size, size );
   original = BlobToImage( imageInfo, blob, blob_length, &exception );
   if (exception.severity != UndefinedException)
     {
@@ -270,10 +270,10 @@ int main ( int argc, char **argv )
   /*
    * Read image back from BLOB
    */
-  strncpy( imageInfo->magick, format, MaxTextExtent-1 );
-  strcpy( imageInfo->filename, "" );
+  (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+  (void) strcpy( imageInfo->filename, "" );
   if ( size[0] != '\0' )
-    CloneString( &imageInfo->size, size );
+    (void) CloneString( &imageInfo->size, size );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Reading image from BLOB");
   final = BlobToImage( imageInfo, blob, blob_length, &exception );

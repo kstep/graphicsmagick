@@ -63,10 +63,10 @@ int main ( int argc, char **argv )
   GetExceptionInfo(&exception);
   map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
 
-  printf("Adding map entries ...\n");
+  (void) printf("Adding map entries ...\n");
   for (i=0; KeyVal[i].key; i++)
     {
-      MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
+      (void) MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
     }
 
 
@@ -74,50 +74,50 @@ int main ( int argc, char **argv )
     char
       str_index[MaxTextExtent];
 
-    printf("Keyed access ...\n");
+    (void) printf("Keyed access ...\n");
     for (i=0; KeyVal[i].key; i++)
       {
         FormatString(str_index,"%u",i);
-        printf("key=\"%s\" value=\"%s\"\n", str_index,
-               (char *)MagickMapAccessEntry(map,str_index,0));
+        (void) printf("key=\"%s\" value=\"%s\"\n", str_index,
+                      (char *)MagickMapAccessEntry(map,str_index,0));
       }
   }
 
   iterator=MagickMapAllocateIterator(map);
-  printf("Iterate forward ...\n");
+  (void) printf("Iterate forward ...\n");
   while(MagickMapIterateNext(iterator,&key))
-    printf("key=%s value=%s\n",key,
-      (char *)MagickMapDereferenceIterator(iterator,0));
+    (void) printf("key=%s value=%s\n",key,
+                  (char *) MagickMapDereferenceIterator(iterator,0));
 
-  printf("Iterate reverse ...\n");
+  (void) printf("Iterate reverse ...\n");
   while(MagickMapIteratePrevious(iterator,&key))
-    printf("key=%s value=%s\n",key,
-      (char *)MagickMapDereferenceIterator(iterator,0));
+    (void) printf("key=%s value=%s\n",key,
+                  (char *) MagickMapDereferenceIterator(iterator,0));
 
   i=2;
-  printf("Remove entry for key \"%s\" and then iterate forward ...\n",
-    KeyVal[i].key);
-  MagickMapRemoveEntry(map,KeyVal[i].key);
+  (void) printf("Remove entry for key \"%s\" and then iterate forward ...\n",
+                KeyVal[i].key);
+  (void) MagickMapRemoveEntry(map,KeyVal[i].key);
   while(MagickMapIterateNext(iterator,&key))
-    printf("key=%s value=%s\n",key,
-      (char *)MagickMapDereferenceIterator(iterator,0));
+    (void) printf("key=%s value=%s\n",key,
+                  (char *)MagickMapDereferenceIterator(iterator,0));
 
-  printf("Iterate reverse ...\n");
+  (void) printf("Iterate reverse ...\n");
   while(MagickMapIteratePrevious(iterator,&key))
-    printf("key=%s value=%s\n",key,
-      (char *)MagickMapDereferenceIterator(iterator,0));
+    (void) printf("key=%s value=%s\n",key,
+                  (char *)MagickMapDereferenceIterator(iterator,0));
 
   MagickMapDeallocateIterator(iterator);
 
   i=2;
-  MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
-  printf("Add entry for key \"%s\" and then iterate forward ...\n",
-         KeyVal[i].key);
+  (void) MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
+  (void) printf("Add entry for key \"%s\" and then iterate forward ...\n",
+                KeyVal[i].key);
 
   iterator=MagickMapAllocateIterator(map);  
   while(MagickMapIterateNext(iterator,&key))
-    printf("key=%s value=%s\n",key,
-           (char *)MagickMapDereferenceIterator(iterator,0));
+    (void) printf("key=%s value=%s\n",key,
+                  (char *)MagickMapDereferenceIterator(iterator,0));
 
   MagickMapDeallocateIterator(iterator);
   MagickMapDeallocateMap(map);

@@ -1199,7 +1199,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
                                &profile_length) != MagickFail)
           {
             if (profile_length != 0)
-              WriteBlob(image,profile_length,profile_info);
+              (void) WriteBlob(image,profile_length,profile_info);
           }
         DeallocateImageProfileIterator(profile_iterator);
       }

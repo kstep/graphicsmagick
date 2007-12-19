@@ -41,7 +41,7 @@ int main ( int argc, char *argv[])
 
   if (argc < 2)
     {
-      printf("usage: %s read/write/test args\n", argv[0]);
+      (void) printf("usage: %s read/write/test args\n", argv[0]);
       exit(1);
     }
 
@@ -50,7 +50,7 @@ int main ( int argc, char *argv[])
   file=fopen("/dev/null","wb+");
   if (!file)
     {
-      printf("Failed to open file\n");
+      (void) printf("Failed to open file\n");
       exit(1);
     }
 
@@ -67,7 +67,7 @@ int main ( int argc, char *argv[])
 
       if (argc != 4)
         {
-          printf("usage: %s read repetitions bits\n", argv[0]);
+          (void) printf("usage: %s read repetitions bits\n", argv[0]);
           exit(1);
         }
 
@@ -77,7 +77,7 @@ int main ( int argc, char *argv[])
       bytes=(unsigned char *)malloc(reps*2);
       if (!bytes)
         {
-          printf("Failed to allocate %lu bytes\n", (unsigned long) reps*2);
+          (void) printf("Failed to allocate %lu bytes\n", (unsigned long) reps*2);
           exit(1);
         }
       for (rep=0; rep < reps*2; rep++)
@@ -108,7 +108,7 @@ int main ( int argc, char *argv[])
 
       if (argc != 4)
         {
-          printf("usage: %s write repetitions bits\n", argv[0]);
+          (void) printf("usage: %s write repetitions bits\n", argv[0]);
           exit(1);
         }
 
@@ -118,10 +118,10 @@ int main ( int argc, char *argv[])
       bytes=(unsigned char *)malloc(reps*2);
       if (!bytes)
         {
-          printf("Failed to allocate %lu bytes\n", (unsigned long) reps*2);
+          (void) printf("Failed to allocate %lu bytes\n", (unsigned long) reps*2);
           exit(1);
         }
-      memset(bytes,0,reps*2);
+      (void) memset(bytes,0,reps*2);
 
       for (rep=reps; rep > 0; rep--)
         {
@@ -153,7 +153,7 @@ int main ( int argc, char *argv[])
 
       if (argc != 3)
         {
-          printf("usage: %s test max_bits\n", argv[0]);
+          (void) printf("usage: %s test max_bits\n", argv[0]);
           exit(1);
         }
 
@@ -172,10 +172,10 @@ int main ( int argc, char *argv[])
           bytes=(unsigned char *)malloc(allocated_bytes);
           if (!bytes)
             {
-              printf("Failed to allocate %lu bytes\n",(unsigned long) allocated_bytes);
+              (void) printf("Failed to allocate %lu bytes\n",(unsigned long) allocated_bytes);
               exit(1);
             }
-          memset(bytes,0xff,allocated_bytes);
+          (void) memset(bytes,0xff,allocated_bytes);
           
           BitStreamInitializeWrite(&write_stream,bytes);
           BitStreamInitializeRead(&read_stream,bytes);
@@ -186,7 +186,7 @@ int main ( int argc, char *argv[])
               read_quantum=BitStreamMSBRead(&read_stream,bits);
               if (read_quantum != write_quantum)
                 {
-                  printf("mismatch: bits=%u write_quantum=%u read_quantum=%u\n",
+                  (void) printf("mismatch: bits=%u write_quantum=%u read_quantum=%u\n",
                          bits,write_quantum,read_quantum);
                 }
             }
@@ -195,8 +195,8 @@ int main ( int argc, char *argv[])
         }
     }
 
-  fprintf(file,"result=%u\n",result);
-  fclose(file);
+  (void) fprintf(file,"result=%u\n",result);
+  (void) fclose(file);
 
   return 0;
 }
