@@ -25,6 +25,7 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 /*
   Note that the WIN32 and WIN64 definitions are provided by the build

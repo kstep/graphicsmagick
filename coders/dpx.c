@@ -162,13 +162,13 @@ typedef union _R32_u
 #define SET_UNDEFINED_U8(value)  (value=0xFFU)
 #define SET_UNDEFINED_U16(value) (value=0xFFFFU)
 #define SET_UNDEFINED_U32(value) (value=0xFFFFFFFFU)
-#define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=~0);
+#define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=~0U);
 #define SET_UNDEFINED_ASCII(value) ((void) memset(value,0,sizeof(value)))
 
 #define IS_UNDEFINED_U8(value) (value == ((U8) 0xFFU))
 #define IS_UNDEFINED_U16(value) (value == ((U16) 0xFFFFU))
 #define IS_UNDEFINED_U32(value) (value == ((U32) 0xFFFFFFFFU))
-#define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) ~0))
+#define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) ~0U))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
 /*
