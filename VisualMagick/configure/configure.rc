@@ -91,7 +91,7 @@ CAPTION "Welcome to the VisualMagick configuration tool."
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "welcome text string...",IDC_WELCOME_TEXT,7,137,304,88
-    CONTROL         132,IDC_STATIC,"Static",SS_BITMAP,91,7,132,126
+    CONTROL         132,IDC_STATIC,"Static",SS_BITMAP,58,7,209,123
 END
 
 IDD_TARGET_PAGE DIALOGEX 0, 0, 318, 233
