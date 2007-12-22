@@ -251,30 +251,31 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
   return;
 }
 
-static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
+
+static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
 {
   long
     x;
   register PixelPacket
     *q;
-
+  MagickPassFail RetVal = MagickFail;
   IndexPacket index;
   IndexPacket *indexes;
 
 
   q = SetImagePixels(image,0,y,image->columns,1);
-  if(q == (PixelPacket *) NULL) return;          
+  if(q == (PixelPacket *) NULL) return MagickFail;
 
   switch (bpp)
     {
     case 1:  /* Convert bitmap scanline. WP seems to ignore palette even if it is present. */
-       (void)ImportImagePixelArea(image,GrayQuantum,bpp,p,NULL,0);
+        RetVal = ImportImagePixelArea(image,GrayQuantum,bpp,p,NULL,0);
         break; 
 
     case 4:  /* Convert PseudoColor scanline. */
     case 8:  /* Convert PseudoColor scanline. */
-       (void)ImportImagePixelArea(image,IndexQuantum,bpp,p,NULL,0);
-       break;      
+        RetVal = ImportImagePixelArea(image,IndexQuantum,bpp,p,NULL,0);
+        break;
 
     case 2:  /* Convert PseudoColor scanline. */
       {
@@ -323,25 +324,29 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
               }
             p++;
           }       
+        RetVal = MagickPass;
         break;
       }
           
     case 24:     /*  Convert DirectColor scanline.  */      
-      for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=ScaleCharToQuantum(*p++);
-          q->green=ScaleCharToQuantum(*p++);
-          q->blue=ScaleCharToQuantum(*p++);
-          q++;
-        }      
+      RetVal = ImportImagePixelArea(image,RGBQuantum,8,p,NULL,0);
       break;
 
     default:
-       return;	/* emit some error here */
+      return MagickFail;  /* emit some error here */
     }
 
+
+  if(RetVal==MagickFail)
+    LogMagickEvent(CoderEvent,GetMagickModule(),"ImportImagePixelArea failed for row: %d, bpp: %d", y, bpp); 
+
   if (!SyncImagePixels(image))
-          return;
+  {
+    LogMagickEvent(CoderEvent,GetMagickModule(),"SyncImagePixels failed for row: %d, bpp: %d", y, bpp); 
+    RetVal = MagickFail;
+  }
+          
+return RetVal;
 }
 
 
@@ -352,7 +357,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
   x++; \
   if((long) x>=ldblk) \
   { \
-    InsertRow(BImgBuff,(long) y,image,bpp); \
+    (void)InsertRow(BImgBuff,(long) y,image,bpp); \
     x=0; \
     y++; \
     } \
@@ -444,7 +449,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
   x++; \
   if((long) x >= ldblk) \
   { \
-    InsertRow(BImgBuff,(long) y,image,bpp); \
+    (void)InsertRow(BImgBuff,(long) y,image,bpp); \
     x=0; \
     y++; \
     XorMe = 0; \
@@ -670,7 +675,10 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /* Obtain temporary file */
   ps_file=AcquireTemporaryFileStream(postscript_file,BinaryFileIOMode);
   if (!ps_file)
+  {
+    LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
     goto FINISH;
+  }
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
@@ -869,6 +877,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     bpp,
     WPG2Flags;
 
+  int logging;
+
   long
     ldblk;
 
@@ -884,11 +894,15 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
+  logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter"); 
+
   image=AllocateImage(image_info);
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+
   /*
     Read WPG image.
   */
@@ -907,7 +921,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError,EncryptedWPGImageFileNotSupported,image);
 
   image->colors = 0;
-  bpp=0;  
+  bpp=0;
+
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+          "File type: %d", Header.FileType);
 
   switch(Header.FileType)
     {
@@ -928,6 +945,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             break;
 
           Header.DataOffset=TellBlob(image)+Rec.RecordLength;
+
+          if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Parsing object: %X", Rec.RecType);
 
           switch(Rec.RecType)
             {
@@ -1129,6 +1149,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
           Header.DataOffset=TellBlob(image)+Rec2.RecordLength;
 
+          if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Parsing object: %X", Rec2.RecType);
+
           switch(Rec2.RecType)
             {
 	    case 1:
@@ -1319,8 +1342,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     for (p=image; p != (Image *) NULL; p=p->next)
       p->scene=scene++;
   }
-  
-  return(image);       
+
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");  
+  return(image);   
 }
 
 /*
