@@ -1,3 +1,7 @@
+2007-12-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* magick/command.c: Fix compilability issue for Microsoft Visual Studio 6.
+
 2007-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Use some improved tests for POSIX standard types

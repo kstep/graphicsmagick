@@ -220,7 +220,13 @@ static MagickBool CommandProgressMonitor(const char *task,
       /* Skip over any preceding white space */
       for (p=task; (*p) && (isspace((int) *p)); p++);
       (void) fprintf(stderr,"  %3lu%% %s\r",
-                     (unsigned long) ((double) 100.0*quantum/(span-1)),
+                     (unsigned long) ((double) 100.0*quantum/(
+#ifdef _MSC_VER
+ #if _MSC_VER <= 1200		/*Older Visual studios does not implement UINT64 to double conversion*/
+		     (magick_int64_t)
+ #endif
+#endif
+		     span-1)),
                      p);
       if ((magick_uint64_t) quantum == (span-1))
         (void) fprintf(stderr,"\n");
