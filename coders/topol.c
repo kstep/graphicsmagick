@@ -40,49 +40,37 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
-
-#if !defined(SWORD)
-#  define SWORD unsigned int
-#endif
-#if !defined(SDWORD)
-#  define SDWORD unsigned long
-#endif
-#if !defined(WORD)
-#  define WORD  int
-#endif
-#if !defined(BYTE)
-#  define BYTE  unsigned char
-#endif
+
 
 typedef struct
 {
   char Name[20];
-  SWORD Rows;
-  SWORD Cols;
-  SWORD TypSou;			/* 0-binary, 1-8 bitu, 2-8 bits+PAL, 3-4 bits,
+  magick_uint16_t Rows;
+  magick_uint16_t Cols;
+  magick_uint16_t TypSou;	/* 0-binary, 1-8 bitu, 2-8 bits+PAL, 3-4 bits,
 				   4-4 bits+PAL, 5-24 bits, 6-16 bits, 7-32
 				   bits */
-  SDWORD Zoom;
-  SWORD Version;
-  SWORD Komprese;		/* 0 - uncompressed (from release 1) */
-  SWORD Stav;
+  magick_uint32_t Zoom;
+  magick_uint16_t Version;
+  magick_uint16_t Komprese;		/* 0 - uncompressed (from release 1) */
+  magick_uint16_t Stav;
   double xRasMin;
   double yRasMin;
   double xRasMax;
   double yRasMax;
   double Scale;			/* from release 2 */
-  WORD TileWidth;		/* tile width in pixels */
-  WORD TileHeight;		/* tile height in pixels */
-  SDWORD TileOffsets;		/* offset to array of longints that contains
+  magick_uint16_t TileWidth;	/* tile width in pixels */
+  magick_uint16_t TileHeight;	/* tile height in pixels */
+  magick_uint32_t TileOffsets;	/* offset to array of longints that contains
 				   adresses of tiles in the raster (adreses
 				   are counted from 0) */
-  SDWORD TileByteCounts;	/* offset to array of words, that contain amount of bytes stored in
+  magick_uint32_t TileByteCounts;/* offset to array of words, that contain amount of bytes stored in
 				   tiles. The tile size might vary depending on
 				   the value TileCompression */
-  BYTE TileCompression;		/* 0 - uncompressed, 1 - variant TIFF
+  magick_uint8_t TileCompression;/* 0 - uncompressed, 1 - variant TIFF
 				   Packbits, 2 - CCITT G3 */
 
-  BYTE Dummy[423];
+  magick_uint8_t Dummy[423];
 } RasHeader;
 
 /*
@@ -327,8 +315,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   RasHeader
     Header;
 
-  /* paletteRAS
-     Pal; */
+  int logging;
 
   int
     depth,
@@ -354,6 +341,9 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
+  logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter"); 
+
   image = AllocateImage(image_info);
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == False)
@@ -551,9 +541,9 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
           if(j==EOF) break;		/* unexpected end of file */
           if(j<=ldblk)
             {
-              image->colormap[j].red=ScaleCharToQuantum(ReadBlobByte(palette));
-              image->colormap[j].green=ScaleCharToQuantum(ReadBlobByte(palette));
-              image->colormap[j].blue=ScaleCharToQuantum(ReadBlobByte(palette));       
+              image->colormap[j].red = ScaleCharToQuantum(ReadBlobByte(palette));
+              image->colormap[j].green = ScaleCharToQuantum(ReadBlobByte(palette));
+              image->colormap[j].blue = ScaleCharToQuantum(ReadBlobByte(palette));
             }
           else
             {
@@ -614,6 +604,8 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   /* if (EOFBlob(image))
      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image); */
   CloseBlob(image);
+
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return (image);
 }
 
