@@ -1,3 +1,8 @@
+2007-12-23  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* VisualMagick/configure/configure.rc: Better positioning of frog, changed original ImageMagick messages.
+	* VisualMagick/configure/configure.exe: New build.
+
 2007-12-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* magick/command.c: Fix compilability issue for Microsoft Visual Studio 6.
