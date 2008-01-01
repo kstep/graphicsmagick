@@ -1,3 +1,10 @@
+2007-12-31  Glenn Randers-Pehrson  <glennrp@comcast.net>
+
+	* coders/png.c (ReadOnePNGImage): Ensure that depth is handled
+	correctly in Q8 build with 16-bit PNG files.  Addresses
+	SourceForge bug 1859467 "16 bit per channel pngs broken".  This
+	bug was already fixed in CVS head.
+
 2007-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Use some improved tests for POSIX standard types

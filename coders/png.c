@@ -2201,7 +2201,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         depth;
 
-      depth=(long) image->depth;
+      depth=(long) ping_info->bit_depth;
 #endif
       image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
           (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
