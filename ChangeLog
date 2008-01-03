@@ -1,11 +1,22 @@
+2008-01-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (DisplayImageCommand): No longer default to
+	reading standard input if stdin fails isatty() test.  This
+	behavior was causing failure to launch from Gnome and it is
+	difficult to work around the issue from within a .desktop file.	
+	(AnimateImageCommand): No longer default to
+	reading standard input if stdin fails isatty() test.
+
 2007-12-23  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* VisualMagick/configure/configure.rc: Better positioning of frog, changed original ImageMagick messages.
+	* VisualMagick/configure/configure.rc: Better positioning of frog,
+	changed original ImageMagick messages.	
 	* VisualMagick/configure/configure.exe: New build.
 
 2007-12-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* magick/command.c: Fix compilability issue for Microsoft Visual Studio 6.
+	* magick/command.c: Fix compilability issue for Microsoft Visual
+	Studio 6.
 
 2007-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
