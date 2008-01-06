@@ -425,10 +425,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
       if (image != (Image *) NULL)
         break;
       else
-        if (!isatty(STDIN_FILENO))
-          option=(char *) "-";
-        else
-          option=(char *) "logo:Untitled";
+        option=(char *) "logo:Untitled";
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
         /*
@@ -5551,10 +5548,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       if (image_number != 0)
         break;
       else
-        if (!isatty(STDIN_FILENO))
-          option=(char *) "-";
-        else
-          option=(char *) "logo:Untitled";
+        option=(char *) "logo:Untitled";
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
         /*
