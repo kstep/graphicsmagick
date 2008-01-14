@@ -326,14 +326,6 @@ AC_SUBST(LFS_CPPFLAGS)
 # Configure libtool & libltdl
 #
 
-# Configure libltdl
-LT_CONFIG_LTDL_DIR([ltdl],[nonrecursive]) 
-AC_LIBLTDL_CONVENIENCE([ltdl])
-AC_LIB_LTDL
-# Substitute INCLTDL and LIBLTDL in the Makefiles
-#AC_SUBST(INCLTDL)
-#AC_SUBST(LIBLTDL)
-
 # Configure libtool
 dnl AC_DISABLE_SHARED
 dnl AC_ENABLE_STATIC
@@ -343,6 +335,15 @@ LT_INIT([disable-shared win32-dll])
 dnl AC_PROG_LIBTOOL
 LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
+
+# Configure libltdl
+LT_CONFIG_LTDL_DIR([ltdl],[nonrecursive]) 
+AC_LIBLTDL_CONVENIENCE([ltdl])
+AC_LIB_LTDL
+# Substitute INCLTDL and LIBLTDL in the Makefiles
+#AC_SUBST(INCLTDL)
+#AC_SUBST(LIBLTDL)
+
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'

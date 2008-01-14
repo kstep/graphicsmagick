@@ -7,17 +7,17 @@
 # unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
 
-# Generated from ltversion.in; do not edit by hand
+# Generated from ltversion.in.
 
-# serial 2494 ltversion.m4
+# serial 2554 ltversion.m4
 # This file is part of GNU Libtool
 
 m4_define([LT_PACKAGE_VERSION], [2.1a])
-m4_define([LT_PACKAGE_REVISION], [1.2494])
+m4_define([LT_PACKAGE_REVISION], [1.2554])
 
 AC_DEFUN([LTVERSION_VERSION],
 [macro_version='2.1a'
-macro_revision='1.2494'
+macro_revision='1.2554'
 _LT_DECL(, macro_version, 0, [Which release of libtool.m4 was used?])
 _LT_DECL(, macro_revision, 0)
 ])

@@ -310,6 +310,12 @@ lt_dlexit (void)
 	    break;
 	}
 
+      /* When removing loaders, we can only find out failure by testing
+	 the error string, so avoid a spurious one from an earlier
+	 failed command. */
+      if (!errors)
+	LT__SETERRORSTR (0);
+
       /* close all loaders */
       for (loader = (lt_dlloader *) lt_dlloader_next (NULL); loader;)
 	{
@@ -322,7 +328,11 @@ lt_dlexit (void)
 	    }
 	  else
 	    {
-	      ++errors;
+	      /* ignore errors due to resident modules */
+	      const char *err;
+	      LT__GETERROR (err);
+	      if (err)
+		++errors;
 	    }
 
 	  loader = next;
@@ -484,7 +494,7 @@ tryall_dlopen_module (lt_dlhandle *handle, const char *prefix,
 
   /* Allocate memory, and combine DIRNAME and MODULENAME into it.
      The PREFIX (if any) is handled below.  */
-  filename  = MALLOC (char, dirname_len + 1 + filename_len + 1);
+  filename  = MALLOC (char, filename_len + 1);
   if (!filename)
     return 1;
 
@@ -989,7 +999,7 @@ trim (char **dest, const char *str)
 	return 1;
 
       memcpy(tmp, &str[1], (end - str) - 1);
-      tmp[len-3] = LT_EOS_CHAR;
+      tmp[(end - str) - 1] = LT_EOS_CHAR;
       *dest = tmp;
     }
   else
@@ -1017,22 +1027,24 @@ parse_dotla_file(FILE *file, char **dlname, char **libdir, char **deplibs,
 
   while (!feof (file))
     {
+      line[line_len-2] = '\0';
       if (!fgets (line, (int) line_len, file))
 	{
 	  break;
 	}
 
       /* Handle the case where we occasionally need to read a line
-	 that is longer than the initial buffer size.  */
-      while ((line[LT_STRLEN(line) -1] != '\n') && (!feof (file)))
+	 that is longer than the initial buffer size.
+	 Behave even if the file contains NUL bytes due to corruption. */
+      while (line[line_len-2] != '\0' && line[line_len-2] != '\n' && !feof (file))
 	{
 	  line = REALLOC (char, line, line_len *2);
 	  if (!line)
 	    {
-	      fclose (file);
 	      ++errors;
 	      goto cleanup;
 	    }
+	  line[line_len * 2 - 2] = '\0';
 	  if (!fgets (&line[line_len -1], (int) line_len +1, file))
 	    {
 	      break;
@@ -1207,11 +1219,11 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 
   assert (base_name && *base_name);
 
+  ext = strrchr (base_name, '.');
   if (!ext)
     {
       ext = base_name + LT_STRLEN (base_name);
     }
-  ext = strrchr (base_name, '.');
 
   /* extract the module name from the file name */
   name = MALLOC (char, ext - base_name + 1);
@@ -1255,7 +1267,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 	    }
 	  newhandle = *phandle;
 
-	  if (tryall_dlopen (&newhandle, filename, advise, vtable) == 0)
+	  if (tryall_dlopen (&newhandle, attempt, advise, vtable) == 0)
 	    {
 	      goto register_handle;
 	    }
@@ -1309,7 +1321,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 	    }
 #endif
 #if defined(LT_DLSEARCH_PATH)
-	  if (!file && sys_dlsearch_path)
+	  if (!file && *sys_dlsearch_path)
 	    {
 	      file = find_file (sys_dlsearch_path, base_name, &dir);
 	    }
@@ -1317,7 +1329,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 	}
       if (!file)
 	{
-	  file = fopen (filename, LT_READTEXT_MODE);
+	  file = fopen (attempt, LT_READTEXT_MODE);
 	}
 
       /* If we didn't find the file by now, it really isn't there.  Set
@@ -1415,7 +1427,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename, const char *ext,
 #endif
 		   )))
 	{
-	  if (tryall_dlopen (&newhandle, filename, advise, 0) != 0)
+	  if (tryall_dlopen (&newhandle, attempt, advise, 0) != 0)
 	    {
 	      newhandle = NULL;
 	    }
@@ -1476,11 +1488,9 @@ static int
 has_library_ext (const char *filename)
 {
   char *	ext     = 0;
-  size_t	len;
 
   assert (filename);
 
-  len = LT_STRLEN (filename);
   ext = strrchr (filename, '.');
 
   if (ext && ((streq (ext, archive_ext))
@@ -1599,9 +1609,8 @@ lt_dlopenadvise (const char *filename, lt_dladvise advise)
 
       return handle;
     }
-  else
+  else if (filename && *filename)
     {
-      assert (filename);
 
       /* First try appending ARCHIVE_EXT.  */
       errors += try_dlopen (&handle, filename, archive_ext, advise);
@@ -1849,7 +1858,7 @@ lt_dlforeachfile (const char *search_path,
 	}
 #endif
 #if defined(LT_DLSEARCH_PATH)
-      if (!is_done && sys_dlsearch_path)
+      if (!is_done && *sys_dlsearch_path)
 	{
 	  is_done = foreach_dirinpath (sys_dlsearch_path, 0,
 				       foreachfile_callback, fpptr, data);
@@ -2281,23 +2290,24 @@ lt_dlcaller_set_data (lt_dlinterface_id key, lt_dlhandle handle, void *data)
 }
 
 void *
-lt_dlcaller_get_data  (lt_dlinterface_id key, lt_dlhandle handle)
+lt_dlcaller_get_data (lt_dlinterface_id key, lt_dlhandle handle)
 {
   void *result = (void *) 0;
   lt__handle *cur = (lt__handle *) handle;
 
   /* Locate the index of the element with a matching KEY.  */
-  {
-    int i;
-    for (i = 0; cur->interface_data[i].key; ++i)
-      {
-	if (cur->interface_data[i].key == key)
-	  {
-	    result = cur->interface_data[i].data;
-	    break;
-	  }
-      }
-  }
+  if (cur->interface_data)
+    {
+      int i;
+      for (i = 0; cur->interface_data[i].key; ++i)
+	{
+	  if (cur->interface_data[i].key == key)
+	    {
+	      result = cur->interface_data[i].data;
+	      break;
+	    }
+	}
+    }
 
   return result;
 }

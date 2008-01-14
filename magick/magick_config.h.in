@@ -157,6 +157,9 @@
    than `double'. */
 #undef HAVE_LONG_DOUBLE_WIDER
 
+/* Define this if a modern libltdl is already installed */
+#undef HAVE_LTDL
+
 /* Define to 1 if you have the <machine/param.h> header file. */
 #undef HAVE_MACHINE_PARAM_H
 
@@ -417,6 +420,9 @@
 
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 #undef LTDL_DLOPEN_DEPLIBS
+
+/* Define if dlopen(NULL) is able to resolve symbols from the main program. */
+#undef LTDL_DLOPEN_SELF_WORKS
 
 /* Define to the system default library search path. */
 #undef LT_DLSEARCH_PATH
