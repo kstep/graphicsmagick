@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2554 2008/01/12 17:00:50) 2.1a
+# ltmain.sh (GNU libtool 1.2558 2008/01/14 22:05:59) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2554 2008/01/12 17:00:50) 2.1a
+#       $progname:		(GNU libtool 1.2558 2008/01/14 22:05:59) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2554 2008/01/12 17:00:50"
-package_revision=1.2554
+TIMESTAMP=" 1.2558 2008/01/14 22:05:59"
+package_revision=1.2558
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -1261,7 +1261,7 @@ func_generate_dlsyms ()
 	func_show_eval "$RM $nlist ${nlist}S ${nlist}T"
 
 	# Parse the name list into a source file.
-	func_echo "creating $output_objdir/$my_dlsyms"
+	func_verbose "creating $output_objdir/$my_dlsyms"
 
 	$opt_dry_run || $ECHO > "$output_objdir/$my_dlsyms" "\
 /* $my_dlsyms - symbol resolution table for \`$my_outputname' dlsym emulation. */
@@ -1275,14 +1275,14 @@ extern \"C\" {
 "
 
 	if test "$dlself" = yes; then
-	  func_echo "generating symbol list for \`$output'"
+	  func_verbose "generating symbol list for \`$output'"
 
 	  $opt_dry_run || echo ': @PROGRAM@ ' > "$nlist"
 
 	  # Add our own program objects to the symbol list.
 	  progfiles=`$ECHO "X$objs$old_deplibs" | $SP2NL | $Xsed -e "$lo2o" | $NL2SP`
 	  for progfile in $progfiles; do
-	    func_echo "extracting global C symbols from \`$progfile'"
+	    func_verbose "extracting global C symbols from \`$progfile'"
 	    $opt_dry_run || eval "$NM $progfile | $global_symbol_pipe >> '$nlist'"
 	  done
 
@@ -1329,7 +1329,7 @@ extern \"C\" {
 	fi
 
 	for dlprefile in $dlprefiles; do
-	  func_echo "extracting global C symbols from \`$dlprefile'"
+	  func_verbose "extracting global C symbols from \`$dlprefile'"
 	  func_basename "$dlprefile"
 	  name="$func_basename_result"
 	  $opt_dry_run || {
@@ -1541,7 +1541,7 @@ func_extract_archives ()
 
       case $host in
       *-darwin*)
-	func_echo "Extracting $my_xabs"
+	func_verbose "Extracting $my_xabs"
 	# Do not bother doing anything if just a dry run
 	$opt_dry_run || {
 	  darwin_orig_dir=`pwd`
@@ -1553,7 +1553,7 @@ func_extract_archives ()
 	  if test -n "$darwin_arches"; then
 	    darwin_arches=`$ECHO "$darwin_arches" | $SED -e 's/.*are://'`
 	    darwin_arch=
-	    func_echo "$darwin_base_archive has multiple architectures $darwin_arches"
+	    func_verbose "$darwin_base_archive has multiple architectures $darwin_arches"
 	    for darwin_arch in  $darwin_arches ; do
 	      func_mkdir_p "unfat-$$/${darwin_base_archive}-${darwin_arch}"
 	      lipo -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
@@ -5037,13 +5037,13 @@ func_mode_link ()
 	    # If the library has no export list, then create one now
 	    if test -f "$output_objdir/$soname-def"; then :
 	    else
-	      func_echo "extracting exported symbol list from \`$soname'"
+	      func_verbose "extracting exported symbol list from \`$soname'"
 	      func_execute_cmds "$extract_expsyms_cmds" 'exit $?'
 	    fi
 
 	    # Create $newlib
 	    if test -f "$output_objdir/$newlib"; then :; else
-	      func_echo "generating import library for \`$soname'"
+	      func_verbose "generating import library for \`$soname'"
 	      func_execute_cmds "$old_archive_from_expsyms_cmds" 'exit $?'
 	    fi
 	    # make sure the library variables are pointing to the new library
@@ -6364,7 +6364,7 @@ EOF
 	# Prepare the list of exported symbols
 	if test -z "$export_symbols"; then
 	  if test "$always_export_symbols" = yes || test -n "$export_symbols_regex"; then
-	    func_echo "generating symbol list for \`$libname.la'"
+	    func_verbose "generating symbol list for \`$libname.la'"
 	    export_symbols="$output_objdir/$libname.exp"
 	    $opt_dry_run || $RM $export_symbols
 	    cmds=$export_symbols_cmds
@@ -6378,7 +6378,7 @@ EOF
 		skipped_export=false
 	      else
 		# The command line is too long to execute in one step.
-		func_echo "using reloadable object file for export list..."
+		func_verbose "using reloadable object file for export list..."
 		skipped_export=:
 		# Break out early, otherwise skipped_export may be
 		# set to false by a later but shorter cmd.
@@ -6401,7 +6401,7 @@ EOF
 
 	if test "X$skipped_export" != "X:" && test -n "$orig_export_symbols"; then
 	  # The given exports_symbols file has to be filtered, so filter it.
-	  func_echo "filter symbol list for \`$libname.la' to tag DATA exports"
+	  func_verbose "filter symbol list for \`$libname.la' to tag DATA exports"
 	  # FIXME: $output_objdir/$libname.filter potentially contains lots of
 	  # 's' commands which not all seds can handle. GNU sed should be fine
 	  # though. Also, the filter scales superlinearly with the number of
@@ -6508,7 +6508,7 @@ EOF
 
 	  if test -n "$save_libobjs" && test "X$skipped_export" != "X:" && test "$with_gnu_ld" = yes; then
 	    output=${output_objdir}/${output_la}.lnkscript
-	    func_echo "creating GNU ld script: $output"
+	    func_verbose "creating GNU ld script: $output"
 	    $ECHO 'INPUT (' > $output
 	    for obj in $save_libobjs
 	    do
@@ -6518,7 +6518,7 @@ EOF
 	    delfiles="$delfiles $output"
 	  elif test -n "$save_libobjs" && test "X$skipped_export" != "X:" && test "X$file_list_spec" != X; then
 	    output=${output_objdir}/${output_la}.lnk
-	    func_echo "creating linker input file list: $output"
+	    func_verbose "creating linker input file list: $output"
 	    : > $output
 	    set x $save_libobjs
 	    shift
@@ -6535,7 +6535,7 @@ EOF
 	    output=$firstobj\"$file_list_spec$output\"
 	  else
 	    if test -n "$save_libobjs"; then
-	      func_echo "creating reloadable object files..."
+	      func_verbose "creating reloadable object files..."
 	      output=$output_objdir/$output_la-${k}.$objext
 	      # Loop over the list of objects to be linked.
 	      for obj in $save_libobjs
@@ -6578,7 +6578,7 @@ EOF
 	    fi
 
 	    if ${skipped_export-false}; then
-	      func_echo "generating symbol list for \`$libname.la'"
+	      func_verbose "generating symbol list for \`$libname.la'"
 	      export_symbols="$output_objdir/$libname.exp"
 	      $opt_dry_run || $RM $export_symbols
 	      libobjs=$output
@@ -6591,7 +6591,7 @@ EOF
 	    fi
 
 	    test -n "$save_libobjs" &&
-	      func_echo "creating a temporary reloadable object file: $output"
+	      func_verbose "creating a temporary reloadable object file: $output"
 
 	    # Loop through the commands generated above and execute them.
 	    save_ifs="$IFS"; IFS='~'
@@ -6631,7 +6631,7 @@ EOF
 
 	    if test -n "$orig_export_symbols"; then
 	      # The given exports_symbols file has to be filtered, so filter it.
-	      func_echo "filter symbol list for \`$libname.la' to tag DATA exports"
+	      func_verbose "filter symbol list for \`$libname.la' to tag DATA exports"
 	      # FIXME: $output_objdir/$libname.filter potentially contains lots of
 	      # 's' commands which not all seds can handle. GNU sed should be fine
 	      # though. Also, the filter scales superlinearly with the number of
@@ -7128,7 +7128,7 @@ EOF
       func_show_eval "$link_command" 'exit $?'
 
       # Now create the wrapper script.
-      func_echo "creating $output"
+      func_verbose "creating $output"
 
       # Quote the relink command for shipping.
       if test -n "$relink_command"; then
@@ -7310,7 +7310,7 @@ EOF
 	  cmds=$old_archive_cmds
 	else
 	  # the command line is too long to link in one step, link in parts
-	  func_echo "using piecewise archive linking..."
+	  func_verbose "using piecewise archive linking..."
 	  save_RANLIB=$RANLIB
 	  RANLIB=:
 	  objlist=
@@ -7360,7 +7360,7 @@ EOF
     *.la)
       old_library=
       test "$build_old_libs" = yes && old_library="$libname.$libext"
-      func_echo "creating $output"
+      func_verbose "creating $output"
 
       # Preserve any variables that may affect compiler behavior
       for var in $variables_saved_for_relink; do
