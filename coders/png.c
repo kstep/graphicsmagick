@@ -5537,21 +5537,17 @@ ModuleExport void RegisterPNGImage(void)
   static const char
     *PNGNote=
     {
-      "See http://www.libpng.org/ for details about the PNG format.\n"
-      "The PNG 1.2 specification is available there and at\n"
-      "ftp://swrinde.nde.swri.edu/pub/png/documents/."
+      "See http://www.libpng.org/ for details about the PNG format."
     },
     *JNGNote=
     {
       "See http://www.libpng.org/pub/mng/ for details about the JNG\n"
-      "format. The JNG 1.0 specification is available there and at\n"
-      "ftp://swrinde.nde.swri.edu/pub/mng/documents/."
+      "format."
     },
     *MNGNote=
     {
       "See http://www.libpng.org/pub/mng/ for details about the MNG\n"
-      "format. The MNG 1.0 specification is available there and at\n"
-      "ftp://swrinde.nde.swri.edu/pub/mng/documents/."
+      "format."
     };
 
   *version='\0';
