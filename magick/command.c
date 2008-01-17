@@ -14506,7 +14506,7 @@ MagickExport void ImportUsage(void)
 */
 static void PrintFeature(const char* feature,MagickBool support)
 {
-  (void) fprintf(stdout,"  %-22s %s\n", feature, (support ? "yes" : "no"));
+  (void) fprintf(stdout,"  %-24s %s\n", feature, (support ? "yes" : "no"));
 }
 static unsigned int VersionCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
@@ -14528,7 +14528,11 @@ static unsigned int VersionCommand(ImageInfo *image_info,
 
   /* Large File Support */
   supported=(sizeof(off_t) > 4);
-  PrintFeature("Large Files", supported);
+  PrintFeature("Large Files (> 32 bit)", supported);
+
+  /* Large Memory Support */
+  supported=(sizeof(PixelPacket *) > 4);
+  PrintFeature("Large Memory (> 32 bit)", supported);
 
   /* BZIP */
   supported=MagickFalse;
