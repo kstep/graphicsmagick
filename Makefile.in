@@ -1711,6 +1711,7 @@ LIB_THREAD = @LIB_THREAD@
 LIB_TIFF = @LIB_TIFF@
 LIB_TRIO = @LIB_TRIO@
 LIB_TTF = @LIB_TTF@
+LIB_UMEM = @LIB_UMEM@
 LIB_WMF = @LIB_WMF@
 LIB_WMF_DEPS = @LIB_WMF_DEPS@
 LIB_X11 = @LIB_X11@
@@ -1722,6 +1723,7 @@ LOCALSTATE_DIR = @LOCALSTATE_DIR@
 LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
 LTCXXLIBOPTS = @LTCXXLIBOPTS@
+LTDLDEPS = @LTDLDEPS@
 LTDLINCL = @LTDLINCL@
 LTDLOPEN = @LTDLOPEN@
 LTLIBOBJS = @LTLIBOBJS@
@@ -9616,7 +9618,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML) --stylesheet=magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
+	$(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
 
 # Format C API documentation
 format_c_api_docs:

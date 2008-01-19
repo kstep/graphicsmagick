@@ -3,9 +3,243 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
 <title>Welcome to GraphicsMagick</title>
-<link rel="stylesheet" href="magick.css" type="text/css" />
+<style type="text/css">
+
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : medium;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : smaller;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+        margin-top : 2mm;
+        margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : medium;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : medium;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : small;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : smaller;
+}
+
+.navlevel2 {
+        font-size : 9pt;
+}
+
+.navlevel3 {
+        font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : smaller;
+}
+
+.tiny  {
+	font-size : smaller;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : smaller;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
+
+
+</style>
 </head>
 <body>
 <div class="document" id="welcome-to-graphicsmagick">
@@ -20,8 +254,8 @@ encouraging open and active participation from all interested developers.
 The GraphicsMagick usage license is designed to allow it to be used for any
 application, including proprietary or GPLed applications. Please see the
 file Copyright.txt for the GraphicsMagick licence.</p>
-<div class="section" id="availability">
-<h1><a name="availability">AVAILABILITY</a></h1>
+<div class="section">
+<h1><a id="availability" name="availability">AVAILABILITY</a></h1>
 <p>GraphicsMagick is continually being improved. It may be retrieved via
 CVS using the following procedure:</p>
 <blockquote>
@@ -55,15 +289,15 @@ GraphicsMagick (useful or not) use:</p>
 cvs co GraphicsMagick-World</blockquote>
 </blockquote>
 </div>
-<div class="section" id="documentation">
-<h1><a name="documentation">DOCUMENTATION</a></h1>
+<div class="section">
+<h1><a id="documentation" name="documentation">DOCUMENTATION</a></h1>
 <blockquote>
 Open the file index.html in a web browser, or refer to the gm(1) manual
 page. Also read the GraphicsMagick frequently asked questions in the
 file www/FAQ.html.</blockquote>
 </div>
-<div class="section" id="installation">
-<h1><a name="installation">INSTALLATION</a></h1>
+<div class="section">
+<h1><a id="installation" name="installation">INSTALLATION</a></h1>
 <blockquote>
 <p>GraphicsMagick may be compiled from source code for virtually any
 modern Unix system (including Linux and MacOS X) and Microsoft Windows.
@@ -79,8 +313,8 @@ HTML equivalents):</p>
 </ul>
 </blockquote>
 </div>
-<div class="section" id="add-on-libraries-programs">
-<h1><a name="add-on-libraries-programs">ADD-ON LIBRARIES &amp; PROGRAMS</a></h1>
+<div class="section">
+<h1><a id="add-on-libraries-programs" name="add-on-libraries-programs">ADD-ON LIBRARIES &amp; PROGRAMS</a></h1>
 <p>To further enhance the capabilities of GraphicsMagick, you may want to
 get these programs or libraries. Note that the Windows source package
 (equivalent to CVS module &quot;GraphicsMagick-NT&quot;) includes (and builds) all
@@ -261,6 +495,17 @@ replacement) is not used, then vsprintf is used instead, which
 decreases the security of GraphicsMagick due to possible buffer
 overrun exploits.</p>
 </li>
+<li><p class="first">GraphicsMagick may optionally use the umem memory allocation library
+which is included in Sun's Solaris operating system or available from</p>
+<blockquote>
+<p><a class="reference" href="https://labs.omniti.com/trac/portableumem/">https://labs.omniti.com/trac/portableumem/</a></p>
+</blockquote>
+<p>to provide enhanced versions of the standard memory allocation
+facilities. Use of umem may improve performance for multi-threaded
+programs and provides access to debugging features that detect memory
+leaks, buffer overruns, multiple frees, use of uninitialized data, use
+of freed data, and many other common pro- gramming errors.</p>
+</li>
 <li><p class="first">GraphicsMagick requires libwmf 0.2.5 (or later) from</p>
 <blockquote>
 <p><a class="reference" href="http://sourceforge.net/projects/wvware/">http://sourceforge.net/projects/wvware/</a></p>
@@ -345,9 +590,10 @@ Copyright.txt. You should have received a copy of Copyright.txt with this
 package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
-<hr class="docutils footer" />
 <div class="footer">
-Generated on: 2007-07-27 20:09 UTC.
+<hr class="footer" />
+Generated on: 2008-01-19 20:05 UTC.
+
 </div>
 </body>
 </html>

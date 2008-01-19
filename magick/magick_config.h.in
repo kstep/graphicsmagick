@@ -400,6 +400,9 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
+/* Define if you have umem memory allocation library */
+#undef HasUMEM
+
 /* Define to use the Windows GDI32 library */
 #undef HasWINGDI32
 

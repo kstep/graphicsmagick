@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2558 2008/01/14 22:05:59) 2.1a
+# ltmain.sh (GNU libtool 1.2566 2008/01/18 10:49:40) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2558 2008/01/14 22:05:59) 2.1a
+#       $progname:		(GNU libtool 1.2566 2008/01/18 10:49:40) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2558 2008/01/14 22:05:59"
-package_revision=1.2558
+TIMESTAMP=" 1.2566 2008/01/18 10:49:40"
+package_revision=1.2566
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -112,9 +112,9 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/usr/sfw/bin/ggrep -E"}
-: ${FGREP="/usr/sfw/bin/ggrep -F"}
-: ${GREP="/usr/sfw/bin/ggrep"}
+: ${EGREP="/usr/local/bin/grep -E"}
+: ${FGREP="/usr/local/bin/grep -F"}
+: ${GREP="/usr/local/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}

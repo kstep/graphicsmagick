@@ -137,6 +137,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --without-tiff          disable TIFF support
    --without-trio          disable TRIO library support
    --without-ttf           disable TrueType support
+   --with-umem             enable umem memory allocation library support
    --without-wmf           disable WMF support
    --with-fontpath         prepend to default font search path
    --with-gs-font-dir      directory containing Ghostscript fonts

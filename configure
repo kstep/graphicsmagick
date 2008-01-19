@@ -933,6 +933,7 @@ am__fastdepCXX_FALSE
 CXXCPP
 LIBTOOL_DEPS
 LIBLTDL
+LTDLDEPS
 LTDLINCL
 INCLTDL
 LT_DLLOADERS
@@ -981,6 +982,9 @@ SysCtlDelegate
 WITH_MAGICK_PLUS_PLUS_TRUE
 WITH_MAGICK_PLUS_PLUS_FALSE
 LIB_THREAD
+HasUMEM_TRUE
+HasUMEM_FALSE
+LIB_UMEM
 CCMALLOCDelegate
 LIB_MATH
 LIB_TRIO
@@ -1779,6 +1783,7 @@ Optional Packages:
   --without-tiff          disable TIFF support
   --without-trio          disable TRIO support
   --without-ttf           disable TrueType support
+  --with-umem             enable umem memory allocation library support
   --without-wmf           disable WMF support
   --with-fontpath=DIR     prepend to default font search path
   --with-gs-font-dir=DIR  directory containing Ghostscript fonts
@@ -6543,7 +6548,7 @@ esac
 
 
 macro_version='2.1a'
-macro_revision='1.2558'
+macro_revision='1.2566'
 
 
 
@@ -6737,13 +6742,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6740: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6745: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6743: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6748: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6746: output\"" >&5)
+  (eval echo "\"\$as_me:6751: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7840,7 +7845,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7843 "configure"' > conftest.$ac_ext
+  echo '#line 7848 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9455,11 +9460,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9458: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9463: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9462: \$? = $ac_status" >&5
+   echo "$as_me:9467: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9773,11 +9778,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9776: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9781: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9780: \$? = $ac_status" >&5
+   echo "$as_me:9785: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9878,11 +9883,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9881: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9886: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9885: \$? = $ac_status" >&5
+   echo "$as_me:9890: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9933,11 +9938,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9936: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9941: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9940: \$? = $ac_status" >&5
+   echo "$as_me:9945: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10607,7 +10612,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     darwin* | rhapsody*)
 
 
-  withGCC=$GCC
   archive_cmds_need_lc=no
   hardcode_direct=no
   hardcode_automatic=yes
@@ -10615,7 +10619,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
   whole_archive_flag_spec=''
   link_all_deplibs=yes
   allow_undefined_flag="$_lt_dar_allow_undefined"
-  if test "$withGCC" = "yes"; then
+  if test "$GCC" = "yes"; then
     output_verbose_link_cmd=echo
     archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring $_lt_dar_single_mod${_lt_dsymutil}"
     module_cmds="\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags${_lt_dsymutil}"
@@ -11284,8 +11288,8 @@ esac
 
   { echo "$as_me:$LINENO: checking dynamic linker characteristics" >&5
 echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6; }
-withGCC=$GCC
-if test "$withGCC" = yes; then
+
+if test "$GCC" = yes; then
   case $host_os in
     darwin*) lt_awk_arg="/^libraries:/,/LR/" ;;
     *) lt_awk_arg="/^libraries:/" ;;
@@ -11446,7 +11450,7 @@ cygwin* | mingw* | pw32*)
   need_version=no
   need_lib_prefix=no
 
-  case $withGCC,$host_os in
+  case $GCC,$host_os in
   yes,cygwin* | yes,mingw* | yes,pw32*)
     library_names_spec='$libname.dll.a'
     # DLL is installed to $(libdir)/../bin by postinstall_cmds
@@ -12666,7 +12670,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12669 "configure"
+#line 12673 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12766,7 +12770,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12769 "configure"
+#line 12773 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14269,7 +14273,6 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       darwin* | rhapsody*)
 
 
-  withGCC=$GXX
   archive_cmds_need_lc_CXX=no
   hardcode_direct_CXX=no
   hardcode_automatic_CXX=yes
@@ -14277,7 +14280,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
   whole_archive_flag_spec_CXX=''
   link_all_deplibs_CXX=yes
   allow_undefined_flag_CXX="$_lt_dar_allow_undefined"
-  if test "$withGCC" = "yes"; then
+  if test "$GCC" = "yes"; then
     output_verbose_link_cmd=echo
     archive_cmds_CXX="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring $_lt_dar_single_mod${_lt_dsymutil}"
     module_cmds_CXX="\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags${_lt_dsymutil}"
@@ -15478,11 +15481,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15481: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15484: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15485: \$? = $ac_status" >&5
+   echo "$as_me:15488: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15577,11 +15580,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15580: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15583: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15584: \$? = $ac_status" >&5
+   echo "$as_me:15587: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15629,11 +15632,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15632: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15635: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15636: \$? = $ac_status" >&5
+   echo "$as_me:15639: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15850,7 +15853,7 @@ esac
 
     { echo "$as_me:$LINENO: checking dynamic linker characteristics" >&5
 echo $ECHO_N "checking dynamic linker characteristics... $ECHO_C" >&6; }
-withGCC=$GXX
+
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
@@ -15961,7 +15964,7 @@ cygwin* | mingw* | pw32*)
   need_version=no
   need_lib_prefix=no
 
-  case $withGCC,$host_os in
+  case $GCC,$host_os in
   yes,cygwin* | yes,mingw* | yes,pw32*)
     library_names_spec='$libname.dll.a'
     # DLL is installed to $(libdir)/../bin by postinstall_cmds
@@ -16601,7 +16604,9 @@ echo "$as_me: error: this package needs a convenience libltdl" >&2;}
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
 esac
 LIBLTDL='${top_builddir}/'"${lt_ltdl_dir+$lt_ltdl_dir/}libltdlc.la"
+LTDLDEPS=$LIBLTDL
 LTDLINCL='-I${top_srcdir}'"${lt_ltdl_dir+/$lt_ltdl_dir}"
+
 
 
 
@@ -17429,7 +17434,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 17432 "configure"
+#line 17437 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18263,7 +18268,9 @@ echo "$as_me: error: this package needs a convenience libltdl" >&2;}
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
 esac
 LIBLTDL='${top_builddir}/'"${lt_ltdl_dir+$lt_ltdl_dir/}libltdlc.la"
+LTDLDEPS=$LIBLTDL
 LTDLINCL='-I${top_srcdir}'"${lt_ltdl_dir+/$lt_ltdl_dir}"
+
 
 
 
@@ -18282,6 +18289,7 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 	LIBLTDL=-lltdl
+	LTDLDEPS=
 	LTDLINCL=
 	;;
   ,no*,no,*)
@@ -18291,6 +18299,7 @@ echo "$as_me: error: \`--with-ltdl-include' and \`--with-ltdl-lib' options must 
 	;;
   *)	with_included_ltdl=no
 	LIBLTDL="-L$with_ltdl_lib -lltdl"
+	LTDLDEPS=
 	LTDLINCL="-I$with_ltdl_include"
 	;;
 esac
@@ -18336,7 +18345,7 @@ else
   INSTALL_LTDL_FALSE=
 fi
 
- if test x"${enable_ltdl_convenience-no}" != xno; then
+  if test x"${enable_ltdl_convenience-no}" != xno; then
   CONVENIENCE_LTDL_TRUE=
   CONVENIENCE_LTDL_FALSE='#'
 else
@@ -19137,6 +19146,21 @@ fi
 
 if test "$with_ttf" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-ttf=$with_ttf "
+fi
+
+# Enable use of Solaris libumem (object-caching memory allocation library).
+# Available as a SourceForge project http://sourceforge.net/projects/umem/ or
+# https://labs.omniti.com/trac/portableumem/.
+
+# Check whether --with-umem was given.
+if test "${with_umem+set}" = set; then
+  withval=$with_umem; with_umem=$withval
+else
+  with_umem='no'
+fi
+
+if test "$with_umem" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-umem=$with_umem "
 fi
 
 # Disable WMF.
@@ -28305,6 +28329,323 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
   LIB_THREAD="$PTHREAD_LIBS"
   LIBS="$LIBS $LIB_THREAD"
 fi
+
+
+
+#
+# Check for Solaris-derived libumem
+#
+have_umem='no'
+LIB_UMEM=''
+if test "$with_umem" != 'no'
+then
+  { echo "$as_me:$LINENO: checking for UMEM support " >&5
+echo $ECHO_N "checking for UMEM support ... $ECHO_C" >&6; }
+  { echo "$as_me:$LINENO: result: " >&5
+echo "${ECHO_T}" >&6; }
+  failed=0;
+  passed=0;
+  if test "${ac_cv_header_umem_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for umem.h" >&5
+echo $ECHO_N "checking for umem.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_umem_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_umem_h" >&5
+echo "${ECHO_T}$ac_cv_header_umem_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking umem.h usability" >&5
+echo $ECHO_N "checking umem.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <umem.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking umem.h presence" >&5
+echo $ECHO_N "checking umem.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <umem.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: umem.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: umem.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: umem.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: umem.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: umem.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: umem.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: umem.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: umem.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: umem.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: umem.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: umem.h: in the future, the compiler will take precedence" >&2;}
+
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for umem.h" >&5
+echo $ECHO_N "checking for umem.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_umem_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_umem_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_umem_h" >&5
+echo "${ECHO_T}$ac_cv_header_umem_h" >&6; }
+
+fi
+if test $ac_cv_header_umem_h = yes; then
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+  { echo "$as_me:$LINENO: checking for umem_alloc in -lumem" >&5
+echo $ECHO_N "checking for umem_alloc in -lumem... $ECHO_C" >&6; }
+if test "${ac_cv_lib_umem_umem_alloc+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lumem  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char umem_alloc ();
+int
+main ()
+{
+return umem_alloc ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_umem_umem_alloc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_umem_umem_alloc=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_umem_umem_alloc" >&5
+echo "${ECHO_T}$ac_cv_lib_umem_umem_alloc" >&6; }
+if test $ac_cv_lib_umem_umem_alloc = yes; then
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+  { echo "$as_me:$LINENO: checking for umem_free in -lumem" >&5
+echo $ECHO_N "checking for umem_free in -lumem... $ECHO_C" >&6; }
+if test "${ac_cv_lib_umem_umem_free+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lumem  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char umem_free ();
+int
+main ()
+{
+return umem_free ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_umem_umem_free=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_umem_umem_free=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_umem_umem_free" >&5
+echo "${ECHO_T}$ac_cv_lib_umem_umem_free" >&6; }
+if test $ac_cv_lib_umem_umem_free = yes; then
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+  { echo "$as_me:$LINENO: checking if umem memory allocation library is complete" >&5
+echo $ECHO_N "checking if umem memory allocation library is complete... $ECHO_C" >&6; }
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      { echo "$as_me:$LINENO: result: no -- some components failed test" >&5
+echo "${ECHO_T}no -- some components failed test" >&6; }
+      have_umem='no (failed tests)'
+    else
+      LIB_UMEM='-lumem'
+      LIBS="$LIB_UMEM $LIBS"
+
+cat >>confdefs.h <<\_ACEOF
+#define HasUMEM 1
+_ACEOF
+
+      { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+      have_umem='yes'
+    fi
+  else
+    { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+  fi
+fi
+ if test "$have_umem" = 'yes'; then
+  HasUMEM_TRUE=
+  HasUMEM_FALSE='#'
+else
+  HasUMEM_TRUE='#'
+  HasUMEM_FALSE=
+fi
+
+
 
 
 #
@@ -38650,9 +38991,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 fi
 
 
@@ -38945,6 +39286,13 @@ if test -z "${WITH_MAGICK_PLUS_PLUS_TRUE}" && test -z "${WITH_MAGICK_PLUS_PLUS_F
   { { echo "$as_me:$LINENO: error: conditional \"WITH_MAGICK_PLUS_PLUS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"WITH_MAGICK_PLUS_PLUS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HasUMEM_TRUE}" && test -z "${HasUMEM_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HasUMEM\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HasUMEM\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -40199,6 +40547,7 @@ am__fastdepCXX_FALSE!$am__fastdepCXX_FALSE$ac_delim
 CXXCPP!$CXXCPP$ac_delim
 LIBTOOL_DEPS!$LIBTOOL_DEPS$ac_delim
 LIBLTDL!$LIBLTDL$ac_delim
+LTDLDEPS!$LTDLDEPS$ac_delim
 LTDLINCL!$LTDLINCL$ac_delim
 INCLTDL!$INCLTDL$ac_delim
 LT_DLLOADERS!$LT_DLLOADERS$ac_delim
@@ -40226,7 +40575,6 @@ DLLDFLAGS!$DLLDFLAGS$ac_delim
 MAINTAINER_MODE_TRUE!$MAINTAINER_MODE_TRUE$ac_delim
 MAINTAINER_MODE_FALSE!$MAINTAINER_MODE_FALSE$ac_delim
 MAINT!$MAINT$ac_delim
-MAGICK_COMPAT_TRUE!$MAGICK_COMPAT_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -40268,6 +40616,7 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+MAGICK_COMPAT_TRUE!$MAGICK_COMPAT_TRUE$ac_delim
 MAGICK_COMPAT_FALSE!$MAGICK_COMPAT_FALSE$ac_delim
 QuantumDepth!$QuantumDepth$ac_delim
 PERL_MAKE_OPTIONS!$PERL_MAKE_OPTIONS$ac_delim
@@ -40288,6 +40637,9 @@ SysCtlDelegate!$SysCtlDelegate$ac_delim
 WITH_MAGICK_PLUS_PLUS_TRUE!$WITH_MAGICK_PLUS_PLUS_TRUE$ac_delim
 WITH_MAGICK_PLUS_PLUS_FALSE!$WITH_MAGICK_PLUS_PLUS_FALSE$ac_delim
 LIB_THREAD!$LIB_THREAD$ac_delim
+HasUMEM_TRUE!$HasUMEM_TRUE$ac_delim
+HasUMEM_FALSE!$HasUMEM_FALSE$ac_delim
+LIB_UMEM!$LIB_UMEM$ac_delim
 CCMALLOCDelegate!$CCMALLOCDelegate$ac_delim
 LIB_MATH!$LIB_MATH$ac_delim
 LIB_TRIO!$LIB_TRIO$ac_delim
@@ -40361,10 +40713,6 @@ CGMDecodeDelegate!$CGMDecodeDelegate$ac_delim
 CatDelegate!$CatDelegate$ac_delim
 DCRAWDecodeDelegate!$DCRAWDecodeDelegate$ac_delim
 DOTDecodeDelegate!$DOTDecodeDelegate$ac_delim
-DVIDecodeDelegate!$DVIDecodeDelegate$ac_delim
-EchoDelegate!$EchoDelegate$ac_delim
-EditorDelegate!$EditorDelegate$ac_delim
-FIGDecodeDelegate!$FIGDecodeDelegate$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -40406,6 +40754,10 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+DVIDecodeDelegate!$DVIDecodeDelegate$ac_delim
+EchoDelegate!$EchoDelegate$ac_delim
+EditorDelegate!$EditorDelegate$ac_delim
+FIGDecodeDelegate!$FIGDecodeDelegate$ac_delim
 GMDelegate!$GMDelegate$ac_delim
 GnuplotDecodeDelegate!$GnuplotDecodeDelegate$ac_delim
 HPGLDecodeDelegate!$HPGLDecodeDelegate$ac_delim
@@ -40476,7 +40828,7 @@ MAGICK_API_LIBS!$MAGICK_API_LIBS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 68; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

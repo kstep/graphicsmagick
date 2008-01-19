@@ -673,6 +673,17 @@ if test "$with_ttf" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-ttf=$with_ttf "
 fi
 
+# Enable use of Solaris libumem (object-caching memory allocation library).
+# Available as a SourceForge project http://sourceforge.net/projects/umem/ or
+# https://labs.omniti.com/trac/portableumem/.
+AC_ARG_WITH(umem,
+	      [  --with-umem             enable umem memory allocation library support],
+	      [with_umem=$withval],
+	      [with_umem='no'])
+if test "$with_umem" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-umem=$with_umem "
+fi
+
 # Disable WMF.
 AC_ARG_WITH(wmf,
 	      [  --without-wmf           disable WMF support],
@@ -1266,6 +1277,43 @@ then
   LIBS="$LIBS $LIB_THREAD"
 fi
 AC_SUBST(LIB_THREAD)
+
+
+#
+# Check for Solaris-derived libumem
+#
+have_umem='no'
+LIB_UMEM=''
+if test "$with_umem" != 'no'
+then
+  AC_MSG_CHECKING(for UMEM support )
+  AC_MSG_RESULT()
+  failed=0;
+  passed=0;
+  AC_CHECK_HEADER(umem.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(umem,umem_alloc,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(umem,umem_free,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_MSG_CHECKING(if umem memory allocation library is complete)
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      AC_MSG_RESULT(no -- some components failed test)
+      have_umem='no (failed tests)'
+    else
+      LIB_UMEM='-lumem'
+      LIBS="$LIB_UMEM $LIBS"
+      AC_DEFINE(HasUMEM,1,Define if you have umem memory allocation library)
+      AC_MSG_RESULT(yes)
+      have_umem='yes'
+    fi
+  else
+    AC_MSG_RESULT(no)
+  fi
+fi
+AM_CONDITIONAL(HasUMEM, test "$have_umem" = 'yes')
+AC_SUBST(LIB_UMEM)
+
 
 #
 # Add support for ccmalloc memory debugging library if requested
@@ -2751,9 +2799,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

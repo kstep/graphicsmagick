@@ -267,7 +267,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML) --stylesheet=magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
+	$(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
 
 # Format C API documentation
 format_c_api_docs:

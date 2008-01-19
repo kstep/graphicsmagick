@@ -262,6 +262,17 @@ of the library-based packages listed here.
   decreases the security of GraphicsMagick due to possible buffer
   overrun exploits.
 
+* GraphicsMagick may optionally use the umem memory allocation library
+  which is included in Sun's Solaris operating system or available from
+
+     https://labs.omniti.com/trac/portableumem/
+
+  to provide enhanced versions of the standard memory allocation
+  facilities. Use of umem may improve performance for multi-threaded
+  programs and provides access to debugging features that detect memory
+  leaks, buffer overruns, multiple frees, use of uninitialized data, use
+  of freed data, and many other common pro- gramming errors.
+
 * GraphicsMagick requires libwmf 0.2.5 (or later) from
 
      http://sourceforge.net/projects/wvware/

@@ -14770,6 +14770,13 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined(HasFPX) */
   PrintFeature("FlashPix", supported);
 
+  /* FreeType */
+  supported=MagickFalse;
+#if defined(HasTTF)
+  supported=MagickTrue;
+#endif /* defined(HasTTF) */
+  PrintFeature("FreeType", supported);
+
   /* Ghostscript Library */
   supported=MagickFalse;
 #if defined(HasGS)
@@ -14833,12 +14840,12 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined(HasTRIO) */
   PrintFeature("TRIO", supported);
 
-  /* FreeType */
+  /* Solaris libumem */
   supported=MagickFalse;
-#if defined(HasTTF)
+#if defined(HasUMEM)
   supported=MagickTrue;
-#endif /* defined(HasTTF) */
-  PrintFeature("FreeType", supported);
+#endif /* defined(HasUMEM) */
+  PrintFeature("UMEM", supported);
 
   /* WMF */
   supported=MagickFalse;
