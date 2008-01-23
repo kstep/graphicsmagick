@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.9 subdir-objects dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-zip dist-bzip2 dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 

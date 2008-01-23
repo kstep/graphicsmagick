@@ -1,3 +1,8 @@
+2008-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Update to Automake 1.10.1 and enable generation of
+	an lzma compressed source package.
+
 2008-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Added configure option --with-umem to enable use
