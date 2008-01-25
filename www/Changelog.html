@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2008-01-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (ExpandFilenames): If a filename appears to
+        contain a wildcard specification, first check to see if there is
+        file matching the unexpanded wildcard prior to engaging in the
+        slow task of wildcard expansion.  Without this fix, expanding the
+        command line takes a very long time if there are a huge number of
+        files in the directory, and some file names appear to contain
+        wildcard specifications.  Inspired by SourceForge bug reports [
+        1878992 ] "literal square brackets in file name cause large delay"
+        and [ 1783209 ] "converting runs slowly when subimage is
+        specified", but this might not be the complete fix for the
+        problem.
+
+</UL>
+<p>
 2008-01-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

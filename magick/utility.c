@@ -939,10 +939,13 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 
     /* 
       Fast cycle options that are not expandable filename patterns.
-      ListFiles only expands patterns in the filename.
+      ListFiles only expands patterns in the filename.  We also check
+      if the full option resolves to a file since ListFiles() obtains
+      a list of all the files in the directory and is thus very slow
+      if there are thousands of files.
     */
     GetPathComponent(option,TailPath,filename);
-    if (!IsGlob(filename))
+    if ((!IsGlob(filename)) || IsAccessibleNoLogging(option))
       continue;
 
     /* Chop the option to get its other filename components. */
