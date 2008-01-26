@@ -6130,7 +6130,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   *magic='\0';
   p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
-  if (*p == ']')
+  if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
     {
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
