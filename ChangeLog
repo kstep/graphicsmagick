@@ -1,3 +1,9 @@
+2008-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Successfully read existing file
+	names in the form file[123] which were failing to read since they
+	appear to be a valid sub-image specification.
+
 2008-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (ExpandFilenames): If a filename appears to
