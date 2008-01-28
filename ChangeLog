@@ -1,3 +1,8 @@
+2008-01-28  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* magick/Makefile.am: Update
+	magick_libGraphicsMagick_la_DEPENDENCIES to use LTDLDEPS.
+
 2008-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Successfully read existing file

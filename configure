@@ -6548,7 +6548,7 @@ esac
 
 
 macro_version='2.1a'
-macro_revision='1.2570'
+macro_revision='1.2578'
 
 
 
@@ -15138,6 +15138,15 @@ esac
 case " $postdeps_CXX " in
 *" -lc "*) archive_cmds_need_lc_CXX=no ;;
 esac
+ compiler_lib_search_dirs_CXX=
+if test -n "$${compiler_lib_search_path_CXX}"; then
+ compiler_lib_search_dirs_CXX=`echo " ${compiler_lib_search_path_CXX}" | ${SED} -e 's! -L! !g' -e 's!^ !!'`
+fi
+
+
+
+
+
 
 
 
@@ -15496,11 +15505,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15499: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15508: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15503: \$? = $ac_status" >&5
+   echo "$as_me:15512: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15595,11 +15604,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15598: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15607: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15602: \$? = $ac_status" >&5
+   echo "$as_me:15611: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15647,11 +15656,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15650: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15659: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15654: \$? = $ac_status" >&5
+   echo "$as_me:15663: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17464,7 +17473,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 17467 "configure"
+#line 17476 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -40057,6 +40066,7 @@ enable_dlopen_self='`$ECHO "X$enable_dlopen_self" | $Xsed -e "$delay_single_quot
 enable_dlopen_self_static='`$ECHO "X$enable_dlopen_self_static" | $Xsed -e "$delay_single_quote_subst"`'
 old_striplib='`$ECHO "X$old_striplib" | $Xsed -e "$delay_single_quote_subst"`'
 striplib='`$ECHO "X$striplib" | $Xsed -e "$delay_single_quote_subst"`'
+compiler_lib_search_dirs='`$ECHO "X$compiler_lib_search_dirs" | $Xsed -e "$delay_single_quote_subst"`'
 predep_objects='`$ECHO "X$predep_objects" | $Xsed -e "$delay_single_quote_subst"`'
 postdep_objects='`$ECHO "X$postdep_objects" | $Xsed -e "$delay_single_quote_subst"`'
 predeps='`$ECHO "X$predeps" | $Xsed -e "$delay_single_quote_subst"`'
@@ -40103,6 +40113,7 @@ include_expsyms_CXX='`$ECHO "X$include_expsyms_CXX" | $Xsed -e "$delay_single_qu
 prelink_cmds_CXX='`$ECHO "X$prelink_cmds_CXX" | $Xsed -e "$delay_single_quote_subst"`'
 file_list_spec_CXX='`$ECHO "X$file_list_spec_CXX" | $Xsed -e "$delay_single_quote_subst"`'
 hardcode_action_CXX='`$ECHO "X$hardcode_action_CXX" | $Xsed -e "$delay_single_quote_subst"`'
+compiler_lib_search_dirs_CXX='`$ECHO "X$compiler_lib_search_dirs_CXX" | $Xsed -e "$delay_single_quote_subst"`'
 predep_objects_CXX='`$ECHO "X$predep_objects_CXX" | $Xsed -e "$delay_single_quote_subst"`'
 postdep_objects_CXX='`$ECHO "X$postdep_objects_CXX" | $Xsed -e "$delay_single_quote_subst"`'
 predeps_CXX='`$ECHO "X$predeps_CXX" | $Xsed -e "$delay_single_quote_subst"`'
@@ -40168,6 +40179,7 @@ soname_spec \
 finish_eval \
 old_striplib \
 striplib \
+compiler_lib_search_dirs \
 predep_objects \
 postdep_objects \
 predeps \
@@ -40193,6 +40205,7 @@ fix_srcfile_path_CXX \
 exclude_expsyms_CXX \
 include_expsyms_CXX \
 file_list_spec_CXX \
+compiler_lib_search_dirs_CXX \
 predep_objects_CXX \
 postdep_objects_CXX \
 predeps_CXX \
@@ -41821,6 +41834,9 @@ file_list_spec=$lt_file_list_spec
 # How to hardcode a shared library path into an executable.
 hardcode_action=$hardcode_action
 
+# The directories searched by this compiler when creating a shared library.
+compiler_lib_search_dirs=$lt_compiler_lib_search_dirs
+
 # Dependencies to place before and after the objects being linked to
 # create a shared library.
 predep_objects=$lt_predep_objects
@@ -42182,6 +42198,9 @@ file_list_spec=$lt_file_list_spec_CXX
 
 # How to hardcode a shared library path into an executable.
 hardcode_action=$hardcode_action_CXX
+
+# The directories searched by this compiler when creating a shared library.
+compiler_lib_search_dirs=$lt_compiler_lib_search_dirs_CXX
 
 # Dependencies to place before and after the objects being linked to
 # create a shared library.

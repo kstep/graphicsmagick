@@ -171,10 +171,6 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 @INSTALL_LTDL_TRUE@am__append_1 = ltdl/ltdl.h
 @INSTALL_LTDL_TRUE@am__append_2 = ltdl/libltdl.la
 @CONVENIENCE_LTDL_TRUE@am__append_3 = ltdl/libltdlc.la
-@CONVENIENCE_LTDL_FALSE@@WITH_MODULES_FALSE@magick_libGraphicsMagick_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-@CONVENIENCE_LTDL_FALSE@@WITH_MODULES_FALSE@	$(am__DEPENDENCIES_1)
-@CONVENIENCE_LTDL_FALSE@@WITH_MODULES_TRUE@magick_libGraphicsMagick_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-@CONVENIENCE_LTDL_FALSE@@WITH_MODULES_TRUE@	$(am__DEPENDENCIES_1)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
@@ -2790,7 +2786,7 @@ magick_libGraphicsMagick_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/lt
 magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
-@CONVENIENCE_LTDL_TRUE@magick_libGraphicsMagick_la_DEPENDENCIES = $(LIBLTDL)
+magick_libGraphicsMagick_la_DEPENDENCIES = $(LTDLDEPS)
 
 # Library base sources
 MAGICK_BASE_SRCS = \
