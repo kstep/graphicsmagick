@@ -3655,6 +3655,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             units=RESUNIT_INCH;
           if (image->units == PixelsPerCentimeterResolution)
             units=RESUNIT_CENTIMETER;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Resolution %gx%g pixels%s",
+                                  image->x_resolution, image->y_resolution,
+                                  (units == RESUNIT_NONE ? " (undefined units)" :
+                                   (units == RESUNIT_INCH ? " per inch" :
+                                    (units == RESUNIT_CENTIMETER ? " per centimeter"
+                                     : "BAD VALUE"))));
           (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
           (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
           (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);

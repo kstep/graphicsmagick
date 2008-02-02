@@ -337,9 +337,8 @@ LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
 
 # Configure libltdl
-LT_CONFIG_LTDL_DIR([ltdl],[nonrecursive]) 
-AC_LIBLTDL_CONVENIENCE([ltdl])
-AC_LIB_LTDL
+LT_CONFIG_LTDL_DIR([ltdl])
+LTDL_INIT([convenience nonrecursive])
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 #AC_SUBST(INCLTDL)
 #AC_SUBST(LIBLTDL)

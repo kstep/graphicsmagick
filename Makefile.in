@@ -163,11 +163,10 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/magick/version.h.in \
 	$(top_srcdir)/wand/GraphicsMagickWand-config.in \
 	$(top_srcdir)/wand/GraphicsMagickWand.pc.in $(wandinc_HEADERS) \
-	AUTHORS ChangeLog NEWS ltdl/argz.c ltdl/config/compile \
+	AUTHORS ChangeLog NEWS ltdl/config/compile \
 	ltdl/config/config.guess ltdl/config/config.sub \
 	ltdl/config/depcomp ltdl/config/install-sh \
-	ltdl/config/ltmain.sh ltdl/config/missing ltdl/lt__dirent.c \
-	ltdl/lt__strl.c mkinstalldirs
+	ltdl/config/ltmain.sh ltdl/config/missing mkinstalldirs
 @INSTALL_LTDL_TRUE@am__append_1 = ltdl/ltdl.h
 @INSTALL_LTDL_TRUE@am__append_2 = ltdl/libltdl.la
 @CONVENIENCE_LTDL_TRUE@am__append_3 = ltdl/libltdlc.la
@@ -943,7 +942,6 @@ ltdl_dyld_la_OBJECTS = $(am_ltdl_dyld_la_OBJECTS)
 ltdl_dyld_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(ltdl_dyld_la_LDFLAGS) $(LDFLAGS) -o $@
-LIBOBJDIR = ltdl/
 am_ltdl_libltdl_la_OBJECTS = ltdl/loaders/ltdl_libltdl_la-preopen.lo \
 	ltdl/ltdl_libltdl_la-lt__alloc.lo \
 	ltdl/ltdl_libltdl_la-lt_dlloader.lo \
@@ -954,6 +952,7 @@ ltdl_libltdl_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(ltdl_libltdl_la_LDFLAGS) $(LDFLAGS) -o $@
 @INSTALL_LTDL_TRUE@am_ltdl_libltdl_la_rpath = -rpath $(libdir)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 am__objects_1 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
 	ltdl/ltdl_libltdlc_la-lt__alloc.lo \
 	ltdl/ltdl_libltdlc_la-lt_dlloader.lo \
@@ -1877,6 +1876,8 @@ libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
 lt_ECHO = @lt_ECHO@
+ltdl_LIBOBJS = @ltdl_LIBOBJS@
+ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -1887,7 +1888,6 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
-subdirs = @subdirs@
 sys_symbol_underscore = @sys_symbol_underscore@
 sysconfdir = @sysconfdir@
 target = @target@
@@ -1922,7 +1922,7 @@ DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 CLEANFILES = $(LTDL_CLEANFILES) $(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) $(TESTS_CLEANFILES) $(WAND_CLEANFILES) \
 	ltdl/libltdl.la ltdl/libltdlc.la ltdl/libdlloader.la \
-	$(LIBOBJS) $(LTLIBOBJS)
+	$(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -1979,7 +1979,8 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	$(MAGICK_EXTRA_DIST) $(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) $(WAND_EXTRA_DIST) \
-	ltdl/COPYING.LIB ltdl/README ltdl/argz_.h
+	ltdl/lt__dirent.c ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README \
+	ltdl/argz_.h ltdl/argz.c
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
 AM_LDFLAGS = -no-undefined
@@ -2020,7 +2021,7 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.mgk.in \
 	config/type.mgk.in
 
-LTDL_VERSION_INFO = -version-info 7:0:0
+LTDL_VERSION_INFO = -version-info 8:0:1
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
@@ -2045,8 +2046,8 @@ ltdl_libltdl_la_SOURCES = ltdl/libltdl/lt__alloc.h \
 
 ltdl_libltdl_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
 ltdl_libltdl_la_LDFLAGS = $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
-ltdl_libltdl_la_LIBADD = $(LTLIBOBJS)
-ltdl_libltdl_la_DEPENDENCIES = $(LT_DLLOADERS) $(LTLIBOBJS)
+ltdl_libltdl_la_LIBADD = $(ltdl_LTLIBOBJS)
+ltdl_libltdl_la_DEPENDENCIES = $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
 ltdl_libltdlc_la_SOURCES = $(ltdl_libltdl_la_SOURCES)
 ltdl_libltdlc_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN)c $(AM_CPPFLAGS)
 ltdl_libltdlc_la_LDFLAGS = $(AM_LDFLAGS) $(LT_DLPREOPEN)
@@ -6506,9 +6507,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-yuv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/argz.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/lt__dirent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/lt__strl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo@am__quote@
@@ -9156,8 +9154,6 @@ install-strip:
 	  `test -z '$(STRIP)' || \
 	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
-	-test -z "$(LIBOBJS)" || rm -f $(LIBOBJS)
-	-test -z "$(LTLIBOBJS)" || rm -f $(LTLIBOBJS)
 	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:

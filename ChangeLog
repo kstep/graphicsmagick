@@ -1,3 +1,15 @@
+2008-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add logging for image resolution
+	and resolution units.
+	* magick/version.h.in: Update copyright year to 2008.
+
+2008-02-01  Gary V. Vaughan  <gary@gnu.org>
+	
+	* configure.ac: Updated for libtool-2.1b.
+	* bootstrap (libtoolize): Libtoolize can figure out the mode and
+	directory for libltdl from configure.ac.
+
 2008-01-28  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* magick/Makefile.am: Update

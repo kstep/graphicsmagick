@@ -36,7 +36,7 @@ AM_CPPFLAGS	       += -DLT_CONFIG_H='<$(LT_CONFIG_H)>' \
 			  -DLTDL -I. -I$(srcdir) -Iltdl \
 			  -I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl
 AM_LDFLAGS	       += -no-undefined
-LTDL_VERSION_INFO	= -version-info 7:0:0
+LTDL_VERSION_INFO	= -version-info 8:0:1
 
 noinst_LTLIBRARIES	+= $(LT_DLLOADERS)
 
@@ -70,10 +70,13 @@ ltdl_libltdl_la_SOURCES = ltdl/libltdl/lt__alloc.h \
 			  ltdl/ltdl.h \
 			  ltdl/slist.c
 
+EXTRA_DIST	       += ltdl/lt__dirent.c \
+			  ltdl/lt__strl.c
+
 ltdl_libltdl_la_CPPFLAGS	= -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
 ltdl_libltdl_la_LDFLAGS	= $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
-ltdl_libltdl_la_LIBADD	= $(LTLIBOBJS)
-ltdl_libltdl_la_DEPENDENCIES	= $(LT_DLLOADERS) $(LTLIBOBJS)
+ltdl_libltdl_la_LIBADD	= $(ltdl_LTLIBOBJS)
+ltdl_libltdl_la_DEPENDENCIES	= $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
 
 ltdl_libltdlc_la_SOURCES	= $(ltdl_libltdl_la_SOURCES)
 ltdl_libltdlc_la_CPPFLAGS	= -DLTDLOPEN=$(LTDLOPEN)c $(AM_CPPFLAGS)
@@ -120,7 +123,7 @@ CLEANFILES		       += ltdl/libltdl.la \
 
 ## Automake-1.9.6 doesn't clean subdir AC_LIBOBJ compiled objects
 ## automatically:
-CLEANFILES	       += $(LIBOBJS) $(LTLIBOBJS)
+CLEANFILES	       += $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 
 EXTRA_DIST	       += ltdl/COPYING.LIB \
 			  ltdl/README
@@ -130,7 +133,8 @@ EXTRA_DIST	       += ltdl/COPYING.LIB \
 ## --------------------------- ##
 
 BUILT_SOURCES	+= ltdl/$(ARGZ_H)
-EXTRA_DIST	+= ltdl/argz_.h
+EXTRA_DIST	+= ltdl/argz_.h \
+		   ltdl/argz.c
 
 # We need the following in order to create an <argz.h> when the system
 # doesn't have one that works with the given compiler.
