@@ -1,5 +1,7 @@
 2008-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/installer/inc/setup.isx: Set Inno Setup installer
+	compression to "lzma/max".
 	* PerlMagick/Magick.xs: Eliminate use of memory allocation macros
 	since these failed miserably under Windows where it seems that
 	malloc, free, and realloc are redefined via macros by the Perl

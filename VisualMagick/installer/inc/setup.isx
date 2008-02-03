@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003, 2004 GraphicsMagick Group
+; Copyright (C) 2003, 2004, 2008 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -21,7 +21,7 @@ AppUpdatesURL=http://www.{#MagickPackageName}.org/www/download.html
 ; Default install is similar to "C:\Program Files\GraphicsMagick-1.1-Q16":
 DefaultDirName={pf}\{#MagickPackageName}-{#MagickPackageVersion}-Q{#QuantumDepth}
 DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
-Compression=bzip/9
+Compression=lzma/max
 ChangesAssociations=1
 AllowRootDirectory=no
 LicenseFile=txt\license.rtf
