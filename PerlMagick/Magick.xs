@@ -44,7 +44,6 @@
 /*
   Include declarations.
 */
-#define MAGICK_IMPLEMENTATION 1
 #if !defined(WIN32)
 #define MagickExport
 #endif
@@ -510,7 +509,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   struct PackageInfo
     *clone_info;
 
-  clone_info=MagickAllocateMemory(struct PackageInfo *,sizeof(struct PackageInfo));
+  clone_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
       clone_info->image_info=CloneImageInfo((ImageInfo *) NULL);
@@ -725,7 +724,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
   DestroyImageInfo(info->image_info);
   DestroyDrawInfo(info->draw_info);
   DestroyQuantizeInfo(info->quantize_info);
-  MagickFreeMemory(info);
+  LiberateMemory((void **) &info);
 }
 
 /*
@@ -833,14 +832,11 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
             {
               *last+=256;
               if (*reference_vector)
-                {
-                  MagickReallocMemory(SV **,*reference_vector,*last*sizeof(*reference_vector));
-                }
+                ReacquireMemory((void **) & (*reference_vector),
+                  *last*sizeof(*reference_vector));
               else
-                {
-                  *reference_vector=
-                    MagickAllocateMemory(SV **,*last*sizeof(*reference_vector));
-                }
+                *reference_vector=(SV **)
+                  AcquireMemory(*last*sizeof(*reference_vector));
             }
         (*reference_vector)[*current]=reference;
         (*reference_vector)[++(*current)]=NULL;
@@ -1646,7 +1642,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)
             (void) GetImageGeometry(image,geometry,False,&image->page);
-          MagickFreeMemory(geometry);
+          LiberateMemory((void **) &geometry);
           return;
         }
       if (LocaleCompare(attribute,"pen") == 0)
@@ -2461,8 +2457,8 @@ BlobToImage(ref,...)
     MY_CXT.error_list=newSVpv("",0);
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
-    list=MagickAllocateMemory(char **,(ac+1)*sizeof(*list));
-    length=MagickAllocateMemory(STRLEN *,(ac+1)*sizeof(length));
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
+    length=(STRLEN *) AcquireMemory((ac+1)*sizeof(length));
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,ReferenceIsNotMyType,PackageName);
@@ -2522,13 +2518,13 @@ BlobToImage(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              MagickFreeMemory(list[i]);
+              LiberateMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
-    MagickFreeMemory(list);
-    MagickFreeMemory(length);
+    LiberateMemory((void **) &list);
+    LiberateMemory((void **) &length);
     sv_setiv(MY_CXT.error_list,(IV) number_images);
     SvPOK_on(MY_CXT.error_list);
     ST(0)=sv_2mortal(MY_CXT.error_list);
@@ -4119,7 +4115,7 @@ ImageToBlob(ref,...)
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv((const char *) blob,length)));
-          MagickFreeMemory(blob);
+          LiberateMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
         break;
@@ -5760,13 +5756,13 @@ Mogrify(ref,...)
             break;
           av=(AV *) argument_list[0].array_reference;
           radius=(unsigned int) sqrt(av_len(av)+1);
-          kernel=MagickAllocateMemory(double *,radius*radius*sizeof(double));
+          kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (long) (radius*radius); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,radius,kernel,&exception);
-          MagickFreeMemory(kernel);
+          LiberateMemory((void **) &kernel);
           break;
         }
         case 68:  /* Profile */
@@ -6042,7 +6038,8 @@ Mogrify(ref,...)
     DestroyExceptionInfo(&exception);
 
   ReturnIt:
-    MagickFreeMemory(reference_vector);
+    if (reference_vector)
+      LiberateMemory((void **) &reference_vector);
     sv_setiv(MY_CXT.error_list,(IV) number_images);
     SvPOK_on(MY_CXT.error_list);
     ST(0)=sv_2mortal(MY_CXT.error_list);
@@ -6747,7 +6744,7 @@ Ping(ref,...)
     MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
     ac=(items < 2) ? 1 : items-1;
-    list=MagickAllocateMemory(char **,(ac+1)*sizeof(*list));
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     av=(AV *) reference;
@@ -6824,14 +6821,14 @@ Ping(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              MagickFreeMemory(list[i]);
+              LiberateMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
     if (package_info)
       DestroyPackageInfo(package_info);
-    MagickFreeMemory(list);
+    LiberateMemory((void **) &list);
     SvREFCNT_dec(MY_CXT.error_list);  /* throw away all errors */
     MY_CXT.error_list=NULL;
   }
@@ -6883,9 +6880,9 @@ QueryColor(ref,...)
         for (i=0; i < colors; i++)
         {
           PUSHs(sv_2mortal(newSVpv(colorlist[i],0)));
-          MagickFreeMemory(colorlist[i]);
+          LiberateMemory((void **) &colorlist[i]);
         }
-        MagickFreeMemory(colorlist);
+        LiberateMemory((void **) &colorlist);
         goto MethodException;
       }
     EXTEND(sp,4*items);
@@ -7024,9 +7021,9 @@ QueryFont(ref,...)
         for (i=0; i < types; i++)
         {
           PUSHs(sv_2mortal(newSVpv(typelist[i],0)));
-          MagickFreeMemory(typelist[i]);
+          LiberateMemory((void **) &typelist[i]);
         }
-        MagickFreeMemory(typelist);
+        LiberateMemory((void **) &typelist);
         goto MethodException;
       }
     EXTEND(sp,10*items);
@@ -7515,7 +7512,7 @@ Read(ref,...)
     package_info=(struct PackageInfo *) NULL;
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
-    list=MagickAllocateMemory(char **,(ac+1)*sizeof(*list));
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,ReferenceIsNotMyType,PackageName);
@@ -7597,14 +7594,14 @@ Read(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              MagickFreeMemory(list[i]);
+              LiberateMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
     if (package_info)
       DestroyPackageInfo(package_info);
-    MagickFreeMemory(list);
+    LiberateMemory((void **) &list);
     sv_setiv(MY_CXT.error_list,(IV) number_images);
     SvPOK_on(MY_CXT.error_list);
     ST(0)=sv_2mortal(MY_CXT.error_list);

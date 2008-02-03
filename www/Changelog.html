@@ -24,6 +24,10 @@
 2008-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/Magick.xs: Eliminate use of memory allocation macros
+        since these failed miserably under Windows where it seems that
+        malloc, free, and realloc are redefined via macros by the Perl
+        build environment.  This reverts changes made on 2007-12-01.
   <LI> magick/memory.c (MagickAcquireMemoryArray): Use implementation
         from the 1.1 branch.<BR>
   <LI> magick/utility.h: Remove MagickSafeMultiplySize_t since it seems
