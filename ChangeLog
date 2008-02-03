@@ -1,3 +1,10 @@
+2008-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (windows-dist): Create a 7z compressed Windows
+	comprehensive source package.  See http://www.7-zip.org/ for
+	information on Windows 7-Zip and http://p7zip.sourceforge.net/ for
+	information on portable 7-Zip (P7ZIP).
+
 2008-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Add logging for image resolution

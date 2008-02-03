@@ -2544,12 +2544,28 @@ AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)
 
 #
-# RedHat RPM support
+# RedHat RPM support (http://rpm5.org/)
 #
 RPM=''
-AC_CHECK_PROGS(RPM,rpmbuild rpm)
+AC_CHECK_PROGS(RPM,[rpmbuild rpm])
 AC_SUBST(RPM)
 AM_CONDITIONAL(HAS_RPM, test "x$RPM" != "x" )
+
+#
+# 7ZIP support (http://p7zip.sourceforge.net/)
+#
+P7ZIP=''
+AC_CHECK_PROGS(P7ZIP,[7za])
+AC_SUBST(P7ZIP)
+AM_CONDITIONAL(HAS_P7ZIP, test "x$P7ZIP" != "x" )
+
+#
+# ZIP support (http://www.info-zip.org/Zip.html)
+#
+ZIP=''
+AC_CHECK_PROGS(ZIP,[zip])
+AC_SUBST(ZIP)
+AM_CONDITIONAL(HAS_ZIP, test "x$ZIP" != "x" )
 
 #
 # Ghostscript related configuration.

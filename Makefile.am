@@ -274,17 +274,33 @@ format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 
 #
-# Build a Windows source Zip-ball
+# Build Windows source Zip and 7Zip balls
 #
+if HAS_ZIP
 DIST_WINDOWS_SRC_ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
+else
+DIST_WINDOWS_SRC_ZIP=
+endif
+if HAS_P7ZIP
+DIST_WINDOWS_SRC_7ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.7z
+else
+DIST_WINDOWS_SRC_7ZIP=
+endif
 $(DIST_WINDOWS_SRC_ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
-	rm -f $(DIST_WINDOWS_SRC_ZIP)
 	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
-	zip -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+if HAS_ZIP
+	rm -f $(DIST_WINDOWS_SRC_ZIP)
+	$(ZIP) -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+endif # HAS_ZIP
+if HAS_P7ZIP
+	rm -f $(DIST_WINDOWS_SRC_7ZIP)
+	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
+endif # HAS_P7ZIP
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 
 #
@@ -334,4 +350,4 @@ endif # HAS_RPM
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
 	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
