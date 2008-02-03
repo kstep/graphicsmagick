@@ -110,7 +110,9 @@ MagickExport void *MagickAcquireMemoryArray(const size_t count,const size_t size
     *allocation;
 
   allocation = 0;
-  allocation_size = MagickSafeMultiplySize_t(count,size);
+  allocation_size = size * count;
+  if ((count != 0) && (size != allocation_size/count))
+    allocation_size = 0;
   if (allocation_size)
     allocation = malloc(allocation_size);
   return allocation;

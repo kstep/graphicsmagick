@@ -1,3 +1,10 @@
+2008-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.c (MagickAcquireMemoryArray): Use implementation
+	from the 1.1 branch.
+	* magick/utility.h: Remove MagickSafeMultiplySize_t since it seems
+	that use of inline functions in Windows is a disaster area.
+
 2008-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (windows-dist): Create a 7z compressed Windows

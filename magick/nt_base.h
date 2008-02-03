@@ -65,7 +65,9 @@ extern "C" {
 #define HAVE_MMAP_FILEIO 1
 
 // Use Visual C++ C inline method extension to improve performance
-#define inline __inline
+#if !defined(inline)
+#  define inline __inline
+#endif
 
 #if !defined(chsize)
 # if defined(__BORLANDC__)
@@ -103,7 +105,9 @@ extern "C" {
   _MSC_VER values:
     1100 MSVC 5.0
     1200 MSVC 6.0
-    1300 MSVC 7.0
+    1300 MSVC 7.0 Visual C++ .NET 2002
+    1310 Visual c++ .NET 2003
+    1400 Visual C++ 2005
 */
 #if defined(_VISUALC_) && (_MSC_VER >= 1300)
 #  define HAVE_GLOBALMEMORYSTATUSEX 1

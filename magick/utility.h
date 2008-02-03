@@ -159,19 +159,6 @@ extern MagickExport size_t
 #if defined(MAGICK_IMPLEMENTATION)
 
 /*
-  Safe multiply for two size_t types.  Returns 0 if the multiply fails
-  due to a result out of range.
-*/
-static inline size_t MagickSafeMultiplySize_t(const size_t count,
-                                              const size_t size)
-{
-  size_t r = size * count;
-  if ((count != 0) && (size != r/count))
-    r = 0;
-  return r;
-}
-
-/*
   Allocate memory
 */
 
