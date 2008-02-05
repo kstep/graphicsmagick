@@ -21,9 +21,23 @@
 </tr>
 </table>
 <p>
+2008-02-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c: With libtiff 3.6.1, including tiff.h and tiffio.h
+        is not sufficient to obtain the definitions from tiffconf.h so
+        libtiff is assumed to not support any features, such as
+        compression.  Avoid this problem by explicitly including
+        tiffconf.h if it is found.  This resolves SourceForge issue
+        [1883527] compression of tiff-file has no effect.
+
+</UL>
+<p>
 2008-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> VisualMagick/installer/inc/setup.isx: Set Inno Setup installer
+        compression to "lzma/max".<BR>
   <LI> PerlMagick/Magick.xs: Eliminate use of memory allocation macros
         since these failed miserably under Windows where it seems that
         malloc, free, and realloc are redefined via macros by the Perl

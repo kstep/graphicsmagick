@@ -56,6 +56,9 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(HasTIFF)
+#  if defined(HAVE_TIFFCONF_H)
+#    include "tiffconf.h"
+#  endif
 #  include "tiff.h"
 #  include "tiffio.h"
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
