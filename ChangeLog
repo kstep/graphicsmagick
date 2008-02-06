@@ -1,5 +1,6 @@
 2008-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Updated to latest CVS libtool.
 	* coders/tiff.c (CompressionSupported): Use
 	TIFFGetConfiguredCODECs() to test if a requested compression type
 	is supported by libtiff.  Based on advice from Frank Warmerdam.
