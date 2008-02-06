@@ -1974,8 +1974,11 @@ then
 	    AC_MSG_RESULT(yes)
 	    have_tiff='yes'
 	    AC_CHECK_HEADERS(tiffconf.h)
-            AC_CHECK_FUNCS([TIFFMergeFieldInfo TIFFSetErrorHandlerExt \
-                            TIFFSetTagExtender TIFFSetWarningHandlerExt \
+            AC_CHECK_FUNCS([TIFFGetConfiguredCODECs \
+                            TIFFMergeFieldInfo \
+                            TIFFSetErrorHandlerExt \
+                            TIFFSetTagExtender \
+                            TIFFSetWarningHandlerExt \
                             TIFFSwabArrayOfTriples])
         fi
     else

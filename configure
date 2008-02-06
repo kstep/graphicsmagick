@@ -35616,8 +35616,12 @@ done
 
 
 
-for ac_func in TIFFMergeFieldInfo TIFFSetErrorHandlerExt \
-                            TIFFSetTagExtender TIFFSetWarningHandlerExt \
+
+for ac_func in TIFFGetConfiguredCODECs \
+                            TIFFMergeFieldInfo \
+                            TIFFSetErrorHandlerExt \
+                            TIFFSetTagExtender \
+                            TIFFSetWarningHandlerExt \
                             TIFFSwabArrayOfTriples
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`

@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2008-02-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (CompressionSupported): Use
+        TIFFGetConfiguredCODECs() to test if a requested compression type
+        is supported by libtiff.  Based on advice from Frank Warmerdam.
+  <LI> configure.ac: Add test for TIFFGetConfiguredCODECs() in libtiff.
+
+</UL>
+<p>
 2008-02-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

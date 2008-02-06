@@ -241,6 +241,164 @@ void ExtensionTagsInitialize(void)
 
 #endif /* defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER) */
 
+/*
+  Return MagickTrue if libtiff supports the indicated compression type.
+  Sets buffer pointed to by 'compression_name' to the name of the compression.
+*/
+static MagickBool CompressionSupported(const CompressionType compression,
+                                       char *compression_name)
+{
+  uint16
+    compress_tag;
+
+  MagickBool
+    status;
+
+  status = MagickFalse;
+  compress_tag=COMPRESSION_NONE;
+  strlcpy(compression_name,"Undefined",MaxTextExtent);
+
+  /*
+    This switch statement should match all the values of CompressionType.
+  */
+  switch (compression)
+    {
+    case UndefinedCompression:
+      {
+        strlcpy(compression_name,"Undefined",MaxTextExtent);
+        break;
+      }
+    case NoCompression:
+      {
+        strlcpy(compression_name,"No",MaxTextExtent);
+        compress_tag=COMPRESSION_NONE;
+        status=MagickTrue;
+        break;
+      }
+    case BZipCompression:
+      {
+        strlcpy(compression_name,"BZip",MaxTextExtent);
+        break;
+      }
+    case FaxCompression:
+      {
+        strlcpy(compression_name,"Group3 FAX",MaxTextExtent);
+#if defined(COMPRESSION_CCITTFAX3)
+        compress_tag=COMPRESSION_CCITTFAX3;
+        status=MagickTrue;
+#endif
+        break;
+      }
+    case Group4Compression:
+      {
+        strlcpy(compression_name,"Group4 FAX",MaxTextExtent);
+#if defined(COMPRESSION_CCITTFAX4)
+        compress_tag=COMPRESSION_CCITTFAX4; 
+        status=MagickTrue;
+#endif
+        break;
+      }
+    case JPEGCompression:
+      {
+        strlcpy(compression_name,"JPEG",MaxTextExtent);
+#if defined(COMPRESSION_JPEG)
+        compress_tag=COMPRESSION_JPEG;
+        status=MagickTrue;
+#endif
+        break;
+      }
+    case LosslessJPEGCompression:
+      {
+        strlcpy(compression_name,"Lossless JPEG",MaxTextExtent);
+        break;
+      }
+    case LZWCompression:
+      {
+        strlcpy(compression_name,"LZW",MaxTextExtent);
+#if defined(COMPRESSION_LZW)
+        compress_tag=COMPRESSION_LZW;
+        status=MagickTrue;
+#endif
+        break;
+      }
+    case RLECompression:
+      {
+        strlcpy(compression_name,"Macintosh RLE (Packbits)",MaxTextExtent);
+#if defined(COMPRESSION_PACKBITS)
+        compress_tag=COMPRESSION_PACKBITS;
+        status=MagickTrue;
+#endif
+        break;
+      }
+    case ZipCompression:
+      {
+        strlcpy(compression_name,"Adobe Deflate",MaxTextExtent);
+#if defined(COMPRESSION_ADOBE_DEFLATE)
+        compress_tag=COMPRESSION_ADOBE_DEFLATE;
+        status=MagickTrue;
+#endif
+        break;
+      }
+    }
+
+  if (MagickTrue == status)
+    {
+#if defined(HAVE_TIFFGETCONFIGUREDCODECS) || (TIFFLIB_VERSION > 20040919)
+      if (compress_tag != COMPRESSION_NONE)
+        {
+          TIFFCodec
+            *codec,
+            *codecs;
+          
+          status = MagickFalse;
+          codecs = TIFFGetConfiguredCODECs();
+          for( codec = codecs; codec->name; codec++ )
+            {
+              if (codec->scheme == compress_tag)
+                {
+                  status = MagickTrue;
+                  break;
+                }
+            }
+        }
+#else
+      switch (compress_tag)
+        {
+#if defined(CCITT_SUPPORT)
+        case COMPRESSION_CCITTFAX3:
+        case COMPRESSION_CCITTFAX4:
+#endif
+#if defined(YCBCR_SUPPORT) && defined(JPEG_SUPPORT)
+        case COMPRESSION_JPEG:
+#endif
+#if defined(LZW_SUPPORT)
+        case COMPRESSION_LZW:
+#endif
+#if defined(PACKBITS_SUPPORT)
+        case COMPRESSION_PACKBITS:
+#endif
+#if defined(ZIP_SUPPORT)
+        case COMPRESSION_ADOBE_DEFLATE:
+#endif
+        case COMPRESSION_NONE:
+          {
+            status = MagickTrue;
+            break;
+          }
+        default:
+          {
+            status = MagickFalse;
+            break;
+          }
+        }
+#endif
+    }
+  return status;
+}
+
+/*
+  Convert a libtiff compression tag to a human readable string.
+*/
 static const char *CompressionTagToString(unsigned int compress_tag)
 {
   const char
@@ -2987,68 +3145,25 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       compression=image->compression;
       if (image_info->compression != UndefinedCompression)
         compression=image_info->compression;
+      if (UndefinedCompression == compression)
+        compression=NoCompression;
 
       /*
         Ensure that only supported compression types are requested.
       */
-      switch(compression)
-        {
-        case FaxCompression:
-        case Group4Compression:
+      {
+        char
+          compression_name[MaxTextExtent];
+
+        if (CompressionSupported(compression,compression_name) != MagickTrue)
           {
-#if !defined(CCITT_SUPPORT)
-            compression=NoCompression;
-            if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "CCITTFAX compression not supported.  Compression request removed");
-#endif
-            break;
+             compression=NoCompression;
+             if (logging)
+               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                     "%s compression not supported.  Compression request removed",
+                                     compression_name);
           }
-        case JPEGCompression:
-          {
-#if !defined(YCBCR_SUPPORT) || !defined(JPEG_SUPPORT)
-            compression=NoCompression;
-            if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "JPEG compression not supported.  Compression request removed");
-#endif
-            break;
-          }
-        case LZWCompression:
-          {
-#if !defined(LZW_SUPPORT)
-            compression=NoCompression;
-            if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "LZW compression not supported.  Compression request removed");
-#endif
-            break;
-          }
-        case RLECompression:
-          {
-#if !defined(PACKBITS_SUPPORT)
-            compression=NoCompression;
-            if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "PACKBITS compression not supported.  Compression request removed");
-#endif
-            break;
-          }
-        case ZipCompression:
-          {
-#if !defined(ZIP_SUPPORT)
-            compression=NoCompression;
-            if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "ZIP compression not supported.  Compression request removed");
-#endif
-            break;
-          }
-        default:
-          {
-            break;
-          }
-        }
+      }
 
       /*
         Determine libtiff compression settings.

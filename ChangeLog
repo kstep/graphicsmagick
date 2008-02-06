@@ -1,3 +1,10 @@
+2008-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (CompressionSupported): Use
+	TIFFGetConfiguredCODECs() to test if a requested compression type
+	is supported by libtiff.  Based on advice from Frank Warmerdam.
+	* configure.ac: Add test for TIFFGetConfiguredCODECs() in libtiff.
+
 2008-02-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c: With libtiff 3.6.1, including tiff.h and tiffio.h
