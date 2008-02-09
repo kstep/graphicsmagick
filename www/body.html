@@ -3,13 +3,14 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Image Processing System</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020718;11000900">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20070919;9130400">
+	<META NAME="CHANGED" CONTENT="20080208;15244200">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
-	<STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
@@ -25,13 +26,13 @@
 	<COL WIDTH=194*>
 	<TR VALIGN=TOP>
 		<TD WIDTH=24%>
-			<P><FONT SIZE=3><I><SPAN STYLE="background: transparent">Current
+			<P><SPAN STYLE="background: transparent"><FONT SIZE=3><I>Current
 			Stable Branch: </SPAN></I></FONT>
 			</P>
 		</TD>
 		<TD WIDTH=76%>
-			<P ALIGN=LEFT><SPAN STYLE="background: transparent"><I><A HREF="http://www.graphicsmagick.org/1.1/" TARGET="_top">1.1.10</A>
-			(Released September 19, 2007) </I></SPAN><A HREF="http://sourceforge.net/project/showfiles.php?group_id=73485" TARGET="_top"><SPAN STYLE="background: transparent"><I>download</I></SPAN></A></P>
+			<P ALIGN=LEFT><I><SPAN STYLE="background: transparent"><A HREF="http://www.graphicsmagick.org/1.1/" TARGET="_top">1.1.10</A>
+			(Released September 19, 2007) <A HREF="http://sourceforge.net/project/showfiles.php?group_id=73485" TARGET="_top">download</A></SPAN></I></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -60,15 +61,15 @@ save the result in the same or differing image format. Image
 processing operations are available from the command line, as well as
 through C, C++, Perl, or Windows COM programming interfaces.
 Extensions are available from third-parties to support <A HREF="programming.html">programming</A>
-in Python, Tcl, and Ruby. With some modification, language extensions
-for ImageMagick may be used.</P>
+in Tcl, and Ruby. With some modification, language extensions for
+ImageMagick may be used.</P>
 <P><I>GraphicsMagick</I> is originally derived from <A HREF="http://www.imagemagick.org/" TARGET="_top">ImageMagick</A>
 5.5.2. Since the branch from ImageMagick, many improvements have been
 made (<A HREF="NEWS.html">see news</A>) by <A HREF="AUTHORS.html">many
 authors</A> using an open development model. <I>GraphicsMagick</I> is
 available for free, may be used to support both open and proprietary
 applications, and may be redistributed without fee.</P>
-<P><I><SPAN STYLE="background: transparent">Gr</SPAN>aphicsMagick</I>
+<P><I><SPAN STYLE="background: transparent">Gr</SPAN></I><I>aphicsMagick</I>
 is <A HREF="Copyright.html">copyrighted</A> by the GraphicsMagick
 Group as well as many others. <I>GraphicsMagick</I> is dististributed
 under an X11-style license, which is approved by the <A HREF="http://www.opensource.org/" TARGET="_top">Open
@@ -95,81 +96,89 @@ of what <I>GraphicsMagick</I> can do:</P>
 				<P ALIGN=CENTER><IMG SRC="../images/gm-282x180t.png" NAME="Graphic23" ALT="Image Magick" ALIGN=BOTTOM WIDTH=282 HEIGHT=180 BORDER=0></P>
 			</TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Resize, rotate, sharpen, color reduce, or add
 				special effects to an image </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=8></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Create a montage of image thumbnails </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=7></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Create a transparent image suitable for use on
 				the Web </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=6></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Turn a group of images into a GIF animation
 				sequence </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=5></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Create a composite image by combining several
 				separate images </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=4></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Draw shapes or text on an image </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=3></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Decorate an image with a border or frame </FONT>
 				</P>
 			</TD>
+			<TD ROWSPAN=2></TD>
 		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
+		<TR>
+			<TD WIDTH=2% VALIGN=TOP>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
-			<TD WIDTH=63%>
+			<TD WIDTH=63% VALIGN=TOP>
 				<P><FONT SIZE=3>Describe the format and characteristics of an
 				image</FONT></P>
 			</TD>
+			<TD></TD>
 		</TR>
 	</TABLE>
 </DL>

@@ -3549,6 +3549,18 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           old_value;
 
         /*
+          Fill order
+        */
+        value=AccessDefinition(image_info,"tiff","fill-order");
+        if (value)
+          {
+            if (LocaleNCompare(value,"msb2lsb",3) == 0)
+              fill_order=FILLORDER_MSB2LSB;
+            else if (LocaleNCompare(value,"lsb2msb",3) == 0)
+              fill_order=FILLORDER_LSB2MSB;
+          }
+
+        /*
           Sample format
         */
         value=AccessDefinition(image_info,"tiff","sample-format");
@@ -3561,7 +3573,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
 
         /*
-          Bits per sample
+          Bits per sample (needs to be after sample format)
         */
         value=AccessDefinition(image_info,"tiff","bits-per-sample");
         if (value)
@@ -3627,6 +3639,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       if (FILLORDER_MSB2LSB != fill_order)
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using %s bit fill order",
+                              (fill_order == FILLORDER_MSB2LSB ? "MSB2LSB" :
+                               (fill_order == FILLORDER_LSB2MSB ? "LSB2MSB" :
+                                "undefined")));
       if (image->orientation != UndefinedOrientation)
         (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,(uint16) image->orientation);
       (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);

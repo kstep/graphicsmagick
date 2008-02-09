@@ -1,4 +1,4 @@
-.TH gm 1 "2007/10/31" "GraphicsMagick"
+.TH gm 1 "2008/02/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1106,13 +1106,25 @@ the pixels.
 
 .in 15
 .in 15
+.B "tiff:fill-order={msb2lsb|lsb2msb}"
+.in 20
+ \fR
+.in 20
+If the tiff:fill-order key is defined, GraphicsMagick will use it to
+determine the bit fill order used while writing TIFF files. The default
+is "msb2lsb", which matches the native bit order of all modern CPUs. This
+option should rarely be used since it is only useful if there are
+interfacing problems with broken software or a hardware device.
+
+.in 15
+.in 15
 .B "tiff:sample-format={unsigned|ieeefp}"
 .in 20
  \fR
 .in 20
 If the tiff:sample-format key is defined, GraphicsMagick will use it to
 determine the sample format used while writing TIFF files. The default is
-"unsigned". Specifify "ieeefp" in order to write floating-point TIFF
+"unsigned". Specify "ieeefp" in order to write floating-point TIFF
 files with float (32-bit) or double (64-bit) values. Use the
 tiff:bits-per-sample define to determine the type of floating-point value
 to use.

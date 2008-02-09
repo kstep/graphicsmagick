@@ -7,15 +7,19 @@
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;13543972">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080207;22104100">
+	<META NAME="CHANGED" CONTENT="20080208;15134100">
 	<META NAME="DESCRIPTION" CONTENT="Magick::Color class documentation">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<STYLE TYPE="text/css">
 	<!--
 		TD P { color: #000000 }
+		TD P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif }
 		H1 { color: #000000 }
 		P { color: #000000 }
+		P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif }
 		H3 { color: #000000 }
 		A:link { color: #0000ee }
 		A:visited { color: #551a8b }
@@ -24,41 +28,43 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>Magick::Color</H1>
-<P><A HREF="#Color">Color</A> is the base color class in Magick++. It
-is a simple container class for the pixel red, green, blue, and alpha
-values scaled to fit GraphicsMagick's Quantum size. Normally users
-will instantiate a class derived from Color which supports the color
-model that fits the needs of the application. The Color class may be
-constructed directly from an X11-style color string. As a perhaps odd
-design decision, <U>the value transparent black is considered to
-represent an unset value</U> (invalid color) in many cases. This
+<P CLASS="western"><A HREF="#Color">Color</A> is the base color class
+in Magick++. It is a simple container class for the pixel red, green,
+blue, and alpha values scaled to fit GraphicsMagick's Quantum size.
+Normally users will instantiate a class derived from Color which
+supports the color model that fits the needs of the application. The
+Color class may be constructed directly from an X11-style color
+string. As a perhaps odd design decision, <U>the value transparent
+black is considered to </U><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><U>represent
+</U></FONT><U>an unset value</U> (invalid color) in many cases. This
 choice was made since it avoided using more memory. The default Color
 constructor constructs an invalid color (i.e. transparent black) and
 may be used as a parameter in order to remove a color setting.</P>
 <H3><A NAME="Color1"></A>Quantum</H3>
-<P>The base type used to represent color samples in GraphicsMagick is
-the <I>Quantum</I> type. Pixels are represented by a structure of
-<I>Quantum</I> values. For example, an RGB pixel contains red, green,
-and blue quantums, while an RGBA pixel contains red, green, blue, and
-opacity quantums.  The maximum value that a <I>Quantum</I> can attain
-is specified by a constant value represented by the <I>MaxRGB</I>
-define, which is itself determined by the number of bits in a
-<I>Quantum</I>. The <I>QuantumDepth</I> build option determines the
-number of bits in a Quantum.</P>
+<P CLASS="western">The base type used to represent color samples in
+GraphicsMagick is the <I>Quantum</I> type. Pixels are represented by
+a structure of <I>Quantum</I> values. For example, an RGB pixel
+contains red, green, and blue quantums, while an RGBA pixel contains
+red, green, blue, and opacity quantums. The maximum value that a
+<I>Quantum</I> can attain is specified by a constant value
+represented by the <I>MaxRGB</I> define, which is itself determined
+by the number of bits in a <I>Quantum</I>. The <I>QuantumDepth</I>
+build option determines the number of bits in a Quantum.</P>
 <H3>PixelPacket</H3>
-<P STYLE="margin-bottom: 0in">PixelPacket is the internal
-representation of a pixel in GraphicsMagick. GraphicsMagick may be
-compiled to support 32, 64, or 128 bit pixels of type <SPAN LANG="en-US">PixelPacket.
-</SPAN>This is controlled by the value of the QuantumDepth define.
-The default is 32 bit pixels (QuantumDepth=8), which provides the
-best performance and the least resource consumption. If additional
-color precision or range is desired, then GraphicsMagick may be
-compiled with QuantumDepth=16 or QuantumDepth=32. The following table
-shows the relationship between <I>QuantumDepth</I>, the type of
-<I>Quantum</I>, and the overall <I>PixelPacket</I> size. 
+<P CLASS="western" STYLE="margin-bottom: 0in">PixelPacket is the
+internal representation of a pixel in GraphicsMagick. GraphicsMagick
+may be compiled to support 32, 64, or 128 bit pixels of type
+<SPAN LANG="en-US">PixelPacket. </SPAN>This is controlled by the
+value of the QuantumDepth define. The default is 32 bit pixels
+(QuantumDepth=8), which provides the best performance and the least
+resource consumption. If additional color precision or range is
+desired, then GraphicsMagick may be compiled with QuantumDepth=16 or
+QuantumDepth=32. The following table shows the relationship between
+<I>QuantumDepth</I>, the type of <I>Quantum</I>, and the overall
+<I>PixelPacket</I> size. 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Effect Of QuantumDepth
-Values</B></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Effect
+Of QuantumDepth Values</B></P>
 <CENTER>
 	<TABLE WIDTH=361 BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=103>
@@ -66,46 +72,46 @@ Values</B></P>
 		<COL WIDTH=111>
 		<TR>
 			<TD WIDTH=103>
-				<P ALIGN=CENTER><B>QuantumDepth</B></P>
+				<P CLASS="western" ALIGN=CENTER><B>QuantumDepth</B></P>
 			</TD>
 			<TD WIDTH=121>
-				<P ALIGN=CENTER><B>Quantum Typedef</B></P>
+				<P CLASS="western" ALIGN=CENTER><B>Quantum Typedef</B></P>
 			</TD>
 			<TD WIDTH=111>
-				<P ALIGN=CENTER><B>PixelPacket Size</B></P>
+				<P CLASS="western" ALIGN=CENTER><B>PixelPacket Size</B></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=103>
-				<P ALIGN=CENTER>8</P>
+				<P CLASS="western" ALIGN=CENTER>8</P>
 			</TD>
 			<TD WIDTH=121>
-				<P ALIGN=CENTER>unsigned char</P>
+				<P CLASS="western" ALIGN=CENTER>unsigned char</P>
 			</TD>
 			<TD WIDTH=111>
-				<P ALIGN=CENTER>32 bits</P>
+				<P CLASS="western" ALIGN=CENTER>32 bits</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=103>
-				<P ALIGN=CENTER>16</P>
+				<P CLASS="western" ALIGN=CENTER>16</P>
 			</TD>
 			<TD WIDTH=121>
-				<P ALIGN=CENTER>unsigned short</P>
+				<P CLASS="western" ALIGN=CENTER>unsigned short</P>
 			</TD>
 			<TD WIDTH=111>
-				<P ALIGN=CENTER>64 bits</P>
+				<P CLASS="western" ALIGN=CENTER>64 bits</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=103>
-				<P ALIGN=CENTER>32</P>
+				<P CLASS="western" ALIGN=CENTER>32</P>
 			</TD>
 			<TD WIDTH=121>
-				<P ALIGN=CENTER>unsigned int</P>
+				<P CLASS="western" ALIGN=CENTER>unsigned int</P>
 			</TD>
 			<TD WIDTH=111>
-				<P ALIGN=CENTER>128 bits</P>
+				<P CLASS="western" ALIGN=CENTER>128 bits</P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -113,22 +119,22 @@ Values</B></P>
 <H3><BR><BR>
 </H3>
 <H3><A NAME="Color"></A>Color Class</H3>
-<P>The Color base class is not intended to be used directly. Normally
-a user will construct a derived class or inherit from this class.
-Color arguments are must be scaled to fit the Quantum size according
-to the range of <I>MaxRGB</I>. The Color class contains a pointer to
-a <I>PixelPacket</I>, which may be allocated by the Color class, or
-may refer to an existing pixel in an image. 
+<P CLASS="western">The Color base class is not intended to be used
+directly. Normally a user will construct a derived class or inherit
+from this class. Color arguments are must be scaled to fit the
+Quantum size according to the range of <I>MaxRGB</I>. The Color class
+contains a pointer to a <I>PixelPacket</I>, which may be allocated by
+the Color class, or may refer to an existing pixel in an image. 
 </P>
-<P>An alternate way to <SPAN LANG="en-US">construct </SPAN>the class
-is via an X11-<SPAN LANG="en-US">compatible</SPAN> color
-specification string (e.g. Color(&ldquo;red&rdquo;) or Color
+<P CLASS="western">An alternate way to <SPAN LANG="en-US">construct
+</SPAN>the class is via an X11-<SPAN LANG="en-US">compatible</SPAN>
+color specification string (e.g. Color(&ldquo;red&rdquo;) or Color
 (&ldquo;#FF0000&rdquo;)). Since the class may be constructed from a
 string, convenient strings may be passed in place of an explicit
-Color object in methods which accept a reference to Color.  Color may
+Color object in methods which accept a reference to Color. Color may
 also be converted to a std::string for convenience in user
 interfaces, and for saving settings to a text file.</P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class Color</FONT></FONT></TT>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class Color</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Color
@@ -152,35 +158,35 @@ blue_,</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Color ( const
 Color &amp; color_ );</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Red color (range 0 to MaxRGB)</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 redQuantum ( Quantum red_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 redQuantum ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Green color (range 0 to MaxRGB)</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 greenQuantum ( Quantum green_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 greenQuantum ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Blue color (range 0 to MaxRGB)</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 blueQuantum ( Quantum blue_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 blueQuantum ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Alpha level (range OpaqueOpacity=0 to TransparentOpacity=MaxRGB)</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 alphaQuantum ( Quantum alpha_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Quantum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 alphaQuantum ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Scaled (to 1.0) version of alpha for use in sub-classes</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 (range opaque=0 to transparent=1.0)</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
@@ -201,7 +207,7 @@ operator= ( const std::string &amp;x11color_ );</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>const
 Color&amp; operator= ( const char * x11color_ );</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Color&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;</FONT></TT>
@@ -210,75 +216,79 @@ Return X11 color specification string</FONT></FONT></TT> <BR><TT><FONT COLOR="#0
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>/* virtual */
 operator std::string() const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Return GraphicsMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>operator
 PixelPacket() const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Construct color via GraphicsMagick PixelPacket</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>Color
 ( const PixelPacket &amp;color_ );</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Set color via GraphicsMagick PixelPacket</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>const Color&amp;
 operator= ( PixelPacket &amp;color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>
 </P>
 <H3>Color Derived Classes</H3>
-<P STYLE="margin-bottom: 0in">Available derived color specification
-classes are shown in the following table: 
+<P CLASS="western" STYLE="margin-bottom: 0in">Available derived color
+specification classes are shown in the following table: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Color Derived Classes</B></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Color
+Derived Classes</B></P>
 <CENTER>
 	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=29*>
 		<COL WIDTH=227*>
 		<TR>
 			<TD WIDTH=11%>
-				<P><A HREF="#ColorRGB">ColorRGB</A></P>
+				<P CLASS="western"><A HREF="#ColorRGB">ColorRGB</A></P>
 			</TD>
 			<TD WIDTH=89%>
-				<P>Representation of RGB color with red, green, and blue
-				specified as ratios (0 to 1)</P>
+				<P CLASS="western">Representation of RGB color with red, green,
+				and blue specified as ratios (0 to 1)</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=11%>
-				<P><A HREF="#ColorGray">ColorGray</A></P>
+				<P CLASS="western"><A HREF="#ColorGray">ColorGray</A></P>
 			</TD>
 			<TD WIDTH=89%>
-				<P>Representation of <SPAN LANG="en-US">grayscale</SPAN> RGB
-				color (equal parts red, green, and blue) specified as a ratio (0
-				to 1)</P>
+				<P CLASS="western">Representation of <SPAN LANG="en-US">grayscale</SPAN>
+				RGB color (equal parts red, green, and blue) specified as a ratio
+				(0 to 1)</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=11%>
-				<P><A HREF="#ColorMono">ColorMono</A></P>
+				<P CLASS="western"><A HREF="#ColorMono">ColorMono</A></P>
 			</TD>
 			<TD WIDTH=89%>
-				<P>Representation of a black/white color (true/false)</P>
+				<P CLASS="western">Representation of a black/white color
+				(true/false)</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=11%>
-				<P><A HREF="#ColorYUV">ColorYUV</A></P>
+				<P CLASS="western"><A HREF="#ColorYUV">ColorYUV</A></P>
 			</TD>
 			<TD WIDTH=89%>
-				<P>Representation of a color in the YUV <SPAN LANG="en-US">colorspace</SPAN></P>
+				<P CLASS="western">Representation of a color in the YUV
+				<SPAN LANG="en-US">colorspace</SPAN></P>
 			</TD>
 		</TR>
 	</TABLE>
 </CENTER>
-<P><BR><BR>
+<P CLASS="western"><BR><BR>
 </P>
 <H3><A NAME="ColorRGB"></A>ColorRGB</H3>
-<P>Representation of an RGB color in floating point. All color
-arguments have a valid range of 0.0 - 1.0. Note that floating point
-alpha may be set via the alpha() method in the Color base class.</P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class ColorRGB : public
-Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
+<P CLASS="western">Representation of an RGB color in floating point.
+All color arguments have a valid range of 0.0 - 1.0. Note that
+floating point alpha may be set via the alpha() method in the Color
+base class.</P>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class
+ColorRGB : public Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorRGB
 ( double red_, double green_, double blue_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
@@ -300,20 +310,20 @@ blue ( double blue_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&n
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 blue ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator from base class</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorRGB&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>
 <BR>&nbsp; 
 </P>
 <H3><A NAME="ColorGray"></A>ColorGray</H3>
-<P>Representation of a floating point grayscale color (in RGB
-colorspace). <SPAN LANG="en-US">Grayscale</SPAN> is simply RGB with
-equal parts of red, green, and blue. All double arguments have a
-valid range of 0.0 - 1.0. 
+<P CLASS="western">Representation of a floating point grayscale color
+(in RGB colorspace). <SPAN LANG="en-US">Grayscale</SPAN> is simply
+RGB with equal parts of red, green, and blue. All double arguments
+have a valid range of 0.0 - 1.0. 
 </P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class ColorGray : public
-Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class
+ColorGray : public Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorGray
 ( double shade_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
@@ -324,23 +334,24 @@ Color &amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nb
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>/* virtual */
 ~ColorGray ();</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
+</FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 shade ( double shade_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 shade ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator from base class</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorGray&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>
 <BR>&nbsp; 
 </P>
 <H3><A NAME="ColorMono"></A>ColorMono</H3>
-<P>Representation of a black/white pixel (in RGB colorspace). Color
-arguments are constrained to 'false' (black pixel) and 'true' (white
-pixel).</P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class ColorMono : public
-Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
+<P CLASS="western">Representation of a black/white pixel (in RGB
+colorspace). Color arguments are constrained to 'false' (black pixel)
+and 'true' (white pixel).</P>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class
+ColorMono : public Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorMono
 ( bool mono_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
@@ -355,18 +366,18 @@ mono ( bool mono_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbs
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 mono ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator from base class</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorMono&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>
 <BR>&nbsp; 
 </P>
 <H3><A NAME="ColorHSL"></A>ColorHSL</H3>
-<P>Representation of a color in Hue/Saturation/Luminosity (HSL)
-colorspace. 
+<P CLASS="western">Representation of a color in
+Hue/Saturation/Luminosity (HSL) colorspace. 
 </P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class ColorHSL : public
-Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class
+ColorHSL : public Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorHSL
 ( double hue_, double saturation_, double luminosity_ );</FONT></FONT></TT>
@@ -389,23 +400,23 @@ luminosity ( double luminosity_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#0000
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 luminosity ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator from base class</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorHSL&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>
 <BR>&nbsp; 
 </P>
 <H3><A NAME="ColorYUV"></A>ColorYUV</H3>
-<P>Representation of a color in YUV colorspace (used to encode color
-for television transmission). 
+<P CLASS="western">Representation of a color in YUV colorspace (used
+to encode color for television transmission). 
 </P>
-<P>&nbsp;Argument ranges: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<P CLASS="western">&nbsp;Argument ranges: <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Y:&nbsp; 0.0 through 1.0 <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 U: -0.5 through 0.5 <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; V:
 -0.5 through 0.5 
 </P>
-<P><TT><FONT COLOR="#000066"><FONT SIZE=2>class ColorYUV : public
-Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
+<P CLASS="western"><TT><FONT COLOR="#000066"><FONT SIZE=2>class
+ColorYUV : public Color</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>public:</FONT></FONT></TT>
 <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorYUV
 ( double y_, double u_, double v_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
@@ -427,7 +438,7 @@ y ( double y_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&n
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 y ( void ) const;</FONT></FONT></TT> 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
+<P CLASS="western"><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>//
 Assignment operator from base class</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </FONT></TT><TT><FONT COLOR="#000066"><FONT SIZE=2>ColorYUV&amp;
 operator= ( const Color&amp; color_ );</FONT></FONT></TT> <BR><TT><FONT COLOR="#000066"><FONT SIZE=2>};</FONT></FONT></TT>

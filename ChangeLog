@@ -1,3 +1,8 @@
+2008-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Use '-define
+	tiff:fill-order={msb2lsb|lsb2msb}' to control TIFF bit fill order.
+
 2008-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Updated to latest CVS libtool.
