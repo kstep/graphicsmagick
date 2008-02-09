@@ -1043,10 +1043,11 @@ the pixels.
 
 <dt>tiff:fill-order={msb2lsb|lsb2msb}</dt>
 <dd>If the tiff:fill-order key is defined, GraphicsMagick will use it to
-determine the bit fill order used while writing TIFF files. The default
-is "msb2lsb", which matches the native bit order of all modern CPUs. This
-option should rarely be used since it is only useful if there are
-interfacing problems with broken software or a hardware device.
+determine the bit fill order used while writing TIFF files. The normal default
+is "msb2lsb", which matches the native bit order of all modern CPUs. The
+only exception to this is when Group3 or Group4 FAX compression is
+requested since FAX machines send data in bit-reversed order and
+therefore RFC 2301 recommends using reverse order.
 </dd>
 
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>

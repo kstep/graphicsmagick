@@ -6555,7 +6555,7 @@ esac
 
 
 macro_version='2.1c'
-macro_revision='1.2588'
+macro_revision='1.2589'
 
 
 
@@ -9635,7 +9635,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6; }
 
     linux* | k*bsd*-gnu)
       case $cc_basename in
-      icc* | ecc*)
+      icc* | ecc* | ifort*)
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-KPIC'
 	lt_prog_compiler_static='-static'
