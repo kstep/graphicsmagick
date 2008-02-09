@@ -1826,7 +1826,8 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
 static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    open_flags[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -1897,9 +1898,44 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open TIFF file
 
-    'w'          open for write
+    'w'  open for write
+    'l'  force little-endian byte order
+    'b'  force big-endian byte order
+    'L'  force LSB to MSB bit order (weird)
+    'B'  force MSB to LSB bit order (normal)
+    '8'  64-bit offsets (BigTIFF)
   */
-  tiff=TIFFOpen(filename,"w");
+  (void) strlcpy(open_flags, "w", sizeof(open_flags));
+  switch (image_info->endian)
+    {
+    case LSBEndian:
+      (void) strlcat(open_flags, "l", sizeof(open_flags));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using little endian byte order");
+      break;
+    case MSBEndian:
+      (void) strlcat(open_flags, "b", sizeof(open_flags));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using big endian byte order");
+      break;
+    default:
+    case UndefinedEndian:
+      {
+        /* Default is native byte order */
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Using native endian byte order");
+      }
+    }
+
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Opening TIFF file \"%s\" using open flags \"%s\".",
+                          filename,open_flags);
+
+  tiff=TIFFOpen(filename,open_flags);
   if (tiff == (TIFF *) NULL)
     {
       if (filename_is_temporary)
@@ -2142,6 +2178,18 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
+        Fill order
+      */
+      value=AccessDefinition(image_info,"tiff","fill-order");
+      if (value)
+        {
+          if (LocaleNCompare(value,"msb2lsb",3) == 0)
+            fill_order=FILLORDER_MSB2LSB;
+          else if (LocaleNCompare(value,"lsb2msb",3) == 0)
+            fill_order=FILLORDER_LSB2MSB;
+        }
+
+      /*
         Samples per pixel
       */
       value=AccessDefinition(image_info,"tiff","samples-per-pixel");
@@ -2168,39 +2216,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-    switch (image_info->endian)
-    {
-      case LSBEndian:
-        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using LSB2MSB fillorder");
-        break;
-      case MSBEndian:
-        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using MSB2LSB fillorder");
-        break;
-      default:
-      case UndefinedEndian:
-      {
-#if defined(HOST_BIGENDIAN)
-        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using MSB2LSB fillorder");
-#else
-        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "Using LSB2MSB fillorder");
-#endif
-        break;
-      }
-    }
     if (FILLORDER_MSB2LSB != fill_order)
       (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Using %s bit fill order",
+                            (fill_order == FILLORDER_MSB2LSB ? "MSB2LSB" :
+                             (fill_order == FILLORDER_LSB2MSB ? "LSB2MSB" :
+                              "undefined")));
     (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
@@ -2297,6 +2320,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           units=RESUNIT_INCH;
         if (image->units == PixelsPerCentimeterResolution)
           units=RESUNIT_CENTIMETER;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Resolution %gx%g pixels%s",
+                                image->x_resolution, image->y_resolution,
+                                (units == RESUNIT_NONE ? " (undefined units)" :
+                                 (units == RESUNIT_INCH ? " per inch" :
+                                  (units == RESUNIT_CENTIMETER ? " per centimeter"
+                                   : "BAD VALUE"))));
         (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
         (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
         (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);

@@ -1,4 +1,4 @@
-.TH gm 1 "2007/08/02" "GraphicsMagick"
+.TH gm 1 "2008/02/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1007,6 +1007,18 @@ If the tiff:bits-per-sample key is defined to a value less than the
 GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
 with the defined bits per sample, overriding any value stored in the
 image.
+
+.in 15
+.in 15
+.B "tiff:fill-order={msb2lsb|lsb2msb}"
+.in 20
+ \fR
+.in 20
+If the tiff:fill-order key is defined, GraphicsMagick will use it to
+determine the bit fill order used while writing TIFF files. The default
+is "msb2lsb", which matches the native bit order of all modern CPUs. This
+option should rarely be used since it is only useful if there are
+interfacing problems with broken software or a hardware device.
 
 .in 15
 .in 15

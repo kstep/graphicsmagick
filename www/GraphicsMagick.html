@@ -1328,6 +1328,13 @@ GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
 with the defined bits per sample, overriding any value stored in the
 image.
 </dd>
+<dt>tiff:fill-order={msb2lsb|lsb2msb}</dt>
+<dd>If the tiff:fill-order key is defined, GraphicsMagick will use it to
+determine the bit fill order used while writing TIFF files. The default
+is "msb2lsb", which matches the native bit order of all modern CPUs. This
+option should rarely be used since it is only useful if there are
+interfacing problems with broken software or a hardware device.
+</dd>
 <dt>tiff:samples-per-pixel=&lt;value&gt;</dt>
 <dd>
 If the tiff:samples-per-pixel key is defined to a value, the TIFF
