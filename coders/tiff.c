@@ -1965,6 +1965,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     switch (image->compression)
     {
 #ifdef CCITT_SUPPORT
+      /*
+        Note that RFC 2301 recommends using LSB2MSB fill order for FAX
+        since it is the transmission order used on the wire for FAX.
+        However, it also states that all conforming readers should be
+        able to read data in both bit orders.
+      */
       case FaxCompression:
       {
         (void) SetImageType(image,BilevelType);
