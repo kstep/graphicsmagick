@@ -2665,12 +2665,12 @@ if test "$GCC" = yes; then
   variables_saved_for_relink="$variables_saved_for_relink GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
 fi
  
-AC_CACHE_VAL([lt_cv_sys_lib_search_path_spec],
-[lt_cv_sys_lib_search_path_spec="$sys_lib_search_path_spec"])
-sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
-AC_CACHE_VAL([lt_cv_sys_lib_dlsearch_path_spec],
-[lt_cv_sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec"])
-sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
+if test "${lt_cv_sys_lib_search_path_spec+set}" = set; then
+  sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
+fi
+if test "${lt_cv_sys_lib_dlsearch_path_spec+set}" = set; then
+  sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
+fi
 
 _LT_DECL([], [variables_saved_for_relink], [1],
     [Variables whose values should be saved in libtool wrapper scripts and
@@ -6473,7 +6473,7 @@ case " $_LT_TAGVAR(postdeps, $1) " in
 *" -lc "*) _LT_TAGVAR(archive_cmds_need_lc, $1)=no ;;
 esac
  _LT_TAGVAR(compiler_lib_search_dirs, $1)=
-if test -n "$${_LT_TAGVAR(compiler_lib_search_path, $1)}"; then
+if test -n "${_LT_TAGVAR(compiler_lib_search_path, $1)}"; then
  _LT_TAGVAR(compiler_lib_search_dirs, $1)=`echo " ${_LT_TAGVAR(compiler_lib_search_path, $1)}" | ${SED} -e 's! -L! !g' -e 's!^ !!'`
 fi
 _LT_TAGDECL([], [compiler_lib_search_dirs], [1],

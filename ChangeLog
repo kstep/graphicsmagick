@@ -1,3 +1,14 @@
+2008-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Use MagickAcquireMemory() rather than
+	AquireMemory().
+	* coders/xwd.c (ReadXWDImage): Eliminate integer overflow
+	vulnerability (IDefense 09.19.07).
+	* coders/xbm.c (ReadXBMImage): ditto
+	* coders/xcf.c (ReadXCFImage): ditto
+	* coders/dib.c (ReadDIBImage): ditto
+	* coders/dcm.c (ReadDCMImage): ditto
+
 2008-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): The RFC 2301 specification for

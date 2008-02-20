@@ -6555,7 +6555,7 @@ esac
 
 
 macro_version='2.1c'
-macro_revision='1.2589'
+macro_revision='1.2594'
 
 
 
@@ -11981,19 +11981,11 @@ if test "$GCC" = yes; then
 fi
 
 if test "${lt_cv_sys_lib_search_path_spec+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  lt_cv_sys_lib_search_path_spec="$sys_lib_search_path_spec"
+  sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
 fi
-
-sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
 if test "${lt_cv_sys_lib_dlsearch_path_spec+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  lt_cv_sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec"
+  sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
 fi
-
-sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
 
 
 
@@ -12696,7 +12688,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12699 "configure"
+#line 12691 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12796,7 +12788,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12799 "configure"
+#line 12791 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15150,7 +15142,7 @@ case " $postdeps_CXX " in
 *" -lc "*) archive_cmds_need_lc_CXX=no ;;
 esac
  compiler_lib_search_dirs_CXX=
-if test -n "$${compiler_lib_search_path_CXX}"; then
+if test -n "${compiler_lib_search_path_CXX}"; then
  compiler_lib_search_dirs_CXX=`echo " ${compiler_lib_search_path_CXX}" | ${SED} -e 's! -L! !g' -e 's!^ !!'`
 fi
 
@@ -15516,11 +15508,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15519: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15511: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15523: \$? = $ac_status" >&5
+   echo "$as_me:15515: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15615,11 +15607,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15618: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15610: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15622: \$? = $ac_status" >&5
+   echo "$as_me:15614: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15667,11 +15659,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15670: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15662: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15674: \$? = $ac_status" >&5
+   echo "$as_me:15666: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16518,19 +16510,11 @@ if test "$GCC" = yes; then
 fi
 
 if test "${lt_cv_sys_lib_search_path_spec+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  lt_cv_sys_lib_search_path_spec="$sys_lib_search_path_spec"
+  sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
 fi
-
-sys_lib_search_path_spec="$lt_cv_sys_lib_search_path_spec"
 if test "${lt_cv_sys_lib_dlsearch_path_spec+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  lt_cv_sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec"
+  sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
 fi
-
-sys_lib_dlsearch_path_spec="$lt_cv_sys_lib_dlsearch_path_spec"
 
 
 
@@ -17461,7 +17445,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 17464 "configure"
+#line 17448 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H

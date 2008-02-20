@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-02-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/Magick.xs: Use MagickAcquireMemory() rather than
+        AquireMemory().<BR>
+  <LI> coders/xwd.c (ReadXWDImage): Eliminate integer overflow
+        vulnerability (IDefense 09.19.07).
+  <LI> coders/xbm.c (ReadXBMImage): ditto
+  <LI> coders/xcf.c (ReadXCFImage): ditto
+  <LI> coders/dib.c (ReadDIBImage): ditto
+  <LI> coders/dcm.c (ReadDCMImage): ditto
+
+</UL>
+<p>
 2008-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

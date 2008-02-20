@@ -509,7 +509,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   struct PackageInfo
     *clone_info;
 
-  clone_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
+  clone_info=(struct PackageInfo *) MagickAcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
       clone_info->image_info=CloneImageInfo((ImageInfo *) NULL);
@@ -836,7 +836,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
                   *last*sizeof(*reference_vector));
               else
                 *reference_vector=(SV **)
-                  AcquireMemory(*last*sizeof(*reference_vector));
+                  MagickAcquireMemory(*last*sizeof(*reference_vector));
             }
         (*reference_vector)[*current]=reference;
         (*reference_vector)[++(*current)]=NULL;
@@ -2457,8 +2457,8 @@ BlobToImage(ref,...)
     MY_CXT.error_list=newSVpv("",0);
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
-    length=(STRLEN *) AcquireMemory((ac+1)*sizeof(length));
+    list=(char **) MagickAcquireMemory((ac+1)*sizeof(*list));
+    length=(STRLEN *) MagickAcquireMemory((ac+1)*sizeof(length));
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,ReferenceIsNotMyType,PackageName);
@@ -5756,7 +5756,7 @@ Mogrify(ref,...)
             break;
           av=(AV *) argument_list[0].array_reference;
           radius=(unsigned int) sqrt(av_len(av)+1);
-          kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
+          kernel=(double *) MagickAcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (long) (radius*radius); j++)
@@ -6744,7 +6744,7 @@ Ping(ref,...)
     MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
+    list=(char **) MagickAcquireMemory((ac+1)*sizeof(*list));
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     av=(AV *) reference;
@@ -7512,7 +7512,7 @@ Read(ref,...)
     package_info=(struct PackageInfo *) NULL;
     number_images=0;
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
+    list=(char **) MagickAcquireMemory((ac+1)*sizeof(*list));
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,ReferenceIsNotMyType,PackageName);
