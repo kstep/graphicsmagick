@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-02-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RndToInt): Cast result to 'unsigned int'
+        rather than 'int' in order to avoid possible value truncation with
+        Q32 build.  Problem was reported by Kai-Uwe Behrmann.
+        (TransformRGBImage): Fix loop iterator which was looping one past
+        the end of the array.  Reported by Kai-Uwe Behrmann.
+  <LI> magick/command.c: Added a -set option to the composite, convert,
+        display, mogrify, import commands in order to allow setting an
+        image attribute.
+
+</UL>
+<p>
 2008-02-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1,4 +1,4 @@
-.TH gm 1 "2008/02/09" "GraphicsMagick"
+.TH gm 1 "2008/02/20" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2828,6 +2828,12 @@ window.  In this way, you can obtain pieces of other windows that overlap
 the specified window, and more importantly, you can capture menus or other
 popups that are independent windows but appear over the specified window.
 .TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
+
+Set a named image attribute.  The attribute is set on the current
+(previously specified on command line) image.
+.TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
 
@@ -3979,6 +3985,9 @@ Options, above.
 .B "-scene \fI<value>"\fP
 \fRset scene number
 .TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
+.TP
 .B "-sharpen \fI<radius>{x<sigma>}"\fP
 \fRsharpen the image
 .TP
@@ -4894,6 +4903,9 @@ Options, above.
 .B "-scene \fI<value>"\fP
 \fRset scene number
 .TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
+.TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
 .TP
@@ -5296,6 +5308,9 @@ Options, above.
 .TP
 .B "-scenes \fI<value-value>"\fP
 \fRrange of image scene numbers to read
+.TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -7410,6 +7425,9 @@ Options, above.
 .B "-screen"
 \fRspecify the screen to capture
 .TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
+.TP
 .B "-silent"
 \fRoperate silently
 .TP
@@ -7759,6 +7777,9 @@ Options, above.
 .TP
 .B "-scene \fI<value>"\fP
 \fRset scene number
+.TP
+.B "-set \fI<attribute> <value>"\fP
+\fRset an image attribut
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image

@@ -43,7 +43,7 @@ typedef float TransformQuantum;
 #define TransformValue(value) ((TransformQuantum) (value))
 
 /* Round floating value to an integer */
-#define RndToInt(value) ((int)((value)+0.5))
+#define RndToInt(value) ((unsigned int)((value)+0.5))
 
 /* Assign value of attribute to double if attribute exists for key */
 #define MagickAttributeToDouble(image,key,variable) \
@@ -429,7 +429,11 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       MagickAttributeToDouble(image,"reference-white",ReferenceWhite);
       MagickAttributeToDouble(image,"reference-black",ReferenceBlack);
       MagickAttributeToDouble(image,"display-gamma",DisplayGamma);
-      MagickAttributeToDouble(image,"negative-film-gamma",NegativeFilmGamma);
+      MagickAttributeToDouble(image,"film-gamma",NegativeFilmGamma);
+
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Log Transform: ReferenceWhite=%g ReferenceBlack=%g DisplayGamma=%g FilmGamma=%g",
+                            ReferenceWhite,ReferenceBlack,DisplayGamma,NegativeFilmGamma);
 
       /*
         FIXME: Math seems to be producing data with gamma 1.0 rather than 1.7.
@@ -1455,8 +1459,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         Establish defaults.
       */
       MaxLinearValue=MaxRGB; /* Maximum linear value output */
-      ReferenceWhite=685;    /* 90% white card (default 685) */
-      ReferenceBlack=95;     /* 1% black card  (default 95) */
+      ReferenceWhite=685.0;  /* 90% white card (default 685) */
+      ReferenceBlack=95.0;   /* 1% black card  (default 95) */
       DisplayGamma=1.7;      /* Typical display gamma (Kodak recommended 1.7) */
       NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
       SoftClip=0.0;          /* Soft clip offset */
@@ -1467,8 +1471,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       MagickAttributeToDouble(image,"reference-white",ReferenceWhite);
       MagickAttributeToDouble(image,"reference-black",ReferenceBlack);
       MagickAttributeToDouble(image,"display-gamma",DisplayGamma);
-      MagickAttributeToDouble(image,"negative-film-gamma",NegativeFilmGamma);
+      MagickAttributeToDouble(image,"film-gamma",NegativeFilmGamma);
       MagickAttributeToDouble(image,"soft-clip-offset",SoftClip);
+
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Log Transform: ReferenceWhite=%g ReferenceBlack=%g DisplayGamma=%g FilmGamma=%g SoftClip=%g",
+                            ReferenceWhite,ReferenceBlack,DisplayGamma,NegativeFilmGamma,SoftClip);
 
       BreakPoint=ReferenceWhite-SoftClip;
       Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
@@ -1485,7 +1493,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                               UnableToTransformColorspace);
 
-      for (i=0; i < 1024; i++)
+      for (i=0; i < 1023; i++)
         {
           double
             linearval,

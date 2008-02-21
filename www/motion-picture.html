@@ -3,13 +3,14 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Motion Picture Features</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20070513;14102700">
+	<META NAME="CHANGED" CONTENT="20080220;20053200">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
-	<STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
@@ -35,21 +36,21 @@
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Motion Picture Features</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>GraphicsMagick
+			Motion Picture Features</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Recently,
 features have been added to <A HREF="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/">development
-GraphicsMagick 1.2</A> (<SPAN STYLE="background: #ffff00">not in the
-released 1.1.X series!</SPAN>) to make it more suitable for
-processing images used by the motion picture (film and
-high-definition) industry. In particular, industrial strength support
-for <A HREF="http://www.smpte.org/" TARGET="_top">SMPTE</A> DPX
-Version 2.0 (SMPTE 268M-2003) has been added for GraphicsMagick 1.2.
-Legacy 10-bit Kodak Cineon is also supported. A new logarithmic RGB
-space based on Kodak's Cineon log definition has been added to
+GraphicsMagick 1.2</A> (</FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><SPAN STYLE="background: #ffff00">not
+in the released 1.1.X series!</SPAN></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">)
+to make it more suitable for processing images used by the motion
+picture (film and high-definition) industry. In particular,
+industrial strength support for <A HREF="http://www.smpte.org/" TARGET="_top">SMPTE</A>
+DPX Version 2.0 (SMPTE 268M-2003) has been added for GraphicsMagick
+1.2. Legacy 10-bit Kodak Cineon is also supported. A new logarithmic
+RGB space based on Kodak's Cineon log definition has been added to
 support images which use a logarithmic density encoding (with range
 of 0 to 2.048) according to Kodak specifications. Support for legacy
 Kodak 4.5 Cineon format has been improved.</FONT></P>
@@ -57,7 +58,7 @@ Kodak 4.5 Cineon format has been improved.</FONT></P>
 DPX support has already been put to use in the industry. It was used
 to perform 16-bit TIFF to DPX conversion for Christopher Reeve's last
 film &quot;<A HREF="http://www.everyonesherodvd.com/flash/ehero.html">Everyone's
-Hero</A>&quot;. While this may not be  Christopher Reeve's most
+Hero</A>&quot;. While this may not be Christopher Reeve's most
 memorable work, the film's images turned out great, and the kids are
 sure to enjoy the film.</FONT></P>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">The
@@ -442,11 +443,22 @@ dealing with DPX files.</P>
 	chroma must be 4:2:2 subsampled in order to use planar storage.
 	While planar storage offers a number of benefits, it seems that very
 	few DPX-supporting applications support it.</DD><DT CLASS="western">
-	-sampling-factor 4:2:2</DT><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	-sampling-factor 4:2:2</DT><DD CLASS="western">
 	Select 4:2:2 subsampling when saving an image in YCbCr format.
 	Subsampling is handled via a general-purpose image resize algorithm
 	(lanczos) rather than a dedicated filter so subsampling is slow (but
-	good).</DD></DL>
+	good).</DD><DT CLASS="western">
+	-set reference-white &lt;value&gt;</DT><DD CLASS="western">
+	Set the 90% white card level (default 685) for Cineon Log.</DD><DT CLASS="western">
+	-set reference-black &lt;value&gt;</DT><DD CLASS="western">
+	Set the 1% black card level (default 95) for Cineon Log.</DD><DT CLASS="western">
+	-set display-gamma &lt;value&gt;</DT><DD CLASS="western">
+	Set the display gamma (default 1.7) for Cineon Log.</DD><DT CLASS="western">
+	-set film-gamma &lt;value&gt;</DT><DD CLASS="western">
+	Set the film gamma (default 0.6) for Cineon Log.</DD><DT CLASS="western">
+	-set soft-clip-offset &lt;value&gt;</DT><DD CLASS="western">
+	Set the soft clip offset (default 0) when converting to &ldquo;computer&rdquo;
+	RGB from Cineon Log.</DD></DL>
 <H3 CLASS="western">
 DPX Attributes</H3>
 <UL>
@@ -523,7 +535,7 @@ Use</P>
 to list all DPX header attributes.</P>
 <HR>
 <P CLASS="western" ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+</FONT><FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
 GraphicsMagick Group 2005</FONT></P>
 </BODY>
 </HTML>

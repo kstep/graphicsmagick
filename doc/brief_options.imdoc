@@ -553,6 +553,10 @@
 <lopt>-screen</opt>
 <abs>specify the screen to capture</abs>
 </utils>
+<utils apps=composite,convert,display,mogrify,import>
+<lopt>-set <attribute> <value></opt>
+<abs>set an image attribut</abs>
+</utils>
 <utils apps=convert,display,mogrify>
 <lopt>-segment <cluster threshold>x<smoothing threshold></opt>
 <abs>segment an image</abs>

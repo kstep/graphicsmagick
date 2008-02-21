@@ -2640,6 +2640,20 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,MissingArgument,option);
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
@@ -2954,6 +2968,7 @@ static void CompositeUsage(void)
       "-sampling-factor HxV[,...]",
       "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
+      "-set attribute value set image attribute",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
       "-stegano offset      hide watermark within an image",
@@ -4649,6 +4664,20 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,MissingArgument,option);
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("shade",option+1) == 0)
           {
             i++;
@@ -5148,6 +5177,7 @@ static void ConvertUsage(void)
       "-scene value         image scene number",
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
+      "-set attribute value set image attribute",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen geometry    sharpen the image",
       "-shave geometry      shave pixels from the image edges",
@@ -5455,6 +5485,7 @@ static void DisplayUsage(void)
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-segment value       segment an image",
+      "-set attribute value set image attribute",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
       "-texture filename    name of texture to tile onto the image background",
@@ -6635,6 +6666,20 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+              }
+            break;
+          }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+                i++;
+                if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
@@ -9370,6 +9415,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->scene=atol(argv[++i]);
             continue;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            char
+              key[MaxTextExtent],
+              value[MaxTextExtent];
+
+            strlcpy(key,argv[++i],sizeof(key));
+            strlcpy(value,argv[++i],sizeof(value));
+            (void) SetImageAttribute(*image,key,value);
+            continue;
+          }
         if (LocaleCompare("segment",option+1) == 0)
           {
             double
@@ -11743,6 +11799,20 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("segment",option+1) == 0)
           {
             if (*option == '-')
@@ -12192,6 +12262,7 @@ static void MogrifyUsage(void)
       "-scene number        image scene number",
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
+      "-set attribute value set image attribute",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen radius      sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
@@ -13616,6 +13687,7 @@ static void MontageUsage(void)
       "-sampling-factor HxV[,...]",
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
+      "-set attribute value set image attribute",
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-size geometry       width and height of image",
       "-stroke color        color to use when stroking a graphic primitive",
@@ -14416,6 +14488,20 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
             ximage_info.screen=(*option == '-');
             break;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("silent",option+1) == 0)
           {
             ximage_info.silent=(*option == '-');
@@ -14655,6 +14741,7 @@ static void ImportUsage(void)
       "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-screen              select image from root window",
+      "-set attribute value set image attribute",
       "-silent              operate silently, i.e. don't ring any bells ",
       "-snaps value         number of screen snapshots",
       "-transparent color   make this color transparent within the image",

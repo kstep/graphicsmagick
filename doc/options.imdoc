@@ -3869,6 +3869,22 @@ popups that are independent windows but appear over the specified window.</pp>
 
 
 
+<!-- ------------ -set ------------------------------------------ -->
+
+<utils apps=composite,convert,display,mogrify,import>
+
+<dopt>-set <attribute> <value></opt>
+
+<abs>set an image attribut</abs>
+
+
+<pp>
+Set a named image attribute.  The attribute is set on the current
+(previously specified on command line) image.
+</utils>
+
+
+
 
 <!-- ------------ -segment ------------------------------------------ -->
 
