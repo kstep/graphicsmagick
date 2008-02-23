@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.10 News</TITLE>
+<TITLE>GraphicsMagick 1.1.11 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,12 +17,70 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.10 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.11 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on September 19, 2007.
+This file was last updated on February 23, 2008.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.11 (released September 23, 2007)
+
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> BMP: Support large files.
+
+  <LI> DIB: Support large files.
+
+  <LI> PNG: Fix depth handling with 16-bit PNG files in the Q8 build.
+
+  <LI> SUN: Properly report image depth.
+
+  <LI> TIFF: Endian option (-endian) now controls TIFF byte endian order
+      rather than bit fill order.
+
+  <LI> DCM, DIB, XBM, XCF, XWD: Eliminate integer overflow vulnerability
+      (IDefense 09.19.07).
+
+  <LI> HSL colorspace transform: Avoid optimization bug noticed on Opteron
+      with GCC.
+
+  <LI> HWB colorspace transform: Avoid optimization bug noticed on Opteron
+      with GCC.
+
+  <LI> RGBTransformImage()/TransformRGBImage(): Was using HWB colorspace
+      when HSL was requested.
+
+  <LI> Successfully reads files with names like 'file[123]'.
+
+  <LI> 'gm display': No longer rely on isatty() to determine if input is
+      from a pipe.
+
+</UL>
+<p>
+  Feature Improvements:
+
+<UL>
+  <LI> 'identify +ping' forces the pixels to be read (similar to GM 1.2).
+
+  <LI> 'gm -version' now indicates if build supports "Large Memory" (i.e. 64-bit).
+
+  <LI> TIFF: Use '-define tiff:fill-order={msb2lsb|lsb2msb}' to control
+      TIFF bit fill order.
+
+
+</UL>
+<p>
+  Performance Improvements:
+
+<UL>
+  <LI> No longer bogs down if a directory contains hundreds of thousands of
+      files and the filename looks like a wildcard specification.
+
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.10 (released September 19, 2007)
 

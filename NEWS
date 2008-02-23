@@ -1,4 +1,52 @@
-This file was last updated on September 19, 2007.
+This file was last updated on February 23, 2008.
+
+Significant changes associated with GraphicsMagick 1.1.11 (released September 23, 2007)
+
+  Bugs Fixed:
+
+    o BMP: Support large files.
+
+    o DIB: Support large files.
+
+    o PNG: Fix depth handling with 16-bit PNG files in the Q8 build.
+
+    o SUN: Properly report image depth.
+
+    o TIFF: Endian option (-endian) now controls TIFF byte endian order
+      rather than bit fill order.
+
+    o DCM, DIB, XBM, XCF, XWD: Eliminate integer overflow vulnerability
+      (IDefense 09.19.07).
+
+    o HSL colorspace transform: Avoid optimization bug noticed on Opteron
+      with GCC.
+
+    o HWB colorspace transform: Avoid optimization bug noticed on Opteron
+      with GCC.
+
+    o RGBTransformImage()/TransformRGBImage(): Was using HWB colorspace
+      when HSL was requested.
+
+    o Successfully reads files with names like 'file[123]'.
+
+    o 'gm display': No longer rely on isatty() to determine if input is
+      from a pipe (use 'gm display -' to display an image read from a pipe).
+
+  Feature Improvements:
+
+    o 'identify +ping' forces the pixels to be read (similar to GM 1.2).
+
+    o 'gm -version' now indicates if build supports "Large Memory" (i.e. 64-bit).
+
+    o TIFF: Use '-define tiff:fill-order={msb2lsb|lsb2msb}' to control
+      TIFF bit fill order.
+
+
+  Performance Improvements:
+
+    o No longer bogs down if a directory contains hundreds of thousands of
+      files and the filename looks like a wildcard specification.
+
 
 Significant changes associated with GraphicsMagick 1.1.10 (released September 19, 2007)
 
