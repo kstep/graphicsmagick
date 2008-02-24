@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080220;21044200">
+	<META NAME="CHANGED" CONTENT="20080220;21102900">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
@@ -58,7 +58,7 @@ Kodak 4.5 Cineon format has been improved.</FONT></P>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">GraphicsMagick's
 DPX support has already been put to use in the industry. It was used
 to perform 16-bit TIFF to DPX conversion for Christopher Reeve's last
-film &quot;<A HREF="http://www.everyonesherodvd.com/flash/ehero.html">Everyone's
+film &quot;<A HREF="http://www.everyonesherodvd.com/flash/ehero.html" TARGET="_top">Everyone's
 Hero</A>&quot;. While this may not be Christopher Reeve's most
 memorable work, the film's images turned out great, and the kids are
 sure to enjoy the film.</FONT></P>
@@ -158,14 +158,15 @@ quality)<BR>Cropping<BR>Rotation<BR>Filtering<BR>ICC ICM
 profile-based color management and tran</FONT>sformations<BR>Gamma
 adjustment<BR>Color adjustment<BR>Conversion to grayscale<BR>Text
 annotations<BR>Compositions<BR>Drawing on images (for example drawing
-markers on image)<BR>Conversion to and from other formats (e.g. TIFF,
-JPEG, SGI, Postscript, PNG, and PNM)</FONT></P>
+markers on image)<BR>Conversion to and from other formats (e.g. Kodak
+Cineon, TIFF, JPEG, SGI, Postscript, PNG, and PNM)</FONT></P>
 <P CLASS="western"><FONT SIZE=2>GraphicsMagick performs well as
 compared with other software. Since it is free and portable, it may
 be installed on any available system with no license fees. For
 example, if a studio has a computing cluster of several hundred
-Linux, SGI IRIX, FreeBSD, or Mac OS X systems, then GraphicsMagick
-may be installed across all systems and used for any desired purpose.</FONT></P>
+Linux, SGI IRIX, Solaris, FreeBSD, or Mac OS X systems, then
+GraphicsMagick may be installed across all systems and used for any
+desired purpose.</FONT></P>
 <P CLASS="western"><FONT SIZE=2>GraphicsMagick's DPX file format
 support is very comprehensive. It goes beyond the DPX format support
 in other applications by striving to implement the complete DPX
@@ -235,7 +236,7 @@ scaling in a reasonable amount of time:</FONT></P>
 <PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</PRE><P CLASS="western">
 The above example command takes about 5 seconds (on an Apple 2.5GHz
 G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a 131MB &ldquo;5K&rdquo;
-(5232x4376) original 16-bit scan from a <A HREF="http://www.filmlight.ltd.uk/northlight.html" TARGET="_top">NorthLight
+(5232x4376) original 16-bit scan from a <A HREF="http://www.filmlight.ltd.uk/" TARGET="_top">NorthLight
 scanner</A> to a 11MB &ldquo;2K&rdquo; 10-bit working image.
 Operations on more typical &ldquo;2K&rdquo; images take on the order
 of half a second.</P>

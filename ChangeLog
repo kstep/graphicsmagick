@@ -1,3 +1,7 @@
+2008-02-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/body.html: Update to mention 1.1.11 release.
+
 2008-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/colorspace.c (RndToInt): Cast result to 'unsigned int'
