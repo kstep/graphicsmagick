@@ -1155,10 +1155,12 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
         ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
 
-  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-    "Resizing image of size %lux%lu to %lux%lu using %s filter",
-    image->columns,image->rows,columns,rows,
-    ResizeFilterToString((FilterTypes)i));
+
+  if (IsEventLogging())
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                          "Resizing image of size %lux%lu to %lux%lu using %s filter",
+                          image->columns,image->rows,columns,rows,
+                          ResizeFilterToString((FilterTypes)i));
 
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;

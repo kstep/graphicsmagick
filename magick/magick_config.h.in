@@ -36,8 +36,14 @@
 /* Define if C compiler supports __func__ */
 #undef HAS_C__func__
 
+/* Define to 1 if you have the `argz_add' function. */
+#undef HAVE_ARGZ_ADD
+
 /* Define to 1 if you have the `argz_append' function. */
 #undef HAVE_ARGZ_APPEND
+
+/* Define to 1 if you have the `argz_count' function. */
+#undef HAVE_ARGZ_COUNT
 
 /* Define to 1 if you have the `argz_create_sep' function. */
 #undef HAVE_ARGZ_CREATE_SEP

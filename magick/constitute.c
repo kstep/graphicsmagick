@@ -35,6 +35,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/bit_stream.h"
 #include "magick/blob.h"
 #include "magick/color.h"
@@ -6191,14 +6192,27 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   for (next=image; next; next=next->next)
   {
+#if 0
     /*
       Apply user-requested colorspace setting.  This allows the user
       to override the default colorspace for the image type.
+      FIXME: Does not work yet.
     */
-    if ( UndefinedColorspace != image_info->colorspace)
-      {
-        next->colorspace = image_info->colorspace;
-      }
+    {
+      const ImageAttribute
+        *attribute;
+      
+/*       if ((image_info->attributes) && */
+/*           (attribute=GetImageAttribute(image_info->attributes,"colorspace-override"))) */
+      if ((attribute=GetImageAttribute(image,"colorspace-override")))
+        {
+          next->colorspace = StringToColorspaceType(attribute->value);
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                "Colorspace explicitly set to %s",
+                                ColorspaceTypeToString(image->colorspace));
+        }
+    }
+#endif
     if (next->storage_class == PseudoClass)
       {
         /*

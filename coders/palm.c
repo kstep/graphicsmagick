@@ -22,13 +22,14 @@
 %                                                                             %
 %                              Software Design                                %
 %                            Christopher R. Hawks                             %
-%                               December 2001                                 %
+                               December 2001                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Based on pnmtopalm by Bill Janssen and ppmtobmp by Ian Goldberg.
+%  See http://www.trantor.de/kawt/doc/palmimages.html
 %
 */
 
@@ -41,6 +42,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/paint.h"
 #include "magick/quantize.h"
@@ -736,9 +738,6 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   Image
     *map;
 
-  ExceptionInfo
-    exception;
-
   const ImageAttribute
     *attribute;
 
@@ -756,7 +755,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     bit,
     byte,
     color,
-    *lastrow,
+    *lastrow = 0,
     *one_row,
     *ptr,
     version = 0;
@@ -766,7 +765,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     status;
 
   unsigned long
-    count,
+    count = 0,
     bits_per_pixel,
     bytes_per_row;
 
@@ -780,21 +779,22 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  lastrow=0;
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  GetExceptionInfo(&exception);
-  attribute = GetImageAttribute(image, "Comment");
-  if (attribute != (ImageAttribute *)NULL)
-    if (LocaleCompare("COLORMAP",attribute->value) == 0)
-      flags |= PALM_HAS_COLORMAP_FLAG;
 
-  count = GetNumberColors(image, NULL, &exception);
-  for (bits_per_pixel=1;  (1UL << bits_per_pixel) < count;  bits_per_pixel*=2);
+  /*
+    Make sure that image is in an RGB type space.
+  */
+  (void) TransformColorspace(image,RGBColorspace);
 
-  if (bits_per_pixel < 16)
-    (void) TransformColorspace(image,RGBColorspace);
+  /*
+    If image is colormapped, but there are too many colors, then force
+    to DirectClass.
+  */
+  if ((image->storage_class == PseudoClass) && (image->colors > 256))
+    image->storage_class=DirectClass;
+
   /*
     Analyze image to be written.
   */
@@ -805,15 +805,23 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
       return MagickFail;
     }
-  if (bits_per_pixel < 8)
+
+  bits_per_pixel=8;
+  if (characteristics.palette)
     {
-      if (characteristics.grayscale)   /* gray scale */
-        (void) SortColormapByIntensity(image);
-      else                                 /* is color */
-        bits_per_pixel = 8;
+      flags |= PALM_HAS_COLORMAP_FLAG;
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Set flag PALM_HAS_COLORMAP_FLAG");
+      for (bits_per_pixel=1;  ((1UL << bits_per_pixel) < image->colors) ;  bits_per_pixel*=2)
+        if (characteristics.grayscale)
+           (void) SortColormapByIntensity(image);
     }
-  if(bits_per_pixel > 8)
-    flags |= PALM_IS_DIRECT_COLOR;
+  else
+    {
+      flags |= PALM_IS_DIRECT_COLOR;
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Set flag PALM_IS_DIRECT_COLOR");
+    }
+  LogMagickEvent(CoderEvent,GetMagickModule(),"Bits per pixel: %lu",bits_per_pixel);
+
   /* Write Tbmp header. */
   (void) WriteBlobMSBShort(image,image->columns);  /* width */
   (void) WriteBlobMSBShort(image,image->rows );  /* height */
@@ -883,7 +891,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       else  /* Map colors to Palm standard colormap */
         {
           map = ConstituteImage(256, 1, "RGB", IntegerPixel,
-                                &PalmPalette, &exception);
+                                &PalmPalette, &image->exception);
           (void) SetImageType(map, PaletteType);
           (void) MapImage(image, map, False);
           for(y = 0; y < (long) image->rows; y++)
@@ -1031,6 +1039,5 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   MagickFreeMemory(one_row);
   if (image->compression == FaxCompression)
     MagickFreeMemory(lastrow);
-  DestroyExceptionInfo(&exception);
   return(True);
 }

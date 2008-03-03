@@ -6554,8 +6554,8 @@ esac
 
 
 
-macro_version='2.1c'
-macro_revision='1.2594'
+macro_version='2.2'
+macro_revision='1.2599'
 
 
 
@@ -17784,8 +17784,10 @@ ARGZ_H=
 
 
 
-for ac_func in argz_append argz_create_sep argz_insert argz_next \
-	argz_stringify
+
+
+for ac_func in argz_add argz_append argz_count argz_create_sep argz_insert \
+	argz_next argz_stringify
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
