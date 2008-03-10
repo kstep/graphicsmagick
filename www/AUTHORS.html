@@ -1,277 +1,406 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
-<TITLE>GraphicsMagick Authors</TITLE>
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick Authors</font></font></font></b></td>
-</tr>
-</table>
-<p>
-The following people have contributed substantially to the development
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick Authors</title>
+<style type="text/css">
+
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : medium;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : smaller;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+        margin-top : 2mm;
+        margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : medium;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : medium;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : small;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : smaller;
+}
+
+.navlevel2 {
+        font-size : 9pt;
+}
+
+.navlevel3 {
+        font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : smaller;
+}
+
+.tiny  {
+	font-size : smaller;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : smaller;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
+
+
+</style>
+</head>
+<body>
+<div class="document" id="graphicsmagick-authors">
+<h1 class="title">GraphicsMagick Authors</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>The following people have contributed substantially to the development
 of GraphicsMagick.  Please let us know if an author is missing, or a
-significant contribution was made and not recorded.
+significant contribution was made and not recorded.</p>
+<div class="contents local topic">
+<ul class="simple">
+<li><a class="reference" href="#active-graphicsmagick-contributors" id="id1" name="id1">Active GraphicsMagick Contributors</a></li>
+<li><a class="reference" href="#former-graphicsmagick-contributors" id="id2" name="id2">Former GraphicsMagick Contributors</a></li>
+<li><a class="reference" href="#other-contributors-via-imagemagick" id="id3" name="id3">Other Contributors (via ImageMagick)</a></li>
+<li><a class="reference" href="#additional-acknowledgements" id="id4" name="id4">Additional Acknowledgements</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="active-graphicsmagick-contributors" name="active-graphicsmagick-contributors">Active GraphicsMagick Contributors</a></h1>
+<dl class="docutils">
+<dt>Bob Friesenhahn</dt>
+<dd>Principal maintainer of GraphicsMagick. Author of
+Magick++ (C++ API to ImageMagick and GraphicsMagick).
+Author of module loader facility, automatic file
+identification (magic) support, Unix/Cygwin/MinGW
+configure/make facility, Windows setup.exe style
+installer, WMF renderer, C API documentation formatter,
+and the C, C++, and Perl test suites used by ImageMagick
+and GraphicsMagick.</dd>
+<dt>Glenn Randers-Pehrson</dt>
+<dd>Contributed significantly to the utilities, including
+writing the 'gm' utility wrapper. Authored support for
+JNG, MNG, and PNG formats. Provided significant support
+for the BMP format. Significant improvements to the
+documentation, including creating a documentation
+authoring environment based on the &lt;imdoc&gt; format.
+Maintains the SourceForge mailing lists.</dd>
+<dt>Daniel Kobras</dt>
+<dd>Provided many security patches and fixes from the Debian
+project.</dd>
+<dt>Jaroslav Fojtik</dt>
+<dd>Authored the ART, CUT, MATLAB, TOPOL, and WPG
+coder modules.</dd>
+<dt>Rolf Schroedter</dt>
+<dd>Principal author of TclMagick.</dd>
+<dt>David N. Welton</dt>
+<dd>Co-author of TclMagick, particularly in the Unix environment.</dd>
+</dl>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="former-graphicsmagick-contributors" name="former-graphicsmagick-contributors">Former GraphicsMagick Contributors</a></h1>
+<dl class="docutils">
+<dt>Mike Chiarappa</dt>
+<dd>Created and maintains the Borland C++ Builder 6.0 build
+environment for GraphicsMagick.</dd>
+<dt>William Radcliffe</dt>
+<dd>Author of the VisualMagick project configure facility for
+Visual C++. Author of FlashPix module. Author of the
+ImageMagickObject COM object for Windows. Author of the
+EMF, XTRN, and META coders. Significant contributions to
+the MSL, JPEG, TIFF, SVG, and URL coders. Authored
+&quot;process&quot; module support. Wrote the micro-timer facility
+used by 'identify'. Ported module loader support to
+Windows. Significantly improved polygon rendering
+performance.</dd>
+<dt>Leonard Rosenthol</dt>
+<dd>Authored the 'conjure' utility and associated MSL
+execution environment. Provided MacOS support. Authored
+the CLIPBOARD, XCF, and PSD coders. Postscript and PDF
+expertise. Significant drawing enhancements including
+support for dash patterns, linecap stroking, clipping
+masks and a mask image.</dd>
+<dt>Lars Ruben Skyum</dt>
+<dd>Contributed the -clippath functionality, added
+-define support, improved color profile support,
+and re-wrote the PS3 coder.</dd>
+</dl>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="other-contributors-via-imagemagick" name="other-contributors-via-imagemagick">Other Contributors (via ImageMagick)</a></h1>
+<dl class="docutils">
+<dt>John Cristy</dt>
+<dd>Creator, principal author, and principal maintainer of
+ImageMagick, from which GraphicsMagick is originally
+derived (from ImageMagick 5.5.2).  Also the author of
+the Wand API to ImageMagick which is incorporated as
+a stand-alone library by GraphicsMagick.</dd>
+<dt>Kelly Bergougnoux</dt>
+<dd>Authored the initial Cineon coder (which has since been
+replaced).</dd>
+<dt>Christopher R. Hawks</dt>
+<dd>Authored the PALM coder.</dd>
+<dt>Francis J. Franklin</dt>
+<dd>Ported the WMF coder to the libwmf 0.2 API.</dd>
+<dt>Rick Mabry</dt>
+<dd>Contributed code to support filling drawn objects using a
+pattern image.</dd>
+<dt>Nathan Brown</dt>
+<dd>Original author of the JP2 coder.</dd>
+<dt>Kyle Shorter</dt>
+<dd>Original author of PerlMagick. Original author of the
+LOCALE coder.</dd>
+<dt>Markus Friedl</dt>
+<dd>Original author of Base64 encode/decode sources.</dd>
+<dt>David Harr</dt>
+<dd>Contributed (with Leonard Rosenthol) dash pattern,
+linecap stroking algorithm, and minor rendering
+improvements.</dd>
+<dt>Troy Edwards</dt>
+<dd>Authored the source RPM spec file for GraphicsMagick.</dd>
+<dt>Milan Votava</dt>
+<dd>Contributed support for Wireless BitMap, used in WAP -
+Wireless Access Protocol.</dd>
+<dt>Mike Edmonds</dt>
+<dd>Contributed the median filter algorithm.</dd>
+</dl>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="additional-acknowledgements" name="additional-acknowledgements">Additional Acknowledgements</a></h1>
+<dl class="docutils">
+<dt>David Pensak, E. I. du Pont de Nemours and Company</dt>
+<dd>For providing the computing environment that made
+developing ImageMagick possible.</dd>
+<dt>Alexander Zimmermann</dt>
+<dd>Responsible for the ImageMagick Linux binary
+distributions for many years. His efforts are very much
+appreciated.</dd>
+<dt>Paul Heckbert, Carnegie Mellon University</dt>
+<dd>Image resizing is based on Paul Heckbert's Zoom program.</dd>
+<dt>Paul Raveling, USC Information Sciences Institute</dt>
+<dd>The spatial subdivision color reduction algorithm is
+based on his Img software.</dd>
+<dt>Michael Halle, Spatial Imaging Group at MIT</dt>
+<dd>For the initial implementation of Alan Paeth's image
+rotation algorithm.</dd>
+<dt>Peder Langlo, Hewlett Packard</dt>
+<dd>Made hundreds of suggestions and bug reports. Without
+Peder, this software would not be nearly as useful as it
+is today.</dd>
+<dt>Rod Bogart and John W. Peterson, University of Utah</dt>
+<dd>Image compositing is loosely based on rlecomp of the
+Utah Raster Toolkit.</dd>
+<dt>Alvy Ray Smith and Eric Ray Lyons</dt>
+<dd>HWB color transform and algorithm.</dd>
+<dt>Thomas R Crimmins</dt>
+<dd>Inventor of the eight hull algorithm used for speckle
+reduction.</dd>
+</dl>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-03-10 03:36 UTC.
 
-<A NAME="1"><H2>Active GraphicsMagick Contributors</H2></A>
-
-<p>
-Bob Friesenhahn<BR>
-<PRE>
-                Principal maintainer of GraphicsMagick. Author of
-                Magick++ (C++ API to ImageMagick and GraphicsMagick).
-                Author of module loader facility, automatic file
-                identification (magic) support, Unix/Cygwin/MinGW
-                configure/make facility, Windows setup.exe style
-                installer, WMF renderer, C API documentation formatter,
-                and the C, C++, and Perl test suites used by ImageMagick
-                and GraphicsMagick.
-</PRE>
-
-<p>
-Glenn Randers-Pehrson<BR>
-<PRE>
-                Contributed significantly to the utilities, including
-                writing the 'gm' utility wrapper. Authored support for
-                JNG, MNG, and PNG formats. Provided significant support
-                for the BMP format. Significant improvements to the
-                documentation, including creating a documentation
-                authoring environment based on the &lt;imdoc&gt; format.
-                Maintains the SourceForge mailing lists.
-</PRE>
-
-<p>
-Daniel Kobras<BR>
-<PRE>
-                Provided many security patches and fixes from the Debian
-                project.
-</PRE>
-
-<p>
-Jaroslav Fojtik<BR>
-<PRE>
-                Authored the ART, CUT, MATLAB, TOPOL, and WPG
-                coder modules.
-</PRE>
-
-<p>
-Rolf Schroedter<BR>
-<PRE>
-                Principal author of TclMagick.
-</PRE>
-
-<p>
-David N. Welton<BR>
-<PRE>
-                Co-author of TclMagick, particularly in the Unix environment.
-</PRE>
-
-
-<A NAME="2"><H2>Former GraphicsMagick Contributors</H2></A>
-
-<p>
-Mike Chiarappa<BR>
-<PRE>
-                Created and maintains the Borland C++ Builder 6.0 build
-                environment for GraphicsMagick.
-</PRE>
-
-<p>
-William Radcliffe<BR>
-<PRE>
-                Author of the VisualMagick project configure facility for
-                Visual C++. Author of FlashPix module. Author of the
-                ImageMagickObject COM object for Windows. Author of the
-                EMF, XTRN, and META coders. Significant contributions to
-                the MSL, JPEG, TIFF, SVG, and URL coders. Authored
-                "process" module support. Wrote the micro-timer facility
-                used by 'identify'. Ported module loader support to
-                Windows. Significantly improved polygon rendering
-                performance.
-</PRE>
-
-<p>
-Leonard Rosenthol<BR>
-<PRE>
-                Authored the 'conjure' utility and associated MSL
-                execution environment. Provided MacOS support. Authored
-                the CLIPBOARD, XCF, and PSD coders. Postscript and PDF
-                expertise. Significant drawing enhancements including
-                support for dash patterns, linecap stroking, clipping
-                masks and a mask image.
-</PRE>
-
-<p>
-Lars Ruben Skyum<BR>
-<PRE>
-                Contributed the -clippath functionality, added
-                -define support, improved color profile support,
-                and re-wrote the PS3 coder.
-</PRE>
-
-<A NAME="3"><H2>Other Contributors (via ImageMagick)</H2></A>
-
-<p>
-John Cristy<BR>
-<PRE>
-                Creator, principal author, and principal maintainer of
-                ImageMagick, from which GraphicsMagick is originally
-                derived (from ImageMagick 5.5.2).  Also the author of
-                the Wand API to ImageMagick which is incorporated as
-                a stand-alone library by GraphicsMagick.
-</PRE>
-
-<p>
-Kelly Bergougnoux<BR>
-<PRE>
-                Authored the initial Cineon coder (which has since been
-                replaced).
-</PRE>
-
-<p>
-Christopher R. Hawks<BR>
-<PRE>
-                Authored the PALM coder.
-</PRE>
-
-<p>
-Francis J. Franklin<BR>
-<PRE>
-                Ported the WMF coder to the libwmf 0.2 API.
-</PRE>
-
-<p>
-Rick Mabry<BR>
-<PRE>
-                Contributed code to support filling drawn objects using a
-                pattern image.
-</PRE>
-<p>
-Nathan Brown<BR>
-<PRE>
-                Original author of the JP2 coder.
-</PRE>
-
-<p>
-Kyle Shorter<BR>
-<PRE>
-                Original author of PerlMagick. Original author of the
-                LOCALE coder.
-</PRE>
-
-<p>
-Markus Friedl<BR>
-<PRE>
-                Original author of Base64 encode/decode sources.
-</PRE>
-
-<p>
-David Harr<BR>
-<PRE>
-                Contributed (with Leonard Rosenthol) dash pattern,
-                linecap stroking algorithm, and minor rendering
-                improvements.
-</PRE>
-
-<p>
-Troy Edwards<BR>
-<PRE>
-                Authored the source RPM spec file for GraphicsMagick.
-</PRE>
-
-<p>
-Milan Votava<BR>
-<PRE>
-                Contributed support for Wireless BitMap, used in WAP -
-                Wireless Access Protocol.
-</PRE>
-
-<p>
-Mike Edmonds<BR>
-<PRE>
-                Contributed the median filter algorithm.
-</PRE>
-
-<A NAME="4"><H2>Additional Acknowledgements</H2></A>
-
-<p>
-David Pensak, E. I. du Pont de Nemours and Company
-<PRE>
-                For providing the computing environment that made
-                developing ImageMagick possible.
-</PRE>
-
-<p>
-Alexander Zimmermann<BR>
-<PRE>
-                Responsible for the ImageMagick Linux binary
-                distributions for many years. His efforts are very much
-                appreciated.
-</PRE>
-
-<p>
-Paul Heckbert, Carnegie Mellon University
-<PRE>
-                Image resizing is based on Paul Heckbert's Zoom program.
-</PRE>
-
-<p>
-Paul Raveling, USC Information Sciences Institute
-<PRE>
-                The spatial subdivision color reduction algorithm is
-                based on his Img software.
-</PRE>
-
-<p>
-Michael Halle, Spatial Imaging Group at MIT
-<PRE>
-                For the initial implementation of Alan Paeth's image
-                rotation algorithm.
-</PRE>
-
-<p>
-Peder Langlo, Hewlett Packard<BR>
-<PRE>
-                Made hundreds of suggestions and bug reports. Without
-                Peder, this software would not be nearly as useful as it
-                is today.
-</PRE>
-
-<p>
-Rod Bogart and John W. Peterson, University of Utah
-<PRE>
-                Image compositing is loosely based on rlecomp of the
-                Utah Raster Toolkit.
-</PRE>
-
-<p>
-Alvy Ray Smith and Eric Ray Lyons<BR>
-<PRE>
-                HWB color transform and algorithm.
-</PRE>
-
-<p>
-Thomas R Crimmins<BR>
-<PRE>
-                Inventor of the eight hull algorithm used for speckle
-                reduction.
-</PRE>
-
-
-<hr>
-<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P></BODY>
-</HTML>
+</div>
+</body>
+</html>

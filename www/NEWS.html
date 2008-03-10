@@ -1,660 +1,875 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
-<TITLE>GraphicsMagick 1.2 News</TITLE>
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.2 News</font></font></font></b></td>
-</tr>
-</table>
-<p>
-This file was last updated on September 11, 2007
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick News</title>
+<style type="text/css">
 
-<p>
-Please note that this file records news for the associated development
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : medium;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : smaller;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+        margin-top : 2mm;
+        margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : medium;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : medium;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : small;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : smaller;
+}
+
+.navlevel2 {
+        font-size : 9pt;
+}
+
+.navlevel3 {
+        font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : smaller;
+}
+
+.tiny  {
+	font-size : smaller;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : smaller;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
+
+
+</style>
+</head>
+<body>
+<div class="document" id="graphicsmagick-news">
+<h1 class="title">GraphicsMagick News</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>This file was last updated on September 11, 2007</p>
+<p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
-ChangeLog file for full details.
-
-<p>
-Significant changes associated with GraphicsMagick 1.2 (not yet released)
-
-<p>
-  Security fixes:
-
-<UL>
-  <LI> Fixes for CERT security alert TA04-217A described at
-      "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
-  <LI> AVI, BMP, &amp; DIB security fixes.
-  <LI> PSD security fixes.
-  <LI> P7 format security fix.
-  <LI> Fix EXIF IFD stack overflow vulnerability.
-  <LI> SGI security fix for RLE encoding (CVE-2006-4144)
-  <LI> XCF security fix (CVE-2006-3743)
-  <LI> PALM heap overflow fix (CVE-2006-5456)
-  <LI> DCM security fix (CVE-2006-5456)
-  <LI> Fix for shell command injection in delegate code via file names)
-      (CVE-2005-4601).  Delegate execution is much more secure now.
-  <LI> Don't use filenames as printf specifications (CVE-2006-0082).
-  <LI> Fix integer overflow in DCM coder (CVE-2007-1797).
-  <LI> XWD integer overflow fix (CVE-2007-1797).
-  <LI> Implementation has replaced usage of strcpy, strcat, and strncat
-      with the more security conscious strlcat and strlcpy.
-
-</UL>
-<p>
-  Bug fixes:
-
-<UL>
-  <LI> The configure script now searches for a web browser in the order
-      mozilla, firefox, and finally netscape.
-  <LI> When the user specifies the -units option, the current image
-      resolution values are now re-scaled to match the new units.
-  <LI> Properly determine Ghostscript font location for Ghostscript 8.0 and later.
-  <LI> GraphicsMagick now successfully builds and passes all tests under
-      Digital Unix 5.1, using the vendor compiler.
-  <LI> Ghostscript sometimes displays an error message and fails, yet it
-      returns a success error code to GraphicsMagick. Verify that
-      Ghostscript has updated the output file before attempting to use it.
-  <LI> Fixed a configure script syntax error when testing for trio.
-  <LI> When requesting a list of formats, all of the modules in the module
-      search path are considered. Previously only the modules in the same
-      directory as the LOGO module were listed.
-  <LI> Ensure that an image clip mask is respected by the negate algorithm.
-  <LI> The BMP writer was sometimes writing incorrect BMP v4 files.
-  <LI> Support reading and writing large PCX files.
-  <LI> The Red Hat source RPM was failing to install the *-config scripts
-      with execute permissions.<BR>
-  <LI> Fixed a bug which could cause possible truncation while cloning the
-      image cache.<BR>
-  <LI> Ensure that MIFF files indicate the compression which was actually used.
-  <LI> Properly handle errors from libtiff so that corrupted images are not
-      output.<BR>
-  <LI> Fix for stripped-TIFF reader. Discard extra samples beyond alpha in
-      scanline TIFFs.<BR>
-  <LI> Endian option now controls TIFF byte-order rather than bit-order.
-  <LI> JBIG writer was writing empty files for some libjbig releases.
-  <LI> Improved handling of corrupt GIF files.
-  <LI> Handle large SUN format images.
-  <LI> Properly compute image depth for 16-bit SGI image files.
-  <LI> For the gmdisplay program, ensure that only RGB data is sent to Windows.
-  <LI> Many memory leak fixes.
-  <LI> PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.
-  <LI> Properly use fseeko() and ftello() if they are available.
-  <LI> Fixed a infinite loop bug in the XWD reader.
-  <LI> Fix minor memory leak in ProfileImage().
-  <LI> Fixed -level command parsing when a percent symbol is supplied within the
-      argument rather than at the end.<BR>
-  <LI> Fix pixel scaling problem caused by floating point
-      rounding error (noticed under AIX).
-  <LI> Fixed a memory leak in the GIF coder in the error return path.
-  <LI> Fix for SourceForge bug id 1353744 "MagickGetQuantumDepth doesn't work".
-  <LI> Fix for SourceForge bug id 1315109 "segfault in InitializeMagick(NULL)".
-  <LI> Fix for SourceForge bug id 1391421 "problem doing resize on 273x1 JPEG".
-  <LI> Fix for SourceForge bug id 1510075 "Failed to write PDF with JPEG compression".
-  <LI> Fix for SourceForge bug id 1572357 "GetOnePixel definition appears incorrect".
-  <LI> Fix for SourceForge bug id 1576616 Fix includedir variable in pkg-config files".
-  <LI> Fix for SourceForge bug id 1173713 "segfault in ModifyCache".
-  <LI> Fix for SourceForge bug id 1431805 "clip art wpg files cause access violation
-      in graphics magick".<BR>
-  <LI> Fix for SourceForge bug id 1743141 "Affine matrix option parsing".
-  <LI> Fix for SourceForge bug id 1625477 "Memory leak reading layered PSD Image".
-  <LI> Fix reading 12-bit grayscale JPEG.
-  <LI> Set image depth appropriately when importing image from X11 display.
-  <LI> Fix map resource tracking.
-  <LI> Fix reading recent variants of ImageMagick's MIFF format.
-  <LI> Output bilevel TIFF meeting the TIFF Class F specification.
-
-</UL>
-<p>
-  New Utilities:
-
-<UL>
-  <LI> A 'benchmark' subcommand is now available to benchmark the
-      performance of any other arbitrary subcommand (e.g. 'convert').
-
-</UL>
-<p>
-  Feature improvements:
-
-<UL>
-  <LI> LZW compression is now enabled by default.
-  <LI> Support industry-standard subsampling notation like "4:2:2".
-  <LI> If gm is executed under a traditional alternate name (e.g.
-      convert), it will invoke the appropriate sub-command. This allows
-      use of hard links, symbolic links, or just copying 'gm' to the
-      desired sub-command name in order to achieve 100% ImageMagick 5.5.2
-      utility compatibility.<BR>
-  <LI> Provide the --enable-magick-compat option when configuring to install
-      ImageMagick utilities compatibility links.
-  <LI> Identify -verbose output includes normalized (0.0-1.0) statistics.
-  <LI> Identify and convert now print "pixels per second" rates to help
-      evaluate performance.<BR>
-  <LI> Added the identify +ping option to force reading the complete file.
-  <LI> The display program now supports the +progress option to disable any
-      visual progress indication (and hourglass cursor) while loading images.
-  <LI> Support writing grayscale TGA files.
-  <LI> Provide explicit support for Rec 601 and Rec 709 grayscale spaces.
-  <LI> Include some support for a log RGB space based on the 2.048 density
-      range as defined for the Cineon Digital Film System.
-  <LI> Added utilities command-line support for industry standard subsampling
-      notation like 4:4:4 and 4:2:2.<BR>
-  <LI> Use MAGICK_IOBUF_SIZE to tune the size of the I/O buffer.
-  <LI> Use -type Bilevel, Grayscale, TrueColor, or TrueColorMatte to
-      influence the type of image that Ghostscript returns.
-  <LI> The -version option now dumps a feature list as well as the build
-      options.<BR>
-  <LI> The -endian option now supports the option 'native'.
-  <LI> A -monitor is added to enable progress monitoring for the command line
-      utilities.<BR>
-  <LI> The already supported option '-type Optimize' is now honored by
-      formats that need to choose a subformat based on the properties of
-      the image. Grueling tests of many/all pixels are not performed
-      unless '-type Optimize' is supplied.
-
-</UL>
-<p>
-  Coder additions/improvements:
-
-<UL>
-  <LI> Replaced existing DPX "support" with all-new DPX support conforming
-      to the SMPTE 268M-2003 standard.<BR>
-  <LI> Cineon reader completely rewritten.
-  <LI> TIFF coder is completely re-written. Now supports reading and
-      writing RGB, CMYK, and grayscale, scanline-oriented TIFF images
-      with arbitrary (1 to 32 bits) depth. Includes support for tiled
-      TIFF, floating point TIFF, LogLuv TIFF, BigTIFF, arbitrary depths,
-      and associated alpha.<BR>
-  <LI> TIFF coder now supports retrieving and saving XMP profiles.
-  <LI> MATLAB support is much improved and supports writing as well.
-  <LI> WPG reader now supports CTM translations.
-  <LI> ART format now supports writing.
-  <LI> Support 32-bit raw RGB images.
-  <LI> Support 32-bit raw CMYK images.
-  <LI> Support 32-bit raw gray images.
-  <LI> JP2 coder reads images in YCBCR colorspace and retrieves an embedded
-      ICC ICM color profile if present.
-
-</UL>
-<p>
-  API enhancements:
-
-<UL>
-  <LI> Added ExportImageChannel() and ImportImageChannel() APIs to support
-      exporting and importing pixel regions with an arbitary range of (1
-      to 32) bits per quantum.<BR>
-  <LI> Added image leveling methods for Magick++.
-  <LI> Generalized GetImageAttribute() support for retrieving wildcarded
-      attributes so that an identify -format specification like
-      '%[dpx:*]' works as expected.<BR>
-  <LI> Incorporated changes changes necessary so that GraphicsMagick can
-      work with the Ch C/C++ interpreter from SoftIntegration at
-      http://www.softintegration.com/.
-
-</UL>
-<p>
-  Performance improvments:
-
-<UL>
-  <LI> The DispatchImage() and ConstituteImage() functions incorporate
-      special case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8
-      bit only) in order to improve performance dramatically.
-  <LI> When writing very large JPEG images, don't enable Huffman compression
-      since doing so requires libjpeg to buffer the entire image in memory.
-  <LI> When using the 'identify' -verbose option, -verbose must be specified
-      twice in order to obtain the color count.  This makes normal use of
-      -verbose much faster.<BR>
-  <LI> Significantly improved read/write speed for bilevel and gray images.
-  <LI> TIFF I/O is considerably faster.
-  <LI> Postscript writer is 10-15X faster.
-  <LI> PNM formats writer is 10-100X faster.
-  <LI> Rotate by 90 or 270 degrees is 2-9X faster.
-
-</UL>
-<p>
-  Windows-specific improvements/changes:
-
-<UL>
-  <LI> For the MinGW and Cygwin builds, the Magick++ library is forced to
-      build as a static library since otherwise C++ exceptions don't work.
-  <LI> Determine location of Ghostscript fonts only once in order to improve
-      performance.<BR>
-  <LI> Updated bzip2 to 1.0.4.
-  <LI> Updated Jasper library to version 1.900.1.
-  <LI> Updated jbigkit to 1.6
-  <LI> Updated lcms to 1.16
-  <LI> Updated libpng to 1.2.18.
-  <LI> Updated libtiff to 3.8.2
-  <LI> Updated zlib to 1.2.3.
-  <LI> Libtiff supports LZW compression.
-  <LI> Find latest Ghostscript which idenfies itself as "GPL Ghostscript".
-  <LI> Use GlobalMemoryStatusEx(), if available, to determine how much
-      physical memory is available. Important for large-memory machines.
-  <LI> Fixed NTreaddir() so that it does not write beyond its buffer.
-  <LI> Fixed opendir() emulation function so it can't overwrite the stack.
-  <LI> FlashPIX library sources are no longer distributed in the Windows
-      source package and building FlashPIX is disabled by default.
-      FlashPIX may still be built by adding the library (separately
-      distributed).
-
-</UL>
-<p>
-Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
-
-<p>
-  Bug fixes:<BR>
-<UL>
-  <LI> Semaphore fix which is necessary for proper multi-threaded operation.
-  <LI> Configure script fix to ensure that -lfpx is not supplied to the C
-    compiler during subsequent tests since this fails on some systems.
-  <LI> Fix for East and West gravity computations.
-  <LI> System error reports (errno) associated with an exception are now
-    correctly obtained from the context existing when the exception was
-    thrown rather than the context of the reporting function.
-  <LI> JNG encoder fix. Files were being written with incorrect
-    alpha_sample_value in the header. These can be repaired by reading
-    them into GM 1.1 and rewriting them.
-  <LI> XPM fix to module registration.
-  <LI> PSD fix for index calculation when QuantumDepth&gt;8.
-  <LI> Validate that geometry specifications only include allowed
-    characters.<BR>
-  <LI> SGI fix to save compression type while writing.
-  <LI> EXIF attributes were not being retrieved when requested.
-  <LI> Fix for bug when reading an image via a user-provided file
-    descriptor.<BR>
-  <LI> The reported image magick string is now always that of the original
-    input file (it was sometimes being reported as the format produced by
-    an intermediate delegate program).<BR>
-  <LI> Fixes to color profiling of CMYK images.
-  <LI> Memory leak fixed in DrawClipPath().
-  <LI> Arc drawing is fixed.
-  <LI> Command-line parsing bug under Linux due to Linux's sscanfs
-    inability to parse strings like "0x1" as "%fx%f" is fixed.
-  <LI> Scaling of 5 and 6-bit colors was slightly incorrect in BMP, AVI,
-    DIB, and TIM datastreams.<BR>
-  <LI> GM utility now reports an error rather than silently returning if
-    an unsupported sub-command is provided.
-  <LI> TIFF coder was writing 16-bit per sample RGB images incorrectly on
-    little-endian CPUs.
-
-</UL>
-<p>
-  Performance improvements:<BR>
-<UL>
-  <LI> Texture tiling is now 7X faster.
-  <LI> Color profile processing speed improvements for colormapped images.
-
-</UL>
-<p>
-  Utilities enhancements:<BR>
-<UL>
-  <LI> For Unix, 'gm version' now includes a dump of the configure and
-    build parameters.<BR>
-  <LI> Logging of thrown exceptions is now supported. Use '-debug
-    exception'. This is useful to learn when and where errors are
-    reported.<BR>
-  <LI> The -define option is added in order to support supplying
-    additional options to coders without needing to add additional
-    command line options or structure members.
-  <LI> The output of 'gm identify -verbose' now provides a nice dump
-    of EXIF data.<BR>
-  <LI> The -sampling-factor option now accepts as many HxV pairs as
-    there are JPEG components.  Omitted ones default to 1x1.
-  <LI> The convert and montage commands now support an -operator command to
-    perform arithmetic and bitwise operations on specified image channels.
-
-</UL>
-<p>
-  Coder additions/improvements<BR>
-<UL>
-  <LI> The META coder supports wide characters for the IPTC and 8BIM
-    formats.<BR>
-  <LI> The XTRN coder now supports wide characters.
-  <LI> An "IMAGE" coder is provided which provides access to a large
-    number of images (derived from XFig) suitable for use as patterns,
-    or as test images.<BR>
-  <LI> The "PATTERN" coder now returns an image pattern tiled to size
-    (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
-    compatibility.<BR>
-  <LI> The CINEON coder now supports reading and writing images in CINEON
-    "CIN" linear gray and RGB formats. The read support is still very
-    weak, but it works for common images.
-  <LI> The JPEG coder now estimates the original JPEG quality and sampling
-    factors and will reuse these options when writing JPEG if the image
-    is of the same type and the option "-define JPEG:preserve-settings"
-    is supplied.<BR>
-  <LI> The JPEG-2000 coder now supports all Jasper library arguments using
-    command line syntax similar to '-define jp2:rate=0.5'.
-  <LI> Reading and writting compressed SVG (SVGZ) is now supported.
-  <LI> The TXT coder now observes depth when writing.
-  <LI> The TIFF coder now outputs colormapped images with 1, 2, 4, and 8
-    bits per sample in order to provide much smaller file sizes for
-    images with very few colors.<BR>
-  <LI> Many TIFF coder enhancements. Now reads colormapped and grayscale
-    images at arbitrary (even odd) bits-per-sample sizes. Now properly
-    supports an opacity channel (at any bits-per-sample value) for
-    grayscale images. Bilevel grayscale images are treated similar to any
-    other grayscale image unless CCITT FAX3/FAX4 compression is
-    requested. Now allows the user to specify an arbitrary
-    bits-per-sample value for grayscale images (even odd values) using
-    "-define tiff:bits-per-sample=value". Now automatically stores the
-    image as TrueColor RGB pixels if the image compression is set to JPEG.
-    TIFF files are now written in using the TIFF library's default endian
-    order rather than always big endian.
-  <LI> The WPG coder now renders embedded WMFs.
-  <LI> The PS3 coder is completely re-written to work much better and
-    support more features (see ChangeLog).
-
-</UL>
-<p>
-  Code structure enhancements:<BR>
-<UL>
-  <LI> Error handling has been improved and validated through testing.
-    Some errors were being lost, unnecessarily ignored, or reported as
-    something else entirely.<BR>
-  <LI> The number of error text messages to be maintained has been reduced
-    by consolidating similar messages.<BR>
-  <LI> The memory allocator functions have been replaced with similar
-    macros in order to eliminate warnings with GCC 3.3, avoid
-    accidentally casting away const, and allow memory debuggers to
-    report memory allocations and frees against the correct functions.
-    The previously-used functions remain in the library for the purpose
-    of compatibility.<BR>
-  <LI> &lt;magick/xwindow.h&gt; no longer depends on magick_config.h defines.
-  <LI> The text string localization code has been replaced with a simpler
-    version written by Bill Radcliffe.<BR>
-  <LI> Added key,value "map" APIs (somewhat similar to C++'s &lt;map&gt;) for
-    internal use.
-
-</UL>
-<p>
-  API enhancements:<BR>
-<UL>
-  <LI> Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
-    library.<BR>
-  <LI> API definition is no longer dependent on types which vary in size
-    (e.g. size_t) depending on large file compilation options.  This means
-    that applications may now be compiled without any special large file
-    options and still work properly with the library.
-  <LI> Thrown exceptions (ExceptionInfo structure) now include source
-    file, source line, function name, and current system error number.
-  <LI> The GetMagickInfoArray() function is added to replace use of
-    GetMagickInfo() for code which needs to access the coder list. This
-    is necessary since invoking GetMagickInfo() may re-order the coder
-    list, causing problems for code which traverses the list. Using
-    GetMagickInfo() to access individual list elements is safe.
-  <LI> Added the CopyException function to support copying exception info
-    from one structure to another.<BR>
-  <LI> Added the ReplaceImageInList function to replace an image in an
-    image list.<BR>
-  <LI> Added the DrawPeekGraphicContext function to access the current
-    DrawInfo structure in the drawing context stack. Use of this
-    function is not recommended since it voilates proper programming
-    practices. It is added to support the Wand API's.
-  <LI> GetImageDepth() now returns an integral value between 1 and
-    QuantumDepth and is no longer limited to the values 8, 16, and 32.
-  <LI> SetImageDepth() supports setting the image modulus depth to any
-    integral value between 1 and QuantumDepth. This effects the effective
-    numeric precision, not the storage depth, since the quantum storage
-    type is still a Quantum.<BR>
-  <LI> GetImageChannelDepth() supports retrieving the modulus depth for a
-    specified channel.<BR>
-  <LI> SetImageChannelDepth() supports setting the modulus depth for a
-    specified channel.<BR>
-  <LI> ProfileImage is updated to handle alpha channels and grayscale
-    images.<BR>
-  <LI> Added GetImageProfile() to retrieve a CMS profile from an image.
-  <LI> Added SetImageProfile() to attach a CMS profile to an image without
-    adjusting the image pixels.<BR>
-  <LI> Added DeleteImageProfile() to remove a CMS profile from an image.
-  <LI> ConstituteImage() and DispatchImage() now support 'T' (transparency),
-    'O' (opacity), and 'P' (pad) options.
-  <LI> CompositeImage() now supports CopyCyanCompositeOp,
-    CopyMagentaCompositeOp, CopyYellowCompositeOp, and
-    CopyBlackCompositeOp, composition operators.
-  <LI> GetColorHistogram() obtains a color histogram for the image.
-  <LI> QuantumOperatorImage() and QuantumOperatorRegionImage() support
-    arithmetic and bitwise operations on specified image channels.
-  <LI> The semaphore.h header is no longer installed or included in the
-    API headers since these functions are private interfaces.
-  <LI> Configure using --enable-symbol-prefix or define
-    PREFIX_MAGICK_SYMBOLS to use the C preprocessor to prefix all library
-    symbols with "Gm". This prevents library symbol conflicts with other
-    libraries.
-
-</UL>
-<p>
-  PerlMagick fixes:<BR>
-<UL>
-  <LI> Adjusted a number of function option names so that they match the
-    documentation.<BR>
-  <LI> Memory leak fixed.
-  <LI> Reading files (e.g. GIF) via a file descriptor is fixed.
-
-</UL>
-<p>
-  Build improvements:
-
-<UL>
-  <LI> The TRIO library may be used to provide a replacement for vsnprintf
-    if the C library doesn't provide it.  This improves security on old
-    systems.<BR>
-  <LI> Configure only configures for C &amp; C++ languages.
-  <LI> Configure now does a better job of figuring out how to build a
-    thread-safe library across multiple operating systems.
-  <LI> Configure incorporates a new mmap() test which tests the
-    functionality which is needed so that mmap() is not unnecessarily
-    rejected on a number of systems. This improves performance for large
-    files on those systems.<BR>
-  <LI> Configure/build fixes for IBM's AIX operating system.
-
-</UL>
-<p>
-  Windows-specific improvements:<BR>
-<UL>
-  <LI> The static install package now uses the "uninstalled"
-    configuration so that it does not depend on the Windows registry in
-    order to run. This allows files from the static install package to
-    be copied to another computer without running an installer.
-  <LI> The executable search path is extended at run-time to include the
-    directory where the CORE DLLs reside in order to ensure that they
-    are found.<BR>
-  <LI> Adding the -t option to VisualMagick configure enables building
-    all of the coders into one library in order to save build time and
-    simplify linkage.<BR>
-  <LI> The XTRN coder now supports wide characters.
-  <LI> LCMS library updated to version 1.10.
-  <LI> GMDisplay displays a checkerboard pattern behind transparent images.
-  <LI> Support is provided for issuing log messages to the Windows standard
-    logging system.<BR>
-  <LI> Project files are now provided for use with Borland C++ Builder 6.0.
-  <LI> Updated LCMS version to 1.12.
-  <LI> Updated FreeType version to 2.1.5.
-  <LI> Updated JBIG-KIT to version 1.5.
-  <LI> Updated libpng to version 1.2.5.
-  <LI> Updated libwmf to version 0.2.8.2.
-  <LI> Updates zlib to version 1.2.1.
-  <LI> ActivePerl 5.8.1 Build 807 now supported.
-  <LI> GraphicsMagick now compiles using Visual Studio .NET 2003.
-
-</UL>
-<p>
-<HR>
-Significant changes associated with GraphicsMagick 1.0 (Released in May, 2003)
-
-<p>
-  GraphicsMagick support services:<BR>
-<UL>
-  <LI> Master web site at "http://www.GraphicsMagick.org/".
-  <LI> Mailing lists, bug tracking, and forums available via
-    "http://sourceforge.net/projects/graphicsmagick/".
-  <LI> CVSWeb via "http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/".
-  <LI> CVS via cvs.graphicsmagick.org (find instructions at
-    "http://www.graphicsmagick.org/www/cvs.html").
-  <LI> FTP via "ftp://ftp.graphicsmagick.org/pub/GraphicsMagick".
-
-</UL>
-<p>
-  Project maintenance improvements:<BR>
-<UL>
-  <LI> ChangeLog conforms to the GNU standard and all CVS commits include
-    useful log messages.<BR>
-  <LI> CVS commit messages posted to graphicsmagick-commit mail list.
-  <LI> CVS commit messages contain CVSWeb URL references.
-
-</UL>
-<p>
-  Footprint changes from ImageMagick:<BR>
-<UL>
-  <LI> Library -lMagick renamed to -lGraphicsMagick.
-  <LI> Library -lMagick++ renamed to -lGraphicsMagick++.
-  <LI> Utilities consolidated into a single 'gm' utility (e.g. use 'gm
-    convert').<BR>
-  <LI> Script Magick-config renamed to GraphicsMagick-config.
-  <LI> Script Magick++-config renamed to GraphicsMagick++-config.
-  <LI> Headers installed under ${PREFIX}/include/GraphicsMagick.
-  <LI> PerlMagick namespace renamed from "Image::Magick" to "Graphics::Magick".
-  <LI> Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
-    installed in $libdir/pkgconfig to assist pkg-config users.
-  <LI> Coder modules installed to lib/GraphicsMagick-1.0/modules-Q8/coders.
-  <LI> Filter modules installed to lib/GraphicsMagick-1.0/modules-Q8/filters.
-
-</UL>
-<p>
-  Many performance enhancements:<BR>
-<UL>
-  <LI> Default QuantumDepth is 8 since this is adequate for most purposes
-    and more efficient than 16.<BR>
-  <LI> The Magick++ demo (compiled with QuantumDepth=8 and -O2) runs about
-    1.8X faster under SPARC/Solaris than the same demo with ImageMagick
-    5.5.4.<BR>
-  <LI> Colorspace transformations are much faster.
-  <LI> Grayscale/monochrome image handling is much faster.
-  <LI> PseudoClass image handling is faster.
-  <LI> Text annotations using FreeType are much faster.
-  <LI> Image file I/O is much faster.
-  <LI> RLE-compressed MIFF reading much faster.
-
-</UL>
-<p>
-  Code structure enhancements:<BR>
-<UL>
-  <LI> All utility support functions moved to magick/command.c in order to
-    significantly reduce link dependencies, allowing statically-linked
-    programs to be smaller.<BR>
-  <LI> Use of MogrifyImage() elminated except for by utilities.
-  <LI> Re-builds due to changes to &lt;magick/image.h&gt; reduced by splitting the
-    header into multiple headers.<BR>
-  <LI> ISO C '99 typedefs (gm_int16_t, gm_uint16_t, gm_int32_t, gm_uint32_t,
-    gm_int64_t, gm_uint64_t) are available for use.
-
-</UL>
-<p>
-  Feature enhancements:<BR>
-<UL>
-  <LI> Module loader always enabled for shared builds to allow extension.
-  <LI> Loading of arbitrary filter modules (via -process option) supported
-    under Unix as well as Windows.<BR>
-  <LI> SVG coder allows specifying size and initial background color.
-  <LI> JPEG-2000 coder (JP2) updated to work with Jasper 1.7.
-  <LI> HWB and HSL image colorspace translation support.
-  <LI> JNG/MNG/PNG format support tracks ImageMagick version.
-  <LI> BMP encoder can write 16-color indexed BMPs now as well as 2-color
-    BMPs (not restricted to monochrome).
-  <LI> TIFF decoder now includes optimized support for tiled and stripped
-<STRONG>TIFF.</STRONG><BR>
-  <LI> The -random-threshold option (RandomThresholdImage()) is added to
-    threshold an image to bilevel using random thresholding.
-
-</UL>
-<p>
-  Major bug fixes:<BR>
-<UL>
-  <LI> 100% successful test completion at all quantum depths (8/16/32).
-  <LI> A temporary file management subsystem is added to ensure that all
-    temporary files are removed before program exit. Temporary files are
-    created and used in a secure fashion to avoid the possibility that a
-    "trojan" temporary file (e.g. a symbolic link, or a file containing
-    unsafe content) is created before a delegate has the chance to write
-    to it. The environment variable MAGICK_TMPDIR allows the user to
-    specify where temporary files are created without altering where
-    other programs create their temporary files. Temporary filenames are
-    created in 8+3 format to hopefully be more acceptable to ralcgm.
-  <LI> When dithering is disabled, don't dither when converting to a
-    PseudoClass, grayscale, or monochrome image. Disabling dithering
-    may cause these translations to be much faster.
-  <LI> PICON format works with BLOBs.
-  <LI> No longer removes input file when pinging a FlashPIX file.
-  <LI> Arc drawing and texture fill fixes from ImageMagick.
-  <LI> Sample, scale and affine fixes from ImageMagick.
-  <LI> MIFF colormaps are now scaled properly while reading.
-  <LI> CMYK translation works for QuantumDepth=32.
-  <LI> ConstituteImage now works properly for grayscale images.
-  <LI> Built-in tilde expansion and filename globbing now works properly.
-  <LI> InitializeMagick now registers signal handlers to ensure that
-    resources are released before program exit.  This helps avoid
-    temporary file leaks due to the user using "CONTROL-C".
-  <LI> The installed &lt;magick/magick_config.h&gt; header now only contains
-    the few definitions required by the API headers.  This should
-    significantly reduce or eliminate conflicts with other package
-    headers.
-
-</UL>
-<p>
-  Windows platform enhancements:<BR>
-<UL>
-  <LI> Configure updated for Visual C++ 7.0.
-  <LI> OLE object (ImageMagickObject) re-written to work with Visual C++ 7.0
-  <LI> New function, CropImageToHBITMAP(), to return a region of the image
-    as a Windows HBITMAP.<BR>
-  <LI> Use vsnprintf to format strings under Windows (safer).
-
-</UL>
-<p>
-<HR>
-On November 19, 2002, GraphicsMagick was created as a fork of
-ImageMagick, several days before the ImageMagick 5.5.2 release.
-
-<p>
-The objectives of GraphicsMagick are to:
-
-<UL>
-  <LI> Use an open development model.
-  <LI> Encourage new developers to join the project.
-  <LI> Avoid unnecessary source code "churn".
-  <LI> Establish and preserve a stable API.
-  <LI> Use efficient coding practices which result in fast code.
-  <LI> Improve memory efficiency.
-  <LI> Use a release process which assures a working product.
-  <LI> Maintain an accurate ChangeLog.
-
-
-</UL>
-<p>
-<HR>
-Copyright (C) 2003 GraphicsMagick Group
-
-<p>
-This program is covered by multiple licenses, which are described in
+ChangeLog file for full details.</p>
+<div class="contents local topic">
+<ul class="simple">
+<li><a class="reference" href="#not-yet-released" id="id1" name="id1">1.2 (not yet released)</a></li>
+<li><a class="reference" href="#released-april-4-2004" id="id2" name="id2">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference" href="#released-in-may-2003" id="id3" name="id3">1.0 (Released in May, 2003)</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="not-yet-released" name="not-yet-released">1.2 (not yet released)</a></h1>
+<p>Security fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Fixes for CERT security alert TA04-217A described at
+&quot;<a class="reference" href="http://www.us-cert.gov/cas/techalerts/TA04-217A.html">http://www.us-cert.gov/cas/techalerts/TA04-217A.html</a>&quot;.</li>
+<li>AVI, BMP, &amp; DIB security fixes.</li>
+<li>PSD security fixes.</li>
+<li>P7 format security fix.</li>
+<li>Fix EXIF IFD stack overflow vulnerability.</li>
+<li>SGI security fix for RLE encoding (CVE-2006-4144)</li>
+<li>XCF security fix (CVE-2006-3743)</li>
+<li>PALM heap overflow fix (CVE-2006-5456)</li>
+<li>DCM security fix (CVE-2006-5456)</li>
+<li>Fix for shell command injection in delegate code via file names)
+(CVE-2005-4601).  Delegate execution is much more secure now.</li>
+<li>Don't use filenames as printf specifications (CVE-2006-0082).</li>
+<li>Fix integer overflow in DCM coder (CVE-2007-1797).</li>
+<li>XWD integer overflow fix (CVE-2007-1797).</li>
+<li>Implementation has replaced usage of strcpy, strcat, and strncat
+with the more security conscious strlcat and strlcpy.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>The configure script now searches for a web browser in the order
+mozilla, firefox, and finally netscape.</li>
+<li>When the user specifies the -units option, the current image
+resolution values are now re-scaled to match the new units.</li>
+<li>Properly determine Ghostscript font location for Ghostscript 8.0 and later.</li>
+<li>GraphicsMagick now successfully builds and passes all tests under
+Digital Unix 5.1, using the vendor compiler.</li>
+<li>Ghostscript sometimes displays an error message and fails, yet it
+returns a success error code to GraphicsMagick. Verify that
+Ghostscript has updated the output file before attempting to use it.</li>
+<li>Fixed a configure script syntax error when testing for trio.</li>
+<li>When requesting a list of formats, all of the modules in the module
+search path are considered. Previously only the modules in the same
+directory as the LOGO module were listed.</li>
+<li>Ensure that an image clip mask is respected by the negate algorithm.</li>
+<li>The BMP writer was sometimes writing incorrect BMP v4 files.</li>
+<li>Support reading and writing large PCX files.</li>
+<li>The Red Hat source RPM was failing to install the -config scripts
+with execute permissions.</li>
+<li>Fixed a bug which could cause possible truncation while cloning the
+image cache.</li>
+<li>Ensure that MIFF files indicate the compression which was actually used.</li>
+<li>Properly handle errors from libtiff so that corrupted images are not
+output.</li>
+<li>Fix for stripped-TIFF reader. Discard extra samples beyond alpha in
+scanline TIFFs.</li>
+<li>Endian option now controls TIFF byte-order rather than bit-order.</li>
+<li>JBIG writer was writing empty files for some libjbig releases.</li>
+<li>Improved handling of corrupt GIF files.</li>
+<li>Handle large SUN format images.</li>
+<li>Properly compute image depth for 16-bit SGI image files.</li>
+<li>For the gmdisplay program, ensure that only RGB data is sent to Windows.</li>
+<li>Many memory leak fixes.</li>
+<li>PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.</li>
+<li>Properly use fseeko() and ftello() if they are available.</li>
+<li>Fixed a infinite loop bug in the XWD reader.</li>
+<li>Fix minor memory leak in ProfileImage().</li>
+<li>Fixed -level command parsing when a percent symbol is supplied within the
+argument rather than at the end.</li>
+<li>Fix pixel scaling problem caused by floating point
+rounding error (noticed under AIX).</li>
+<li>Fixed a memory leak in the GIF coder in the error return path.</li>
+<li>Fix for SourceForge bug id 1353744 &quot;MagickGetQuantumDepth doesn't work&quot;.</li>
+<li>Fix for SourceForge bug id 1315109 &quot;segfault in InitializeMagick(NULL)&quot;.</li>
+<li>Fix for SourceForge bug id 1391421 &quot;problem doing resize on 273x1 JPEG&quot;.</li>
+<li>Fix for SourceForge bug id 1510075 &quot;Failed to write PDF with JPEG compression&quot;.</li>
+<li>Fix for SourceForge bug id 1572357 &quot;GetOnePixel definition appears incorrect&quot;.</li>
+<li>Fix for SourceForge bug id 1576616 Fix includedir variable in pkg-config files&quot;.</li>
+<li>Fix for SourceForge bug id 1173713 &quot;segfault in ModifyCache&quot;.</li>
+<li>Fix for SourceForge bug id 1431805 &quot;clip art wpg files cause access violation
+in graphics magick&quot;.</li>
+<li>Fix for SourceForge bug id 1743141 &quot;Affine matrix option parsing&quot;.</li>
+<li>Fix for SourceForge bug id 1625477 &quot;Memory leak reading layered PSD Image&quot;.</li>
+<li>Fix reading 12-bit grayscale JPEG.</li>
+<li>Set image depth appropriately when importing image from X11 display.</li>
+<li>Fix map resource tracking.</li>
+<li>Fix reading recent variants of ImageMagick's MIFF format.</li>
+<li>Output bilevel TIFF meeting the TIFF Class F specification.</li>
+</ul>
+</blockquote>
+<p>New Utilities:</p>
+<blockquote>
+<ul class="simple">
+<li>A 'benchmark' subcommand is now available to benchmark the
+performance of any other arbitrary subcommand (e.g. 'convert').</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>LZW compression is now enabled by default.</li>
+<li>Support industry-standard subsampling notation like &quot;4:2:2&quot;.</li>
+<li>If gm is executed under a traditional alternate name (e.g.
+convert), it will invoke the appropriate sub-command. This allows
+use of hard links, symbolic links, or just copying 'gm' to the
+desired sub-command name in order to achieve 100% ImageMagick 5.5.2
+utility compatibility.</li>
+<li>Provide the --enable-magick-compat option when configuring to install
+ImageMagick utilities compatibility links.</li>
+<li>Identify -verbose output includes normalized (0.0-1.0) statistics.</li>
+<li>Identify and convert now print &quot;pixels per second&quot; rates to help
+evaluate performance.</li>
+<li>Added the identify +ping option to force reading the complete file.</li>
+<li>The display program now supports the +progress option to disable any
+visual progress indication (and hourglass cursor) while loading images.</li>
+<li>Support writing grayscale TGA files.</li>
+<li>Provide explicit support for Rec 601 and Rec 709 grayscale spaces.</li>
+<li>Include some support for a log RGB space based on the 2.048 density
+range as defined for the Cineon Digital Film System.</li>
+<li>Added utilities command-line support for industry standard subsampling
+notation like 4:4:4 and 4:2:2.</li>
+<li>Use MAGICK_IOBUF_SIZE to tune the size of the I/O buffer.</li>
+<li>Use -type Bilevel, Grayscale, TrueColor, or TrueColorMatte to
+influence the type of image that Ghostscript returns.</li>
+<li>The -version option now dumps a feature list as well as the build
+options.</li>
+<li>The -endian option now supports the option 'native'.</li>
+<li>A -monitor is added to enable progress monitoring for the command line
+utilities.</li>
+<li>The already supported option '-type Optimize' is now honored by
+formats that need to choose a subformat based on the properties of
+the image. Grueling tests of many/all pixels are not performed
+unless '-type Optimize' is supplied.</li>
+</ul>
+</blockquote>
+<p>Coder additions/improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Replaced existing DPX &quot;support&quot; with all-new DPX support conforming
+to the SMPTE 268M-2003 standard.</li>
+<li>Cineon reader completely rewritten.</li>
+<li>TIFF coder is completely re-written. Now supports reading and
+writing RGB, CMYK, and grayscale, scanline-oriented TIFF images
+with arbitrary (1 to 32 bits) depth. Includes support for tiled
+TIFF, floating point TIFF, LogLuv TIFF, BigTIFF, arbitrary depths,
+and associated alpha.</li>
+<li>TIFF coder now supports retrieving and saving XMP profiles.</li>
+<li>MATLAB support is much improved and supports writing as well.</li>
+<li>WPG reader now supports CTM translations.</li>
+<li>ART format now supports writing.</li>
+<li>Support 32-bit raw RGB images.</li>
+<li>Support 32-bit raw CMYK images.</li>
+<li>Support 32-bit raw gray images.</li>
+<li>JP2 coder reads images in YCBCR colorspace and retrieves an embedded
+ICC ICM color profile if present.</li>
+</ul>
+</blockquote>
+<p>API enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Added ExportImageChannel() and ImportImageChannel() APIs to support
+exporting and importing pixel regions with an arbitary range of (1
+to 32) bits per quantum.</li>
+<li>Added image leveling methods for Magick++.</li>
+<li>Generalized GetImageAttribute() support for retrieving wildcarded
+attributes so that an identify -format specification like
+<tt class="docutils literal"><span class="pre">&quot;%[dpx:*]&quot;</span></tt> works as expected.</li>
+<li>Incorporated changes changes necessary so that GraphicsMagick can
+work with the Ch C/C++ interpreter from SoftIntegration at
+<a class="reference" href="http://www.softintegration.com/">http://www.softintegration.com/</a>.</li>
+</ul>
+</blockquote>
+<p>Performance improvments:</p>
+<blockquote>
+<ul class="simple">
+<li>The DispatchImage() and ConstituteImage() functions incorporate
+special case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8
+bit only) in order to improve performance dramatically.</li>
+<li>When writing very large JPEG images, don't enable Huffman compression
+since doing so requires libjpeg to buffer the entire image in memory.</li>
+<li>When using the 'identify' -verbose option, -verbose must be specified
+twice in order to obtain the color count.  This makes normal use of
+-verbose much faster.</li>
+<li>Significantly improved read/write speed for bilevel and gray images.</li>
+<li>TIFF I/O is considerably faster.</li>
+<li>Postscript writer is 10-15X faster.</li>
+<li>PNM formats writer is 10-100X faster.</li>
+<li>Rotate by 90 or 270 degrees is 2-9X faster.</li>
+</ul>
+</blockquote>
+<p>Windows-specific improvements/changes:</p>
+<blockquote>
+<ul class="simple">
+<li>For the MinGW and Cygwin builds, the Magick++ library is forced to
+build as a static library since otherwise C++ exceptions don't work.</li>
+<li>Determine location of Ghostscript fonts only once in order to improve
+performance.</li>
+<li>Updated bzip2 to 1.0.4.</li>
+<li>Updated Jasper library to version 1.900.1.</li>
+<li>Updated jbigkit to 1.6</li>
+<li>Updated lcms to 1.16</li>
+<li>Updated libpng to 1.2.18.</li>
+<li>Updated libtiff to 3.8.2</li>
+<li>Updated zlib to 1.2.3.</li>
+<li>Libtiff supports LZW compression.</li>
+<li>Find latest Ghostscript which idenfies itself as &quot;GPL Ghostscript&quot;.</li>
+<li>Use GlobalMemoryStatusEx(), if available, to determine how much
+physical memory is available. Important for large-memory machines.</li>
+<li>Fixed NTreaddir() so that it does not write beyond its buffer.</li>
+<li>Fixed opendir() emulation function so it can't overwrite the stack.</li>
+<li>FlashPIX library sources are no longer distributed in the Windows
+source package and building FlashPIX is disabled by default.
+FlashPIX may still be built by adding the library (separately
+distributed).</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Semaphore fix which is necessary for proper multi-threaded operation.</li>
+<li>Configure script fix to ensure that -lfpx is not supplied to the C
+compiler during subsequent tests since this fails on some systems.</li>
+<li>Fix for East and West gravity computations.</li>
+<li>System error reports (errno) associated with an exception are now
+correctly obtained from the context existing when the exception was
+thrown rather than the context of the reporting function.</li>
+<li>JNG encoder fix. Files were being written with incorrect
+alpha_sample_value in the header. These can be repaired by reading
+them into GM 1.1 and rewriting them.</li>
+<li>XPM fix to module registration.</li>
+<li>PSD fix for index calculation when QuantumDepth&gt;8.</li>
+<li>Validate that geometry specifications only include allowed
+characters.</li>
+<li>SGI fix to save compression type while writing.</li>
+<li>EXIF attributes were not being retrieved when requested.</li>
+<li>Fix for bug when reading an image via a user-provided file
+descriptor.</li>
+<li>The reported image magick string is now always that of the original
+input file (it was sometimes being reported as the format produced by
+an intermediate delegate program).</li>
+<li>Fixes to color profiling of CMYK images.</li>
+<li>Memory leak fixed in DrawClipPath().</li>
+<li>Arc drawing is fixed.</li>
+<li>Command-line parsing bug under Linux due to Linux's sscanfs
+inability to parse strings like &quot;0x1&quot; as &quot;%fx%f&quot; is fixed.</li>
+<li>Scaling of 5 and 6-bit colors was slightly incorrect in BMP, AVI,
+DIB, and TIM datastreams.</li>
+<li>GM utility now reports an error rather than silently returning if
+an unsupported sub-command is provided.</li>
+<li>TIFF coder was writing 16-bit per sample RGB images incorrectly on
+little-endian CPUs.</li>
+</ul>
+</blockquote>
+<p>Performance improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Texture tiling is now 7X faster.</li>
+<li>Color profile processing speed improvements for colormapped images.</li>
+</ul>
+</blockquote>
+<p>Utilities enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>For Unix, 'gm version' now includes a dump of the configure and
+build parameters.</li>
+<li>Logging of thrown exceptions is now supported. Use '-debug
+exception'. This is useful to learn when and where errors are
+reported.</li>
+<li>The -define option is added in order to support supplying
+additional options to coders without needing to add additional
+command line options or structure members.</li>
+<li>The output of 'gm identify -verbose' now provides a nice dump
+of EXIF data.</li>
+<li>The -sampling-factor option now accepts as many HxV pairs as
+there are JPEG components.  Omitted ones default to 1x1.</li>
+<li>The convert and montage commands now support an -operator command to
+perform arithmetic and bitwise operations on specified image channels.</li>
+</ul>
+</blockquote>
+<p>Coder additions/improvements</p>
+<blockquote>
+<ul class="simple">
+<li>The META coder supports wide characters for the IPTC and 8BIM
+formats.</li>
+<li>The XTRN coder now supports wide characters.</li>
+<li>An &quot;IMAGE&quot; coder is provided which provides access to a large
+number of images (derived from XFig) suitable for use as patterns,
+or as test images.</li>
+<li>The &quot;PATTERN&quot; coder now returns an image pattern tiled to size
+(equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
+compatibility.</li>
+<li>The CINEON coder now supports reading and writing images in CINEON
+&quot;CIN&quot; linear gray and RGB formats. The read support is still very
+weak, but it works for common images.</li>
+<li>The JPEG coder now estimates the original JPEG quality and sampling
+factors and will reuse these options when writing JPEG if the image
+is of the same type and the option &quot;-define JPEG:preserve-settings&quot;
+is supplied.</li>
+<li>The JPEG-2000 coder now supports all Jasper library arguments using
+command line syntax similar to '-define jp2:rate=0.5'.</li>
+<li>Reading and writting compressed SVG (SVGZ) is now supported.</li>
+<li>The TXT coder now observes depth when writing.</li>
+<li>The TIFF coder now outputs colormapped images with 1, 2, 4, and 8
+bits per sample in order to provide much smaller file sizes for
+images with very few colors.</li>
+<li>Many TIFF coder enhancements. Now reads colormapped and grayscale
+images at arbitrary (even odd) bits-per-sample sizes. Now properly
+supports an opacity channel (at any bits-per-sample value) for
+grayscale images. Bilevel grayscale images are treated similar to any
+other grayscale image unless CCITT FAX3/FAX4 compression is
+requested. Now allows the user to specify an arbitrary
+bits-per-sample value for grayscale images (even odd values) using
+&quot;-define tiff:bits-per-sample=value&quot;. Now automatically stores the
+image as TrueColor RGB pixels if the image compression is set to JPEG.
+TIFF files are now written in using the TIFF library's default endian
+order rather than always big endian.</li>
+<li>The WPG coder now renders embedded WMFs.</li>
+<li>The PS3 coder is completely re-written to work much better and
+support more features (see ChangeLog).</li>
+</ul>
+</blockquote>
+<p>Code structure enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Error handling has been improved and validated through testing.
+Some errors were being lost, unnecessarily ignored, or reported as
+something else entirely.</li>
+<li>The number of error text messages to be maintained has been reduced
+by consolidating similar messages.</li>
+<li>The memory allocator functions have been replaced with similar
+macros in order to eliminate warnings with GCC 3.3, avoid
+accidentally casting away const, and allow memory debuggers to
+report memory allocations and frees against the correct functions.
+The previously-used functions remain in the library for the purpose
+of compatibility.</li>
+<li>&lt;magick/xwindow.h&gt; no longer depends on magick_config.h defines.</li>
+<li>The text string localization code has been replaced with a simpler
+version written by Bill Radcliffe.</li>
+<li>Added key,value &quot;map&quot; APIs (somewhat similar to C++'s &lt;map&gt;) for
+internal use.</li>
+</ul>
+</blockquote>
+<p>API enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
+library.</li>
+<li>API definition is no longer dependent on types which vary in size
+(e.g. size_t) depending on large file compilation options.  This means
+that applications may now be compiled without any special large file
+options and still work properly with the library.</li>
+<li>Thrown exceptions (ExceptionInfo structure) now include source
+file, source line, function name, and current system error number.</li>
+<li>The GetMagickInfoArray() function is added to replace use of
+GetMagickInfo() for code which needs to access the coder list. This
+is necessary since invoking GetMagickInfo() may re-order the coder
+list, causing problems for code which traverses the list. Using
+GetMagickInfo() to access individual list elements is safe.</li>
+<li>Added the CopyException function to support copying exception info
+from one structure to another.</li>
+<li>Added the ReplaceImageInList function to replace an image in an
+image list.</li>
+<li>Added the DrawPeekGraphicContext function to access the current
+DrawInfo structure in the drawing context stack. Use of this
+function is not recommended since it voilates proper programming
+practices. It is added to support the Wand API's.</li>
+<li>GetImageDepth() now returns an integral value between 1 and
+QuantumDepth and is no longer limited to the values 8, 16, and 32.</li>
+<li>SetImageDepth() supports setting the image modulus depth to any
+integral value between 1 and QuantumDepth. This effects the effective
+numeric precision, not the storage depth, since the quantum storage
+type is still a Quantum.</li>
+<li>GetImageChannelDepth() supports retrieving the modulus depth for a
+specified channel.</li>
+<li>SetImageChannelDepth() supports setting the modulus depth for a
+specified channel.</li>
+<li>ProfileImage is updated to handle alpha channels and grayscale
+images.</li>
+<li>Added GetImageProfile() to retrieve a CMS profile from an image.</li>
+<li>Added SetImageProfile() to attach a CMS profile to an image without
+adjusting the image pixels.</li>
+<li>Added DeleteImageProfile() to remove a CMS profile from an image.</li>
+<li>ConstituteImage() and DispatchImage() now support 'T' (transparency),
+'O' (opacity), and 'P' (pad) options.</li>
+<li>CompositeImage() now supports CopyCyanCompositeOp,
+CopyMagentaCompositeOp, CopyYellowCompositeOp, and
+CopyBlackCompositeOp, composition operators.</li>
+<li>GetColorHistogram() obtains a color histogram for the image.</li>
+<li>QuantumOperatorImage() and QuantumOperatorRegionImage() support
+arithmetic and bitwise operations on specified image channels.</li>
+<li>The semaphore.h header is no longer installed or included in the
+API headers since these functions are private interfaces.</li>
+<li>Configure using --enable-symbol-prefix or define
+PREFIX_MAGICK_SYMBOLS to use the C preprocessor to prefix all library
+symbols with &quot;Gm&quot;. This prevents library symbol conflicts with other
+libraries.</li>
+</ul>
+</blockquote>
+<p>PerlMagick fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Adjusted a number of function option names so that they match the
+documentation.</li>
+<li>Memory leak fixed.</li>
+<li>Reading files (e.g. GIF) via a file descriptor is fixed.</li>
+</ul>
+</blockquote>
+<p>Build improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>The TRIO library may be used to provide a replacement for vsnprintf
+if the C library doesn't provide it.  This improves security on old
+systems.</li>
+<li>Configure only configures for C &amp; C++ languages.</li>
+<li>Configure now does a better job of figuring out how to build a
+thread-safe library across multiple operating systems.</li>
+<li>Configure incorporates a new mmap() test which tests the
+functionality which is needed so that mmap() is not unnecessarily
+rejected on a number of systems. This improves performance for large
+files on those systems.</li>
+<li>Configure/build fixes for IBM's AIX operating system.</li>
+</ul>
+</blockquote>
+<p>Windows-specific improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>The static install package now uses the &quot;uninstalled&quot;
+configuration so that it does not depend on the Windows registry in
+order to run. This allows files from the static install package to
+be copied to another computer without running an installer.</li>
+<li>The executable search path is extended at run-time to include the
+directory where the CORE DLLs reside in order to ensure that they
+are found.</li>
+<li>Adding the -t option to VisualMagick configure enables building
+all of the coders into one library in order to save build time and
+simplify linkage.</li>
+<li>The XTRN coder now supports wide characters.</li>
+<li>LCMS library updated to version 1.10.</li>
+<li>GMDisplay displays a checkerboard pattern behind transparent images.</li>
+<li>Support is provided for issuing log messages to the Windows standard
+logging system.</li>
+<li>Project files are now provided for use with Borland C++ Builder 6.0.</li>
+<li>Updated LCMS version to 1.12.</li>
+<li>Updated FreeType version to 2.1.5.</li>
+<li>Updated JBIG-KIT to version 1.5.</li>
+<li>Updated libpng to version 1.2.5.</li>
+<li>Updated libwmf to version 0.2.8.2.</li>
+<li>Updates zlib to version 1.2.1.</li>
+<li>ActivePerl 5.8.1 Build 807 now supported.</li>
+<li>GraphicsMagick now compiles using Visual Studio .NET 2003.</li>
+</ul>
+</blockquote>
+</div>
+<hr class="docutils" />
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
+<p>GraphicsMagick support services:</p>
+<blockquote>
+<ul class="simple">
+<li>Master web site at &quot;<a class="reference" href="http://www.GraphicsMagick.org/">http://www.GraphicsMagick.org/</a>&quot;.</li>
+<li>Mailing lists, bug tracking, and forums available via
+&quot;<a class="reference" href="http://sourceforge.net/projects/graphicsmagick/">http://sourceforge.net/projects/graphicsmagick/</a>&quot;.</li>
+<li>CVSWeb via &quot;<a class="reference" href="http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/">http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/</a>&quot;.</li>
+<li>CVS via cvs.graphicsmagick.org (find instructions at
+&quot;<a class="reference" href="http://www.graphicsmagick.org/www/cvs.html">http://www.graphicsmagick.org/www/cvs.html</a>&quot;).</li>
+<li>FTP via &quot;<a class="reference" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick">ftp://ftp.graphicsmagick.org/pub/GraphicsMagick</a>&quot;.</li>
+</ul>
+</blockquote>
+<p>Project maintenance improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>ChangeLog conforms to the GNU standard and all CVS commits include
+useful log messages.</li>
+<li>CVS commit messages posted to graphicsmagick-commit mail list.</li>
+<li>CVS commit messages contain CVSWeb URL references.</li>
+</ul>
+</blockquote>
+<p>Footprint changes from ImageMagick:</p>
+<blockquote>
+<ul class="simple">
+<li>Library -lMagick renamed to -lGraphicsMagick.</li>
+<li>Library -lMagick++ renamed to -lGraphicsMagick++.</li>
+<li>Utilities consolidated into a single 'gm' utility (e.g. use 'gm
+convert').</li>
+<li>Script Magick-config renamed to GraphicsMagick-config.</li>
+<li>Script Magick++-config renamed to GraphicsMagick++-config.</li>
+<li>Headers installed under ${PREFIX}/include/GraphicsMagick.</li>
+<li>PerlMagick namespace renamed from &quot;Image::Magick&quot; to &quot;Graphics::Magick&quot;.</li>
+<li>Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
+installed in $libdir/pkgconfig to assist pkg-config users.</li>
+<li>Coder modules installed to lib/GraphicsMagick-1.0/modules-Q8/coders.</li>
+<li>Filter modules installed to lib/GraphicsMagick-1.0/modules-Q8/filters.</li>
+</ul>
+</blockquote>
+<p>Many performance enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Default QuantumDepth is 8 since this is adequate for most purposes
+and more efficient than 16.</li>
+<li>The Magick++ demo (compiled with QuantumDepth=8 and -O2) runs about
+1.8X faster under SPARC/Solaris than the same demo with ImageMagick
+5.5.4.</li>
+<li>Colorspace transformations are much faster.</li>
+<li>Grayscale/monochrome image handling is much faster.</li>
+<li>PseudoClass image handling is faster.</li>
+<li>Text annotations using FreeType are much faster.</li>
+<li>Image file I/O is much faster.</li>
+<li>RLE-compressed MIFF reading much faster.</li>
+</ul>
+</blockquote>
+<p>Code structure enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>All utility support functions moved to magick/command.c in order to
+significantly reduce link dependencies, allowing statically-linked
+programs to be smaller.</li>
+<li>Use of MogrifyImage() elminated except for by utilities.</li>
+<li>Re-builds due to changes to &lt;magick/image.h&gt; reduced by splitting the
+header into multiple headers.</li>
+<li>ISO C '99 typedefs (gm_int16_t, gm_uint16_t, gm_int32_t, gm_uint32_t,
+gm_int64_t, gm_uint64_t) are available for use.</li>
+</ul>
+</blockquote>
+<p>Feature enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Module loader always enabled for shared builds to allow extension.</li>
+<li>Loading of arbitrary filter modules (via -process option) supported
+under Unix as well as Windows.</li>
+<li>SVG coder allows specifying size and initial background color.</li>
+<li>JPEG-2000 coder (JP2) updated to work with Jasper 1.7.</li>
+<li>HWB and HSL image colorspace translation support.</li>
+<li>JNG/MNG/PNG format support tracks ImageMagick version.</li>
+<li>BMP encoder can write 16-color indexed BMPs now as well as 2-color
+BMPs (not restricted to monochrome).</li>
+<li>TIFF decoder now includes optimized support for tiled and stripped
+TIFF.</li>
+<li>The -random-threshold option (RandomThresholdImage()) is added to
+threshold an image to bilevel using random thresholding.</li>
+</ul>
+</blockquote>
+<p>Major bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>100% successful test completion at all quantum depths (8/16/32).</li>
+<li>A temporary file management subsystem is added to ensure that all
+temporary files are removed before program exit. Temporary files are
+created and used in a secure fashion to avoid the possibility that a
+&quot;trojan&quot; temporary file (e.g. a symbolic link, or a file containing
+unsafe content) is created before a delegate has the chance to write
+to it. The environment variable MAGICK_TMPDIR allows the user to
+specify where temporary files are created without altering where
+other programs create their temporary files. Temporary filenames are
+created in 8+3 format to hopefully be more acceptable to ralcgm.</li>
+<li>When dithering is disabled, don't dither when converting to a
+PseudoClass, grayscale, or monochrome image. Disabling dithering
+may cause these translations to be much faster.</li>
+<li>PICON format works with BLOBs.</li>
+<li>No longer removes input file when pinging a FlashPIX file.</li>
+<li>Arc drawing and texture fill fixes from ImageMagick.</li>
+<li>Sample, scale and affine fixes from ImageMagick.</li>
+<li>MIFF colormaps are now scaled properly while reading.</li>
+<li>CMYK translation works for QuantumDepth=32.</li>
+<li>ConstituteImage now works properly for grayscale images.</li>
+<li>Built-in tilde expansion and filename globbing now works properly.</li>
+<li>InitializeMagick now registers signal handlers to ensure that
+resources are released before program exit.  This helps avoid
+temporary file leaks due to the user using &quot;CONTROL-C&quot;.</li>
+<li>The installed &lt;magick/magick_config.h&gt; header now only contains
+the few definitions required by the API headers.  This should
+significantly reduce or eliminate conflicts with other package
+headers.</li>
+</ul>
+</blockquote>
+<p>Windows platform enhancements:</p>
+<blockquote>
+<ul class="simple">
+<li>Configure updated for Visual C++ 7.0.</li>
+<li>OLE object (ImageMagickObject) re-written to work with Visual C++ 7.0</li>
+<li>New function, CropImageToHBITMAP(), to return a region of the image
+as a Windows HBITMAP.</li>
+<li>Use vsnprintf to format strings under Windows (safer).</li>
+</ul>
+</blockquote>
+<hr class="docutils" />
+<p>On November 19, 2002, GraphicsMagick was created as a fork of
+ImageMagick, several days before the ImageMagick 5.5.2 release.</p>
+<p>The objectives of GraphicsMagick are to:</p>
+<blockquote>
+<ul class="simple">
+<li>Use an open development model.</li>
+<li>Encourage new developers to join the project.</li>
+<li>Avoid unnecessary source code &quot;churn&quot;.</li>
+<li>Establish and preserve a stable API.</li>
+<li>Use efficient coding practices which result in fast code.</li>
+<li>Improve memory efficiency.</li>
+<li>Use a release process which assures a working product.</li>
+<li>Maintain an accurate ChangeLog.</li>
+</ul>
+</blockquote>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2003 - 2008 GraphicsMagick Group</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-03-09 23:28 UTC.
 
-
-
-<hr>
-<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P></BODY>
-</HTML>
+</div>
+</body>
+</html>

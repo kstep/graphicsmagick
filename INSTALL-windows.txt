@@ -1,18 +1,33 @@
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
+===================
+Windows Compilation
+===================
+
+.. contents::
+  :local:
+
+Applicability
+-------------
+
   These installation instructions are for Microsoft Windows using
   the Visual C++ (Visual Studio, etc.) IDE.  For building using
   the free Cygwin or MinGW compilers, follow the instructions in
   INSTALL-unix.txt.
 
-IMPORTANT NOTES
+Important Notes
+---------------
 
-  On some platforms VISUAL C++ 7.0 fails with an internal compiler
-  error while compiling image.c. If this happens to you, then make sure
-  that your compiler is updated with the latest fixes from the Microsoft
-  web site and the problem should go away.
+  On some platforms Visual C++ may fail with an internal compiler error.
+  If this happens to you, then make sure that your compiler is updated
+  with the latest fixes from the Microsoft web site and the problem
+  should go away.
 
-WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
+Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation
+---------------------------------------------------------
 
-  The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 95
+  The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 98
   does not provide any stock workspace (DSW) or project files (DSP) except
   for those included with third party libraries. Instead, there is a
   "configure" program that must be built and run that creates build
@@ -60,8 +75,8 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   Clicking this button brings up magick_config.h in Windows notepad for
   optionally changing any preprocessor defines in GraphicsMagick's
-  magick_config.h file. This file is copied to magick\magick_config.h. You
-  may safely open magick\magick_config.h, modify it, and recompile without
+  magick_config.h file. This file is copied to ``magick\magick_config.h``. You
+  may safely open ``magick\magick_config.h``, modify it, and recompile without
   re-running the configure program. In fact, using notepad to edit the
   copied file may be preferable since it preserves the original
   magick_config.h file.
@@ -119,9 +134,9 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   The Visual C++ distribution of GraphicsMagick comes with the Magick++
   C++ wrapper by default. This add-on layer has a large number of demo
-  and test files that can be found in GraphicsMagick\Magick++\demo, and
-  GraphicsMagick\Magick++\tests. There are also a variety of tests that
-  use the straight C API as well in GraphicsMagick\tests.
+  and test files that can be found in ``GraphicsMagick\Magick++\demo``, and
+  ``GraphicsMagick\Magick++\tests``. There are also a variety of tests that
+  use the straight C API as well in ``GraphicsMagick\tests``.
 
   All of these programs are NOT configured to be built in the default
   workspace created by the configure program. You can cause all of these
@@ -137,7 +152,7 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
   This is the checkbox:
 
    "Generate all utility projects with full paths rather then relative
-    paths"
+   paths"
 
   WOW - that a mouthfull - eh?
 
@@ -157,11 +172,11 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   With this feature enabled, you should be able to nab a copy of...
     
-    VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C)
+    ``VisualMagick\utilities\UTIL_convert_xxx_exe.dsp``  (for C)
 
      -or-
 
-    VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
+    ``VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp`` (for C++)
 
   ... and pop it into notepad, modify it (carefully) to your needs and
   be on your way to happy compiling and linking.
@@ -172,24 +187,25 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   The choice of what to use as a starting point is very easy...
 
-  For straight C API command line applications use something from:
+  For straight C API command line applications use something from
 
-    GraphicsMagick\tests or GraphicsMagick\utilities (source code)
-    GraphicsMagick\VisualMagick\tests or GraphicsMagick\Visualmagick\utilities
-      (project - DSP)
+    ``GraphicsMagick\tests`` or ``GraphicsMagick\utilities`` (source code)
 
-  For C++ and Magick++ command line applications use something from:
+    ``GraphicsMagick\VisualMagick\tests`` or ``GraphicsMagick\Visualmagick\utilities``
+    (project - DSP)
 
-    GraphicsMagick\Magick++\tests or GraphicsMagick\Magick++\demo
-      (source code)
-    GraphicsMagick\VisualMagick\Magick++\tests or
-      GraphicsMagick\VisualMagick\Magick++\demo (project - DSP)
+  For C++ and Magick++ command line applications use something from
 
-  For C++ and Magick++ and MFC windows applications use:
+    ``GraphicsMagick\Magick++\tests`` or ``GraphicsMagick\Magick++\demo`` (source code)
+
+    ``GraphicsMagick\VisualMagick\Magick++\tests`` or
+    ``GraphicsMagick\VisualMagick\Magick++\demo`` (project - DSP)
+
+  For C++ and Magick++ and MFC windows applications use
    
-    GraphicsMagick\contrib\win32\MFC\NtMagick (source code)
-    GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick
-      (project - DSP)
+    ``GraphicsMagick\contrib\win32\MFC\NtMagick`` (source code)
+
+    ``GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick`` (project - DSP)
 
   Note #2:
 
@@ -217,14 +233,15 @@ WINDOWS WIN2K/95 VISUAL C++ 6.0, 7.X, and 8.0 COMPILATION
 
   With this default setup, you can use any of the command line tools
   and run scripts as normal. You can actually get by quite nicely this
-  way by doing something like "pushd e:\xxx\yyy\bin" in any scripts you
+  way by doing something like ``pushd e:\xxx\yyy\bin`` in any scripts you
   write to execute "out of" this directory.
 
   By default the core of GraphicsMagick on Win32 always looks in the place
   were the exe program is run from in order to find all of the files as
   well as the DLL's it needs.
 
-ENVIRONMENT VARIABLES
+Environment Variables
+---------------------
 
   You can use the "System" control panel to allow you to add and delete
   what is in any of the environment variables. You can even have user
@@ -238,7 +255,7 @@ ENVIRONMENT VARIABLES
    you wish to run any of utilities from another location then you must
    add the path to your "bin" directory in. For instance, you might add:
 
-      D:\CVS\GraphicsMagick\VisualMagick\bin
+      ``D:\CVS\GraphicsMagick\VisualMagick\bin``
 
    to do this for the default build environment like I do.
 
@@ -257,7 +274,7 @@ ENVIRONMENT VARIABLES
    then you can simply set this to the same place
    as you did the PATH variable. In my case:
 
-      D:\\GraphicsMagick\coders
+      ``D:\\GraphicsMagick\coders``
 
    This is also the place were GraphicsMagick expects to find the
    "colors.mgk", "delegates.mgk", "magic.mgk", "modules.mgk", and
@@ -276,11 +293,11 @@ ENVIRONMENT VARIABLES
 
   defines.h has 
 
-      #define MagickConfigurePath  "c:\\GraphicsMagick\\"
+      ``#define MagickConfigurePath  "c:\\GraphicsMagick\\"``
 
   To view any image in a Microsoft window, type
 
-      convert image.ext win:
+      ``convert image.ext win:``
 
   Make sure Ghostscript is installed, otherwise, you will be unable to
   convert or view a Postscript document, and Postscript standard fonts will
@@ -289,12 +306,12 @@ ENVIRONMENT VARIABLES
   You may use any standard web browser (e.g. Internet Explorer) to browse
   the GraphicsMagick documentation.
 
-  The Win2K executables will work under Windows 95/98.
+  The Win2K executables will work under Windows '98 and later.
 
 ---------------------------------------------------------------------------
 
-Copyright (C) 2003 GraphicsMagick Group
-Copyright (C) 2002 ImageMagick Studio
+| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 ImageMagick Studio
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

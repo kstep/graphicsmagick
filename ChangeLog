@@ -1,3 +1,10 @@
+2008-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* AUTHORS.txt, BUGS.txt, FAQ.txt, NEWS.txt, PLATFORMS.txt,
+	TODO.txt, INSTALL-unix.txt, INSTALL-windows.txt: Use
+	reStructuredText format.
+	* Makefile.am: Use reStructuredText for more files.
+
 2008-02-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ReadImage): Disable colorspace override

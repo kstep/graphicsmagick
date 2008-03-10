@@ -76,12 +76,14 @@ XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS)
 
 TOP_EXTRA_DIST = \
+	AUTHORS.txt \
 	BUGS.txt \
 	ChangeLog \
 	Copyright.txt \
+	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
-	NEWS \
+	NEWS.txt \
 	PLATFORMS.txt \
 	README.txt \
 	TODO.txt \
@@ -146,7 +148,7 @@ docdir = $(MagickSharePath)
 doc_DATA = \
 	Copyright.txt \
 	ChangeLog \
-	NEWS
+	NEWS.txt
 
 if MAINTAINER_MODE
 MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
@@ -226,18 +228,22 @@ magick-version: magick/version.h
 ${srcdir}/configure: ${srcdir}/version.sh
 
 if HasRST2HTML
+RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
 RST2HTML_TARGETS = \
+	$(top_srcdir)/www/AUTHORS.html \
+	$(top_srcdir)/www/BUGS.html \
+	$(top_srcdir)/www/FAQ.html \
+	$(top_srcdir)/www/INSTALL-unix.html \
+	$(top_srcdir)/www/INSTALL-windows.html \
+	$(top_srcdir)/www/NEWS.html \
+	$(top_srcdir)/www/PLATFORMS.html \
 	$(top_srcdir)/www/README.html
 endif # HasRST2HTML
 
 if WITH_PERL
 # txt2html requires perl.
 TXT2HTML_TARGETS = \
-	$(top_srcdir)/www/AUTHORS.html \
-	$(top_srcdir)/www/Changelog.html \
-	$(top_srcdir)/www/INSTALL-unix.html \
-	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/NEWS.html
+	$(top_srcdir)/www/Changelog.html
 endif # WITH_PERL
 
 # Automatically reconfigure libtool
@@ -245,9 +251,17 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
-# Build HTML version of AUTHORS
-$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Authors' < $(top_srcdir)/AUTHORS > $(top_srcdir)/www/AUTHORS.html
+# Build HTML version of AUTHORS.txt
+$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/AUTHORS.txt $(top_srcdir)/www/AUTHORS.html
+
+# Build HTML version of BUGS.txt
+$(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
+
+# Build HTML version of FAQ.txt
+$(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
 
 # Build HTML version of ChangeLog
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
@@ -255,19 +269,23 @@ $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
 
 # Build HTML version of INSTALL-unix.txt
 $(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
+	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-unix.txt $(top_srcdir)/www/INSTALL-unix.html
 
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
 
 # Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
+$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/NEWS.txt $(top_srcdir)/www/NEWS.html
+
+# Build HTML version of PLATFORMS
+$(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/PLATFORMS.txt $(top_srcdir)/www/PLATFORMS.html
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
+	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
 
 # Format C API documentation
 format_c_api_docs:

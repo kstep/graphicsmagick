@@ -1,808 +1,855 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>GraphicsMagick FAQ</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
-	<META NAME="CREATED" CONTENT="20020821;20445100">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050117;19531200">
-	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-	<META NAME="KEYWORDS" CONTENT="GraphicsMagick FAQ">
-	<STYLE>
-	<!--
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		PRE { color: #000000 }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0 STYLE="page-break-before: always">
-	<COL WIDTH=256*>
-	<TR>
-		<TD WIDTH=100% BGCOLOR="#52799e">
-			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic1" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			FAQ</FONT></FONT></B></P>
-		</TD>
-	</TR>
-</TABLE>
-<OL>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C1">How does
-	GraphicsMagick differ from ImageMagick?</A></P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C2">I received the
-	following message, &quot;?????? delegation failed ...&quot;. What
-	does it mean?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C3">How can I improve
-	the appearance of 24-bit images displayed on my colormapped <I>X
-	server</I>?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C4">How do I set the
-	transparency index in a GIF image so it displays properly within
-	Mozilla?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C5">How can I stop
-	the filenames from changing in the title bar of the animate(1) image
-	window?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C6">The image grabbed
-	by import(1) does not look like the image on my <I>X server</I>.
-	What's wrong</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C7">How do I animate
-	a digital YUV image sequence?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C8">How do I view
-	only the red channel of an RGB image?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C9">How do I change
-	the default <I>PostScript</I> page size?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C10">When I display
-	or convert an image, I get <I>Memory allocation error</I>. What can
-	I do?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C11">How do I
-	concatenate three images left-to-right with no borders, frames, or
-	text?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C12">How do I create
-	a GIF animation sequence to display within Netscape?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C13">When I display a
-	<I>PostScript</I> image it appears to be trimmed. I would like to
-	display the entire page, including any white space.</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C14">What are visual
-	image directories? How do I use them?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C15">I have an HP.
-	How do I take advantage of the Color Recovery option?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C16">I use the window
-	ID reported by <I>xwininfo(1)</I> with import and it does include
-	the window manager frame as expected. How can I save the window with
-	its frame?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C17">I displayed an
-	image and it appears as one solid color. What did I do wrong?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C18">I received the
-	following message, &quot;???? library is not available ...&quot;.
-	What does it mean?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C19">I want to
-	inspect the values of the matte channel within my image. How can I
-	do that?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C20">Convert in.gif
-	out.png&quot; says &quot;Invalid Parameter - out.png&quot;</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C21">How can I add
-	one of those cool bevels to my image that I see used on the Web?</A>
-		</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C22">I try to launch
-	display from my window manager and it fails. What's up?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C23">When I convert
-	Postscript to another format, how can I improve the appearance of
-	the text?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C24">How can I
-	annotate an image with text that is 2 to 3 inches tall?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C25">How can I
-	convert my GIF animation sequence to individual image files?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C26">How can I remove
-	the background that prints around my image when I display it with
-	Netscape?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C27">How do I create
-	a GIF or PNG image with Web safe colors?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C28">How come Adobe
-	Acrobat 2.1 can't read GraphicsMagick's PDF format?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C29">How can I add a
-	matte layer to my image?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C30">How can I draw
-	with text using 'convert' under Windows NT?</A> 
-	</P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C31">Why are my JPEG
-	files larger than expected?</A></P>
-	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C32">How do I extract
-	a single image from a multi-image file?</A></P>
-</OL>
-<P STYLE="border-top: none; border-bottom: 3.55pt double #808080; border-left: none; border-right: none; padding-top: 0in; padding-bottom: 0.02in; padding-left: 0in; padding-right: 0in">
-<BR><BR>
-</P>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C1"></A><B>1. How does
-	GraphicsMagick differ from ImageMagick?</B></DT><DD STYLE="margin-left: 0in">
-	<B>GraphicsMagick</B> is originally based on ImageMagick 5.5.2.
-	Other than utilities being executed as sub-commands of the 'gm'
-	command, the command-line syntax and programming APIs remain
-	entirely upward compatible with ImageMagick 5.5.2. A better question
-	might be &ldquo;How does ImageMagick differ from ImageMagick?&rdquo;
-	since ImageMagick continues to alter and evolve its interfaces so
-	they are no longer completely compatible with earlier versions.
-	While GraphicsMagick also adds new features, it does so in a way
-	which assures that existing features work as they did before.
-	GraphicsMagick maintains a stable release branch, maintains a
-	detailed ChangeLog, and maintains a stable source repository with
-	complete version history so that changes are controlled, and changes
-	between releases are accurately described. ImageMagick does not
-	offer this. Since GraphicsMagick is more &ldquo;stable&rdquo;, more
-	time has been spent optimizing and debugging its code.
-	GraphicsMagick is often faster than ImageMagick. ImageMagick focuses
-	on adding new functionality and features.</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C2"></A><B>2. I received
-	the following message, &quot;?????? delegation failed ...&quot;.
-	What does it mean?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	<B>GraphicsMagick</B> uses several freely available packages to
-	perform the translation of certain image formats (<I>PostScript</I>,
-	<I>MPEG</I>, etc.). Make sure these packages are available as
-	described in the <A HREF="install.html">README</A> file. Also verify
-	that you have plenty of temporary disk space. If not, set the TMPDIR
-	environment variable to an area where space is available. Finally,
-	for <I>PostScript</I>, verify that Ghostscript supports the <B>pnmraw</B>
-	or <B>ppmraw</B> device (<TT>gs -h</TT>) and that the document
-	contains valid <I>PostScript</I> statements (<TT>gs image.ps</TT>). 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C3"></A><B>3. How can I
-	improve the appearance of 24-bit images displayed on my colormapped
-	<I>X server</I>?</B> 
-	</DT></DL>
-<P>
-If you have a colormapped <I>X server</I>, the number of unique
-colors in an image must first be reduced to match the requirements of
-your server before it can be displayed. <A HREF="display.html">Display</A>
-tries to make the color reduced image closely resemble the original.
-However, there are some options that may improve the appearance. 
-</P>
-<P>You can use a private colormap. By default, your image must share
-colors with existing applications on your <I>X server</I>. The colors
-in your image may be very different than the shared colors and the
-results may be visually unsatisfactory. Try 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -colormap private image.miff</PRE><P>
-The disadvantage is the annoying colormap loading and unloading as
-you move your pointer in and out of the image window. 
-</P>
-<P>The YCbCr colorspace may give better results when color reducing
-images of people faces. Try 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -colorspace YCbCr image.miff</PRE><P>
-If you intend to view an image frequently, reduce the number of
-colors to match the resolution of your <I>X server</I> once and write
-to a new image. Then display this new image. For example, 
-</P>
-<PRE> gm convert -colors 256 -dither image.jpeg image.miff
- gm display image.miff</PRE><P>
-This forces the time-consuming process of color reducing the image to
-one-time, rather than each time the image is displayed. 
-</P>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C4"></A><B>4. How do I set
-	the transparency index in a GIF image so it displays properly within
-	Mozilla?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Display your GIF image with <A HREF="display.html">display</A>.
-	Choose <B>Matte</B> from the <B>Image Edit</B> command menu and
-	identify a pixel that has the <I>transparency</I> color. Press
-	<B>Method</B> and select a matte edit method from a pop-up menu.
-	Choose from these methods: 
-	</DD></DL>
-<PRE> point
- replace
- floodfill</PRE><P>
-The <B>point</B> method changes the matte value of any pixel selected
-with the pointer until the button is is released. The <B>replace</B>
-method changes the matte value of any pixel that matches the color of
-the pixel you select with a button press. <B>Floodfill</B> changes
-the matte value of any pixel that matches the color of the pixel you
-select with a button press and is a neighbor. 
-</P>
-<P>Select your transparent pixel with the pointer and press a button.
-The image is redisplayed with any transparent pixels recolored to the
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick FAQ</title>
+<style type="text/css">
+
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : medium;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : smaller;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+        margin-top : 2mm;
+        margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : medium;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : medium;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : small;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : smaller;
+}
+
+.navlevel2 {
+        font-size : 9pt;
+}
+
+.navlevel3 {
+        font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : smaller;
+}
+
+.tiny  {
+	font-size : smaller;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : smaller;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
+
+
+</style>
+</head>
+<body>
+<div class="document" id="graphicsmagick-faq">
+<h1 class="title">GraphicsMagick FAQ</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<!-- URL links -->
+<div class="contents topic">
+<p class="topic-title first"><a id="faq-contents" name="faq-contents">FAQ Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#how-does-graphicsmagick-differ-from-imagemagick" id="id1" name="id1">1) How does GraphicsMagick differ from ImageMagick?</a></li>
+<li><a class="reference" href="#i-received-the-following-message-delegation-failed-what-does-it-mean" id="id2" name="id2">2) I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></li>
+<li><a class="reference" href="#how-can-i-improve-the-appearance-of-24-bit-images-displayed-on-my-colormapped-x-server" id="id3" name="id3">3) How can I improve the appearance of 24-bit images displayed on my colormapped /X server/?</a></li>
+<li><a class="reference" href="#how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" id="id4" name="id4">4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></li>
+<li><a class="reference" href="#how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" id="id5" name="id5">5) How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></li>
+<li><a class="reference" href="#the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" id="id6" name="id6">6) The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></li>
+<li><a class="reference" href="#how-do-i-animate-a-digital-yuv-image-sequence" id="id7" name="id7">7) How do I animate a digital YUV image sequence?</a></li>
+<li><a class="reference" href="#how-do-i-view-only-the-red-channel-of-an-rgb-image" id="id8" name="id8">8) How do I view only the red channel of an RGB image?</a></li>
+<li><a class="reference" href="#how-do-i-change-the-default-postscript-page-size" id="id9" name="id9">9) How do I change the default <em>PostScript</em> page size?</a></li>
+<li><a class="reference" href="#when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do" id="id10" name="id10">10) When I display or convert an image, I get Memory allocation error. What can I do?</a></li>
+<li><a class="reference" href="#how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" id="id11" name="id11">11) How do I concatenate three images left-to-right with no borders, frames, or text?</a></li>
+<li><a class="reference" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" id="id12" name="id12">12) How do I create a GIF animation sequence to display within Netscape?</a></li>
+<li><a class="reference" href="#when-i-display-a-postscript-image-white-borders-are-trimmed" id="id13" name="id13">13) When I display a <em>PostScript</em> image, white borders are trimmed.</a></li>
+<li><a class="reference" href="#what-are-visual-image-directories-how-do-i-use-them" id="id14" name="id14">14) What are visual image directories? How do I use them?</a></li>
+<li><a class="reference" href="#how-can-i-include-the-window-frame-when-importing-a-window" id="id15" name="id15">15) How can I include the window frame when importing a window?</a></li>
+<li><a class="reference" href="#i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong" id="id16" name="id16">16) I displayed an image and it appears as one solid color. What did I do wrong?</a></li>
+<li><a class="reference" href="#i-received-the-following-message-library-is-not-available" id="id17" name="id17">17) I received the following message, &quot;???? library is not available...&quot;.</a></li>
+<li><a class="reference" href="#i-want-to-inspect-the-values-of-the-matte-channel-within-my-image" id="id18" name="id18">18) I want to inspect the values of the matte channel within my image.</a></li>
+<li><a class="reference" href="#how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web" id="id19" name="id19">19) How can I add one of those cool bevels to my image that I see used on the Web?</a></li>
+<li><a class="reference" href="#i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up" id="id20" name="id20">20) I try to launch display from my window manager and it fails. What's up?</a></li>
+<li><a class="reference" href="#how-can-i-make-postscript-text-look-good" id="id21" name="id21">21)  How can I make Postscript text look good?</a></li>
+<li><a class="reference" href="#how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" id="id22" name="id22">22) How can I annotate an image with text that is 2 to 3 inches tall?</a></li>
+<li><a class="reference" href="#how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" id="id23" name="id23">23) How can I convert my GIF animation sequence to individual image files?</a></li>
+<li><a class="reference" href="#how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" id="id24" name="id24">24) How can I remove the background that prints around my image when I display it with Netscape?</a></li>
+<li><a class="reference" href="#how-do-i-create-a-gif-or-png-image-with-web-safe-colors" id="id25" name="id25">25) How do I create a GIF or PNG image with Web safe colors?</a></li>
+<li><a class="reference" href="#how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" id="id26" name="id26">26) How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></li>
+<li><a class="reference" href="#how-can-i-add-a-matte-layer-to-my-image" id="id27" name="id27">27) How can I add a matte layer to my image?</a></li>
+<li><a class="reference" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id28" name="id28">28) How can I draw with text using 'convert' under Windows NT?</a></li>
+<li><a class="reference" href="#why-are-my-jpeg-files-larger-than-expected" id="id29" name="id29">29) Why are my JPEG files larger than expected?</a></li>
+<li><a class="reference" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id30" name="id30">30) How do I extract a single image from a multi-image file?</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="how-does-graphicsmagick-differ-from-imagemagick" name="how-does-graphicsmagick-differ-from-imagemagick">1) How does GraphicsMagick differ from ImageMagick?</a></h1>
+<p><em>GraphicsMagick</em> is originally based on ImageMagick 5.5.2. Other than
+utilities being executed as sub-commands of the 'gm' command, the
+command-line syntax and programming APIs remain entirely upward
+compatible with ImageMagick 5.5.2. A better question might be &quot;<em>How does
+ImageMagick differ from ImageMagick?</em>&quot; since ImageMagick continues to
+alter and evolve its interfaces so they are no longer completely
+compatible with earlier versions. While GraphicsMagick also adds new
+features, it does so in a way which assures that existing features work
+as they did before. GraphicsMagick maintains a stable release branch,
+maintains a detailed ChangeLog, and maintains a stable source repository
+with complete version history so that changes are controlled, and changes
+between releases are accurately described. ImageMagick does not offer
+this. Since GraphicsMagick is more stable, more time has been spent
+optimizing and debugging its code. GraphicsMagick is often faster than
+ImageMagick. ImageMagick focuses on adding new functionality and features.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="i-received-the-following-message-delegation-failed-what-does-it-mean" name="i-received-the-following-message-delegation-failed-what-does-it-mean">2) I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></h1>
+<p><em>GraphicsMagick</em> uses several freely available packages to perform the
+translation of certain image formats (<em>PostScript</em>, <em>MPEG</em>, etc.). Make
+sure these packages are available as described in the <a class="reference" href="README.html">README</a> file. Also
+verify that you have plenty of temporary disk space. If not, set the
+TMPDIR environment variable to an area where space is available. Finally,
+for <em>PostScript</em>, verify that Ghostscript supports the <em>pnmraw</em> or
+<em>ppmraw</em> device (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">-h</span></tt>) and that the document contains valid
+<em>PostScript</em> statements (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">image.ps</span></tt>).</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="how-can-i-improve-the-appearance-of-24-bit-images-displayed-on-my-colormapped-x-server" name="how-can-i-improve-the-appearance-of-24-bit-images-displayed-on-my-colormapped-x-server">3) How can I improve the appearance of 24-bit images displayed on my colormapped /X server/?</a></h1>
+<p>If you have a colormapped X server, the number of unique colors in an
+image must first be reduced to match the requirements of your server
+before it can be displayed. <a class="reference" href="display.html">Display</a> tries to make the color reduced
+image closely resemble the original. However, there are some options that
+may improve the appearance.</p>
+<p>You can use a private colormap. By default, your image must share colors
+with existing applications on your X server. The colors in your image may
+be very different than the shared colors and the results may be visually
+unsatisfactory. Try</p>
+<pre class="literal-block">
+gm display -colormap private image.miff
+</pre>
+<p>The disadvantage is the annoying colormap loading and unloading as you
+move your pointer in and out of the image window.</p>
+<p>If you intend to view an image frequently, reduce the number of colors to
+match the resolution of your X server once and write to a new image. Then
+display this new image. For example,</p>
+<pre class="literal-block">
+gm convert -colors 256 -dither image.jpeg image.miff
+gm display image.miff
+</pre>
+<p>This forces the time-consuming process of color reducing the image to
+one-time, rather than each time the image is displayed.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" name="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
+<p>Display your GIF image with <a class="reference" href="display.html">display</a>. Choose <em>Matte</em> from the <em>Image
+Edit</em> command menu and identify a pixel that has the <em>transparency</em>
+color. Press <em>Method</em> and select a matte edit method from a pop-up menu.
+Choose from these methods:</p>
+<ul class="simple">
+<li>point</li>
+<li>replace</li>
+<li>floodfill</li>
+</ul>
+<p>The <em>point</em> method changes the matte value of any pixel selected with the
+pointer until the button is is released. The <em>replace</em> method changes the
+matte value of any pixel that matches the color of the pixel you select
+with a button press. <em>Floodfill</em> changes the matte value of any pixel
+that matches the color of the pixel you select with a button press and is
+a neighbor.</p>
+<p>Select your transparent pixel with the pointer and press a button. The
+image is redisplayed with any transparent pixels recolored to the
 background color. You can select other pixels or areas to force to
-transparent. When you are satisfied, press Return. 
-</P>
-<P>Finally, choose <B>Save</B> from the command menu and write your
-GIF image to a file. <I>Note that setting transparency works best on
-a TrueColor or DirectColor visual</I>. If your server only exports
-colormapped visuals you will need to use a <B>Standard Colormap</B>
-to set transparency. 
-</P>
-<PRE> xstdcmap -best
- display -map list image.gif
- <I>choose Matte Edit</I>
- <I>select your transparent pixel then press Return</I>
- <I>choose Save</I></PRE><P>
-If you do not have the <I>xstdcmap(1)</I> program, try 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -visual TrueColor image.gif</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C5"></A><B>5. How can I
-	stop the filenames from changing in the title bar of the animate(1)
-	image window?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	<A HREF="animate.html">Animate</A> updates the image file name in
-	the title bar of the image window as each image is displayed from
-	the image sequence. To display just a single name that will not
-	change, use <I>-title</I>: 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm animate -title &quot;My Image Sequence&quot; images.</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C6"></A><B>6. The image
-	grabbed by import(1) does not look like the image on my <I>X server</I>.
-	What's wrong?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Use the <I>-descend</I> option: 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm import -descend image.miff</PRE><P>
-or set this <I>X resource</I>: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm import.descend: True</PRE><P>
-By default, <A HREF="import.html">import</A> quickly grabs the image
-from the <I>X server</I>. However, it may not always have the correct
-colors in some areas. This can happen when a subwindow has a
-different colormap than its parent. With <I>-descend</I>, <A HREF="import.html">import</A>
-descends the window hierarchy. Descending involves grabbing the image
-and colormap of each window or subwindow associated with the window
-you select and compositing it on a blank canvas. This can be
-significantly slower than just grabbing the top-level window but
-ensures the correct image. 
-</P>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C7"></A><B>7. How do I
-	animate a digital YUV image sequence?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Suppose your sequence is 72 352x240 frames titled frame0.Y,
-	frame0.U, frame0.V, frame1.Y, frame1.U, etc. Use this command: 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C8"></A><B>8. How do I
-	view only the red channel of an RGB image?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Use the <I>-gamma</I> option, for example, 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -gamma 1.0,0.0,0.0 image.miff</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C9"></A><B>9. How do I
-	change the default <I>PostScript</I> page size?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	The default dimensions of a <I>PostScript</I> page is 612x792. If
-	you prefer another default, change the page geometries
-	(PSPageGeometry) in <I>magick/image.h</I> and recompile. 
-	</DD><DT STYLE="margin-bottom: 0.2in">
-	<B>10. When I display or convert an image, I get <I>Memory
-	allocation error</I>. What can I do?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Memory allocation is a complex topic in GraphicsMagick and image
-	processing requires a lot of memory. GraphicsMagick tries to take
-	best advantage of the resources available by optimizing its use of
-	<I>virtual</I> memory. Virtual memory is normally the amount of RAM
-	(Random Access Memory) available to the process plus the amount of
-	free space in the system paging area (known as &quot;swap&quot;
-	under Unix, or a &quot;page file&quot; under Windows). In addition
-	to the RAM and the paging area, GraphicsMagick is able to expand the
-	amount of virtual memory available by using memory-mapped files
-	which cause the file to be treated as extra memory. A piece of
-	hardware known as the Memory Management Unit (MMU) performs the
-	magic which allows the system paging area and memory-mapped files to
-	be treated as more memory by your system's CPU.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Usually when a memory allocation error occurs, it is because the
-	system's paging area is full, or the programs memory (heap) is
-	fragmented badly enough that there is no large-enough block of
-	memory available to satisfy the request. In some cases the operating
-	system may artificially limit the memory available to the program.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Failures of small memory allocations are generally considered fatal
-	by GraphicsMagick. If it is impossible to allocate even a little bit
-	of memory, then there is no point in continuing. When large memory
-	allocations associated with allocating memory for image pixels fail,
-	GraphicsMagick uses that as a key to know that it should start using
-	memory-mapped temporary files to increase virtual memory. Under Unix
-	and other POSIX-compliant systems, these memory-mapped temporary
-	files are created in either the system default location (e.g.
-	/var/tmp) or the directory set by the TMPDIR environment variable.
-	Under Windows, temporary files are created in the directory set by
-	the TEMP or TMP environment variable. Use the MAGICK_TMPDIR
-	environment variable to specify a directory for GraphicsMagick to
-	write its temporary files.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	If the temporary file directory is too small, or is itself mapped to
-	the system's paging area (no win!), then GraphicsMagick will fail to
-	allocate more virtual memory via the temporary file and will return
-	an error.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	The single biggest factor in how much memory is required by
-	GraphicsMagick is the QuantumDepth setting when it was compiled. The
-	amount of memory (in bytes) required to store a single image in
-	memory is may be calculated via the equation
-	(QuantumDepth*Rows*Columns*5)/8. As a means of example, the
-	following table shows the amount of memory consumed by a single
-	1024x768 image using the supported QuantumDepth settings:</DD><DL>
-		<DD>
-		<TABLE WIDTH=356 BORDER=1 CELLPADDING=4 CELLSPACING=3>
-			<COL WIDTH=162>
-			<COL WIDTH=167>
-			<THEAD>
-				<TR VALIGN=TOP>
-					<TH WIDTH=162>
-						<P>QuantumDepth</P>
-					</TH>
-					<TH WIDTH=167>
-						<P>Virtual Memory</P>
-					</TH>
-				</TR>
-			</THEAD>
-			<TBODY>
-				<TR>
-					<TD WIDTH=162 VALIGN=BOTTOM SDVAL="8" SDNUM="1033;">
-						<P ALIGN=CENTER>8</P>
-					</TD>
-					<TD WIDTH=167 VALIGN=TOP>
-						<P ALIGN=CENTER>3MB</P>
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH=162 VALIGN=BOTTOM SDVAL="16" SDNUM="1033;">
-						<P ALIGN=CENTER>16</P>
-					</TD>
-					<TD WIDTH=167 VALIGN=TOP>
-						<P ALIGN=CENTER>8MB</P>
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH=162 VALIGN=BOTTOM SDVAL="32" SDNUM="1033;">
-						<P ALIGN=CENTER>32</P>
-					</TD>
-					<TD WIDTH=167 VALIGN=TOP>
-						<P ALIGN=CENTER>15MB</P>
-					</TD>
-				</TR>
-			</TBODY>
-		</TABLE>
-	</DL>
-	<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">Performing an
-	image processing operation may require that several images be in
-	memory at one time. In the case of animations, hundreds of images
-	may be in memory at one time.</DD></DL>
-<P>
-<B>GraphicsMagick</B> is designed to be general purpose. It can
-display many image storage formats (<I>Monochrome</I>, <I>PseudoColor</I>,
-or <I>TrueColor</I>) on many different types of <I>X visuals</I>
-(<I>StaticGray, StaticColor, PseudoColor, GrayScale, DirectColor,</I>
-or <I>TrueColor</I>). To support all these combinations of image
-storage formats and X visuals, extra memory is required.
-Additionally, <A HREF="animate.html">animate</A> and <A HREF="montage.html">montage</A>
-store an entire image sequence in memory.</P>
-<DL>
-	<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">It is recommended
-	that systems used to run <B>GraphicsMagick</B> have at least 96MB of
-	RAM and 140MB free in their paging area. Systems used to process
-	large images (do the math!) may require considerably more memory to
-	operate efficiently. GraphicsMagick is proven to be far more
-	efficient at processing huge images when it is compiled as a 64-bit
-	application on a 64-bit capable CPU. RAM is typically 1000 times
-	faster than disk, so it is important to keep as much data in RAM as
-	possible (buy lots of RAM). The temporary file area should have
-	plenty of free space. The size of the temporary file area is usually
-	the deciding factor as to whether GraphicsMagick is able to complete
-	an operation. With sufficient free disk space, GraphicsMagick is
-	primarily limited by your CPU, your operating system's ability to
-	address memory, and your degree of patience. GraphicsMagick has been
-	used to process RGB images 64K by 64K pixels in size!</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C10"></A><B>11. How do I
-	concatenate three images left-to-right with no borders, frames, or
-	text?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Assume your three images are called <TT>image1.ppm</TT>, <TT>image2.ppm</TT>,
-	and <TT>image3.ppm</TT>. Type 
-	</DD></DL>
-<PRE> gm montage -mode concatenate -tile 3x1 image1.ppm image2.ppm \
- image3.ppm concatenated.miff</PRE><P>
-To concatenate the images top-to-bottom, use <TT>-tile 1x3</TT>. 
-</P>
-<P>For more control over the placement of an image, use <A HREF="composite.html">composite</A>.
-First create a matte image and position your images onto the matte.
-For example, 
-</P>
-<PRE> gm convert -size 350x500 xc:black composite.miff
- gm composite -geometry +0+0 composite.miff image1.gif composite.miff
- gm composite -geometry &quot;+1&quot;00+0 composite.miff image2.gif composite.miff
- gm composite -geometry +0+300 composite.miff image3.gif composite.miff
- gm composite -geometry +0+375 composite.miff image4.gif composite.miff</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C11"></A><B>12. How do I
-	create a GIF animation sequence to display within Netscape?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Use <A HREF="convert.html">convert</A> with the <B>-delay</B> and
-	<B>-page</B> options. The <B>-delay</B> option is used to specify
-	the delay in <B>1/100ths of a second</B> between the display of each
-	frame of the animation. For example, 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm convert -delay 20 frame*.gif animation.gif</PRE><P>
-You can also declare specific delays for each frame of the image
-sequence. For example, if the delay was 20, 10, and 5, use 
-</P>
-<PRE> gm convert -delay 20 frame1.gif -delay 10 frame2.gif \
- -delay 5 frame3.gif animation.gif</PRE><P>
-Use <B>-page</B> to specify the <I>left</I> and <I>top</I> locations
-of the image frame: 
-</P>
-<PRE> gm convert frame1.gif -page +50&quot;+1&quot;00 frame2.gif -page +0&quot;+1&quot;00 \
- frame3.gif animation.gif</PRE><P>
-Finally, if you want the image to loop within <B>Netscape</B>, use
-<B>-loop</B>: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm convert -loop 50 frame*.gif animation.gif</PRE><P>
-For further information about GIF animation, see <A HREF="http://members.aol.com/royalef.pngmake.htm">GIF
-Animation on the WWW</A>. 
-</P>
-<P>Note, that all the images are composited into a single multi-image
-GIF animation. If you want a single image produced for each frame,
-use <B>+adjoin</B>: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm convert +adjoin images.* frames%d.gif</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C12"></A><B>13. When I
-	display a <I>PostScript</I> image it appears to be trimmed. I would
-	like to display the entire page, including any white space.</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	<B>GraphicsMagick</B> automatically trims any <I>PostScript</I>
-	image as defined by the bounding box. To preempt this behavior,
-	remove the bounding box statement from the Postscrpt or explicitly
-	set the page size. For example, 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -page letter image.ps</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C13"></A><B>14. What are
-	visual image directories? How do I use them?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	A visual image directory (VID) is an image that contains thumbnails
-	of one or more images in a file directory. Rather than displaying
-	each individual image at its full resolution, you can browse the
-	visual image directory and choose an image to display. You can
-	create a VID with either of these commands: 
-	</DD></DL>
-<PRE> gm gm montage *.jpg directory.vid
- gm gm convert 'vid:*.jpg' directory.vid</PRE><P>
-Of course you can substitute any filenames you desire. <A HREF="montage.html">Montage</A>
-has many relevant command line options. You can exercise more control
-over the appearance of the VID than with <A HREF="convert.html">convert</A>.
-</P>
-<P>Next display the directory: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display directory.vid</PRE><P>
-Finally browse and select an image to display. Move the pointer to
-the image and press button 3. 
-</P>
-<P>You can create the VID directory with this command: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display 'vid:*.jpg'</PRE><P>
-You can also select <B>Visual Image...</B> from the <B>File</B> menu
-of the command widget. 
-</P>
-<P><I>Note, that creating a VID is time consuming</I>. Creating them
-on-the-fly within <A HREF="display.html">display</A> may be less
-convenient than using <A HREF="montage.html">montage</A> or <A HREF="convert.html">convert</A>
-. Also, if you create them with <A HREF="montage.html">montage</A>.
-or <A HREF="convert.html">convert</A>, you can reuse them as often as
-necessary. 
-</P>
-<P>Note that a visual image directory is useful for looking at
-individual frames of an image sequence: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display vid:movie.mpg</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C14"></A><B>15. I have an
-	HP. How do I take advantage of the Color Recovery option?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Type 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm display -map list image.miff</PRE><P>
-If you want to use <A HREF="http://www.hp.com/workstations/support/documentation/manuals/user_guides/graphics/GAG11/3_XWindows11.html#HPColorRecovery">Color
-Recovery</A> all the time, put this in your X defaults file: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display.map: list</PRE><P>
-Now if you need to turn off Color Recovery temporarily, type 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm display +dither image.miff</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C15"></A><B>16. I use the
-	window ID reported by <I>xwininfo(1)</I> with import and it does
-	include the window manager frame as expected. How can I save the
-	window with its frame?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	By default, <I>xwininfo(1)</I> returns the ID of the window you
-	click on. Use the <I>-frame</I> option to get the reparented window
-	ID: 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> xwininfo -frame</PRE><P>
-You can then use the returned window ID with <A HREF="import.html">import</A>:
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> gm import -frame -window ID window.miff</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C16"></A><B>17. I
-	displayed an image and it appears as one solid color. What did I do
-	wrong?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	A blank image generally means that the image is either corrupt or it
-	has a matte channel and the matte values are all zero.
-	<B>GraphicsMagick</B> treats a matte value of zero as completely
-	transparent. To determine if this is the problem, try 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> gm display +matte image.miff</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C17"></A><B>18. I received
-	the following message, &quot;???? library is not available ...&quot;.
-	What does it mean?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	<B>GraphicsMagick</B> requires source libraries not included with
-	the distribution to view or convert certain image formats such as
-	JPEG or TIFF. The above message means you did not compile the
-	required library and link with the <B>GraphicsMagick</B> utilities.
-	See <A HREF="install.html">README</A> for the location of these
-	libraries and compiling instructions.</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C18"></A><B>19. I want to
-	inspect the values of the matte channel within my image. How can I
-	do that?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	View the matte image as a gray scale image. Suppose you have a TIFF
-	image that has a matte channel and is 640 pixels in width and 480 in
-	height. Type: 
-	</DD></DL>
-<PRE> gm convert image.tiff image.matte
- gm display -size 640x480 gray:image.matte</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C181"></A><B>20. How can I
-	add one of those cool bevels to my image that I see used on the Web?</B>
-		</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	There are four types of ornamental borders you can add to your image
-	with GraphicsMagick. Each is listed below with the procedure to use
-	them with your image. 
-	</DD></DL>
-<UL>
-	<LI><P>
-	<I>Surround the image with a border of color</I>: Use <TT>-border</TT>
-	followed by the width and height of the border. Set the color of the
-	border with <TT>-bordercolor</TT>. For example, to surround your
-	image with a red border that is 25 pixels wide on each side, use: 
-	</P>
-	<PRE STYLE="margin-bottom: 0.2in"> convert -bordercolor red -border 25x25 image.jpg image.gif</PRE>
-	<LI><P><I>Lighten or darken image edges to create a 3-D effect</I>:
-	Use <TT>-raise</TT> followed by the width of the image edge. For
-	example, to create a raised edge effect of 25 pixels, use: 
-	</P>
-	<PRE STYLE="margin-bottom: 0.2in"> convert -raise 25 image.jpg image.gif</PRE>
-	<LI><P><I>Surround the image with an ornamental frame</I>: Use
-	<TT>-frame</TT> followed by the width and height of the frame. Set
-	the color of the border with <TT>-mattecolor</TT>. For example, to
-	surround your image with a gray frame that is 25 pixels wide on each
-	side, use: 
-	</P>
-	<PRE STYLE="margin-bottom: 0.2in"> convert -mattecolor gray -frame 25x25 image.jpg image.gif</PRE>
-	<LI><P><I>Surround the image with a raised or sunken bevel</I>: Use
-	<TT>-frame</TT> followed by the width and height of the bevel. Set
-	the color of the border with <TT>-mattecolor</TT>. This is just like
-	the description above except you specify a bevel width that matches
-	the frame width. For example, to surround your image with a gray
-	bevel that is 25 pixels wide on each side, use: 
-	</P>
-	<PRE> convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
- convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif</PRE>
-</UL>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C19"></A><B>21. I try to
-	launch display from my window manager and it fails. What's up?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	<A HREF="display.html">Display</A> determines if it is executing
-	interactively and behaves differently depending on the result. To
-	convince <A HREF="display.html">display</A> you are running in an
-	interactive environment when launching from a window manager, use
-	either of 
-	</DD></DL>
-<PRE> display logo:Untitled
- display &lt; /dev/console</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C20"></A><B>22. When I
-	convert Postscript to another format, how can I improve the
-	appearance of the text?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Simple. Increase the dots-per-inch when converting and sub-sample: 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> convert -density 288 -geometry 25% image.ps image.gif</PRE><P>
-Change the density to 144 and geometry to 50% if the above command
-fails due to insufficient memory. Alternatively, see the Ghostscript
-documentation about using high-quality fonts. 
-</P>
-<P>The <TT>-density</TT> option increases the number of pixels (or
-dots) generated by Ghostscript when processing the input postscript
-file. However as all other images formats are generally displayed on
-screens which are typically about 72 to 100 dots per inch, the output
-image will be larger. 
-</P>
-<P>The <I>-geometry</I> option reduces the large image output of
-ghostscript image back to a normal 72 dpi resolution (25% of 288 dpi
-gives 72 dpi) but in the process anti-aliases (or smooths) the fonts
-and lines of the image so as to remove the <I>jaggies</I> you would
-otherwise get from a normal postscript to image conversion. 
-</P>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C21"></A><B>23. How can I
-	annotate an image with text that is 2 to 3 inches tall?</B> 
-	</DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	If you do not access to a particular named font that is large, try
-	scalable fonts. First see if you have any scalable fonts. Type 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> xlsfonts -fn '*-0-0-0-0-*'</PRE>
-<DL>
-	<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Or if you are using <A HREF="display.html">display</A>, use the font
-	pattern above within the Font Browser (see Image Edit-&gt;Annotate).
-	Next substitute the appropriate resolution. Keep in mind that a
-	scalable font must be fully qualified to work. That is, all 14
-	fields must be specified. Here is one example where we annotate an
-	image with large <I>Helvetica</I> text: 
-	</DD></DL>
-<PRE> convert -font '-*-helvetica-*-*-*--300-300-*-*-*-*-iso8859-1' \
- -fill green -draw 'text 50,300 Magick' image.gif annotated.gif</PRE><P>
-If you have the FreeType support built into GraphicsMagick, just
-increase your pointsize and/or density: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> convert -font Helvetica -pointsize 100 -density 300 ...</PRE>
-<HR SIZE=5>
-<DL>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C22"></A><B>24. How can I
-	convert my GIF animation sequence to individual image files?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	Use the scene embedded file format with <A HREF="convert.html">convert</A>:
-		</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp; <TT>convert animation.gif frame%02d.gif</TT> 
-	</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	The resulting image files are titled <TT>frame01.gif</TT>,
-	<TT>frame02.gif</TT>, <TT>frame03.gif</TT>, etc. 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C23"></A><B>25. How can I
-	remove the background that prints around my image when I display it
-	with Netscape?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	Use the <TT>+page</TT> option of the <A HREF="convert.html">convert</A>
-	command: 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp; <TT>convert +page alpha.gif beta.gif</TT> 
-	</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	GIF allows for a page offset relative to some background. The page
-	offset information may have been in your GIF image already or it
-	could have been introduced by GraphicsMagick. Either way, <TT>+page</TT>
-	removes the unwanted page offset and Netscape should behave as
-	expected. 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C24"></A><B>26. How do I
-	create a GIF or PNG image with Web safe colors?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	Use the <TT>-map</TT> option of the <A HREF="convert.html">convert</A>
-	command: 
-	</DD><DD STYLE="margin-left: 0in">
-	<TT>&nbsp;&nbsp;&nbsp; convert -map netscape: alpha.gif beta.gif</TT>
-		</DD><DD STYLE="margin-left: 0in">
-	Netscape predefines 216 colors for colormapped displays. Use the
-	above command to ensure only these predefined colors are used.
-	Otherwise Netscape dithers your image with varying degrees of image
-	fidelity. 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C25"></A><B>27. How come
-	Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	The default PDF compression is <I>Zip</I>. You need Acrobat 3.0 and
-	above to read Zip compressed PDF. Instead use no compression or LZW
-	compression when you create the PDF file: 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp; <TT>convert +compress images.tiff image.pdf</TT> 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C26"></A><B>28. How can I
-	add a matte layer to my image?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	One way is to use a bitmap as your transparency mask 
-	</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	First, use the <TT>-matte</TT> option to add an all-opaque opacity
-	channel, then use the <TT>composite</TT> utility to copy the
-	graylevel samples from the mask file into your new opacity channel: 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <TT>convert image.gif -matte
-	temp.miff</TT> 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <TT>composite -compose CopyOpacity
-	mask.xbm temp.miff transparent.gif</TT> 
-	</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	Note, GIF is limited to one transparent color. If your mask has
-	variable opacity, use a format like MIFF, TIFF, or PNG as your
-	output image format. 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C27"></A><B>29. How can I
-	draw with text using 'convert' under Windows NT?</B> 
-	</DT><DD STYLE="margin-left: 0in">
-	The problem is that NT interprets the command line differently than
-	Unix does, causing the documented command to fail. The following
-	command has been reported to work correctly (all on one line): 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <TT>convert -font Arial -fill blue
-	-draw &quot;text 10,10 'your text here'&quot; d:\test.tif
-	png:d:\test.png</TT> 
-	</DD><DD STYLE="margin-left: 0in">
-	and here is another example which is reported to work (which relies
-	on Ghostscript's 'gs' program to installed): 
-	</DD><DD STYLE="margin-left: 0in">
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <TT>convert.exe -pointsize 18 -draw
-	&quot;text 0,0 &quot;This is my text!&quot;&quot; C:\blank.gif
-	c:\text.gif</TT> 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C28"></A><B>30. Why are my
-	JPEG files larger than expected?</B></DT><DD STYLE="margin-left: 0in; font-weight: medium">
-	Your JPEG files may contain embedded &quot;profiles&quot; such as
-	Exif or IPTC, or they may contain uncompressed thumbnails. You can
-	use the <FONT FACE="Cumberland">+profile &quot;*&quot;</FONT>
-	commandline option or an equivalent API method to remove them. 
-	</DD><HR SIZE=5>
-	<DT STYLE="margin-bottom: 0.2in"><A NAME="C29"></A><B>31. How do I
-	extract a single image from a multi-image file?</B></DT><DD STYLE="margin-left: 0in; margin-bottom: 0.2in; font-weight: medium">
-	Use a square-bracket syntax to indicate which frame or frames you
-	want. For example, 
-	</DD></DL>
-<PRE STYLE="margin-bottom: 0.2in"> convert &quot;Image.gif[0]&quot; first.gif</PRE><P STYLE="margin-bottom: 0in">
-Will extract the first image (scene 0) from a GIF animation. Be sure
+transparent. When you are satisfied, press Return.</p>
+<p>Finally, choose <em>Save</em> from the command menu and write your GIF image to
+a file. <strong>Note that setting transparency works best on a TrueColor or
+DirectColor visual</strong>. If your server only exports colormapped visuals you
+will need to use a <em>Standard Colormap</em> to set transparency.</p>
+<pre class="literal-block">
+xstdcmap -best
+gm display -map list image.gif
+[ choose Matte Edit ]
+[ select your transparent pixel then press Return ]
+[ choose Save '
+</pre>
+<p>If you do not have the <em>xstdcmap(1)</em> program, try</p>
+<pre class="literal-block">
+gm display -visual TrueColor image.gif
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id5" id="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" name="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window">5) How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></h1>
+<p><a class="reference" href="animate.html">Animate</a> updates the image file name in the title bar of the image window
+as each image is displayed from the image sequence. To display just a
+single name that will not change, use <em>-title</em>:</p>
+<pre class="literal-block">
+gm animate -title &quot;My Image Sequence&quot; images.
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id6" id="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" name="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong">6) The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></h1>
+<p>Use the <em>-descend</em> option:</p>
+<pre class="literal-block">
+gm import -descend image.miff
+</pre>
+<p>or set this X resource:</p>
+<pre class="literal-block">
+gm import.descend: True
+</pre>
+<p>By default, <a class="reference" href="import.html">import</a> quickly grabs the image from the X server. However,
+it may not always have the correct colors in some areas. This can happen
+when a subwindow has a different colormap than its parent. With
+<em>-descend</em>, <a class="reference" href="import.html">import</a> descends the window hierarchy. Descending involves
+grabbing the image and colormap of each window or subwindow associated
+with the window you select and compositing it on a blank canvas. This can
+be significantly slower than just grabbing the top-level window but
+ensures the correct image.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="how-do-i-animate-a-digital-yuv-image-sequence" name="how-do-i-animate-a-digital-yuv-image-sequence">7) How do I animate a digital YUV image sequence?</a></h1>
+<p>Suppose your sequence is 72 352x240 frames titled frame0.Y, frame0.U,
+frame0.V, frame1.Y, frame1.U, etc. Use this command:</p>
+<pre class="literal-block">
+gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id8" id="how-do-i-view-only-the-red-channel-of-an-rgb-image" name="how-do-i-view-only-the-red-channel-of-an-rgb-image">8) How do I view only the red channel of an RGB image?</a></h1>
+<p>Use the <em>-gamma</em> option, for example,</p>
+<pre class="literal-block">
+gm display -gamma 1.0,0.0,0.0 image.miff
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id9" id="how-do-i-change-the-default-postscript-page-size" name="how-do-i-change-the-default-postscript-page-size">9) How do I change the default <em>PostScript</em> page size?</a></h1>
+<p>The default dimensions of a <em>PostScript</em> page is 612x792. If you prefer
+another default, change the page geometries (PSPageGeometry) in
+<cite>magick/image.h</cite> and recompile.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id10" id="when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do" name="when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do">10) When I display or convert an image, I get Memory allocation error. What can I do?</a></h1>
+<p>Memory allocation is a complex topic in GraphicsMagick and image
+processing requires a lot of memory. GraphicsMagick tries to take best
+advantage of the resources available by optimizing its use of <em>virtual</em>
+memory. Virtual memory is normally the amount of RAM (Random Access
+Memory) available to the process plus the amount of free space in the
+system paging area (known as &quot;swap&quot; under Unix, or a &quot;page file&quot; under
+Windows). In addition to the RAM and the paging area, GraphicsMagick is
+able to expand the amount of virtual memory available by using
+memory-mapped files which cause the file to be treated as extra memory. A
+piece of hardware known as the Memory Management Unit (MMU) performs the
+magic which allows the system paging area and memory-mapped files to be
+treated as more memory by your system's CPU.</p>
+<p>Usually when a memory allocation error occurs, it is because the system's
+paging area is full, or the programs memory (heap) is fragmented badly
+enough that there is no large-enough block of memory available to satisfy
+the request. In some cases the operating system may artificially limit
+the memory available to the program. Failures of small memory allocations
+are generally considered fatal by GraphicsMagick. If it is impossible to
+allocate even a little bit of memory, then there is no point in
+continuing. When large memory allocations associated with allocating
+memory for image pixels fail, GraphicsMagick uses that as a key to know
+that it should start using memory-mapped temporary files to increase
+virtual memory. Under Unix and other POSIX-compliant systems, these
+memory-mapped temporary files are created in either the system default
+location (e.g. <cite>/var/tmp</cite>) or the directory set by the TMPDIR environment
+variable. Under Windows, temporary files are created in the directory set
+by the TEMP or TMP environment variable. Use the MAGICK_TMPDIR
+environment variable to specify a directory for GraphicsMagick to write
+its temporary files.</p>
+<p>If the temporary file directory is too small, or is itself mapped to the
+system's paging area (no win!), then GraphicsMagick will fail to allocate
+more virtual memory via the temporary file and will return an error.</p>
+<p>The single biggest factor in how much memory is required by
+GraphicsMagick is the QuantumDepth setting when it was compiled. The
+amount of memory (in bytes) required to store a single image in memory is
+may be calculated via the equation (QuantumDepth*Rows*Columns*5)/8. As a
+means of example, the following table shows the amount of memory consumed
+by a single 1024x768 image using the supported QuantumDepth settings:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">QuantumDepth</th>
+<th class="head">Virtual Memory</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>8</td>
+<td>3MB</td>
+</tr>
+<tr><td>16</td>
+<td>8MB</td>
+</tr>
+<tr><td>32</td>
+<td>15MB</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Performing an image processing operation may require that several images
+be in memory at one time. In the case of animations, hundreds of images
+may be in memory at one time.</p>
+<p><em>GraphicsMagick</em> is designed to be general purpose. It can display many
+image storage formats (<em>Monochrome</em>, <em>PseudoColor</em>, or <em>TrueColor</em>) on
+many different types of X visuals (<em>StaticGray, StaticColor, PseudoColor,
+GrayScale, DirectColor,</em> or <em>TrueColor</em>). To support all these
+combinations of image storage formats and X visuals, extra memory is
+required. Additionally, <a class="reference" href="animate.html">animate</a> and <a class="reference" href="montage.html">montage</a> store an entire image
+sequence in memory.</p>
+<p>It is recommended that systems used to run <em>GraphicsMagick</em> have at least
+96MB of RAM and 140MB free in their paging area. Systems used to process
+large images (do the math!) may require considerably more memory to
+operate efficiently. GraphicsMagick is proven to be far more efficient at
+processing huge images when it is compiled as a 64-bit application on a
+64-bit capable CPU. RAM is typically 1000 times faster than disk, so it
+is important to keep as much data in RAM as possible (buy lots of RAM).
+The temporary file area should have plenty of free space. The size of the
+temporary file area is usually the deciding factor as to whether
+GraphicsMagick is able to complete an operation. With sufficient free
+disk space, GraphicsMagick is primarily limited by your CPU, your
+operating system's ability to address memory, and your degree of
+patience. GraphicsMagick has been used to process RGB images 64K by 64K
+pixels in size!</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id11" id="how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" name="how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text">11) How do I concatenate three images left-to-right with no borders, frames, or text?</a></h1>
+<p>Assume your three images are called image1.ppm, image2.ppm, and
+image3.ppm. Type</p>
+<pre class="literal-block">
+gm montage -mode concatenate -tile 3x1 image1.ppm image2.ppm \
+  image3.ppm concatenated.miff
+</pre>
+<p>To concatenate the images top-to-bottom, use -tile 1x3.</p>
+<p>For more control over the placement of an image, use <a class="reference" href="composite.html">composite</a>. First
+create a matte image and position your images onto the matte. For
+example,</p>
+<pre class="literal-block">
+gm convert -size 350x500 xc:black composite.miff
+gm composite -geometry +0+0 composite.miff image1.gif composite.miff
+gm composite -geometry &quot;+1&quot;00+0 composite.miff image2.gif composite.miff
+gm composite -geometry +0+300 composite.miff image3.gif composite.miff
+gm composite -geometry +0+375 composite.miff image4.gif composite.miff
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" name="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape">12) How do I create a GIF animation sequence to display within Netscape?</a></h1>
+<p>Use <a class="reference" href="convert.html">convert</a> with the <em>-delay</em> and <em>-page</em> options. The <em>-delay</em> option
+is used to specify the delay in <em>1/100ths of a second</em> between the
+display of each frame of the animation. For example,</p>
+<pre class="literal-block">
+gm convert -delay 20 frame*.gif animation.gif
+</pre>
+<p>You can also declare specific delays for each frame of the image
+sequence. For example, if the delay was 20, 10, and 5, use</p>
+<pre class="literal-block">
+gm convert -delay 20 frame1.gif -delay 10 frame2.gif \
+  -delay 5 frame3.gif animation.gif
+</pre>
+<p>Use <em>-page</em> to specify the <em>left</em> and <em>top</em> locations of the image frame</p>
+<pre class="literal-block">
+gm convert frame1.gif -page +50&quot;+1&quot;00 frame2.gif -page +0&quot;+1&quot;00 \
+  frame3.gif animation.gif
+</pre>
+<p>Finally, if you want the image to loop within <em>Netscape</em>, use <em>-loop</em></p>
+<pre class="literal-block">
+gm convert -loop 50 frame*.gif animation.gif
+</pre>
+<p>Note, that all the images are composited into a single multi-image GIF
+animation. If you want a single image produced for each frame, use
+<em>+adjoin</em></p>
+<pre class="literal-block">
+gm convert +adjoin images.* frames%d.gif
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id13" id="when-i-display-a-postscript-image-white-borders-are-trimmed" name="when-i-display-a-postscript-image-white-borders-are-trimmed">13) When I display a <em>PostScript</em> image, white borders are trimmed.</a></h1>
+<p><em>GraphicsMagick</em> automatically trims any <em>PostScript</em> image as defined by
+the bounding box. To preempt this behavior, remove the bounding box
+statement from the <em>Postscript</em> or explicitly set the page size. For
+example,</p>
+<pre class="literal-block">
+gm display -page letter image.ps
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id14" id="what-are-visual-image-directories-how-do-i-use-them" name="what-are-visual-image-directories-how-do-i-use-them">14) What are visual image directories? How do I use them?</a></h1>
+<p>A visual image directory (VID) is an image that contains thumbnails of
+one or more images in a file directory. Rather than displaying each
+individual image at its full resolution, you can browse the visual image
+directory and choose an image to display. You can create a VID with
+either of these commands:</p>
+<pre class="literal-block">
+gm montage *.jpg directory.vid
+gm convert 'vid:*.jpg' directory.vid
+</pre>
+<p>Of course you can substitute any filenames you desire. <a class="reference" href="montage.html">Montage</a> has many
+relevant command line options. You can exercise more control over the
+appearance of the VID than with <a class="reference" href="convert.html">convert</a>.</p>
+<p>Next display the directory:</p>
+<pre class="literal-block">
+gm display directory.vid
+</pre>
+<p>Finally browse and select an image to display. Move the pointer to the
+image and press button 3.</p>
+<p>You can create the VID directory with this command:</p>
+<pre class="literal-block">
+gm display 'vid:*.jpg'
+</pre>
+<p>You can also select <em>Visual Image...</em> from the <em>File</em> menu of the command
+widget.</p>
+<p><em>Note, that creating a VID is time consuming</em>. Creating them on-the-fly
+within <a class="reference" href="display.html">display</a> may be less convenient than using <a class="reference" href="montage.html">montage</a> or <a class="reference" href="convert.html">convert</a> .
+Also, if you create them with <a class="reference" href="montage.html">montage</a>. or <a class="reference" href="convert.html">convert</a>, you can reuse them
+as often as necessary.</p>
+<p>Note that a visual image directory is useful for looking at individual
+frames of an image sequence:</p>
+<pre class="literal-block">
+gm display vid:movie.mpg
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id15" id="how-can-i-include-the-window-frame-when-importing-a-window" name="how-can-i-include-the-window-frame-when-importing-a-window">15) How can I include the window frame when importing a window?</a></h1>
+<p>I use the window ID reported by <em>xwininfo(1)</em> with import and it does not
+include the window manager frame as expected. How can I save the window
+with its frame?</p>
+<p>By default, <em>xwininfo(1)</em> returns the ID of the window you click on. Use
+the <em>-frame</em> option to get the reparented window ID:</p>
+<pre class="literal-block">
+xwininfo -frame
+</pre>
+<p>You can then use the returned window ID with <a class="reference" href="import.html">import</a>:</p>
+<pre class="literal-block">
+gm import -frame -window ID window.miff
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id16" id="i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong" name="i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong">16) I displayed an image and it appears as one solid color. What did I do wrong?</a></h1>
+<p>A blank image generally means that the image is either corrupt or it has
+a matte channel and the matte values are all zero. <em>GraphicsMagick</em>
+treats a matte value of zero as completely transparent. To determine if
+this is the problem, try</p>
+<pre class="literal-block">
+gm display +matte image.miff
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id17" id="i-received-the-following-message-library-is-not-available" name="i-received-the-following-message-library-is-not-available">17) I received the following message, &quot;???? library is not available...&quot;.</a></h1>
+<p><em>GraphicsMagick</em> requires source libraries not included with the
+distribution to view or convert certain image formats such as JPEG or
+TIFF. The above message means you did not compile the required library
+and link with the <em>GraphicsMagick</em> utilities. See <a class="reference" href="README.html">README</a> for the
+location of these libraries and compiling instructions.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id18" id="i-want-to-inspect-the-values-of-the-matte-channel-within-my-image" name="i-want-to-inspect-the-values-of-the-matte-channel-within-my-image">18) I want to inspect the values of the matte channel within my image.</a></h1>
+<p>View the matte image as a gray scale image. Suppose you have a TIFF image
+that has a matte channel and is 640 pixels in width and 480 in height.
+Type:</p>
+<pre class="literal-block">
+gm convert image.tiff image.matte
+gm display -size 640x480 gray:image.matte
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id19" id="how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web" name="how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web">19) How can I add one of those cool bevels to my image that I see used on the Web?</a></h1>
+<p>There are four types of ornamental borders you can add to your image
+with GraphicsMagick. Each is listed below with the procedure to use
+them with your image.</p>
+<ul>
+<li><p class="first">Surround the image with a border of color</p>
+<p>Use -border followed by the width and height of the border. Set the
+color of the border with -bordercolor. For example, to surround your
+image with a red border that is 25 pixels wide on each side, use</p>
+<pre class="literal-block">
+gm convert -bordercolor red -border 25x25 image.jpg image.gif
+</pre>
+</li>
+<li><p class="first">Lighten or darken image edges to create a 3-D effect</p>
+<p>Use -raise followed by the width of the image edge. For example, to
+create a raised edge effect of 25 pixels, use</p>
+<pre class="literal-block">
+gm convert -raise 25 image.jpg image.gif
+</pre>
+</li>
+<li><p class="first">Surround the image with an ornamental frame</p>
+<p>Use -frame followed by the width and height of the frame. Set the
+color of the border with -mattecolor. For example, to surround your
+image with a gray frame that is 25 pixels wide on each side, use</p>
+<pre class="literal-block">
+gm convert -mattecolor gray -frame 25x25 image.jpg image.gif
+</pre>
+</li>
+<li><p class="first">Surround the image with a raised or sunken bevel</p>
+<p>Use -frame followed by the width and height of the bevel. Set the
+color of the border with -mattecolor. This is just like the
+description above except you specify a bevel width that matches the
+frame width. For example, to surround your image with a gray bevel
+that is 25 pixels wide on each side, use</p>
+<pre class="literal-block">
+gm convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
+gm convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif
+</pre>
+</li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id20" id="i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up" name="i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up">20) I try to launch display from my window manager and it fails. What's up?</a></h1>
+<p><a class="reference" href="display.html">Display</a> determines if it is executing interactively and behaves
+differently depending on the result. To convince display &lt;display.html&gt;
+you are running in an interactive environment when launching from a
+window manager, use either of</p>
+<pre class="literal-block">
+display logo:Untitled
+display &lt; /dev/console
+</pre>
+<p>Note that this issue no longer exists as of GraphicsMagick 1.2.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id21" id="how-can-i-make-postscript-text-look-good" name="how-can-i-make-postscript-text-look-good">21)  How can I make Postscript text look good?</a></h1>
+<p>Simple. Increase the dots-per-inch when converting and sub-sample:</p>
+<pre class="literal-block">
+gm convert -density 288 -geometry 25% image.ps image.gif
+</pre>
+<p>Change the density to 144 and geometry to 50% if the above command fails
+due to insufficient memory. Alternatively, see the Ghostscript
+documentation about using high-quality fonts.</p>
+<p>The -density option increases the number of pixels (or dots) generated by
+Ghostscript when processing the input postscript file. However as all
+other images formats are generally displayed on screens which are
+typically about 72 to 100 dots per inch, the output image will be larger.</p>
+<p>The <em>-geometry</em> option reduces the large image output of ghostscript
+image back to a normal 72 dpi resolution (25% of 288 dpi gives 72 dpi)
+but in the process anti-aliases (or smooths) the fonts and lines of the
+image so as to remove the jaggies you would otherwise get from a normal
+postscript to image conversion.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id22" id="how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" name="how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall">22) How can I annotate an image with text that is 2 to 3 inches tall?</a></h1>
+<p>If you do not access to a particular named font that is large, try
+scalable fonts. First see if you have any scalable fonts. Type</p>
+<pre class="literal-block">
+xlsfonts -fn '*-0-0-0-0-*'
+</pre>
+<p>Or if you are using <a class="reference" href="display.html">display</a>, use the font pattern above within the Font
+Browser (see Image Edit-&gt;Annotate). Next substitute the appropriate
+resolution. Keep in mind that a scalable font must be fully qualified to
+work. That is, all 14 fields must be specified. Here is one example where
+we annotate an image with large <em>Helvetica</em> text:</p>
+<pre class="literal-block">
+gm convert -font '-*-helvetica-*-*-*--300-300-*-*-*-*-iso8859-1' \
+  -fill green -draw 'text 50,300 Magick' image.gif annotated.gif
+</pre>
+<p>If you have the FreeType support built into GraphicsMagick, just
+increase your pointsize and/or density:</p>
+<pre class="literal-block">
+gm convert -font Helvetica -pointsize 100 -density 300 ...
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id23" id="how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" name="how-can-i-convert-my-gif-animation-sequence-to-individual-image-files">23) How can I convert my GIF animation sequence to individual image files?</a></h1>
+<p>Use the scene embedded file format with <a class="reference" href="convert.html">convert</a>:</p>
+<pre class="literal-block">
+gm convert animation.gif frame%02d.gif
+</pre>
+<p>The resulting image files are titled frame01.gif, frame02.gif,
+frame03.gif, etc.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id24" id="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" name="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape">24) How can I remove the background that prints around my image when I display it with Netscape?</a></h1>
+<p>Use the +page option of the <a class="reference" href="convert.html">convert</a> command:</p>
+<pre class="literal-block">
+gm convert +page alpha.gif beta.gif
+</pre>
+<p>GIF allows for a page offset relative to some background. The page
+offset information may have been in your GIF image already or it
+could have been introduced by GraphicsMagick. Either way, +page
+removes the unwanted page offset and Netscape should behave as
+expected.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id25" id="how-do-i-create-a-gif-or-png-image-with-web-safe-colors" name="how-do-i-create-a-gif-or-png-image-with-web-safe-colors">25) How do I create a GIF or PNG image with Web safe colors?</a></h1>
+<p>Web safe colors are not normally needed any more since almost all
+computers now have true color displays. However, this FAQ may still be
+useful.</p>
+<p>Use the -map option of the <a class="reference" href="convert.html">convert</a> command:</p>
+<pre class="literal-block">
+gm convert -map netscape: alpha.gif beta.gif
+</pre>
+<p>Netscape predefines 216 colors for colormapped displays. Use the above
+command to ensure only these predefined colors are used. Otherwise
+Netscape dithers your image with varying degrees of image fidelity.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id26" id="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" name="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format">26) How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></h1>
+<p>The default PDF compression is <em>Zip</em>. You need Acrobat 3.0 and above
+to read Zip compressed PDF. Instead use no compression or LZW
+compression when you create the PDF file:</p>
+<pre class="literal-block">
+gm convert +compress images.tiff image.pdf
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id27" id="how-can-i-add-a-matte-layer-to-my-image" name="how-can-i-add-a-matte-layer-to-my-image">27) How can I add a matte layer to my image?</a></h1>
+<p>One way is to use a bitmap as your transparency mask First, use the
+-matte option to add an all-opaque opacity channel, then use the
+composite utility to copy the graylevel samples from the mask file
+into your new opacity channel:</p>
+<pre class="literal-block">
+gm convert image.gif -matte temp.miff
+gm composite -compose CopyOpacity mask.xbm temp.miff transparent.gif
+</pre>
+<p>Note, GIF is limited to one transparent color. If your mask has
+variable opacity, use a format like MIFF, TIFF, or PNG as your output
+image format.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id28" id="how-can-i-draw-with-text-using-convert-under-windows-nt" name="how-can-i-draw-with-text-using-convert-under-windows-nt">28) How can I draw with text using 'convert' under Windows NT?</a></h1>
+<p>The problem is that NT interprets the command line differently than
+Unix does, causing the documented command to fail. The following
+command has been reported to work correctly (all on one line):</p>
+<pre class="literal-block">
+gm convert -font Arial -fill blue -draw &quot;text 10,10 'your text here'&quot; \
+   d:\test.tif png:d:\test.png
+</pre>
+<p>and here is another example which is reported to work (which relies
+on Ghostscript's 'gs' program to installed):</p>
+<pre class="literal-block">
+gm convert.exe -pointsize 18 -draw &quot;text 0,0 &quot;This is my text!&quot;&quot; \
+  C:\blank.gif c:\text.gif
+</pre>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id29" id="why-are-my-jpeg-files-larger-than-expected" name="why-are-my-jpeg-files-larger-than-expected">29) Why are my JPEG files larger than expected?</a></h1>
+<p>Your JPEG files may contain embedded &quot;profiles&quot; such as Exif or IPTC,
+or they may contain uncompressed thumbnails. You can use the <cite>+profile
+&quot;*&quot;</cite> commandline option or an equivalent API method to remove them.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id30" id="how-do-i-extract-a-single-image-from-a-multi-image-file" name="how-do-i-extract-a-single-image-from-a-multi-image-file">30) How do I extract a single image from a multi-image file?</a></h1>
+<p>Use a square-bracket syntax to indicate which frame or frames you
+want. For example,</p>
+<pre class="literal-block">
+gm convert &quot;Image.gif[0]&quot; first.gif
+</pre>
+<p>Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
-the shell from interpreting the square brackets. 
-</P>
-<HR>
-<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004, 2005</P>
-</BODY>
-</HTML>
+the shell from interpreting the square brackets.</p>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
+<div class="line">Copyright (C) 2002 ImageMagick Studio</div>
+<div class="line">Copyright (C) 1999 E. I. du Pont de Nemours and Company</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-03-10 03:31 UTC.
+
+</div>
+</body>
+</html>

@@ -1,68 +1,82 @@
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
 =========================
 Welcome to GraphicsMagick
 =========================
 
+.. contents::
+  :local:
+
+Executive Summary
+-----------------
+
 GraphicsMagick provides a comprehensive collection of utilities,
-programming interfaces, and GUIs, to support image processing and 2D vector
-rendering.
+programming interfaces, and GUIs, to support file format conversion,
+image processing, and 2D vector rendering.
 
 GraphicsMagick is originally based on ImageMagick from ImageMagick Studio
 (which was originally written by John Cristy at Dupont). The goal of
 GraphicsMagick is to provide the highest quality product possible while
 encouraging open and active participation from all interested developers.
-The GraphicsMagick usage license is designed to allow it to be used for any
-application, including proprietary or GPLed applications. Please see the
-file Copyright.txt for the GraphicsMagick licence.
+The GraphicsMagick usage license is designed to allow it to be used for
+any application, including proprietary or GPLed applications. Please see
+the file `Copyright.txt <Copyright.html>`_ for the GraphicsMagick licence.
 
-AVAILABILITY
+Availability
 ------------
 
-GraphicsMagick is continually being improved. It may be retrieved via
-CVS using the following procedure:
+The master ftp site for GraphicsMagick distributions is
+ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/. Bandwidth on this
+site is very limited, so it is recommended to download from SourceForge
+at http://sourceforge.net/project/showfiles.php?group_id=73485 if
+possible.
 
-  To use CVS over SSH:
+
+GraphicsMagick is a continual work in progress. The very latest code is
+available from CVS. GraphicsMagick may be retrieved via CVS using the
+following procedure:
+
+  To use CVS over SSH::
 
     export CVS_RSH=ssh
-
     export CVSROOT=":ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick"
 
-  or to use CVS with its built-in (and insecure) pserver protocol:
+  or to use CVS with its built-in (and insecure) pserver protocol::
 
     export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
 
   to set CVSROOT in the environment (adjust for your shell), or prepend
-  -d followed by the CVS root to every command. For example:
+  -d followed by the CVS root to every command. For example::
 
     cvs -d ":pserver:anonymous@cvs ...
 
   For brevity the following examples assume that CVSROOT is set in the
-  environment:
+  environment::
 
     cvs login
-
     [ enter "anonymous" ]
-
     cvs co GraphicsMagick
 
   If you would like to retrieve the (huge) Windows source package which
   includes the core GraphicsMagick sources along with all necessary
-  third-party libraries use:
+  third-party libraries use::
 
     cvs co GraphicsMagick-NT
 
   If  you  would like to retrieve *everything* associated with
-  GraphicsMagick (useful or not) use:
+  GraphicsMagick (useful or not) use::
 
     cvs co GraphicsMagick-World
 
-DOCUMENTATION
+Documentation
 -------------
 
   Open the file index.html in a web browser, or refer to the gm(1) manual
   page. Also read the GraphicsMagick frequently asked questions in the
-  file www/FAQ.html.
+  file `www/FAQ.html <FAQ.html>`_.
 
-INSTALLATION
+Installation
 ------------
 
   GraphicsMagick may be compiled from source code for virtually any
@@ -72,13 +86,13 @@ INSTALLATION
 
   * Unix / MacOS-X / Cygwin / MinGW:
 
-    INSTALL-unix.txt
+    `INSTALL-unix.txt <INSTALL-unix.html>`_
 
-  * Microsoft Windows:
+  * Microsoft Windows (With Microsoft Visual Studio):
 
-    INSTALL-windows.txt
+    `INSTALL-windows.txt <INSTALL-windows.html>`_
 
-ADD-ON LIBRARIES & PROGRAMS
+Add-On Libraries & Programs
 ---------------------------
 
 To further enhance the capabilities of GraphicsMagick, you may want to
@@ -103,13 +117,14 @@ of the library-based packages listed here.
 
     http://www.cybercom.net/~dcoffin/dcraw/
 
-  to read raw images from digital cameras.  Use similar to
+  to read raw images from digital cameras.  Use similar to::
 
     gm convert dcraw:infile outfile
 
-* GraphicsMagick requires 'fig2dev' from
+* GraphicsMagick requires 'fig2dev' provided in the transfig package
+  from
 
-    ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
+    http://www.xfig.org/
 
   to read the Fig image format.
 
@@ -132,7 +147,7 @@ of the library-based packages listed here.
   is used to annotate an image when the FreeType library is not used,
   or an X server is not available. See the FreeType library above for
   another means to annotate an image. Note, Ghostscript must support
-  the ppmraw device (type gs -h to verify). If Ghostscript is
+  the ppmraw device (type `gs -h` to verify). If Ghostscript is
   unavailable, the Display Postscript X11 extension is used to
   rasterize a Postscript document (assuming you define HasDPS and DPS
   is available). The DPS extension is less robust than Ghostscript in
@@ -170,7 +185,7 @@ of the library-based packages listed here.
 
 * GraphicsMagick requires html2ps available from
 
-     http://www.tdb.uu.se/~jan/html2ps.html
+     http://user.it.uu.se/~jan/html2ps.html
 
   to rasterize HTML files.
 
@@ -209,7 +224,7 @@ of the library-based packages listed here.
 * GraphicsMagick requires the MPEG utilities from the MPEG Software
   Simulation Group, which are available via anonymous FTP as
 
-     ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
+     ftp://ftp.GraphicsMagick.org/pub/GraphicsMagick/delegates/mpeg2vidcodec_v12.tar.gz
 
   to read or write the MPEG image format.
 
@@ -298,7 +313,7 @@ of the library-based packages listed here.
   background while "-texture plasma:fractal" renders on a fractal image.
 
    A free set of Microsoft Windows fonts may be retrieved from
-   "http://sourceforge.net/projects/corefonts/". Note that the license
+   http://sourceforge.net/projects/corefonts/. Note that the license
    for these fonts requires that they be distributed in the original
    .exe form, but the Linux folks have found ways to deal with that on
    non-Windows systems.
@@ -347,6 +362,7 @@ of the library-based packages listed here.
 
   to read or write the PNG or Zip compressed MIFF images.
 
+---------------------------------------------------------------------------
 
 | Copyright (C) 2003, 2004, 2005, 2007 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio

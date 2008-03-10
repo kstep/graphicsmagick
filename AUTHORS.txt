@@ -1,6 +1,17 @@
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
+======================
+GraphicsMagick Authors
+======================
+
 The following people have contributed substantially to the development
 of GraphicsMagick.  Please let us know if an author is missing, or a
 significant contribution was made and not recorded.
+
+.. contents::
+  :local:
+
 
 Active GraphicsMagick Contributors
 ==================================
@@ -156,4 +167,12 @@ Alvy Ray Smith and Eric Ray Lyons
 Thomas R Crimmins
 		Inventor of the eight hull algorithm used for speckle
 		reduction.
+
+---------------------------------------------------------------------------
+
+| Copyright (C) 2002 - 2008 GraphicsMagick Group
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 

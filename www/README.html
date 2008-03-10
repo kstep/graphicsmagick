@@ -244,60 +244,84 @@ A.leftcolnav:VISITED  {
 <body>
 <div class="document" id="welcome-to-graphicsmagick">
 <h1 class="title">Welcome to GraphicsMagick</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<div class="contents local topic">
+<ul class="simple">
+<li><a class="reference" href="#executive-summary" id="id1" name="id1">Executive Summary</a></li>
+<li><a class="reference" href="#availability" id="id2" name="id2">Availability</a></li>
+<li><a class="reference" href="#documentation" id="id3" name="id3">Documentation</a></li>
+<li><a class="reference" href="#installation" id="id4" name="id4">Installation</a></li>
+<li><a class="reference" href="#add-on-libraries-programs" id="id5" name="id5">Add-On Libraries &amp; Programs</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="executive-summary" name="executive-summary">Executive Summary</a></h1>
 <p>GraphicsMagick provides a comprehensive collection of utilities,
-programming interfaces, and GUIs, to support image processing and 2D vector
-rendering.</p>
+programming interfaces, and GUIs, to support file format conversion,
+image processing, and 2D vector rendering.</p>
 <p>GraphicsMagick is originally based on ImageMagick from ImageMagick Studio
 (which was originally written by John Cristy at Dupont). The goal of
 GraphicsMagick is to provide the highest quality product possible while
 encouraging open and active participation from all interested developers.
-The GraphicsMagick usage license is designed to allow it to be used for any
-application, including proprietary or GPLed applications. Please see the
-file Copyright.txt for the GraphicsMagick licence.</p>
+The GraphicsMagick usage license is designed to allow it to be used for
+any application, including proprietary or GPLed applications. Please see
+the file <a class="reference" href="Copyright.html">Copyright.txt</a> for the GraphicsMagick licence.</p>
+</div>
 <div class="section">
-<h1><a id="availability" name="availability">AVAILABILITY</a></h1>
-<p>GraphicsMagick is continually being improved. It may be retrieved via
-CVS using the following procedure:</p>
+<h1><a class="toc-backref" href="#id2" id="availability" name="availability">Availability</a></h1>
+<p>The master ftp site for GraphicsMagick distributions is
+<a class="reference" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/">ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/</a>. Bandwidth on this
+site is very limited, so it is recommended to download from SourceForge
+at <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=73485">http://sourceforge.net/project/showfiles.php?group_id=73485</a> if
+possible.</p>
+<p>GraphicsMagick is a continual work in progress. The very latest code is
+available from CVS. GraphicsMagick may be retrieved via CVS using the
+following procedure:</p>
 <blockquote>
 <p>To use CVS over SSH:</p>
-<blockquote>
-<p>export CVS_RSH=ssh</p>
-<p>export CVSROOT=&quot;:ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick&quot;</p>
-</blockquote>
+<pre class="literal-block">
+export CVS_RSH=ssh
+export CVSROOT=&quot;:ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick&quot;
+</pre>
 <p>or to use CVS with its built-in (and insecure) pserver protocol:</p>
-<blockquote>
-export CVSROOT=&quot;:pserver:anonymous&#64;cvs.graphicsmagick.org:/GraphicsMagick&quot;</blockquote>
+<pre class="literal-block">
+export CVSROOT=&quot;:pserver:anonymous&#64;cvs.graphicsmagick.org:/GraphicsMagick&quot;
+</pre>
 <p>to set CVSROOT in the environment (adjust for your shell), or prepend
 -d followed by the CVS root to every command. For example:</p>
-<blockquote>
-cvs -d &quot;:pserver:anonymous&#64;cvs ...</blockquote>
+<pre class="literal-block">
+cvs -d &quot;:pserver:anonymous&#64;cvs ...
+</pre>
 <p>For brevity the following examples assume that CVSROOT is set in the
 environment:</p>
-<blockquote>
-<p>cvs login</p>
-<p>[ enter &quot;anonymous&quot; ]</p>
-<p>cvs co GraphicsMagick</p>
-</blockquote>
+<pre class="literal-block">
+cvs login
+[ enter &quot;anonymous&quot; ]
+cvs co GraphicsMagick
+</pre>
 <p>If you would like to retrieve the (huge) Windows source package which
 includes the core GraphicsMagick sources along with all necessary
 third-party libraries use:</p>
-<blockquote>
-cvs co GraphicsMagick-NT</blockquote>
+<pre class="literal-block">
+cvs co GraphicsMagick-NT
+</pre>
 <p>If  you  would like to retrieve <em>everything</em> associated with
 GraphicsMagick (useful or not) use:</p>
-<blockquote>
-cvs co GraphicsMagick-World</blockquote>
+<pre class="literal-block">
+cvs co GraphicsMagick-World
+</pre>
 </blockquote>
 </div>
 <div class="section">
-<h1><a id="documentation" name="documentation">DOCUMENTATION</a></h1>
+<h1><a class="toc-backref" href="#id3" id="documentation" name="documentation">Documentation</a></h1>
 <blockquote>
 Open the file index.html in a web browser, or refer to the gm(1) manual
 page. Also read the GraphicsMagick frequently asked questions in the
-file www/FAQ.html.</blockquote>
+file <a class="reference" href="FAQ.html">www/FAQ.html</a>.</blockquote>
 </div>
 <div class="section">
-<h1><a id="installation" name="installation">INSTALLATION</a></h1>
+<h1><a class="toc-backref" href="#id4" id="installation" name="installation">Installation</a></h1>
 <blockquote>
 <p>GraphicsMagick may be compiled from source code for virtually any
 modern Unix system (including Linux and MacOS X) and Microsoft Windows.
@@ -305,16 +329,16 @@ Installation instructions may be found in the following files (or their
 HTML equivalents):</p>
 <ul>
 <li><p class="first">Unix / MacOS-X / Cygwin / MinGW:</p>
-<p>INSTALL-unix.txt</p>
+<p><a class="reference" href="INSTALL-unix.html">INSTALL-unix.txt</a></p>
 </li>
-<li><p class="first">Microsoft Windows:</p>
-<p>INSTALL-windows.txt</p>
+<li><p class="first">Microsoft Windows (With Microsoft Visual Studio):</p>
+<p><a class="reference" href="INSTALL-windows.html">INSTALL-windows.txt</a></p>
 </li>
 </ul>
 </blockquote>
 </div>
 <div class="section">
-<h1><a id="add-on-libraries-programs" name="add-on-libraries-programs">ADD-ON LIBRARIES &amp; PROGRAMS</a></h1>
+<h1><a class="toc-backref" href="#id5" id="add-on-libraries-programs" name="add-on-libraries-programs">Add-On Libraries &amp; Programs</a></h1>
 <p>To further enhance the capabilities of GraphicsMagick, you may want to
 get these programs or libraries. Note that the Windows source package
 (equivalent to CVS module &quot;GraphicsMagick-NT&quot;) includes (and builds) all
@@ -337,14 +361,15 @@ need Ghostscript (see below).</p>
 <blockquote>
 <p><a class="reference" href="http://www.cybercom.net/~dcoffin/dcraw/">http://www.cybercom.net/~dcoffin/dcraw/</a></p>
 </blockquote>
-<p>to read raw images from digital cameras.  Use similar to</p>
-<blockquote>
-<p>gm convert dcraw:infile outfile</p>
-</blockquote>
+<p>to read raw images from digital cameras.  Use similar to:</p>
+<pre class="literal-block">
+gm convert dcraw:infile outfile
+</pre>
 </li>
-<li><p class="first">GraphicsMagick requires 'fig2dev' from</p>
+<li><p class="first">GraphicsMagick requires 'fig2dev' provided in the transfig package
+from</p>
 <blockquote>
-<p><a class="reference" href="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">ftp://ftp.x.org/contrib/applications/drawing_tools/transfig</a></p>
+<p><a class="reference" href="http://www.xfig.org/">http://www.xfig.org/</a></p>
 </blockquote>
 <p>to read the Fig image format.</p>
 </li>
@@ -367,7 +392,7 @@ available from</p>
 is used to annotate an image when the FreeType library is not used,
 or an X server is not available. See the FreeType library above for
 another means to annotate an image. Note, Ghostscript must support
-the ppmraw device (type gs -h to verify). If Ghostscript is
+the ppmraw device (type <cite>gs -h</cite> to verify). If Ghostscript is
 unavailable, the Display Postscript X11 extension is used to
 rasterize a Postscript document (assuming you define HasDPS and DPS
 is available). The DPS extension is less robust than Ghostscript in
@@ -404,7 +429,7 @@ format. HP printers usually accept PCL format rather than HPGL format.</p>
 </li>
 <li><p class="first">GraphicsMagick requires html2ps available from</p>
 <blockquote>
-<p><a class="reference" href="http://www.tdb.uu.se/~jan/html2ps.html">http://www.tdb.uu.se/~jan/html2ps.html</a></p>
+<p><a class="reference" href="http://user.it.uu.se/~jan/html2ps.html">http://user.it.uu.se/~jan/html2ps.html</a></p>
 </blockquote>
 <p>to rasterize HTML files.</p>
 </li>
@@ -442,7 +467,7 @@ comment out the line which invokes atexit().</p>
 <li><p class="first">GraphicsMagick requires the MPEG utilities from the MPEG Software
 Simulation Group, which are available via anonymous FTP as</p>
 <blockquote>
-<p><a class="reference" href="ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz">ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz</a></p>
+<p><a class="reference" href="ftp://ftp.GraphicsMagick.org/pub/GraphicsMagick/delegates/mpeg2vidcodec_v12.tar.gz">ftp://ftp.GraphicsMagick.org/pub/GraphicsMagick/delegates/mpeg2vidcodec_v12.tar.gz</a></p>
 </blockquote>
 <p>to read or write the MPEG image format.</p>
 </li>
@@ -529,7 +554,7 @@ example, &quot;-background '#ffffffff'&quot; renders on a transparent
 background while &quot;-texture plasma:fractal&quot; renders on a fractal image.</p>
 <blockquote>
 <p>A free set of Microsoft Windows fonts may be retrieved from
-&quot;<a class="reference" href="http://sourceforge.net/projects/corefonts/">http://sourceforge.net/projects/corefonts/</a>&quot;. Note that the license
+<a class="reference" href="http://sourceforge.net/projects/corefonts/">http://sourceforge.net/projects/corefonts/</a>. Note that the license
 for these fonts requires that they be distributed in the original
 .exe form, but the Linux folks have found ways to deal with that on
 non-Windows systems.</p>
@@ -580,6 +605,7 @@ network via FTP and HTTP.</p>
 <p>to read or write the PNG or Zip compressed MIFF images.</p>
 </li>
 </ul>
+<hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2003, 2004, 2005, 2007 GraphicsMagick Group</div>
 <div class="line">Copyright (C) 2002 ImageMagick Studio</div>
@@ -592,7 +618,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-01-19 20:05 UTC.
+Generated on: 2008-03-09 23:59 UTC.
 
 </div>
 </body>
