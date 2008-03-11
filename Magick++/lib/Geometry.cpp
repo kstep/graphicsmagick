@@ -10,6 +10,7 @@
 #include "Magick++/Include.h"
 #include <string>
 #include <ctype.h> // for isdigit
+#include <strings.h> // for strcpy
 
 using namespace std;
 
