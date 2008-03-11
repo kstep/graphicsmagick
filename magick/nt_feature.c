@@ -211,6 +211,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   bitmapH = CreateBitmapIndirect( &bitmap );
 
   GlobalUnlock((HGLOBAL) bitmap_bitsH);
+  GlobalFree((HGLOBAL) bitmap_bitsH);
 
   return (void *)bitmapH;
 }
@@ -685,6 +686,7 @@ MagickExport void *ImageToHBITMAP(Image* image)
   bitmapH = CreateBitmapIndirect( &bitmap );
 
   GlobalUnlock((HGLOBAL) bitmap_bitsH);
+  GlobalFree((HGLOBAL) bitmap_bitsH);
 
   return (void *)bitmapH;
 }
