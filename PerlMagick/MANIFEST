@@ -116,6 +116,7 @@ t/input_gray_lsb_16bit.mat
 t/input_gray_lsb_double.mat
 t/input_gray_lsb_float.mat
 t/input_gray_msb_08bit.mat
+t/input_logical_lsb_08bit.mat
 t/input_p1.pbm
 t/input_p2.pgm
 t/input_p3.ppm
@@ -295,6 +296,7 @@ t/reference/read/input_ico.miff
 t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff
 t/reference/read/input_im8.miff
+t/reference/read/input_logical_lsb_08bit_mat.miff
 t/reference/read/input_miff.miff
 t/reference/read/input_mtv.miff
 t/reference/read/input_null_DarkOrange.miff

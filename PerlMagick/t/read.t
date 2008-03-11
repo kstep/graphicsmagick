@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..58\n"; }
+BEGIN { $| = 1; $test=1; print "1..59\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -69,6 +69,10 @@ testReadCompare('gradient:red-blue', 'reference/read/gradient.miff',
 print("GRANITE (granite texture) ...\n");
 ++$test;
 testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0, 0);
+
+print("MAT (MatLab logical 8-bit LSB integer) ...\n");
+++$test;
+testReadCompare('input_logical_lsb_08bit.mat', 'reference/read/input_logical_lsb_08bit_mat.miff', q//, 0, 0);
 
 print("MAT (MatLab gray 8-bit LSB integer) ...\n");
 ++$test;
