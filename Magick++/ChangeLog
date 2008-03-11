@@ -1,3 +1,8 @@
+2008-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Geometry.cpp, lib/Image.cpp: Include <strings.h> since it is
+	needed in order to use strcpy().
+
 2007-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/{Drawable.cpp, Geometry.cpp, BlobRef.cpp, Blob.cpp,

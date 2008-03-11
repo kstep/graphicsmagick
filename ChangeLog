@@ -1,3 +1,8 @@
+2008-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/read.t: Added/adjusted WPG test files from Jaroslav
+	Fojtik.
+
 2008-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* AUTHORS.txt, BUGS.txt, FAQ.txt, NEWS.txt, PLATFORMS.txt,

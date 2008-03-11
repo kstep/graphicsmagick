@@ -21,6 +21,265 @@
 </tr>
 </table>
 <p>
+2008-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/read.t: Added/adjusted WPG test files from Jaroslav
+        Fojtik.
+
+</UL>
+<p>
+2008-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> AUTHORS.txt, BUGS.txt, FAQ.txt, NEWS.txt, PLATFORMS.txt,
+        TODO.txt, INSTALL-unix.txt, INSTALL-windows.txt: Use
+        reStructuredText format.<BR>
+  <LI> Makefile.am: Use reStructuredText for more files.
+
+</UL>
+<p>
+2008-02-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ReadImage): Disable colorspace override
+        code since it was being wrongly-triggered in X11 display commands.
+
+</UL>
+<p>
+2008-02-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/body.html: Update to mention 1.1.11 release.
+
+</UL>
+<p>
+2008-02-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RndToInt): Cast result to 'unsigned int'
+        rather than 'int' in order to avoid possible value truncation with
+        Q32 build.  Problem was reported by Kai-Uwe Behrmann.
+        (TransformRGBImage): Fix loop iterator which was looping one past
+        the end of the array.  Reported by Kai-Uwe Behrmann.
+  <LI> magick/command.c: Added a -set option to the composite, convert,
+        display, mogrify, import commands in order to allow setting an
+        image attribute.
+
+</UL>
+<p>
+2008-02-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/Magick.xs: Use MagickAcquireMemory() rather than
+        AquireMemory().<BR>
+  <LI> coders/xwd.c (ReadXWDImage): Eliminate integer overflow
+        vulnerability (IDefense 09.19.07).
+  <LI> coders/xbm.c (ReadXBMImage): ditto
+  <LI> coders/xcf.c (ReadXCFImage): ditto
+  <LI> coders/dib.c (ReadDIBImage): ditto
+  <LI> coders/dcm.c (ReadDCMImage): ditto
+
+</UL>
+<p>
+2008-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): The RFC 2301 specification for
+        Internet FAX recommends LSB2MSB fill order so document that.
+
+</UL>
+<p>
+2008-02-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Use '-define
+        tiff:fill-order={msb2lsb|lsb2msb}' to control TIFF bit fill order.
+
+</UL>
+<p>
+2008-02-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Updated to latest CVS libtool.
+  <LI> coders/tiff.c (CompressionSupported): Use
+        TIFFGetConfiguredCODECs() to test if a requested compression type
+        is supported by libtiff.  Based on advice from Frank Warmerdam.
+  <LI> configure.ac: Add test for TIFFGetConfiguredCODECs() in libtiff.
+
+</UL>
+<p>
+2008-02-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c: With libtiff 3.6.1, including tiff.h and tiffio.h
+        is not sufficient to obtain the definitions from tiffconf.h so
+        libtiff is assumed to not support any features, such as
+        compression.  Avoid this problem by explicitly including
+        tiffconf.h if it is found.  This resolves SourceForge issue
+        [1883527] compression of tiff-file has no effect.
+
+</UL>
+<p>
+2008-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/installer/inc/setup.isx: Set Inno Setup installer
+        compression to "lzma/max".<BR>
+  <LI> PerlMagick/Magick.xs: Eliminate use of memory allocation macros
+        since these failed miserably under Windows where it seems that
+        malloc, free, and realloc are redefined via macros by the Perl
+        build environment.  This reverts changes made on 2007-12-01.
+  <LI> magick/memory.c (MagickAcquireMemoryArray): Use implementation
+        from the 1.1 branch.<BR>
+  <LI> magick/utility.h: Remove MagickSafeMultiplySize_t since it seems
+        that use of inline functions in Windows is a disaster area.
+
+</UL>
+<p>
+2008-02-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am (windows-dist): Create a 7z compressed Windows
+        comprehensive source package.  See http://www.7-zip.org/ for
+        information on Windows 7-Zip and http://p7zip.sourceforge.net/ for
+        information on portable 7-Zip (P7ZIP).
+
+</UL>
+<p>
+2008-02-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Add logging for image resolution
+        and resolution units.<BR>
+  <LI> magick/version.h.in: Update copyright year to 2008.
+
+</UL>
+<p>
+2008-02-01  Gary V. Vaughan  &lt;gary@gnu.org&gt;
+
+<UL>
+  <LI> configure.ac: Updated for libtool-2.1b.
+  <LI> bootstrap (libtoolize): Libtoolize can figure out the mode and
+        directory for libltdl from configure.ac.
+
+</UL>
+<p>
+2008-01-28  Ralf Wildenhues  &lt;Ralf.Wildenhues@gmx.de&gt;
+
+<UL>
+  <LI> magick/Makefile.am: Update
+        magick_libGraphicsMagick_la_DEPENDENCIES to use LTDLDEPS.
+
+</UL>
+<p>
+2008-01-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Successfully read existing file
+        names in the form file[123] which were failing to read since they
+        appear to be a valid sub-image specification.
+
+</UL>
+<p>
+2008-01-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (ExpandFilenames): If a filename appears to
+        contain a wildcard specification, first check to see if there is
+        file matching the unexpanded wildcard prior to engaging in the
+        slow task of wildcard expansion.  Without this fix, expanding the
+        command line takes a very long time if there are a huge number of
+        files in the directory, and some file names appear to contain
+        wildcard specifications.  Inspired by SourceForge bug reports [
+        1878992 ] "literal square brackets in file name cause large delay"
+        and [ 1783209 ] "converting runs slowly when subimage is
+        specified", but this might not be the complete fix for the
+        problem.
+
+</UL>
+<p>
+2008-01-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am: Update to Automake 1.10.1 and enable generation of
+        an lzma compressed source package.
+
+</UL>
+<p>
+2008-01-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Added configure option --with-umem to enable use
+        of the umem memory allocation library available in Solaris 9,
+        Update 3 and later, or from<BR>
+        https://labs.omniti.com/trac/portableumem/.  This library supports
+        concurrency in multi-threaded programs and supports debugging
+        memory issues.  See<BR>
+        http://developers.sun.com/solaris/articles/libumem_library.html
+        for a description of how to use the library for debugging memory
+        issues.
+
+</UL>
+<p>
+2008-01-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (VersionCommand): Include a "Large Memory" item
+        in the Feature Support list.<BR>
+  <LI> coders/png.c (RegisterPNGImage): Remove reference to dead PNG
+        ftp site.<BR>
+  <LI> VisualMagick/configure/configure.cpp (InitInstance): Remove
+        project dependency on dxguid.lib (Direct-X).
+
+</UL>
+<p>
+2008-01-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Update libtool to latest CVS version.
+
+</UL>
+<p>
+2008-01-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (DisplayImageCommand): No longer default to
+        reading standard input if stdin fails isatty() test.  This
+        behavior was causing failure to launch from Gnome and it is
+        difficult to work around the issue from within a .desktop file.
+        (AnimateImageCommand): No longer default to
+        reading standard input if stdin fails isatty() test.
+
+</UL>
+<p>
+2007-12-23  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> VisualMagick/configure/configure.rc: Better positioning of frog,
+        changed original ImageMagick messages.
+  <LI> VisualMagick/configure/configure.exe: New build.
+
+</UL>
+<p>
+2007-12-22  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> magick/command.c: Fix compilability issue for Microsoft Visual
+        Studio 6.
+
+</UL>
+<p>
+2007-12-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Use some improved tests for POSIX standard types
+        available in Autoconf 2.61.<BR>
+        Add support for configuring a magick_uintmax_t type.
+        Added support for configuring a magick_uintptr_t type.
+
+</UL>
+<p>
 2007-12-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -30,6 +289,8 @@
         (MagickAllocateMemory): Check for size_t value truncation/overflow
         and zero size before deciding to allocate memory.  Any detected
         failure results in a NULL pointer being returned.
+        (MagickReallocMemory): Add a type parameter to use in cast in
+        order to avoid C++ portability problem.
   <LI> PerlMagick/Magick.xs: Eliminate use of deprecated methods.
   <LI> magick/memory.c (MagickAcquireMemory): New function to allocate
         memory.<BR>
