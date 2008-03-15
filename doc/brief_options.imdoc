@@ -433,6 +433,10 @@
 <lopt>-ordered-dither <channeltype> <NxN></opt>
 <abs>ordered dither the image</abs>
 </utils>
+<utils apps=mogrify>
+<lopt>-output-directory <directory></opt>
+<abs>output files to directory</abs>
+</utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
 <abs>size and location of an image canvas</abs>

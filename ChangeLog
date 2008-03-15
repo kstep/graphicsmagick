@@ -1,3 +1,9 @@
+2008-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Added an
+	-output-directory option to 'mogrify' to send output files to the
+	specified directory.
+
 2008-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/read.t: Add input_logical_lsb_08bit.mat to

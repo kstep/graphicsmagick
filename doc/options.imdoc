@@ -3080,6 +3080,26 @@ tiles and 17 levels of gray.</pp>
 
 
 
+<!-- ------------ -output-directory --------------------------------- -->
+
+<utils apps=mogrify>
+
+<dopt>-output-directory <directory></opt>
+
+<abs>output files to directory</abs>
+
+<pp>
+Use -output-directory to specify a directory under which to write the
+output files. Normally mogrify overwrites the input files but with this
+option the output files may be written to a different directory so that
+the input files are preserved. The algorithm used preserves all of the
+input path specification in the output path so that the user-specified
+input path (including any directory part) is appended to the output path.
+The user is responsible for creating the output directory.</pp>
+
+</utils>
+
+
 
 <!-- ------------ -page --------------------------------------------- -->
 

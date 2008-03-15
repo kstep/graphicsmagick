@@ -364,7 +364,7 @@ of the library-based packages listed here.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003, 2004, 2005, 2007 GraphicsMagick Group
+| Copyright (C) 2003 - 2008 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 

@@ -10271,6 +10271,7 @@ typedef struct _TransmogrifyOptions
   int argc;
   char **argv;
   char *output_format;
+  char *output_directory;
   MagickBool global_colormap;
   MagickPassFail status;
   ExceptionInfo exception;
@@ -10319,7 +10320,21 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
           /*
             Compute final output file name and format
           */
-          (void) strlcpy(output_filename,image->filename,MaxTextExtent);
+          (void) strlcpy(output_filename,"",MaxTextExtent);
+          if ((char *) NULL != options->output_directory)
+            {
+              size_t
+                output_directory_length;
+
+              output_directory_length = strlen(options->output_directory);
+              if (0 != output_directory_length)
+                {
+                  (void) strlcat(output_filename,options->output_directory,MaxTextExtent);
+                  if (output_filename[output_directory_length-1] != DirectorySeparator[0])
+                    (void) strlcat(output_filename,DirectorySeparator,MaxTextExtent);
+                }
+            }
+          (void) strlcat(output_filename,image->filename,MaxTextExtent);
           if (options->output_format != (char *) NULL)
             {
               AppendImageFormat(options->output_format,output_filename);
@@ -10382,7 +10397,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
   char
     *format = NULL,
-    *option = NULL;
+    *option = NULL,
+    *output_directory;
 
   double
     sans;
@@ -10419,6 +10435,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     Set defaults.
   */
   format=(char *) NULL;
+  output_directory=(char *) NULL;
   global_colormap=False;
   status=True;
 
@@ -10449,6 +10466,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         transmogrify_options.argc=i-j;
         transmogrify_options.argv=argv+j;
         transmogrify_options.output_format=format;
+        transmogrify_options.output_directory=output_directory;
         transmogrify_options.global_colormap=global_colormap;
         transmogrify_options.status=MagickPass;
         GetExceptionInfo(&transmogrify_options.exception);
@@ -11588,6 +11606,19 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("output-directory",option+1) == 0)
+          {
+            (void) CloneString(&output_directory,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,
+                    option);
+                (void) CloneString(&output_directory,argv[i]);
+              }
+            break;
+          }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
       case 'p':
@@ -12240,6 +12271,8 @@ static void MogrifyUsage(void)
       "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
+      "-output-directory directory",
+      "                     write output files to directory",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-fill color           color for annotating or changing opaque color",
