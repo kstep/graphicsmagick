@@ -8224,6 +8224,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("depth",option+1) == 0)
           {
+            /* (*image)->depth = atol(argv[++i]); */
             (void) SetImageDepth(*image,atol(argv[++i]));
             continue;
           }

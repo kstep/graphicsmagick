@@ -339,8 +339,20 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->border_color=image_info->border_color;
   allocate_image->matte_color=image_info->matte_color;
   allocate_image->client_data=image_info->client_data;
+
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(allocate_image->cache,image_info->cache);
+
+  if (image_info->attributes != (Image *) NULL)
+    {
+      const ImageAttribute
+        *attribute;
+
+      attribute=GetImageAttribute(image_info->attributes,(char *) NULL);
+      for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+        (void) SetImageAttribute(allocate_image,attribute->key,attribute->value);
+    }
+
   return(allocate_image);
 }
 
@@ -2713,6 +2725,37 @@ MagickExport Image *GetImageClipMask(const Image *image, ExceptionInfo *exceptio
 %
 %
 */
+static inline unsigned char MinimumDepthForValue(const Quantum quantum)
+{
+  register unsigned int
+    depth,
+    scale;
+  
+  for (depth=1 ; depth < MaxRGB; depth++)
+    {
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+      if (quantum == scale*(quantum/scale))
+        break;
+    }
+  
+  return depth;
+}
+static unsigned char* AllocateDepthMap(void)
+{
+  unsigned char
+    *map;
+  
+  map = MagickAllocateMemoryElements(unsigned char *, MaxRGB, sizeof(char));
+  if (map != (unsigned char *) NULL)
+    {
+      unsigned int
+        i;
+      
+      for (i=0; i <= MaxRGB; i++)
+        map[i] = MinimumDepthForValue(i);
+    }
+  return map;
+}
 MagickExport unsigned long GetImageDepth(const Image *image,
   ExceptionInfo *exception)
 {
@@ -2739,6 +2782,9 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 
   if ((image->storage_class == PseudoClass) && !(image->matte))
     {
+      /*
+        PseudoClass
+      */
       p=image->colormap;
       scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
       for (x=image->colors ; x > 0; x--)
@@ -2759,14 +2805,54 @@ MagickExport unsigned long GetImageDepth(const Image *image,
   else
     {
       /*
-        Directclass
+        DirectClass.
+
+        Notice that all pixels in the image must be inspected if the
+        image depth is less than QuantumDepth.
       */
-/*       printf("GetImageDepth: Exhaustive pixel test!\n"); */
+#if MaxMap == MaxRGB
+      /*
+        Use fast table lookups if we can
+      */
+      unsigned char
+        *map = (unsigned char*) NULL;
+      
+      map = AllocateDepthMap();
+      
+      /*       printf("GetImageDepth: Exhaustive pixel test!\n"); */
+      if (map)
+        {
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=image->columns; x != 0 ; x--)
+                {
+                  depth=Max(depth,map[p->red]);
+                  depth=Max(depth,map[p->green]);
+                  depth=Max(depth,map[p->blue]);
+                  if (image->matte)
+                    depth=Max(depth,map[p->opacity]);
+                  if (depth == QuantumDepth)
+                    break;
+                  p++;
+                }
+              if (depth == QuantumDepth)
+                break;
+            }
+          MagickFreeMemory(map);
+        }
+#else /* MaxMap == MaxRGB */
+      /*
+        Use the slow, sure, way (Q32 only)
+      */
       for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,exception);
           if (p == (const PixelPacket *) NULL)
             break;
+          
           scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
           x=(long) image->columns;
           while(x > 0)
@@ -2789,8 +2875,9 @@ MagickExport unsigned long GetImageDepth(const Image *image,
           if (depth == QuantumDepth)
             break;
         }
+#endif
     }
-
+  
   return depth;
 }
 
@@ -4526,8 +4613,15 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   register PixelPacket
     *q;
 
+  Quantum
+    *map;
+  
+  unsigned int
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  map=(Quantum*) NULL;
   is_grayscale=image->is_grayscale;
   is_monochrome=image->is_monochrome;
 
@@ -4535,6 +4629,15 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
 
   /* fprintf(stdout, "SetImageDepth: depth=%lu, scale=%lu\n",desired_depth,scale); */
+
+#if MaxMap == MaxRGB
+  map=MagickAllocateMemoryElements(Quantum*,sizeof(Quantum),MaxRGB+1);
+  if (map != (Quantum*) NULL)
+    {
+      for (i=0; i <= MaxRGB; i++)
+        map[i]=ScaleQuantumDepth(i,scale);
+    }
+#endif
 
   if (desired_depth < QuantumDepth)
     {
@@ -4546,18 +4649,29 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
             Note that this approach may lead to multiple occurances of the
             same color in the colormap.
           */
-          register unsigned long
-            i;
-
           assert(image->colormap != (PixelPacket *) NULL);
           q=image->colormap;
-          for (i=image->colors; i != 0; i--)
+          if (map != (Quantum*) NULL)
             {
-              q->red=ScaleQuantumDepth(q->red,scale);
-              q->green=ScaleQuantumDepth(q->green,scale);
-              q->blue=ScaleQuantumDepth(q->blue,scale);
-              q->opacity=ScaleQuantumDepth(q->opacity,scale);
-              q++;
+              for (i=image->colors; i != 0; i--)
+                {
+                  q->red=map[q->red];
+                  q->green=map[q->green];
+                  q->blue=map[q->blue];
+                  q->opacity=map[q->opacity];
+                  q++;
+                }
+            }
+          else
+            {
+              for (i=image->colors; i != 0; i--)
+                {
+                  q->red=ScaleQuantumDepth(q->red,scale);
+                  q->green=ScaleQuantumDepth(q->green,scale);
+                  q->blue=ScaleQuantumDepth(q->blue,scale);
+                  q->opacity=ScaleQuantumDepth(q->opacity,scale);
+                  q++;
+                }
             }
 
           /*
@@ -4578,13 +4692,27 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
                   status=MagickFail;
                   break;
                 }
-              for (x=image->columns; x != 0; x--)
+              if (map != (Quantum*) NULL)
                 {
-                  q->red=ScaleQuantumDepth(q->red,scale);
-                  q->green=ScaleQuantumDepth(q->green,scale);
-                  q->blue=ScaleQuantumDepth(q->blue,scale);
-                  q->opacity=ScaleQuantumDepth(q->opacity,scale);
-                  q++;
+                  for (x=image->columns; x != 0; x--)
+                    {
+                      q->red=map[q->red];
+                      q->green=map[q->green];
+                      q->blue=map[q->blue];
+                      q->opacity=map[q->opacity];
+                      q++;
+                    }
+                }
+              else
+                {
+                  for (x=image->columns; x != 0; x--)
+                    {
+                      q->red=ScaleQuantumDepth(q->red,scale);
+                      q->green=ScaleQuantumDepth(q->green,scale);
+                      q->blue=ScaleQuantumDepth(q->blue,scale);
+                      q->opacity=ScaleQuantumDepth(q->opacity,scale);
+                      q++;
+                    }
                 }
               if (!SyncImagePixels(image))
                 {
@@ -4594,6 +4722,8 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
             }
         }
     }
+
+  MagickFreeMemory(map);
 
   image->depth=desired_depth;
   image->is_grayscale=is_grayscale;

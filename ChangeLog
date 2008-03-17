@@ -1,3 +1,14 @@
+2008-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageDepth): Use table lookups to improve
+	performance.
+
+2008-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (AllocateImage): Transfer any attributes from
+	ImageInfo to allocated image.
+	(SetImageDepth): Use table lookups to improve performance.
+
 2008-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): Added an

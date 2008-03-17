@@ -1239,12 +1239,11 @@ static void RGBTransformPacket(PixelPacket *pixel,
   blue_p = &blue_map[ScaleQuantumToMap(pixel->blue)];
 
   red=(red_p->red+green_p->red+blue_p->red);
-  red = red < 0 ? 0 : red > MaxMap ? MaxMap : (unsigned int) (red + 0.5);
-
   green=(red_p->green+green_p->green+blue_p->green);
-  green = green < 0 ? 0 : green > MaxMap ? MaxMap : (unsigned int) (green + 0.5);
-
   blue=(red_p->blue+green_p->blue+blue_p->blue);
+  
+  red = red < 0 ? 0 : red > MaxMap ? MaxMap : (unsigned int) (red + 0.5);
+  green = green < 0 ? 0 : green > MaxMap ? MaxMap : (unsigned int) (green + 0.5);
   blue = blue < 0 ? 0 : blue > MaxMap ? MaxMap : (unsigned int) (blue + 0.5);
 
   if ( rgb_map != 0 )

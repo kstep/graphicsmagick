@@ -2502,7 +2502,7 @@ resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
 time on platforms that can provide information about available resources.
 When the limit is reached, GraphicsMagick will fail in some fashion, or
 take compensating actions if possible.
-For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
+For example, <tt>-limit memory 32 -limit map 64</tt> limits memory.
 When the pixel cache reaches the memory limit it uses
 memory mapping.  When that limit is reached it goes to disk.  If disk has
 a hard limit, the program will fail.</pp>
