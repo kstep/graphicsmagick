@@ -1,5 +1,7 @@
 2008-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colorspace.c (RGBTransformPacket): Rationalize casts for
+	improved performance.
 	* magick/image.c (GetImageDepth): Use table lookups to improve
 	performance.
 

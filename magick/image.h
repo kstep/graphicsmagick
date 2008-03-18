@@ -118,8 +118,8 @@ typedef unsigned int Quantum;
 #define TransparentOpacity  MaxRGB
 #define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
   (value > MaxRGB) ? MaxRGB : value + 0.5))
-#define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
-  value + 0.5))
+#define RoundToQuantum(value) ((Quantum) ((double) value > (double) MaxRGB ? \
+   MaxRGB : (double) value + 0.5))
 #define ConstrainToRange(min,max,value) (value < min ? min : \
   (value > max) ? max : value)
 #define ConstrainToQuantum(value) ConstrainToRange(0,MaxRGB,value)

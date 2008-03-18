@@ -43,7 +43,7 @@ typedef float TransformQuantum;
 #define TransformValue(value) ((TransformQuantum) (value))
 
 /* Round floating value to an integer */
-#define RndToInt(value) ((unsigned int)((value)+0.5))
+#define RndToInt(value) ((unsigned int)((double) value+0.5))
 
 /* Assign value of attribute to double if attribute exists for key */
 #define MagickAttributeToDouble(image,key,variable) \
@@ -1234,17 +1234,18 @@ static void RGBTransformPacket(PixelPacket *pixel,
     *green_p,
     *blue_p;
 
-  red_p = &red_map[ScaleQuantumToMap(pixel->red)];
+  red_p   = &red_map[ScaleQuantumToMap(pixel->red)];
   green_p = &green_map[ScaleQuantumToMap(pixel->green)];
-  blue_p = &blue_map[ScaleQuantumToMap(pixel->blue)];
-
-  red=(red_p->red+green_p->red+blue_p->red);
-  green=(red_p->green+green_p->green+blue_p->green);
-  blue=(red_p->blue+green_p->blue+blue_p->blue);
+  blue_p  = &blue_map[ScaleQuantumToMap(pixel->blue)];
   
-  red = red < 0 ? 0 : red > MaxMap ? MaxMap : (unsigned int) (red + 0.5);
-  green = green < 0 ? 0 : green > MaxMap ? MaxMap : (unsigned int) (green + 0.5);
-  blue = blue < 0 ? 0 : blue > MaxMap ? MaxMap : (unsigned int) (blue + 0.5);
+  red   = (red_p->red+green_p->red+blue_p->red);
+  green = (red_p->green+green_p->green+blue_p->green);
+  blue  = (red_p->blue+green_p->blue+blue_p->blue);
+  
+  red   = red   < 0.0 ? 0.0 : red   > (double) MaxMap ? (double) MaxMap : (red + 0.5);
+  green = green < 0.0 ? 0.0 : green > (double) MaxMap ? (double) MaxMap : (green + 0.5);
+  blue  = blue  < 0.0 ? 0.0 : blue  > (double) MaxMap ? (double) MaxMap : (blue + 0.5);
+
 
   if ( rgb_map != 0 )
     {
