@@ -9418,13 +9418,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
-            char
-              key[MaxTextExtent],
-              value[MaxTextExtent];
+            const char
+              *key,
+              *value;
 
-            strlcpy(key,argv[++i],sizeof(key));
-            strlcpy(value,argv[++i],sizeof(value));
-            (void) SetImageAttribute(*image,key,value);
+            key=argv[++i];
+            value=argv[++i];
+            (void) SetImageAttribute(*image,key,(char *) NULL);
+            if (*option == '-')
+              (void) SetImageAttribute(*image,key,value);
             continue;
           }
         if (LocaleCompare("segment",option+1) == 0)

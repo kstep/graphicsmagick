@@ -45,15 +45,110 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
-static void DestroyImageAttribute(ImageAttribute *attribute)
+/*
+  Forward declarations.
+*/
+static void DestroyImageAttribute(ImageAttribute *attribute);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e I m a g e A t t r i b u t e s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneImageAttributes() copies the text attibutes from one image to another.
+%  Any text attributes in the destination image are preserved.
+%  CloneImageAttributes returns MagickPass if all of the attribututes are
+%  successfully cloned or MagickFail if there is a memory allocation error.
+%
+%  The format of the CloneImageAttributes method is:
+%
+%      MagickPassFail CloneImageAttributes(Image* clone_image,
+%                                          const Image* original_image)
+%
+%  A description of each parameter follows:
+%
+%    o clone_image: The destination image.
+%
+%    o original_image: The source image.
+%
+%
+*/
+MagickExport MagickPassFail CloneImageAttributes(Image* clone_image,
+  const Image* original_image)
 {
-  if (attribute == (ImageAttribute *) NULL)
-    return;
-  MagickFreeMemory(attribute->value);
-  MagickFreeMemory(attribute->key);
-  (void) memset(attribute,0xbf,sizeof(ImageAttribute));
-  MagickFreeMemory(attribute);
+  MagickPassFail
+    status;
+
+  ImageAttribute
+    *cloned_attribute,
+    *cloned_attributes;
+
+  const ImageAttribute
+    *attribute;
+
+  status = MagickPass;
+
+  /*
+    Search for tail of list (if any)
+  */
+  for(cloned_attributes=clone_image->attributes;
+      cloned_attributes != (ImageAttribute *) NULL;
+      cloned_attributes=cloned_attributes->next);
+
+  attribute=GetImageAttribute(original_image,(char *) NULL);
+  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+    {
+      /*
+        Construct AttributeInfo to append.
+      */
+      cloned_attribute=MagickAllocateMemory(ImageAttribute *,sizeof(ImageAttribute));
+      if (cloned_attribute == (ImageAttribute *) NULL)
+        {
+          status = MagickFail;
+          break;
+        }
+      cloned_attribute->key=AcquireString(attribute->key);
+      cloned_attribute->length=attribute->length;
+      cloned_attribute->value=MagickAllocateMemory(char *,cloned_attribute->length+1);
+      cloned_attribute->previous=(ImageAttribute *) NULL;
+      cloned_attribute->next=(ImageAttribute *) NULL;
+      if ((cloned_attribute->value == (char *) NULL) ||
+          (cloned_attribute->key == (char *) NULL))
+        {
+          DestroyImageAttribute(cloned_attribute);
+          status = MagickFail;
+          break;
+        }
+      strcpy(cloned_attribute->value,attribute->value);
+
+      if (cloned_attributes == (ImageAttribute *) NULL)
+        {
+          /*
+            Start list
+          */
+          cloned_attributes=cloned_attribute;
+          clone_image->attributes=cloned_attributes;
+        }
+      else
+        {
+          /*
+            Append to list
+          */
+          cloned_attributes->next=cloned_attribute;
+          cloned_attribute->previous=cloned_attributes;
+          cloned_attributes=cloned_attribute;
+        }
+    }
+
+  return status;
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -78,6 +173,15 @@ static void DestroyImageAttribute(ImageAttribute *attribute)
 %
 %
 */
+static void DestroyImageAttribute(ImageAttribute *attribute)
+{
+  if (attribute == (ImageAttribute *) NULL)
+    return;
+  MagickFreeMemory(attribute->value);
+  MagickFreeMemory(attribute->key);
+  (void) memset(attribute,0xbf,sizeof(ImageAttribute));
+  MagickFreeMemory(attribute);
+}
 MagickExport void DestroyImageAttributes(Image *image)
 {
   ImageAttribute
@@ -2013,21 +2117,33 @@ MagickExport MagickPassFail SetImageAttribute(Image *image,const char *key,
   if (attribute == (ImageAttribute *) NULL)
     return(MagickFail);
   attribute->key=AllocateString(key);
-  if ((LocaleNCompare(key,"EXIF",4) == 0) ||
-      (LocaleNCompare(key,"IPTC",4) == 0) ||
-      (LocaleNCompare(key,"[Locale",7) == 0) ||
-      (LocaleNCompare(key,"8BIM",4) == 0))
+  attribute->length=0;
+  if ((LocaleNCompare(key,"comment",7) == 0) ||
+      (LocaleNCompare(key,"label",5) == 0))
     {
-      attribute->length=strlen(value);
-      attribute->value=MagickAllocateMemory(char *,attribute->length+MaxTextExtent);
-      if (attribute->value != (char *) NULL)
-        (void) strcpy(attribute->value,value);
-    }
-  else
-    {
+      /*
+        Translate format requests in attribute text.
+
+        This is really gross since it is assumed that the attribute is
+        supplied by the user and the user intends for translation to
+        occur.  However, comment attributes may also come from an
+        image file and may contain arbitrary text.  There does not
+        seem to be any work-around which preserves the already defined
+        interface.
+      */
       attribute->value=TranslateText((ImageInfo *) NULL,image,value);
       if (attribute->value != (char *) NULL)
         attribute->length=strlen(attribute->value);
+    }
+  else
+    {
+      /*
+        Use attribute text as is.
+      */
+      attribute->length=strlen(value);
+      attribute->value=MagickAllocateMemory(char *,attribute->length+1);
+      if (attribute->value != (char *) NULL)
+        (void) strlcpy(attribute->value,value,attribute->length+1);
     }
   if ((attribute->value == (char *) NULL) ||
       (attribute->key == (char *) NULL))
@@ -2051,6 +2167,9 @@ MagickExport MagickPassFail SetImageAttribute(Image *image,const char *key,
           min_l,
           realloc_l;
 
+        /*
+          Extend existing text string.
+        */
         min_l=p->length+attribute->length+1;
         for (realloc_l=2; realloc_l <= min_l; realloc_l *= 2);
         MagickReallocMemory(char *,p->value,realloc_l);

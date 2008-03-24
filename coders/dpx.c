@@ -2555,6 +2555,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
+#if 0
   /*
     Don't return image in YCbCr colorspace at the moment since it can
     cause some usability problems elsewhere in GraphicsMagick.
@@ -2564,6 +2565,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) TransformColorspace(image,RGBColorspace);
       if (transfer_characteristic == TransferCharacteristicPrintingDensity)
         image->colorspace=CineonLogRGBColorspace;
+    }
+#endif
+
+  /*
+    If image is YCbCr representing Cineon Log RGB, then return the image as
+    RGB in CineonLog colorspace.
+  */
+  if (IsYCbCrColorspace(image->colorspace) && (transfer_characteristic == TransferCharacteristicPrintingDensity))
+    {
+      (void) TransformColorspace(image,RGBColorspace);
+      image->colorspace=CineonLogRGBColorspace;
     }
 
   image->is_monochrome=is_monochrome;
@@ -3318,7 +3330,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
            !IsRGBColorspace(image->colorspace))
     (void) TransformColorspace(image,RGBColorspace);
   else if (!IsRGBColorspace(image->colorspace) &&
-           (image->colorspace != CineonLogRGBColorspace))
+           (image->colorspace != CineonLogRGBColorspace) &&
+           (image->colorspace != Rec601YCbCrColorspace) &&
+           (image->colorspace != Rec709YCbCrColorspace))
     (void) TransformColorspace(image,RGBColorspace);
 
   /*

@@ -2594,6 +2594,50 @@ MagickExport magick_off_t GetPixelCacheArea(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e P r e s e n t                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCachePresent() tests to see the pixel cache is present
+%  and contains pixels.
+%
+%  The format of the GetPixelCachePresent() method is:
+%
+%      MagickBool GetPixelCachePresent(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Specifies a pointer to an Image structure.
+%
+%
+*/
+extern MagickBool GetPixelCachePresent(const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (image->cache == (Cache) NULL)
+    return MagickFalse;
+
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  if ((cache_info->columns == 0) ||
+      (cache_info->rows == 0))
+    return MagickFalse;
+
+  return MagickTrue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l S t r e a m                                               %
 %                                                                             %
 %                                                                             %

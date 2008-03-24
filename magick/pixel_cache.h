@@ -247,6 +247,13 @@ extern "C" {
   GetCacheInfo(Cache *cache);
 
   /*
+    GetPixelCachePresent() tests to see the pixel cache is present
+    and contains pixels.
+  */
+  extern MagickBool
+  GetPixelCachePresent(const Image *image);
+
+  /*
     ReferenceCache() increments the reference count associated with
     the pixel cache.
 

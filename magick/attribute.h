@@ -37,7 +37,8 @@ extern MagickExport const ImageAttribute
   *GetImageClippingPathAttribute(const Image *image),
   *GetImageInfoAttribute(const ImageInfo *image_info,const Image *image,const char *key);
 
-extern MagickExport unsigned int
+extern MagickExport MagickPassFail
+  CloneImageAttributes(Image* clone_image, const Image* original_image),
   SetImageAttribute(Image *image,const char *key,const char *value);
 
 extern MagickExport void

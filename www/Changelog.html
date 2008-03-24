@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2008-03-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (WriteDPXImage): Support writing image which is
+        already in a YCbCr colorspace.<BR>
+        (ReadDPXImage): Return YCbCr images in YCbCr colorspace unless
+        they are also Cineon log encoded.
+  <LI> magick/image.c (CloneImage): Use CloneImageAttributes().
+  <LI> magick/attribute.c (CloneImageAttributes): New function for
+        copying image attributes from one image to another.
+  <LI> magick/utility.c (TranslateTextEx): Check if the pixel cache is
+        initialized before using a function which requires using it.
+        Thanks to Micha³ Kowalczuk for bringing this issue to my
+        attention.<BR>
+  <LI> magick/attribute.c (SetImageAttribute): Only apply
+        transformations to "comment" and "label" attributes.
+  <LI> magick/pixel_cache.c (GetPixelCachePresent): New function to
+        test if the image pixel cache is present and initialized.
+
+</UL>
+<p>
 2008-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -42,6 +42,7 @@
 #include "magick/color.h"
 #include "magick/log.h"
 #include "magick/magick.h"
+#include "magick/pixel_cache.h"
 #include "magick/signature.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -4959,9 +4960,17 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'k':
       {
         /* Number of unique colors */
-        FormatString(buffer,"%lu",GetNumberColors(image,(FILE *) NULL,
-                                                  &image->exception));
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (GetPixelCachePresent(image))
+          {
+            FormatString(buffer,"%lu",GetNumberColors(image,(FILE *) NULL,
+                                                      &image->exception));
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
+        else
+          {
+            *q++='%';
+            *q++=(*p);
+          }
         break;
       }
       case 'l':
@@ -5010,7 +5019,10 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'q':
       {
         /* Quantum depth */
-        FormatString(buffer,"%lu",GetImageDepth(image,&image->exception));
+        if (GetPixelCachePresent(image))
+          FormatString(buffer,"%lu",GetImageDepth(image,&image->exception));
+        else
+          FormatString(buffer,"%u",image->depth);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
@@ -5116,11 +5128,18 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       }
       case '#':
       {
-        /* Image signature */
-        (void) SignatureImage(image);
-        attribute=GetImageAttribute(image,"signature");
-        if (attribute != (ImageAttribute *) NULL)
-          q+=(translate)(q,attribute->value,MaxTextExtent);
+        if (GetPixelCachePresent(image))
+          {
+            (void) SignatureImage(image);
+            attribute=GetImageAttribute(image,"signature");
+            if (attribute != (ImageAttribute *) NULL)
+              q+=(translate)(q,attribute->value,MaxTextExtent);
+          }
+        else
+          {
+            *q++='%';
+            *q++=(*p);
+          }
         break;
       }
       case '%':
