@@ -45,6 +45,108 @@
 #include "magick/utility.h"
 
 /*
+  Forward declarations.
+*/
+static void DestroyImageAttribute(ImageAttribute *attribute);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e I m a g e A t t r i b u t e s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneImageAttributes() copies the text attibutes from one image to another.
+%  Any text attributes in the destination image are preserved.
+%  CloneImageAttributes returns MagickPass if all of the attribututes are
+%  successfully cloned or MagickFail if there is a memory allocation error.
+%
+%  The format of the CloneImageAttributes method is:
+%
+%      MagickPassFail CloneImageAttributes(Image* clone_image,
+%                                          const Image* original_image)
+%
+%  A description of each parameter follows:
+%
+%    o clone_image: The destination image.
+%
+%    o original_image: The source image.
+%
+%
+*/
+MagickExport MagickPassFail CloneImageAttributes(Image* clone_image,
+  const Image* original_image)
+{
+  MagickPassFail
+    status;
+
+  ImageAttribute
+    *cloned_attribute,
+    *cloned_attributes;
+
+  const ImageAttribute
+    *attribute;
+
+  status = MagickPass;
+
+  /*
+    Search for tail of list (if any)
+  */
+  for(cloned_attributes=clone_image->attributes;
+      cloned_attributes != (ImageAttribute *) NULL;
+      cloned_attributes=cloned_attributes->next);
+
+  attribute=GetImageAttribute(original_image,(char *) NULL);
+  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+    {
+      /*
+        Construct AttributeInfo to append.
+      */
+      cloned_attribute=MagickAllocateMemory(ImageAttribute *,sizeof(ImageAttribute));
+      if (cloned_attribute == (ImageAttribute *) NULL)
+        {
+          status = MagickFail;
+          break;
+        }
+      cloned_attribute->key=AcquireString(attribute->key);
+      cloned_attribute->value=AcquireString(attribute->value);
+      cloned_attribute->previous=(ImageAttribute *) NULL;
+      cloned_attribute->next=(ImageAttribute *) NULL;
+      if ((cloned_attribute->value == (char *) NULL) ||
+          (cloned_attribute->key == (char *) NULL))
+        {
+          DestroyImageAttribute(cloned_attribute);
+          status = MagickFail;
+          break;
+        }
+
+      if (cloned_attributes == (ImageAttribute *) NULL)
+        {
+          /*
+            Start list
+          */
+          cloned_attributes=cloned_attribute;
+          clone_image->attributes=cloned_attributes;
+        }
+      else
+        {
+          /*
+            Append to list
+          */
+          cloned_attributes->next=cloned_attribute;
+          cloned_attribute->previous=cloned_attributes;
+          cloned_attributes=cloned_attribute;
+        }
+    }
+
+  return status;
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -68,6 +170,15 @@
 %
 %
 */
+static void DestroyImageAttribute(ImageAttribute *attribute)
+{
+  if (attribute == (ImageAttribute *) NULL)
+    return;
+  MagickFreeMemory(attribute->value);
+  MagickFreeMemory(attribute->key);
+  (void) memset(attribute,0xbf,sizeof(ImageAttribute));
+  MagickFreeMemory(attribute);
+}
 MagickExport void DestroyImageAttributes(Image *image)
 {
   ImageAttribute
@@ -82,11 +193,7 @@ MagickExport void DestroyImageAttributes(Image *image)
   {
     attribute=p;
     p=p->next;
-    if (attribute->key != (char *) NULL)
-      MagickFreeMemory(attribute->key);
-    if (attribute->value != (char *) NULL)
-      MagickFreeMemory(attribute->value);
-    MagickFreeMemory(attribute);
+    DestroyImageAttribute(attribute);
   }
   image->attributes=(ImageAttribute *) NULL;
 }

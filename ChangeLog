@@ -1,3 +1,15 @@
+2008-03-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (CloneImage): Use CloneImageAttributes().
+	* magick/attribute.c (CloneImageAttributes): New function for
+	copying image attributes from one image to another.
+	* magick/utility.c (TranslateTextEx): Check if the pixel cache is
+	initialized before using a function which requires using it.
+	Thanks to Micha³ Kowalczuk for bringing this issue to my
+	attention.
+	* magick/cache.c (GetPixelCachePresent): New function to test if
+	the image pixel cache is present and initialized.
+
 2008-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_feature.c (CropImageToHBITMAP, ImageToHBITMAP): Use

@@ -258,6 +258,17 @@ extern MagickExport void
     AcquireOnePixelFromHandler acquire_one_pixel_from,
     GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel);
 
+#if defined(MAGICK_IMPLEMENTATION)
+
+/*
+  GetPixelCachePresent() tests to see the pixel cache is present
+  and contains pixels.
+*/
+extern MagickBool
+  GetPixelCachePresent(const Image *image);
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

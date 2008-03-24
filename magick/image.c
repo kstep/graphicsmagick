@@ -1166,9 +1166,6 @@ MagickExport unsigned int ClipPathImage(Image *image,const char *pathname,
 MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   const unsigned long rows,const unsigned int orphan,ExceptionInfo *exception)
 {
-  const ImageAttribute
-    *attribute;
-
   Image
     *clone_image;
 
@@ -1298,9 +1295,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->gravity=image->gravity;
   clone_image->compose=image->compose;
   clone_image->signature=MagickSignature;
-  attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
-    (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
+  (void) CloneImageAttributes(clone_image,image);
   clone_image->scene=image->scene;
   clone_image->dispose=image->dispose;
   clone_image->delay=image->delay;
