@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2004, 2007 GraphicsMagick Group
+  Copyright (C) 2003 - 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -138,14 +138,8 @@ extern MagickExport void
   GetToken(const char *,char **,char *),
   LocaleLower(char *),
   LocaleUpper(char *),
-  *MagickAcquireMemory(const size_t size),
-  *MagickAcquireMemoryArray(const size_t count,const size_t size),
-  *MagickCloneMemory(void *destination,const void *source,const size_t size),
-  *MagickReallocateMemory(void *memory,const size_t size),
-  MagickReleaseMemory(void *memory),
   Strip(char *),
-  SetGeometry(const Image *,RectangleInfo *),
-  *MagickAllocateMemoryArray(const size_t count,const size_t size);
+  SetGeometry(const Image *,RectangleInfo *);
 
 extern MagickExport void
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3))),
@@ -157,49 +151,6 @@ extern MagickExport size_t
   MagickStrlCpyTrunc(char *dst, const char *src, const size_t size);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-/*
-  Allocate memory
-*/
-
-/* #define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size))) */
-#define MagickAllocateMemory(type,size) \
-  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : ((type) malloc((size_t) (size))))
-
-#define MagickAllocateMemoryElements(type,count,size) \
-  ( (type) MagickAcquireMemoryArray(count,size) )
-
-/*
-  Free memory and set pointer to NULL
-*/
-#define MagickFreeMemory(memory) \
-{ \
-    void *_magick_mp; \
-    if (memory != 0) \
-      { \
-        _magick_mp=memory; \
-        free(_magick_mp); \
-        memory=0; \
-      } \
-}
-
-/*
-  Reallocate memory using provided pointer.  If pointer value is null,
-  then allocate new memory. If reallocation fails then free memory,
-  setting pointer to null.  If size is 0 and memory is not a null
-  pointer, then free memory.  This interface behaves similar to
-  realloc() except that memory is always freed (and pointer set to
-  null) if a memory allocation failure occurs.
-*/
-#define MagickReallocMemory(type,memory,size)   \
-{ \
-    size_t _new_size = (size_t) (size); \
-    void *_magick_mp = 0; \
-    _magick_mp=realloc(memory,_new_size); \
-    if ((_magick_mp == 0) && (memory != 0) && (_new_size != 0)) \
-       free(memory); \
-    memory=(type) _magick_mp; \
-}
 
 /*
   Force argument into range accepted by <ctype.h> functions.

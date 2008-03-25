@@ -38,38 +38,51 @@
 */
 #include "magick/studio.h"
 #include "magick/utility.h"
+
+/*
+  Static variables.
+*/
+MagickFreeFunc    FreeFunc    = free;
+MagickMallocFunc  MallocFunc  = malloc;
+MagickReallocFunc ReallocFunc = realloc;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k A c q u i r e M e m o r y                                     %
+%   M a g i c k A l l o c F u n c t i o n s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickAcquireMemory() returns a pointer to a block of memory of at least
-%  size bytes suitably aligned for any use.  NULL is returned if insufficient
-%  memory is available or the requested size is zero.
+%  MagickAllocFunctions() provides a way for the user to supply a preferred
+%  free(), malloc(), and realloc() functions.  Otherwise the default system
+%  versions are used.
 %
-%  The format of the  MagickAcquireMemory method is:
+%  The format of the  MagickAllocFunctions method is:
 %
-%      void * MagickAcquireMemory(const size_t size)
+%      void MagickAllocFunctions(MagickFreeFunc free_func,
+%                                MagickMallocFunc malloc_func,
+%                                MagickReallocFunc realloc_func)
 %
 %  A description of each parameter follows:
 %
-%    o size: The size of the memory in bytes to allocate.
+%    o free_func: Function to free memory.
 %
+%    o malloc_func: Function to allocate memory.
+%
+%    o realloc_func: Function to reallocate memory.
 %
 */
-MagickExport void * MagickAcquireMemory(const size_t size)
+MagickExport void MagickAllocFunctions(MagickFreeFunc free_func,
+                                       MagickMallocFunc malloc_func,
+                                       MagickReallocFunc realloc_func)
 {
-  if (size == 0)
-    return ((void *) NULL);
-
-  return (MagickAllocateMemory(void *,size));
+  FreeFunc    = free_func;
+  MallocFunc  = malloc_func;
+  ReallocFunc = realloc_func;
 }
 
 /*
@@ -77,22 +90,54 @@ MagickExport void * MagickAcquireMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   M a g i c k A c q u i r e M e m o r y A r r a y                           %
+%   M a g i c k M a l l o c                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickAcquireMemoryArray() returns a pointer to a block of memory of
+%  MagickMalloc() returns a pointer to a block of memory of at least size
+%  bytes suitably aligned for any use.  NULL is returned if insufficient
+%  memory is available or the requested size is zero.
+%
+%  The format of the  MagickMalloc method is:
+%
+%      void * MagickMalloc(const size_t size)
+%
+%  A description of each parameter follows:
+%
+%    o size: The size of the memory in bytes to allocate.
+%
+%
+*/
+MagickExport void * MagickMalloc(const size_t size)
+{
+  if (size == 0)
+    return ((void *) NULL);
+
+  return (MallocFunc)(size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k M a l l o c A r r a y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMallocArray() returns a pointer to a block of memory of
 %  sufficient size to support an array of elements of a specified size.
 %  The returned memory is suitably aligned for any use.  NULL is returned
 %  if the required memory exceeds the range of size_t, the specified size
 %  is zero, or there is insufficient memory available.
 %
-%  The format of the MagickAcquireMemoryArray method is:
+%  The format of the MagickMallocArray method is:
 %
-%      void *MagickAcquireMemoryArray(const size_t count,
-%                                     const size_t size);
+%      void *MagickMallocArray(const size_t count, const size_t size);
 %
 %  A description of each parameter follows:
 %
@@ -101,7 +146,7 @@ MagickExport void * MagickAcquireMemory(const size_t size)
 %    o size: The size of one array element.
 %
 */
-MagickExport void *MagickAcquireMemoryArray(const size_t count,const size_t size)
+MagickExport void *MagickMallocArray(const size_t count,const size_t size)
 {
   size_t
     allocation_size;
@@ -109,12 +154,12 @@ MagickExport void *MagickAcquireMemoryArray(const size_t count,const size_t size
   void
     *allocation;
 
-  allocation = 0;
+  allocation = (void *) NULL;
   allocation_size = size * count;
   if ((count != 0) && (size != allocation_size/count))
-    allocation_size = 0;
+    allocation_size = (void *) NULL;
   if (allocation_size)
-    allocation = malloc(allocation_size);
+    allocation = (MallocFunc)(allocation_size);
   return allocation;
 }
 
@@ -166,21 +211,21 @@ MagickExport void *MagickCloneMemory(void *destination,const void *source,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k R e a l l o c a t e M e m o r y                               %
+%   M a g i c k R e a l l o c                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickReallocateMemory() changes the size of the memory and returns a
-%  pointer to the (possibly moved) block.  The contents will be unchanged
-%  up to the lesser of the new and old sizes.  If size is zero, then the
-%  memory is freed and a NULL value is returned.  If the memory allocation
-%  fails, then the existing memory is freed, and a NULL value is returned.
+%  MagickRealloc() changes the size of the memory and returns a pointer to
+%  the (possibly moved) block.  The contents will be unchanged up to the
+%  lesser of the new and old sizes.  If size is zero, then the memory is
+%  freed and a NULL value is returned.  If the memory allocation fails, then
+%  the existing memory is freed, and a NULL value is returned.
 %
-%  The format of the MagickReallocateMemory method is:
+%  The format of the MagickRealloc method is:
 %
-%      void *MagickReallocateMemory(void *memory,const size_t size)
+%      void *MagickRealloc(void *memory,const size_t size)
 %
 %  A description of each parameter follows:
 %
@@ -189,18 +234,16 @@ MagickExport void *MagickCloneMemory(void *destination,const void *source,
 %    o size: The new size of the allocated memory.
 %
 */
-MagickExport void *MagickReallocateMemory(void *memory,const size_t size)
+MagickExport void *MagickRealloc(void *memory,const size_t size)
 {
   void
-    *new_memory;
+    *new_memory = (void *) NULL;
 
-  assert(memory != (void *) NULL);
-
-  new_memory = realloc(memory,size);
+  new_memory = (ReallocFunc)(memory,size);
   if ((new_memory == 0) && (memory != 0) && (size != 0))
-    free(memory);
+    (FreeFunc)(memory);
 
-  return new_memory;;
+  return new_memory;
 }
 
 /*
@@ -208,17 +251,19 @@ MagickExport void *MagickReallocateMemory(void *memory,const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%    M a g i c k R e l e a s e M e m o r y                                    %
+%    M a g i c k F r e e                                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickReleaseMemory() frees memory that has already been allocated.
+%  MagickFree() frees memory that has already been allocated.  A NULL
+%  argument is ignored.  The function always returns NULL so that the
+%  return value may be used to set the memory pointer to null.
 %
-%  The format of the MagickReleaseMemory method is:
+%  The format of the MagickFree method is:
 %
-%      void MagickReleaseMemory(void *memory)
+%      void *MagickFree(void *memory)
 %
 %  A description of each parameter follows:
 %
@@ -226,7 +271,10 @@ MagickExport void *MagickReallocateMemory(void *memory,const size_t size)
 %
 %
 */
-MagickExport void MagickReleaseMemory(void *memory)
+MagickExport void *MagickFree(void *memory)
 {
-  MagickFreeMemory(memory);
+  if (memory != (void *) NULL)
+    (FreeFunc)(memory);
+
+  return (void *) NULL;
 }

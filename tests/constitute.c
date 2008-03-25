@@ -206,7 +206,7 @@ int main ( int argc, char **argv )
    * Save image to array
    */
   pixels_size=quantum_size*strlen(map)*rows*columns;
-  pixels=MagickAcquireMemory(pixels_size);
+  pixels=MagickMalloc(pixels_size);
   if( !pixels )
     {
       (void) printf ( "Failed to allocate memory for pixels\n");
@@ -275,7 +275,7 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
 
-  MagickReleaseMemory(pixels);
+  MagickFree(pixels);
   pixels=0;
 
   /*
@@ -318,7 +318,7 @@ int main ( int argc, char **argv )
       DestroyImage( final );
     }
   final = 0;
-  MagickReleaseMemory(pixels);
+  MagickFree(pixels);
   pixels=0;
   if (imageInfo)
     DestroyImageInfo(imageInfo);

@@ -677,10 +677,10 @@ namespace Magick
   using MagickLib::LevelImageChannel;
   using MagickLib::LocaleCompare;
   using MagickLib::LogMagickEvent;
-  using MagickLib::MagickAcquireMemory;
+  using MagickLib::MagickFree;
   using MagickLib::MagickInfo;
-  using MagickLib::MagickReallocateMemory;
-  using MagickLib::MagickReleaseMemory;
+  using MagickLib::MagickMalloc;
+  using MagickLib::MagickRealloc;
   using MagickLib::MagickToMime;
   using MagickLib::MagnifyImage;
   using MagickLib::MapImage;

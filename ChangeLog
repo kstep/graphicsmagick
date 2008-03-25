@@ -1,5 +1,16 @@
 2008-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/Magick.xs: Use memory allocation macros like the rest
+	of the code.
+	* magick/memory.c (MagickMalloc): New function which behaves
+	similar to malloc().
+	(MagickMallocArray): New function for allocating an array.
+	(MagickRealloc): New function which behaves similar to realloc().
+	(MagickFree): New function which behaves similar to free().
+	(MagickAllocFunctions): New function to allow the user to specify
+	the memory allocation functions.
+	* magick/memory.h: New header file to define memory allocation
+	functions.
 	* magick/deprecate.c (DeleteImageList, DestroyImages,
 	GetImageList, GetImageListIndex, GetImageListSize, GetNextImage,
 	GetNumberScenes, GetPreviousImage, ParseImageGeometry,

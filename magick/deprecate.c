@@ -75,7 +75,7 @@ MagickExport void *AcquireMemory(const size_t size)
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
                           "Method has been deprecated");
 
-  return MagickAcquireMemory(size);
+  return MagickAllocateMemory(void *,size);
 }
 
 /*
@@ -106,23 +106,11 @@ MagickExport void *AcquireMemory(const size_t size)
 MagickExport void *CloneMemory(void *destination,const void *source,
   const size_t size)
 {
-  unsigned char
-    *d=(unsigned char*) destination;
-
-  const unsigned char
-    *s=(const unsigned char*) source;
-
-  assert(destination != (void *) NULL);
-  assert(source != (const void *) NULL);
-
   if (IsEventLogging())
     (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
                           "Method has been deprecated");
 
-  if (((d+size) < s) || (d > (s+size)))
-    return(memcpy(destination,source,size));
-
-  return(memmove(destination,source,size));
+  return MagickCloneMemory(destination,source,size);
 }
 
 /*

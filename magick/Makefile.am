@@ -101,6 +101,7 @@ MAGICK_BASE_SRCS = \
 	magick/map.c \
 	magick/map.h \
 	magick/memory.c \
+	magick/memory.h \
 	magick/module.c \
 	magick/module.h \
 	magick/monitor.c \
@@ -205,6 +206,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/magic.h \
 	magick/magick.h \
 	magick/magick_types.h \
+	magick/memory.h \
 	magick/module.h \
 	magick/monitor.h \
 	magick/montage.h \

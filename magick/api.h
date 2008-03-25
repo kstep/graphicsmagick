@@ -128,6 +128,7 @@ extern "C" {
 #include "magick/enhance.h"
 #include "magick/fx.h"
 #include "magick/magick.h"
+#include "magick/memory.h"
 #include "magick/montage.h"
 #include "magick/effect.h"
 #include "magick/resize.h"

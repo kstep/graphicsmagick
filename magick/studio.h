@@ -233,6 +233,7 @@ extern "C" {
 #include "magick/magick_types.h"
 #include "magick/image.h"
 #include "magick/list.h"
+#include "magick/memory.h"
 
 #if !defined(MSWINDOWS)
 #  include <sys/time.h>

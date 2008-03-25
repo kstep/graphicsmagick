@@ -1926,7 +1926,7 @@ namespace Magick
             continue;
           }
       }
-    MagickLib::MagickReleaseMemory(coder_list);
+    MagickLib::MagickFree(coder_list);
     coder_list=0;
     MagickLib::DestroyExceptionInfo( &exceptionInfo );
   }
@@ -1997,7 +1997,7 @@ namespace Magick
       }
     
     // Deallocate histogram array
-    MagickLib::MagickReleaseMemory(histogram_array);
+    MagickLib::MagickFree(histogram_array);
     histogram_array = 0;
   }
                       
@@ -2119,7 +2119,7 @@ namespace Magick
 		      const Montage &montageOpts_ ) {
 
     MagickLib::MontageInfo* montageInfo =
-      static_cast<MagickLib::MontageInfo*>(MagickLib::MagickAcquireMemory(sizeof(MagickLib::MontageInfo)));
+      static_cast<MagickLib::MontageInfo*>(MagickLib::MagickMalloc(sizeof(MagickLib::MontageInfo)));
 
     // Update montage options with those set in montageOpts_
     montageOpts_.updateMontageInfo( *montageInfo );

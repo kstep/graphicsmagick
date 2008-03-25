@@ -241,7 +241,7 @@ int main ( int argc, char **argv )
       exit_status = 1;
       goto program_exit;
     }
-  MagickReleaseMemory(blob);
+  MagickFree(blob);
   blob=0;
 
   /*
@@ -290,7 +290,7 @@ int main ( int argc, char **argv )
       exit_status = 1;
       goto program_exit;
     }
-  MagickReleaseMemory(blob);
+  MagickFree(blob);
   blob=0;
 
   if (check)
