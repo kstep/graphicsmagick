@@ -1,3 +1,13 @@
+2008-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/deprecate.c (DeleteImageList, DestroyImages,
+	GetImageList, GetImageListIndex, GetImageListSize, GetNextImage,
+	GetNumberScenes, GetPreviousImage, ParseImageGeometry,
+	PopImageList, PostscriptGeometry, PushImageList,
+	SetCacheThreshold, SetImageList, ShiftImageList, SizeBlob,
+	SpliceImageList, UnshiftImageList): Remove functions which were
+	already deprecated in ImageMagick 5.5.2 or earlier.
+
 2008-03-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Support writing image which is

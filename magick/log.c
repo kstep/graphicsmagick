@@ -307,7 +307,7 @@ MagickExport void DestroyLogInfo(void)
 %
 %
 */
-MagickExport unsigned int IsEventLogging(void)
+MagickExport MagickBool IsEventLogging(void)
 {
   return ((log_info) && (log_info->events != NoEventsMask));
 }

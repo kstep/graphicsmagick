@@ -78,7 +78,7 @@ typedef enum
 /*
   Method declarations.
 */
-extern MagickExport unsigned int
+extern MagickExport MagickBool
   IsEventLogging(void),
   LogMagickEvent(const ExceptionType type,
     const char *module,const char *function,const unsigned long line,
