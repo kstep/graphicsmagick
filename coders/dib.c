@@ -541,7 +541,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (!AllocateImageColormap(image,image->colors))
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      dib_colormap=MagickAllocateMemoryElements(unsigned char *,image->colors,4);
+      dib_colormap=MagickAllocateArray(unsigned char *,image->colors,4);
       if (dib_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       packet_size=4;
@@ -564,7 +564,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
-  pixels=MagickAllocateMemoryElements(unsigned char *,
+  pixels=MagickAllocateArray(unsigned char *,
                                       image->rows,
                                       Max(bytes_per_line,image->columns+1));
   if (pixels == (unsigned char *) NULL)

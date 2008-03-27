@@ -1118,8 +1118,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   size_t
     span;
 
-  unsigned int
-    status;
+  MagickPassFail
+    status = MagickPass;
 
   unsigned long
     quantum;
@@ -1216,7 +1216,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   */
   MagickFreeMemory(contribution);
   DestroyImage(source_image);
-  if (status == False)
+  if (status == MagickFail)
     {
       DestroyImage(resize_image);
       ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,

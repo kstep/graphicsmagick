@@ -263,7 +263,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=(size_t) header.ncolors;
       if (length > ((~0UL)/sizeof(*colors)))
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-      colors=MagickAllocateMemoryElements(XColor *,length,sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,length,sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i < (long) header.ncolors; i++)
@@ -662,7 +662,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      colors=MagickAllocateMemoryElements(XColor *,image->colors,sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,image->colors,sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i < (long) image->colors; i++)

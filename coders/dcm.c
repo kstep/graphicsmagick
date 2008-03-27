@@ -2892,7 +2892,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (length > ((~0UL)/quantum))
                 ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-              data=MagickAllocateMemoryElements(unsigned char *,(length+1),quantum);
+              data=MagickAllocateArray(unsigned char *,(length+1),quantum);
               if (data == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
               (void) ReadBlob(image,quantum*length,(char *) data);
@@ -3112,7 +3112,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             colors=length/bytes_per_pixel;
             datum=(long) colors;
-            graymap=MagickAllocateMemoryElements(unsigned short *,
+            graymap=MagickAllocateArray(unsigned short *,
                                                  colors,sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
@@ -3249,7 +3249,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Compute pixel scaling table.
       */
-      scale=MagickAllocateMemoryElements(Quantum *,(max_value+1),sizeof(Quantum));
+      scale=MagickAllocateArray(Quantum *,(max_value+1),sizeof(Quantum));
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i <= (long) max_value; i++)

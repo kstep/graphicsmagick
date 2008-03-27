@@ -1,3 +1,10 @@
+2008-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage, WriteDPXImage): Use lookup tables to
+	speed up value conversion.
+	* magick/memory.h (MagickAllocateArray): Renamed from
+	MagickAllocateMemoryElements.
+
 2008-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Use memory allocation macros like the rest

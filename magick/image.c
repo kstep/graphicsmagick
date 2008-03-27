@@ -2733,7 +2733,7 @@ static unsigned char* AllocateDepthMap(void)
   unsigned char
     *map;
   
-  map = MagickAllocateMemoryElements(unsigned char *, MaxRGB, sizeof(char));
+  map = MagickAllocateArray(unsigned char *, MaxRGB, sizeof(char));
   if (map != (unsigned char *) NULL)
     {
       unsigned int
@@ -4619,7 +4619,7 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   /* fprintf(stdout, "SetImageDepth: depth=%lu, scale=%lu\n",desired_depth,scale); */
 
 #if MaxMap == MaxRGB
-  map=MagickAllocateMemoryElements(Quantum*,sizeof(Quantum),MaxRGB+1);
+  map=MagickAllocateArray(Quantum*,sizeof(Quantum),MaxRGB+1);
   if (map != (Quantum*) NULL)
     {
       for (i=0; i <= MaxRGB; i++)

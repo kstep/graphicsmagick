@@ -135,6 +135,13 @@
 #include "magick/resize.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+
+/*
+  Define STATIC to nothing so that normally static functions are
+  externally visible in the symbol table (for profiling).
+*/
+#undef STATIC
+#define STATIC static
 
 /*
   Forward declaractions.
@@ -147,7 +154,7 @@ typedef magick_uint8_t U8;
 typedef magick_uint16_t U16;
 typedef magick_uint32_t U32;
 typedef float R32;
-typedef unsigned int sample_t;
+typedef magick_uint16_t sample_t;
 
 /*
   Union to allow R32 to be accessed as an unsigned U32 type for "unset
@@ -426,7 +433,7 @@ typedef struct _DPXHeader
 %
 %
 */
-static unsigned int IsDPX(const unsigned char *magick,const size_t length)
+STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
 {
   return ((length >= 4) &&
           ((memcmp(magick,"SDPX",4) == 0) || (memcmp(magick,"XPDS",4) == 0)));
@@ -541,7 +548,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
       LogSetImageAttribute(name,buffer_); \
     } \
 }
-static void SwabDPXFileInfo(DPXFileInfo *file_info)
+STATIC void SwabDPXFileInfo(DPXFileInfo *file_info)
 {
   MagickSwabUInt32(&file_info->magic);
   MagickSwabUInt32(&file_info->image_data_offset);
@@ -552,7 +559,7 @@ static void SwabDPXFileInfo(DPXFileInfo *file_info)
   MagickSwabUInt32(&file_info->user_defined_length);
   MagickSwabUInt32(&file_info->encryption_key);
 }
-static void SwabDPXImageInfo(DPXImageInfo *image_info)
+STATIC void SwabDPXImageInfo(DPXImageInfo *image_info)
 {
   int
     i;
@@ -575,7 +582,7 @@ static void SwabDPXImageInfo(DPXImageInfo *image_info)
       MagickSwabUInt32(&image_info->element_info[i].eoi_pad);
     }
 }
-static void SwabDPXImageSourceInfo(DPXImageSourceInfo *source_info)
+STATIC void SwabDPXImageSourceInfo(DPXImageSourceInfo *source_info)
 {
   MagickSwabUInt32(&source_info->x_offset);
   MagickSwabUInt32(&source_info->y_offset);
@@ -592,7 +599,7 @@ static void SwabDPXImageSourceInfo(DPXImageSourceInfo *source_info)
   MagickSwabFloat(&source_info->x_scanned_size);
   MagickSwabFloat(&source_info->y_scanned_size);
 }
-static void SwabDPXMPFilmInfo(DPXMPFilmInfo *mp_info)
+STATIC void SwabDPXMPFilmInfo(DPXMPFilmInfo *mp_info)
 {
   MagickSwabUInt32(&mp_info->frame_position);
   MagickSwabUInt32(&mp_info->sequence_length);
@@ -600,7 +607,7 @@ static void SwabDPXMPFilmInfo(DPXMPFilmInfo *mp_info)
   MagickSwabFloat(&mp_info->frame_rate);
   MagickSwabFloat(&mp_info->shutter_angle);
 }
-static void SwabDPXTVInfo(DPXTVInfo *tv_info)
+STATIC void SwabDPXTVInfo(DPXTVInfo *tv_info)
 {
   MagickSwabUInt32(&tv_info->time_code);
   MagickSwabUInt32(&tv_info->user_bits);
@@ -615,7 +622,7 @@ static void SwabDPXTVInfo(DPXTVInfo *tv_info)
   MagickSwabFloat(&tv_info->white_level);
   MagickSwabFloat(&tv_info->integration_time);
 }
-static void SMPTEBitsToString(const U32 value, char *str)
+STATIC void SMPTEBitsToString(const U32 value, char *str)
 {
   unsigned int
     pos,
@@ -633,7 +640,7 @@ static void SMPTEBitsToString(const U32 value, char *str)
     }
   *str='\0';
 }
-static U32 SMPTEStringToBits(const char *str)
+STATIC U32 SMPTEStringToBits(const char *str)
 {
   U32
     value=0;
@@ -665,7 +672,7 @@ static U32 SMPTEStringToBits(const char *str)
   Compute the number of octets required to contain the specified number of
   rows, with specified samples per row, bits per sample, and packing method.
 */
-static size_t DPXRowOctets(const unsigned long rows,
+STATIC size_t DPXRowOctets(const unsigned long rows,
                            const unsigned int samples_per_row,
                            const unsigned int bits_per_sample,
                            const ImageComponentPackingMethod packing_method)
@@ -729,7 +736,7 @@ static size_t DPXRowOctets(const unsigned long rows,
   Compute optimum I/O parameters based on all considerations.
 */
 #if 0
-static size_t DPXIOOctets(const long current_row, /* 0 based */
+STATIC size_t DPXIOOctets(const long current_row, /* 0 based */
                           const unsigned long image_rows,
                           const unsigned int samples_per_row,
                           const unsigned int bits_per_sample,
@@ -744,7 +751,7 @@ static size_t DPXIOOctets(const long current_row, /* 0 based */
 
 }
 #endif
-static const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
+STATIC const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
 {
   const char *
     description="Unknown";
@@ -835,7 +842,7 @@ static const char *DescribeImageElementDescriptor(const DPXImageElementDescripto
 /*
   Describe the element transfer characteristic.
 */
-static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacteristic characteristic)
+STATIC const char *DescribeImageTransferCharacteristic(const DPXTransferCharacteristic characteristic)
 {
   static char
     buffer[MaxTextExtent];
@@ -896,7 +903,7 @@ static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacte
 /*
   Describe the element colorimetric.
 */
-static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
+STATIC const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
 {
   static char
     buffer[MaxTextExtent];
@@ -957,7 +964,7 @@ static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
 /*
   Describe the image element.
 */
-static void DescribeDPXImageElement(const DPXImageElement *element_info,
+STATIC void DescribeDPXImageElement(const DPXImageElement *element_info,
                                     const unsigned int element)
 {
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1011,7 +1018,7 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
   is planar three elements are required to support RGB, and this
   function will therefore return 1 rather than 3.
 */
-static unsigned int  DPXSamplesPerPixel(const DPXImageElementDescriptor element_descriptor)
+STATIC unsigned int  DPXSamplesPerPixel(const DPXImageElementDescriptor element_descriptor)
 {
   unsigned int
     samples_per_pixel=0;
@@ -1058,7 +1065,7 @@ static unsigned int  DPXSamplesPerPixel(const DPXImageElementDescriptor element_
 /*
   Set the image primary chromaticities based on the colorimetric.
 */
-static void DPXSetPrimaryChromaticities(const DPXColorimetric colorimetric,
+STATIC void DPXSetPrimaryChromaticities(const DPXColorimetric colorimetric,
                                         ChromaticityInfo *chromaticity_info)
 {
   switch(colorimetric)
@@ -1144,7 +1151,7 @@ static void DPXSetPrimaryChromaticities(const DPXColorimetric colorimetric,
     }
 }
 
-static OrientationType
+STATIC OrientationType
 DPXOrientationToOrientationType(const unsigned int orientation)
 {
   OrientationType
@@ -1199,7 +1206,7 @@ DPXOrientationToOrientationType(const unsigned int orientation)
 /*
   Scale from a video level to a full-range level.
 */
-static inline Quantum ScaleFromVideo(const unsigned int sample,
+STATIC inline Quantum ScaleFromVideo(const unsigned int sample,
                                      const unsigned int ref_low,
                                      const double upscale)
 {
@@ -1220,7 +1227,7 @@ typedef struct _ReadWordU32State
   const unsigned char *words;
 } ReadWordU32State;
 
-static unsigned long ReadWordU32BE (void *state)
+STATIC unsigned long ReadWordU32BE (void *state)
 {
   magick_uint32_t value;
   ReadWordU32State *read_state=(ReadWordU32State *) state;
@@ -1231,7 +1238,7 @@ static unsigned long ReadWordU32BE (void *state)
   return value;
 }
 
-static unsigned long ReadWordU32LE (void *state)
+STATIC unsigned long ReadWordU32LE (void *state)
 {
   magick_uint32_t value;
   ReadWordU32State *read_state=(ReadWordU32State *) state;
@@ -1255,9 +1262,9 @@ static unsigned long ReadWordU32LE (void *state)
   endian_type      -- The endian order of the enclosing words.
   swap_word_datums -- Use alternate sample order (BGR vs RGB, CbYCr vs CrYCb) for
                       samples filled into 32 bit words.
-  samples          -- decoded samples (currently unsigned 32-bit).
+  samples          -- Decoded samples (currently unsigned 16-bit).
 */
-static void ReadRowSamples(const unsigned char *scanline,
+STATIC void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int samples_per_row,
                            const unsigned int bits_per_sample,
                            const ImageComponentPackingMethod packing_method,
@@ -1474,6 +1481,7 @@ static void ReadRowSamples(const unsigned char *scanline,
       return;
     }
 
+#if 0
   /*
     Special fast handling for 32-bit (float) images.
   */
@@ -1500,6 +1508,7 @@ static void ReadRowSamples(const unsigned char *scanline,
         }
       return;
     }
+#endif
 
   /*
     Packed data.
@@ -1525,10 +1534,11 @@ static void ReadRowSamples(const unsigned char *scanline,
         *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
   }
 }
+
 /*
   Apply a simple "Tent" filter to upsample chroma channels.
 */
-void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
+STATIC void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
 {
   unsigned long
     column;
@@ -1557,7 +1567,7 @@ void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
     }
 }
 
-static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
+STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   DPXFileInfo
     dpx_file_info;
@@ -1594,6 +1604,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *samples,                   /* parsed sample array */
     *samples_itr;               /* current sample */
 
+  Quantum
+    *map_Y,                     /* value translation map (RGB or Y) */
+    *map_CbCr;                  /* value translation map (CbCr) */
+
   unsigned char
     *scanline;
 
@@ -1607,7 +1621,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_samples_per_pixel,      /* maximum number of samples comprising one pixel for any element */
     samples_per_pixel,          /* number of samples comprising one pixel for this element */
     samples_per_row,            /* number of samples in one row */
-    scale_to_short,             /* multiplier to scale to 16-bits */
     status;
 
   unsigned long
@@ -2008,17 +2021,33 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate row samples.
   */
-  samples=MagickAllocateMemory(sample_t *,max_samples_per_pixel*
-                               image->columns*sizeof(sample_t));
+  samples=MagickAllocateArray(sample_t *,image->columns,
+                              max_samples_per_pixel*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Allocate scanline storage.
   */
-  scanline=MagickAllocateMemory(unsigned char *,max_samples_per_pixel*
-                                image->columns*sizeof(U32));
+  scanline=MagickAllocateArray(unsigned char *,image->columns,
+                               max_samples_per_pixel*sizeof(U32));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+
+  /*
+    Allocate sample translation map storage.
+  */
+  map_Y=MagickAllocateArray(Quantum *,
+                            MaxValueGivenBits(max_bits_per_sample)+1,
+                            sizeof(Quantum));
+  if (map_Y == (Quantum *) NULL)
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+
+  map_CbCr=MagickAllocateArray(Quantum *,
+                               MaxValueGivenBits(max_bits_per_sample)+1,
+                               sizeof(Quantum));
+  if (map_CbCr == (Quantum *) NULL)
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+
   /*
     Allow user to over-ride pixel endianness.
   */
@@ -2143,11 +2172,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           unsigned int
             max_value_given_bits = MaxValueGivenBits(bits_per_sample),
             reference_low = 0,
-            reference_high = max_value_given_bits;
-
-          double
-            ScaleY = 0.0,
-            ScaleCbCr = 0.0;
+            reference_high = max_value_given_bits,
+            scale_to_short;             /* multiplier to scale to 16-bits */
 
           scale_to_short=1U;
           if (bits_per_sample < 16U)
@@ -2160,6 +2186,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (image->colorspace == Rec601LumaColorspace) ||
               (image->colorspace == Rec709LumaColorspace))
             {
+              double
+                ScaleY = 0.0,
+                ScaleCbCr = 0.0;
+
               /*
                 Establish YCbCr video defaults.
                 8 bit ==> Luma 16 to 235
@@ -2178,10 +2208,22 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((definition_value=AccessDefinition(image_info,"dpx","reference-high")))
                 reference_high=strtol(definition_value, (char **)NULL, 10);
               
-              ScaleY = (((double) max_value_given_bits+1)/(reference_high-reference_low));
+              ScaleY = (((double) max_value_given_bits+1.0)/(reference_high-reference_low));
               ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
               reference_low=ScaleShortToQuantum(reference_low*scale_to_short);
+
+              for(i=0; i <= max_value_given_bits; i++)
+                {
+                  map_Y[i] = ScaleFromVideo(ScaleShortToQuantum(i*scale_to_short),reference_low,ScaleY);
+                  map_CbCr[i] = ScaleFromVideo(ScaleShortToQuantum(i*scale_to_short),reference_low,ScaleCbCr);
+                }
             }
+          else
+            {
+              for(i=0; i <= max_value_given_bits; i++)
+                map_Y[i]=ScaleShortToQuantum(i*scale_to_short);
+            }
+
           /*
             Compute samples per row.
           */
@@ -2246,26 +2288,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
                                packing_method,endian_type,swap_word_datums,samples);
               }
-              /*
-                Scale samples.
-              */
-              samples_itr=samples;
-              if (bits_per_sample == 1)
-                {
-                  for (i=samples_per_row; i != 0; i--)
-                    {
-                      *samples_itr=(*samples_itr == 0) ? 0 : MaxRGB;
-                      samples_itr++;
-                    }
-                }
-              else
-                {
-                  for (i=samples_per_row; i != 0; i--)
-                    {
-                      *samples_itr=ScaleShortToQuantum((*samples_itr)*scale_to_short);
-                      samples_itr++;
-                    }
-                }
+
               /*
                 Assign samples to pixels.
               */
@@ -2275,37 +2298,25 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRed:
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetRedSample(q++,*samples_itr++);
+                      SetRedSample(q++,map_Y[*samples_itr++]);
                     }
                   break;
                 case ImageElementGreen:
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetGreenSample(q++,*samples_itr++);
+                      SetGreenSample(q++,map_Y[*samples_itr++]);
                     }
                   break;
                 case ImageElementBlue:
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetBlueSample(q++,*samples_itr++);
+                      SetBlueSample(q++,map_Y[*samples_itr++]);
                     }
                   break;
                 case ImageElementAlpha:
-                  if (IsYCbCrColorspace(image->colorspace))
+                  for (x=image->columns; x != 0; x--)
                     {
-                      /* Video levels */
-                      for (x=image->columns; x != 0; x--)
-                        {
-                          SetOpacitySample(q++,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
-                        }
-                    }
-                  else
-                    {
-                      /* Full range levels. */
-                      for (x=image->columns; x != 0; x--)
-                        {
-                          SetOpacitySample(q++,*samples_itr++);
-                        }
+                      SetOpacitySample(q++,map_Y[*samples_itr++]);
                     }
                   break;
                 case ImageElementUnspecified:
@@ -2315,26 +2326,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       /* Video Luma (planar) */
                       for (x=image->columns; x != 0; x--)
                         {
-                          SetRedSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
-                          q++;
-                        }
-                    }
-                  else if ((image->colorspace == Rec601LumaColorspace) ||
-                           (image->colorspace == Rec709LumaColorspace))
-                    {
-                      /* Video Luma */
-                      for (x=image->columns; x != 0; x--)
-                        {
-                          SetGraySample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
+                          SetRedSample(q,map_Y[*samples_itr++]);
                           q++;
                         }
                     }
                   else
                     {
-                      /* Linear Grayscale */
+                      /* Video Luma or Linear Grayscale */
                       for (x=image->columns; x != 0; x--)
                         {
-                          SetGraySample(q,*samples_itr++);
+                          SetGraySample(q,map_Y[*samples_itr++]);
                           q++;
                         }
                     }
@@ -2348,14 +2349,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           Cb,
                           Cr;
                         
-                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
+                        Cb=map_CbCr[*samples_itr++]; /* Cb */
+                        Cr=map_CbCr[*samples_itr++]; /* Cr */
                     
-                        SetCbSample(q,Cb); /* Cb */
+                        SetCbSample(q,Cb);  /* Cb */
                         SetCrSample(q,Cr);  /* Cr */
                         q++;
 
-                        SetCbSample(q,Cb); /* Cb (false) */
+                        SetCbSample(q,Cb);  /* Cb (false) */
                         SetCrSample(q,Cr);  /* Cr (false) */
                         q++;
                       }
@@ -2366,9 +2367,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* RGB order */
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetRedSample(q,*samples_itr++);
-                      SetGreenSample(q,*samples_itr++);
-                      SetBlueSample(q,*samples_itr++);
+                      SetRedSample(q,map_Y[*samples_itr++]);
+                      SetGreenSample(q,map_Y[*samples_itr++]);
+                      SetBlueSample(q,map_Y[*samples_itr++]);
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
@@ -2377,10 +2378,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* RGB order */
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetRedSample(q,*samples_itr++);
-                      SetGreenSample(q,*samples_itr++);
-                      SetBlueSample(q,*samples_itr++);
-                      SetOpacitySample(q,*samples_itr++);
+                      SetRedSample(q,map_Y[*samples_itr++]);
+                      SetGreenSample(q,map_Y[*samples_itr++]);
+                      SetBlueSample(q,map_Y[*samples_itr++]);
+                      SetOpacitySample(q,map_Y[*samples_itr++]);
                       q++;
                     }
                   break;
@@ -2388,10 +2389,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* ARGB order */
                   for (x=image->columns; x != 0; x--)
                     {
-                      SetOpacitySample(q,*samples_itr++);
-                      SetRedSample(q,*samples_itr++);
-                      SetGreenSample(q,*samples_itr++);
-                      SetBlueSample(q,*samples_itr++);
+                      SetOpacitySample(q,map_Y[*samples_itr++]);
+                      SetRedSample(q,map_Y[*samples_itr++]);
+                      SetGreenSample(q,map_Y[*samples_itr++]);
+                      SetBlueSample(q,map_Y[*samples_itr++]);
                       q++;
                     }
                   break;
@@ -2406,10 +2407,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           Y0,
                           Y1;
 
-                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        Y0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);    /* Y0 */
-                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
-                        Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);    /* Y1 */
+                        Cb=map_CbCr[*samples_itr++]; /* Cb */
+                        Y0=map_Y[*samples_itr++];    /* Y0 */
+                        Cr=map_CbCr[*samples_itr++]; /* Cr */
+                        Y1=map_Y[*samples_itr++];    /* Y1 */
 
                         SetYSample(q,Y0);   /* Y0 */
                         SetCbSample(q,Cb);  /* Cb */
@@ -2439,13 +2440,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           Y0,
                           Y1;
 
-                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
-                        Y0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
-                        A0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                        Cb=map_CbCr[*samples_itr++];
+                        Y0=map_Y[*samples_itr++];
+                        A0=map_Y[*samples_itr++];
 
-                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
-                        Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
-                        A1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                        Cr=map_CbCr[*samples_itr++];
+                        Y1=map_Y[*samples_itr++];
+                        A1=map_Y[*samples_itr++];
 
                         SetYSample(q,Y0);       /* Y0 */
                         SetCbSample(q,Cb);      /* Cb */
@@ -2467,10 +2468,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /* red,green,blue = Y, Cb, Cr */
                     for (x=image->columns; x != 0; x--)
                       {
-                        SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cb */
-                        SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));     /* Y */
-                        SetCrSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cr */
-                        SetOpacitySample(q,OpaqueOpacity);                                     /* A */
+                        SetCbSample(q,map_CbCr[*samples_itr++]); /* Cb */
+                        SetYSample(q,map_Y[*samples_itr++]);     /* Y */
+                        SetCrSample(q,map_CbCr[*samples_itr++]); /* Cr */
+                        SetOpacitySample(q,OpaqueOpacity);      /* A */
                         q++;
                       }
                     break;
@@ -2480,10 +2481,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /* red,green,blue = Y, Cb, Cr */
                     for (x=image->columns; x != 0; x--)
                       {
-                        SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr));   /* Cb */
-                        SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));       /* Y */
-                        SetCrSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr));   /* Cr */
-                        SetOpacitySample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY)); /* A */
+                        SetCbSample(q,map_CbCr[*samples_itr++]);   /* Cb */
+                        SetYSample(q,map_Y[*samples_itr++]);       /* Y */
+                        SetCrSample(q,map_CbCr[*samples_itr++]);   /* Cr */
+                        SetOpacitySample(q,map_Y[*samples_itr++]); /* A */
                         q++;
                       }
                     break;
@@ -2581,6 +2582,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
   image->depth=Min(QuantumDepth,image->depth);
+  MagickFreeMemory(map_CbCr);
+  MagickFreeMemory(map_Y);
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
   CloseBlob(image);
@@ -2687,7 +2690,7 @@ ModuleExport void UnregisterDPXImage(void)
 %
 %
 */
-static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
+STATIC void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
 {
   time_t
     current_time;
@@ -2708,7 +2711,7 @@ static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
       *p='0';
 }
 
-static unsigned int OrientationTypeToDPXOrientation(const OrientationType orientation_type)
+STATIC unsigned int OrientationTypeToDPXOrientation(const OrientationType orientation_type)
 {
   unsigned int
     orientation = 0;
@@ -2767,7 +2770,7 @@ typedef struct _WriteWordU32State
   unsigned char *words;
 } WriteWordU32State;
 
-static size_t WriteWordU32BE (void *state, const unsigned long value)
+STATIC size_t WriteWordU32BE (void *state, const unsigned long value)
 {
   WriteWordU32State *write_state=(WriteWordU32State *) state;
   *write_state->words++ = (unsigned char) ((value >> 24) & 0xff);
@@ -2777,7 +2780,7 @@ static size_t WriteWordU32BE (void *state, const unsigned long value)
   return sizeof(magick_uint32_t);
 }
 
-static size_t WriteWordU32LE (void *state, const unsigned long value)
+STATIC size_t WriteWordU32LE (void *state, const unsigned long value)
 {
   WriteWordU32State *write_state=(WriteWordU32State *) state;
   *write_state->words++ = (unsigned char) (value & 0xff);
@@ -2791,7 +2794,7 @@ static size_t WriteWordU32LE (void *state, const unsigned long value)
   Encode row samples. Currently just one row but in the future may be
                       multiple rows (e.g. 3).
 
-  samples          -- unencoded samples (currently unsigned 32-bit).
+  samples          -- unencoded samples (currently unsigned 16-bit).
   samples_per_row  -- Number of samples to encode.
   bits_per_sample  -- Number of bits in one decoded sample.
   packing_method   -- Describes the way that samples are packed into enclosing words.
@@ -2802,7 +2805,7 @@ static size_t WriteWordU32LE (void *state, const unsigned long value)
                       which represents the encoded pixels for one or more scanlines.
                       Underlying input data type is properly aligned for access.
 */
-static void WriteRowSamples(const sample_t *samples,
+STATIC void WriteRowSamples(const sample_t *samples,
                             const unsigned int samples_per_row,
                             const unsigned int bits_per_sample,
                             const ImageComponentPackingMethod packing_method,
@@ -3021,6 +3024,7 @@ static void WriteRowSamples(const sample_t *samples,
       return;
     }
 
+#if 0
   /*
     Special fast handling for 32-bit (float) images.
   */
@@ -3047,6 +3051,7 @@ static void WriteRowSamples(const sample_t *samples,
         }
       return;
     }
+#endif
 
   /*
     Packed data.
@@ -3189,7 +3194,7 @@ static void WriteRowSamples(const sample_t *samples,
 #define RoundUpToBoundary(offset,boundary) \
   (((offset+boundary-1)/boundary)*boundary);
 
-static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
+STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
   DPXFileInfo
     dpx_file_info;
@@ -3231,6 +3236,10 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   sample_t
     *samples,
     *samples_itr;
+
+  sample_t
+    *map_Y,                     /* value translation map (RGB or Y) */
+    *map_CbCr;                  /* value translation map (CbCr) */
 
   unsigned char
     *scanline;
@@ -3842,8 +3851,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate row samples.
   */
-  samples=MagickAllocateMemory(sample_t *,max_samples_per_pixel*
-                               image->columns*sizeof(sample_t));
+  samples=MagickAllocateArray(sample_t *,image->columns,
+                              max_samples_per_pixel*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset((void *) samples,0,max_samples_per_pixel*image->columns*
@@ -3858,6 +3867,29 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   (void) memset((void *) scanline,0,row_octets);
+
+  /*
+    Allocate sample translation map storage.
+  */
+  map_Y=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
+  if (map_Y == (sample_t) NULL)
+    {
+      MagickFreeMemory(samples);
+      MagickFreeMemory(scanline);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  (void) memset((void *) map_Y,0,(MaxMap+1)*sizeof(sample_t));
+
+  map_CbCr=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
+  if (map_CbCr == (sample_t) NULL)
+    {
+      MagickFreeMemory(samples);
+      MagickFreeMemory(scanline);
+      MagickFreeMemory(map_Y);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  (void) memset((void *) map_CbCr,0,(MaxMap+1)*sizeof(sample_t));
+
   /*
     Write file headers.
   */
@@ -3920,10 +3952,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         reference_low = 0,
         reference_high = max_value_given_bits;
 
-      double
-        ScaleY = 0.0,
-        ScaleCbCr = 0.0;
-
       if (BlobIsSeekable(image))
         {
           magick_off_t reported_file_offset = TellBlob(image);
@@ -3948,10 +3976,25 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
           (transfer_characteristic == TransferCharacteristicITU_R601_525L))
         {
+          double
+            ScaleY = 0.0,
+            ScaleCbCr = 0.0;
+
           reference_low = (((double) MaxRGB+1)*(64.0/1024.0));
           reference_high = (((double) MaxRGB+1)*(940.0/1024.0));
           ScaleY = ((double) reference_high-reference_low)/((double) MaxRGB+1);
           ScaleCbCr = ScaleY*((960.0-64.0)/(940.0-64.0));
+
+          for (i=0; i <= MaxMap ; i++)
+            {
+              map_Y[i]=ScaleQuantumToShort(ScaleToVideo(i,reference_low,ScaleY))/scale_from_short;
+              map_CbCr[i]=ScaleQuantumToShort(ScaleToVideo(i,reference_low,ScaleCbCr))/scale_from_short;
+            }
+        }
+      else
+        {
+          for (i=0; i <= MaxMap ; i++)
+            map_Y[i]=ScaleQuantumToShort(i)/scale_from_short;
         }
 
       element_descriptor=(DPXImageElementDescriptor)
@@ -4017,45 +4060,30 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementRed:
               for (x=image->columns; x != 0; x--)
                 {
-                  *samples_itr++=GetRedSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetRedSample(p))];
                   p++;
                 }
               break;
             case ImageElementGreen:
               for (x=image->columns; x != 0; x--)
                 {
-                  *samples_itr++=GetGreenSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetGreenSample(p))];
                   p++;
                 }
               break;
             case ImageElementBlue:
               for (x=image->columns; x != 0; x--)
                 {
-                  *samples_itr++=GetBlueSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetBlueSample(p))];
                   p++;
                 }
               break;
             case ImageElementAlpha:
               {
-                if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
-                    (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
-                    (transfer_characteristic == TransferCharacteristicITU_R601_525L))
+                for (x=image->columns; x != 0; x--)
                   {
-                    /* Video levels */
-                    for (x=image->columns; x != 0; x--)
-                      {
-                        *samples_itr++=ScaleToVideo(GetOpacitySample(p),reference_low,ScaleY);
-                        p++;
-                      }
-                  }
-                else
-                  {
-                    /* Full range levels */
-                    for (x=image->columns; x != 0; x--)
-                      {
-                        *samples_itr++=GetOpacitySample(p);
-                        p++;
-                      }
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetOpacitySample(p))];
+                    p++;
                   }
                 break;
               }
@@ -4069,7 +4097,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     /* Video luma */
                     for (x=image->columns; x != 0; x--)
                       {
-                        *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);
+                        *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];
                         p++;
                       }
                   }
@@ -4078,7 +4106,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     /* Linear gray */
                     for (x=image->columns; x != 0; x--)
                       {
-                        *samples_itr++=GetGraySample(p);
+                        *samples_itr++=map_Y[ScaleQuantumToMap(GetGraySample(p))];
                         p++;
                       }
                   }
@@ -4097,8 +4125,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 
                 for (x=image->columns; x != 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr);  /* Cr */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCbSample(chroma_pixels))]; /* Cb */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCrSample(chroma_pixels))]; /* Cr */
                     chroma_pixels++;
                   }
                 break;
@@ -4108,13 +4136,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 {
 #if 0
                   /* BGR */
-                  *samples_itr++=GetBlueSample(p);
-                  *samples_itr++=GetGreenSample(p);
-                  *samples_itr++=GetRedSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetBlueSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetGreenSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetRedSample(p))];
 #else
-                  *samples_itr++=GetRedSample(p);
-                  *samples_itr++=GetGreenSample(p);
-                  *samples_itr++=GetBlueSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetRedSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetGreenSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetBlueSample(p))];
 #endif
                   p++;
                 }
@@ -4124,15 +4152,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 {
 #if 0
                   /* BGRA */
-                  *samples_itr++=GetBlueSample(p);
-                  *samples_itr++=GetGreenSample(p);
-                  *samples_itr++=GetRedSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetBlueSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetGreenSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetRedSample(p))];
 #else
-                  *samples_itr++=GetRedSample(p);
-                  *samples_itr++=GetGreenSample(p);
-                  *samples_itr++=GetBlueSample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetRedSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetGreenSample(p))];
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetBlueSample(p))];
 #endif
-                  *samples_itr++=GetOpacitySample(p);
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetOpacitySample(p))];
                   p++;
                 }
               break;
@@ -4149,11 +4177,11 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x != 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCbSample(chroma_pixels))]; /* Cb */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];                 /* Y */
                     p++;
-                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr); /* Cr */
-                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCrSample(chroma_pixels))]; /* Cr */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];                 /* Y */
                     p++;
                     chroma_pixels++;
                   }
@@ -4172,13 +4200,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x != 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
-                    *samples_itr++=ScaleToVideo(GetOpacitySample(p),reference_low,ScaleY);           /* A */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCbSample(chroma_pixels))]; /* Cb */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];                 /* Y */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetOpacitySample(p))];           /* A */
                     p++;
-                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr); /* Cr */
-                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
-                    *samples_itr++=ScaleToVideo(GetOpacitySample(p),reference_low,ScaleY);           /* A */
+                    *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCrSample(chroma_pixels))]; /* Cr */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];                 /* Y */
+                    *samples_itr++=map_Y[ScaleQuantumToMap(GetOpacitySample(p))];           /* A */
                     p++;
                     chroma_pixels++;
                   }
@@ -4187,19 +4215,19 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementCbYCr444:
               for (x=image->columns; x != 0; x--)
                 {
-                  *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr); /* Cb */
-                  *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);     /* Y */
-                  *samples_itr++=ScaleToVideo(GetCrSample(p),reference_low,ScaleCbCr); /* Cr */
+                  *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCbSample(p))]; /* Cb */
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];     /* Y */
+                  *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCrSample(p))]; /* Cr */
                   p++;
                 }
               break;
             case ImageElementCbYCrA4444:
               for (x=image->columns; x != 0; x--)
                 {
-                  *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr);   /* Cb */
-                  *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);       /* Y */
-                  *samples_itr++=ScaleToVideo(GetCrSample(p),reference_low,ScaleCbCr);   /* Cr */
-                  *samples_itr++=ScaleToVideo(GetOpacitySample(p),reference_low,ScaleY); /* A */
+                  *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCbSample(p))];   /* Cb */
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetYSample(p))];       /* Y */
+                  *samples_itr++=map_CbCr[ScaleQuantumToMap(GetCrSample(p))];   /* Cr */
+                  *samples_itr++=map_Y[ScaleQuantumToMap(GetOpacitySample(p))]; /* A */
                   p++;
                 }
               break;
@@ -4207,7 +4235,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             default:
               break;
             }
-          
+
+#if 0
           /*
             Scale samples.
           */
@@ -4228,6 +4257,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                   samples_itr++;
                 }
             }
+#endif
 
           /*
             FIXME: RLE samples.
@@ -4261,6 +4291,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         }
     }
   
+  MagickFreeMemory(map_CbCr);
+  MagickFreeMemory(map_Y);
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
   CloseBlob(image);  
