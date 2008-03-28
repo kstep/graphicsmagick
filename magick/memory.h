@@ -14,17 +14,9 @@
 extern "C" {
 #endif
 
-#if !defined(MagickDLLCall)
-#  if defined(MSWINDOWS)
-#    define MagickDLLCall __stdcall
-#  else
-#    define MagickDLLCall
-#  endif
-#endif
-
-typedef MagickDLLCall void *(*MagickMallocFunc)(size_t size);
-typedef MagickDLLCall void (*MagickFreeFunc)(void *ptr);
-typedef MagickDLLCall void *(*MagickReallocFunc)(void *ptr, size_t size);
+typedef void *(*MagickMallocFunc)(size_t size);
+typedef void (*MagickFreeFunc)(void *ptr);
+typedef void *(*MagickReallocFunc)(void *ptr, size_t size);
 
 extern MagickExport void
    MagickAllocFunctions(MagickFreeFunc free_func,MagickMallocFunc malloc_func,

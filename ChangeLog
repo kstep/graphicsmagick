@@ -1,3 +1,7 @@
+2008-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Fix compilation issues with Microsoft Visual Studio.
+
 2008-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage, WriteDPXImage): Use lookup tables to

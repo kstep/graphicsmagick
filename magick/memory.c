@@ -157,7 +157,7 @@ MagickExport void *MagickMallocArray(const size_t count,const size_t size)
   allocation = (void *) NULL;
   allocation_size = size * count;
   if ((count != 0) && (size != allocation_size/count))
-    allocation_size = (void *) NULL;
+    allocation_size = 0;
   if (allocation_size)
     allocation = (MallocFunc)(allocation_size);
   return allocation;

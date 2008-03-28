@@ -13,7 +13,7 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#include <strings.h> // for strcpy
+#include <string.h> // for strcpy
 
 using namespace std;
 
