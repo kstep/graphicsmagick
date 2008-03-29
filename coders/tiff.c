@@ -596,9 +596,11 @@ static int TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 
   if (*base)
     {
-/*       if (((Image *) image)->logging) */
-/*         (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
-/*           "TIFF mapped blob: base=%p size=%ld",*base, *size); */
+#if 0
+      if (((Image *) image)->logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "TIFF mapped blob: base=%p size=%ld",*base, *size);
+#endif
       return 1;
     }
   return(0);
@@ -607,27 +609,37 @@ static int TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 /* Read BLOB data at current offset */
 static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 {
-/*   if (((Image *) image)->logging) */
-/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
-/*                           "TIFF read blob: data=%p size=%ld", data, size); */
+#if 0
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "TIFF read blob: data=%p size=%ld", data, size);
+#endif
   return((tsize_t) ReadBlob((Image *) image,(size_t) size,data));
 }
 
 /* Seek to BLOB offset */
 static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
-/*   if (((Image *) image)->logging) */
-/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
-/*       "TIFF seek blob: offset=%ld whence=%d", offset, whence); */
+#if 0
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "TIFF seek blob: offset=%lu whence=%d (%s)",
+                          (unsigned long) offset, whence,
+                          (whence == SEEK_SET ? "SET" :
+                           (whence == SEEK_CUR ? "CUR" :
+                            (whence == SEEK_END ? "END" : "unknown"))));
+#endif
   return((toff_t) SeekBlob((Image *) image,offset,whence));
 }
 
 /* Obtain BLOB size */
 static toff_t TIFFGetBlobSize(thandle_t image)
 {
-/*   if (((Image *) image)->logging) */
-/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
-/*       "TIFF get blob size"); */
+#if 0
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "TIFF get blob size");
+#endif
   return((toff_t) GetBlobSize((Image *) image));
 }
 
@@ -636,9 +648,11 @@ static void TIFFUnmapBlob(thandle_t ARGUNUSED(image),
                           tdata_t ARGUNUSED(base),
                           toff_t ARGUNUSED(size))
 {
-/*   if (((Image *) image)->logging) */
-/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
-/*       "TIFF unmap blob: base=%p size=%ld", base, size); */
+#if 0
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "TIFF unmap blob: base=%p size=%ld", base, size);
+#endif
 }
 
 /* Report warnings. */
