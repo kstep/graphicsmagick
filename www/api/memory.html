@@ -19,10 +19,11 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#acquirememory">AcquireMemory</a></li>
-		<li><a href="#clonememory">CloneMemory</a></li>
-		<li><a href="#liberatememory">LiberateMemory</a></li>
-		<li><a href="#reacquirememory">ReacquireMemory</a></li>
+		<li><a href="#magickallocfunctions">MagickAllocFunctions</a></li>
+		<li><a href="#magickmalloc">MagickMalloc</a></li>
+		<li><a href="#magickclonememory">MagickCloneMemory</a></li>
+		<li><a href="#magickrealloc">MagickRealloc</a></li>
+		<li><a href="#magickfree">MagickFree</a></li>
 	</ul>
 
 </ul>
@@ -37,19 +38,45 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>void * <strong>AcquireMemory</strong>( const size_t size );</P>
-<P>void * <strong>CloneMemory</strong>( void *destination, const void *source, const size_t size );</P>
-<P>void  <strong>LiberateMemory</strong>( void ** memory );</P>
-<P>void  <strong>ReacquireMemory</strong>( void ** memory, const size_t size );</P>
+<P>void  <strong>MagickAllocFunctions</strong>( MagickFreeFunc free_func, MagickMallocFunc malloc_func, MagickReallocFunc realloc_func );</P>
+<P>void * <strong>MagickCloneMemory</strong>( void *destination, const void *source, const size_t size );</P>
+<P>void * <strong>MagickFree</strong>( void *memory );</P>
+<P>void * <strong>MagickMalloc</strong>( const size_t size );</P>
+<P>void * <strong>MagickRealloc</strong>( void *memory, const size_t size );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
 </P>
-<h2><a name="acquirememory">AcquireMemory</a></h2>
-<blockquote>AcquireMemory() returns a pointer to a block of memory of at least size bytes suitably aligned for any use. </blockquote><P>The format of the AcquireMemory method is:</P>
-<blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>A description of each parameter follows:</P>
+<h2><a name="magickallocfunctions">MagickAllocFunctions</a></h2>
+<blockquote>MagickAllocFunctions() provides a way for the user to supply a preferred free ( ), malloc ( ), and realloc ( ) functions. Otherwise the default system versions are used. </blockquote><P>The format of the MagickAllocFunctions method is:</P>
+<blockquote>void MagickAllocFunctions ( MagickFreeFunc free_func, MagickMallocFunc malloc_func, MagickReallocFunc realloc_func ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_free_func_3a">free_func:</a></strong>
+
+<DD>
+<P>Function to free memory.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_malloc_func_3a">malloc_func:</a></strong>
+
+<DD>
+<P>Function to allocate memory.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_realloc_func_3a">realloc_func:</a></strong>
+
+<DD>
+<P>Function to reallocate memory.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="magickmalloc">MagickMalloc</a></h2>
+<blockquote>MagickMalloc() returns a pointer to a block of memory of at least size bytes suitably aligned for any use. NULL is returned if insufficient memory is available or the requested size is zero. </blockquote><P>The format of the MagickMalloc method is:</P>
+<blockquote>void *MagickMalloc ( const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_size_3a">size:</a></strong>
 
@@ -60,9 +87,9 @@
 </dl>
 <P>
 </P>
-<h2><a name="clonememory">CloneMemory</a></h2>
-<blockquote>CloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the CloneMemory method is:</P>
-<blockquote>void *CloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
+<h2><a name="magickclonememory">MagickCloneMemory</a></h2>
+<blockquote>MagickCloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the MagickCloneMemory method is:</P>
+<blockquote>void *MagickCloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>size:</strong>
 
@@ -73,33 +100,33 @@
 </dl>
 <P>
 </P>
-<h2><a name="liberatememory">LiberateMemory</a></h2>
-<blockquote>LiberateMemory() frees memory that has already been allocated, and NULLs the pointer to it. </blockquote><P>The format of the LiberateMemory method is:</P>
-<blockquote>void LiberateMemory ( void **memory ); </blockquote><P>A description of each parameter follows:</P>
+<h2><a name="magickrealloc">MagickRealloc</a></h2>
+<blockquote>MagickRealloc() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. If size is zero, then the memory is freed and a NULL value is returned. If the memory allocation fails, then the existing memory is freed, and a NULL value is returned. </blockquote><P>The format of the MagickRealloc method is:</P>
+<blockquote>void *MagickRealloc ( void *memory, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_memory_3a">memory:</a></strong>
 
 <DD>
-<P>A pointer to a block of memory to free for reuse.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="reacquirememory">ReacquireMemory</a></h2>
-<blockquote>ReacquireMemory() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. </blockquote><P>The format of the ReacquireMemory method is:</P>
-<blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>memory:</strong>
-
-<DD>
-<P>A pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.</P>
+<P>A pointer to a memory allocation.</P>
 </dd>
 </li>
 <dt><strong>size:</strong>
 
 <DD>
 <P>The new size of the allocated memory.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="magickfree">MagickFree</a></h2>
+<blockquote>MagickFree() frees memory that has already been allocated. A NULL argument is ignored. The function always returns NULL so that the return value may be used to set the memory pointer to null. </blockquote><P>The format of the MagickFree method is:</P>
+<blockquote>void *MagickFree ( void *memory ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>memory:</strong>
+
+<DD>
+<P>A pointer to a block of memory to free for reuse.</P>
 </dd>
 </dl>
 

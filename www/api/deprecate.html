@@ -19,23 +19,12 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#acquirememory">AcquireMemory</a></li>
+		<li><a href="#clonememory">CloneMemory</a></li>
+		<li><a href="#liberatememory">LiberateMemory</a></li>
 		<li><a href="#popimagepixels">PopImagePixels</a></li>
 		<li><a href="#pushimagepixels">PushImagePixels</a></li>
-		<li><a href="#deleteimagelist">DeleteImageList</a></li>
-		<li><a href="#destroyimages">DestroyImages</a></li>
-		<li><a href="#getimagelist">GetImageList</a></li>
-		<li><a href="#getimagelistindex">GetImageListIndex</a></li>
-		<li><a href="#getimagelistsize">GetImageListSize</a></li>
-		<li><a href="#getnextimage">GetNextImage</a></li>
-		<li><a href="#getnumberscenes">GetNumberScenes</a></li>
-		<li><a href="#getpreviousimage">GetPreviousImage</a></li>
-		<li><a href="#popimagelist">PopImageList</a></li>
-		<li><a href="#postscriptgeometry">PostscriptGeometry</a></li>
-		<li><a href="#pushimagelist">PushImageList</a></li>
-		<li><a href="#setimagelist">SetImageList</a></li>
-		<li><a href="#shiftimagelist">ShiftImageList</a></li>
-		<li><a href="#spliceimagelist">SpliceImageList</a></li>
-		<li><a href="#unshiftimagelist">UnshiftImageList</a></li>
+		<li><a href="#reacquirememory">ReacquireMemory</a></li>
 	</ul>
 
 </ul>
@@ -50,27 +39,55 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>DeleteImageList</strong>( Image *images, const long offset );</P>
-<P>void  <strong>DestroyImages</strong>( Image *image );</P>
-<P>Image * <strong>GetImageList</strong>( const Image *images, const long offset, ExceptionInfo *exception );</P>
-<P>long  <strong>GetImageListIndex</strong>( const Image *images );</P>
-<P>unsigned long  <strong>GetImageListSize</strong>( const Image *images );</P>
-<P>Image * <strong>GetNextImage</strong>( const Image *images );</P>
-<P>unsigned int  <strong>GetNumberScenes</strong>( const Image *images );</P>
-<P>Image * <strong>GetPreviousImage</strong>( const Image *images );</P>
-<P>Image * <strong>PopImageList</strong>( Image ** images );</P>
+<P>void * <strong>AcquireMemory</strong>( const size_t size );</P>
+<P>void * <strong>CloneMemory</strong>( void *destination, const void *source, const size_t size );</P>
+<P>void  <strong>LiberateMemory</strong>( void ** memory );</P>
 <P>unsigned int  <strong>PopImagePixels</strong>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
-<P>char * <strong>PostscriptGeometry</strong>( const char *page );</P>
-<P>unsigned int  <strong>PushImageList</strong>( Image *images, const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>PushImagePixels</strong>( Image *image, const QuantumType quantum_type, const unsigned char *source );</P>
-<P>unsigned int  <strong>SetImageList</strong>( Image *images, const Image *image, const long offset, ExceptionInfo *exception );</P>
-<P>Image * <strong>ShiftImageList</strong>( Image ** images );</P>
-<P>Image * <strong>SpliceImageList</strong>( Image *images, const long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>UnshiftImageList</strong>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>void  <strong>ReacquireMemory</strong>( void ** memory, const size_t size );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="acquirememory">AcquireMemory</a></h2>
+<blockquote>AcquireMemory() returns a pointer to a block of memory of at least size bytes suitably aligned for any use. NULL is returned if insufficient memory is available or the requested size is zero. </blockquote><P>The format of the AcquireMemory method is:</P>
+<blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_size_3a">size:</a></strong>
+
+<DD>
+<P>The size of the memory in bytes to allocate.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="clonememory">CloneMemory</a></h2>
+<blockquote>CloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the CloneMemory method is:</P>
+<blockquote>void *CloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>size:</strong>
+
+<DD>
+<P>The size of the memory in bytes to allocate.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="liberatememory">LiberateMemory</a></h2>
+<blockquote>LiberateMemory() frees memory that has already been allocated, and NULLs the pointer to it. </blockquote><P>The format of the LiberateMemory method is:</P>
+<blockquote>void LiberateMemory ( void **memory ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_memory_3a">memory:</a></strong>
+
+<DD>
+<P>A pointer to a block of memory to free for reuse.</P>
+</dd>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="popimagepixels">PopImagePixels</a></h2>
@@ -135,295 +152,20 @@
 </dl>
 <P>
 </P>
-<h2><a name="deleteimagelist">DeleteImageList</a></h2>
-<blockquote>DeleteImageList() deletes an image at the specified position in the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the DeleteImageList method is:</P>
-<blockquote>unsigned int DeleteImageList ( <A HREF="types.html#Image">Image</A> *images, const long offset ); </blockquote><P>A description of each parameter follows:</P>
+<h2><a name="reacquirememory">ReacquireMemory</a></h2>
+<blockquote>ReacquireMemory() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. </blockquote><P>The format of the ReacquireMemory method is:</P>
+<blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_images_3a">images:</a></strong>
+<dt><strong>memory:</strong>
 
 <DD>
-<P>The image list.</P>
+<P>A pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_offset_3a">offset:</a></strong>
+<dt><strong>size:</strong>
 
 <DD>
-<P>The position within the list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="destroyimages">DestroyImages</a></h2>
-<blockquote>DestroyImages() destroys an image list. </blockquote><P>This method is deprecated as of version 5.4.3.</P>
-<P>The format of the DestroyImages method is:</P>
-<blockquote>void DestroyImages ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image sequence.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getimagelist">GetImageList</a></h2>
-<blockquote>GetImageList() returns an image at the specified position in the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetImageList ( const <A HREF="types.html#Image">Image</A> *images, const long offset, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-<dt><strong>offset:</strong>
-
-<DD>
-<P>The position within the list.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getimagelistindex">GetImageListIndex</a></h2>
-<blockquote>GetImageListIndex() returns the position in the list of the specified image. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetImageListIndex method is:</P>
-<blockquote>long GetImageListIndex ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getimagelistsize">GetImageListSize</a></h2>
-<blockquote>GetImageListSize() returns the number of images in the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetImageListSize method is:</P>
-<blockquote>unsigned long GetImageListSize ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getnextimage">GetNextImage</a></h2>
-<blockquote>GetNextImage() returns the next image in a list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetNextImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetNextImage ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getnumberscenes">GetNumberScenes</a></h2>
-<blockquote>GetNumberScenes() returns the number of images in the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetNumberScenes method is:</P>
-<blockquote>unsigned int GetNumberScenes ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="getpreviousimage">GetPreviousImage</a></h2>
-<blockquote>GetPreviousImage() returns the previous image in a list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the GetPreviousImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetPreviousImage ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="popimagelist">PopImageList</a></h2>
-<blockquote>PopImageList() removes the last image in the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the PopImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *PopImageList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="postscriptgeometry">PostscriptGeometry</a></h2>
-<blockquote>PostscriptGeometry() replaces any page mneumonic with the equivalent size in picas. </blockquote><P>This method is deprecated as of version 5.5.1.</P>
-<P>The format of the PostscriptGeometry method is:</P>
-<blockquote>char *PostscriptGeometry ( const char *page ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong><a name="item_o_page_3a">page:</a></strong>
-
-<DD>
-<P>Specifies a pointer to an array of characters.  The string is either a Postscript page name (e.g.  A4) or a postscript page geometry (e.g.  612x792+36+36).</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="pushimagelist">PushImageList</a></h2>
-<blockquote>PushImageList() adds an image to the end of the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the PushImageList method is:</P>
-<blockquote>unsigned int PushImageList ( <A HREF="types.html#Image">Image</A> *images, const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="setimagelist">SetImageList</a></h2>
-<blockquote>SetImageList() inserts an image into the list at the specified position. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the SetImageList method is:</P>
-<blockquote>unsigned int SetImageList ( <A HREF="types.html#Image">Image</A> *images, const <A HREF="types.html#Image">Image</A> *image, const long offset, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>offset:</strong>
-
-<DD>
-<P>The position within the list.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="shiftimagelist">ShiftImageList</a></h2>
-<blockquote>ShiftImageList() removes an image from the beginning of the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the ShiftImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *ShiftImageList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="spliceimagelist">SpliceImageList</a></h2>
-<blockquote>SpliceImageList() removes the images designated by offset and length from the list and replaces them with the specified list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the SpliceImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *SpliceImageList ( <A HREF="types.html#Image">Image</A> *images, const long offset, const unsigned long length, const <A HREF="types.html#Image">Image</A> *splices, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-<dt><strong>offset:</strong>
-
-<DD>
-<P>The position within the list.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_length_3a">length:</a></strong>
-
-<DD>
-<P>The length of the image list to remove.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_splice_3a">splice:</a></strong>
-
-<DD>
-<P>Replace the removed image list with this list.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="unshiftimagelist">UnshiftImageList</a></h2>
-<blockquote>UnshiftImageList() adds the image to the beginning of the list. </blockquote><P>This method is deprecated as of version 5.5.2.</P>
-<P>The format of the UnshiftImageList method is:</P>
-<blockquote>unsigned int UnshiftImageList ( <A HREF="types.html#Image">Image</A> *images, const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>images:</strong>
-
-<DD>
-<P>The image list.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
+<P>The new size of the allocated memory.</P>
 </dd>
 </dl>
 

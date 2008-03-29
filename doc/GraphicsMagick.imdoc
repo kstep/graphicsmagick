@@ -204,7 +204,7 @@ The <s>GraphicsMagick</s> utilities recognize the following image formats:
 <include file=format.imdoc>
 <p>
 <i>Support for some of these formats require additional programs or libraries.
-<a href="install.html">README</a>
+<a href="README.html">README</a>
 tells where to find this software</i>.</p>
 <p>
 Note, a format delineated with <tt>+</tt> means that if more than one

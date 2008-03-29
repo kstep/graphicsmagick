@@ -19,6 +19,7 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#cloneimageattributes">CloneImageAttributes</a></li>
 		<li><a href="#destroyimageattributes">DestroyImageAttributes</a></li>
 		<li><a href="#getimageattribute">GetImageAttribute</a></li>
 		<li><a href="#getimageclippingpathattribute">GetImageClippingPathAttribute</a></li>
@@ -37,6 +38,7 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>MagickPassFail  <strong>CloneImageAttributes</strong>( Image *clone_image, const Image *original_image );</P>
 <P><strong>DestroyImageAttributes</strong>( Image *image );</P>
 <P>const ImageAttribute * <strong>GetImageAttribute</strong>( const Image *image, const char *key );</P>
 <P>const ImageAttribute * <strong>GetImageClippingPathAttribute</strong>( const Image *image );</P>
@@ -45,6 +47,25 @@
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="cloneimageattributes">CloneImageAttributes</a></h2>
+<blockquote>CloneImageAttributes() copies the text attibutes from one image to another. Any text attributes in the destination image are preserved. CloneImageAttributes returns MagickPass if all of the attribututes are successfully cloned or MagickFail if there is a memory allocation error. </blockquote><P>The format of the CloneImageAttributes method is:</P>
+<blockquote>MagickPassFail CloneImageAttributes ( <A HREF="types.html#Image">Image</A> *clone_image, const <A HREF="types.html#Image">Image</A> *original_image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_clone_image_3a">clone_image:</a></strong>
+
+<DD>
+<P>The destination image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_original_image_3a">original_image:</a></strong>
+
+<DD>
+<P>The source image.</P>
+</dd>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="destroyimageattributes">DestroyImageAttributes</a></h2>

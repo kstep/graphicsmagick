@@ -1,20 +1,270 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-===================
-Windows Compilation
-===================
+===================================
+GraphicsMagick Windows Installation
+===================================
 
 .. contents::
   :local:
 
+Installing Using Installer Package
+==================================
+
+  This section provides information specific to GraphicsMagick installed
+  via a "setup.exe" style installation wizard under Microsoft Windows. It
+  applies only to the pre-built "binaries" package, and not to versions
+  compiled from source code. If you would like to install GraphicsMagick
+  from source code, then please refer to the Installing From Source Code
+  section.
+
+Prerequisites
+-------------
+
+  While multiple versions of GraphicsMagick may be installed at one time,
+  if your intention is to replace a prior installation of GraphicsMagick
+  with a newer version, then it may be wise to uninstall the existing
+  GraphicsMagick (see uninstall procedure) prior to installing the newer
+  version.
+
+  While it is not a requirement, it is strongly recommended that the
+  `Ghostscript <http://www.cs.wisc.edu/~ghost/>`_ package (GraphicsMagick
+  is tested with version 8.62) be installed. GraphicsMagick uses
+  Ghostscript to render Postscript and PDF files, as well as formats
+  where a translator to Postscript is available. GraphicsMagick will also
+  use the fonts delivered with Ghostscript to support the standard set of
+  Adobe Postscript fonts like "Helvetica" and "Times Roman" if these
+  fonts are not available as TrueType fonts.
+
+  The installation package includes the GraphicsMagick Perl extension (
+  PerlMagick <perl.html>) as an installation option. If you would like to
+  use this extension, then you must install
+  `ActiveState ActivePerl <http://www.activestate.com/store/activeperl/download/>`_
+  prior to commencing with installation of GraphicsMagick.
+
+Retrieve Install Package
+------------------------
+
+  Retrieve the GraphicsMagick Windows binary install package from a one
+  of the ftp sites listed at the `GraphicsMagick Download Sites
+  <download.html>`_ page. The available install packages are as follows
+
+  Windows Dynamic-Multithread (DLL-based) install package with utilities,
+  PerlMagick, ImageMagickObject COM object, and web pages:
+
+    ::
+
+      GraphicsMagick-1.2-Q8-windows-dll.exe
+      GraphicsMagick-1.2-Q16-windows-dll.exe
+
+  Windows Static-Multithread package including the utilities (gm.exe,
+  gmdisplay.exe, and MagickCMD.exe), the `ImageMagickObject
+  <ImageMagickObject.html>`_ COM object, and the web pages. This package
+  does not include PerlMagick.
+
+    ::
+
+      GraphicsMagick-1.2-Q8-windows-static.exe
+      GraphicsMagick-1.2-Q16-windows-static.exe
+
+  Note that the QuantumDepth=8 version (Q8) which provides industry
+  standard 24/32 bit pixels consumes half the memory and about 30% less
+  CPU than the QuantumDepth=16 version (Q16) which provides 48/64 bit
+  pixels for high-resolution color. A Q8 version is fine for processing
+  typical photos intended for viewing on a computer screen. If you are
+  dealing with film, scientific, or medical images, use ICC color
+  profiles, or deal with images that have limited contrast, then the Q16
+  version is recommended.
+
+Start Installation Wizard
+-------------------------
+
+  Execute the downloaded file from your browser or by double-clicking on
+  the filename from within Windows Explorer. The GraphicsMagick Setup
+  Wizard will appear. Click on "*Next>*" to continue.
+
+Read Installation Information
+-----------------------------
+
+  An informational screen is presented which provides a summary of things
+  you should know before you proceed. Please take care to read this
+  information. Once you have finished, Click on "*Next>*" to continue.
+
+Select Destination Directory
+----------------------------
+
+  Specify what drive and directory to install GraphicsMagick into.
+  Approximately 15MB of free disk space is required to install all of
+  GraphicsMagick (you may choose to install a subset to save space). A
+  message at the bottom of the screen will tell you exactly how much
+  space is required to install the complete package. The default
+  installation directory is similar to ``C:\Program
+  Files\GraphicsMagick-1.2-Q8``. Once you have entered the desired
+  installation directory, then select "*Next>*" to continue.
+
+Select Start Menu Folder
+------------------------
+
+  Select the folder where you would like the program's shortcuts to
+  appear. The default should normally be satisfactory. Click on "*Next>*"
+  to continue.
+
+Select Additional Tasks
+-----------------------
+
+  A screen is displayed which presents most (or all) of the following
+  options:
+
+  * Create a desktop icon
+
+  * Update executable search path
+
+  * Associate supported file extensions with GraphicsMagick
+
+  * Install PerlMagick for ActiveState Perl v5.8.7 build 815
+
+  * Install ImageMagickObject OLE Control for VBscript, Visual Basic,
+    and WSH.
+
+  "Creating a desktop icon" and "Update the executable search path" are
+  selected by default. The remaining options default to un-selected.
+  Select the options you prefer. Note that ActiveState Perl packages are
+  intended to be binary compatible across a build series (i.e. 800 series
+  builds should be binary compatible).
+
+  Think twice before selecting "*Associate supported file extensions with
+  GraphicsMagick*" since this will set up approximately fifty file
+  associations, including common formats like JPEG, GIF, PNG, TIFF, and
+  PDF. These file associations will be to the 'gmdisplay' program which
+  is suitable for displaying images, but currently offers little more
+  than that. Windows XP seems to handle the file associations pretty
+  well, allowing you to choose from a list of programs, but older systems
+  like Windows NT 4.0 and Windows '98 only support a single association
+  per format, which can be quite annoying. Associations for
+  GraphicsMagick's native formats (such as `MIFF <miff.html>`_) will
+  always be made.
+
+  Once you have made your selections, click on "*Next>*" to continue.
+
+Ready to Install
+----------------
+
+  A screen is displayed which displays the selected options. If you are
+  not satisfied with a selected option, then click on "*<Back*" to go back
+  to a previous screen so that the option may be adjusted. If you are
+  satisfied with the options and are ready to install, then select
+  "*Install*". To abort the installation entirely, select "*Cancel*".
+
+Installation Progress
+---------------------
+
+  While the install program is performing the installation, it will
+  display what it is doing in an installation progress window.
+
+
+Final Information
+-----------------
+
+  A summary of post-install steps is provided. These steps include some
+  commands you can execute to make sure that GraphicsMagick is working,
+  as well as some notes about what has been installed on your system, and
+  where to find additional information. Once you have read this
+  information, click on "*Next>*" to continue.
+
+Finishing Up
+------------
+
+  By default "*View GraphicsMagick.html*" is check-marked. This causes the
+  GraphicsMagick web pages to be displayed in your web browser when
+  "*Finish*" is selected. If you do not want to view the web pages, then
+  de-select "*View GraphicsMagick.html*". Select "*Finish*" to exit the
+  installation program.
+
+  Under Windows '95 and Windows '98 it will be necessary to reboot the
+  system in order for some settings to take effect (such as executable
+  search path) since these are set in autoexec.bat. Please verify that
+  autoexec.bat is updated correctly. We have received some reports that
+  the path in autoexec.bat is not always updated correctly.
+
+Testing The Installation
+------------------------
+
+  Select "*Command Prompt*" from the Windows Start menu. Within the window
+  type
+
+    ::
+
+      gm convert logo: logo.miff
+      gmdisplay logo.miff
+
+  and the GraphicsMagick logo should be displayed in a window.
+
+Uninstall
+---------
+
+  The GraphicsMagick package incorporates its own uninstall
+  functionality. Always remove an installed GraphicsMagick via its
+  uninstall function since manually removing it (such as by removing its
+  installation directory) will leave behind the registry entries and path
+  settings established at install time.
+
+  Under Windows '95 and Windows '98, use the "*Uninstall*" entry in the
+  GraphicsMagick portion of the Windows start menu to initiate the
+  uninstall.
+
+  On NT 4.0 and 5.X -based systems, GraphicsMagick should be removed via
+  the "*Add or Remove Programs*" area of the Windows Control Panel. Select
+  the GraphicsMagick package from the list, and click on "*Change/Remove*"
+  to uninstall it.
+
+Use From Another Package or Program
+-----------------------------------
+
+  The GraphicsMagick gm utility may be executed as a sub-process by other
+  programs. If gm utility is not in the systems executable search path
+  (it should be since the GraphicsMagick install extends the path), then
+  the utility should be executed via the complete path to the executable.
+
+  The `ImageMagickObject <ImageMagickObject.html>`_ COM object may be
+  used to execute the gm sub-functions (e.g. "convert") without spawning
+  a new process or causing Windows to pop up a window. The COM object
+  supports multi-threaded concurrent use.
+
+  When GraphicsMagick is installed, entries are added to the Windows
+  Registry so that other programs may obtain information regarding the
+  most recently installed GraphicsMagick. These entries are available
+  under the registry path ``HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\Current``.
+
+  These registry keys are currently available:
+
+  =================  ========  ============================================
+  Key Name           Key Type  Description
+  =================  ========  ============================================
+  BinPath            REG_SZ    Directory where GraphicsMagick executables
+                               are installed
+  ConfigurePath      REG_SZ    Directory where configuration files are
+                               installed
+  LibPath            REG_SZ    Directory where GraphicsMagick core DLLs
+                               are installed
+  CoderModulesPath   REG_SZ    Directory where GraphicsMagick loadable
+                               coder modules are installed
+  FilterModulesPath  REG_SZ    Directory where GraphicsMagick loadable
+                               filter modules are installed
+  SharePath          REG_SZ    Directory where configuration files are
+                               installed
+  =================  ========  ============================================
+
+
+Installing From Source Code
+===========================
+
 Applicability
 -------------
 
-  These installation instructions are for Microsoft Windows using
-  the Visual C++ (Visual Studio, etc.) IDE.  For building using
-  the free Cygwin or MinGW compilers, follow the instructions in
-  INSTALL-unix.txt.
+  This section provides instructions for building GraphicsMagick
+  Microsoft Windows using the Visual C++ (Visual Studio, etc.) IDE. For
+  building using the free Cygwin or MinGW compilers, follow the
+  instructions in INSTALL-unix.txt.
 
 Important Notes
 ---------------
@@ -27,11 +277,11 @@ Important Notes
 Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation
 ---------------------------------------------------------
 
-  The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 98
-  does not provide any stock workspace (DSW) or project files (DSP) except
-  for those included with third party libraries. Instead, there is a
-  "configure" program that must be built and run that creates build
-  environments to satisfy various requirements.
+  The Visual C++ distribution targeted at Windows XP, Win2K, or Windows
+  98 does not provide any stock workspace (DSW) or project files (DSP)
+  except for those included with third party libraries. Instead, there is
+  a "configure" program that must run to create build environments to
+  satisfy various requirements.
 
   The Visual C++ system provides three different types of "runtimes"
   that must match across all application, library, and DLL code that is
@@ -203,9 +453,9 @@ Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation
 
   For C++ and Magick++ and MFC windows applications use
    
-    ``GraphicsMagick\contrib\win32\MFC\NtMagick`` (source code)
+    ``GraphicsMagick\win2k\IMDisplay`` (source code)
 
-    ``GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick`` (project - DSP)
+    ``GraphicsMagick\VisualMagick\win32\NtMagick`` (project - DSP)
 
   Note #2:
 
@@ -307,6 +557,87 @@ Environment Variables
   the GraphicsMagick documentation.
 
   The Win2K executables will work under Windows '98 and later.
+
+Windows Distribution Build Procedure
+------------------------------------
+
+  The following are the instructions for how to build a Q:8 DLL-based
+  distribution installer package using Visual C++ 7.0:
+
+  1. Install prerequisite software:
+
+    a. Download and install Inno Setup 5
+       <"http://www.jrsoftware.org/isinfo.php">.
+    b. Download and install ActiveState ActivePerl
+       <"http://www.activestate.com/store/activeperl/download/">.
+
+  2. Open workspace VisualMagick\configure\configure.sln by double-clicking
+     from Windows Explorer.
+
+     a. Select "Rebuild All"
+     b. Click on '!' icon to run configure program
+     c. Select DLL build
+     d. Uncheck "Use X11 Stubs" and check "Build demo and test programs"
+     e. Click on Edit "magick_config.h" and ensure that UseInstalledGraphicsMagick
+        and ProvideDllMain are defined.
+     f. Finish remaining configure wizard screens to complete.
+     g. File -> "Close Workspace"
+
+  3. Open workspace VisualMagick\VisualDynamicMT.sln by double-clicking from
+     Windows Explorer or opening workpace via Visual C++ dialog.
+
+     a. Build -> "Set Active Configuration" -> "All - Win32 Release" -> OK
+     b. Build -> "Rebuild All"
+
+  4. Build ImageMagickObject
+
+     a. ``cd contrib\win32\ATL7\ImageMagickObject``
+     b. ``BuildImageMagickObject clean``
+     c. ``BuildImageMagickObject release``
+     d. ``cd ..\..\..\..``
+
+  5. Open Windows Command Shell Window
+
+     a. ``cd PerlMagick``
+     b. ``nmake clean`` (only if this is a rebuild)
+     c. ``perl Makefile.nt``
+     d. ``nmake release``
+
+  NOTE: access to *nmake* requires that there be a path to it. Depending on
+  how the install of Visual Studio was done, this may not be the case.
+  Visual Studio provides a batch script in VC98\Bin called VCVARS32.BAT
+  that can be used to do this manually after you open up a command prompt.
+
+  6. Open ``VisualMagick\installer\gm-dll-8.iss`` by double-clicking from Windows Explorer.
+
+     a. File -> Compile
+     b. Test install by clicking on green triangle
+
+  7. Test PerlMagick.
+
+     a. ``cd PerlMagick``
+     b. ``nmake test`` (All tests must pass!)
+
+  8. Test file format read and write.
+
+     a. ``cd VisualMagick\tests``
+     b. ``run_rwfile.bat`` (All tests must pass!)
+     c. ``run_rwblob.bat`` (All tests must pass!)
+
+  9. Run Magick++ test programs.
+
+     a. ``cd Magick++/tests``
+     b. ``run_tests.bat`` (All tests must pass!)
+
+  10. Run Magick++ demo programs.
+
+     a. ``cd Magick++/demo``
+     b. ``run_demos.bat``
+     c. Use *gmdisplay* to visually inspect all output files.
+
+  11. Distribution package is available as
+      ``VisualMagick\bin\GraphicsMagick-1.0-Q8-dll.exe``
+
 
 ---------------------------------------------------------------------------
 

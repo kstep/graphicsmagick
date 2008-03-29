@@ -1,16 +1,20 @@
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
 This file is part of the GraphicsMagick software distributed by the
 GraphicsMagick Group.
 
-[ Please note that the legal community considers 15 or more total lines
-of code or text (not necessarily contiguous) to be significant for the
-purposes of copyright. Repeated changes such as renaming a symbol has
-similar significance to changing one line of code. ]
+  [*Please note that the legal community considers 15 or more
+  total lines of code or text (not necessarily contiguous) to
+  be significant for the purposes of copyright. Repeated
+  changes such as renaming a symbol has similar significance
+  to changing one line of code.*]
 
 The licences which components of this software fall under are as follows.
 
 1)
-  In November 2002, the GraphicsMagick Group created GraphicsMagick
-  from ImageMagick Studio's ImageMagick and applied this license:
+  In November 2002, the GraphicsMagick Group created GraphicsMagick from
+  ImageMagick Studio's ImageMagick and applied this license:
 
   Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
   to making software imaging solutions freely available.
@@ -123,21 +127,23 @@ The licences which components of this software fall under are as follows.
 
 5)
   The GraphicsMagick Base64Decode() and Base64Encode() functions are
-  based on source code obtained from OpenSSH.
-  This source code is distributed under the following license.
+  based on source code obtained from OpenSSH. This source code is
+  distributed under the following license:
 
   Copyright (c) 2000 Markus Friedl.  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
   are met:
+
   1. Redistributions of source code must retain the above copyright
      notice, this list of conditions and the following disclaimer.
+
   2. Redistributions in binary form must reproduce the above copyright
      notice, this list of conditions and the following disclaimer in the
      documentation and/or other materials provided with the distribution.
 
-  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR \`\`AS IS\'\' AND ANY EXPRESS OR
   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
   OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -149,14 +155,13 @@ The licences which components of this software fall under are as follows.
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 6)
-
   Many of the pattern images in coders/logo.c are derived from XFig,
   which is distributed under the following license:
  
-  FIG : Facility for Interactive Generation of figures
-  Copyright (c) 1985-1988 by Supoj Sutanthavibul
-  Parts Copyright (c) 1989-2000 by Brian V. Smith
-  Parts Copyright (c) 1991 by Paul King
+  | FIG : Facility for Interactive Generation of figures
+  | Copyright (c) 1985-1988 by Supoj Sutanthavibul
+  | Parts Copyright (c) 1989-2000 by Brian V. Smith
+  | Parts Copyright (c) 1991 by Paul King
  
   Any party obtaining a copy of these files is granted, free of charge, a
   full and unrestricted irrevocable, world-wide, paid up, royalty-free,
@@ -192,11 +197,12 @@ The licences which components of this software fall under are as follows.
   name of the person performing the modification, the date of modification,
   and the reason for such modification.
 
-8) The source code comprising swab.c is originally derived from
+8)
+  The source code comprising swab.c is originally derived from
   libtiff which has the following license:
 
-  Copyright (c) 1988-1997 Sam Leffler
-  Copyright (c) 1991-1997 Silicon Graphics, Inc.
+  | Copyright (c) 1988-1997 Sam Leffler
+  | Copyright (c) 1991-1997 Silicon Graphics, Inc.
 
   Permission to use, copy, modify, distribute, and sell this software and 
   its documentation for any purpose is hereby granted without fee, provided
@@ -251,4 +257,9 @@ The licences which components of this software fall under are as follows.
   GraphicsMagick license. For convenience, when GraphicsMagick is
   bundled with (or compiled with) "delegate" libraries, a copy of the
   licenses for these libraries is provided in a "licenses" directory.
+
+---------------------------------------------------------------------------
+
+| Copyright (C) 2002 - 2008 GraphicsMagick Group
+
 

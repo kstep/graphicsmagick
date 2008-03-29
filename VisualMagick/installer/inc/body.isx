@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003, 2004 GraphicsMagick Group
+; Copyright (C) 2003, 2004, 2008 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -33,7 +33,10 @@
 #include "tasks-update-path.isx"
 #include "tasks-extensions.isx"
 #ifdef MagickDynamicPackage
-  #include "tasks-install-devel.isx"
+; Checkbox item to include development headers and libraries
+;  #include "tasks-install-devel.isx"
+;
+; Checkbox item to install PerlMagick
   #include "tasks-install-perlmagick.isx"
 #endif
 #include "tasks-install-com.isx"
@@ -50,9 +53,14 @@
 #include "files-documentation.isx"
 #include "files-licenses.isx"
 #ifdef MagickDynamicPackage
+; Install DLLs
   #include "files-dlls.isx"
+;
+; Install PerlMagick
   #include "files-perlmagick.isx"
-  #include "files-development.isx"
+;
+; Install development headers and libraries
+;  #include "files-development.isx"
 #endif
 #include "files-com.isx"
 

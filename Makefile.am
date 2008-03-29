@@ -232,6 +232,7 @@ RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --ti
 RST2HTML_TARGETS = \
 	$(top_srcdir)/www/AUTHORS.html \
 	$(top_srcdir)/www/BUGS.html \
+	$(top_srcdir)/www/Copyright.html \
 	$(top_srcdir)/www/FAQ.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
 	$(top_srcdir)/www/INSTALL-windows.html \
@@ -258,6 +259,10 @@ $(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
 # Build HTML version of BUGS.txt
 $(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
+
+# Build HTML version of Copyright.txt
+$(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
 
 # Build HTML version of FAQ.txt
 $(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt

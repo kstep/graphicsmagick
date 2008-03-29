@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2008-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> INSTALL-windows.txt: Add instructions for how to install from
+        setup.exe style installer.  Also add instructions for how the
+        distribution package is built.<BR>
+  <LI> Copyright.txt: Reformat in reStucturedText format and generate
+        HTML version from it.<BR>
+  <LI> VisualMagick/installer/inc/body.isx: No longer include
+        development headers and libraries in the Windows DLL install
+        package since they are large and they may only work with the
+        version of Visual C++ used to perform the build.  It is much safer
+        for the developer to build the package from source with his own
+        compiler.
+
+</UL>
+<p>
 2008-03-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

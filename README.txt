@@ -88,7 +88,7 @@ Installation
 
     `INSTALL-unix.txt <INSTALL-unix.html>`_
 
-  * Microsoft Windows (With Microsoft Visual Studio):
+  * Microsoft Windows (Via "setup" style installer or from source code):
 
     `INSTALL-windows.txt <INSTALL-windows.html>`_
 
