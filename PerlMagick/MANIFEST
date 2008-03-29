@@ -271,8 +271,6 @@ t/reference/jpeg/write_non_interlaced.miff
 t/reference/jpeg/write_plane_interlaced.miff
 t/reference/read/gradient.miff
 t/reference/read/granite.miff
-t/reference/read/input1_wpg.miff
-t/reference/read/input2_wpg.miff
 t/reference/read/input_avs.miff
 t/reference/read/input_bmp.miff
 t/reference/read/input_bmp24.miff
