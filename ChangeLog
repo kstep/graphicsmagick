@@ -1,5 +1,7 @@
 2008-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PROCESS.txt: Convert description of development process to
+	reStucturedText format and generate HTML version from it.
 	* INSTALL-windows.txt: Add instructions for how to install from
 	setup.exe style installer.  Also add instructions for how the
 	distribution package is built.

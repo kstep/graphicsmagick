@@ -233,9 +233,11 @@ RST2HTML_TARGETS = \
 	$(top_srcdir)/www/AUTHORS.html \
 	$(top_srcdir)/www/BUGS.html \
 	$(top_srcdir)/www/Copyright.html \
+	$(top_srcdir)/www/development.html \
 	$(top_srcdir)/www/FAQ.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
 	$(top_srcdir)/www/INSTALL-windows.html \
+	$(top_srcdir)/www/mission.html \
 	$(top_srcdir)/www/NEWS.html \
 	$(top_srcdir)/www/PLATFORMS.html \
 	$(top_srcdir)/www/README.html
@@ -264,6 +266,10 @@ $(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
 $(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
 
+# Build HTML version of PROCESS.txt
+$(top_srcdir)/www/development.html: $(top_srcdir)/PROCESS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/PROCESS.txt $(top_srcdir)/www/development.html
+
 # Build HTML version of FAQ.txt
 $(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
@@ -279,6 +285,10 @@ $(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
+
+# Build HTML version of mission
+$(top_srcdir)/www/mission.html: $(top_srcdir)/MISSION.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/MISSION.txt $(top_srcdir)/www/mission.html
 
 # Build HTML version of news
 $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
