@@ -1,5 +1,7 @@
 2008-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* CONTRIBUTE.txt: Convert contribute.html to reStucturedText
+	format and generate HTML version from it.
 	* PROCESS.txt: Convert description of development process to
 	reStucturedText format and generate HTML version from it.
 	* INSTALL-windows.txt: Add instructions for how to install from

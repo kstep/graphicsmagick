@@ -1,158 +1,345 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Contributing To GraphicsMagick</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
-	<META NAME="CREATED" CONTENT="20020823;18090800">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080309;14371500">
-	<META NAME="CLASSIFICATION" CONTENT="Describes how to contribute to GraphicsMagick.">
-	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<STYLE TYPE="text/css">
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2 STYLE="page-break-before: always">
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Contributing
-			To GraphicsMagick</B></FONT></FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><FONT FACE="Albany"><FONT SIZE=3>The future and success of
-GraphicsMagick depends on your contributions. By contributing to
-GraphicsMagick you will benefit from the features/fixes you
-contribute, can take pride in taking part in the development of a
-quality product, and you can tell your friends that you contribute to
-the GraphicsMagick project.</FONT></FONT></P>
-<P><FONT FACE="Albany"><FONT SIZE=3>There are a number of ways you
-can contribute:</FONT></FONT></P>
-<UL>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Submit
-	bug reports to the GraphicsMagick <A HREF="https://sourceforge.net/tracker/?group_id=73485" TARGET="_top">bug
-	tracking system</A> at SourceForge.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Submit
-	patches to the GraphicsMagick patch submission system at
-	SourceForge.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Perform
-	test builds on unusual systems and report the results.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Submit
-	ideas and proposed designs to the <I>graphicsmagick-core</I> mailing
-	list.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Create
-	a new language interface, dependent library, or application.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Join
-	the GraphicsMagick Group as a full-fledged developer with CVS commit
-	access.</FONT></FONT></P>
-</UL>
-<P><FONT FACE="Albany"><FONT SIZE=3>Regardless of how you choose to
-contribute, your contributions will be treated with the respect and
-value that they deserve.</FONT></FONT></P>
-<P><FONT FACE="Albany">Becoming a member of the GraphicsMagick Group
-requires a majority vote from existing members. Your chances of being
-admitted to the group are increased significantly if you have a
-proven track-record of success on other open source projects, are a
-recognized expert in the field, or have already demonstrated your
-capabilities and commitment by contributing to the project in other
-ways. Please contact <A HREF="mailto:bfriesen@simple.dallas.tx.us?subject=GraphicsMagick%20Group%20Membership">Bob
-Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;</A></FONT> <FONT FACE="Albany">in
-order to be considered for group membership.</FONT></P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Areas To
-			Contribute</B></FONT></FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><FONT FACE="Albany"><FONT SIZE=3>The following are areas where
-significant contributions may be made to the GraphicsMagick project:</FONT></FONT></P>
-<UL>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Support
-	building and distributing GraphicsMagick RPMs for Linux.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Support
-	a FreeBSD &quot;port&quot; in the FreeBSD ports collection for
-	GraphicsMagick.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Set
-	up an FTP mirror site for GraphicsMagick.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Create
-	a language interface to Enlightenment's </FONT></FONT><FONT FACE="Albany"><FONT SIZE=3><B>embryo</B></FONT></FONT><FONT FACE="Albany"><FONT SIZE=3>
-	byte-code interpreter (which is itself based on </FONT></FONT><A HREF="http://www.compuphase.com/small.htm"><FONT FACE="Albany"><B>Small</B></FONT></A><FONT FACE="Albany"><FONT SIZE=3><SPAN STYLE="font-weight: medium">)
-	</SPAN></FONT></FONT><FONT FACE="Albany"><FONT SIZE=3>so that a
-	common scripting language is available to </FONT></FONT><FONT FACE="Albany"><FONT SIZE=3><U>any</U></FONT></FONT><FONT FACE="Albany"><FONT SIZE=3>
-	GraphicsMagick user (without requiring external components).</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create a
-	language interface using <A HREF="http://www.swig.org/">SWIG</A> to
-	support scripting in Perl, Python, TCL/TK, Guile, MzScheme, Ruby,
-	Java, PHP, and CHICKEN, based on a common implementation.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Create
-	a new utility command parser based on a separate LALR or XML-based
-	syntax definition, and using an approach suitable to replace the
-	existing error-prone command parsers in magick/command.c</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create a
-	vector encoder for EPS, Postscript, PDF, <A HREF="http://www.w3.org/Graphics/SVG/Overview.htm8">SVG</A>,
-	Macromedia Flash (SWF), <A HREF="http://www.w3.org/Graphics/WebCGM/">WebCGM</A>,
-	or WMF.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create an
-	OpenEXR coder based on the <A HREF="http://www.openexr.org/">OpenEXR</A>
-	library from Industrial Light &amp; Magic.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create a
-	</FONT><FONT FACE="Albany"><I>pstoedit</I></FONT><FONT FACE="Albany">
-	module to import Postscript, EPS, and PDF files as vector data using
-	<A HREF="http://home.t-online.de/home/helga.glunz/wglunz/pstoedit/index.htm">pstoedit</A>
-	which already includes a high-quality driver to render Postscript
-	vectors via GraphicsMagick. This module could also export vector
-	data in many formats using pstoedit's output drivers.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create a coder
-	to support the <A HREF="http://www-cals.itsi.disa.mil/">CALS</A>
-	raster file format.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Support
-	reading/rendering HP printer PCL formats.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Add integrated
-	Adobe <A HREF="http://www.adobe.com/products/xmp/main.html">XMP</A>
-	profile support for TIFF, JPEG, PNG, PDF, EPS, and Postscript.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Add a <A HREF="http://www.remotesensing.org/geotiff/geotiff.html">GeoTIFF</A>
-	extension to GraphicsMagick.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Port Erik
-	Reinhard's super-cool <A HREF="http://www.cs.ucf.edu/~reinhard/Reinhard02/">Parameter
-	Estimation For Photographic Tone Reproduction</A> algorithm to
-	GraphicsMagick.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Finish
-	writing the IMDisplay Windows GUI program.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Write a
-	shim-layer to allow <A HREF="http://www.gimp.org/">The GIMP</A> to
-	be executed as a loadable process module providing GraphicsMagick
-	users with access to GIMP features.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Port
-	your existing GIMP module to GraphicsMagick as a loadable process
-	module.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany">Create an
-	interface between GraphicsMagick and <A HREF="http://www.openoffice.org/">OpenOffice.org.</A>
-	so that OpenOffice may load and save any format supported by
-	GraphicsMagick. OpenOffice.org offers a separate SDK so there may be
-	a number of other opportunities to explore.</FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Resolve
-	the remaining porting bugs in the FlashPIX library.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Albany"><FONT SIZE=3>Complete
-	the port of ralcgm to Windows so that it may be used as a delegate
-	under Windows.</FONT></FONT></P>
-</UL>
-<HR>
-<P ALIGN=CENTER><FONT FACE="Albany"><A HREF="Copyright.html">Copyright</A>
-</FONT><FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT><FONT FACE="Albany">
-GraphicsMagick Group 2002, 2003, 2004</FONT></P>
-</BODY>
-</HTML>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>Contributing to GraphicsMagick</title>
+<style type="text/css">
+
+/* magick.css -- default style sheet */
+
+BODY, P, TD, TH, UL, OL  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+	font-size : medium;
+}
+
+H1, H2, H3, H4  {
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+}
+
+H1  {
+	font-size : 120%;
+}
+
+H2  {
+	font-size : 110%;
+}
+
+H3, H4  {
+	font-size : 105%;
+}
+
+A:LINK  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A:VISITED  {
+	text-decoration : underline;
+	color : Purple;
+}
+
+A:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.nav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.nav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+A.nav:HOVER  {
+	text-decoration : underline;
+	color : #0085C0;
+}
+
+A.leftcolnav:LINK  {
+	text-decoration : none;
+	color : #0085C0;
+}
+
+A.leftcolnav:HOVER  {
+	text-decoration : none;
+	background : #999999;
+	color: black;
+}
+
+A.leftcolnav:VISITED  {
+	text-decoration : none;
+	color : Purple;
+}
+
+.stripes  {
+	font-size : smaller;
+}
+
+.navtopon  {
+	background-color : #999999;
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.navtopoff  {
+	font-size : smaller;
+	text-align : center;
+	font-weight : bold;
+}
+
+.gutter  {
+	margin-top : 2mm;
+	margin-right : 3mm;
+	margin-bottom : 3mm;
+	margin-left : 5mm;
+}
+
+.bannergutter {
+        margin-top : 2mm;
+        margin-right : 3mm;
+}
+
+.pagebodygutter  {
+	margin-top : 2mm;
+}
+
+.pagecentergutter  {
+        margin-left : 20mm;
+        margin-right: 20mm;
+        margin-top : 5mm;
+        margin-bottom: 2mm;
+}
+
+.leftcolgutter  {
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 3mm;
+}
+
+.textcolgutter  {
+	margin-bottom : 1.5mm;
+}
+
+.textpromo  {
+	font-size : medium;
+	margin-top : 2mm;
+	margin-right : 1mm;
+	margin-left : 2mm;
+}
+
+.newscolgutter  {
+	margin-left : 1mm;
+	margin-top : 2mm;
+	margin-bottom : 3mm;
+	font-size : medium;
+}
+
+.itemgutter  {
+	margin-left : 1.5mm;
+	font-size : small;
+}
+
+.logogutter  {
+	margin-top : 3mm;
+	margin-bottom : 2mm;
+	margin-left : 3mm;
+}
+
+.navtext  {
+	font-size : smaller;
+}
+
+.navlevel2 {
+        font-size : 9pt;
+}
+
+.navlevel3 {
+        font-size : 8pt;
+}
+
+.navlevel2on {
+        font-size : 9pt;
+	background-color : #cccccc;
+}
+
+.navlevel3on {
+        font-size : 8pt;
+        background-color : #cccccc;
+}
+
+.navlevel1on {
+	background-color : #cccccc;
+}
+
+.note  {
+	font-style : italic;
+	color : gray;
+}
+
+.textwhite  {
+	color : white;
+}
+
+.small  {
+	font-size : smaller;
+}
+
+.tiny  {
+	font-size : smaller;
+}
+
+.confirmation  {
+	color : Lime;
+}
+
+.warning  {
+	color : #ffcc66;
+}
+
+.error  {
+	color : Red;
+}
+
+.disclaimer  {
+	font-size : smaller;
+	color : Gray;
+	margin-top : 1em;
+	margin-bottom : 1em;
+}
+
+
+.bgwhite {
+        background-color: White;
+}
+
+.1colgutter {
+        margin-top: 2mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+}
+
+.1colnavgutter {
+        margin-right: 1mm;
+        margin-left: 1mm;
+}
+
+.largeboldfont {
+	font-size : 110%;
+	font-weight: bold;
+}
+
+.redfont {
+	color : red;
+}
+
+
+</style>
+</head>
+<body>
+<div class="document" id="contributing-to-graphicsmagick">
+<h1 class="title">Contributing to GraphicsMagick</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>The future and success of GraphicsMagick depends on your contributions.
+By contributing to GraphicsMagick you will benefit from the
+features/fixes you contribute, can take pride in taking part in the
+development of a quality product, and you can tell your friends that you
+contribute to the GraphicsMagick project.</p>
+<p>There are a number of ways you can contribute:</p>
+<ul class="simple">
+<li>Submit bug reports to the GraphicsMagick bug tracking system at
+SourceForge.</li>
+<li>Submit patches to the GraphicsMagick patch submission system at
+SourceForge.</li>
+<li>Perform test builds on unusual systems and report the results.</li>
+<li>Submit ideas and proposed designs to the graphicsmagick-core
+mailing list.</li>
+<li>Create a new language interface, dependent library, or application.</li>
+<li>Join the GraphicsMagick Group as a full-fledged developer with CVS
+commit access.</li>
+</ul>
+<p>Regardless of how you choose to contribute, your contributions will be
+treated with the respect and value that they deserve.</p>
+<p>Becoming a member of the GraphicsMagick Group requires a majority vote
+from existing members. Your chances of being admitted to the group are
+increased significantly if you have a proven track-record of success on
+other open source projects, are a recognized expert in the field, or have
+already demonstrated your capabilities and commitment by contributing to
+the project in other ways. Please contact Bob Friesenhahn
+&lt;<a class="reference" href="mailto:bfriesen&#64;simple.dallas.tx.us">bfriesen&#64;simple.dallas.tx.us</a>&gt; in order to be considered for group
+membership.</p>
+<div class="section">
+<h1><a id="areas-to-contribute" name="areas-to-contribute">Areas To Contribute</a></h1>
+<p>The following are areas where significant contributions may be made to
+the GraphicsMagick project:</p>
+<ul class="simple">
+<li>Support building and distributing GraphicsMagick RPMs for Linux.</li>
+<li>Support a FreeBSD &quot;port&quot; in the FreeBSD ports collection for
+GraphicsMagick.</li>
+<li>Set up an FTP mirror site for GraphicsMagick.</li>
+<li>Create a language interface using SWIG &lt;<a class="reference" href="http://www.swig.org/">http://www.swig.org/</a>&gt; to
+support scripting in Perl, Python, TCL/TK, Guile, MzScheme, Ruby,
+Java, PHP, and CHICKEN, based on a common implementation.</li>
+<li>Create a new utility command parser based on a separate LALR or
+XML-based syntax definition, and using an approach suitable to
+replace the existing error-prone command parsers in magick/command.c</li>
+<li>Create a vector encoder for EPS, Postscript, PDF, SVG
+&lt;<a class="reference" href="http://www.w3.org/Graphics/SVG/Overview.htm8">http://www.w3.org/Graphics/SVG/Overview.htm8</a>&gt;, Macromedia Flash
+(SWF), WebCGM &lt;<a class="reference" href="http://www.w3.org/Graphics/WebCGM/">http://www.w3.org/Graphics/WebCGM/</a>&gt;, or WMF.</li>
+<li>Create an OpenEXR coder based on the OpenEXR
+&lt;<a class="reference" href="http://www.openexr.org/">http://www.openexr.org/</a>&gt; library from Industrial Light &amp; Magic.</li>
+<li>Create a /pstoedit/ module to import Postscript, EPS, and PDF
+files as vector data using pstoedit
+&lt;<a class="reference" href="http://home.t-online.de/home/helga.glunz/wglunz/pstoedit/index.htm">http://home.t-online.de/home/helga.glunz/wglunz/pstoedit/index.htm</a>&gt;
+which already includes a high-quality driver to render Postscript
+vectors via GraphicsMagick. This module could also export vector
+data in many formats using pstoedit's output drivers.</li>
+<li>Create a coder to support the CALS
+&lt;<a class="reference" href="http://www-cals.itsi.disa.mil/">http://www-cals.itsi.disa.mil/</a>&gt; raster file format.</li>
+<li>Support reading/rendering HP printer PCL formats.</li>
+<li>Add integrated Adobe XMP
+&lt;<a class="reference" href="http://www.adobe.com/products/xmp/main.html">http://www.adobe.com/products/xmp/main.html</a>&gt; profile support for
+TIFF, JPEG, PNG, PDF, EPS, and Postscript.</li>
+<li>Add a GeoTIFF &lt;<a class="reference" href="http://www.remotesensing.org/geotiff/geotiff.html">http://www.remotesensing.org/geotiff/geotiff.html</a>&gt;
+extension to GraphicsMagick.</li>
+<li>Port Erik Reinhard's super-cool Parameter Estimation For
+Photographic Tone Reproduction
+&lt;<a class="reference" href="http://www.cs.ucf.edu/~reinhard/Reinhard02/">http://www.cs.ucf.edu/~reinhard/Reinhard02/</a>&gt; algorithm to
+GraphicsMagick.</li>
+<li>Finish writing the IMDisplay Windows GUI program.</li>
+<li>Write a shim-layer to allow The GIMP &lt;<a class="reference" href="http://www.gimp.org/">http://www.gimp.org/</a>&gt; to be
+executed as a loadable process module providing GraphicsMagick
+users with access to GIMP features.</li>
+<li>Port your existing GIMP module to GraphicsMagick as a loadable
+process module.</li>
+<li>Create an interface between GraphicsMagick and OpenOffice.org.
+&lt;<a class="reference" href="http://www.openoffice.org/">http://www.openoffice.org/</a>&gt; so that OpenOffice may load and save
+any format supported by GraphicsMagick. OpenOffice.org offers a
+separate SDK so there may be a number of other opportunities to
+explore.</li>
+<li>Resolve the remaining porting bugs in the FlashPIX library.</li>
+<li>Complete the port of ralcgm to Windows so that it may be used as a
+delegate under Windows.</li>
+</ul>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-03-30 01:55 UTC.
+
+</div>
+</body>
+</html>
