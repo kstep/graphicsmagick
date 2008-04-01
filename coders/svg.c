@@ -2326,12 +2326,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
   svg_info->n--;
 }
 
-static void SVGCharacters(void *context,const xmlChar *c,int length)
+static void SVGCharacters(void *context,const xmlChar *c,size_t length)
 {
   register char
     *p;
 
-  register long
+  register size_t
     i;
 
   SVGInfo
@@ -2341,7 +2341,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     Receiving some characters from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.characters(%.1024s,%d)",c,length);
+                        "  SAX.characters(%.1024s,%lu)",c,(unsigned long) length);
   svg_info=(SVGInfo *) context;
   if (svg_info->text != (char *) NULL)
     {

@@ -817,7 +817,7 @@ static char **MagickFontToList(char *font)
     for (q=p; *q != '\0'; q++)
       if ((*q == ':') || (*q == ';') || (*q == ','))
         break;
-    fontlist[i]=MagickAllocateMemory(char *,q-p+1);
+    fontlist[i]=MagickAllocateMemory(char *,(size_t) (q-p+1));
     if (fontlist[i] == (char *) NULL)
       {
         MagickError3(ResourceLimitError,MemoryAllocationFailed,
@@ -5627,11 +5627,11 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
   if (!window->shared_memory)
     {
       if (ximage->format == XYBitmap)
-        ximage->data=MagickAllocateMemory(char *,
-          ximage->bytes_per_line*ximage->height*ximage->depth);
+        ximage->data=MagickAllocateArray(char *,
+          ximage->height*ximage->depth,ximage->bytes_per_line);
       else
-        ximage->data=MagickAllocateMemory(char *,
-          ximage->bytes_per_line*ximage->height);
+        ximage->data=MagickAllocateArray(char *,
+          ximage->height,ximage->bytes_per_line);
     }
   if (ximage->data == (char *) NULL)
     {

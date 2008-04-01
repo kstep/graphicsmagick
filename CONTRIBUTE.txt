@@ -63,21 +63,20 @@ the GraphicsMagick project:
   replace the existing error-prone command parsers in magick/command.c
 
 * Create a vector encoder for EPS, Postscript, PDF, SVG
-  <http://www.w3.org/Graphics/SVG/Overview.htm8>, Macromedia Flash
+  <http://www.w3.org/Graphics/SVG/>, Macromedia Flash
   (SWF), WebCGM <http://www.w3.org/Graphics/WebCGM/>, or WMF.
 
 * Create an OpenEXR coder based on the OpenEXR
   <http://www.openexr.org/> library from Industrial Light & Magic.
 
-* Create a /pstoedit/ module to import Postscript, EPS, and PDF
-  files as vector data using pstoedit
-  <http://home.t-online.de/home/helga.glunz/wglunz/pstoedit/index.htm>
-  which already includes a high-quality driver to render Postscript
-  vectors via GraphicsMagick. This module could also export vector
-  data in many formats using pstoedit's output drivers.
+* Create a *pstoedit* module to import Postscript, EPS, and PDF
+  files as vector data using pstoedit <http://www.pstoedit.net/> which
+  already includes a high-quality driver to render Postscript vectors via
+  GraphicsMagick. This module could also export vector data in many
+  formats using pstoedit's output drivers.
 
 * Create a coder to support the CALS
-  <http://www-cals.itsi.disa.mil/> raster file format.
+  <http://www.fileformat.info/format/cals/> raster file format.
 
 * Support reading/rendering HP printer PCL formats.
 
@@ -93,7 +92,8 @@ the GraphicsMagick project:
   <http://www.cs.ucf.edu/~reinhard/Reinhard02/> algorithm to
   GraphicsMagick.
 
-* Finish writing the IMDisplay Windows GUI program.
+* Create a replacement (using a portable Widget set such as FLTK) for the
+  IMDisplay Windows GUI program.
 
 * Write a shim-layer to allow The GIMP <http://www.gimp.org/> to be
   executed as a loadable process module providing GraphicsMagick

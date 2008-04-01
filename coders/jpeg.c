@@ -276,7 +276,8 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  long int
+  size_t
+    i,
     length;
 
   register char
@@ -287,11 +288,11 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   */
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  length=(long) GetCharacter(jpeg_info) << 8;
-  length+=(long) GetCharacter(jpeg_info);
-  length-=2;
-  if (length <= 0)
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  if (length <= 2)
     return(True);
+  length-=2;
   comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
@@ -299,8 +300,12 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Read comment.
   */
-  for (p=comment; --length >= 0; p++)
-    *p=GetCharacter(jpeg_info);
+  p=comment;
+  for (i=length; i != 0; i--)
+    {
+      *p=GetCharacter(jpeg_info);
+      p++;
+    }
   *p='\0';
   (void) SetImageAttribute(image,"comment",comment);
   MagickFreeMemory(comment);
@@ -315,10 +320,10 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  long
+  size_t
     length;
 
-  register long
+  register size_t
     i;
 
   char
@@ -336,11 +341,12 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Determine length of generic profile.
   */
-  length=(long) GetCharacter(jpeg_info) << 8;
-  length+=(long) GetCharacter(jpeg_info);
-  length-=2;
-  if (length <= 0)
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  if (length <= 2)
     return(status);
+  length-=2;
+
   marker=jpeg_info->unread_marker-JPEG_APP0;
 
   /*
@@ -362,15 +368,15 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
                          (char *) NULL);
 
-  for (i=0 ; i<length ; i++)
+  for (i=0 ; i < length ; i++)
     profile[i]=GetCharacter(jpeg_info);
 
   /*
     Detect EXIF and XMP profiles.
   */
-  if ((marker==1) && (length>4) && (strncmp((char *) profile,"Exif",4) == 0))
+  if ((marker==1) && (length > 4) && (strncmp((char *) profile,"Exif",4) == 0))
     FormatString(profile_name,"EXIF");
-  else if (((marker==1) && length>5) && (strncmp((char *) profile,"http:",5) == 0))
+  else if (((marker==1) && length > 5) && (strncmp((char *) profile,"http:",5) == 0))
     FormatString((char *) profile,"XMP");
 
   /*
@@ -379,8 +385,8 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   status=SetImageProfile(image,profile_name,profile,length);
   MagickFreeMemory(profile);
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %ld bytes",
-    profile_name,length);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
+                        profile_name,(unsigned long) length);
 
   return (status);
 }
@@ -437,7 +443,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   /*
     Read color profile.
   */
-  profile=MagickAllocateMemory(unsigned char *,length);
+  profile=MagickAllocateMemory(unsigned char *,(size_t) length);
   if (profile == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
@@ -539,7 +545,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length <= 0)
     return(True);
 
-  profile=MagickAllocateMemory(unsigned char *,length+tag_length);
+  profile=MagickAllocateMemory(unsigned char *,(size_t) length+tag_length);
   if (profile == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);

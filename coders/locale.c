@@ -503,7 +503,7 @@ static char *EscapeLocaleString(const char *str)
 {
     const char *p;
     char *strput, *s;
-    int n;
+    size_t n;
 
     for (p = str, n = 0; *p; p++, n++)
         if (*p == '"' || *p == '\\')
@@ -594,7 +594,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
             {
                 int x;
 
-                if (!(xp = MagickAllocateMemory(char *,np - tp + 1)))
+                if (!(xp = MagickAllocateMemory(char *,(size_t) (np - tp + 1))))
                 {
                     (void) fprintf(stderr, "out of memory!\n" );
                     exit(1);

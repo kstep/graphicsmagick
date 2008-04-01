@@ -3912,7 +3912,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
       else
         while (!isspace((int)(unsigned char) (*q)) && (*q != '\0'))
           q++;
-    argv[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
+    argv[i]=MagickAllocateMemory(char *,(size_t) (q-p+MaxTextExtent));
     if (argv[i] == (char *) NULL)
       {
         int
@@ -4052,7 +4052,7 @@ MagickExport char **StringToList(const char *text)
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
+        textlist[i]=MagickAllocateMemory(char *,(size_t) (q-p+MaxTextExtent));
         if (textlist[i] == (char *) NULL)
           MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
             UnableToConvertText);

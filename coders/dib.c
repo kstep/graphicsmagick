@@ -1180,8 +1180,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      dib_colormap=MagickAllocateMemory(unsigned char *,
-        4*(1 << dib_info.bits_per_pixel));
+      dib_colormap=MagickAllocateArray(unsigned char *,
+                                       (1 << dib_info.bits_per_pixel),4);
       if (dib_colormap == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       q=dib_colormap;

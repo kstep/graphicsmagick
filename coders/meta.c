@@ -223,10 +223,12 @@ static int convertHTMLcodes(char *s, int len)
   return 0;
 }
 
-static char *super_fgets(char **b, int *blen, Image *file)
+static char *super_fgets(char **b, size_t *blen, Image *file)
 {
   int
-    c,
+    c;
+
+  size_t
     len;
 
   unsigned char
@@ -294,7 +296,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
   unsigned int
     recnum;
 
-  int
+  size_t
     inputlen = BUFFER_SZ;
 
   long
@@ -484,11 +486,13 @@ static long parse8BIM(Image *ifile, Image *ofile)
   return outputlen;
 }
 
-static char *super_fgets_w(char **b, int *blen, Image *file)
+static char *super_fgets_w(char **b, size_t *blen, Image *file)
 {
-  int
-    c,
+  size_t
     len;
+
+  int
+    c;
 
   unsigned char
     *p,
@@ -553,7 +557,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   unsigned int
     recnum;
 
-  int
+  size_t
     inputlen = BUFFER_SZ;
 
   long
@@ -580,7 +584,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
     next=0;
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "META CODER Parse8BIM: %s (%d)",line, inputlen);
+                          "META CODER Parse8BIM: %s (%lu)",line, (unsigned long) inputlen);
     token = MagickAllocateMemory(char *,inputlen);
     newstr = MagickAllocateMemory(char *,inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,

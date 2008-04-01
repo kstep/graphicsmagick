@@ -682,7 +682,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     }  
 
   /* ----- Load raster data ----- */
-    BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /* Ldblk was set in the check phase */
+    BImgBuff = MagickAllocateMemory(unsigned char *,(size_t) (ldblk));    /* Ldblk was set in the check phase */
     if (BImgBuff == NULL)
       goto NoMemory;
 
@@ -707,7 +707,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
 	  goto ExitLoop;
 	}
-        if(ReadBlob(image,ldblk,(char *)BImgBuff) != ldblk)
+        if(ReadBlob(image,ldblk,(char *)BImgBuff) != (size_t) ldblk)
 	{
 	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
              "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));

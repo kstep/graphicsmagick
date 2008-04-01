@@ -738,9 +738,6 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   Image
     *map;
 
-  const ImageAttribute
-    *attribute;
-
   register IndexPacket
     *indexes;
 

@@ -561,7 +561,7 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
 static size_t EncodeImage(Image *image,const unsigned char *scanline,
   const unsigned long bytes_per_line,unsigned char *pixels)
 {
-#define MaxCount  128
+#define MaxCount  128U
 #define MaxPackbitsRunlength  128
 
   long
@@ -1394,7 +1394,7 @@ ModuleExport void UnregisterPICTImage(void)
 */
 static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
-#define MaxCount  128
+#define MaxCount  128U
 #define PictCropRegionOp  0x01
 #define PictEndOfPictureOp  0xff
 #define PictJPEGOp  0x8200

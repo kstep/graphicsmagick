@@ -332,7 +332,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
 }
 
 static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
-              XCFLayerInfo*  inLayerInfo, int data_length)
+              XCFLayerInfo*  inLayerInfo, size_t data_length)
 {
   unsigned char data, val;
   ExtendedSignedIntegralType size;

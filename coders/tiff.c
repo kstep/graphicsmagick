@@ -1756,7 +1756,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
               }
 
-            scanline=MagickAllocateMemory(unsigned char *,scanline_size);
+            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size);
             if (scanline == (unsigned char *) NULL)
               {
                 TIFFClose(tiff);
@@ -1896,7 +1896,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
               }
 
-            strip=MagickAllocateMemory(unsigned char *,strip_size_max);
+            strip=MagickAllocateMemory(unsigned char *,(size_t) strip_size_max);
             if (strip == (unsigned char *) NULL)
               {
                 TIFFClose(tiff);
@@ -2088,7 +2088,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             /*
               Allocate tile buffer
             */
-            tile=MagickAllocateMemory(unsigned char *, tile_size_max);
+            tile=MagickAllocateMemory(unsigned char *, (size_t) tile_size_max);
             if (tile == (unsigned char *) NULL)
               {
                 TIFFClose(tiff);
@@ -4072,7 +4072,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               Allocate memory for one scanline.
             */
             scanline_size=TIFFScanlineSize(tiff);
-            scanline=MagickAllocateMemory(unsigned char *,scanline_size);
+            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size);
             if (scanline == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             /*
@@ -4257,7 +4257,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate tile buffer
             */
-            tile=MagickAllocateMemory(unsigned char *, tile_size_max);
+            tile=MagickAllocateMemory(unsigned char *, (size_t) tile_size_max);
             if (tile == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);            
             /*

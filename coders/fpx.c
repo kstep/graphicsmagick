@@ -181,14 +181,14 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     status,
-    subimage;
-
-  unsigned long
+    subimage,
     height,
-    memory_limit,
     tile_width,
     tile_height,
     width;
+
+  size_t
+    memory_limit;
 
   /*
     Open image.
@@ -784,8 +784,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
+  size_t
+    memory_limit;
+
   unsigned long
-    memory_limit,
     tile_height,
     tile_width;
 

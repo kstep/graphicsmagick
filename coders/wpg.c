@@ -338,11 +338,11 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
 
 
   if(RetVal==MagickFail)
-    LogMagickEvent(CoderEvent,GetMagickModule(),"ImportImagePixelArea failed for row: %d, bpp: %d", y, bpp); 
+    LogMagickEvent(CoderEvent,GetMagickModule(),"ImportImagePixelArea failed for row: %ld, bpp: %d", y, bpp); 
 
   if (!SyncImagePixels(image))
   {
-    LogMagickEvent(CoderEvent,GetMagickModule(),"SyncImagePixels failed for row: %d, bpp: %d", y, bpp); 
+    LogMagickEvent(CoderEvent,GetMagickModule(),"SyncImagePixels failed for row: %ld, bpp: %d", y, bpp); 
     RetVal = MagickFail;
   }
           
@@ -383,7 +383,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
   y=0;
 
   ldblk=(long) ((bpp*image->columns+7)/8);
-  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+  BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(BImgBuff==NULL) return(-2);
 
   while(y<(long) image->rows)
@@ -488,10 +488,10 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   x=0;
   y=0;
   ldblk=(long) ((bpp*image->columns+7)/8);
-  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+  BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(BImgBuff==NULL)
     return(-2);
-  UpImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+  UpImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(UpImgBuff==NULL)
   {
     MagickFreeMemory(BImgBuff);
@@ -1225,7 +1225,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 case 0:    /*Uncompressed raster*/
                   {
                     ldblk=(long) ((bpp*image->columns+7)/8);
-                    BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);
+                    BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 

@@ -59,6 +59,8 @@ int main ( int argc, char **argv )
       { 0, 0 }
     };
 
+  (void) argc;
+  (void) argv;
 
   GetExceptionInfo(&exception);
   map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);

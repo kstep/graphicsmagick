@@ -573,7 +573,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
 
   /* ----- Load TopoL raster ----- */
   ldblk = (long) ((depth * image->columns + 7) / 8);
-  BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);	/*Ldblk was set in the check phase */
+  BImgBuff = MagickAllocateMemory(unsigned char *,(size_t) ldblk);	/*Ldblk was set in the check phase */
   if (BImgBuff == NULL)
     goto NoMemory;
 

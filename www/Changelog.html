@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-04-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c: Convert more code to use size_t for sized values
+        rather than long.<BR>
+  <LI> coders/wpg.c (InsertRow): Fix log format string specification.
+  <LI> coders/dpx.c (WriteDPXImage): Fix typo in casts.
+  <LI> coders/fpx.c (ReadFPXImage): Apply FreeBSD patch from Mikhail
+        Teterin to allow FlashPIX to work better for 64-bit builds.
+        Addresses SourceForge issue 1824658 "FPX should work again now".
+  <LI> magick/blob.c (ImageToBlob): Fix typo in cast.
+
+</UL>
+<p>
 2008-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

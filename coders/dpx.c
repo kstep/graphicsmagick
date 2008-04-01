@@ -3872,7 +3872,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     Allocate sample translation map storage.
   */
   map_Y=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
-  if (map_Y == (sample_t) NULL)
+  if (map_Y == (sample_t *) NULL)
     {
       MagickFreeMemory(samples);
       MagickFreeMemory(scanline);
@@ -3881,7 +3881,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) memset((void *) map_Y,0,(MaxMap+1)*sizeof(sample_t));
 
   map_CbCr=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
-  if (map_CbCr == (sample_t) NULL)
+  if (map_CbCr == (sample_t *) NULL)
     {
       MagickFreeMemory(samples);
       MagickFreeMemory(scanline);

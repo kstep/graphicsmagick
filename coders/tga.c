@@ -300,7 +300,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             TGA image comment.
           */
-          comment=MagickAllocateMemory(char *,tga_info.id_length+1);
+          comment=MagickAllocateMemory(char *,(size_t) tga_info.id_length+1);
           if (comment == (char *) NULL)
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
@@ -705,8 +705,10 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
+  size_t
+    count;
+
   long
-    count,
     y;
 
   register const PixelPacket
@@ -884,8 +886,8 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file (blue, green, red byte order).
           */
-          targa_colormap=MagickAllocateMemory(unsigned char *,
-                                              3*targa_info.colormap_length);
+          targa_colormap=MagickAllocateArray(unsigned char *,
+                                             targa_info.colormap_length,3);
           if (targa_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
@@ -903,7 +905,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       /*
         Convert MIFF to TGA raster pixels.
       */
-      count=(long) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
+      count=(size_t) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
       targa_pixels=MagickAllocateMemory(unsigned char *,count);
       if (targa_pixels == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);

@@ -115,6 +115,9 @@ int main(int argc,char **argv)
     columns,
     rows;
 
+  (void) argc;
+  (void) argv;
+
   magick_wand=NewMagickWand();
   MagickSetSize(magick_wand,640,480);
   MagickGetSize(magick_wand,&columns,&rows);

@@ -542,7 +542,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         offsets=MagickAllocateMemory(unsigned long *,iris_info.ysize*
           iris_info.zsize*sizeof(unsigned long));
-        max_packets=MagickAllocateMemory(unsigned char *,4*iris_info.xsize+10);
+        max_packets=MagickAllocateArray(unsigned char *,iris_info.xsize+10,4);
         runlength=MagickAllocateMemory(unsigned long *,iris_info.ysize*
           iris_info.zsize*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||

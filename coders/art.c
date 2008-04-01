@@ -123,7 +123,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping) goto DONE_READING;
 
   /* ----- Load RLE compressed raster ----- */
-  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);  /*Ldblk was set in the check phase*/
+  BImgBuff=MagickAllocateMemory(unsigned char *,((size_t) ldblk));  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL)
     NoMemory:
   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -204,7 +204,7 @@ static unsigned int WriteARTImage(const ImageInfo *image_info,Image *image)
   DataSize = (long)((image->columns+7) / 8);
   Padding = (unsigned char)((-DataSize) & 0x01);  
 
-  pixels=MagickAllocateMemory(unsigned char *,DataSize);
+  pixels=MagickAllocateMemory(unsigned char *,(size_t) (DataSize));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 

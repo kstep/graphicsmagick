@@ -1426,8 +1426,10 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     nde=Read16u(morder,ifdp);
     for (; de < nde; de++)
     {
+      unsigned int
+        n;
+
       int
-        n,
         t,
         f,
         c;
@@ -1478,7 +1480,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
               value=MagickAllocateMemory(char *,n+1);
               if (value != (char *) NULL)
                 {
-                  long
+                  unsigned int
                     a;
 
                   for (a=0; a < n; a++)
@@ -1556,7 +1558,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
               value=MagickAllocateMemory(char *,n+1);
               if (value != (char *) NULL)
                 {
-                  long
+                  unsigned int
                     a;
 
                   for (a=0; a < n; a++)
