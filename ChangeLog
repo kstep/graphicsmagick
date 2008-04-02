@@ -1,3 +1,10 @@
+2008-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/channel.c (GetImageChannelDepth): Added progress monitor
+	support.
+	* magick/signature.c (SignatureImage): Added progress monitor support.
+	* magick/image.c (GetImageDepth): Added progress monitor support.
+
 2008-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool:  Update to libtool 2.2.2.

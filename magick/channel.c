@@ -408,6 +408,7 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
 %
 %
 */
+#define ComputeChannelDepthText "  Get image channel depth...  "
 #define COMPUTE_CHANNEL_DEPTH(depth,parameter) \
 { \
   long \
@@ -448,9 +449,13 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
           indexes++; \
           x--; \
         } \
+       if (QuantumTick(y,image->rows)) \
+         if (!MagickMonitor(ComputeChannelDepthText,y,image->rows,exception)) \
+            break; \
       if (depth == QuantumDepth) \
         break; \
     } \
+  MagickMonitor(ComputeChannelDepthText,image->rows,image->rows,exception); \
 }
 
 MagickExport unsigned int GetImageChannelDepth(const Image *image,

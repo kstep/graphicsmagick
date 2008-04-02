@@ -2744,6 +2744,7 @@ static unsigned char* AllocateDepthMap(void)
     }
   return map;
 }
+#define GetImageDepthText "  Get image depth...  "
 MagickExport unsigned long GetImageDepth(const Image *image,
   ExceptionInfo *exception)
 {
@@ -2777,6 +2778,9 @@ MagickExport unsigned long GetImageDepth(const Image *image,
       scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
       for (x=image->colors ; x > 0; x--)
         {
+          if (QuantumTick(image->colors-x,image->colors))
+            if (!MagickMonitor(GetImageDepthText,image->colors-x,image->colors,exception))
+              break;
           if ((p->red != scale*(p->red/scale)) ||
               (p->green != scale*(p->green/scale)) ||
               (p->blue != scale*(p->blue/scale)))
@@ -2789,6 +2793,8 @@ MagickExport unsigned long GetImageDepth(const Image *image,
             }
           p++;
         }
+      /* Force 100% */
+      MagickMonitor(GetImageDepthText,image->colors,image->colors,exception);
     }
   else
     {
@@ -2826,9 +2832,14 @@ MagickExport unsigned long GetImageDepth(const Image *image,
                     break;
                   p++;
                 }
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(GetImageDepthText,y,image->rows,exception))
+                  break;
               if (depth == QuantumDepth)
                 break;
             }
+          /* Force 100% */
+          MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
           MagickFreeMemory(map);
         }
 #else /* MaxMap == MaxRGB */
@@ -2860,9 +2871,14 @@ MagickExport unsigned long GetImageDepth(const Image *image,
               p++;
               x--;
             }
+          if (QuantumTick(y,image->rows))
+            if (!MagickMonitor(GetImageDepthText,y,image->rows,exception))
+              break;
           if (depth == QuantumDepth)
             break;
         }
+      /* Force 100% */
+      MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
 #endif
     }
   

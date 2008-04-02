@@ -37,6 +37,7 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
+#include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/signature.h"
 #include "magick/utility.h"
@@ -166,6 +167,7 @@ MagickExport void GetSignatureInfo(SignatureInfo *signature_info)
 %
 %
 */
+#define SignatureImageText "  Compute image SHA-256 signature...  "
 MagickExport unsigned int SignatureImage(Image *image)
 {
   char
@@ -267,6 +269,9 @@ MagickExport unsigned int SignatureImage(Image *image)
       p++;
     }
     UpdateSignature(&signature_info,message,q-message);
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(SignatureImageText,y,image->rows,&image->exception))
+        break;
   }
   FinalizeSignature(&signature_info);
   MagickFreeMemory(message);
