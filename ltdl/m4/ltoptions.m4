@@ -7,7 +7,7 @@
 # unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
 
-# serial 4 ltoptions.m4
+# serial 5 ltoptions.m4
 
 # This is to help aclocal find these macros, as it can't see m4_define.
 AC_DEFUN([LTOPTIONS_VERSION], [m4_if([1])])
@@ -143,7 +143,8 @@ _LT_DECL([], [OBJDUMP], [0], [Object dumper program])dnl
 ])# win32-dll
 
 AU_DEFUN([AC_LIBTOOL_WIN32_DLL],
-[_LT_SET_OPTION([LT_INIT], [win32-dll])
+[AC_REQUIRE([AC_CANONICAL_HOST])dnl
+_LT_SET_OPTION([LT_INIT], [win32-dll])
 AC_DIAGNOSE([obsolete],
 [$0: Remove this warning and the call to _LT_SET_OPTION when you
 put the `win32-dll' option into LT_INIT's first parameter.])

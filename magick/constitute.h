@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003, 2004, 2005 GraphicsMagick Group
+  Copyright (C) 2003, 2004, 2005, 2007, 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  
-  ImageMagick Constitute Methods.
+  GraphicsMagick Constitute Methods.
 */
 #ifndef _MAGICK_CONSTITUTE_H
 #define _MAGICK_CONSTITUTE_H
@@ -18,7 +18,9 @@ extern "C" {
 /*
   Quantum import/export types as used by ImportImagePixelArea() and
   ExportImagePixelArea(). Values are imported or exported in network
-  byte order ("big endian").
+  byte order ("big endian") by default, but little endian may be
+  selected via the 'endian' option in ExportPixelAreaOptions and
+  ImportPixelAreaOptions.
 */
 typedef enum
 {

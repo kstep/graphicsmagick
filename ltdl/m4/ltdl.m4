@@ -7,7 +7,7 @@
 # unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
 
-# serial 13 LTDL_INIT
+# serial 14 LTDL_INIT
 
 # LT_CONFIG_LTDL_DIR(DIRECTORY, [LTDL-MODE])
 # ------------------------------------------
@@ -154,7 +154,7 @@ m4_defun([_LTDL_INSTALLABLE],
   if test x"${lt_lib_ltdl-no}" = xyes; then
     if test x"$enable_ltdl_install" != xyes; then
       # Don't overwrite $prefix/lib/libltdl.la without --enable-ltdl-install
-      AC_MSG_WARN([not overwriting libltdl at $prefix, force with \`--enable-ltdl-install'])
+      AC_MSG_WARN([not overwriting libltdl at $prefix, force with `--enable-ltdl-install'])
       enable_ltdl_install=no
     fi
   elif test x"$enable_ltdl_install" = xno; then
@@ -287,7 +287,7 @@ AC_ARG_WITH([ltdl_include],
 if test -n "$with_ltdl_include"; then
   if test -f "$with_ltdl_include/ltdl.h"; then :
   else
-    AC_MSG_ERROR([invalid ltdl include directory: \`$with_ltdl_include'])
+    AC_MSG_ERROR([invalid ltdl include directory: `$with_ltdl_include'])
   fi
 else
   with_ltdl_include=no
@@ -300,7 +300,7 @@ AC_ARG_WITH([ltdl_lib],
 if test -n "$with_ltdl_lib"; then
   if test -f "$with_ltdl_lib/libltdl.la"; then :
   else
-    AC_MSG_ERROR([invalid ltdl library directory: \`$with_ltdl_lib'])
+    AC_MSG_ERROR([invalid ltdl library directory: `$with_ltdl_lib'])
   fi
 else
   with_ltdl_lib=no
@@ -323,7 +323,7 @@ case ,$with_included_ltdl,$with_ltdl_include,$with_ltdl_lib, in
 	LTDLINCL=
 	;;
   ,no*,no,*)
-	AC_MSG_ERROR([\`--with-ltdl-include' and \`--with-ltdl-lib' options must be used together])
+	AC_MSG_ERROR([`--with-ltdl-include' and `--with-ltdl-lib' options must be used together])
 	;;
   *)	with_included_ltdl=no
 	LIBLTDL="-L$with_ltdl_lib -lltdl"
@@ -471,6 +471,13 @@ AC_CACHE_CHECK([whether deplibs are loaded by dlopen],
     ;;
   aix[[4-9]]*)
     lt_cv_sys_dlopen_deplibs=yes
+    ;;
+  amigaos*)
+    case $host_cpu in
+    powerpc)
+      lt_cv_sys_dlopen_deplibs=no
+      ;;
+    esac
     ;;
   darwin*)
     # Assuming the user has installed a libdl from somewhere, this is true
