@@ -3026,6 +3026,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   ExportPixelAreaOptions
     export_options;
 
+  ExportPixelAreaInfo
+    export_info;
+
   MagickBool
     filename_is_temporary=MagickFalse,
     logging;
@@ -4122,12 +4125,16 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       Export pixels to scanline.
                     */
                     if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
-                                             scanline,&export_options,0)
+                                             scanline,&export_options,&export_info)
                         == MagickFail)
                       {
                         status=MagickFail;
                         break;
                       }
+                    /*
+                      Enforce that we did not overrun our buffer.
+                    */
+                    assert(export_info.bytes_exported <= (size_t) scanline_size);
                     /*
                       Write scanline.
                     */
@@ -4345,12 +4352,16 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                             */
                             if (ExportImagePixelArea(image,quantum_type,
                                                      bits_per_sample,q,
-                                                     &export_options,0)
+                                                     &export_options,&export_info)
                                 == MagickFail)
                               {
                                 status=MagickFail;
                                 break;
                               }
+                            /*
+                              Enforce that we did not overrun our buffer.
+                            */
+                            assert(export_info.bytes_exported <= (size_t) scanline_size);
                             q += stride;
                           } /* for yy */
                         if (status == MagickFail)

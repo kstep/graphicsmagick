@@ -246,7 +246,7 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 11, 2007</p>
+<p>This file was last updated on April 3, 2007</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -279,6 +279,8 @@ ChangeLog file for full details.</p>
 <li>XWD integer overflow fix (CVE-2007-1797).</li>
 <li>Implementation has replaced usage of strcpy, strcat, and strncat
 with the more security conscious strlcat and strlcpy.</li>
+<li>DCM, DIB, XCF, XBM, and XWD security fix for integer overflow
+vulnerability (IDefense 09.19.07).</li>
 </ul>
 </blockquote>
 <p>Bug fixes:</p>
@@ -311,6 +313,8 @@ output.</li>
 <li>Fix for stripped-TIFF reader. Discard extra samples beyond alpha in
 scanline TIFFs.</li>
 <li>Endian option now controls TIFF byte-order rather than bit-order.</li>
+<li>TIFF writer can now write to pipes and other non-seekable output
+destinations.</li>
 <li>JBIG writer was writing empty files for some libjbig releases.</li>
 <li>Improved handling of corrupt GIF files.</li>
 <li>Handle large SUN format images.</li>
@@ -318,6 +322,7 @@ scanline TIFFs.</li>
 <li>For the gmdisplay program, ensure that only RGB data is sent to Windows.</li>
 <li>Many memory leak fixes.</li>
 <li>PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.</li>
+<li>PDF writer now writes proper output with CCITT compression.</li>
 <li>Properly use fseeko() and ftello() if they are available.</li>
 <li>Fixed a infinite loop bug in the XWD reader.</li>
 <li>Fix minor memory leak in ProfileImage().</li>
@@ -337,6 +342,11 @@ rounding error (noticed under AIX).</li>
 in graphics magick&quot;.</li>
 <li>Fix for SourceForge bug id 1743141 &quot;Affine matrix option parsing&quot;.</li>
 <li>Fix for SourceForge bug id 1625477 &quot;Memory leak reading layered PSD Image&quot;.</li>
+<li>Fix for SourceForge bug id 1878992 &quot;literal square brackets in file
+name cause large delay and bug id 1783209 &quot;converting runs slowly
+when subimage is specified&quot;.</li>
+<li>Fix for SourceForge bug id 1883527 &quot;compression of tiff-file has no effect&quot;.</li>
+<li>Successfully read files in the form &quot;file[123]&quot;.</li>
 <li>Fix reading 12-bit grayscale JPEG.</li>
 <li>Set image depth appropriately when importing image from X11 display.</li>
 <li>Fix map resource tracking.</li>
@@ -378,15 +388,26 @@ notation like 4:4:4 and 4:2:2.</li>
 <li>Use MAGICK_IOBUF_SIZE to tune the size of the I/O buffer.</li>
 <li>Use -type Bilevel, Grayscale, TrueColor, or TrueColorMatte to
 influence the type of image that Ghostscript returns.</li>
+<li>Use '-define tiff:fill-order={msb2lsb|lsb2msb}' to control TIFF bit
+fill order.</li>
 <li>The -version option now dumps a feature list as well as the build
 options.</li>
 <li>The -endian option now supports the option 'native'.</li>
 <li>A -monitor is added to enable progress monitoring for the command line
 utilities.</li>
+<li>Use the -output-directory option to 'mogrify' to send output files to
+the specified directory.</li>
 <li>The already supported option '-type Optimize' is now honored by
 formats that need to choose a subformat based on the properties of
 the image. Grueling tests of many/all pixels are not performed
 unless '-type Optimize' is supplied.</li>
+<li>Added a a -set option to the composite, convert, display, mogrify,
+import commands in order to allow setting an image attribute.</li>
+<li>Display utility no longer defaults to reading from standard input if
+stdin is not a tty.</li>
+<li>May now be configured to use the umem memory allocation library
+available in Solaris 9, Update 3 and later, or from the portable umem
+project.</li>
 </ul>
 </blockquote>
 <p>Coder additions/improvements:</p>
@@ -424,6 +445,13 @@ attributes so that an identify -format specification like
 <li>Incorporated changes changes necessary so that GraphicsMagick can
 work with the Ch C/C++ interpreter from SoftIntegration at
 <a class="reference" href="http://www.softintegration.com/">http://www.softintegration.com/</a>.</li>
+<li>Added MagickAllocFunctions() to allow the API user to replace the
+underlying memory allocator functions.</li>
+<li>Added MagickMalloc() and deprecated AcquireMemory().</li>
+<li>Added MagickCloneMemory() and deprecated CloneMemory().</li>
+<li>Added MagickMallocArray() to safely allocate N items of size S.</li>
+<li>Added MagickRealloc() and deprecated ReacquireMemory().</li>
+<li>Added MagickFree() and deprecated LiberateMemory().</li>
 </ul>
 </blockquote>
 <p>Performance improvments:</p>
@@ -468,6 +496,7 @@ physical memory is available. Important for large-memory machines.</li>
 source package and building FlashPIX is disabled by default.
 FlashPIX may still be built by adding the library (separately
 distributed).</li>
+<li>Fix bitmap handle leak in CropImageToHBITMAP() and ImageToHBITMAP().</li>
 </ul>
 </blockquote>
 </div>
@@ -868,7 +897,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-03-09 23:28 UTC.
+Generated on: 2008-04-03 19:33 UTC.
 
 </div>
 </body>

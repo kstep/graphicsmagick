@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 11, 2007
+This file was last updated on April 3, 2007
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -36,6 +36,8 @@ Security fixes:
   * XWD integer overflow fix (CVE-2007-1797).
   * Implementation has replaced usage of strcpy, strcat, and strncat
     with the more security conscious strlcat and strlcpy.
+  * DCM, DIB, XCF, XBM, and XWD security fix for integer overflow
+    vulnerability (IDefense 09.19.07).
 
 Bug fixes:
 
@@ -66,6 +68,8 @@ Bug fixes:
   * Fix for stripped-TIFF reader. Discard extra samples beyond alpha in
     scanline TIFFs.
   * Endian option now controls TIFF byte-order rather than bit-order.
+  * TIFF writer can now write to pipes and other non-seekable output
+    destinations.
   * JBIG writer was writing empty files for some libjbig releases.
   * Improved handling of corrupt GIF files.
   * Handle large SUN format images.
@@ -73,6 +77,7 @@ Bug fixes:
   * For the gmdisplay program, ensure that only RGB data is sent to Windows.
   * Many memory leak fixes.
   * PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.
+  * PDF writer now writes proper output with CCITT compression.
   * Properly use fseeko() and ftello() if they are available.
   * Fixed a infinite loop bug in the XWD reader.
   * Fix minor memory leak in ProfileImage().
@@ -92,6 +97,11 @@ Bug fixes:
     in graphics magick".
   * Fix for SourceForge bug id 1743141 "Affine matrix option parsing".
   * Fix for SourceForge bug id 1625477 "Memory leak reading layered PSD Image".
+  * Fix for SourceForge bug id 1878992 "literal square brackets in file
+    name cause large delay and bug id 1783209 "converting runs slowly
+    when subimage is specified".
+  * Fix for SourceForge bug id 1883527 "compression of tiff-file has no effect".
+  * Successfully read files in the form "file[123]".
   * Fix reading 12-bit grayscale JPEG.
   * Set image depth appropriately when importing image from X11 display.
   * Fix map resource tracking.
@@ -129,15 +139,26 @@ Feature improvements:
   * Use MAGICK_IOBUF_SIZE to tune the size of the I/O buffer.
   * Use -type Bilevel, Grayscale, TrueColor, or TrueColorMatte to
     influence the type of image that Ghostscript returns.
+  * Use '-define tiff:fill-order={msb2lsb|lsb2msb}' to control TIFF bit
+    fill order.
   * The -version option now dumps a feature list as well as the build
     options.
   * The -endian option now supports the option 'native'.
   * A -monitor is added to enable progress monitoring for the command line
     utilities.
+  * Use the -output-directory option to 'mogrify' to send output files to
+    the specified directory.
   * The already supported option '-type Optimize' is now honored by
     formats that need to choose a subformat based on the properties of
     the image. Grueling tests of many/all pixels are not performed
     unless '-type Optimize' is supplied.
+  * Added a a -set option to the composite, convert, display, mogrify,
+    import commands in order to allow setting an image attribute.
+  * Display utility no longer defaults to reading from standard input if
+    stdin is not a tty.
+  * May now be configured to use the umem memory allocation library
+    available in Solaris 9, Update 3 and later, or from the portable umem
+    project.
 
 Coder additions/improvements:
 
@@ -171,6 +192,13 @@ API enhancements:
   * Incorporated changes changes necessary so that GraphicsMagick can
     work with the Ch C/C++ interpreter from SoftIntegration at
     http://www.softintegration.com/.
+  * Added MagickAllocFunctions() to allow the API user to replace the
+    underlying memory allocator functions.
+  * Added MagickMalloc() and deprecated AcquireMemory().
+  * Added MagickCloneMemory() and deprecated CloneMemory().
+  * Added MagickMallocArray() to safely allocate N items of size S.
+  * Added MagickRealloc() and deprecated ReacquireMemory().
+  * Added MagickFree() and deprecated LiberateMemory().
 
 Performance improvments:
 
@@ -211,6 +239,7 @@ Windows-specific improvements/changes:
     source package and building FlashPIX is disabled by default.
     FlashPIX may still be built by adding the library (separately
     distributed).
+  * Fix bitmap handle leak in CropImageToHBITMAP() and ImageToHBITMAP().
 
 1.1 (Released April 4, 2004)
 ============================

@@ -1,3 +1,12 @@
+2008-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/mat.c: Convert C99 comments to C89 comments so code can
+	compile with a C89 compiler.
+	* coders/tiff.c (WriteTIFFImage): Add an assertion to enforce that
+	the bytes output to the scanline is no more than the bytes
+	allocated for the scanline.
+	* NEWS.txt: Updated with latest NEWS.
+
 2008-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (WritePDFImage): Default to ZIP compression if
