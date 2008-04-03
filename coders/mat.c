@@ -629,8 +629,10 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
         sample_size = 32;
         image->depth = Min(QuantumDepth,32);        /* double type cell */
         import_options.sample_type = FloatQuantumSampleType;
-//      if (sizeof(float) != 4)
-//        ThrowReaderException(CoderError, IncompatibleSizeOfFloat, image);
+#if 0
+      if (sizeof(float) != 4)
+        ThrowReaderException(CoderError, IncompatibleSizeOfFloat, image);
+#endif
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
 	{                         /* complex float type cell */
 	}
@@ -678,7 +680,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       unsigned long temp = image->columns;
       image->columns = image->rows;
       image->rows = temp;
-      goto done_reading; //!!!!!! BAD  !!!!
+      goto done_reading; /* !!!!!! BAD  !!!! */
     }  
 
   /* ----- Load raster data ----- */
@@ -729,7 +731,7 @@ ImportImagePixelAreaFailed:
           if(ImportImagePixelArea(image,z2qtype[z],sample_size,BImgBuff,&import_options,0) == MagickFail)
 	    goto ImportImagePixelAreaFailed;
 
-          if (z<=1 &&			 // fix only during a last pass z==0 || z==1
+          if (z<=1 &&			 /* fix only during a last pass z==0 || z==1 */
 	        (CellType==miINT8 || CellType==miINT16 || CellType==miINT32 || CellType==miINT64))
 	    FixSignedValues(q,MATLAB_HDR.SizeX);
         }
