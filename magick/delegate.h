@@ -67,20 +67,26 @@ typedef struct gs_main_instance_s gs_main_instance;
   DLL/shared and static Ghostscript libbraries may be handled identically.
   These definitions must be compatible with those in the Ghostscript API
   headers (which we don't require).
+
+  http://pages.cs.wisc.edu/~ghost/doc/cvs/API.htm
   */
 typedef struct _GhostscriptVectors
 {
-  /* Exit the interpreter */
+  /* Exit the interpreter (gsapi_exit)*/
   int  (MagickDLLCall *exit)(gs_main_instance *instance);
-  /* Destroy instance of Ghostscript.  Call exit first! */
+
+  /* Destroy instance of Ghostscript.  Call exit first! (gsapi_delete_instance) */
   void (MagickDLLCall *delete_instance)(gs_main_instance *instance);
-  /* Initialize the Ghostscript interpreter */
+
+  /* Initialize the Ghostscript interpreter (gsapi_init_with_args) */
   int  (MagickDLLCall *init_with_args)(gs_main_instance *instance,int argc,
                                        char **argv);
-  /* Create a new instance of the Ghostscript interpreter */
+
+  /* Create a new instance of the Ghostscript interpreter (gsapi_new_instance) */
   int  (MagickDLLCall *new_instance)(gs_main_instance **pinstance,
                                      void *caller_handle);
-  /* Execute string command in Ghostscript interpreter */
+
+  /* Execute string command in Ghostscript interpreter (gsapi_run_string) */
   int  (MagickDLLCall *run_string)(gs_main_instance *instance,const char *str,
                                    int user_errors,int *pexit_code);
 } GhostscriptVectors;

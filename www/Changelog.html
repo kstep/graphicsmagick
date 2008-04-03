@@ -24,6 +24,11 @@
 2008-04-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/pdf.c (WritePDFImage): Default to ZIP compression if
+        available.  Ignore Image compression setting since the useful
+        value (set by the user) usually comes from ImageInfo.
+  <LI> coders/png.c (WriteOnePNGImage): Fix progress monitor when
+        writing PNG.<BR>
   <LI> magick/channel.c (GetImageChannelDepth): Added progress monitor
         support.<BR>
   <LI> magick/signature.c (SignatureImage): Added progress monitor support.

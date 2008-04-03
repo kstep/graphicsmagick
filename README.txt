@@ -154,15 +154,24 @@ of the library-based packages listed here.
   that it will only rasterize one page of a multi-page document.
 
   Ghostscript (release 7.0 and later) may optionally install a library
-  (libgs). If this library is installed, GraphicsMagick may be
-  configured to use it. Note that Ghostscript provides its own modified
-  version of libjpeg and that symbols from this libjpeg may be confused
-  with symbols with the stand-alone libjpeg. If conflicts cause JPEG to
-  fail (JPEG returns an error regarding expected structure sizes), it
-  may be necessary to use Ghostscript's copy of libjpeg for
-  GraphicsMagick, and all delegate libraries which depend on libjpeg,
-  or convince Ghostscript to build against an unmodified installed JPEG
-  library (and loose compatibility with some Postscript files).
+  (libgs) under Linux. If this library is installed, GraphicsMagick may
+  be configured to use it. We do **NOT** recommend using this library
+  under Unix type systems. The Ghostscript library does not support
+  concurrency since only one instance of the interpreter is available.
+  Unix systems will obtain better performance from executing Ghostscript as
+  an external process since then multiple interpreters may execute at
+  once on multiple CPU cores.
+
+  Ghostscript provides its own modified version of libjpeg and libJasper
+  while GraphicsMagick will be using these libraries as provided with the
+  system. If Ghostscript is not using the same libraries, then
+  identically named symbols may be used from the wrong code, causing
+  confusion or a program crash. If conflicts cause JPEG to fail (JPEG
+  returns an error regarding expected structure sizes), it may be
+  necessary to use Ghostscript's copy of libjpeg for GraphicsMagick, and
+  all delegate libraries which depend on libjpeg, or convince Ghostscript
+  to build against an unmodified installed JPEG library (and lose
+  compatibility with some Postscript files).
 
 * GraphicsMagick requires hp2xx available from
 

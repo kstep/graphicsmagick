@@ -824,6 +824,7 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   /*
     Allocate an interpreter.
   */
+  interpreter = (gs_main_instance *) NULL;
   status=(gs_func->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     {
