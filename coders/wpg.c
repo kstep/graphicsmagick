@@ -338,11 +338,11 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
 
 
   if(RetVal==MagickFail)
-    LogMagickEvent(CoderEvent,GetMagickModule(),"ImportImagePixelArea failed for row: %ld, bpp: %d", y, bpp); 
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ImportImagePixelArea failed for row: %ld, bpp: %d", y, bpp); 
 
   if (!SyncImagePixels(image))
   {
-    LogMagickEvent(CoderEvent,GetMagickModule(),"SyncImagePixels failed for row: %ld, bpp: %d", y, bpp); 
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"SyncImagePixels failed for row: %ld, bpp: %d", y, bpp); 
     RetVal = MagickFail;
   }
           
@@ -429,7 +429,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
                   MagickFreeMemory(BImgBuff);
                   return(-4);
                 }
-              InsertRow(BImgBuff,y-1,image,bpp);
+              (void) InsertRow(BImgBuff,y-1,image,bpp);
             }
         }
       }
@@ -543,8 +543,8 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(UpImgBuff,(long) (image->rows >= y ? y : image->rows-1),
-                          image,bpp);
+                (void) InsertRow(UpImgBuff,(long) (image->rows >= y ? y : image->rows-1),
+                                 image,bpp);
                 y++;
               }    
           }
@@ -676,7 +676,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   ps_file=AcquireTemporaryFileStream(postscript_file,BinaryFileIOMode);
   if (!ps_file)
   {
-    LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
     goto FINISH;
   }
 
@@ -1232,7 +1232,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     for(i=0; i< (long) image->rows; i++)
                       {
                         (void) ReadBlob(image,ldblk,(char *) BImgBuff);
-                        InsertRow(BImgBuff,i,image,bpp);
+                        (void) InsertRow(BImgBuff,i,image,bpp);
                       }
 
                     if(BImgBuff)

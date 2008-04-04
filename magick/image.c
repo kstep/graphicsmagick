@@ -2794,7 +2794,7 @@ MagickExport unsigned long GetImageDepth(const Image *image,
           p++;
         }
       /* Force 100% */
-      MagickMonitor(GetImageDepthText,image->colors,image->colors,exception);
+      (void) MagickMonitor(GetImageDepthText,image->colors,image->colors,exception);
     }
   else
     {
@@ -2839,7 +2839,7 @@ MagickExport unsigned long GetImageDepth(const Image *image,
                 break;
             }
           /* Force 100% */
-          MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
+          (void) MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
           MagickFreeMemory(map);
         }
 #else /* MaxMap == MaxRGB */

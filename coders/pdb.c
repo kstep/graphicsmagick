@@ -685,12 +685,12 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
+    bits_per_pixel,    
+    packet_size,
     status;
 
   unsigned long
-    bits_per_pixel,
     literal,
-    packet_size,
     packets,
     repeat;
 
@@ -770,7 +770,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   if (buffer == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   packet_size=image->depth > 8 ? 2: 1;
-  scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
+  scanline=MagickAllocateArray(unsigned char *,image->columns,packet_size);
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   (void) TransformColorspace(image,RGBColorspace);

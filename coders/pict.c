@@ -1143,7 +1143,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             unsigned char
               *info;
 
-            unsigned long
+            unsigned int
               type;
 
             /*

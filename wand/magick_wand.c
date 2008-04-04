@@ -1271,7 +1271,7 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
   const MagickWand *reference,const ChannelType channel,const MetricType metric,
   double *distortion)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   Image
     *compare_image;
 
@@ -1327,7 +1327,7 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
 WandExport MagickWand *MagickCompareImages(MagickWand *wand,
   const MagickWand *reference,const MetricType metric,double *distortion)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   Image
     *compare_image;
 
@@ -2830,7 +2830,7 @@ WandExport unsigned long MagickGetImageChannelDepth(MagickWand *wand,
 WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
   const ChannelType channel,unsigned long *minima,unsigned long *maxima)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -2884,7 +2884,7 @@ WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
 WandExport unsigned int MagickGetImageChannelMean(MagickWand *wand,
   const ChannelType channel,double *mean,double *standard_deviation)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -3170,7 +3170,7 @@ WandExport unsigned long MagickGetImageDepth(MagickWand *wand)
 WandExport unsigned int MagickGetImageExtrema(MagickWand *wand,
   unsigned long *min,unsigned long *max)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -6031,7 +6031,7 @@ WandExport char **MagickQueryFormats(const char *pattern,
 WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
   const double angle)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   Image
     *blur_image;
 
@@ -8786,7 +8786,7 @@ WandExport unsigned int MagickThresholdImage(MagickWand *wand,
 WandExport unsigned int MagickThresholdImageChannel(MagickWand *wand,
   const ChannelType channel,const double threshold)
 {
-#if NOT_IMPLEMENTED
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 

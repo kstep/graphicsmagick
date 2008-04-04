@@ -235,7 +235,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned char
     *buffer;
 
-  unsigned long
+  unsigned int
     bits,
     plane,
     pcd_length[3],

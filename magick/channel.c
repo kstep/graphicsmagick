@@ -449,13 +449,13 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
           indexes++; \
           x--; \
         } \
-       if (QuantumTick(y,image->rows)) \
-         if (!MagickMonitor(ComputeChannelDepthText,y,image->rows,exception)) \
-            break; \
+      if (QuantumTick(y,image->rows)) \
+        if (!MagickMonitor(ComputeChannelDepthText,y,image->rows,exception)) \
+           break; \
       if (depth == QuantumDepth) \
         break; \
     } \
-  MagickMonitor(ComputeChannelDepthText,image->rows,image->rows,exception); \
+  (void) MagickMonitor(ComputeChannelDepthText,image->rows,image->rows,exception); \
 }
 
 MagickExport unsigned int GetImageChannelDepth(const Image *image,

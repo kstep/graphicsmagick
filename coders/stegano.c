@@ -89,12 +89,16 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
+  unsigned long
+    y;
+
   long
+    k;
+
+  int
     c,
     i,
-    j,
-    k,
-    y;
+    j;
 
   PixelPacket
     pixel;
@@ -102,7 +106,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -143,12 +147,12 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   k=image->offset;
   for (i=QuantumDepth-1; (i >= 0) && (j < QuantumDepth); i--)
   {
-    for (y=0; (y < (long) image->rows) && (j < QuantumDepth); y++)
+    for (y=0; (y < image->rows) && (j < QuantumDepth); y++)
     {
-      for (x=0; (x < (long) image->columns) && (j < QuantumDepth); x++)
+      for (x=0; (x < image->columns) && (j < QuantumDepth); x++)
       {
-        pixel=AcquireOnePixel(watermark,k % (long) watermark->columns,
-          k/(long) watermark->columns,exception);
+        pixel=AcquireOnePixel(watermark,k % watermark->columns,
+          k/watermark->columns,exception);
         q=GetImagePixels(image,x,y,1,1);
         if (q == (PixelPacket *) NULL)
           break;
@@ -176,7 +180,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         if (c == 3)
           c=0;
         k++;
-        if (k == (long) (watermark->columns*watermark->columns))
+        if ((unsigned long) k == watermark->columns*watermark->columns)
           k=0;
         if (k == image->offset)
           j++;

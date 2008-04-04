@@ -3351,7 +3351,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   MagickFreeMemory(path_info);
   if (polygon_info == (PolygonInfo *) NULL)
     return(False);
-  if (0)
+  if (0) /* FIXME ??? */
     DrawBoundingRectangles(image,draw_info,polygon_info);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||

@@ -64,7 +64,7 @@
 %      long MagickGetMMUPageSize()
 %
 */
-MagickExport long MagickGetMMUPageSize()
+MagickExport long MagickGetMMUPageSize(void)
 {
   long
     pagesize;

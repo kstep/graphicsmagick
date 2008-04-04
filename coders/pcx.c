@@ -217,7 +217,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register long
+  register unsigned int
     i;
 
   register unsigned char
@@ -326,7 +326,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
-    for (i=0; i < (long) image->colors; i++)
+    for (i=0; i < image->colors; i++)
     {
       image->colormap[i].red=ScaleCharToQuantum(*p++);
       image->colormap[i].green=ScaleCharToQuantum(*p++);
@@ -428,7 +428,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pcx_info.colormap_signature=ReadBlobByte(image);
                 (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
-                for (i=0; i < (long) image->colors; i++)
+                for (i=0; i < image->colors; i++)
                 {
                   image->colormap[i].red=ScaleCharToQuantum(*p++);
                   image->colormap[i].green=ScaleCharToQuantum(*p++);
@@ -535,7 +535,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (long) (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (unsigned int) (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
