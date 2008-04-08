@@ -108,7 +108,7 @@ extern MagickExport int
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);
 
-extern MagickPassFail
+extern MagickExport MagickPassFail
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),

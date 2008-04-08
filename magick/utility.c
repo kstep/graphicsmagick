@@ -3358,17 +3358,14 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
     path[MaxTextExtent];
 
   int
-    status;
+    status = MagickPass;
 
   const char
     *p;
 
-  mode_t
-    directory_mode;
+  unsigned int
+    directory_mode = 0;
 
-  status = MagickPass;
-
-  directory_mode = 0;
 #if defined(S_IRWXU)
   directory_mode |= S_IRWXU;
 #endif
