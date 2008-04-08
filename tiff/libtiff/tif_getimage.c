@@ -31,6 +31,7 @@
  */
 #include "tiffiop.h"
 #include <stdio.h>
+#include <string.h>
 
 static	int gtTileContig(TIFFRGBAImage*, uint32*, uint32, uint32);
 static	int gtTileSeparate(TIFFRGBAImage*, uint32*, uint32, uint32);
