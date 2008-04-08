@@ -862,7 +862,7 @@ MagickExport void ExpandFilename(char *filename)
 %
 %
 */
-MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
+MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 {
   char
     current_directory[MaxTextExtent],
@@ -891,7 +891,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         (*argv)[i]);
   vector=MagickAllocateMemory(char **,(*argc+MaxTextExtent)*sizeof(char *));
   if (vector == (char **) NULL)
-    return(False);
+    return(MagickFail);
   /*
     Expand any wildcard filenames.
   */
@@ -993,9 +993,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       Transfer file list to argument vector.
     */
     MagickReallocMemory(char **,vector,
-                    (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
+                        (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
     if (vector == (char **) NULL)
-      return(False);
+      return(MagickFail);
 
     for (j=0; j < number_files; j++)
       {
@@ -1037,7 +1037,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   (void) chdir(current_directory);
   *argc=count;
   *argv=vector;
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -3321,6 +3321,114 @@ MagickExport void LocaleUpper(char *string)
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
     *q=(char) toupper((int) *q);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C r e a t e D i r e c t o r y P a t h                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCreateDirectoryPath() creates the specified directory path, creating
+%  parent directories as required.  MagickPass is returned on success, and
+%  MagickFail is returned if there is a failure, with error information set
+%  in the user-provided ExceptionInfo structure.
+%
+%  The format of the MagickCreateDirectoryPath method is:
+%
+%      MagickPassFail MagickCreateDirectoryPath(const char *dir,
+%                                               ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o dir: Path to create.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
+                                                      ExceptionInfo *exception)
+{
+  char
+    path[MaxTextExtent];
+
+  int
+    status;
+
+  const char
+    *p;
+
+  mode_t
+    directory_mode;
+
+  status = MagickPass;
+
+  directory_mode = 0;
+#if defined(S_IRWXU)
+  directory_mode |= S_IRWXU;
+#endif
+#if defined(S_IRGRP)
+  directory_mode |= S_IRGRP;
+#endif
+#if defined(S_IXGRP)
+  directory_mode |= S_IXGRP;
+#endif
+#if defined(S_IROTH)
+  directory_mode |= S_IROTH;
+#endif
+#if defined(S_IXOTH)
+  directory_mode |= S_IXOTH;
+#endif
+  if (0 == directory_mode)
+    directory_mode = 0777;
+
+  p = dir;
+  while (MagickTrue)
+    {
+      if ((p = strchr(p,DirectorySeparator[0])) != (const char *) NULL)
+        strlcpy(path,dir,Min(p-dir+1,MaxTextExtent));
+      else
+        strlcpy(path,dir,sizeof(path));
+
+      if (strcmp(".",path) != 0)
+        {
+          if (-1 == mkdir(path,directory_mode))
+            {
+              if (EEXIST != errno)
+                {
+                  /*
+                    Throw exception.
+                  */
+                  ThrowException2(exception,FileOpenError,dir,strerror(errno));
+                  status = MagickFail;
+                  break;
+                }
+            }
+        }
+      errno = 0;
+      if (p != (const char *) NULL)
+        {
+          /*
+            More path components.
+          */
+          p++;
+          continue;
+        }
+      else
+        {
+          /*
+            Done
+          */
+          break;
+        }
+    }
+
+  return status;
 }
 
 /*

@@ -67,6 +67,11 @@
 #if defined(TIFF_VERSION_BIG)
 #  define HasBigTIFF 1
 #endif /* defined(TIFF_BIGTIFF_VERSION) */
+
+/*
+  Set to 1 in order to log low-level BLOB I/O at "coder" level.
+*/
+#define LOG_BLOB_IO 0
 
 /*
   Global declarations.
@@ -562,8 +567,10 @@ extern "C" {
 /* Close BLOB */
 static int TIFFCloseBlob(thandle_t image)
 {
-/*   if (((Image *) image)->logging) */
-/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"TIFF close blob"); */
+#if LOG_BLOB_IO
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"TIFF close blob");
+#endif /* LOG_BLOB_IO */
   CloseBlob((Image *) image);
   return(0);
 }
@@ -609,18 +616,18 @@ static int TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 /* Read BLOB data at current offset */
 static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 {
-#if 0
+#if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "TIFF read blob: data=%p size=%ld", data, size);
-#endif
+#endif /* LOG_BLOB_IO */
   return((tsize_t) ReadBlob((Image *) image,(size_t) size,data));
 }
 
 /* Seek to BLOB offset */
 static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
-#if 0
+#if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "TIFF seek blob: offset=%lu whence=%d (%s)",
@@ -628,18 +635,18 @@ static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
                           (whence == SEEK_SET ? "SET" :
                            (whence == SEEK_CUR ? "CUR" :
                             (whence == SEEK_END ? "END" : "unknown"))));
-#endif
+#endif  /* LOG_BLOB_IO */
   return((toff_t) SeekBlob((Image *) image,offset,whence));
 }
 
 /* Obtain BLOB size */
 static toff_t TIFFGetBlobSize(thandle_t image)
 {
-#if 0
+#if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "TIFF get blob size");
-#endif
+#endif /* LOG_BLOB_IO */
   return((toff_t) GetBlobSize((Image *) image));
 }
 
@@ -648,11 +655,11 @@ static void TIFFUnmapBlob(thandle_t ARGUNUSED(image),
                           tdata_t ARGUNUSED(base),
                           toff_t ARGUNUSED(size))
 {
-#if 0
+#if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "TIFF unmap blob: base=%p size=%ld", base, size);
-#endif
+#endif  /* LOG_BLOB_IO */
 }
 
 /* Report warnings. */
@@ -680,9 +687,11 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
 /* Write data a current offset */
 static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
+#if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "TIFF write blob: data=%p size=%u", data, (unsigned int) size);
+#endif  /* LOG_BLOB_IO */
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 
@@ -4067,15 +4076,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             QuantumType
               quantum_type;
             
-            if (logging)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Using scanline %s write method with %u bits per sample",
-                                    PhotometricTagToString(photometric),bits_per_sample);
             /*
               Allocate memory for one scanline.
             */
             scanline_size=TIFFScanlineSize(tiff);
-            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size);
+
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Using scanline %s write method with %u bits per sample (%lu bytes/scanline)",
+                                    PhotometricTagToString(photometric),bits_per_sample, (unsigned long) scanline_size);
+
+            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size+1);
             if (scanline == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             /*
@@ -4124,6 +4135,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     /*
                       Export pixels to scanline.
                     */
+                    scanline[scanline_size]=0xbf;
                     if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
                                              scanline,&export_options,&export_info)
                         == MagickFail)
@@ -4135,6 +4147,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       Enforce that we did not overrun our buffer.
                     */
                     assert(export_info.bytes_exported <= (size_t) scanline_size);
+                    assert(scanline[scanline_size] == 0xbf);
                     /*
                       Write scanline.
                     */

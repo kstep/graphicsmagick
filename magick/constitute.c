@@ -1716,33 +1716,33 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         Special "fast" support for two-color PsudeoClass.
                       */
                       register unsigned int
-                        bit=0,
-                        byte=0,
+                        bit=0U,
+                        byte=0U,
                         polarity;
 
                       polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
-                      if (image->colors == 2)
+                      if (image->colors == 2U)
                         polarity=PixelIntensityToQuantum(&image->colormap[0]) <
                           PixelIntensityToQuantum(&image->colormap[1]);
                       if (grayscale_miniswhite)
                         polarity=!polarity;
                       
-                      for (x = number_pixels; x != 0; --x)
+                      for (x = number_pixels; x != 0UL; --x)
                         {
-                          byte<<=1;
+                          byte <<= 1U;
                           if (*indexes++ == polarity)
-                            byte|=0x01;
+                            byte |= 1U;
                           bit++;
-                          if (bit == 8)
+                          if (bit == 8U)
                             {
                               *q++=byte;
-                              bit=0;
-                              byte=0;
+                              bit=0U;
+                              byte=0U;
                             }
                         }
-                      if (bit != 0)
+                      if (bit != 0U)
                         {
-                          *q++=byte << (8-bit);
+                          *q++=byte << (8U-bit);
                         }
                     }
                   else
@@ -1752,35 +1752,38 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         Performs 50% thresholding for best appearance.
                       */
                       register unsigned int
-                        bit=8U,
+                        bit=0U,
+                        byte=0U,
                         black=0U,
                         white=1U;
-                    
+
                       if (grayscale_miniswhite)
                         {
                           black=1U;
                           white=0U;
                         }
-                    
-                      *q=0;
-                      for (x = number_pixels ; x != 0 ; --x )
+
+                      for (x = number_pixels ; x != 0UL ; --x )
                         {
-                          --bit;
                           if (image->is_grayscale)
                             unsigned_value=GetGraySample(p);
                           else
                             unsigned_value=PixelIntensityToQuantum(p);
-                          *q |= ((unsigned_value > MaxRGB/2 ? white : black) << bit);
-                          if (bit == 0U)
+                          byte <<= 1;
+                          byte |= ((unsigned_value > MaxRGB/2U) ? white : black);
+                          bit++;
+                          if (bit == 8U)
                             {
-                              bit=8U;
-                              q++;
-                              *q=0;
+                              *q++=byte;
+                              bit=0U;
+                              byte=0U;
                             }
                           p++;
                         }
-                      if (bit != 8U)
-                        q++;
+                      if (bit != 0)
+                        {
+                          *q++=byte << (8-bit);
+                        }
                     }
                   break;
                 }

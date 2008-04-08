@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2008-04-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (MagickCreateDirectoryPath): New function to
+        create a directory path.  Will be used later.
+  <LI> configure.ac: Tweaks to produce a successful MinGW cross-compile.
+
+</UL>
+<p>
+2008-04-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Added a simple sentinel
+        assertion to hopefully flush out any remaining cases where
+        ExportImagePixelArea() writes past the end of its buffer.
+  <LI> magick/constitute.c (ExportImagePixelArea): GrayQuantum case for
+        DirectClass pixels was sometimes writing a zero byte one past the
+        end of the allocated buffer.  Thanks to Josue Gomes for reporting
+        this bug.
+
+</UL>
+<p>
 2008-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

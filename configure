@@ -870,7 +870,6 @@ INCLUDE_DIR
 OLDINCLUDE_DIR
 INFO_DIR
 MAN_DIR
-WinPathScript
 MAGICK_CODER_MODULE_PATH
 MAGICK_CONFIGURE_SRC_PATH
 MAGICK_CONFIGURE_BUILD_PATH
@@ -906,6 +905,7 @@ WIN32_NATIVE_BUILD_TRUE
 WIN32_NATIVE_BUILD_FALSE
 CYGWIN_BUILD_TRUE
 CYGWIN_BUILD_FALSE
+WinPathScript
 acx_pthread_config
 PTHREAD_CC
 PTHREAD_CXX
@@ -2967,9 +2967,6 @@ eval "eval MAN_DIR=$mandir"
 srcdirfull="`cd $srcdir && pwd`"
 builddir="`pwd`"
 
-WinPathScript="${srcdirfull}/winpath.sh"
-
-
 #
 # Compute variables useful for running uninstalled software
 #
@@ -2978,12 +2975,16 @@ MAGICK_CONFIGURE_SRC_PATH="${srcdirfull}/config"
 MAGICK_CONFIGURE_BUILD_PATH="${builddir}/config"
 MAGICK_FILTER_MODULE_PATH="${builddir}/filters"
 DIRSEP=':'
-case "${host_os}" in
+case "${build_os}" in
   mingw* )
     MAGICK_CODER_MODULE_PATH=`$WinPathScript "${MAGICK_CODER_MODULE_PATH}" 0`
     MAGICK_CONFIGURE_SRC_PATH=`$WinPathScript "${MAGICK_CONFIGURE_SRC_PATH}" 0`
     MAGICK_CONFIGURE_BUILD_PATH=`$WinPathScript "${MAGICK_CONFIGURE_BUILD_PATH}" 0`
     MAGICK_FILTER_MODULE_PATH=`$WinPathScript "${MAGICK_FILTER_MODULE_PATH}" 0`
+    ;;
+esac
+case "${host_os}" in
+  mingw* )
     DIRSEP=';'
     ;;
 esac
@@ -5436,6 +5437,9 @@ else
 fi
 
 
+WinPathScript="${srcdirfull}/winpath.sh"
+
+
 #
 # Compiler flags tweaks
 #
@@ -6749,13 +6753,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6752: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6756: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6755: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:6759: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:6758: output\"" >&5)
+  (eval echo "\"\$as_me:6762: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -7852,7 +7856,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7855 "configure"' > conftest.$ac_ext
+  echo '#line 7859 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9477,11 +9481,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9480: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9484: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9484: \$? = $ac_status" >&5
+   echo "$as_me:9488: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9801,11 +9805,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9804: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9808: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9808: \$? = $ac_status" >&5
+   echo "$as_me:9812: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9906,11 +9910,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9909: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9913: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9913: \$? = $ac_status" >&5
+   echo "$as_me:9917: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9961,11 +9965,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9964: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9968: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9968: \$? = $ac_status" >&5
+   echo "$as_me:9972: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12709,7 +12713,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12712 "configure"
+#line 12716 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12809,7 +12813,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 12812 "configure"
+#line 12816 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15537,11 +15541,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15540: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15544: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15544: \$? = $ac_status" >&5
+   echo "$as_me:15548: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15636,11 +15640,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15639: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15643: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15643: \$? = $ac_status" >&5
+   echo "$as_me:15647: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15688,11 +15692,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15691: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15695: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15695: \$? = $ac_status" >&5
+   echo "$as_me:15699: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17479,7 +17483,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 17482 "configure"
+#line 17486 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28121,10 +28125,11 @@ fi
 { echo "$as_me:$LINENO: result: $im_cv_x_configure" >&5
 echo "${ECHO_T}$im_cv_x_configure" >&6; }
 X11ConfigurePath="$im_cv_x_configure"
-if test "$native_win32_build" = 'yes'
-then
-  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
+  ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define X11ConfigurePath "X11ConfigurePath"
@@ -36529,10 +36534,11 @@ _ACEOF
 # Path to GraphicsMagick bin directory
 MagickBinPath="${BIN_DIR}"
 MagickBinPathDefine="${MagickBinPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickBinPath "$MagickBinPathDefine"
@@ -36543,10 +36549,11 @@ _ACEOF
 # Path to GraphicsMagick lib
 MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
 MagickLibPathDefine="${MagickLibPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickLibPath "$MagickLibPathDefine"
@@ -36563,10 +36570,11 @@ _ACEOF
 
 MagickLibConfigPath="${LIB_DIR}/${MagickLibConfigSubDir}"
 MagickLibConfigPathDefine="${MagickLibConfigPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickLibConfigPath "$MagickLibConfigPathDefine"
@@ -36584,10 +36592,11 @@ _ACEOF
 
 MagickCoderModulesPath="${LIB_DIR}/${MagickCoderModulesSubdir}"
 MagickCoderModulesPathDefine="${MagickCoderModulesPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickCoderModulesPathDefine=`$WinPathScript "$MagickCoderModulesPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickCoderModulesPathDefine=`$WinPathScript "$MagickCoderModulesPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickCoderModulesPath "$MagickCoderModulesPathDefine"
@@ -36605,10 +36614,11 @@ _ACEOF
 
 MagickFilterModulesPath="${LIB_DIR}/${MagickFilterModulesSubdir}"
 MagickFilterModulesPathDefine="${MagickFilterModulesPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickFilterModulesPathDefine=`$WinPathScript "$MagickFilterModulesPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickFilterModulesPathDefine=`$WinPathScript "$MagickFilterModulesPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickFilterModulesPath "$MagickFilterModulesPathDefine"
@@ -36621,10 +36631,11 @@ _ACEOF
 MagickShareSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 MagickSharePath="${DATA_DIR}/${MagickShareSubdir}"
 MagickSharePathDefine="${MagickSharePath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickSharePath "$MagickSharePathDefine"
@@ -36641,10 +36652,11 @@ _ACEOF
 
 MagickShareConfigPath="${DATA_DIR}/${MagickShareConfigSubDir}"
 MagickShareConfigPathDefine="${MagickShareConfigPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
+    ;;
+esac
 
 cat >>confdefs.h <<_ACEOF
 #define MagickShareConfigPath "$MagickShareConfigPathDefine"
@@ -38447,10 +38459,11 @@ else
 echo "${ECHO_T}not found!" >&6; };
 fi
 
-if test "${native_win32_build}" = 'yes'
-then
-  PSDelegate=`$WinPathScript "$PSDelegate" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    PSDelegate=`$WinPathScript "$PSDelegate" 1`
+    ;;
+esac
 
 
 
@@ -40631,7 +40644,6 @@ INCLUDE_DIR!$INCLUDE_DIR$ac_delim
 OLDINCLUDE_DIR!$OLDINCLUDE_DIR$ac_delim
 INFO_DIR!$INFO_DIR$ac_delim
 MAN_DIR!$MAN_DIR$ac_delim
-WinPathScript!$WinPathScript$ac_delim
 MAGICK_CODER_MODULE_PATH!$MAGICK_CODER_MODULE_PATH$ac_delim
 MAGICK_CONFIGURE_SRC_PATH!$MAGICK_CONFIGURE_SRC_PATH$ac_delim
 MAGICK_CONFIGURE_BUILD_PATH!$MAGICK_CONFIGURE_BUILD_PATH$ac_delim
@@ -40667,6 +40679,7 @@ WIN32_NATIVE_BUILD_TRUE!$WIN32_NATIVE_BUILD_TRUE$ac_delim
 WIN32_NATIVE_BUILD_FALSE!$WIN32_NATIVE_BUILD_FALSE$ac_delim
 CYGWIN_BUILD_TRUE!$CYGWIN_BUILD_TRUE$ac_delim
 CYGWIN_BUILD_FALSE!$CYGWIN_BUILD_FALSE$ac_delim
+WinPathScript!$WinPathScript$ac_delim
 acx_pthread_config!$acx_pthread_config$ac_delim
 PTHREAD_CC!$PTHREAD_CC$ac_delim
 PTHREAD_CXX!$PTHREAD_CXX$ac_delim
@@ -42372,6 +42385,7 @@ echo "GraphicsMagick is configured as follows. Please verify that this"
 echo "configuration matches your expectations."
 echo ""
 echo "Host system type : $host"
+echo "Build system type : $build"
 echo ""
 echo "Option            Configure option           	Configured value"
 echo "-----------------------------------------------------------------"

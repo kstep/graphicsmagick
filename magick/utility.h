@@ -108,12 +108,13 @@ extern MagickExport int
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);
 
-extern MagickExport unsigned int
+extern MagickPassFail
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   GetExecutionPath(char *),
-  GetExecutionPathUsingName(char *);
+  GetExecutionPathUsingName(char *),
+  MagickCreateDirectoryPath(const char *dir,ExceptionInfo *exception);
 
 extern MagickExport MagickBool
   IsAccessible(const char *),

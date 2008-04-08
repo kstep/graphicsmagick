@@ -154,9 +154,6 @@ AC_SUBST(MAN_DIR)
 srcdirfull="`cd $srcdir && pwd`"
 builddir="`pwd`"
 
-WinPathScript="${srcdirfull}/winpath.sh"
-AC_SUBST(WinPathScript)
-
 #
 # Compute variables useful for running uninstalled software
 #
@@ -165,12 +162,16 @@ MAGICK_CONFIGURE_SRC_PATH="${srcdirfull}/config"
 MAGICK_CONFIGURE_BUILD_PATH="${builddir}/config"
 MAGICK_FILTER_MODULE_PATH="${builddir}/filters"
 DIRSEP=':'
-case "${host_os}" in
+case "${build_os}" in
   mingw* )
     MAGICK_CODER_MODULE_PATH=`$WinPathScript "${MAGICK_CODER_MODULE_PATH}" 0`
     MAGICK_CONFIGURE_SRC_PATH=`$WinPathScript "${MAGICK_CONFIGURE_SRC_PATH}" 0`
     MAGICK_CONFIGURE_BUILD_PATH=`$WinPathScript "${MAGICK_CONFIGURE_BUILD_PATH}" 0`
     MAGICK_FILTER_MODULE_PATH=`$WinPathScript "${MAGICK_FILTER_MODULE_PATH}" 0`
+    ;;
+esac
+case "${host_os}" in
+  mingw* )
     DIRSEP=';'
     ;;
 esac
@@ -221,6 +222,9 @@ AC_SUBST(LIB_GDI32)
 AM_CONDITIONAL(HasWINGDI32, test "${LIB_GDI32}x" != 'x' )
 AM_CONDITIONAL(WIN32_NATIVE_BUILD, test "${native_win32_build}" = 'yes' )
 AM_CONDITIONAL(CYGWIN_BUILD, test "${cygwin_build}" = 'yes' )
+
+WinPathScript="${srcdirfull}/winpath.sh"
+AC_SUBST(WinPathScript)
 
 #
 # Compiler flags tweaks
@@ -1244,10 +1248,11 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
 
   done])
 X11ConfigurePath="$im_cv_x_configure"
-if test "$native_win32_build" = 'yes'
-then
-  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
+  ;;
+esac
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
 #
@@ -2157,20 +2162,22 @@ AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where 
 # Path to GraphicsMagick bin directory
 MagickBinPath="${BIN_DIR}"
 MagickBinPathDefine="${MagickBinPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickBinPath,"$MagickBinPathDefine",Directory where executables are installed.)
 AC_SUBST(MagickBinPath)
 
 # Path to GraphicsMagick lib
 MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
 MagickLibPathDefine="${MagickLibPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
 AC_SUBST(MagickLibPath)
 
@@ -2179,10 +2186,11 @@ MagickLibConfigSubDir="${MagickLibSubdir}/config"
 AC_DEFINE_UNQUOTED(MagickLibConfigSubDir,"$MagickLibConfigSubDir",Subdirectory of lib where architecture-dependent configuration files live.)
 MagickLibConfigPath="${LIB_DIR}/${MagickLibConfigSubDir}"
 MagickLibConfigPathDefine="${MagickLibConfigPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickLibConfigPath,"$MagickLibConfigPathDefine",Directory where architecture-dependent configuration files live.)
 AC_SUBST(MagickLibConfigPath)
 
@@ -2192,10 +2200,11 @@ MagickCoderModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/coders"
 AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where coder modules are installed)
 MagickCoderModulesPath="${LIB_DIR}/${MagickCoderModulesSubdir}"
 MagickCoderModulesPathDefine="${MagickCoderModulesPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickCoderModulesPathDefine=`$WinPathScript "$MagickCoderModulesPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickCoderModulesPathDefine=`$WinPathScript "$MagickCoderModulesPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickCoderModulesPath,"$MagickCoderModulesPathDefine",Location of coder modules)
 AC_SUBST(MagickCoderModulesPath)
 
@@ -2205,10 +2214,11 @@ MagickFilterModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/filters"
 AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where filter modules are installed)
 MagickFilterModulesPath="${LIB_DIR}/${MagickFilterModulesSubdir}"
 MagickFilterModulesPathDefine="${MagickFilterModulesPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickFilterModulesPathDefine=`$WinPathScript "$MagickFilterModulesPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickFilterModulesPathDefine=`$WinPathScript "$MagickFilterModulesPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickFilterModulesPath,"$MagickFilterModulesPathDefine",Location of filter modules)
 AC_SUBST(MagickFilterModulesPath)
 
@@ -2217,10 +2227,11 @@ AC_SUBST(MagickFilterModulesPath)
 MagickShareSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 MagickSharePath="${DATA_DIR}/${MagickShareSubdir}"
 MagickSharePathDefine="${MagickSharePath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
@@ -2229,10 +2240,11 @@ MagickShareConfigSubDir="${MagickLibSubdir}/config"
 AC_DEFINE_UNQUOTED(MagickShareConfigSubDir,"$MagickShareConfigSubDir",Subdirectory of lib where architecture-independent configuration files live.)
 MagickShareConfigPath="${DATA_DIR}/${MagickShareConfigSubDir}"
 MagickShareConfigPathDefine="${MagickShareConfigPath}/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
+    ;;
+esac
 AC_DEFINE_UNQUOTED(MagickShareConfigPath,"$MagickShareConfigPathDefine",Directory where architecture-independent configuration files live.)
 AC_SUBST(MagickShareConfigPath)
 
@@ -2454,10 +2466,11 @@ else
   AC_MSG_RESULT(not found!);
 fi
 AC_SUBST(ghostscript_font_dir)
-if test "${native_win32_build}" = 'yes'
-then
-  PSDelegate=`$WinPathScript "$PSDelegate" 1`
-fi
+case "${build_os}" in
+  mingw* )
+    PSDelegate=`$WinPathScript "$PSDelegate" 1`
+    ;;
+esac
 
 AC_SUBST(type_include_files)
 
@@ -2905,6 +2918,7 @@ echo "GraphicsMagick is configured as follows. Please verify that this"
 echo "configuration matches your expectations."
 echo ""
 echo "Host system type : $host"
+echo "Build system type : $build"
 echo ""
 echo "Option            Configure option           	Configured value"
 echo "-----------------------------------------------------------------"

@@ -80,6 +80,7 @@ extern "C" {
 #if !defined(tempnam)
 # define tempnam _tempnam
 #endif
+
 #define vsnprintf _vsnprintf 
 #if defined(_MT) && defined(MSWINDOWS)
 #define SAFE_GLOBAL __declspec(thread)
@@ -118,6 +119,13 @@ extern "C" {
  */
 #define HAVE_ACCESS 1
 #define access(path,mode) _access(path,mode)
+
+/*
+  Windows provides Unix-style mkdir() via _mkdir() but it does not
+  seem to accept a 'mode' argument.
+ */
+#define mkdir(path,mode) _mkdir(path)
+
 /*
   Typedef declarations.
 */

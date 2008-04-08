@@ -94,7 +94,9 @@ int main ( int argc, char **argv )
                 imageInfo->compression=ZipCompression;
             }
           else if (LocaleCompare("debug",option+1) == 0)
-            (void) SetLogEventMask(argv[++arg]);
+            {
+              (void) SetLogEventMask(argv[++arg]);
+            }
           else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo->depth=QuantumDepth;
@@ -115,11 +117,17 @@ int main ( int argc, char **argv )
                 }
             }
           else if (LocaleCompare("log",option+1) == 0)
-            (void) SetLogFormat(argv[++arg]);
+            {
+              (void) SetLogFormat(argv[++arg]);
+            }
           else if (LocaleCompare("nocheck",option+1) == 0)
-            check=MagickFalse;
+            {
+              check=MagickFalse;
+            }
           else if (LocaleCompare("pause",option+1) == 0)
-            pause=1;
+            {
+              pause=1;
+            }
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
@@ -138,7 +146,9 @@ int main ( int argc, char **argv )
             }
         }
       else
-        break;
+        {
+          break;
+        }
     }
   if (arg != argc-2)
     {
