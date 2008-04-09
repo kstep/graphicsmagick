@@ -10275,6 +10275,7 @@ typedef struct _TransmogrifyOptions
   char **argv;
   char *output_format;
   char *output_directory;
+  MagickBool create_directories;
   MagickBool global_colormap;
   MagickPassFail status;
   ExceptionInfo exception;
@@ -10295,98 +10296,141 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
 
   image_info=CloneImageInfo(options->image_info);
   (void) strlcpy(image_info->filename,options->input_filename,MaxTextExtent);
-  image=ReadImage(image_info,&options->exception);
-  status &= (image != (Image *) NULL) &&
-    (options->exception.severity < ErrorException);
-  if (status != MagickFail)
+
+  while (MagickTrue)
     {
+      char
+        output_filename[MaxTextExtent],
+        temporary_filename[MaxTextExtent];
+
+      image=ReadImage(image_info,&options->exception);
+      status = (image != (Image *) NULL) &&
+        (options->exception.severity < ErrorException);
+
+      if (status == MagickFail)
+        break;
+        
       /*
         Transmogrify image as defined by the preceding image
         processing options.
       */
-      status &= MogrifyImages(image_info,options->argc,options->argv,&image);
+      status = MogrifyImages(image_info,options->argc,options->argv,&image);
       if (image->exception.severity > options->exception.severity)
         CopyException(&options->exception,&image->exception);
-      if ((status != MagickFail) && (options->global_colormap))
-        (void) MapImages(image,(Image *) NULL,image_info->dither);
+      if (status == MagickFail)
+        break;
 
-      if (status != MagickFail)
+      if (options->global_colormap)
         {
           /*
-            Write transmogrified image to disk.
+            Apply a global colormap to the image sequence.
+          */
+          status = MapImages(image,(Image *) NULL,image_info->dither);
+          if (image->exception.severity > options->exception.severity)
+            CopyException(&options->exception,&image->exception);
+        }
+      if (status == MagickFail)
+        break;
+          
+      /*
+        Write transmogrified image to disk.
+      */
+              
+      (void) strlcpy(temporary_filename,"",MaxTextExtent);
+
+      /*
+        Compute final output file name and format
+      */
+      (void) strlcpy(output_filename,"",MaxTextExtent);
+      if ((char *) NULL != options->output_directory)
+        {
+          size_t
+            output_directory_length;
+                  
+          output_directory_length = strlen(options->output_directory);
+          if (0 != output_directory_length)
+            {
+              (void) strlcat(output_filename,options->output_directory,MaxTextExtent);
+              if (output_filename[output_directory_length-1] != DirectorySeparator[0])
+                (void) strlcat(output_filename,DirectorySeparator,MaxTextExtent);
+            }
+        }
+      (void) strlcat(output_filename,image->filename,MaxTextExtent);
+      if (options->output_format != (char *) NULL)
+        {
+          /*
+            Replace file extension with new output format.
+          */
+          AppendImageFormat(options->output_format,output_filename);
+          (void) strlcpy(image->magick,options->output_format,MaxTextExtent);
+        }
+      if (options->create_directories)
+        {
+          /*
+            Create directory (as required)
           */
           char
-            output_filename[MaxTextExtent],
-            temporary_filename[MaxTextExtent];
-
-          (void) strlcpy(temporary_filename,"",MaxTextExtent);
-          /*
-            Compute final output file name and format
-          */
-          (void) strlcpy(output_filename,"",MaxTextExtent);
-          if ((char *) NULL != options->output_directory)
+            directory[MaxTextExtent];
+                  
+          GetPathComponent(output_filename,HeadPath,directory);
+          if (IsAccessibleNoLogging(directory) == MagickFalse)
             {
-              size_t
-                output_directory_length;
-
-              output_directory_length = strlen(options->output_directory);
-              if (0 != output_directory_length)
+              if (image_info->verbose)
+                fprintf(stdout,"Creating directory \"%s\".\n",directory);
+                      
+              if (MagickCreateDirectoryPath(directory,&options->exception)
+                  == MagickFail)
                 {
-                  (void) strlcat(output_filename,options->output_directory,MaxTextExtent);
-                  if (output_filename[output_directory_length-1] != DirectorySeparator[0])
-                    (void) strlcat(output_filename,DirectorySeparator,MaxTextExtent);
+                  status = MagickFail;
                 }
             }
-          (void) strlcat(output_filename,image->filename,MaxTextExtent);
-          if (options->output_format != (char *) NULL)
-            {
-              AppendImageFormat(options->output_format,output_filename);
-              (void) strlcpy(image->magick,options->output_format,MaxTextExtent);
-            }
-          if (LocaleCompare(image_info->filename,"-") != 0)
-            {
-              /*
-                If output file already exists and is writeable by the
-                user, then create a rescue file by adding a tilde to the
-                existing file name and renaming.  If output file does
-                not exist or the rename of the existing file fails, then
-                there is no backup!  Note that this approach allows working
-                within a read-only directory if the output file already exists
-                and is writeable.
-              */
-              if (IsWriteable(output_filename))
-                {
-                  (void) strlcpy(temporary_filename,output_filename,MaxTextExtent);
-                  (void) strcat(temporary_filename,"~");
-                  if (rename(output_filename,temporary_filename) == 0)
-                    {
-                      if(image_info->verbose)
-                        (void) fprintf(stdout, "rename to backup %.1024s=>%.1024s\n",
-                                       output_filename,temporary_filename);
-                    }
-                  else
-                    {
-                      (void) strlcpy(temporary_filename,"",MaxTextExtent);
-                    }
-                }
-            }
+          if (status == MagickFail)
+            break;          
+        }
+      if (LocaleCompare(image_info->filename,"-") != 0)
+        {
           /*
-            Write the output file.
+            If output file already exists and is writeable by the
+            user, then create a rescue file by adding a tilde to the
+            existing file name and renaming.  If output file does
+            not exist or the rename of the existing file fails, then
+            there is no backup!  Note that this approach allows working
+            within a read-only directory if the output file already exists
+            and is writeable.
           */
-          (void) strlcpy(image->filename,output_filename,MaxTextExtent);
-          status &= WriteImages(image_info,image,image->filename,&options->exception);
-          if ((status != MagickFail) && (temporary_filename[0] != 0))
+          if (IsWriteable(output_filename))
             {
-              /*
-                Remove backup file.
-              */
-              if (remove(temporary_filename) == 0)
+              (void) strlcpy(temporary_filename,output_filename,MaxTextExtent);
+              (void) strcat(temporary_filename,"~");
+              if (rename(output_filename,temporary_filename) == 0)
                 {
                   if (image_info->verbose)
-                    (void) fprintf(stdout, "remove backup %.1024s\n",temporary_filename);
+                    (void) fprintf(stdout, "rename to backup %.1024s=>%.1024s\n",
+                                   output_filename,temporary_filename);
+                }
+              else
+                {
+                  (void) strlcpy(temporary_filename,"",MaxTextExtent);
                 }
             }
         }
+      /*
+        Write the output file.
+      */
+      (void) strlcpy(image->filename,output_filename,MaxTextExtent);
+      status = WriteImages(image_info,image,image->filename,&options->exception);
+      if ((status != MagickFail) && (temporary_filename[0] != 0))
+        {
+          /*
+            Remove backup file.
+          */
+          if (remove(temporary_filename) == 0)
+            {
+              if (image_info->verbose)
+                (void) fprintf(stdout, "remove backup %.1024s\n",temporary_filename);
+            }
+        }
+      break;
     }
   if (image)
     DestroyImageList(image);
@@ -10414,8 +10458,11 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   register long
     i;
 
+  MagickBool
+    create_directories,
+    global_colormap;
+
   unsigned int
-    global_colormap,
     status;
 
   /*
@@ -10439,7 +10486,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   */
   format=(char *) NULL;
   output_directory=(char *) NULL;
-  global_colormap=False;
+  create_directories=MagickFalse;
+  global_colormap=MagickFalse;
   status=True;
 
   /*
@@ -10470,6 +10518,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         transmogrify_options.argv=argv+j;
         transmogrify_options.output_format=format;
         transmogrify_options.output_directory=output_directory;
+        transmogrify_options.create_directories=create_directories;
         transmogrify_options.global_colormap=global_colormap;
         transmogrify_options.status=MagickPass;
         GetExceptionInfo(&transmogrify_options.exception);
@@ -10743,6 +10792,11 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
              }
            break;
          }
+        if (LocaleCompare("create-directories",option+1) == 0)
+          {
+            create_directories=(*option == '-');
+            break;
+          }
         if (LocaleCompare("crop",option+1) == 0)
           {
             if (*option == '-')
@@ -12096,8 +12150,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->verbose+=(*option == '-');
             break;
           }
-        if (LocaleCompare("verbose",option+1) == 0)
-          break;
         if (LocaleCompare("view",option+1) == 0)
           {
             (void) CloneString(&image_info->view,(char *) NULL);
@@ -12218,6 +12270,7 @@ static void MogrifyUsage(void)
       "-comment string      annotate image with comment",
       "-compress type       image compression type",
       "-contrast            enhance or reduce the image contrast",
+      "-create-directories  create output directories if required",
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
       "-debug events        display copious debugging information",

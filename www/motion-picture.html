@@ -6,9 +6,10 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080314;18161400">
+	<META NAME="CHANGED" CONTENT="20080408;20470900">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
@@ -319,21 +320,28 @@ This means that if your system has multiple CPUs, it can take
 advantage of all the CPUs while still using one command:</P>
 <PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10</PRE><P CLASS="western">
 The mogrify command supports the -output-directory option to sent
-files to a different directory than the input files.  This allows
+files to a different directory than the input files. This allows
 processing a large number of files without overwriting the input
 files:</P>
 <PRE>   mkdir dest
    cd source
-   gm mogrify -output-directory ../dest -resize 1828x1556 -depth 10 &ldquo;*.dpx&rdquo;
-</PRE><P CLASS="western">
+   gm mogrify -output-directory ../dest -resize 1828x1556 -depth 10 &ldquo;*.dpx&rdquo;</PRE><P CLASS="western">
 Note that the entire input file path specification is preserved when
 composing the output path so that the input file path is simply
-appended to the output directory path. Also, the user is responsible
-for creating any necessary destination directories. As an example of
-the path composition algorithm, if the input file name is specified
-as <I>source/file.dpx</I> and the output directory is specified as
-<I>dest</I>, then the output file path will be <I>dest/source/file.dpx</I>.</P>
-<H4>Creating A Contact Sheet</H4>
+appended to the output directory path. Also, unless the
+-create-directories option is added, the user is responsible for
+creating any necessary destination directories. As an example of the
+path composition algorithm, if the input file name is specified as
+<I>source/file.dpx</I> and the output directory is specified as <I>dest</I>,
+then the output file path will be <I>dest/source/file.dpx</I>.</P>
+<P CLASS="western">Here is an incantation which recursively processes
+all DPX files under <I>source</I> and sends the result to a similar
+directory tree under <I>dest</I>.</P>
+<PRE>   mkdir dest
+   cd source
+   find . name '*.dpx' -print | xargs gm mogrify -output-directory ../dest \
+     -create-directories -resize 1828x1556 -depth 10</PRE><H4>
+Creating A Contact Sheet</H4>
 <P CLASS="western">GraphicsMagick may be used to create a contact
 sheet (grid of thumbnails with name and size) by using the &ldquo;VID&rdquo;
 pseudoformat which accepts a wildcarded argument of files (protected

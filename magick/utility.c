@@ -3357,10 +3357,14 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
   char
     path[MaxTextExtent];
 
+  size_t
+    dir_len;
+
   int
     status = MagickPass;
 
   const char
+    *end,
     *p;
 
   unsigned int
@@ -3384,47 +3388,48 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
   if (0 == directory_mode)
     directory_mode = 0777;
 
-  p = dir;
-  while (MagickTrue)
-    {
-      if ((p = strchr(p,DirectorySeparator[0])) != (const char *) NULL)
-        strlcpy(path,dir,Min(p-dir+1,MaxTextExtent));
-      else
-        strlcpy(path,dir,sizeof(path));
+  dir_len = strlen(dir);
+  end = dir + dir_len;
 
-      if (strcmp(".",path) != 0)
+  /*
+    Walk back to find part of path which already exists.
+  */
+  for (p = end; p > dir ; p--)
+    {
+      if ((p == end) || (DirectorySeparator[0] == *p))
         {
-          if (-1 == mkdir(path,directory_mode))
-            {
-              if (EEXIST != errno)
-                {
-                  /*
-                    Throw exception.
-                  */
-                  ThrowException2(exception,FileOpenError,dir,strerror(errno));
-                  status = MagickFail;
-                  break;
-                }
-            }
-        }
-      errno = 0;
-      if (p != (const char *) NULL)
-        {
-          /*
-            More path components.
-          */
-          p++;
-          continue;
-        }
-      else
-        {
-          /*
-            Done
-          */
-          break;
+          (void) strlcpy(path,dir,p-dir+1);
+          if (IsAccessibleNoLogging(path))
+            break;
         }
     }
 
+  if (p != end)
+    {
+      /*
+        Create part of path which does not already exist.
+      */
+      for ( p++; p <= end ; p++)
+        {
+          if ((*p == '\0') || (DirectorySeparator[0] == *p))
+            {
+              (void) strlcpy(path,dir,p-dir+1);
+              if (-1 == mkdir(path,directory_mode))
+                {
+                  if (EEXIST != errno)
+                    {
+                      /*
+                        Throw exception.
+                      */
+                      ThrowException2(exception,FileOpenError,dir,strerror(errno));
+                      status = MagickFail;
+                      break;
+                    }
+                }
+              errno = 0;
+            }
+        }
+    }
   return status;
 }
 

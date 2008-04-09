@@ -1,3 +1,10 @@
+2008-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): New -create-directories
+	option automatically creates subdirectories as needed when
+	-output-directory option is used.  This is useful when one
+	directory tree of files is being mogrified to a new tree.
+
 2008-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (MagickCreateDirectoryPath): New function to

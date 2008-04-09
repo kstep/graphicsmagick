@@ -118,6 +118,10 @@
 <lopt>-convolve <kernel></opt>
 <abs>convolve image with the specified convolution kernel</abs>
 </utils>
+<utils apps=mogrify>
+<lopt>-create-directories</opt>
+<abs>create output directory if required</abs>
+</utils>
 <utils apps=animate,convert,display,import,mogrify,montage>
 <lopt>-crop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
 <abs>preferred size and location of the cropped image</abs>

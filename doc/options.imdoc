@@ -806,6 +806,23 @@ number of entries.  Presently only square kernels are supported.</pp>
 
 
 
+<!-- ------------ -create-directories ------------------------------------------ -->
+
+<utils apps=mogrify>
+<dopt>-create-directories</opt>
+
+<abs>create output directory if required</abs>
+
+<pp>
+Use this option with <s>-output-directory</s> if the input paths contain
+subdirectories and it is desired to create similar subdirectories in the
+output directory.  Without this option, <s>mogrify</s> will fail if the
+required output directory does not exist.</pp>
+
+</utils>
+
+
+
 <!-- ------------ -crop --------------------------------------------- -->
 
 <utils apps=animate,convert,display,import,mogrify,montage>

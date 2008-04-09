@@ -1,4 +1,4 @@
-.TH gm 1 "2008/03/29" "GraphicsMagick"
+.TH gm 1 "2008/04/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -884,6 +884,14 @@ The kernel is specified as a comma-separated list of integers, ordered
 left-to right, starting with the top row.
 The order of the kernel is determined by the square root of the
 number of entries.  Presently only square kernels are supported.
+.TP
+.B "-create-directories"
+\fRcreate output directory if required
+
+Use this option with \fB-output-directory\fP if the input paths contain
+subdirectories and it is desired to create similar subdirectories in the
+output directory.  Without this option, \fBmogrify\fP will fail if the
+required output directory does not exist.
 .TP
 .B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
@@ -7560,6 +7568,9 @@ Options, above.
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
+.TP
+.B "-create-directories"
+\fRcreate output directory if required
 .TP
 .B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
