@@ -1,3 +1,7 @@
+2008-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Updated to Autoconf 2.62.
+
 2008-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): New -create-directories
