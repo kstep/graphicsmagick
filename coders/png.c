@@ -1616,6 +1616,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     png_set_read_fn(ping,image,png_get_data);
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+  /* Ignore unknown chunks */
+  png_set_keep_unknown_chunks(ping, 1, NULL, 0);
   /* Ignore unused chunks */
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
                               (int)sizeof(unused_chunks)/5);
@@ -1915,21 +1917,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (ping_info->valid & PNG_INFO_tRNS)
     {
       int
-        scale;
+        bit_mask;
 
-      if (logging)
+      if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Reading PNG tRNS chunk.");
-      scale=(int) (MaxRGB/((1L << ping_info->bit_depth)-1L));
-      if (scale < 1)
-        scale=1;
+          "    Reading PNG tRNS chunk.");
+
+      bit_mask = (1 << ping_info->bit_depth) - 1;
+
       /*
         Image has a transparent background.
       */
-      transparent_color.red=(int) (ping_info->trans_values.red*scale);
-      transparent_color.green=(int) (ping_info->trans_values.green*scale);
-      transparent_color.blue=(int) (ping_info->trans_values.blue*scale);
-      transparent_color.opacity=(int) (ping_info->trans_values.gray*scale);
+      transparent_color.red=
+        (Quantum)(ping_info->trans_values.red & bit_mask);
+      transparent_color.green=
+        (Quantum) (ping_info->trans_values.green & bit_mask);
+      transparent_color.blue=
+        (Quantum) (ping_info->trans_values.blue & bit_mask);
+      transparent_color.opacity=
+        (Quantum) (ping_info->trans_values.gray & bit_mask);
       if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
         {
           transparent_color.red=transparent_color.opacity;
