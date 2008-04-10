@@ -1,3 +1,8 @@
+2008-04-09  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c (ReadOnePNGImage) Use the low bits of the PNG
+	tRNS values instead of scaling them when reducing from 16-bits.
+
 2008-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Updated to Autoconf 2.62.
