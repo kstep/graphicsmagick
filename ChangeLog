@@ -1,5 +1,6 @@
 2008-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lcms: Updated lcms to 1.17.
 	* png: Updated libpng to 1.2.26.
 
 2008-04-09  Glenn Randers-Pehrson <glennrp@simple....>
