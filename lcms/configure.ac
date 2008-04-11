@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.16)
+AC_INIT(lcms,1.17)
 
 #
 # Libtool library revision control info

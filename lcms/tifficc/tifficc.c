@@ -53,16 +53,16 @@ extern cmsHPROFILE OpenStockProfile(const char* File);
 
 // Flags
 
-static BOOL Verbose                = FALSE;
-static BOOL BlackWhiteCompensation = FALSE;
-static BOOL IgnoreEmbedded         = FALSE;
-static BOOL EmbedProfile           = FALSE;
-static BOOL Width16                = FALSE;
-static BOOL GamutCheck             = FALSE;
-static BOOL lIsDeviceLink          = FALSE;
-static BOOL StoreAsAlpha           = FALSE;
+static LCMSBOOL Verbose                = FALSE;
+static LCMSBOOL BlackWhiteCompensation = FALSE;
+static LCMSBOOL IgnoreEmbedded         = FALSE;
+static LCMSBOOL EmbedProfile           = FALSE;
+static LCMSBOOL Width16                = FALSE;
+static LCMSBOOL GamutCheck             = FALSE;
+static LCMSBOOL lIsDeviceLink          = FALSE;
+static LCMSBOOL StoreAsAlpha           = FALSE;
 static int PreserveBlack		   = 0;
-static BOOL InputLabUsingICC	   = FALSE;
+static LCMSBOOL InputLabUsingICC	   = FALSE;
 
 static int Intent                  = INTENT_PERCEPTUAL;
 static int ProofingIntent          = INTENT_PERCEPTUAL;
@@ -811,7 +811,7 @@ void DoEmbedProfile(TIFF* Out, const char* ProfileFile)
         if (f == NULL) return;
 
         size = xfilelength(fileno(f));
-        EmbedBuffer = (LPBYTE) malloc(size + 1);
+        EmbedBuffer = (LPBYTE) _cmsMalloc(size + 1);
         EmbedLen = fread(EmbedBuffer, 1, size, f);
         fclose(f);
         EmbedBuffer[EmbedLen] = 0;

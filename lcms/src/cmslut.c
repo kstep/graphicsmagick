@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -89,7 +89,7 @@ LPLUT LCMSEXPORT cmsAllocLUT(void)
 {
        LPLUT NewLUT;
 
-       NewLUT = (LPLUT) malloc(sizeof(LUT));
+       NewLUT = (LPLUT) _cmsMalloc(sizeof(LUT));
        if (NewLUT)
               ZeroMemory(NewLUT, sizeof(LUT));
 
@@ -142,9 +142,10 @@ void LCMSEXPORT cmsFreeLUT(LPLUT Lut)
 static
 LPVOID DupBlockTab(LPVOID Org, size_t size)
 {
-    LPVOID mem = malloc(size);
+    LPVOID mem = _cmsMalloc(size);
+    if (mem != NULL)
+        CopyMemory(mem, Org, size);
 
-    CopyMemory(mem, Org, size);
     return mem;
 }
 
@@ -196,7 +197,9 @@ LPLUT LCMSEXPORT cmsAlloc3DGrid(LPLUT NewLUT, int clutPoints, int inputChan, int
                                                 NewLUT->InputChan)
                                                 * sizeof(WORD));
 
-       NewLUT -> T = (LPWORD) malloc(nTabSize);
+       NewLUT -> T = (LPWORD) _cmsMalloc(nTabSize);
+       if (NewLUT -> T == NULL) return NULL;
+
        ZeroMemory(NewLUT -> T, nTabSize);
        NewLUT ->Tsize = nTabSize;
        
@@ -225,7 +228,9 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                for (i=0; i < NewLUT -> InputChan; i++) {
 
-                     PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> InputEntries);
+                     PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewLUT -> InputEntries);
+                     if (PtrW == NULL) return NULL;
+
                      NewLUT -> L1[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> InputEntries);
 					 CopyMemory(&NewLUT -> LCurvesSeed[0][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
@@ -239,7 +244,9 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                NewLUT -> OutputEntries = Tables[0] -> nEntries;
                for (i=0; i < NewLUT -> OutputChan; i++) {
 
-                     PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> OutputEntries);
+                     PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewLUT -> OutputEntries);
+                     if (PtrW == NULL) return NULL;
+
                      NewLUT -> L2[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> OutputEntries);
 					 CopyMemory(&NewLUT -> LCurvesSeed[1][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
@@ -256,7 +263,9 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
 
                for (i=0; i < NewLUT -> InputChan; i++) {
 
-                     PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> L3Entries);
+                     PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewLUT -> L3Entries);
+                     if (PtrW == NULL) return NULL;
+
                      NewLUT -> L3[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L3Entries);
 					 CopyMemory(&NewLUT -> LCurvesSeed[2][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
@@ -269,7 +278,9 @@ LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nT
                NewLUT -> L4Entries = Tables[0] -> nEntries;
                for (i=0; i < NewLUT -> OutputChan; i++) {
 
-                     PtrW = (LPWORD) malloc(sizeof(WORD) * NewLUT -> L4Entries);
+                     PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewLUT -> L4Entries);
+                     if (PtrW == NULL) return NULL;
+
                      NewLUT -> L4[i] = PtrW;
                      CopyMemory(PtrW, Tables[i]->GammaTable, sizeof(WORD) * NewLUT -> L4Entries);
 					 CopyMemory(&NewLUT -> LCurvesSeed[3][i], &Tables[i] -> Seed, sizeof(LCMSGAMMAPARAMS));
@@ -551,7 +562,7 @@ LPLUT _cmsBlessLUT8(LPLUT Lut)
    LPL16PARAMS p = &Lut ->CLut16params;
 
   
-   p8 = (LPL8PARAMS) malloc(sizeof(L8PARAMS));
+   p8 = (LPL8PARAMS) _cmsMalloc(sizeof(L8PARAMS));
    if (p8 == NULL) return NULL;
 
   // values comes * 257, so we can safely take first byte (x << 8 + x)
@@ -564,8 +575,8 @@ LPLUT _cmsBlessLUT8(LPLUT Lut)
            if (Lut ->wFlags & LUT_HASTL1) {
 
               for (j=0; j < 3; j++)
-                     StageABC[i] = cmsLinearInterpLUT16(StageABC[i],
-                                                        Lut -> L1[i],
+                     StageABC[j] = cmsLinearInterpLUT16(StageABC[j],
+                                                        Lut -> L1[j],
                                                        &Lut -> In16params);
               Lut ->wFlags &= ~LUT_HASTL1;
            }

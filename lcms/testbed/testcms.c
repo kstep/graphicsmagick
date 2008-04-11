@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -250,7 +250,7 @@ static
 int TestJointCurves(void)
 {
     LPGAMMATABLE Forward, Reverse, Result;
-    BOOL rc;
+    LCMSBOOL rc;
 
     printf("Testing curves join ...");
 
@@ -317,7 +317,7 @@ int TestReversingOfCurves(void)
                                    
     }
     
-    PrintStatistics(0, &Stats); 
+    if (Stats.Peak > 0) PrintStatistics(0, &Stats); 
     printf(" pass.\n");
     cmsFreeGamma(Gamma);
     cmsFreeGamma(Reverse);
@@ -604,7 +604,7 @@ int IsGood(const char *frm, WORD in, WORD out)
 }
 
 static
-BOOL TestReverseLinearInterpolation(void)
+LCMSBOOL TestReverseLinearInterpolation(void)
 {
         WORD Tab[20];
         L16PARAMS p;
@@ -782,7 +782,7 @@ void PrintMatrix(LPMAT3 lpM)
 
 
 static
-BOOL CmpMatrix(LPMAT3 lpM1, LPMAT3 lpM2, double tolerance)
+LCMSBOOL CmpMatrix(LPMAT3 lpM1, LPMAT3 lpM2, double tolerance)
 {
        int i, j;
 
@@ -800,7 +800,7 @@ BOOL CmpMatrix(LPMAT3 lpM1, LPMAT3 lpM2, double tolerance)
 
 
 static
-BOOL TestMatrixCreation(void)
+LCMSBOOL TestMatrixCreation(void)
 {
        MAT3 Mat;
        int rc;
@@ -913,8 +913,8 @@ int TestFullSpectrum(cmsHTRANSFORM xform, int nRedInterv, int MaxErr)
        clock_t t;
 
 
-       bin  = (Scanline_rgb2 *) malloc(256*sizeof(Scanline_rgb2));
-       bout = (Scanline_rgb2 *) malloc(256*sizeof(Scanline_rgb2));
+       bin  = (Scanline_rgb2 *) _cmsMalloc(256*sizeof(Scanline_rgb2));
+       bout = (Scanline_rgb2 *) _cmsMalloc(256*sizeof(Scanline_rgb2));
 
 
        ClearStats(&Stats);
@@ -960,8 +960,8 @@ int TestFullSpectrum(cmsHTRANSFORM xform, int nRedInterv, int MaxErr)
                                           printf("Coarse error! : In=(%x,%x,%x) Out=(%x,%x,%x)\n",
                                                         bin[b].r, bin[b].g, bin[b].b,
                                                         bout[b].r, bout[b].g, bout[b].b);
-                                          free(bin);
-                                          free(bout);
+                                          _cmsFree(bin);
+                                          _cmsFree(bout);
                                           return 0;
                                    }
                             }
@@ -972,8 +972,8 @@ int TestFullSpectrum(cmsHTRANSFORM xform, int nRedInterv, int MaxErr)
 
 
        PrintStatistics(t, &Stats);
-       free(bin);
-       free(bout);
+       _cmsFree(bin);
+       _cmsFree(bout);
 
        return 1;
 }
@@ -1036,7 +1036,7 @@ double Convertab(WORD v)
 
 static
 int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2, 
-                      int nRedInterv, int lWithStats, BOOL lIsLab)
+                      int nRedInterv, int lWithStats, LCMSBOOL lIsLab)
 {
        int r, g, b;
        double err;
@@ -1045,9 +1045,9 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
        int OutOfGamut = 0;
 
 
-       bin   = (Scanline_rgb2 *) malloc(256*sizeof(Scanline_rgb2));
-       bout1 = (Scanline_rgb2 *) malloc(256*sizeof(Scanline_rgb2));
-       bout2 = (Scanline_rgb2 *) malloc(256*sizeof(Scanline_rgb2));
+       bin   = (Scanline_rgb2 *) _cmsMalloc(256*sizeof(Scanline_rgb2));
+       bout1 = (Scanline_rgb2 *) _cmsMalloc(256*sizeof(Scanline_rgb2));
+       bout2 = (Scanline_rgb2 *) _cmsMalloc(256*sizeof(Scanline_rgb2));
 
 
        ClearStats(&Stats);
@@ -1135,9 +1135,9 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
                 printf("Out of encodeable representation=%d\n\n", OutOfGamut);
      
 
-       free(bin);
-       free(bout1);
-       free(bout2);
+       _cmsFree(bin);
+       _cmsFree(bout1);
+       _cmsFree(bout2);
 
        return 1;
 }
@@ -1145,7 +1145,7 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
 
 
 static
-BOOL CheckXYZ(LPcmsCIEXYZ Check, double X, double Y, double Z)
+LCMSBOOL CheckXYZ(LPcmsCIEXYZ Check, double X, double Y, double Z)
 {
     return ((fabs(Check->X - X) < 0.001) && 
             (fabs(Check->Y - Y) < 0.001) &&
@@ -1168,7 +1168,7 @@ LPGAMMATABLE Build_sRGBGamma(void)
 }
 
 static
-BOOL Check_sRGBGamma(LPGAMMATABLE Shape)
+LCMSBOOL Check_sRGBGamma(LPGAMMATABLE Shape)
 {
     LPGAMMATABLE sRGB = Build_sRGBGamma();
     int i;
@@ -1666,8 +1666,8 @@ void CompareWithICM_16bit(void)
 
 
 	size = 256 * 256 * 256;
-	InBlk = malloc((size_t) size * sizeof(COLOR));
-	OutBlk = malloc((size_t) size * sizeof(COLOR));
+	InBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
+	OutBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
 
 	if (InBlk == NULL || OutBlk == NULL) {
 		printf("Out of memory\n"); exit(2);
@@ -1721,8 +1721,8 @@ void CompareWithICM_16bit(void)
     cmsCloseProfile(hlcmsProfileIn);
     cmsCloseProfile(hlcmsProfileOut);
 
-	free(InBlk);
-	free(OutBlk);
+	_cmsFree(InBlk);
+	_cmsFree(OutBlk);
 }
 
 static
@@ -1849,7 +1849,7 @@ void SpeedTest(void)
 
 	Mb = 256*256*256*sizeof(Scanline_rgb0);
 
-	In = (Scanline_rgb0*) malloc(Mb);
+	In = (Scanline_rgb0*) _cmsMalloc(Mb);
 
 	j = 0;
 	for (r=0; r < 256; r++)
@@ -1872,7 +1872,7 @@ void SpeedTest(void)
 
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
-	free(In);
+	_cmsFree(In);
 	
     
     printf("done.\n[%d tics, %g sec, %g Mpixel/sec.]\n", (int) diff, seconds, Mb / (1024*1024*seconds*3*2) );
@@ -1905,7 +1905,7 @@ void SpeedTest2(void)
 
 	Mb = 256*256*256*sizeof(Scanline_rgb8);
 
-	In = (Scanline_rgb8*) malloc(Mb);
+	In = (Scanline_rgb8*) _cmsMalloc(Mb);
 
 	j = 0;
 	for (r=0; r < 256; r++)
@@ -1928,7 +1928,7 @@ void SpeedTest2(void)
 
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
-	free(In);
+	_cmsFree(In);
 	
     
     printf("done.\n[%d tics, %g sec, %g Mpixels/sec.]\n", (int) diff, seconds, Mb / (1024*1024*seconds*3) );
@@ -1963,7 +1963,7 @@ int TestSaveToMem(void)
             return FALSE;
       }
 
-    memPtr = malloc(bytesNeeded);
+    memPtr = _cmsMalloc(bytesNeeded);
     if (_cmsSaveProfileToMem(hProfile, memPtr, &bytesNeeded)) {
             
 
@@ -1973,7 +1973,7 @@ int TestSaveToMem(void)
         if (strncmp(s, "sRGB", 4) == 0) rc = TRUE;
 
         cmsCloseProfile(newProfile);
-        free(memPtr);
+        _cmsFree(memPtr);
         
     }
 
@@ -2228,11 +2228,11 @@ void GenerateCSA(const char* cInProf)
 	n = cmsGetPostScriptCSA(hProfile, 0, NULL, 0);
 	if (n == 0) return;
 
-	Buffer = (char*) malloc(n + 1);
+	Buffer = (char*) _cmsMalloc(n + 1);
 	cmsGetPostScriptCSA(hProfile, 0, Buffer, n);
 	Buffer[n] = 0;
 	
-	free(Buffer);
+	_cmsFree(Buffer);
 	cmsCloseProfile(hProfile);
 }
 
@@ -2254,11 +2254,11 @@ void GenerateCRD(const char* cOutProf)
 	n = cmsGetPostScriptCRDEx(hProfile, 0, dwFlags, NULL, 0);
 	if (n == 0) return;
 
-	Buffer = (char*) malloc(n + 1);
+	Buffer = (char*) _cmsMalloc(n + 1);
     cmsGetPostScriptCRDEx(hProfile, 0, dwFlags, Buffer, n);
 	Buffer[n] = 0;
 	
-	free(Buffer);
+	_cmsFree(Buffer);
 	cmsCloseProfile(hProfile);
 }
 
@@ -2299,11 +2299,12 @@ void TestLabFloat()
 int main(int argc, char *argv[])
 {
        int lExhaustive = 0;   
-	
+
 	   // #include "crtdbg.h"
 	   // _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 
 	  	   
+         
        printf("little cms testbed. Ver %1.2f [build %s %s]\n\n", LCMS_VERSION / 100., __DATE__, __TIME__);
        
 #ifndef LCMS_DLL

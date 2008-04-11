@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -46,14 +46,14 @@ extern cmsHPROFILE OpenStockProfile(const char* File);
 
 // Globals
 
-static BOOL InHexa                 = FALSE;
-static BOOL Verbose                = FALSE;
-static BOOL GamutCheck             = FALSE;
-static BOOL Width16                = FALSE;
-static BOOL BlackPointCompensation = FALSE;
-static BOOL PreserveBlack		   = FALSE;
-static BOOL lIsDeviceLink          = FALSE;
-static BOOL lTerse                 = FALSE;
+static LCMSBOOL InHexa                 = FALSE;
+static LCMSBOOL Verbose                = FALSE;
+static LCMSBOOL GamutCheck             = FALSE;
+static LCMSBOOL Width16                = FALSE;
+static LCMSBOOL BlackPointCompensation = FALSE;
+static LCMSBOOL PreserveBlack		   = FALSE;
+static LCMSBOOL lIsDeviceLink          = FALSE;
+static LCMSBOOL lTerse                 = FALSE;
 
 static char *cInProf   = NULL;
 static char *cOutProf  = NULL;
@@ -604,16 +604,7 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
                     Print100("Y", Encoded[2]); 
                     break;
 
-    case icSigHexachromeData:
-    case icSig6colorData:
-                            
-                    Print100("C", Encoded[0]); 
-                    Print100("M", Encoded[1]); 
-                    Print100("Y", Encoded[2]); 
-                    Print100("K", Encoded[3]); 
-                    Print100("c", Encoded[1]); 
-                    Print100("m", Encoded[2]); 
-                    break;
+  
 
     default:
 
@@ -905,7 +896,10 @@ static
 void TakeCGATSValues(int nPatch, WORD Encoded[])
 {
     // At first take the name if SAMPLE_ID is present
-	cmsIT8GetPatchName(hIT8in, nPatch, CGATSPatch);
+    if (cmsIT8GetPatchName(hIT8in, nPatch, CGATSPatch) == NULL) {
+        	FatalError("icctrans: Sorry, I need 'SAMPLE_ID' on input CGATS to operate.");
+    }
+
 
     // Special handling for named color profiles. 
     // Lookup the name in the names database (the transform)

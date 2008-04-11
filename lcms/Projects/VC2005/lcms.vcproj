@@ -132,7 +132,7 @@
 				AssemblerListingLocation=".\LibDebug/"
 				ObjectFile=".\LibDebug/"
 				ProgramDataBaseFileName=".\LibDebug/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"

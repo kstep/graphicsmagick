@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -253,7 +253,7 @@ void Eval8Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS 
 // Fills optimization parameters
 
 void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan, 
-                                            BOOL lUseTetrahedral, LPL16PARAMS p)
+                                            LCMSBOOL lUseTetrahedral, LPL16PARAMS p)
 {
        int clutPoints;
 
@@ -550,7 +550,7 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
 
                 // Identify if value fall downto 0 or FFFF zone             
                 if (Value == 0) return 0;
-                if (Value == 0xFFFF) return 0xFFFF;
+               // if (Value == 0xFFFF) return 0xFFFF;
 
                 // else restrict to valid zone
 
@@ -602,7 +602,7 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
         a = (y1 - y0) / (x1 - x0);
         b = y0 - a * x0;
 
-        if (a == 0) return (WORD) x;
+        if (fabs(a) < 0.01) return (WORD) x;
 
         f = ((Value - b) / a);
 

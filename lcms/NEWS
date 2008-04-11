@@ -1,57 +1,32 @@
 
- New in ver 1.16
+ New in ver 1.17
  ===============
   
-New features
+Changes in API
+----------------------
+
+WIN64 support
+_vsnprintf wrap
+BOOL replaced by LCMSBOOL
+cmsSetLanguage parameters changed to match ICC spec
+removed support for extended gamut descriptor (was never fully implemented)
+cmsFLAGS_NODEFAULTRESOURCEDEF moved to 0x01000000
+_cmsMalloc wrapper for malloc
+_cmsFree wrapper for free
+
+
+Implementation
+----------------------
+All errors moved to fatal, since there is no easy recovery strategy
+Vulnerability fixes on cmsio1.c 
+Status check, many functions now check the status when calling other functions. Improved robustness against ill-formed profiles.
+_cmsSaveProfile didn't copy tags from a file based profile, fixed.
+
+
+Utilities
+----------
+icctrans: CMYKcm support wrongly implemented, fixed.
+icclink: linking 3 to 7 channels didn't work in some cases, fixed.
     
-  two different types of black preservation on CMYK-> CMYK transforms
-  Ability to set adaptation state of observer on absolute colorimetric transforms. 
-  A rather advanced feature. Actually it only allows No adaptation (d=0) and observer fully adapted (d=1)
-  lcms can now "fix" some broken 8-bit profiles that have gray axes misplaced.
-  icctrans can now read CGATS/IT8 files.
-  improved tifficc with tiff Lab8 support
-  icclink now supports colorant table tag.
-  
-
- New functions
-
-double        cmsSetAdaptationState(cmsHTRANSFORM hTransform, double d);
-
-void           cmsSetHeaderAttributes(cmsHPROFILE hProfile, DWORD Flags);
-DWORD          cmsTakeHeaderAttributes(cmsHPROFILE hProfile);
-
-icInt32Number  cmsGetTagCount(cmsHPROFILE hProfile);
-icTagSignature cmsGetTagSignature(cmsHPROFILE hProfile, icInt32Number n);
-
-int            cmsSetCMYKPreservationStrategy(int n)
-
-BOOL           cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded);
-
-BOOL          _cmsIsMatrixShaper(cmsHPROFILE hProfile);
-BOOL          _cmsAddDateTimeTag(cmsHPROFILE hProfile, icTagSignature sig, struct tm *DateTime);
-BOOL          _cmsAddColorantTableTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsNAMEDCOLORLIST nc);
-
-double       cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Result[], LPWORD Hint);
-
-LPcmsNAMEDCOLORLIST  cmsReadColorantTable(cmsHPROFILE hProfile, icTagSignature sig)
-
-LPcmsGAMUTEX cmsReadExtendedGamut(cmsHPROFILE hProfile, int index);
-void         cmsFreeExtendedGamut(LPcmsGAMUTEX gex);
-
-
-New tags supported
-
-       icSigColorantTableTag		    LPcmsNAMEDCOLORLIST
-       icSigColorantTableOutTag         LPcmsNAMEDCOLORLIST
-       icSigCalibrationDateTimeTag	    const struct tm*
-    
-		
-New flags:
-
-cmsFLAGS_PRESERVEBLACK
-cmsFLAGS_GRIDPOINTS(n)
-
-
-And of course some bug fixing.
 
 

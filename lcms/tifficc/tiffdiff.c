@@ -40,7 +40,7 @@ static TIFF *Tiff1, *Tiff2, *TiffDiff;
 static const char* TiffDiffFilename;
 static const char* CGATSout;
 
-static BOOL Verbose = FALSE;
+static LCMSBOOL Verbose = FALSE;
 
 typedef struct {
                 double  n, x, x2;                    

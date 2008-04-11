@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -291,7 +291,7 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
     cmsHPROFILE hICC;
     _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) hTransform;
     LPLUT Lut;
-    BOOL MustFreeLUT;
+    LCMSBOOL MustFreeLUT;
     LPcmsNAMEDCOLORLIST InputColorant = NULL;
     LPcmsNAMEDCOLORLIST OutputColorant = NULL;
     
@@ -343,11 +343,9 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
     cmsAddTag(hICC, icSigMediaWhitePointTag,  (LPVOID) cmsD50_XYZ());
     
     if (cmsGetDeviceClass(hICC) == icSigOutputClass) {
-        
-        
+                
         cmsAddTag(hICC, icSigBToA0Tag, (LPVOID) Lut);
     }
-    
     else
         cmsAddTag(hICC, icSigAToB0Tag, (LPVOID) Lut);
     
@@ -417,6 +415,7 @@ cmsHPROFILE LCMSEXPORT cmsCreateLinearizationDeviceLink(icColorSpaceSignature Co
      
        // Creates a LUT with prelinearization step only
        Lut = cmsAllocLUT();
+       if (Lut == NULL) return NULL;
 
        // Set up channels
        Lut ->InputChan = Lut ->OutputChan = _cmsChannelsOf(ColorSpace);
@@ -519,6 +518,10 @@ cmsHPROFILE LCMSEXPORT cmsCreateInkLimitingDeviceLink(icColorSpaceSignature Colo
       
        // Creates a LUT with 3D grid only
        Lut = cmsAllocLUT();
+       if (Lut == NULL) {
+           cmsCloseProfile(hICC);
+           return NULL;
+           }
 
 
        cmsAlloc3DGrid(Lut, 17, _cmsChannelsOf(ColorSpace), 
@@ -555,8 +558,9 @@ static
 LPLUT Create3x3EmptyLUT(void)
 {
         LPLUT AToB0 = cmsAllocLUT();
-        AToB0 -> InputChan = AToB0 -> OutputChan = 3;
+        if (AToB0 == NULL) return NULL;
 
+        AToB0 -> InputChan = AToB0 -> OutputChan = 3;
         return AToB0;
 }
 
@@ -568,8 +572,8 @@ cmsHPROFILE LCMSEXPORT cmsCreateLabProfile(LPcmsCIExyY WhitePoint)
         cmsHPROFILE hProfile;        
         LPLUT Lut;
 
-
         hProfile = cmsCreateRGBProfile(WhitePoint == NULL ? cmsD50_xyY() : WhitePoint, NULL, NULL);
+        if (hProfile == NULL) return NULL;
 
         cmsSetDeviceClass(hProfile, icSigAbstractClass);
         cmsSetColorSpace(hProfile,  icSigLabData);
@@ -582,7 +586,10 @@ cmsHPROFILE LCMSEXPORT cmsCreateLabProfile(LPcmsCIExyY WhitePoint)
 
        // An empty LUTs is all we need
        Lut = Create3x3EmptyLUT();
-       if (Lut == NULL) return NULL;
+       if (Lut == NULL) {
+           cmsCloseProfile(hProfile);
+           return NULL;
+           }
 
        cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
        cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
@@ -599,8 +606,8 @@ cmsHPROFILE LCMSEXPORT cmsCreateLab4Profile(LPcmsCIExyY WhitePoint)
         cmsHPROFILE hProfile;        
         LPLUT Lut;
 
-
         hProfile = cmsCreateRGBProfile(WhitePoint == NULL ? cmsD50_xyY() : WhitePoint, NULL, NULL);
+        if (hProfile == NULL) return NULL;
 
         cmsSetProfileICCversion(hProfile, 0x4000000);
 
@@ -615,7 +622,10 @@ cmsHPROFILE LCMSEXPORT cmsCreateLab4Profile(LPcmsCIExyY WhitePoint)
 
        // An empty LUTs is all we need
        Lut = Create3x3EmptyLUT();
-       if (Lut == NULL) return NULL;
+       if (Lut == NULL) {
+           cmsCloseProfile(hProfile);
+           return NULL;
+           }
 
        Lut -> wFlags |= LUT_V4_INPUT_EMULATE_V2;
        cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
@@ -637,6 +647,7 @@ cmsHPROFILE LCMSEXPORT cmsCreateXYZProfile(void)
         LPLUT Lut;
 
         hProfile = cmsCreateRGBProfile(cmsD50_xyY(), NULL, NULL);
+        if (hProfile == NULL) return NULL;
 
         cmsSetDeviceClass(hProfile, icSigAbstractClass);
         cmsSetColorSpace(hProfile, icSigXYZData);
@@ -648,15 +659,16 @@ cmsHPROFILE LCMSEXPORT cmsCreateXYZProfile(void)
 
        // An empty LUTs is all we need
        Lut = Create3x3EmptyLUT();
-       if (Lut == NULL) return NULL;
+       if (Lut == NULL) {
+           cmsCloseProfile(hProfile);
+           return NULL;
+           }
 
        cmsAddTag(hProfile, icSigAToB0Tag,    (LPVOID) Lut);
        cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
        cmsAddTag(hProfile, icSigPreview0Tag, (LPVOID) Lut);
 
-       cmsFreeLUT(Lut);
-
-    
+       cmsFreeLUT(Lut);    
        return hProfile;
 }
 
@@ -694,6 +706,7 @@ LPGAMMATABLE Build_sRGBGamma(void)
     return cmsBuildParametricGamma(1024, 4, Parameters);
 }
 
+// Create the ICC virtual profile for sRGB space 
 cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
 {
        cmsCIExyY       D65;
@@ -710,6 +723,7 @@ cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
            
        hsRGB = cmsCreateRGBProfile(&D65, &Rec709Primaries, Gamma22);
        cmsFreeGamma(Gamma22[0]);
+       if (hsRGB == NULL) return NULL;
 
       
        cmsAddTag(hsRGB, icSigDeviceMfgDescTag,      (LPVOID) "(lcms internal)");
@@ -718,7 +732,6 @@ cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
         
        return hsRGB;
 }
-
 
 
 
@@ -764,7 +777,6 @@ int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
 
     cmsFloat2LabEncoded(Out, &LabOut);
     
-
     return TRUE;
 }
 
@@ -810,7 +822,10 @@ cmsHPROFILE LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
       
        // Creates a LUT with 3D grid only
        Lut = cmsAllocLUT();
-
+       if (Lut == NULL) {
+           cmsCloseProfile(hICC);
+           return NULL;
+           }
 
        cmsAlloc3DGrid(Lut, nLUTPoints, 3, 3);
 
@@ -861,7 +876,10 @@ cmsHPROFILE LCMSEXPORT cmsCreateNULLProfile(void)
 
        // An empty LUTs is all we need
        Lut = cmsAllocLUT();
-       if (Lut == NULL) return NULL;
+       if (Lut == NULL) {
+           cmsCloseProfile(hProfile);
+           return NULL;
+           }
 
        Lut -> InputChan = 3;
        Lut -> OutputChan = 1;

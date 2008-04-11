@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -91,7 +91,7 @@ int ComponentOf(int n, int clut, int nColorant)
 // This routine does a sweep on whole input space, and calls its callback
 // function on knots. returns TRUE if all ok, FALSE otherwise.
 
-BOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo, DWORD dwFlags)
+LCMSBOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo, DWORD dwFlags)
 {
    int i, t, nTotalPoints, Colorant, index;
    WORD In[MAXCHANNELS], Out[MAXCHANNELS];
@@ -116,12 +116,16 @@ BOOL LCMSEXPORT cmsSample3DGrid(LPLUT Lut, _cmsSAMPLER Sampler, LPVOID Cargo, DW
                                                 &Lut -> In16params);
         }
 
+		for (t=0; t < (int) Lut -> OutputChan; t++)
+                     Out[t] = Lut->T[index + t];
 
-        // if (dwFlags & SAMPLER_INSPECT) {
+        if (dwFlags & SAMPLER_HASTL2) {
 
              for (t=0; t < (int) Lut -> OutputChan; t++)
-                        Out[t] = Lut->T[index + t];
-        // }
+                     Out[t] = cmsLinearInterpLUT16(Out[t],
+                                                   Lut -> L2[t],
+                                                   &Lut -> Out16params);               
+        }	
 
 
         if (!Sampler(In, Out, Cargo))
@@ -226,8 +230,10 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        LPLUT Grid;
        int nGridPoints;
        DWORD dwFormatIn, dwFormatOut;
+       DWORD SaveFormatIn, SaveFormatOut;
        int ChannelsIn, ChannelsOut;
        LPLUT SaveGamutLUT;
+
 
        // Remove any gamut checking
        SaveGamutLUT = p ->Gamut;
@@ -247,8 +253,13 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        dwFormatIn   = (CHANNELS_SH(ChannelsIn)|BYTES_SH(2));
        dwFormatOut  = (CHANNELS_SH(ChannelsOut)|BYTES_SH(2));
 
-       p -> FromInput = _cmsIdentifyInputFormat(p, dwFormatIn);
-       p -> ToOutput  = _cmsIdentifyOutputFormat(p, dwFormatOut);
+       SaveFormatIn  = p ->InputFormat;
+       SaveFormatOut = p ->OutputFormat;
+
+       p -> InputFormat  = dwFormatIn;
+       p -> OutputFormat = dwFormatOut;
+       p -> FromInput    = _cmsIdentifyInputFormat(p, dwFormatIn);
+       p -> ToOutput     = _cmsIdentifyOutputFormat(p, dwFormatOut);
 
        // Fix gamut & gamma possible mismatches. 
            
@@ -259,8 +270,7 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
                 
            _cmsComputePrelinearizationTablesFromXFORM(hOne, 1, Grid);
        }
-        
-            
+                    
        // Attention to this typecast! we can take the luxury to
        // do this since cmsHTRANSFORM is only an alias to a pointer
        // to the transform struct.
@@ -268,11 +278,13 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
        if (!cmsSample3DGrid(Grid, XFormSampler, (LPVOID) p, Grid -> wFlags)) {
 
                 cmsFreeLUT(Grid);
-                return NULL;
-       }
+                Grid = NULL;
+       }      
       
-      
-       p ->Gamut = SaveGamutLUT;
+       p ->Gamut        = SaveGamutLUT;
+       p ->InputFormat  = SaveFormatIn; 
+       p ->OutputFormat = SaveFormatOut;
+
        return Grid;
 }
 
@@ -440,6 +452,7 @@ int LCMSEXPORT cmsSetCMYKPreservationStrategy(int n)
     return OldVal;
 }
 
+#pragma warning(disable: 4550)
 
 // Get a pointer to callback on depending of strategy
 static
@@ -624,7 +637,7 @@ void PatchLUT(LPLUT Grid, WORD At[], WORD Value[],
 
 
 
-BOOL _cmsFixWhiteMisalignment(_LPcmsTRANSFORM p)
+LCMSBOOL _cmsFixWhiteMisalignment(_LPcmsTRANSFORM p)
 {
 
        WORD *WhitePointIn, *WhitePointOut, *BlackPointIn, *BlackPointOut;

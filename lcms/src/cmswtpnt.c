@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -48,7 +48,7 @@ void LCMSEXPORT cmsxyY2XYZ(LPcmsCIEXYZ Dest, const cmsCIExyY* Source)
 
 // Obtains WhitePoint from Temperature
 
-BOOL LCMSEXPORT cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint)
+LCMSBOOL LCMSEXPORT cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint)
 {
        double x, y;
        double T, T2, T3;
@@ -113,7 +113,7 @@ BOOL LCMSEXPORT cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint)
 //            - Then, I apply these coeficients to the original matrix
 
 
-BOOL LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r, LPcmsCIExyY WhitePt,
+LCMSBOOL LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r, LPcmsCIExyY WhitePt,
                                             LPcmsCIExyYTRIPLE Primrs)
 {
         VEC3 WhitePoint, Coef;
@@ -208,7 +208,7 @@ void ComputeChromaticAdaptation(LPMAT3 Conversion,
 // Returns the final chrmatic adaptation from illuminant FromIll to Illuminant ToIll
 // The cone matrix can be specified in ConeMatrix. If NULL, Bradford is assumed
 
-BOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcmsCIEXYZ ToIll)
+LCMSBOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcmsCIEXYZ ToIll)
 {
      MAT3 LamRigg   = {{ // Bradford matrix
                       {{  0.8951,  0.2664, -0.1614 }},
@@ -227,7 +227,7 @@ BOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcms
 
 // Same as anterior, but assuming D50 destination. White point is given in xyY
 
-BOOL cmsAdaptMatrixToD50(LPMAT3 r, LPcmsCIExyY SourceWhitePt)
+LCMSBOOL cmsAdaptMatrixToD50(LPMAT3 r, LPcmsCIExyY SourceWhitePt)
 {
         cmsCIEXYZ Dn;      
         MAT3 Bradford;
@@ -246,7 +246,7 @@ BOOL cmsAdaptMatrixToD50(LPMAT3 r, LPcmsCIExyY SourceWhitePt)
 
 // Same as anterior, but assuming D50 source. White point is given in xyY
 
-BOOL cmsAdaptMatrixFromD50(LPMAT3 r, LPcmsCIExyY DestWhitePt)
+LCMSBOOL cmsAdaptMatrixFromD50(LPMAT3 r, LPcmsCIExyY DestWhitePt)
 {
         cmsCIEXYZ Dn;       
         MAT3 Bradford;
@@ -266,7 +266,7 @@ BOOL cmsAdaptMatrixFromD50(LPMAT3 r, LPcmsCIExyY DestWhitePt)
 // Adapts a color to a given illuminant. Original color is expected to have
 // a SourceWhitePt white point. 
 
-BOOL LCMSEXPORT cmsAdaptToIlluminant(LPcmsCIEXYZ Result, 
+LCMSBOOL LCMSEXPORT cmsAdaptToIlluminant(LPcmsCIEXYZ Result, 
                                      LPcmsCIEXYZ SourceWhitePt, 
                                      LPcmsCIEXYZ Illuminant, 
                                      LPcmsCIEXYZ Value)
@@ -366,8 +366,6 @@ double Robertson(LPcmsCIExyY v)
 
         dj = ((vs - vj) - tj * (us - uj)) / sqrt(1 + tj*tj);
 
-
-
         if ((j!=0) && (di/dj < 0.0)) {
             Tc = 1000000.0 / (mi + (di / (di - dj)) * (mj - mi));
             break;
@@ -385,7 +383,7 @@ double Robertson(LPcmsCIExyY v)
 
 
 static
-BOOL InRange(LPcmsCIExyY a, LPcmsCIExyY b, double tolerance)
+LCMSBOOL InRange(LPcmsCIExyY a, LPcmsCIExyY b, double tolerance)
 {
        double dist_x, dist_y;
 

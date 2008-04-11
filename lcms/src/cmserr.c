@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -28,6 +28,7 @@
 // errors.
 
 void cdecl cmsSignalError(int ErrorCode, const char *ErrorText, ...);
+
 int  LCMSEXPORT cmsErrorAction(int lAbort);
 void LCMSEXPORT cmsSetErrorHandler(cmsErrorHandlerFunction Fn);
 
@@ -67,7 +68,7 @@ void cmsSignalError(int ErrorCode, const char *ErrorText, ...)
 
             char Buffer[1024];
 
-            vsprintf(Buffer, ErrorText, args);
+            vsnprintf(Buffer, 1023, ErrorText, args);
             va_end(args);   
 
             if (UserErrorHandler(ErrorCode, Buffer)) {     
@@ -89,8 +90,8 @@ void cmsSignalError(int ErrorCode, const char *ErrorText, ...)
               char Buffer1[1024];
               char Buffer2[256];
 
-              sprintf(Buffer1, "Error #%x; ", ErrorCode);
-              vsprintf(Buffer2, ErrorText, args);
+              snprintf(Buffer1,  767, "Error #%x; ", ErrorCode);
+              vsnprintf(Buffer2, 255, ErrorText, args);
               strcat(Buffer1, Buffer2);
               MessageBox(NULL, Buffer1, "Little cms",
                                           MB_OK|MB_ICONSTOP|MB_TASKMODAL);

@@ -8,7 +8,7 @@
 
                           by Marti Maria
 
-                            Ver 1.16
+                            Ver 1.17
 
         ---------------------------------------------------
 
@@ -677,7 +677,7 @@ NOTES:
   For simplify the parameters construction, there are additional
   functions:
 
-        BOOL  cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint);
+        LCMSBOOL  cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint);
 
   This function computes the xyY chromacity of white point using
   the temperature. Screen manufacturers often includes a white
@@ -769,7 +769,7 @@ NOTES:
 
   You can also smooth the curve by using:
 
-        BOOL cmsSmoothGamma(LPGAMMATABLE Tab, double lambda);
+        LCMSBOOL cmsSmoothGamma(LPGAMMATABLE Tab, double lambda);
 
   "Smooth" curves does work better and are more pleasant to eyes.
 
@@ -1041,6 +1041,10 @@ may create.
   You should return 1 if you are handling the error. Returning 0, 
   throws the error back to the default error handler.
 
+  WARNING: lcms is *not* supposed to recover from all errors. If you are 
+  using your own error handling, please note that you have to abort 
+  all process if you recive LCMS_ERRC_ABORTED in ErrorCode parameter.
+  Incoming versions will handle this issue more properly.
 
 11. Getting information from profiles.
 ============================================================================
@@ -1048,15 +1052,15 @@ may create.
   There are some functions for retrieve information on opened profiles. 
   These are:
 
-        BOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
+        LCMSBOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 
   This one does check if a particular tag is present. Remaining does take
   useful information about general parameters.
 
-        BOOL  cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
-        BOOL  cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
-        BOOL  cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
-        BOOL  cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
+        LCMSBOOL  cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+        LCMSBOOL  cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+        LCMSBOOL  cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+        LCMSBOOL  cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
 
         const char* cmsTakeProductName(cmsHPROFILE hProfile);
         const char* cmsTakeProductDesc(cmsHPROFILE hProfile);
@@ -1080,7 +1084,7 @@ may create.
         #define LCMS_USED_AS_OUTPUT     1
         #define LCMS_USED_AS_PROOF      2
 
-        BOOL cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
+        LCMSBOOL cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
 
   This one helps on inquiring if a determinate intent is
   supported by an opened profile. You must give a handle to
@@ -1114,7 +1118,7 @@ may create.
     void cmsSetPCS(cmsHPROFILE hProfile, icColorSpaceSignature pcs);
     void cmsSetRenderingIntent(cmsHPROFILE hProfile, int RenderingIntent);
 
-    BOOL cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
+    LCMSBOOL cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
 
    And the generic file management ones:
 
@@ -1237,7 +1241,7 @@ may create.
 
   To fill the CLUT with sampled values, the programmer can call:
   
-    BOOL cmsSample3DGrid(LPLUT Lut, 
+    LCMSBOOL cmsSample3DGrid(LPLUT Lut, 
                         _cmsSAMPLER Sampler, 
                         LPVOID Cargo, 
                         DWORD dwFlags)  
@@ -1348,13 +1352,13 @@ may create.
     
    Chromatic Adaptation:
 
-       BOOL cmsAdaptToIlluminant(LPcmsCIEXYZ Result, LPcmsCIEXYZ SourceWhitePt,
+       LCMSBOOL cmsAdaptToIlluminant(LPcmsCIEXYZ Result, LPcmsCIEXYZ SourceWhitePt,
                                      LPcmsCIEXYZ Illuminant, LPcmsCIEXYZ Value);
 
    Build a balanced transfer matrix with chromatic adaptation, this
    is equivalent to "cooking" required to conform a colorant matrix.
 
-      BOOL cmsBuildRGB2XYZtransferMatrix(LPMAT3 r,
+      LCMSBOOL cmsBuildRGB2XYZtransferMatrix(LPMAT3 r,
                                           LPcmsCIExyY WhitePoint,
                                           LPcmsCIExyYTRIPLE Primaries);
 
@@ -1565,7 +1569,7 @@ double  cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2, double Kl, double K
   That returns the number of colors present on transform database.
 
 
-    BOOL cmsNamedColorInfo(cmsHTRANSFORM xform, int nColor, 
+    LCMSBOOL cmsNamedColorInfo(cmsHTRANSFORM xform, int nColor, 
                                 char* Name, char* Prefix, char* Suffix);
 
   That returns extended information about a given color. Named color profiles 

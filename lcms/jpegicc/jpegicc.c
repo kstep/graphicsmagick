@@ -1,8 +1,8 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
-// Permission is hereby granted, free of charge, to any person obtaining 
+// Permission is hereby granted, _cmsFree( of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation 
 // the rights to use, copy, modify, merge, publish, distribute, sublicense, 
@@ -56,14 +56,14 @@ extern cmsHPROFILE OpenStockProfile(const char* File);
 
 // Flags
 
-static BOOL Verbose                = FALSE;
-static BOOL BlackPointCompensation = FALSE;
-static BOOL IgnoreEmbedded         = FALSE;
-static BOOL GamutCheck             = FALSE;
-static BOOL lIsITUFax              = FALSE;
-static BOOL lIsPhotoshopApp13      = FALSE;
-static BOOL lIsDeviceLink          = FALSE;
-static BOOL EmbedProfile           = FALSE;
+static LCMSBOOL Verbose                = FALSE;
+static LCMSBOOL BlackPointCompensation = FALSE;
+static LCMSBOOL IgnoreEmbedded         = FALSE;
+static LCMSBOOL GamutCheck             = FALSE;
+static LCMSBOOL lIsITUFax              = FALSE;
+static LCMSBOOL lIsPhotoshopApp13      = FALSE;
+static LCMSBOOL lIsDeviceLink          = FALSE;
+static LCMSBOOL EmbedProfile           = FALSE;
 static int PreserveBlack		   = 0;
 
 static const char* SaveEmbedded = NULL;
@@ -174,7 +174,7 @@ my_error_exit (j_common_ptr cinfo)
 
 
 static
-BOOL IsITUFax(jpeg_saved_marker_ptr ptr)
+LCMSBOOL IsITUFax(jpeg_saved_marker_ptr ptr)
 {
     while (ptr) {
         
@@ -200,7 +200,7 @@ BOOL IsITUFax(jpeg_saved_marker_ptr ptr)
 #define PS_FIXED_TO_FLOAT(h, l) ((float) (h) + ((float) (l)/(1<<16)))
 
 static
-BOOL ProcessPhotoshopAPP13(JOCTET FAR *data, int datalen)
+LCMSBOOL ProcessPhotoshopAPP13(JOCTET FAR *data, int datalen)
 {
     int i;
 
@@ -250,7 +250,7 @@ BOOL ProcessPhotoshopAPP13(JOCTET FAR *data, int datalen)
 
 
 static
-BOOL HandlePhotoshopAPP13(jpeg_saved_marker_ptr ptr)
+LCMSBOOL HandlePhotoshopAPP13(jpeg_saved_marker_ptr ptr)
 {
     while (ptr) {
         
@@ -282,7 +282,7 @@ BOOL HandlePhotoshopAPP13(jpeg_saved_marker_ptr ptr)
 
 
 static
-BOOL OpenInput(const char* FileName)
+LCMSBOOL OpenInput(const char* FileName)
 {
     int m;
     
@@ -315,7 +315,7 @@ BOOL OpenInput(const char* FileName)
 
 
 static
-BOOL OpenOutput(const char* FileName)
+LCMSBOOL OpenOutput(const char* FileName)
 {
 
         OutFile = fopen(FileName, "wb");
@@ -337,7 +337,7 @@ BOOL OpenOutput(const char* FileName)
 }
 
 static
-BOOL Done()
+LCMSBOOL Done()
 {
        jpeg_destroy_decompress(&Decompressor);
        jpeg_destroy_compress(&Compressor);
@@ -619,13 +619,13 @@ void DoEmbedProfile(const char* ProfileFile)
         if (f == NULL) return;
 
         size = xfilelength(fileno(f));
-        EmbedBuffer = (LPBYTE) malloc(size + 1);
+        EmbedBuffer = (LPBYTE) _cmsMalloc(size + 1);
         EmbedLen = fread(EmbedBuffer, 1, size, f);
         fclose(f);
         EmbedBuffer[EmbedLen] = 0;
 
         write_icc_profile (&Compressor, EmbedBuffer, EmbedLen);		   
-        free(EmbedBuffer);
+        _cmsFree(EmbedBuffer);
 }
 
 
@@ -653,8 +653,8 @@ int DoTransform(cmsHTRANSFORM hXForm)
        if (EmbedProfile && cOutProf) 
            DoEmbedProfile(cOutProf);
 
-       ScanLineIn  = (JSAMPROW) malloc(Decompressor.output_width * Decompressor.num_components);
-       ScanLineOut = (JSAMPROW) malloc(Compressor.image_width * Compressor.num_components);
+       ScanLineIn  = (JSAMPROW) _cmsMalloc(Decompressor.output_width * Decompressor.num_components);
+       ScanLineOut = (JSAMPROW) _cmsMalloc(Compressor.image_width * Compressor.num_components);
 
        while (Decompressor.output_scanline <
                             Decompressor.output_height) {
@@ -667,8 +667,8 @@ int DoTransform(cmsHTRANSFORM hXForm)
 
        }
 
-       free(ScanLineIn); 
-       free(ScanLineOut);
+       _cmsFree(ScanLineIn); 
+       _cmsFree(ScanLineOut);
 
        jpeg_finish_decompress(&Decompressor);
        jpeg_finish_compress(&Compressor);
@@ -758,7 +758,7 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
                if (hIn != NULL && SaveEmbedded != NULL)
                           SaveMemoryBlock(EmbedBuffer, EmbedLen, SaveEmbedded);
 
-              free(EmbedBuffer);
+              _cmsFree(EmbedBuffer);
         }
         else
         {
@@ -828,7 +828,7 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
 static
 void Help(int level)
 {
-     fprintf(stderr, "little cms ICC profile applier for JPEG - v2.0\n\n");
+     fprintf(stderr, "little cms ICC profile applier for JPEG - v2.1\n\n");
 
      switch(level) {
 

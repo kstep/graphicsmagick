@@ -827,50 +827,6 @@ cmsSEQ_swigregister(cmsSEQ)
 
 cmsReadProfileSequenceDescription = _lcms.cmsReadProfileSequenceDescription
 cmsFreeProfileSequenceDescription = _lcms.cmsFreeProfileSequenceDescription
-LCMSGAMUTMETHOD_SEGMENTMAXIMA = _lcms.LCMSGAMUTMETHOD_SEGMENTMAXIMA
-LCMSGAMUTMETHOD_CONVEXHULL = _lcms.LCMSGAMUTMETHOD_CONVEXHULL
-LCMSGAMUTMETHOD_ALPHASHAPE = _lcms.LCMSGAMUTMETHOD_ALPHASHAPE
-LCMSGAMUT_PHYSICAL = _lcms.LCMSGAMUT_PHYSICAL
-LCMSGAMUT_HP1 = _lcms.LCMSGAMUT_HP1
-LCMSGAMUT_HP2 = _lcms.LCMSGAMUT_HP2
-class cmsGAMUTEX(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, cmsGAMUTEX, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, cmsGAMUTEX, name)
-    __repr__ = _swig_repr
-    __swig_setmethods__["CoordSig"] = _lcms.cmsGAMUTEX_CoordSig_set
-    __swig_getmethods__["CoordSig"] = _lcms.cmsGAMUTEX_CoordSig_get
-    if _newclass:CoordSig = property(_lcms.cmsGAMUTEX_CoordSig_get, _lcms.cmsGAMUTEX_CoordSig_set)
-    __swig_setmethods__["Method"] = _lcms.cmsGAMUTEX_Method_set
-    __swig_getmethods__["Method"] = _lcms.cmsGAMUTEX_Method_get
-    if _newclass:Method = property(_lcms.cmsGAMUTEX_Method_get, _lcms.cmsGAMUTEX_Method_set)
-    __swig_setmethods__["Usage"] = _lcms.cmsGAMUTEX_Usage_set
-    __swig_getmethods__["Usage"] = _lcms.cmsGAMUTEX_Usage_get
-    if _newclass:Usage = property(_lcms.cmsGAMUTEX_Usage_get, _lcms.cmsGAMUTEX_Usage_set)
-    __swig_setmethods__["Description"] = _lcms.cmsGAMUTEX_Description_set
-    __swig_getmethods__["Description"] = _lcms.cmsGAMUTEX_Description_get
-    if _newclass:Description = property(_lcms.cmsGAMUTEX_Description_get, _lcms.cmsGAMUTEX_Description_set)
-    __swig_setmethods__["Vc"] = _lcms.cmsGAMUTEX_Vc_set
-    __swig_getmethods__["Vc"] = _lcms.cmsGAMUTEX_Vc_get
-    if _newclass:Vc = property(_lcms.cmsGAMUTEX_Vc_get, _lcms.cmsGAMUTEX_Vc_set)
-    __swig_setmethods__["Count"] = _lcms.cmsGAMUTEX_Count_set
-    __swig_getmethods__["Count"] = _lcms.cmsGAMUTEX_Count_get
-    if _newclass:Count = property(_lcms.cmsGAMUTEX_Count_get, _lcms.cmsGAMUTEX_Count_set)
-    __swig_setmethods__["Data"] = _lcms.cmsGAMUTEX_Data_set
-    __swig_getmethods__["Data"] = _lcms.cmsGAMUTEX_Data_get
-    if _newclass:Data = property(_lcms.cmsGAMUTEX_Data_get, _lcms.cmsGAMUTEX_Data_set)
-    def __init__(self, *args): 
-        this = _lcms.new_cmsGAMUTEX(*args)
-        try: self.this.append(this)
-        except: self.this = this
-    __swig_destroy__ = _lcms.delete_cmsGAMUTEX
-    __del__ = lambda self : None;
-cmsGAMUTEX_swigregister = _lcms.cmsGAMUTEX_swigregister
-cmsGAMUTEX_swigregister(cmsGAMUTEX)
-
-cmsReadExtendedGamut = _lcms.cmsReadExtendedGamut
-cmsFreeExtendedGamut = _lcms.cmsFreeExtendedGamut
 _cmsICCcolorSpace = _lcms._cmsICCcolorSpace
 _cmsLCMScolorSpace = _lcms._cmsLCMScolorSpace
 _cmsChannelsOf = _lcms._cmsChannelsOf
@@ -1064,8 +1020,11 @@ _cmsAddSequenceDescriptionTag = _lcms._cmsAddSequenceDescriptionTag
 _cmsAddNamedColorTag = _lcms._cmsAddNamedColorTag
 _cmsAddDateTimeTag = _lcms._cmsAddDateTimeTag
 _cmsAddColorantTableTag = _lcms._cmsAddColorantTableTag
+_cmsAddChromaticAdaptationTag = _lcms._cmsAddChromaticAdaptationTag
 _cmsQuickFloor = _lcms._cmsQuickFloor
 _cmsClampWord = _lcms._cmsClampWord
+_cmsMalloc = _lcms._cmsMalloc
+_cmsFree = _lcms._cmsFree
 cmsSignalError = _lcms.cmsSignalError
 class _cmsTestAlign16(_object):
     __swig_setmethods__ = {}

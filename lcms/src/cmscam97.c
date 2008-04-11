@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -145,7 +145,7 @@ typedef struct {
 LCMSAPI void LCMSEXPORT cmsCIECAM97sDone(LCMSHANDLE hModel)
 {
     LPcmsCIECAM97s lpMod = (LPcmsCIECAM97s) (LPSTR) hModel;
-    if (lpMod) free(lpMod);
+    if (lpMod) _cmsFree(lpMod);
 }
 
 // Partial discounting for adaptation degree computation
@@ -302,7 +302,7 @@ LCMSAPI LCMSHANDLE LCMSEXPORT cmsCIECAM97sInit(LPcmsViewingConditions pVC)
     LPcmsCIECAM97s lpMod;
     VEC3 tmp;
 
-    if((lpMod = (LPcmsCIECAM97s) malloc(sizeof(cmsCIECAM97s))) == NULL) {
+    if((lpMod = (LPcmsCIECAM97s) _cmsMalloc(sizeof(cmsCIECAM97s))) == NULL) {
         return (LCMSHANDLE) NULL;
     }
 

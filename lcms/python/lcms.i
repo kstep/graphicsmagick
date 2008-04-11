@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -23,7 +23,7 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-// Version 1.16
+// Version 1.17
 
 
 /* File lcms.i */
@@ -164,12 +164,12 @@ typedef IT8* LPIT8;
 %extend COLORB {
 		COLORB() {		                
 				LPCOLORB v;
-                v = (LPCOLORB) malloc(sizeof(COLORB));
+                v = (LPCOLORB) _cmsMalloc(sizeof(COLORB));
 				ZeroMemory(v, sizeof(COLORB));
                 return v;
         }
         ~COLORB() {
-                free(self);
+                _cmsFree(self);
         }
 		const char* __repr__() {                
                 return "Color 8 bps";
@@ -187,12 +187,12 @@ typedef IT8* LPIT8;
 %extend COLORW {
 		COLORW() {		                
 				LPCOLORW v;
-                v = (LPCOLORW) malloc(sizeof(COLORW));
+                v = (LPCOLORW) _cmsMalloc(sizeof(COLORW));
 				ZeroMemory(v, sizeof(COLORW));
                 return v;
         }
         ~COLORB() {
-                free(self);
+                _cmsFree(self);
         }
 		const char* __repr__() {                
                 return "Color 16 bps";
@@ -211,14 +211,14 @@ typedef IT8* LPIT8;
 %extend cmsCIEXYZ {
         cmsCIEXYZ(double x=0, double y=0, double z=0) {
                 LPcmsCIEXYZ v;
-                v = (LPcmsCIEXYZ) malloc(sizeof(cmsCIEXYZ));
+                v = (LPcmsCIEXYZ) _cmsMalloc(sizeof(cmsCIEXYZ));
                 v->X = x;
                 v->Y = y;
                 v->Z = z;
                 return v;
         }
         ~cmsCIEXYZ() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 static char Buffer[256];
@@ -231,14 +231,14 @@ typedef IT8* LPIT8;
 %extend cmsCIExyY {
         cmsCIExyY(double x=0, double y=0, double Y=0) {
                 LPcmsCIExyY v;
-                v = (LPcmsCIExyY) malloc(sizeof(cmsCIExyY));
+                v = (LPcmsCIExyY) _cmsMalloc(sizeof(cmsCIExyY));
                 v->x = x;
                 v->y = y;
                 v->Y = Y;
                 return v;
         }
         ~cmsCIExyY() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 static char Buffer[256];
@@ -251,14 +251,14 @@ typedef IT8* LPIT8;
 %extend cmsCIELab {
         cmsCIELab(double L=0, double a=0, double b=0) {
                 LPcmsCIELab v;
-                v = (LPcmsCIELab) malloc(sizeof(cmsCIELab));
+                v = (LPcmsCIELab) _cmsMalloc(sizeof(cmsCIELab));
                 v->L = L;
                 v->a = a;
                 v->b = b;
                 return v;
         }
         ~cmsCIELab() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 static char Buffer[256];
@@ -275,14 +275,14 @@ typedef IT8* LPIT8;
 %extend cmsCIELCh {
         cmsCIELCh(double L=0, double C=0, double h=0) {
                 LPcmsCIELCh v;
-                v = (LPcmsCIELCh) malloc(sizeof(cmsCIELCh));
+                v = (LPcmsCIELCh) _cmsMalloc(sizeof(cmsCIELCh));
                 v->L = L;
                 v->C = C;
                 v->h = h;
                 return v;
         }
         ~cmsCIELCh() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 static char Buffer[256];
@@ -296,14 +296,14 @@ typedef IT8* LPIT8;
 %extend cmsJCh {
         cmsJCh(double J=0, double C=0, double h=0) {
                 LPcmsJCh v;
-                v = (LPcmsJCh) malloc(sizeof(cmsJCh));
+                v = (LPcmsJCh) _cmsMalloc(sizeof(cmsJCh));
                 v->J = J;
                 v->C = C;
                 v->h = h;
                 return v;
         }
         ~cmsJCh() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 static char Buffer[256];
@@ -341,14 +341,14 @@ typedef IT8* LPIT8;
 %extend cmsCIExyYTRIPLE {
         cmsCIExyYTRIPLE(cmsCIExyY* Red, cmsCIExyY* Green, cmsCIExyY* Blue) {
                 LPcmsCIExyYTRIPLE v;
-                v = (LPcmsCIExyYTRIPLE) malloc(sizeof(cmsCIExyYTRIPLE));
+                v = (LPcmsCIExyYTRIPLE) _cmsMalloc(sizeof(cmsCIExyYTRIPLE));
                 CopyMemory(&v->Red,   Red,   sizeof(cmsCIExyY));
 				CopyMemory(&v->Green, Green, sizeof(cmsCIExyY));
 				CopyMemory(&v->Blue,  Blue,  sizeof(cmsCIExyY));
                 return v;
         }
         ~cmsCIExyYTRIPLE() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 
@@ -360,14 +360,14 @@ typedef IT8* LPIT8;
 %extend cmsCIEXYZTRIPLE {
         cmsCIEXYZTRIPLE(cmsCIEXYZ* Red, cmsCIEXYZ* Green, cmsCIEXYZ* Blue) {
                 LPcmsCIEXYZTRIPLE v;
-                v = (LPcmsCIEXYZTRIPLE) malloc(sizeof(cmsCIEXYZTRIPLE));
+                v = (LPcmsCIEXYZTRIPLE) _cmsMalloc(sizeof(cmsCIEXYZTRIPLE));
                 CopyMemory(&v->Red,   Red,   sizeof(cmsCIExyY));
 				CopyMemory(&v->Green, Green, sizeof(cmsCIExyY));
 				CopyMemory(&v->Blue,  Blue,  sizeof(cmsCIExyY));
                 return v;
         }
         ~cmsCIEXYZTRIPLE() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 
@@ -381,7 +381,7 @@ typedef IT8* LPIT8;
 %extend cmsViewingConditions {
         cmsViewingConditions(cmsCIEXYZ* WhitePoint, double Yb, double La, int surround, double D_value) {
                 LPcmsViewingConditions v;
-                v = (LPcmsViewingConditions) malloc(sizeof(cmsViewingConditions));
+                v = (LPcmsViewingConditions) _cmsMalloc(sizeof(cmsViewingConditions));
 				CopyMemory(&v -> whitePoint, WhitePoint, sizeof(cmsCIEXYZ));
 				v ->Yb = Yb;
 				v ->La = La;
@@ -390,7 +390,7 @@ typedef IT8* LPIT8;
                 return v;
         }
         ~cmsViewingConditions() {
-                free(self);
+                _cmsFree(self);
         }
         const char* __repr__() {
                 
@@ -403,7 +403,7 @@ typedef IT8* LPIT8;
 %extend VEC3 {
         VEC3(double vx=0, double vy=0, double vz=0) {
                 LPVEC3 v;
-                v = (LPVEC3) malloc(sizeof(VEC3));
+                v = (LPVEC3) _cmsMalloc(sizeof(VEC3));
                 v->n[VX] =vx;
                 v->n[VY] =vy;
                 v->n[VZ] =vz;
@@ -411,7 +411,7 @@ typedef IT8* LPIT8;
 
         }
         ~VEC3() {
-                free(self);
+                _cmsFree(self);
         }
         double __getitem__(int key) {
                 return self -> n[key];
@@ -434,13 +434,13 @@ class icTagSignature {
 
 %extend icTagSignature {
 	icTagSignature(unsigned int n) {
-		icTagSignature* v =  (icTagSignature*) malloc(sizeof(icTagSignature));
+		icTagSignature* v =  (icTagSignature*) _cmsMalloc(sizeof(icTagSignature));
 		*v = (icTagSignature) n;
 		return v;
 	}
 
 	~icTagSignature() {
-                free(self);
+                _cmsFree(self);
     }
 };
 
@@ -449,11 +449,11 @@ class icTagSignature {
 
         IT8(const char* FileName) {
                 LPIT8 it8;
-                it8 = (LPIT8) malloc(sizeof(IT8));
+                it8 = (LPIT8) _cmsMalloc(sizeof(IT8));
                 InErrorFlag = 0;	
                 it8 -> hIT8 = cmsIT8LoadFromFile(FileName); 				              
                 if (InErrorFlag) {
-                    free(it8);
+                    _cmsFree(it8);
                     return NULL;
                 }
                 return it8;
@@ -461,14 +461,14 @@ class icTagSignature {
 
         IT8() {
                 LPIT8 it8;
-                it8 = (LPIT8) malloc(sizeof(IT8));
+                it8 = (LPIT8) _cmsMalloc(sizeof(IT8));
                 it8 -> hIT8 = cmsIT8Alloc();                
                 return it8;
         }
 
         ~IT8() {
                 cmsIT8Free(self -> hIT8);
-                free(self);
+                _cmsFree(self);
         }
         
         const char* __repr__() {

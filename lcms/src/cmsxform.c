@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -55,7 +55,7 @@ void         LCMSEXPORT cmsDoTransform(cmsHTRANSFORM Transform,
 
 void         LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b);
 void         LCMSEXPORT cmsSetAlarmCodes(int r, int g, int b);
-BOOL         LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
+LCMSBOOL     LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
                                                 int Intent, int UsedDirection);
 
 // -------------------------------------------------------------------------
@@ -605,6 +605,8 @@ LPMATSHAPER cmsBuildGrayInputMatrixShaper(cmsHPROFILE hProfile)
        MAT3 Scale;
 
        GrayTRC = cmsReadICCGamma(hProfile, icSigGrayTRCTag);        // Y
+       if (GrayTRC == NULL) return NULL;
+
        cmsTakeIluminant(&Illuminant, hProfile);
 
        if (cmsGetPCS(hProfile) == icSigLabData) {
@@ -771,7 +773,7 @@ LPMATSHAPER cmsBuildOutputMatrixShaper(cmsHPROFILE OutputProfile)
 // This function builds a transform matrix chaining parameters
 
 static
-BOOL cmsBuildSmeltMatShaper(_LPcmsTRANSFORM p)
+LCMSBOOL cmsBuildSmeltMatShaper(_LPcmsTRANSFORM p)
 {
        MAT3 From, To, ToInv, Transfer;
        LPGAMMATABLE In[3], InverseOut[3];
@@ -784,7 +786,6 @@ BOOL cmsBuildSmeltMatShaper(_LPcmsTRANSFORM p)
        if (!cmsReadICCMatrixRGB2XYZ(&To, p -> OutputProfile))
                      return FALSE;
 
-               
        // invert dest
        
        if (MAT3inverse(&To, &ToInv) < 0)
@@ -808,10 +809,14 @@ BOOL cmsBuildSmeltMatShaper(_LPcmsTRANSFORM p)
         InverseOut[1] = cmsReadICCGammaReversed(p -> OutputProfile, icSigGreenTRCTag);
         InverseOut[2] = cmsReadICCGammaReversed(p -> OutputProfile, icSigBlueTRCTag);
 
+		if (!InverseOut[0] || !InverseOut[1] || !InverseOut[2]) {
+				     cmsFreeGammaTriple(In); 
+                     return FALSE;
+		}
+
         p -> SmeltMatShaper = cmsAllocMatShaper2(&Transfer, In, InverseOut, MATSHAPER_ALLSMELTED);
 
         cmsFreeGammaTriple(In);
-        
         cmsFreeGammaTriple(InverseOut);
         
         return (p -> SmeltMatShaper != NULL);
@@ -999,7 +1004,7 @@ void TakeConversionRoutines(_LPcmsTRANSFORM p, int DoBPC)
 // Check colorspace
 
 static
-BOOL IsProperColorSpace(cmsHPROFILE hProfile, DWORD dwFormat, BOOL lUsePCS)
+LCMSBOOL IsProperColorSpace(cmsHPROFILE hProfile, DWORD dwFormat, LCMSBOOL lUsePCS)
 {
        int Space = T_COLORSPACE(dwFormat);
 
@@ -1019,10 +1024,10 @@ _LPcmsTRANSFORM AllocEmptyTransform(void)
 {
     // Allocate needed memory
 
-    _LPcmsTRANSFORM p = (_LPcmsTRANSFORM) malloc(sizeof(_cmsTRANSFORM));
+    _LPcmsTRANSFORM p = (_LPcmsTRANSFORM) _cmsMalloc(sizeof(_cmsTRANSFORM));
     if (!p) {
 
-          cmsSignalError(LCMS_ERRC_ABORTED, "cmsCreateTransform: malloc() failed");
+          cmsSignalError(LCMS_ERRC_ABORTED, "cmsCreateTransform: _cmsMalloc() failed");
           return NULL;
     }
 
@@ -1239,12 +1244,12 @@ _LPcmsTRANSFORM PickTransformRoutine(_LPcmsTRANSFORM p,
         else {
                 // Can we optimize matrix-shaper only transform?
 
-                   if (*FromTagPtr == 0 && 
-                       *ToTagPtr == 0 && 
-                       !p->PreviewProfile  && 
-                       p -> Intent != INTENT_ABSOLUTE_COLORIMETRIC && 
+                   if ((*FromTagPtr == 0) && 
+                       (*ToTagPtr == 0) && 
+                       (!p->PreviewProfile) && 
+                       (p -> Intent != INTENT_ABSOLUTE_COLORIMETRIC) && 
                        (p -> EntryColorSpace == icSigRgbData) && 
-                       (p -> ExitColorSpace == icSigRgbData) &&
+                       (p -> ExitColorSpace == icSigRgbData)  &&
                        !(p -> dwOriginalFlags & cmsFLAGS_BLACKPOINTCOMPENSATION)) {
 
                           // Yes... try to smelt matrix-shapers
@@ -1500,7 +1505,6 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
 
        TakeConversionRoutines(p, dwFlags & cmsFLAGS_BLACKPOINTCOMPENSATION);
 
-     
        if (!(p -> dwOriginalFlags & cmsFLAGS_NOTPRECALC)) {
 
                LPLUT DeviceLink;   
@@ -1638,7 +1642,7 @@ void LCMSEXPORT cmsDeleteTransform(cmsHTRANSFORM hTransform)
 
 	   LCMS_FREE_LOCK(&p->rwlock);
 
-       free((void *) p);
+       _cmsFree((void *) p);
 }
 
 
@@ -1674,7 +1678,7 @@ void LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b)
 
 // Returns TRUE if the profile is implemented as matrix-shaper
 
-BOOL LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile)
+LCMSBOOL LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile)
 {    
     switch (cmsGetColorSpace(hProfile)) {
 
@@ -1698,7 +1702,7 @@ BOOL LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile)
 }
 
 
-BOOL LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
+LCMSBOOL LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
                                                 int Intent, int UsedDirection)
 {
 
@@ -1744,6 +1748,16 @@ int MultiprofileSampler(register WORD In[], register WORD Out[], register LPVOID
 }
 
 
+static
+int IsAllowedInSingleXform(icProfileClassSignature aClass)
+{
+	return (aClass == icSigInputClass) ||
+		   (aClass == icSigDisplayClass) ||
+		   (aClass == icSigOutputClass) ||
+		   (aClass == icSigColorSpaceClass);
+}
+
+
 // A multiprofile transform does chain several profiles into a single
 // devicelink. It couls also be used to merge named color profiles into
 // a single database.
@@ -1775,13 +1789,19 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateMultiprofileTransform(cmsHPROFILE hProfiles[],
     // There is a simple case with just two profiles, try to catch it in order of getting
     // black preservation to work on this function, at least with two profiles.
 
+    
     if (nProfiles == 2) {
 
-        if ((cmsGetDeviceClass(hProfiles[0]) != icSigLinkClass) && 
-            (cmsGetDeviceClass(hProfiles[1]) != icSigLinkClass)) 
+		icProfileClassSignature Class1 = cmsGetDeviceClass(hProfiles[0]);
+		icProfileClassSignature Class2 = cmsGetDeviceClass(hProfiles[1]);
+
+		// Only input, output and display are allowed
+
+        if (IsAllowedInSingleXform(Class1) && 
+            IsAllowedInSingleXform(Class2)) 
                    return cmsCreateTransform(hProfiles[0], dwInput, hProfiles[1], dwOutput, Intent, dwFlags);
     }
-
+    
 
     // Creates a phantom transform for latter filling
     p = (_LPcmsTRANSFORM) cmsCreateTransform(NULL, dwInput, 
@@ -1953,6 +1973,14 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateMultiprofileTransform(cmsHPROFILE hProfiles[],
 
     if (hLab) cmsCloseProfile(hLab);
     if (hXYZ) cmsCloseProfile(hXYZ);
+
+    
+    if (p ->EntryColorSpace == icSigRgbData ||
+        p ->EntryColorSpace == icSigCmyData) {
+                   
+                    p->DeviceLink -> CLut16params.Interp3D = cmsTetrahedralInterp16;
+    }
+	
 
     if ((Intent != INTENT_ABSOLUTE_COLORIMETRIC) && 
         !(dwFlags & cmsFLAGS_NOWHITEONWHITEFIXUP))

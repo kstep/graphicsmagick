@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -33,6 +33,7 @@
 // data yet in fixed point, so no additional process is required.
 // Then, we obtain data on 15.16, so we need to shift >> by 1 to
 // obtain 1.15 PCS format.
+
 // On OUTPUT profiles, things are inverse, we must first expand 1 bit
 // by shifting left, and then convert result between 0 and 1.000 to
 // RGB, so FromFixedDomain() must be called before pass values to
@@ -42,6 +43,7 @@
 // input is encoded from 0 to 0xffff, we must first use the shaper and
 // then the matrix, an additional FromFixedDomain() must be used to
 // accomodate output values.
+
 // For a sake of simplicity, I will handle this three behaviours
 // with different routines, so the flags MATSHAPER_INPUT and MATSHAPER_OUTPUT
 // can be conbined to signal smelted matrix-shapers
@@ -60,7 +62,7 @@ int ComputeTables(LPGAMMATABLE Table[3], LPWORD Out[3], LPL16PARAMS p16)
        {
         LPWORD PtrW;
 
-        PtrW = (LPWORD) malloc(sizeof(WORD) * p16 -> nSamples);
+        PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * p16 -> nSamples);
 
         if (PtrW == NULL) return -1;  // Signal error            
               
@@ -90,7 +92,7 @@ LPMATSHAPER cmsAllocMatShaper2(LPMAT3 Matrix, LPGAMMATABLE In[], LPGAMMATABLE Ou
        LPMATSHAPER NewMatShaper;
        int rc;
 
-       NewMatShaper = (LPMATSHAPER) malloc(sizeof(MATSHAPER));
+       NewMatShaper = (LPMATSHAPER) _cmsMalloc(sizeof(MATSHAPER));
        if (NewMatShaper)
               ZeroMemory(NewMatShaper, sizeof(MATSHAPER));
 
@@ -142,7 +144,7 @@ LPMATSHAPER cmsAllocMatShaper(LPMAT3 Matrix, LPGAMMATABLE Tables[], DWORD Behavi
        LPMATSHAPER NewMatShaper;
        int i, AllLinear;
 
-       NewMatShaper = (LPMATSHAPER) malloc(sizeof(MATSHAPER));
+       NewMatShaper = (LPMATSHAPER) _cmsMalloc(sizeof(MATSHAPER));
        if (NewMatShaper)
               ZeroMemory(NewMatShaper, sizeof(MATSHAPER));
 
@@ -168,7 +170,7 @@ LPMATSHAPER cmsAllocMatShaper(LPMAT3 Matrix, LPGAMMATABLE Tables[], DWORD Behavi
        {
         LPWORD PtrW;
 
-        PtrW = (LPWORD) malloc(sizeof(WORD) * NewMatShaper -> p16.nSamples);
+        PtrW = (LPWORD) _cmsMalloc(sizeof(WORD) * NewMatShaper -> p16.nSamples);
 
         if (PtrW == NULL) {
               cmsFreeMatShaper(NewMatShaper);
@@ -206,11 +208,11 @@ void cmsFreeMatShaper(LPMATSHAPER MatShaper)
 
        for (i=0; i < 3; i++)
        {
-              if (MatShaper -> L[i]) free(MatShaper ->L[i]);
-              if (MatShaper -> L2[i]) free(MatShaper ->L2[i]);
+              if (MatShaper -> L[i]) _cmsFree(MatShaper ->L[i]);
+              if (MatShaper -> L2[i]) _cmsFree(MatShaper ->L2[i]);
        }
 
-       free(MatShaper);
+       _cmsFree(MatShaper);
 }
 
 

@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.16
+                     little cms Engine 1.17
 
                          API Definition
 
@@ -156,7 +156,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL  cmsCloseProfile(cmsHPROFILE hProfile);
+LCMSBOOL  cmsCloseProfile(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
   Closes a profile handle and frees associated memory. Note that
@@ -770,7 +770,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSBOOL cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
   This function takes the white point of hProfile.
@@ -788,7 +788,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSBOOL cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
 This function takes the contents of black point tag of hProfile if present.
@@ -809,7 +809,7 @@ detection use cmsDetectBlackPoint() instead.
 
 _________________________________________________________________________________
 
-BOOL cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSBOOL cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
 This function takes the value of PCS illuminant of hProfile.
@@ -829,7 +829,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
+LCMSBOOL cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
  This function takes the value of colorant matrix of hProfile if
@@ -885,7 +885,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
+LCMSBOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 _________________________________________________________________________________
 
  Tests whatever a particular tag is present in hProfile.
@@ -967,7 +967,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
+LCMSBOOL cmsIsIntentSupported(cmsHPROFILE hProfile, int Intent, int UsedDirection);
 _________________________________________________________________________________
 
 
@@ -1004,7 +1004,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t* len);
+LCMSBOOL cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t* len);
 _________________________________________________________________________________
 
   Retrieves the target data the profiler has used to build the profile. Usage
@@ -1061,7 +1061,7 @@ Returns:
 
 _________________________________________________________________________________
 
-BOOL  _cmsIsMatrixShaper(cmsHPROFILE hProfile);
+LCMSBOOL  _cmsIsMatrixShaper(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
  Tests whatever a particular profile is implemented as Matrix-shaper-
@@ -1104,8 +1104,8 @@ Parameters:
 
 _________________________________________________________________________________
 
-BOOL _cmsSaveProfile(cmsHPROFILE hProfile, const char* FileName);
-BOOL _cmsSaveProfileToMem(cmsHPROFILE hProfile, void *MemPtr, size_t* BytesNeeded);
+LCMSBOOL _cmsSaveProfile(cmsHPROFILE hProfile, const char* FileName);
+LCMSBOOL _cmsSaveProfileToMem(cmsHPROFILE hProfile, void *MemPtr, size_t* BytesNeeded);
 _________________________________________________________________________________
 
   INTERNAL, USE WITH CAUTION.
@@ -1292,7 +1292,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
-BOOL cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint);
+LCMSBOOL cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint);
 _________________________________________________________________________________
 
   Obtains the chromaticity of white point based on temperature §K
@@ -1309,7 +1309,7 @@ Returns:
 
 _________________________________________________________________________________
 
-LCMSAPI BOOL          LCMSEXPORT cmsAdaptToIlluminant(LPcmsCIEXYZ Result,
+LCMSAPI LCMSBOOL          LCMSEXPORT cmsAdaptToIlluminant(LPcmsCIEXYZ Result,
                                                         LPcmsCIEXYZ SourceWhitePt,
                                                         LPcmsCIEXYZ Illuminant,
                                                         LPcmsCIEXYZ Value);
@@ -1463,7 +1463,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
-BOOL cmsSmoothGamma(LPGAMMATABLE Tab, double lambda);
+LCMSBOOL cmsSmoothGamma(LPGAMMATABLE Tab, double lambda);
 _________________________________________________________________________________
 
  Does smooth the curve contained into Tab. Smooth  curves does work better
@@ -1878,7 +1878,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
-BOOL cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
+LCMSBOOL cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void* data);
 _________________________________________________________________________________
 
     Adds a new tag to a profile. Supported tags are:
@@ -2455,7 +2455,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName);
+ LCMSBOOL             cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName);
 _________________________________________________________________________________
 
  Saves a IT8/CGATS.13 object to a file.
@@ -2469,7 +2469,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL           cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded);
+ LCMSBOOL           cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded);
 _________________________________________________________________________________
 
 
@@ -2505,7 +2505,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type);
+ LCMSBOOL             cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type);
 _________________________________________________________________________________
 
  Parameters:
@@ -2517,7 +2517,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetComment(LCMSHANDLE hIT8, const char* cComment);
+ LCMSBOOL             cmsIT8SetComment(LCMSHANDLE hIT8, const char* cComment);
 _________________________________________________________________________________
 
 This function is intended to provide a way automated IT8 creators can embed comments 
@@ -2542,10 +2542,10 @@ properties.  Its primary purpose is store simpler settings.
 
 _________________________________________________________________________________
 
- BOOL cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
- BOOL cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
- BOOL cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
- BOOL cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
+ LCMSBOOL cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
+ LCMSBOOL cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
+ LCMSBOOL cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
+ LCMSBOOL cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
 _________________________________________________________________________________
 
  Parameters:
@@ -2613,7 +2613,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, 
+ LCMSBOOL             cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, 
                                                 const char* Val);
 _________________________________________________________________________________
 
@@ -2626,7 +2626,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, 
+ LCMSBOOL             cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, 
                                                 double Val);
 _________________________________________________________________________________
 
@@ -2665,7 +2665,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL  cmsIT8SetData(LCMSHANDLE IT8, const char* cPatch,
+ LCMSBOOL  cmsIT8SetData(LCMSHANDLE IT8, const char* cPatch,
                                         const char* cSample,
                                         char *Val);
 _________________________________________________________________________________
@@ -2679,7 +2679,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
+ LCMSBOOL             cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
                                                 const char* cSample,
                                                 double Val);
 _________________________________________________________________________________
@@ -2693,7 +2693,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
+ LCMSBOOL             cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
 _________________________________________________________________________________
 
  Parameters:

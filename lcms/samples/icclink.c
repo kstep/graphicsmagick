@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -44,13 +44,13 @@ static char *cOutProf = "devicelink.icm";
 static int PrecalcMode = 1;
 static int NumOfGridPoints = 0;
 
-static BOOL BlackPointCompensation = FALSE;
+static LCMSBOOL BlackPointCompensation = FALSE;
 static int  BlackPreservation      = 0;
 
 static double InkLimit             = 400;
-static BOOL lUse8bits = FALSE;
-static BOOL TagResult = FALSE;
-
+static LCMSBOOL lUse8bits = FALSE;
+static LCMSBOOL TagResult = FALSE;
+static LCMSBOOL NoPrelinearization = FALSE;
 
 
 
@@ -86,10 +86,11 @@ void Help(int level)
      fprintf(stderr, "%cn<gridpoints> - Alternate way to set precission, number of CLUT points\n", SW);     
      fprintf(stderr, "%cd<description> - description text (quotes can be used)\n", SW);     
      fprintf(stderr, "\n%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%cf<0,1> - Black preserving 0=off, 1=K ink only 2=K plane\n", SW);
+     fprintf(stderr, "%cf<0,1,2> - Black preserving 0=off, 1=K ink only 2=K plane\n", SW);
      fprintf(stderr, "\n%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
      fprintf(stderr, "%c8 - Creates 8-bit devicelink\n", SW);
      fprintf(stderr, "%cx - Creatively, guess deviceclass of resulting profile.\n", SW);
+     fprintf(stderr, "%cl - no prelinearization.\n", SW);
      fprintf(stderr, "\n");
      fprintf(stderr, "%ch<0,1,2,3> - More help\n", SW);
      break;
@@ -142,7 +143,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:f:F:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"xXH:h:8k:K:BbO:o:T:t:D:d:C:c:n:N:f:F:lL")) != EOF) {
 
        switch (s){
 
@@ -211,7 +212,10 @@ void HandleSwitches(int argc, char *argv[])
         case 'H':
                 Help(atoi(xoptarg));
                 break;
-        
+     
+        case 'l':
+        case 'L': NoPrelinearization = TRUE;
+                  break;
      default:
 
        FatalError("Unknown option - run without args to see valid ones.\n");
@@ -288,7 +292,7 @@ int main(int argc, char *argv[])
 	cmsHTRANSFORM hTransform;
     
 
-     fprintf(stderr, "little cms device link generator - v1.6\n");
+     fprintf(stderr, "little cms device link generator - v1.7\n");
 
 	 HandleSwitches(argc, argv);
 
@@ -332,6 +336,9 @@ int main(int argc, char *argv[])
      if (TagResult)
             dwFlags |= cmsFLAGS_GUESSDEVICECLASS;
 
+     if (NoPrelinearization)
+         dwFlags |= cmsFLAGS_NOPRELINEARIZATION;
+            
      if (InkLimit != 400.0) {
 
             cmsHPROFILE hInkLimit = cmsCreateInkLimitingDeviceLink(
@@ -346,7 +353,7 @@ int main(int argc, char *argv[])
 	 if (hTransform) {
 
         size_t size = sizeof(int) + nargs * sizeof(cmsPSEQDESC);
-        LPcmsSEQ pseq = (LPcmsSEQ) malloc(size);
+        LPcmsSEQ pseq = (LPcmsSEQ) _cmsMalloc(size);
         
         ZeroMemory(pseq, size);
         pseq ->n = nargs;
@@ -371,7 +378,7 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Error saving file!");
 
 		cmsCloseProfile(hProfile);
-        free(pseq);
+        _cmsFree(pseq);
 	 }
 
 	 cmsDeleteTransform(hTransform);

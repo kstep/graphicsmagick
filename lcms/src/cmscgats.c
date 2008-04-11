@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2006 Marti Maria
+//  Copyright (C) 1998-2007 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -36,18 +36,18 @@ LCMSAPI int             LCMSEXPORT cmsIT8SetTable(LCMSHANDLE IT8, int nTable);
 // Persistence
 LCMSAPI LCMSHANDLE      LCMSEXPORT cmsIT8LoadFromFile(const char* cFileName);
 LCMSAPI LCMSHANDLE      LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len);
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE IT8, const char* cFileName);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE IT8, const char* cFileName);
 
 // Properties
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetSheetType(LCMSHANDLE hIT8);
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char* cComment);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char* cComment);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
 
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetProperty(LCMSHANDLE hIT8, const char* cProp);
 LCMSAPI double          LCMSEXPORT cmsIT8GetPropertyDbl(LCMSHANDLE hIT8, const char* cProp);
@@ -60,10 +60,10 @@ LCMSAPI const char*     LCMSEXPORT cmsIT8GetPatchName(LCMSHANDLE hIT8, int nPatc
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetDataRowCol(LCMSHANDLE IT8, int row, int col);                                                
 LCMSAPI double          LCMSEXPORT cmsIT8GetDataRowColDbl(LCMSHANDLE IT8, int col, int row);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, 
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, 
                                                 const char* Val);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, 
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, 
                                                 double Val);
 
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetData(LCMSHANDLE IT8, const char* cPatch, const char* cSample);
@@ -71,15 +71,15 @@ LCMSAPI const char*     LCMSEXPORT cmsIT8GetData(LCMSHANDLE IT8, const char* cPa
 
 LCMSAPI double          LCMSEXPORT cmsIT8GetDataDbl(LCMSHANDLE IT8, const char* cPatch, const char* cSample);                                                
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetData(LCMSHANDLE IT8, const char* cPatch,
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetData(LCMSHANDLE IT8, const char* cPatch,
                                                 const char* cSample,
                                                 const char *Val);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
                                                 const char* cSample,
                                                 double Val);
 
-LCMSAPI BOOL            LCMSEXPORT cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
+LCMSAPI LCMSBOOL        LCMSEXPORT cmsIT8SetDataFormat(LCMSHANDLE IT8, int n, const char *Sample);
 LCMSAPI int             LCMSEXPORT cmsIT8EnumDataFormat(LCMSHANDLE IT8, char ***SampleNames);
 
 LCMSAPI void            LCMSEXPORT cmsIT8DefineDblFormat(LCMSHANDLE IT8, const char* Formatter);
@@ -381,28 +381,28 @@ static void* AllocChunk(LPIT8 it8, size_t size);
 
 // Checks if c is a separator
 static
-BOOL isseparator(int c)
+LCMSBOOL isseparator(int c)
 {
         return (c == ' ') || (c == '\t') || (c == '\r');
 }
 
 // Checks whatever if c is a valid identifier char
 static 
-BOOL ismiddle(int c)
+LCMSBOOL ismiddle(int c)
 {
    return (!isseparator(c) && (c != '#') && (c !='\"') && (c != '\'') && (c > 32) && (c < 127));
 }
 
 // Checks whatsever if c is a valid identifier middle char.
 static
-BOOL isidchar(int c)
+LCMSBOOL isidchar(int c)
 {
    return isalnum(c) || ismiddle(c);
 }
 
 // Checks whatsever if c is a valid identifier first char.
 static
-BOOL isfirstidchar(int c)
+LCMSBOOL isfirstidchar(int c)
 {
      return !isdigit(c) && ismiddle(c);
 }
@@ -410,7 +410,7 @@ BOOL isfirstidchar(int c)
 // checks whether the supplied path looks like an absolute path
 // NOTE: this function doesn't checks if the path exists or even if it's legal
 static
-BOOL isabsolutepath(const char *path)
+LCMSBOOL isabsolutepath(const char *path)
 {
 	if(path == NULL)
 		return FALSE;
@@ -430,48 +430,64 @@ BOOL isabsolutepath(const char *path)
 // NOTE: both relPath and basePath are assumed to be no more than MAX_PATH characters long (including the null terminator!)
 // NOTE: this function doesn't check if the path exists or even if it's legal
 static 
-BOOL _cmsMakePath(const char *relPath, const char *basePath, char *buffer)
+LCMSBOOL _cmsMakePath(const char *relPath, const char *basePath, char *buffer)
 {
-	if(!isabsolutepath(relPath))
-	{
+	if (!isabsolutepath(relPath)) {
+
 		char *tail;
-		strcpy(buffer, basePath);
+		
+        strncpy(buffer, basePath, MAX_PATH-1);
 		tail = strrchr(buffer, DIR_CHAR);
-		if (tail != NULL)
-		{
+		if (tail != NULL) {
+
 			size_t len = tail - buffer;
 			strncpy(tail + 1, relPath, MAX_PATH - len -1);
 			//	TODO: if combined path is longer than MAX_PATH, this should return FALSE!
 			return TRUE;
 		}
 	}
-	strcpy(buffer, relPath);
+	strncpy(buffer, relPath, MAX_PATH - 1);
 	return TRUE;
 }
 
+
+// Make sure no exploit is being even tried
+
+static
+const char* NoMeta(const char* str)
+{
+    if (strchr(str, '%') != NULL) 
+        return "**** CORRUPTED FORMAT STRING ***";
+
+    return str;
+}
+
+
 // Syntax error
 static
-BOOL SynError(LPIT8 it8, const char *Txt, ...)
+LCMSBOOL SynError(LPIT8 it8, const char *Txt, ...)
 {
         char Buffer[256], ErrMsg[1024];
         va_list args;
 
         va_start(args, Txt);
-        vsprintf(Buffer, Txt, args);
+        vsnprintf(Buffer, 255, Txt, args);
+        Buffer[255] = 0;
         va_end(args);
 
-        sprintf(ErrMsg, "%s: Line %d, %s", it8->FileStack[it8 ->IncludeSP]->FileName, it8->lineno, Buffer);
+        snprintf(ErrMsg, 1023, "%s: Line %d, %s", it8->FileStack[it8 ->IncludeSP]->FileName, it8->lineno, Buffer);
+        ErrMsg[1023] = 0;
         it8->sy = SSYNERROR;
-        cmsSignalError(LCMS_ERRC_ABORTED, ErrMsg);
+        cmsSignalError(LCMS_ERRC_ABORTED, "%s", ErrMsg);
         return FALSE;
 }
 
 // Check if current symbol is same as specified. issue an error else.
 static
-BOOL Check(LPIT8 it8, SYMBOL sy, const char* Err)
+LCMSBOOL Check(LPIT8 it8, SYMBOL sy, const char* Err)
 {
         if (it8 -> sy != sy)
-                return SynError(it8, Err);
+                return SynError(it8, NoMeta(Err));
         return TRUE;
 }
 
@@ -863,7 +879,7 @@ void InSymbol(LPIT8 it8)
 
 // Checks end of line separator
 static
-BOOL CheckEOLN(LPIT8 it8)
+LCMSBOOL CheckEOLN(LPIT8 it8)
 {
         if (!Check(it8, SEOLN, "Expected separator")) return FALSE;
         while (it8 -> sy == SEOLN)
@@ -894,29 +910,36 @@ void SkipEOLN(LPIT8 it8)
 
 // Returns a string holding current value
 static
-BOOL GetVal(LPIT8 it8, char* Buffer, const char* ErrorTitle)
+LCMSBOOL GetVal(LPIT8 it8, char* Buffer, size_t max, const char* ErrorTitle)
 {
     switch (it8->sy) {
 
-    case SIDENT:  strncpy(Buffer, it8->id, MAXID-1); break;
-    case SINUM:   sprintf(Buffer, "%d", it8 -> inum); break;
-    case SDNUM:   sprintf(Buffer, it8->DoubleFormatter, it8 -> dnum); break;
-    case SSTRING: strncpy(Buffer, it8->str, MAXSTR-1); break;
+    case SIDENT:  strncpy(Buffer, it8->id, max); break;
+    case SINUM:   snprintf(Buffer, max, "%d", it8 -> inum); break;
+    case SDNUM:   snprintf(Buffer, max, it8->DoubleFormatter, it8 -> dnum); break;
+    case SSTRING: strncpy(Buffer, it8->str, max); break;
 
 
     default:
-         return SynError(it8, ErrorTitle);
+         return SynError(it8, "%s", ErrorTitle);
     }
 
-     return TRUE;
+    Buffer[max] = 0;
+    return TRUE;
 }
 
 // ---------------------------------------------------------- Table
 
 static
 LPTABLE GetTable(LPIT8 it8)
-{    
-    return it8 ->Tab + it8 ->nTable;
+{        
+   if ((it8 -> nTable >= it8 ->TablesCount) || (it8 -> nTable < 0)) {
+
+           SynError(it8, "Table %d out of sequence", it8 -> nTable);
+           return it8 -> Tab;
+   }            
+
+   return it8 ->Tab + it8 ->nTable;
 }
 
 // ---------------------------------------------------------- Memory management
@@ -940,15 +963,15 @@ void LCMSEXPORT cmsIT8Free(LCMSHANDLE hIT8)
         for (p = it8->MemorySink; p != NULL; p = n) {
 
             n = p->Next;
-            if (p->Ptr) free(p->Ptr);
-            free(p);
+            if (p->Ptr) _cmsFree(p->Ptr);
+            _cmsFree(p);
         }
     }
 
     if (it8->MemoryBlock)
-        free(it8->MemoryBlock);    
+        _cmsFree(it8->MemoryBlock);    
 
-    free(it8);
+     _cmsFree(it8);
 }
 
 
@@ -957,16 +980,16 @@ static
 void* AllocBigBlock(LPIT8 it8, size_t size)
 {
    LPOWNEDMEM ptr1;
-   void* ptr = malloc(size);
+   void* ptr = _cmsMalloc(size);
 
         if (ptr) {
 
                 ZeroMemory(ptr, size);
-                ptr1 = (LPOWNEDMEM) malloc(sizeof(OWNEDMEM));
+                ptr1 = (LPOWNEDMEM) _cmsMalloc(sizeof(OWNEDMEM));
 
                 if (ptr1 == NULL) {
 
-                    free(ptr);
+                     _cmsFree(ptr);
                     return NULL;
                 }
 
@@ -1030,7 +1053,7 @@ char *AllocString(LPIT8 it8, const char* str)
 // Searches through linked list
 
 static
-BOOL IsAvailableOnList(LPKEYVALUE p, const char* Key, LPKEYVALUE* LastPtr)
+LCMSBOOL IsAvailableOnList(LPKEYVALUE p, const char* Key, LPKEYVALUE* LastPtr)
 {
 
     for (;  p != NULL; p = p->Next) {
@@ -1051,7 +1074,7 @@ BOOL IsAvailableOnList(LPKEYVALUE p, const char* Key, LPKEYVALUE* LastPtr)
 
 // Add a property into a linked list
 static
-BOOL AddToList(LPIT8 it8, LPKEYVALUE* Head, const char *Key, const char* xValue, WRITEMODE WriteAs)
+LCMSBOOL AddToList(LPIT8 it8, LPKEYVALUE* Head, const char *Key, const char* xValue, WRITEMODE WriteAs)
 {
     LPKEYVALUE p;
     LPKEYVALUE last;
@@ -1065,12 +1088,10 @@ BOOL AddToList(LPIT8 it8, LPKEYVALUE* Head, const char *Key, const char* xValue,
 
 			 last->Value   = AllocString(it8, xValue);
 			 last->WriteAs = WriteAs;
-			 return TRUE;
-
-             // return SynError(it8, "duplicate key <%s>", Key);                                        
+			 return TRUE;                                               
     }
 
-        // Allocate the container
+    // Allocate the container
     p = (LPKEYVALUE) AllocChunk(it8, sizeof(KEYVALUE));
     if (p == NULL)
     {
@@ -1101,14 +1122,14 @@ BOOL AddToList(LPIT8 it8, LPKEYVALUE* Head, const char *Key, const char* xValue,
 }
 
 static
-BOOL AddAvailableProperty(LPIT8 it8, const char* Key)
+LCMSBOOL AddAvailableProperty(LPIT8 it8, const char* Key)
 {
         return AddToList(it8, &it8->ValidKeywords, Key, NULL, WRITE_UNCOOKED);
 }
 
 
 static
-BOOL AddAvailableSampleID(LPIT8 it8, const char* Key)
+LCMSBOOL AddAvailableSampleID(LPIT8 it8, const char* Key)
 {
         return AddToList(it8, &it8->ValidSampleID, Key, NULL, WRITE_UNCOOKED);
 }
@@ -1158,7 +1179,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8Alloc(void)
     LPIT8 it8;
     int i;
 
-    it8 = (LPIT8) malloc(sizeof(IT8));
+    it8 = (LPIT8) _cmsMalloc(sizeof(IT8));
     if (it8 == NULL) return NULL;
 
     ZeroMemory(it8, sizeof(IT8));
@@ -1211,7 +1232,7 @@ const char* LCMSEXPORT cmsIT8GetSheetType(LCMSHANDLE hIT8)
 
 }
 
-BOOL  LCMSEXPORT cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type)
+LCMSBOOL  LCMSEXPORT cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type)
 {
         LPIT8 it8 = (LPIT8) hIT8;
 
@@ -1219,7 +1240,7 @@ BOOL  LCMSEXPORT cmsIT8SetSheetType(LCMSHANDLE hIT8, const char* Type)
         return TRUE;
 }
 
-BOOL LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char* Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char* Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
 
@@ -1232,7 +1253,7 @@ BOOL LCMSEXPORT cmsIT8SetComment(LCMSHANDLE hIT8, const char* Val)
 
 
 // Sets a property
-BOOL LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* Key, const char *Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* Key, const char *Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
 
@@ -1243,7 +1264,7 @@ BOOL LCMSEXPORT cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* Key, const cha
 }
 
 
-BOOL LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
     char Buffer[1024];
@@ -1253,7 +1274,7 @@ BOOL LCMSEXPORT cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double 
     return AddToList(it8, &GetTable(it8)->HeaderList, cProp, Buffer, WRITE_UNCOOKED);    
 }
 
-BOOL LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
     char Buffer[1024];
@@ -1263,7 +1284,7 @@ BOOL LCMSEXPORT cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val
     return AddToList(it8, &GetTable(it8)->HeaderList, cProp, Buffer, WRITE_HEXADECIMAL);    
 }
 
-BOOL LCMSEXPORT cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer)
+LCMSBOOL LCMSEXPORT cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer)
 {
     LPIT8 it8 = (LPIT8) hIT8;    
     
@@ -1331,7 +1352,7 @@ const char *GetDataFormat(LPIT8 it8, int n)
 }
 
 static
-BOOL SetDataFormat(LPIT8 it8, int n, const char *label)
+LCMSBOOL SetDataFormat(LPIT8 it8, int n, const char *label)
 {
     LPTABLE t = GetTable(it8);
 
@@ -1352,7 +1373,7 @@ BOOL SetDataFormat(LPIT8 it8, int n, const char *label)
 }
 
 
-BOOL LCMSEXPORT cmsIT8SetDataFormat(LCMSHANDLE h, int n, const char *Sample)
+LCMSBOOL LCMSEXPORT cmsIT8SetDataFormat(LCMSHANDLE h, int n, const char *Sample)
 {
         LPIT8 it8 = (LPIT8) h;
         return SetDataFormat(it8, n, Sample);
@@ -1392,7 +1413,7 @@ char* GetData(LPIT8 it8, int nSet, int nField)
 }
 
 static
-BOOL SetData(LPIT8 it8, int nSet, int nField, const char *Val)
+LCMSBOOL SetData(LPIT8 it8, int nSet, int nField, const char *Val)
 {
     LPTABLE t = GetTable(it8);
 
@@ -1462,7 +1483,8 @@ void WriteStr(LPSAVESTREAM f, const char *str)
 }
 
 
-// 
+// Write formatted
+
 static
 void Writef(LPSAVESTREAM f, const char* frm, ...)
 {
@@ -1470,7 +1492,8 @@ void Writef(LPSAVESTREAM f, const char* frm, ...)
     va_list args;
 
     va_start(args, frm);
-    vsprintf(Buffer, frm, args);
+    vsnprintf(Buffer, 4095, frm, args);
+    Buffer[4095] = 0;
     WriteStr(f, Buffer);
     va_end(args);
 
@@ -1617,7 +1640,7 @@ void WriteData(LPSAVESTREAM fp, LPIT8 it8)
 
 
 // Saves whole file
-BOOL LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName)
+LCMSBOOL LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName)
 {
     SAVESTREAM sd;	
     int i;
@@ -1645,7 +1668,7 @@ BOOL LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName)
 
 
 // Saves to memory
-BOOL LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded)
+LCMSBOOL LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded)
 {
     SAVESTREAM sd;	
     int i;
@@ -1688,7 +1711,7 @@ BOOL LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeed
 // -------------------------------------------------------------- Higer level parsing
 
 static
-BOOL DataFormatSection(LPIT8 it8)
+LCMSBOOL DataFormatSection(LPIT8 it8)
 {
     int iField = 0;    
     LPTABLE t = GetTable(it8);
@@ -1729,7 +1752,7 @@ BOOL DataFormatSection(LPIT8 it8)
 
 
 static
-BOOL DataSection (LPIT8 it8)
+LCMSBOOL DataSection (LPIT8 it8)
 {
     int  iField = 0;
     int  iSet   = 0;
@@ -1738,6 +1761,9 @@ BOOL DataSection (LPIT8 it8)
 
     InSymbol(it8);   // Eats "BEGIN_DATA"
     CheckEOLN(it8);
+
+    if (!t->Data)
+        AllocateDataSet(it8);
 
     while (it8->sy != SEND_DATA && it8->sy != SEOF)
     {
@@ -1749,7 +1775,7 @@ BOOL DataSection (LPIT8 it8)
 
         if (it8->sy != SEND_DATA && it8->sy != SEOF) {
 
-            if (!GetVal(it8, Buffer, "Sample data expected"))
+            if (!GetVal(it8, Buffer, 255, "Sample data expected"))
                 return FALSE;
 
             if (!SetData(it8, iSet, iField, Buffer))
@@ -1778,7 +1804,7 @@ BOOL DataSection (LPIT8 it8)
 
 
 static
-BOOL HeaderSection(LPIT8 it8)
+LCMSBOOL HeaderSection(LPIT8 it8)
 {
     char VarName[MAXID];
     char Buffer[MAXSTR];
@@ -1793,7 +1819,7 @@ BOOL HeaderSection(LPIT8 it8)
 
         case SKEYWORD:
                 InSymbol(it8);
-                if (!GetVal(it8, Buffer, "Keyword expected")) return FALSE;                
+                if (!GetVal(it8, Buffer, MAXSTR-1, "Keyword expected")) return FALSE;                
                 if (!AddAvailableProperty(it8, Buffer)) return FALSE;
                 InSymbol(it8);
                 break;
@@ -1812,7 +1838,7 @@ BOOL HeaderSection(LPIT8 it8)
                 }
 
                 InSymbol(it8);
-                if (!GetVal(it8, Buffer, "Property data expected")) return FALSE;
+                if (!GetVal(it8, Buffer, MAXSTR-1, "Property data expected")) return FALSE;
 
 				
                 AddToList(it8, &GetTable(it8)->HeaderList, VarName, Buffer, 
@@ -1837,7 +1863,7 @@ BOOL HeaderSection(LPIT8 it8)
 
 
 static
-BOOL ParseIT8(LPIT8 it8)
+LCMSBOOL ParseIT8(LPIT8 it8)
 {
     char* SheetTypePtr;
 
@@ -1913,6 +1939,12 @@ void CookPointers(LPIT8 it8)
 
     for (idField = 0; idField < t -> nSamples; idField++)
     {
+        if (t ->DataFormat == NULL) {
+             SynError(it8, "Undefined DATA_FORMAT");
+             return;
+
+        }
+
         Fld = t->DataFormat[idField];
         if (!Fld) continue;
 
@@ -1968,7 +2000,7 @@ void CookPointers(LPIT8 it8)
                                         char *Type  = p ->Value;
                                         int  nTable = k;                                        
 
-                                        sprintf(Buffer, "%s %d %s", Label, nTable, Type );
+                                        snprintf(Buffer, 255, "%s %d %s", Label, nTable, Type );
                                                                                 
                                         SetData(it8, i, idField, Buffer);
                                     }
@@ -1992,7 +2024,7 @@ void CookPointers(LPIT8 it8)
 // that should be something like some printable characters plus a \n
 
 static
-BOOL IsMyBlock(LPBYTE Buffer, size_t n)
+LCMSBOOL IsMyBlock(LPBYTE Buffer, size_t n)
 {
     size_t i;
 
@@ -2014,7 +2046,7 @@ BOOL IsMyBlock(LPBYTE Buffer, size_t n)
 
 
 static
-BOOL IsMyFile(const char* FileName)
+LCMSBOOL IsMyFile(const char* FileName)
 {
    FILE *fp;
    size_t Size;
@@ -2048,7 +2080,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len)
     if (!hIT8) return NULL;
 
     it8 = (LPIT8) hIT8;
-    it8 ->MemoryBlock = (char*) malloc(len + 1);
+    it8 ->MemoryBlock = (char*) _cmsMalloc(len + 1);
 
     strncpy(it8 ->MemoryBlock, (const char*) Ptr, len);
     it8 ->MemoryBlock[len] = 0;
@@ -2065,7 +2097,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len)
     CookPointers(it8);
     it8 ->nTable = 0;
 
-    free(it8->MemoryBlock);
+     _cmsFree(it8->MemoryBlock);
     it8 -> MemoryBlock = NULL;
 
     return hIT8;
@@ -2245,7 +2277,7 @@ double LCMSEXPORT cmsIT8GetDataRowColDbl(LCMSHANDLE hIT8, int row, int col)
 }
 
 
-BOOL LCMSEXPORT cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, const char* Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, const char* Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
     
@@ -2253,7 +2285,7 @@ BOOL LCMSEXPORT cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, const cha
 }
 
 
-BOOL LCMSEXPORT cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, double Val)
+LCMSBOOL LCMSEXPORT cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, double Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
     char Buff[256];
@@ -2304,7 +2336,7 @@ double LCMSEXPORT cmsIT8GetDataDbl(LCMSHANDLE it8, const char* cPatch, const cha
 
 
 
-BOOL LCMSEXPORT cmsIT8SetData(LCMSHANDLE hIT8, const char* cPatch,
+LCMSBOOL LCMSEXPORT cmsIT8SetData(LCMSHANDLE hIT8, const char* cPatch,
                         const char* cSample,
                         const char *Val)
 {
@@ -2349,18 +2381,19 @@ BOOL LCMSEXPORT cmsIT8SetData(LCMSHANDLE hIT8, const char* cPatch,
 }
 
 
-BOOL LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
+LCMSBOOL LCMSEXPORT cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
                         const char* cSample,
                         double Val)
 {
     LPIT8 it8 = (LPIT8) hIT8;
     char Buff[256];
 
-        sprintf(Buff, it8->DoubleFormatter, Val);
+        snprintf(Buff, 255, it8->DoubleFormatter, Val);
         return cmsIT8SetData(hIT8, cPatch, cSample, Buff);
 
 }
 
+// Buffer should get MAXSTR at least
 
 const char* LCMSEXPORT cmsIT8GetPatchName(LCMSHANDLE hIT8, int nPatch, char* buffer)
 {
@@ -2371,7 +2404,7 @@ const char* LCMSEXPORT cmsIT8GetPatchName(LCMSHANDLE hIT8, int nPatch, char* buf
         if (!Data) return NULL;
         if (!buffer) return Data;
 
-        strcpy(buffer, Data);
+        strncpy(buffer, Data, MAXSTR-1);        
         return buffer;
 }
 
@@ -2400,7 +2433,7 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
     cLabelFld = cmsIT8GetData(hIT8, cSet, cField); 
     if (!cLabelFld) return -1;
     
-    if (sscanf(cLabelFld, "%s %d %s", Label, &nTable, Type) != 3)
+    if (sscanf(cLabelFld, "%255s %d %255s", Label, &nTable, Type) != 3)
             return -1;
     
     if (ExpectedType != NULL && *ExpectedType == 0)

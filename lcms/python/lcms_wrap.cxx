@@ -2048,7 +2048,7 @@ SWIG_Python_ConvertFunctionPtr(PyObject *obj, void **ptr, swig_type_info *ty) {
     void *vptr = 0;
     
     /* here we get the method pointer for callbacks */
-    char *doc = (((PyCFunctionObject *)obj) -> m_ml -> ml_doc);
+    const char *doc = (((PyCFunctionObject *)obj) -> m_ml -> ml_doc);
     const char *desc = doc ? strstr(doc, "swig_ptr: ") : 0;
     if (desc) {
       desc = ty ? SWIG_UnpackVoidPtr(desc + 10, &vptr, ty->name) : 0;
@@ -2467,83 +2467,81 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIGTYPE_p_LPMATSHAPER swig_types[5]
 #define SWIGTYPE_p_LPWMAT3 swig_types[6]
 #define SWIGTYPE_p_LPWVEC3 swig_types[7]
-#define SWIGTYPE_p_LPcmsGAMUTEX swig_types[8]
-#define SWIGTYPE_p_LPcmsNAMEDCOLORLIST swig_types[9]
-#define SWIGTYPE_p_LPcmsSEQ swig_types[10]
-#define SWIGTYPE_p_MAT3 swig_types[11]
-#define SWIGTYPE_p_MATSHAPER swig_types[12]
-#define SWIGTYPE_p_SAMPLEDCURVE swig_types[13]
-#define SWIGTYPE_p_StrPointer swig_types[14]
-#define SWIGTYPE_p_VEC3 swig_types[15]
-#define SWIGTYPE_p_WMAT3 swig_types[16]
-#define SWIGTYPE_p_WVEC3 swig_types[17]
-#define SWIGTYPE_p__cmsTestAlign16 swig_types[18]
-#define SWIGTYPE_p__cmsTestAlign8 swig_types[19]
-#define SWIGTYPE_p__cmstransform_struct swig_types[20]
-#define SWIGTYPE_p__lcms_LUT_struc swig_types[21]
-#define SWIGTYPE_p__lcms_iccprofile_struct swig_types[22]
-#define SWIGTYPE_p__lcms_l16params_struc swig_types[23]
-#define SWIGTYPE_p__lcms_l8opt_struc swig_types[24]
-#define SWIGTYPE_p_a_16__LCMSGAMMAPARAMS swig_types[25]
-#define SWIGTYPE_p_char swig_types[26]
-#define SWIGTYPE_p_cmsCIELCh swig_types[27]
-#define SWIGTYPE_p_cmsCIELab swig_types[28]
-#define SWIGTYPE_p_cmsCIEXYZ swig_types[29]
-#define SWIGTYPE_p_cmsCIEXYZTRIPLE swig_types[30]
-#define SWIGTYPE_p_cmsCIExyY swig_types[31]
-#define SWIGTYPE_p_cmsCIExyYTRIPLE swig_types[32]
-#define SWIGTYPE_p_cmsGAMUTEX swig_types[33]
-#define SWIGTYPE_p_cmsJCh swig_types[34]
-#define SWIGTYPE_p_cmsNAMEDCOLOR swig_types[35]
-#define SWIGTYPE_p_cmsNAMEDCOLORLIST swig_types[36]
-#define SWIGTYPE_p_cmsPSEQDESC swig_types[37]
-#define SWIGTYPE_p_cmsSEQ swig_types[38]
-#define SWIGTYPE_p_cmsViewingConditions swig_types[39]
-#define SWIGTYPE_p_double swig_types[40]
-#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void swig_types[41]
-#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_a___unsigned_short_p__lcms_l16params_struc__void swig_types[42]
-#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_p_void__int swig_types[43]
-#define SWIGTYPE_p_f_int_p_q_const__char__int swig_types[44]
-#define SWIGTYPE_p_f_p__cmstransform_struct_a___unsigned_short_a___unsigned_short__void swig_types[45]
-#define SWIGTYPE_p_f_p__cmstransform_struct_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[46]
-#define SWIGTYPE_p_f_p__cmstransform_struct_p_void_p_void_unsigned_int__void swig_types[47]
-#define SWIGTYPE_p_f_p__lcms_iccprofile_struct__int swig_types[48]
-#define SWIGTYPE_p_f_p__lcms_iccprofile_struct__size_t swig_types[49]
-#define SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t__int swig_types[50]
-#define SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t_p_void__int swig_types[51]
-#define SWIGTYPE_p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[52]
-#define SWIGTYPE_p_f_p_void_size_t_size_t_p__lcms_iccprofile_struct__size_t swig_types[53]
-#define SWIGTYPE_p_icCLutStruct swig_types[54]
-#define SWIGTYPE_p_icColorSpaceSignature swig_types[55]
-#define SWIGTYPE_p_icInt32Number swig_types[56]
-#define SWIGTYPE_p_icLutAtoB swig_types[57]
-#define SWIGTYPE_p_icLutBtoA swig_types[58]
-#define SWIGTYPE_p_icProfileClassSignature swig_types[59]
-#define SWIGTYPE_p_icRenderingIntent swig_types[60]
-#define SWIGTYPE_p_icS15Fixed16Number swig_types[61]
-#define SWIGTYPE_p_icSignature swig_types[62]
-#define SWIGTYPE_p_icTagSignature swig_types[63]
-#define SWIGTYPE_p_icTechnologySignature swig_types[64]
-#define SWIGTYPE_p_icUInt16Number swig_types[65]
-#define SWIGTYPE_p_icUInt32Number swig_types[66]
-#define SWIGTYPE_p_icUInt8Number swig_types[67]
-#define SWIGTYPE_p_int swig_types[68]
-#define SWIGTYPE_p_p_GAMMATABLE swig_types[69]
-#define SWIGTYPE_p_p_char swig_types[70]
-#define SWIGTYPE_p_p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void swig_types[71]
-#define SWIGTYPE_p_p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[72]
-#define SWIGTYPE_p_p_p_char swig_types[73]
-#define SWIGTYPE_p_p_unsigned_short swig_types[74]
-#define SWIGTYPE_p_p_void swig_types[75]
-#define SWIGTYPE_p_size_t swig_types[76]
-#define SWIGTYPE_p_tm swig_types[77]
-#define SWIGTYPE_p_unsigned_char swig_types[78]
-#define SWIGTYPE_p_unsigned_int swig_types[79]
-#define SWIGTYPE_p_unsigned_long swig_types[80]
-#define SWIGTYPE_p_unsigned_short swig_types[81]
-#define SWIGTYPE_p_void swig_types[82]
-static swig_type_info *swig_types[84];
-static swig_module_info swig_module = {swig_types, 83, 0, 0, 0, 0};
+#define SWIGTYPE_p_LPcmsNAMEDCOLORLIST swig_types[8]
+#define SWIGTYPE_p_LPcmsSEQ swig_types[9]
+#define SWIGTYPE_p_MAT3 swig_types[10]
+#define SWIGTYPE_p_MATSHAPER swig_types[11]
+#define SWIGTYPE_p_SAMPLEDCURVE swig_types[12]
+#define SWIGTYPE_p_StrPointer swig_types[13]
+#define SWIGTYPE_p_VEC3 swig_types[14]
+#define SWIGTYPE_p_WMAT3 swig_types[15]
+#define SWIGTYPE_p_WVEC3 swig_types[16]
+#define SWIGTYPE_p__cmsTestAlign16 swig_types[17]
+#define SWIGTYPE_p__cmsTestAlign8 swig_types[18]
+#define SWIGTYPE_p__cmstransform_struct swig_types[19]
+#define SWIGTYPE_p__lcms_LUT_struc swig_types[20]
+#define SWIGTYPE_p__lcms_iccprofile_struct swig_types[21]
+#define SWIGTYPE_p__lcms_l16params_struc swig_types[22]
+#define SWIGTYPE_p__lcms_l8opt_struc swig_types[23]
+#define SWIGTYPE_p_a_16__LCMSGAMMAPARAMS swig_types[24]
+#define SWIGTYPE_p_char swig_types[25]
+#define SWIGTYPE_p_cmsCIELCh swig_types[26]
+#define SWIGTYPE_p_cmsCIELab swig_types[27]
+#define SWIGTYPE_p_cmsCIEXYZ swig_types[28]
+#define SWIGTYPE_p_cmsCIEXYZTRIPLE swig_types[29]
+#define SWIGTYPE_p_cmsCIExyY swig_types[30]
+#define SWIGTYPE_p_cmsCIExyYTRIPLE swig_types[31]
+#define SWIGTYPE_p_cmsJCh swig_types[32]
+#define SWIGTYPE_p_cmsNAMEDCOLOR swig_types[33]
+#define SWIGTYPE_p_cmsNAMEDCOLORLIST swig_types[34]
+#define SWIGTYPE_p_cmsPSEQDESC swig_types[35]
+#define SWIGTYPE_p_cmsSEQ swig_types[36]
+#define SWIGTYPE_p_cmsViewingConditions swig_types[37]
+#define SWIGTYPE_p_double swig_types[38]
+#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void swig_types[39]
+#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_a___unsigned_short_p__lcms_l16params_struc__void swig_types[40]
+#define SWIGTYPE_p_f_a___unsigned_short_a___unsigned_short_p_void__int swig_types[41]
+#define SWIGTYPE_p_f_int_p_q_const__char__int swig_types[42]
+#define SWIGTYPE_p_f_p__cmstransform_struct_a___unsigned_short_a___unsigned_short__void swig_types[43]
+#define SWIGTYPE_p_f_p__cmstransform_struct_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[44]
+#define SWIGTYPE_p_f_p__cmstransform_struct_p_void_p_void_unsigned_int__void swig_types[45]
+#define SWIGTYPE_p_f_p__lcms_iccprofile_struct__int swig_types[46]
+#define SWIGTYPE_p_f_p__lcms_iccprofile_struct__size_t swig_types[47]
+#define SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t__int swig_types[48]
+#define SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t_p_void__int swig_types[49]
+#define SWIGTYPE_p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[50]
+#define SWIGTYPE_p_f_p_void_size_t_size_t_p__lcms_iccprofile_struct__size_t swig_types[51]
+#define SWIGTYPE_p_icCLutStruct swig_types[52]
+#define SWIGTYPE_p_icColorSpaceSignature swig_types[53]
+#define SWIGTYPE_p_icInt32Number swig_types[54]
+#define SWIGTYPE_p_icLutAtoB swig_types[55]
+#define SWIGTYPE_p_icLutBtoA swig_types[56]
+#define SWIGTYPE_p_icProfileClassSignature swig_types[57]
+#define SWIGTYPE_p_icRenderingIntent swig_types[58]
+#define SWIGTYPE_p_icS15Fixed16Number swig_types[59]
+#define SWIGTYPE_p_icSignature swig_types[60]
+#define SWIGTYPE_p_icTagSignature swig_types[61]
+#define SWIGTYPE_p_icTechnologySignature swig_types[62]
+#define SWIGTYPE_p_icUInt16Number swig_types[63]
+#define SWIGTYPE_p_icUInt32Number swig_types[64]
+#define SWIGTYPE_p_icUInt8Number swig_types[65]
+#define SWIGTYPE_p_int swig_types[66]
+#define SWIGTYPE_p_p_GAMMATABLE swig_types[67]
+#define SWIGTYPE_p_p_char swig_types[68]
+#define SWIGTYPE_p_p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void swig_types[69]
+#define SWIGTYPE_p_p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char swig_types[70]
+#define SWIGTYPE_p_p_p_char swig_types[71]
+#define SWIGTYPE_p_p_unsigned_short swig_types[72]
+#define SWIGTYPE_p_p_void swig_types[73]
+#define SWIGTYPE_p_size_t swig_types[74]
+#define SWIGTYPE_p_tm swig_types[75]
+#define SWIGTYPE_p_unsigned_char swig_types[76]
+#define SWIGTYPE_p_unsigned_int swig_types[77]
+#define SWIGTYPE_p_unsigned_long swig_types[78]
+#define SWIGTYPE_p_unsigned_short swig_types[79]
+#define SWIGTYPE_p_void swig_types[80]
+static swig_type_info *swig_types[82];
+static swig_module_info swig_module = {swig_types, 81, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2678,7 +2676,7 @@ typedef IT8* LPIT8;
 
 SWIGINTERN COLORW *new_COLORW(){		                
 				LPCOLORW v;
-                v = (LPCOLORW) malloc(sizeof(COLORW));
+                v = (LPCOLORW) _cmsMalloc(sizeof(COLORW));
 				memset((v),0,(sizeof(COLORW)));
                 return v;
         }
@@ -2895,12 +2893,12 @@ SWIGINTERN void COLORW___setitem__(COLORW *self,int key,int val){
         }
 SWIGINTERN COLORB *new_COLORB(){		                
 				LPCOLORB v;
-                v = (LPCOLORB) malloc(sizeof(COLORB));
+                v = (LPCOLORB) _cmsMalloc(sizeof(COLORB));
 				memset((v),0,(sizeof(COLORB)));
                 return v;
         }
 SWIGINTERN void delete_COLORB(COLORB *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *COLORB___repr__(COLORB *self){                
                 return "Color 8 bps";
@@ -2968,24 +2966,24 @@ SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
 
 SWIGINTERN IT8 *new_IT8__SWIG_0(char const *FileName){
                 LPIT8 it8;
-                it8 = (LPIT8) malloc(sizeof(IT8));
+                it8 = (LPIT8) _cmsMalloc(sizeof(IT8));
                 InErrorFlag = 0;	
                 it8 -> hIT8 = cmsIT8LoadFromFile(FileName); 				              
                 if (InErrorFlag) {
-                    free(it8);
+                    _cmsFree(it8);
                     return NULL;
                 }
                 return it8;
         }
 SWIGINTERN IT8 *new_IT8__SWIG_1(){
                 LPIT8 it8;
-                it8 = (LPIT8) malloc(sizeof(IT8));
+                it8 = (LPIT8) _cmsMalloc(sizeof(IT8));
                 it8 -> hIT8 = cmsIT8Alloc();                
                 return it8;
         }
 SWIGINTERN void delete_IT8(IT8 *self){
                 cmsIT8Free(self -> hIT8);
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *IT8___repr__(IT8 *self){
                 return "CGATS.13/IT8 parser";
@@ -3216,7 +3214,7 @@ SWIGINTERN void GAMMATABLE___setitem__(GAMMATABLE *self,int key,WORD val){
         }
 SWIGINTERN VEC3 *new_VEC3__SWIG_0(double vx=0,double vy=0,double vz=0){
                 LPVEC3 v;
-                v = (LPVEC3) malloc(sizeof(VEC3));
+                v = (LPVEC3) _cmsMalloc(sizeof(VEC3));
                 v->n[0] =vx;
                 v->n[1] =vy;
                 v->n[2] =vz;
@@ -3224,7 +3222,7 @@ SWIGINTERN VEC3 *new_VEC3__SWIG_0(double vx=0,double vy=0,double vz=0){
 
         }
 SWIGINTERN void delete_VEC3(VEC3 *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN double VEC3___getitem__(VEC3 *self,int key){
                 return self -> n[key];
@@ -3240,14 +3238,14 @@ SWIGINTERN char const *VEC3___repr__(VEC3 *self){
         }
 SWIGINTERN cmsCIEXYZ *new_cmsCIEXYZ__SWIG_0(double x=0,double y=0,double z=0){
                 LPcmsCIEXYZ v;
-                v = (LPcmsCIEXYZ) malloc(sizeof(cmsCIEXYZ));
+                v = (LPcmsCIEXYZ) _cmsMalloc(sizeof(cmsCIEXYZ));
                 v->X = x;
                 v->Y = y;
                 v->Z = z;
                 return v;
         }
 SWIGINTERN void delete_cmsCIEXYZ(cmsCIEXYZ *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIEXYZ___repr__(cmsCIEXYZ *self){
                 static char Buffer[256];
@@ -3257,14 +3255,14 @@ SWIGINTERN char const *cmsCIEXYZ___repr__(cmsCIEXYZ *self){
         }
 SWIGINTERN cmsCIExyY *new_cmsCIExyY__SWIG_0(double x=0,double y=0,double Y=0){
                 LPcmsCIExyY v;
-                v = (LPcmsCIExyY) malloc(sizeof(cmsCIExyY));
+                v = (LPcmsCIExyY) _cmsMalloc(sizeof(cmsCIExyY));
                 v->x = x;
                 v->y = y;
                 v->Y = Y;
                 return v;
         }
 SWIGINTERN void delete_cmsCIExyY(cmsCIExyY *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIExyY___repr__(cmsCIExyY *self){
                 static char Buffer[256];
@@ -3274,14 +3272,14 @@ SWIGINTERN char const *cmsCIExyY___repr__(cmsCIExyY *self){
         }
 SWIGINTERN cmsCIELab *new_cmsCIELab__SWIG_0(double L=0,double a=0,double b=0){
                 LPcmsCIELab v;
-                v = (LPcmsCIELab) malloc(sizeof(cmsCIELab));
+                v = (LPcmsCIELab) _cmsMalloc(sizeof(cmsCIELab));
                 v->L = L;
                 v->a = a;
                 v->b = b;
                 return v;
         }
 SWIGINTERN void delete_cmsCIELab(cmsCIELab *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIELab___repr__(cmsCIELab *self){
                 static char Buffer[256];
@@ -3294,14 +3292,14 @@ SWIGINTERN int cmsCIELab___cmp__(cmsCIELab *self,cmsCIELab *a){
         }
 SWIGINTERN cmsCIELCh *new_cmsCIELCh__SWIG_0(double L=0,double C=0,double h=0){
                 LPcmsCIELCh v;
-                v = (LPcmsCIELCh) malloc(sizeof(cmsCIELCh));
+                v = (LPcmsCIELCh) _cmsMalloc(sizeof(cmsCIELCh));
                 v->L = L;
                 v->C = C;
                 v->h = h;
                 return v;
         }
 SWIGINTERN void delete_cmsCIELCh(cmsCIELCh *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIELCh___repr__(cmsCIELCh *self){
                 static char Buffer[256];
@@ -3311,14 +3309,14 @@ SWIGINTERN char const *cmsCIELCh___repr__(cmsCIELCh *self){
         }
 SWIGINTERN cmsJCh *new_cmsJCh__SWIG_0(double J=0,double C=0,double h=0){
                 LPcmsJCh v;
-                v = (LPcmsJCh) malloc(sizeof(cmsJCh));
+                v = (LPcmsJCh) _cmsMalloc(sizeof(cmsJCh));
                 v->J = J;
                 v->C = C;
                 v->h = h;
                 return v;
         }
 SWIGINTERN void delete_cmsJCh(cmsJCh *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsJCh___repr__(cmsJCh *self){
                 static char Buffer[256];
@@ -3328,14 +3326,14 @@ SWIGINTERN char const *cmsJCh___repr__(cmsJCh *self){
         }
 SWIGINTERN cmsCIEXYZTRIPLE *new_cmsCIEXYZTRIPLE(cmsCIEXYZ *Red,cmsCIEXYZ *Green,cmsCIEXYZ *Blue){
                 LPcmsCIEXYZTRIPLE v;
-                v = (LPcmsCIEXYZTRIPLE) malloc(sizeof(cmsCIEXYZTRIPLE));
+                v = (LPcmsCIEXYZTRIPLE) _cmsMalloc(sizeof(cmsCIEXYZTRIPLE));
                 memcpy((&v->Red),(Red),(sizeof(cmsCIExyY)));
 				memcpy((&v->Green),(Green),(sizeof(cmsCIExyY)));
 				memcpy((&v->Blue),(Blue),(sizeof(cmsCIExyY)));
                 return v;
         }
 SWIGINTERN void delete_cmsCIEXYZTRIPLE(cmsCIEXYZTRIPLE *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIEXYZTRIPLE___repr__(cmsCIEXYZTRIPLE *self){
                 
@@ -3343,14 +3341,14 @@ SWIGINTERN char const *cmsCIEXYZTRIPLE___repr__(cmsCIEXYZTRIPLE *self){
         }
 SWIGINTERN cmsCIExyYTRIPLE *new_cmsCIExyYTRIPLE(cmsCIExyY *Red,cmsCIExyY *Green,cmsCIExyY *Blue){
                 LPcmsCIExyYTRIPLE v;
-                v = (LPcmsCIExyYTRIPLE) malloc(sizeof(cmsCIExyYTRIPLE));
+                v = (LPcmsCIExyYTRIPLE) _cmsMalloc(sizeof(cmsCIExyYTRIPLE));
                 memcpy((&v->Red),(Red),(sizeof(cmsCIExyY)));
 				memcpy((&v->Green),(Green),(sizeof(cmsCIExyY)));
 				memcpy((&v->Blue),(Blue),(sizeof(cmsCIExyY)));
                 return v;
         }
 SWIGINTERN void delete_cmsCIExyYTRIPLE(cmsCIExyYTRIPLE *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsCIExyYTRIPLE___repr__(cmsCIExyYTRIPLE *self){
                 
@@ -3358,7 +3356,7 @@ SWIGINTERN char const *cmsCIExyYTRIPLE___repr__(cmsCIExyYTRIPLE *self){
         }
 SWIGINTERN cmsViewingConditions *new_cmsViewingConditions(cmsCIEXYZ *WhitePoint,double Yb,double La,int surround,double D_value){
                 LPcmsViewingConditions v;
-                v = (LPcmsViewingConditions) malloc(sizeof(cmsViewingConditions));
+                v = (LPcmsViewingConditions) _cmsMalloc(sizeof(cmsViewingConditions));
 				memcpy((&v -> whitePoint),(WhitePoint),(sizeof(cmsCIEXYZ)));
 				v ->Yb = Yb;
 				v ->La = La;
@@ -3367,22 +3365,12 @@ SWIGINTERN cmsViewingConditions *new_cmsViewingConditions(cmsCIEXYZ *WhitePoint,
                 return v;
         }
 SWIGINTERN void delete_cmsViewingConditions(cmsViewingConditions *self){
-                free(self);
+                _cmsFree(self);
         }
 SWIGINTERN char const *cmsViewingConditions___repr__(cmsViewingConditions *self){
                 
                 return "CIECAM97s viewing conditions";                
         }
-
-SWIGINTERNINLINE int
-SWIG_AsVal_size_t (PyObject * obj, size_t *val)
-{
-  unsigned long v;
-  int res = SWIG_AsVal_unsigned_SS_long (obj, val ? &v : 0);
-  if (SWIG_IsOK(res) && val) *val = static_cast< size_t >(v);
-  return res;
-}
-
 
 SWIGINTERN int
 SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
@@ -3408,6 +3396,16 @@ SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
 }
 
 
+SWIGINTERNINLINE int
+SWIG_AsVal_size_t (PyObject * obj, size_t *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, val ? &v : 0);
+  if (SWIG_IsOK(res) && val) *val = static_cast< size_t >(v);
+  return res;
+}
+
+
 SWIGINTERNINLINE PyObject *
 SWIG_From_size_t  (size_t value)
 {    
@@ -3415,12 +3413,12 @@ SWIG_From_size_t  (size_t value)
 }
 
 SWIGINTERN icTagSignature *new_icTagSignature(unsigned int n){
-		icTagSignature* v =  (icTagSignature*) malloc(sizeof(icTagSignature));
+		icTagSignature* v =  (icTagSignature*) _cmsMalloc(sizeof(icTagSignature));
 		*v = (icTagSignature) n;
 		return v;
 	}
 SWIGINTERN void delete_icTagSignature(icTagSignature *self){
-                free(self);
+                _cmsFree(self);
     }
 
 class StrPointer {
@@ -11156,7 +11154,7 @@ fail:
 SWIGINTERN PyObject *_wrap_cmsCloseProfile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   PyObject * obj0 = 0 ;
   
@@ -11168,7 +11166,7 @@ SWIGINTERN PyObject *_wrap_cmsCloseProfile(PyObject *SWIGUNUSEDPARM(self), PyObj
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsCloseProfile(arg1);
+  result = (LCMSBOOL)cmsCloseProfile(arg1);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -12051,7 +12049,7 @@ SWIGINTERN PyObject *_wrap_cmsWhitePointFromTemp(PyObject *SWIGUNUSEDPARM(self),
   PyObject *resultobj = 0;
   int arg1 ;
   LPcmsCIExyY arg2 = (LPcmsCIExyY) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int val1 ;
   int ecode1 = 0 ;
   void *argp2 = 0 ;
@@ -12073,7 +12071,7 @@ SWIGINTERN PyObject *_wrap_cmsWhitePointFromTemp(PyObject *SWIGUNUSEDPARM(self),
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsWhitePointFromTemp(arg1,arg2);
+  result = (LCMSBOOL)cmsWhitePointFromTemp(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -12089,7 +12087,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptToIlluminant(PyObject *SWIGUNUSEDPARM(self), 
   LPcmsCIEXYZ arg2 = (LPcmsCIEXYZ) 0 ;
   LPcmsCIEXYZ arg3 = (LPcmsCIEXYZ) 0 ;
   LPcmsCIEXYZ arg4 = (LPcmsCIEXYZ) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -12127,7 +12125,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptToIlluminant(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAdaptToIlluminant(arg1,arg2,arg3,arg4);
+  result = (LCMSBOOL)cmsAdaptToIlluminant(arg1,arg2,arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -12142,7 +12140,7 @@ SWIGINTERN PyObject *_wrap_cmsBuildRGB2XYZtransferMatrix(PyObject *SWIGUNUSEDPAR
   LPMAT3 arg1 = (LPMAT3) 0 ;
   LPcmsCIExyY arg2 = (LPcmsCIExyY) 0 ;
   LPcmsCIExyYTRIPLE arg3 = (LPcmsCIExyYTRIPLE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -12172,7 +12170,7 @@ SWIGINTERN PyObject *_wrap_cmsBuildRGB2XYZtransferMatrix(PyObject *SWIGUNUSEDPAR
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsBuildRGB2XYZtransferMatrix(arg1,arg2,arg3);
+  result = (LCMSBOOL)cmsBuildRGB2XYZtransferMatrix(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13163,7 +13161,7 @@ SWIGINTERN PyObject *_wrap_cmsSmoothGamma(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   LPGAMMATABLE arg1 = (LPGAMMATABLE) 0 ;
   double arg2 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   double val2 ;
@@ -13185,7 +13183,7 @@ SWIGINTERN PyObject *_wrap_cmsSmoothGamma(PyObject *SWIGUNUSEDPARM(self), PyObje
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsSmoothGamma(arg1,arg2);
+  result = (LCMSBOOL)cmsSmoothGamma(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13355,7 +13353,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeMediaWhitePoint(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   LPcmsCIEXYZ arg1 = (LPcmsCIEXYZ) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13375,7 +13373,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeMediaWhitePoint(PyObject *SWIGUNUSEDPARM(self)
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeMediaWhitePoint(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeMediaWhitePoint(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13389,7 +13387,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeMediaBlackPoint(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   LPcmsCIEXYZ arg1 = (LPcmsCIEXYZ) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13409,7 +13407,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeMediaBlackPoint(PyObject *SWIGUNUSEDPARM(self)
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeMediaBlackPoint(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeMediaBlackPoint(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13423,7 +13421,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeIluminant(PyObject *SWIGUNUSEDPARM(self), PyOb
   PyObject *resultobj = 0;
   LPcmsCIEXYZ arg1 = (LPcmsCIEXYZ) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13443,7 +13441,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeIluminant(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeIluminant(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeIluminant(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13457,7 +13455,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeColorants(PyObject *SWIGUNUSEDPARM(self), PyOb
   PyObject *resultobj = 0;
   LPcmsCIEXYZTRIPLE arg1 = (LPcmsCIEXYZTRIPLE) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13477,7 +13475,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeColorants(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeColorants(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeColorants(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13539,30 +13537,30 @@ fail:
 
 SWIGINTERN PyObject *_wrap_cmsSetLanguage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  int arg2 ;
-  int val1 ;
-  int ecode1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
+  char *arg1 ;
+  char *arg2 ;
+  char temp1[4] ;
+  int res1 ;
+  char temp2[4] ;
+  int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:cmsSetLanguage",&obj0,&obj1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_int(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "cmsSetLanguage" "', argument " "1"" of type '" "int""'");
-  } 
-  arg1 = static_cast< int >(val1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "cmsSetLanguage" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
+  res1 = SWIG_AsCharArray(obj0, temp1, 4);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsSetLanguage" "', argument " "1"" of type '" "char const [4]""'");
+  }
+  arg1 = temp1;
+  res2 = SWIG_AsCharArray(obj1, temp2, 4);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsSetLanguage" "', argument " "2"" of type '" "char const [4]""'");
+  }
+  arg2 = temp2;
   
   
   InErrorFlag = 0;	
-  cmsSetLanguage(arg1,arg2);
+  cmsSetLanguage((char const (*))arg1,(char const (*))arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_Py_Void();
@@ -13751,7 +13749,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCreationDateTime(PyObject *SWIGUNUSEDPARM(self
   PyObject *resultobj = 0;
   tm *arg1 = (tm *) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13771,7 +13769,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCreationDateTime(PyObject *SWIGUNUSEDPARM(self
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeCreationDateTime(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeCreationDateTime(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13785,7 +13783,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCalibrationDateTime(PyObject *SWIGUNUSEDPARM(s
   PyObject *resultobj = 0;
   tm *arg1 = (tm *) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -13805,7 +13803,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCalibrationDateTime(PyObject *SWIGUNUSEDPARM(s
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeCalibrationDateTime(arg1,arg2);
+  result = (LCMSBOOL)cmsTakeCalibrationDateTime(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13819,7 +13817,7 @@ SWIGINTERN PyObject *_wrap_cmsIsTag(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
   PyObject *resultobj = 0;
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -13847,7 +13845,7 @@ SWIGINTERN PyObject *_wrap_cmsIsTag(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIsTag(arg1,arg2);
+  result = (LCMSBOOL)cmsIsTag(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -13887,7 +13885,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCharTargetData(PyObject *SWIGUNUSEDPARM(self),
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   char **arg2 = (char **) 0 ;
   size_t *arg3 = (size_t *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
@@ -13915,7 +13913,7 @@ SWIGINTERN PyObject *_wrap_cmsTakeCharTargetData(PyObject *SWIGUNUSEDPARM(self),
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsTakeCharTargetData(arg1,arg2,arg3);
+  result = (LCMSBOOL)cmsTakeCharTargetData(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -14677,541 +14675,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_CoordSig_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icColorSpaceSignature arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_CoordSig_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_CoordSig_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_icColorSpaceSignature,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_CoordSig_set" "', argument " "2"" of type '" "icColorSpaceSignature""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "cmsGAMUTEX_CoordSig_set" "', argument " "2"" of type '" "icColorSpaceSignature""'");
-    } else {
-      icColorSpaceSignature * temp = reinterpret_cast< icColorSpaceSignature * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  if (arg1) (arg1)->CoordSig = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_CoordSig_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icColorSpaceSignature result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_CoordSig_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_CoordSig_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result =  ((arg1)->CoordSig);
-  resultobj = SWIG_NewPointerObj((new icColorSpaceSignature(static_cast< const icColorSpaceSignature& >(result))), SWIGTYPE_p_icColorSpaceSignature, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Method_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt16Number arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Method_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Method_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_icUInt16Number,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Method_set" "', argument " "2"" of type '" "icUInt16Number""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "cmsGAMUTEX_Method_set" "', argument " "2"" of type '" "icUInt16Number""'");
-    } else {
-      icUInt16Number * temp = reinterpret_cast< icUInt16Number * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  if (arg1) (arg1)->Method = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Method_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt16Number result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Method_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Method_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result =  ((arg1)->Method);
-  resultobj = SWIG_NewPointerObj((new icUInt16Number(static_cast< const icUInt16Number& >(result))), SWIGTYPE_p_icUInt16Number, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Usage_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt16Number arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Usage_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Usage_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_icUInt16Number,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Usage_set" "', argument " "2"" of type '" "icUInt16Number""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "cmsGAMUTEX_Usage_set" "', argument " "2"" of type '" "icUInt16Number""'");
-    } else {
-      icUInt16Number * temp = reinterpret_cast< icUInt16Number * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  if (arg1) (arg1)->Usage = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Usage_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt16Number result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Usage_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Usage_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result =  ((arg1)->Usage);
-  resultobj = SWIG_NewPointerObj((new icUInt16Number(static_cast< const icUInt16Number& >(result))), SWIGTYPE_p_icUInt16Number, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Description_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  char *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  char temp2[512] ;
-  int res2 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Description_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Description_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  res2 = SWIG_AsCharArray(obj1, temp2, 512);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Description_set" "', argument " "2"" of type '" "char [512]""'");
-  }
-  arg2 = temp2;
-  if (arg2) memcpy(arg1->Description,arg2,512*sizeof(char));
-  else memset(arg1->Description,0,512*sizeof(char));
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Description_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  char *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Description_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Description_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result = (char *)(char *) ((arg1)->Description);
-  {
-    size_t size = 512;
-    
-    while (size && (result[size - 1] == '\0')) --size;
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Vc_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  cmsViewingConditions *arg2 = (cmsViewingConditions *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Vc_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Vc_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_cmsViewingConditions, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Vc_set" "', argument " "2"" of type '" "cmsViewingConditions *""'"); 
-  }
-  arg2 = reinterpret_cast< cmsViewingConditions * >(argp2);
-  if (arg1) (arg1)->Vc = *arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Vc_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  cmsViewingConditions *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Vc_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Vc_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result = (cmsViewingConditions *)& ((arg1)->Vc);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cmsViewingConditions, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Count_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt32Number arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Count_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Count_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_icUInt32Number,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Count_set" "', argument " "2"" of type '" "icUInt32Number""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "cmsGAMUTEX_Count_set" "', argument " "2"" of type '" "icUInt32Number""'");
-    } else {
-      icUInt32Number * temp = reinterpret_cast< icUInt32Number * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  if (arg1) (arg1)->Count = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Count_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  icUInt32Number result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Count_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Count_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result =  ((arg1)->Count);
-  resultobj = SWIG_NewPointerObj((new icUInt32Number(static_cast< const icUInt32Number& >(result))), SWIGTYPE_p_icUInt32Number, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Data_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  double *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsGAMUTEX_Data_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Data_set" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_double, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "cmsGAMUTEX_Data_set" "', argument " "2"" of type '" "double [1]""'"); 
-  } 
-  arg2 = reinterpret_cast< double * >(argp2);
-  {
-    if (arg2) {
-      size_t ii = 0;
-      for (; ii < (size_t)1; ++ii) arg1->Data[ii] = arg2[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""Data""' of type '""double [1]""'");
-    }
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsGAMUTEX_Data_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  double *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsGAMUTEX_Data_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsGAMUTEX_Data_get" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  result = (double *)(double *) ((arg1)->Data);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_double, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_cmsGAMUTEX(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)":new_cmsGAMUTEX")) SWIG_fail;
-  
-  
-  InErrorFlag = 0;	
-  result = (cmsGAMUTEX *)new cmsGAMUTEX();
-  if (InErrorFlag) SWIG_fail; 		  
-  
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cmsGAMUTEX, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_cmsGAMUTEX(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsGAMUTEX *arg1 = (cmsGAMUTEX *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_cmsGAMUTEX",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cmsGAMUTEX, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_cmsGAMUTEX" "', argument " "1"" of type '" "cmsGAMUTEX *""'"); 
-  }
-  arg1 = reinterpret_cast< cmsGAMUTEX * >(argp1);
-  
-  
-  InErrorFlag = 0;	
-  delete arg1;
-  
-  if (InErrorFlag) SWIG_fail; 		  
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *cmsGAMUTEX_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_cmsGAMUTEX, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *_wrap_cmsReadExtendedGamut(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
-  int arg2 ;
-  LPcmsGAMUTEX result;
-  int res1 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:cmsReadExtendedGamut",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsReadExtendedGamut" "', argument " "1"" of type '" "cmsHPROFILE""'"); 
-  }
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "cmsReadExtendedGamut" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  
-  
-  InErrorFlag = 0;	
-  result = cmsReadExtendedGamut(arg1,arg2);
-  if (InErrorFlag) SWIG_fail; 		  
-  
-  resultobj = SWIG_NewPointerObj((new LPcmsGAMUTEX(static_cast< const LPcmsGAMUTEX& >(result))), SWIGTYPE_p_LPcmsGAMUTEX, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_cmsFreeExtendedGamut(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  LPcmsGAMUTEX arg1 ;
-  void *argp1 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:cmsFreeExtendedGamut",&obj0)) SWIG_fail;
-  {
-    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_LPcmsGAMUTEX,  0  | 0);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "cmsFreeExtendedGamut" "', argument " "1"" of type '" "LPcmsGAMUTEX""'"); 
-    }  
-    if (!argp1) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "cmsFreeExtendedGamut" "', argument " "1"" of type '" "LPcmsGAMUTEX""'");
-    } else {
-      LPcmsGAMUTEX * temp = reinterpret_cast< LPcmsGAMUTEX * >(argp1);
-      arg1 = *temp;
-      if (SWIG_IsNewObj(res1)) delete temp;
-    }
-  }
-  
-  
-  InErrorFlag = 0;	
-  cmsFreeExtendedGamut(arg1);
-  if (InErrorFlag) SWIG_fail; 		  
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap__cmsICCcolorSpace(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int arg1 ;
@@ -15312,7 +14775,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsIsMatrixShaper(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   PyObject * obj0 = 0 ;
   
@@ -15324,7 +14787,7 @@ SWIGINTERN PyObject *_wrap__cmsIsMatrixShaper(PyObject *SWIGUNUSEDPARM(self), Py
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsIsMatrixShaper(arg1);
+  result = (LCMSBOOL)_cmsIsMatrixShaper(arg1);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -15339,7 +14802,7 @@ SWIGINTERN PyObject *_wrap_cmsIsIntentSupported(PyObject *SWIGUNUSEDPARM(self), 
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   int arg2 ;
   int arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -15367,7 +14830,7 @@ SWIGINTERN PyObject *_wrap_cmsIsIntentSupported(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIsIntentSupported(arg1,arg2,arg3);
+  result = (LCMSBOOL)cmsIsIntentSupported(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -16960,7 +16423,7 @@ SWIGINTERN PyObject *_wrap_cmsNamedColorInfo(PyObject *SWIGUNUSEDPARM(self), PyO
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
   char *arg5 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -17007,7 +16470,7 @@ SWIGINTERN PyObject *_wrap_cmsNamedColorInfo(PyObject *SWIGUNUSEDPARM(self), PyO
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsNamedColorInfo(arg1,arg2,arg3,arg4,arg5);
+  result = (LCMSBOOL)cmsNamedColorInfo(arg1,arg2,arg3,arg4,arg5);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -17107,7 +16570,7 @@ SWIGINTERN PyObject *_wrap_cmsAddTag(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   void *arg3 = (void *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -17141,7 +16604,7 @@ SWIGINTERN PyObject *_wrap_cmsAddTag(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAddTag(arg1,arg2,(void const *)arg3);
+  result = (LCMSBOOL)cmsAddTag(arg1,arg2,(void const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -17222,7 +16685,7 @@ SWIGINTERN PyObject *_wrap_cmsSaveProfile(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   char *arg2 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -17243,7 +16706,7 @@ SWIGINTERN PyObject *_wrap_cmsSaveProfile(PyObject *SWIGUNUSEDPARM(self), PyObje
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsSaveProfile(arg1,(char const *)arg2);
+  result = (LCMSBOOL)_cmsSaveProfile(arg1,(char const *)arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -17260,7 +16723,7 @@ SWIGINTERN PyObject *_wrap__cmsSaveProfileToMem(PyObject *SWIGUNUSEDPARM(self), 
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   void *arg2 = (void *) 0 ;
   size_t *arg3 = (size_t *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   void *argp3 = 0 ;
@@ -17286,7 +16749,7 @@ SWIGINTERN PyObject *_wrap__cmsSaveProfileToMem(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsSaveProfileToMem(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsSaveProfileToMem(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18245,7 +17708,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SaveToFile(PyObject *SWIGUNUSEDPARM(self), PyOb
   PyObject *resultobj = 0;
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18266,7 +17729,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SaveToFile(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SaveToFile(arg1,(char const *)arg2);
+  result = (LCMSBOOL)cmsIT8SaveToFile(arg1,(char const *)arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18283,7 +17746,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SaveToMem(PyObject *SWIGUNUSEDPARM(self), PyObj
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   void *arg2 = (void *) 0 ;
   size_t *arg3 = (size_t *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   void *argp3 = 0 ;
@@ -18309,7 +17772,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SaveToMem(PyObject *SWIGUNUSEDPARM(self), PyObj
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SaveToMem(arg1,arg2,arg3);
+  result = (LCMSBOOL)cmsIT8SaveToMem(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18348,7 +17811,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetSheetType(PyObject *SWIGUNUSEDPARM(self), Py
   PyObject *resultobj = 0;
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18369,7 +17832,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetSheetType(PyObject *SWIGUNUSEDPARM(self), Py
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetSheetType(arg1,(char const *)arg2);
+  result = (LCMSBOOL)cmsIT8SetSheetType(arg1,(char const *)arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18385,7 +17848,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetComment(PyObject *SWIGUNUSEDPARM(self), PyOb
   PyObject *resultobj = 0;
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18406,7 +17869,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetComment(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetComment(arg1,(char const *)arg2);
+  result = (LCMSBOOL)cmsIT8SetComment(arg1,(char const *)arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18423,7 +17886,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyStr(PyObject *SWIGUNUSEDPARM(self), 
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18453,7 +17916,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyStr(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetPropertyStr(arg1,(char const *)arg2,(char const *)arg3);
+  result = (LCMSBOOL)cmsIT8SetPropertyStr(arg1,(char const *)arg2,(char const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18472,7 +17935,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyDbl(PyObject *SWIGUNUSEDPARM(self), 
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
   double arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18501,7 +17964,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyDbl(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetPropertyDbl(arg1,(char const *)arg2,arg3);
+  result = (LCMSBOOL)cmsIT8SetPropertyDbl(arg1,(char const *)arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18518,7 +17981,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyHex(PyObject *SWIGUNUSEDPARM(self), 
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
   int arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18547,7 +18010,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyHex(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetPropertyHex(arg1,(char const *)arg2,arg3);
+  result = (LCMSBOOL)cmsIT8SetPropertyHex(arg1,(char const *)arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18564,7 +18027,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyUncooked(PyObject *SWIGUNUSEDPARM(se
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -18594,7 +18057,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetPropertyUncooked(PyObject *SWIGUNUSEDPARM(se
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetPropertyUncooked(arg1,(char const *)arg2,(char const *)arg3);
+  result = (LCMSBOOL)cmsIT8SetPropertyUncooked(arg1,(char const *)arg2,(char const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18808,7 +18271,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataRowCol(PyObject *SWIGUNUSEDPARM(self), P
   int arg2 ;
   int arg3 ;
   char *arg4 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -18845,7 +18308,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataRowCol(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetDataRowCol(arg1,arg2,arg3,(char const *)arg4);
+  result = (LCMSBOOL)cmsIT8SetDataRowCol(arg1,arg2,arg3,(char const *)arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -18863,7 +18326,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataRowColDbl(PyObject *SWIGUNUSEDPARM(self)
   int arg2 ;
   int arg3 ;
   double arg4 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -18899,7 +18362,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataRowColDbl(PyObject *SWIGUNUSEDPARM(self)
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetDataRowColDbl(arg1,arg2,arg3,arg4);
+  result = (LCMSBOOL)cmsIT8SetDataRowColDbl(arg1,arg2,arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19013,7 +18476,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetData(PyObject *SWIGUNUSEDPARM(self), PyObjec
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -19052,7 +18515,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetData(PyObject *SWIGUNUSEDPARM(self), PyObjec
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetData(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  result = (LCMSBOOL)cmsIT8SetData(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19074,7 +18537,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataDbl(PyObject *SWIGUNUSEDPARM(self), PyOb
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   double arg4 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -19112,7 +18575,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataDbl(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetDataDbl(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  result = (LCMSBOOL)cmsIT8SetDataDbl(arg1,(char const *)arg2,(char const *)arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19168,7 +18631,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataFormat(PyObject *SWIGUNUSEDPARM(self), P
   LCMSHANDLE arg1 = (LCMSHANDLE) 0 ;
   int arg2 ;
   char *arg3 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -19197,7 +18660,7 @@ SWIGINTERN PyObject *_wrap_cmsIT8SetDataFormat(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsIT8SetDataFormat(arg1,arg2,(char const *)arg3);
+  result = (LCMSBOOL)cmsIT8SetDataFormat(arg1,arg2,(char const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19601,7 +19064,7 @@ SWIGINTERN PyObject *_wrap__cmsAddTextTag(PyObject *SWIGUNUSEDPARM(self), PyObje
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   char *arg3 = (char *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19638,7 +19101,7 @@ SWIGINTERN PyObject *_wrap__cmsAddTextTag(PyObject *SWIGUNUSEDPARM(self), PyObje
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddTextTag(arg1,arg2,(char const *)arg3);
+  result = (LCMSBOOL)_cmsAddTextTag(arg1,arg2,(char const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19655,7 +19118,7 @@ SWIGINTERN PyObject *_wrap__cmsAddXYZTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   cmsCIEXYZ *arg3 = (cmsCIEXYZ *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19691,7 +19154,7 @@ SWIGINTERN PyObject *_wrap__cmsAddXYZTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddXYZTag(arg1,arg2,(cmsCIEXYZ const *)arg3);
+  result = (LCMSBOOL)_cmsAddXYZTag(arg1,arg2,(cmsCIEXYZ const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19706,7 +19169,7 @@ SWIGINTERN PyObject *_wrap__cmsAddLUTTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   void *arg3 = (void *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19740,7 +19203,7 @@ SWIGINTERN PyObject *_wrap__cmsAddLUTTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddLUTTag(arg1,arg2,(void const *)arg3);
+  result = (LCMSBOOL)_cmsAddLUTTag(arg1,arg2,(void const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19755,7 +19218,7 @@ SWIGINTERN PyObject *_wrap__cmsAddGammaTag(PyObject *SWIGUNUSEDPARM(self), PyObj
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   LPGAMMATABLE arg3 = (LPGAMMATABLE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19791,7 +19254,7 @@ SWIGINTERN PyObject *_wrap__cmsAddGammaTag(PyObject *SWIGUNUSEDPARM(self), PyObj
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddGammaTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddGammaTag(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19806,7 +19269,7 @@ SWIGINTERN PyObject *_wrap__cmsAddChromaticityTag(PyObject *SWIGUNUSEDPARM(self)
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   LPcmsCIExyYTRIPLE arg3 = (LPcmsCIExyYTRIPLE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19842,7 +19305,7 @@ SWIGINTERN PyObject *_wrap__cmsAddChromaticityTag(PyObject *SWIGUNUSEDPARM(self)
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddChromaticityTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddChromaticityTag(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19857,7 +19320,7 @@ SWIGINTERN PyObject *_wrap__cmsAddSequenceDescriptionTag(PyObject *SWIGUNUSEDPAR
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   LPcmsSEQ arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19901,7 +19364,7 @@ SWIGINTERN PyObject *_wrap__cmsAddSequenceDescriptionTag(PyObject *SWIGUNUSEDPAR
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddSequenceDescriptionTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddSequenceDescriptionTag(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19916,7 +19379,7 @@ SWIGINTERN PyObject *_wrap__cmsAddNamedColorTag(PyObject *SWIGUNUSEDPARM(self), 
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   LPcmsNAMEDCOLORLIST arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -19960,7 +19423,7 @@ SWIGINTERN PyObject *_wrap__cmsAddNamedColorTag(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddNamedColorTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddNamedColorTag(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -19975,7 +19438,7 @@ SWIGINTERN PyObject *_wrap__cmsAddDateTimeTag(PyObject *SWIGUNUSEDPARM(self), Py
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   tm *arg3 = (tm *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -20011,7 +19474,7 @@ SWIGINTERN PyObject *_wrap__cmsAddDateTimeTag(PyObject *SWIGUNUSEDPARM(self), Py
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddDateTimeTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddDateTimeTag(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -20026,7 +19489,7 @@ SWIGINTERN PyObject *_wrap__cmsAddColorantTableTag(PyObject *SWIGUNUSEDPARM(self
   cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
   LPcmsNAMEDCOLORLIST arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   void *argp2 ;
   int res2 = 0 ;
@@ -20070,7 +19533,58 @@ SWIGINTERN PyObject *_wrap__cmsAddColorantTableTag(PyObject *SWIGUNUSEDPARM(self
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsAddColorantTableTag(arg1,arg2,arg3);
+  result = (LCMSBOOL)_cmsAddColorantTableTag(arg1,arg2,arg3);
+  if (InErrorFlag) SWIG_fail; 		  
+  
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap__cmsAddChromaticAdaptationTag(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  cmsHPROFILE arg1 = (cmsHPROFILE) 0 ;
+  SwigValueWrapper<icTagSignature > arg2 ;
+  cmsCIEXYZ *arg3 = (cmsCIEXYZ *) 0 ;
+  LCMSBOOL result;
+  int res1 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:_cmsAddChromaticAdaptationTag",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "_cmsAddChromaticAdaptationTag" "', argument " "1"" of type '" "cmsHPROFILE""'"); 
+  }
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_icTagSignature,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "_cmsAddChromaticAdaptationTag" "', argument " "2"" of type '" "icTagSignature""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "_cmsAddChromaticAdaptationTag" "', argument " "2"" of type '" "icTagSignature""'");
+    } else {
+      icTagSignature * temp = reinterpret_cast< icTagSignature * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_cmsCIEXYZ, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "_cmsAddChromaticAdaptationTag" "', argument " "3"" of type '" "cmsCIEXYZ const *""'"); 
+  }
+  arg3 = reinterpret_cast< cmsCIEXYZ * >(argp3);
+  
+  
+  InErrorFlag = 0;	
+  result = (LCMSBOOL)_cmsAddChromaticAdaptationTag(arg1,arg2,(cmsCIEXYZ const *)arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -20128,6 +19642,57 @@ SWIGINTERN PyObject *_wrap__cmsClampWord(PyObject *SWIGUNUSEDPARM(self), PyObjec
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_unsigned_SS_short(static_cast< unsigned short >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap__cmsMalloc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  size_t arg1 ;
+  void *result = 0 ;
+  size_t val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:_cmsMalloc",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_size_t(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "_cmsMalloc" "', argument " "1"" of type '" "size_t""'");
+  } 
+  arg1 = static_cast< size_t >(val1);
+  
+  
+  InErrorFlag = 0;	
+  result = (void *)_cmsMalloc(arg1);
+  if (InErrorFlag) SWIG_fail; 		  
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap__cmsFree(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  int res1 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:_cmsFree",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "_cmsFree" "', argument " "1"" of type '" "void *""'"); 
+  }
+  
+  
+  InErrorFlag = 0;	
+  _cmsFree(arg1);
+  if (InErrorFlag) SWIG_fail; 		  
+  
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -21475,7 +21040,7 @@ SWIGINTERN PyObject *_wrap_VEC3equal(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   LPWVEC3 arg1 ;
   LPWVEC3 arg2 ;
   double arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 ;
   int res1 = 0 ;
   void *argp2 ;
@@ -21521,7 +21086,7 @@ SWIGINTERN PyObject *_wrap_VEC3equal(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   
   
   InErrorFlag = 0;	
-  result = (BOOL)VEC3equal(arg1,arg2,arg3);
+  result = (LCMSBOOL)VEC3equal(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -21536,7 +21101,7 @@ SWIGINTERN PyObject *_wrap_VEC3equalF(PyObject *SWIGUNUSEDPARM(self), PyObject *
   LPVEC3 arg1 = (LPVEC3) 0 ;
   LPVEC3 arg2 = (LPVEC3) 0 ;
   double arg3 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -21566,7 +21131,7 @@ SWIGINTERN PyObject *_wrap_VEC3equalF(PyObject *SWIGUNUSEDPARM(self), PyObject *
   
   
   InErrorFlag = 0;	
-  result = (BOOL)VEC3equalF(arg1,arg2,arg3);
+  result = (LCMSBOOL)VEC3equalF(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -21916,7 +21481,7 @@ SWIGINTERN PyObject *_wrap_MAT3solve(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   LPVEC3 arg1 = (LPVEC3) 0 ;
   LPMAT3 arg2 = (LPMAT3) 0 ;
   LPVEC3 arg3 = (LPVEC3) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -21946,7 +21511,7 @@ SWIGINTERN PyObject *_wrap_MAT3solve(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   
   
   InErrorFlag = 0;	
-  result = (BOOL)MAT3solve(arg1,arg2,arg3);
+  result = (LCMSBOOL)MAT3solve(arg1,arg2,arg3);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -22185,7 +21750,7 @@ SWIGINTERN PyObject *_wrap_MAT3isIdentity(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   LPWMAT3 arg1 ;
   double arg2 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 ;
   int res1 = 0 ;
   double val2 ;
@@ -22215,7 +21780,7 @@ SWIGINTERN PyObject *_wrap_MAT3isIdentity(PyObject *SWIGUNUSEDPARM(self), PyObje
   
   
   InErrorFlag = 0;	
-  result = (BOOL)MAT3isIdentity(arg1,arg2);
+  result = (LCMSBOOL)MAT3isIdentity(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -23605,7 +23170,7 @@ SWIGINTERN PyObject *_wrap_cmsCalcCLUT16ParamsEx(PyObject *SWIGUNUSEDPARM(self),
   int arg1 ;
   int arg2 ;
   int arg3 ;
-  BOOL arg4 ;
+  LCMSBOOL arg4 ;
   LPL16PARAMS arg5 = (LPL16PARAMS) 0 ;
   int val1 ;
   int ecode1 = 0 ;
@@ -23641,9 +23206,9 @@ SWIGINTERN PyObject *_wrap_cmsCalcCLUT16ParamsEx(PyObject *SWIGUNUSEDPARM(self),
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "cmsCalcCLUT16ParamsEx" "', argument " "4"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "cmsCalcCLUT16ParamsEx" "', argument " "4"" of type '" "LCMSBOOL""'");
   } 
-  arg4 = static_cast< BOOL >(val4);
+  arg4 = static_cast< LCMSBOOL >(val4);
   res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p__lcms_l16params_struc, 0 |  0 );
   if (!SWIG_IsOK(res5)) {
     SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "cmsCalcCLUT16ParamsEx" "', argument " "5"" of type '" "LPL16PARAMS""'"); 
@@ -25308,7 +24873,7 @@ fail:
 SWIGINTERN PyObject *_wrap__lcms_LUT_struc_FixGrayAxes_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _lcms_LUT_struc *arg1 = (_lcms_LUT_struc *) 0 ;
-  BOOL arg2 ;
+  LCMSBOOL arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -25324,9 +24889,9 @@ SWIGINTERN PyObject *_wrap__lcms_LUT_struc_FixGrayAxes_set(PyObject *SWIGUNUSEDP
   arg1 = reinterpret_cast< _lcms_LUT_struc * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_lcms_LUT_struc_FixGrayAxes_set" "', argument " "2"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_lcms_LUT_struc_FixGrayAxes_set" "', argument " "2"" of type '" "LCMSBOOL""'");
   } 
-  arg2 = static_cast< BOOL >(val2);
+  arg2 = static_cast< LCMSBOOL >(val2);
   if (arg1) (arg1)->FixGrayAxes = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -25339,7 +24904,7 @@ fail:
 SWIGINTERN PyObject *_wrap__lcms_LUT_struc_FixGrayAxes_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _lcms_LUT_struc *arg1 = (_lcms_LUT_struc *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -25350,7 +24915,7 @@ SWIGINTERN PyObject *_wrap__lcms_LUT_struc_FixGrayAxes_get(PyObject *SWIGUNUSEDP
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "_lcms_LUT_struc_FixGrayAxes_get" "', argument " "1"" of type '" "_lcms_LUT_struc *""'"); 
   }
   arg1 = reinterpret_cast< _lcms_LUT_struc * >(argp1);
-  result = (BOOL) ((arg1)->FixGrayAxes);
+  result = (LCMSBOOL) ((arg1)->FixGrayAxes);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -25480,7 +25045,7 @@ SWIGINTERN PyObject *_wrap__cmsSmoothEndpoints(PyObject *SWIGUNUSEDPARM(self), P
   PyObject *resultobj = 0;
   LPWORD arg1 = (LPWORD) 0 ;
   int arg2 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -25502,7 +25067,7 @@ SWIGINTERN PyObject *_wrap__cmsSmoothEndpoints(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsSmoothEndpoints(arg1,arg2);
+  result = (LCMSBOOL)_cmsSmoothEndpoints(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -25783,7 +25348,7 @@ SWIGINTERN PyObject *_wrap_cmsSmoothSampledCurve(PyObject *SWIGUNUSEDPARM(self),
   PyObject *resultobj = 0;
   LPSAMPLEDCURVE arg1 = (LPSAMPLEDCURVE) 0 ;
   double arg2 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   double val2 ;
@@ -25805,7 +25370,7 @@ SWIGINTERN PyObject *_wrap_cmsSmoothSampledCurve(PyObject *SWIGUNUSEDPARM(self),
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsSmoothSampledCurve(arg1,arg2);
+  result = (LCMSBOOL)cmsSmoothSampledCurve(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26484,7 +26049,7 @@ SWIGINTERN PyObject *_wrap_cmsReadICCMatrixRGB2XYZ(PyObject *SWIGUNUSEDPARM(self
   PyObject *resultobj = 0;
   LPMAT3 arg1 = (LPMAT3) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -26504,7 +26069,7 @@ SWIGINTERN PyObject *_wrap_cmsReadICCMatrixRGB2XYZ(PyObject *SWIGUNUSEDPARM(self
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsReadICCMatrixRGB2XYZ(arg1,arg2);
+  result = (LCMSBOOL)cmsReadICCMatrixRGB2XYZ(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26570,7 +26135,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptationMatrix(PyObject *SWIGUNUSEDPARM(self), P
   LPMAT3 arg2 = (LPMAT3) 0 ;
   LPcmsCIEXYZ arg3 = (LPcmsCIEXYZ) 0 ;
   LPcmsCIEXYZ arg4 = (LPcmsCIEXYZ) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -26608,7 +26173,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptationMatrix(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAdaptationMatrix(arg1,arg2,arg3,arg4);
+  result = (LCMSBOOL)cmsAdaptationMatrix(arg1,arg2,arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26622,7 +26187,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptMatrixToD50(PyObject *SWIGUNUSEDPARM(self), P
   PyObject *resultobj = 0;
   LPMAT3 arg1 = (LPMAT3) 0 ;
   LPcmsCIExyY arg2 = (LPcmsCIExyY) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -26644,7 +26209,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptMatrixToD50(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAdaptMatrixToD50(arg1,arg2);
+  result = (LCMSBOOL)cmsAdaptMatrixToD50(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26658,7 +26223,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptMatrixFromD50(PyObject *SWIGUNUSEDPARM(self),
   PyObject *resultobj = 0;
   LPMAT3 arg1 = (LPMAT3) 0 ;
   LPcmsCIExyY arg2 = (LPcmsCIExyY) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -26680,7 +26245,7 @@ SWIGINTERN PyObject *_wrap_cmsAdaptMatrixFromD50(PyObject *SWIGUNUSEDPARM(self),
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAdaptMatrixFromD50(arg1,arg2);
+  result = (LCMSBOOL)cmsAdaptMatrixFromD50(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26694,7 +26259,7 @@ SWIGINTERN PyObject *_wrap_cmsReadChromaticAdaptationMatrix(PyObject *SWIGUNUSED
   PyObject *resultobj = 0;
   LPMAT3 arg1 = (LPMAT3) 0 ;
   cmsHPROFILE arg2 = (cmsHPROFILE) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -26714,7 +26279,7 @@ SWIGINTERN PyObject *_wrap_cmsReadChromaticAdaptationMatrix(PyObject *SWIGUNUSED
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsReadChromaticAdaptationMatrix(arg1,arg2);
+  result = (LCMSBOOL)cmsReadChromaticAdaptationMatrix(arg1,arg2);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -26984,7 +26549,7 @@ SWIGINTERN PyObject *_wrap_cmsAppendNamedColor(PyObject *SWIGUNUSEDPARM(self), P
   char *arg2 = (char *) 0 ;
   WORD *arg3 ;
   WORD *arg4 ;
-  BOOL result;
+  LCMSBOOL result;
   int res1 ;
   int res2 ;
   char *buf2 = 0 ;
@@ -27021,7 +26586,7 @@ SWIGINTERN PyObject *_wrap_cmsAppendNamedColor(PyObject *SWIGUNUSEDPARM(self), P
   
   
   InErrorFlag = 0;	
-  result = (BOOL)cmsAppendNamedColor(arg1,(char const *)arg2,arg3,arg4);
+  result = (LCMSBOOL)cmsAppendNamedColor(arg1,(char const *)arg2,arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -28141,7 +27706,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_IsWrite_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL arg2 ;
+  LCMSBOOL arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -28157,9 +27722,9 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_IsWrite_set(PyObject *SWIGUNUSEDPARM(s
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "LCMSICCPROFILE_IsWrite_set" "', argument " "2"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "LCMSICCPROFILE_IsWrite_set" "', argument " "2"" of type '" "LCMSBOOL""'");
   } 
-  arg2 = static_cast< BOOL >(val2);
+  arg2 = static_cast< LCMSBOOL >(val2);
   if (arg1) (arg1)->IsWrite = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -28172,7 +27737,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_IsWrite_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28183,7 +27748,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_IsWrite_get(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "LCMSICCPROFILE_IsWrite_get" "', argument " "1"" of type '" "LCMSICCPROFILE *""'"); 
   }
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
-  result = (BOOL) ((arg1)->IsWrite);
+  result = (LCMSBOOL) ((arg1)->IsWrite);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -28194,7 +27759,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_SaveAs8Bits_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL arg2 ;
+  LCMSBOOL arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -28210,9 +27775,9 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_SaveAs8Bits_set(PyObject *SWIGUNUSEDPA
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "LCMSICCPROFILE_SaveAs8Bits_set" "', argument " "2"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "LCMSICCPROFILE_SaveAs8Bits_set" "', argument " "2"" of type '" "LCMSBOOL""'");
   } 
-  arg2 = static_cast< BOOL >(val2);
+  arg2 = static_cast< LCMSBOOL >(val2);
   if (arg1) (arg1)->SaveAs8Bits = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -28225,7 +27790,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_SaveAs8Bits_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28236,7 +27801,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_SaveAs8Bits_get(PyObject *SWIGUNUSEDPA
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "LCMSICCPROFILE_SaveAs8Bits_get" "', argument " "1"" of type '" "LCMSICCPROFILE *""'"); 
   }
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
-  result = (BOOL) ((arg1)->SaveAs8Bits);
+  result = (LCMSBOOL) ((arg1)->SaveAs8Bits);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -28360,7 +27925,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Seek_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*arg2)(_lcms_iccprofile_struct *,size_t) = (BOOL (*)(_lcms_iccprofile_struct *,size_t)) 0 ;
+  LCMSBOOL (*arg2)(_lcms_iccprofile_struct *,size_t) = (LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t)) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28375,7 +27940,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Seek_set(PyObject *SWIGUNUSEDPARM(self
   {
     int res = SWIG_ConvertFunctionPtr(obj1, (void**)(&arg2), SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t__int);
     if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Seek_set" "', argument " "2"" of type '" "BOOL (*)(_lcms_iccprofile_struct *,size_t)""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Seek_set" "', argument " "2"" of type '" "LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t)""'"); 
     }
   }
   if (arg1) (arg1)->Seek = arg2;
@@ -28390,7 +27955,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Seek_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*result)(_lcms_iccprofile_struct *,size_t) = 0 ;
+  LCMSBOOL (*result)(_lcms_iccprofile_struct *,size_t) = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28401,7 +27966,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Seek_get(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "LCMSICCPROFILE_Seek_get" "', argument " "1"" of type '" "LCMSICCPROFILE *""'"); 
   }
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
-  result = (BOOL (*)(_lcms_iccprofile_struct *,size_t)) ((arg1)->Seek);
+  result = (LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t)) ((arg1)->Seek);
   resultobj = SWIG_NewFunctionPtrObj((void *)(result), SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t__int);
   return resultobj;
 fail:
@@ -28412,7 +27977,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Close_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*arg2)(_lcms_iccprofile_struct *) = (BOOL (*)(_lcms_iccprofile_struct *)) 0 ;
+  LCMSBOOL (*arg2)(_lcms_iccprofile_struct *) = (LCMSBOOL (*)(_lcms_iccprofile_struct *)) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28427,7 +27992,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Close_set(PyObject *SWIGUNUSEDPARM(sel
   {
     int res = SWIG_ConvertFunctionPtr(obj1, (void**)(&arg2), SWIGTYPE_p_f_p__lcms_iccprofile_struct__int);
     if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Close_set" "', argument " "2"" of type '" "BOOL (*)(_lcms_iccprofile_struct *)""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Close_set" "', argument " "2"" of type '" "LCMSBOOL (*)(_lcms_iccprofile_struct *)""'"); 
     }
   }
   if (arg1) (arg1)->Close = arg2;
@@ -28442,7 +28007,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Close_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*result)(_lcms_iccprofile_struct *) = 0 ;
+  LCMSBOOL (*result)(_lcms_iccprofile_struct *) = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28453,7 +28018,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Close_get(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "LCMSICCPROFILE_Close_get" "', argument " "1"" of type '" "LCMSICCPROFILE *""'"); 
   }
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
-  result = (BOOL (*)(_lcms_iccprofile_struct *)) ((arg1)->Close);
+  result = (LCMSBOOL (*)(_lcms_iccprofile_struct *)) ((arg1)->Close);
   resultobj = SWIG_NewFunctionPtrObj((void *)(result), SWIGTYPE_p_f_p__lcms_iccprofile_struct__int);
   return resultobj;
 fail:
@@ -28516,7 +28081,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Write_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*arg2)(_lcms_iccprofile_struct *,size_t,LPVOID) = (BOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)) 0 ;
+  LCMSBOOL (*arg2)(_lcms_iccprofile_struct *,size_t,LPVOID) = (LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28531,7 +28096,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Write_set(PyObject *SWIGUNUSEDPARM(sel
   {
     int res = SWIG_ConvertFunctionPtr(obj1, (void**)(&arg2), SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t_p_void__int);
     if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Write_set" "', argument " "2"" of type '" "BOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "LCMSICCPROFILE_Write_set" "', argument " "2"" of type '" "LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)""'"); 
     }
   }
   if (arg1) (arg1)->Write = arg2;
@@ -28546,7 +28111,7 @@ fail:
 SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Write_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   LCMSICCPROFILE *arg1 = (LCMSICCPROFILE *) 0 ;
-  BOOL (*result)(_lcms_iccprofile_struct *,size_t,LPVOID) = 0 ;
+  LCMSBOOL (*result)(_lcms_iccprofile_struct *,size_t,LPVOID) = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -28557,7 +28122,7 @@ SWIGINTERN PyObject *_wrap_LCMSICCPROFILE_Write_get(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "LCMSICCPROFILE_Write_get" "', argument " "1"" of type '" "LCMSICCPROFILE *""'"); 
   }
   arg1 = reinterpret_cast< LCMSICCPROFILE * >(argp1);
-  result = (BOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)) ((arg1)->Write);
+  result = (LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)) ((arg1)->Write);
   resultobj = SWIG_NewFunctionPtrObj((void *)(result), SWIGTYPE_p_f_p__lcms_iccprofile_struct_size_t_p_void__int);
   return resultobj;
 fail:
@@ -28692,7 +28257,7 @@ SWIGINTERN PyObject *_wrap__cmsSearchTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   PyObject *resultobj = 0;
   LPLCMSICCPROFILE arg1 = (LPLCMSICCPROFILE) 0 ;
   SwigValueWrapper<icTagSignature > arg2 ;
-  BOOL arg3 ;
+  LCMSBOOL arg3 ;
   icInt32Number result;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -28725,9 +28290,9 @@ SWIGINTERN PyObject *_wrap__cmsSearchTag(PyObject *SWIGUNUSEDPARM(self), PyObjec
   }
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "_cmsSearchTag" "', argument " "3"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "_cmsSearchTag" "', argument " "3"" of type '" "LCMSBOOL""'");
   } 
-  arg3 = static_cast< BOOL >(val3);
+  arg3 = static_cast< LCMSBOOL >(val3);
   
   
   InErrorFlag = 0;	
@@ -30944,7 +30509,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lInputV4Lab_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _cmsTRANSFORM *arg1 = (_cmsTRANSFORM *) 0 ;
-  BOOL arg2 ;
+  LCMSBOOL arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -30960,9 +30525,9 @@ SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lInputV4Lab_set(PyObject *SWIGUNUSEDPAR
   arg1 = reinterpret_cast< _cmsTRANSFORM * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_cmsTRANSFORM_lInputV4Lab_set" "', argument " "2"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_cmsTRANSFORM_lInputV4Lab_set" "', argument " "2"" of type '" "LCMSBOOL""'");
   } 
-  arg2 = static_cast< BOOL >(val2);
+  arg2 = static_cast< LCMSBOOL >(val2);
   if (arg1) (arg1)->lInputV4Lab = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -30975,7 +30540,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lInputV4Lab_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _cmsTRANSFORM *arg1 = (_cmsTRANSFORM *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -30986,7 +30551,7 @@ SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lInputV4Lab_get(PyObject *SWIGUNUSEDPAR
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "_cmsTRANSFORM_lInputV4Lab_get" "', argument " "1"" of type '" "_cmsTRANSFORM *""'"); 
   }
   arg1 = reinterpret_cast< _cmsTRANSFORM * >(argp1);
-  result = (BOOL) ((arg1)->lInputV4Lab);
+  result = (LCMSBOOL) ((arg1)->lInputV4Lab);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -30997,7 +30562,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lOutputV4Lab_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _cmsTRANSFORM *arg1 = (_cmsTRANSFORM *) 0 ;
-  BOOL arg2 ;
+  LCMSBOOL arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
@@ -31013,9 +30578,9 @@ SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lOutputV4Lab_set(PyObject *SWIGUNUSEDPA
   arg1 = reinterpret_cast< _cmsTRANSFORM * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_cmsTRANSFORM_lOutputV4Lab_set" "', argument " "2"" of type '" "BOOL""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "_cmsTRANSFORM_lOutputV4Lab_set" "', argument " "2"" of type '" "LCMSBOOL""'");
   } 
-  arg2 = static_cast< BOOL >(val2);
+  arg2 = static_cast< LCMSBOOL >(val2);
   if (arg1) (arg1)->lOutputV4Lab = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -31028,7 +30593,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lOutputV4Lab_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _cmsTRANSFORM *arg1 = (_cmsTRANSFORM *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -31039,7 +30604,7 @@ SWIGINTERN PyObject *_wrap__cmsTRANSFORM_lOutputV4Lab_get(PyObject *SWIGUNUSEDPA
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "_cmsTRANSFORM_lOutputV4Lab_get" "', argument " "1"" of type '" "_cmsTRANSFORM *""'"); 
   }
   arg1 = reinterpret_cast< _cmsTRANSFORM * >(argp1);
-  result = (BOOL) ((arg1)->lOutputV4Lab);
+  result = (LCMSBOOL) ((arg1)->lOutputV4Lab);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -31579,7 +31144,7 @@ SWIGINTERN PyObject *_wrap__cmsEndPointsBySpace(PyObject *SWIGUNUSEDPARM(self), 
   WORD **arg2 = (WORD **) 0 ;
   WORD **arg3 = (WORD **) 0 ;
   int *arg4 = (int *) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -31625,7 +31190,7 @@ SWIGINTERN PyObject *_wrap__cmsEndPointsBySpace(PyObject *SWIGUNUSEDPARM(self), 
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsEndPointsBySpace(arg1,arg2,arg3,arg4);
+  result = (LCMSBOOL)_cmsEndPointsBySpace(arg1,arg2,arg3,arg4);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -31932,7 +31497,7 @@ fail:
 SWIGINTERN PyObject *_wrap__cmsFixWhiteMisalignment(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   _LPcmsTRANSFORM arg1 = (_LPcmsTRANSFORM) 0 ;
-  BOOL result;
+  LCMSBOOL result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -31946,7 +31511,7 @@ SWIGINTERN PyObject *_wrap__cmsFixWhiteMisalignment(PyObject *SWIGUNUSEDPARM(sel
   
   
   InErrorFlag = 0;	
-  result = (BOOL)_cmsFixWhiteMisalignment(arg1);
+  result = (LCMSBOOL)_cmsFixWhiteMisalignment(arg1);
   if (InErrorFlag) SWIG_fail; 		  
   
   resultobj = SWIG_From_int(static_cast< int >(result));
@@ -32570,25 +32135,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"cmsSEQ_swigregister", cmsSEQ_swigregister, METH_VARARGS, NULL},
 	 { (char *)"cmsReadProfileSequenceDescription", _wrap_cmsReadProfileSequenceDescription, METH_VARARGS, NULL},
 	 { (char *)"cmsFreeProfileSequenceDescription", _wrap_cmsFreeProfileSequenceDescription, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_CoordSig_set", _wrap_cmsGAMUTEX_CoordSig_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_CoordSig_get", _wrap_cmsGAMUTEX_CoordSig_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Method_set", _wrap_cmsGAMUTEX_Method_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Method_get", _wrap_cmsGAMUTEX_Method_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Usage_set", _wrap_cmsGAMUTEX_Usage_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Usage_get", _wrap_cmsGAMUTEX_Usage_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Description_set", _wrap_cmsGAMUTEX_Description_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Description_get", _wrap_cmsGAMUTEX_Description_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Vc_set", _wrap_cmsGAMUTEX_Vc_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Vc_get", _wrap_cmsGAMUTEX_Vc_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Count_set", _wrap_cmsGAMUTEX_Count_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Count_get", _wrap_cmsGAMUTEX_Count_get, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Data_set", _wrap_cmsGAMUTEX_Data_set, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_Data_get", _wrap_cmsGAMUTEX_Data_get, METH_VARARGS, NULL},
-	 { (char *)"new_cmsGAMUTEX", _wrap_new_cmsGAMUTEX, METH_VARARGS, NULL},
-	 { (char *)"delete_cmsGAMUTEX", _wrap_delete_cmsGAMUTEX, METH_VARARGS, NULL},
-	 { (char *)"cmsGAMUTEX_swigregister", cmsGAMUTEX_swigregister, METH_VARARGS, NULL},
-	 { (char *)"cmsReadExtendedGamut", _wrap_cmsReadExtendedGamut, METH_VARARGS, NULL},
-	 { (char *)"cmsFreeExtendedGamut", _wrap_cmsFreeExtendedGamut, METH_VARARGS, NULL},
 	 { (char *)"_cmsICCcolorSpace", _wrap__cmsICCcolorSpace, METH_VARARGS, NULL},
 	 { (char *)"_cmsLCMScolorSpace", _wrap__cmsLCMScolorSpace, METH_VARARGS, NULL},
 	 { (char *)"_cmsChannelsOf", _wrap__cmsChannelsOf, METH_VARARGS, NULL},
@@ -32716,8 +32262,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"_cmsAddNamedColorTag", _wrap__cmsAddNamedColorTag, METH_VARARGS, NULL},
 	 { (char *)"_cmsAddDateTimeTag", _wrap__cmsAddDateTimeTag, METH_VARARGS, NULL},
 	 { (char *)"_cmsAddColorantTableTag", _wrap__cmsAddColorantTableTag, METH_VARARGS, NULL},
+	 { (char *)"_cmsAddChromaticAdaptationTag", _wrap__cmsAddChromaticAdaptationTag, METH_VARARGS, NULL},
 	 { (char *)"_cmsQuickFloor", _wrap__cmsQuickFloor, METH_VARARGS, NULL},
 	 { (char *)"_cmsClampWord", _wrap__cmsClampWord, METH_VARARGS, NULL},
+	 { (char *)"_cmsMalloc", _wrap__cmsMalloc, METH_VARARGS, NULL},
+	 { (char *)"_cmsFree", _wrap__cmsFree, METH_VARARGS, NULL},
 	 { (char *)"cmsSignalError", _wrap_cmsSignalError, METH_VARARGS, NULL},
 	 { (char *)"_cmsTestAlign16_a_set", _wrap__cmsTestAlign16_a_set, METH_VARARGS, NULL},
 	 { (char *)"_cmsTestAlign16_a_get", _wrap__cmsTestAlign16_a_get, METH_VARARGS, NULL},
@@ -33130,7 +32679,6 @@ static swig_type_info _swigt__p_LCMSGAMMAPARAMS = {"_p_LCMSGAMMAPARAMS", "LCMSGA
 static swig_type_info _swigt__p_LPMATSHAPER = {"_p_LPMATSHAPER", "LPMATSHAPER *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_LPWMAT3 = {"_p_LPWMAT3", "LPWMAT3 *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_LPWVEC3 = {"_p_LPWVEC3", "LPWVEC3 *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_LPcmsGAMUTEX = {"_p_LPcmsGAMUTEX", "LPcmsGAMUTEX *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_LPcmsNAMEDCOLORLIST = {"_p_LPcmsNAMEDCOLORLIST", "LPcmsNAMEDCOLORLIST *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_LPcmsSEQ = {"_p_LPcmsSEQ", "LPcmsSEQ *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MAT3 = {"_p_MAT3", "MAT3 *|LPMAT3", 0, 0, (void*)0, 0};
@@ -33155,13 +32703,12 @@ static swig_type_info _swigt__p_cmsCIEXYZ = {"_p_cmsCIEXYZ", "cmsCIEXYZ *|LPcmsC
 static swig_type_info _swigt__p_cmsCIEXYZTRIPLE = {"_p_cmsCIEXYZTRIPLE", "cmsCIEXYZTRIPLE *|LPcmsCIEXYZTRIPLE", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsCIExyY = {"_p_cmsCIExyY", "cmsCIExyY *|LPcmsCIExyY", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsCIExyYTRIPLE = {"_p_cmsCIExyYTRIPLE", "cmsCIExyYTRIPLE *|LPcmsCIExyYTRIPLE", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_cmsGAMUTEX = {"_p_cmsGAMUTEX", "cmsGAMUTEX *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsJCh = {"_p_cmsJCh", "cmsJCh *|LPcmsJCh", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsNAMEDCOLOR = {"_p_cmsNAMEDCOLOR", "cmsNAMEDCOLOR *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsNAMEDCOLORLIST = {"_p_cmsNAMEDCOLORLIST", "cmsNAMEDCOLORLIST *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsPSEQDESC = {"_p_cmsPSEQDESC", "cmsPSEQDESC *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_cmsSEQ = {"_p_cmsSEQ", "cmsSEQ *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_cmsViewingConditions = {"_p_cmsViewingConditions", "cmsViewingConditions *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_cmsViewingConditions = {"_p_cmsViewingConditions", "cmsViewingConditions *|LPcmsViewingConditions", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void = {"_p_f_a___unsigned_short_a___unsigned_short_LPWMAT3_LPWVEC3__void", "void (*)(unsigned short [],unsigned short [],LPWMAT3,LPWVEC3)|_cmsADJFN", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_a___unsigned_short_a___unsigned_short_a___unsigned_short_p__lcms_l16params_struc__void = {"_p_f_a___unsigned_short_a___unsigned_short_a___unsigned_short_p__lcms_l16params_struc__void", "void (*)(unsigned short [],unsigned short [],unsigned short [],_lcms_l16params_struc *)|_cms3DLERP", 0, 0, (void*)0, 0};
@@ -33170,10 +32717,10 @@ static swig_type_info _swigt__p_f_int_p_q_const__char__int = {"_p_f_int_p_q_cons
 static swig_type_info _swigt__p_f_p__cmstransform_struct_a___unsigned_short_a___unsigned_short__void = {"_p_f_p__cmstransform_struct_a___unsigned_short_a___unsigned_short__void", "void (*)(_cmstransform_struct *,unsigned short [],unsigned short [])|_cmsTRANSFN", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_p__cmstransform_struct_a___unsigned_short_p_unsigned_char__p_unsigned_char = {"_p_f_p__cmstransform_struct_a___unsigned_short_p_unsigned_char__p_unsigned_char", "unsigned char *(*)(_cmstransform_struct *,unsigned short [],unsigned char *)|_cmsFIXFN", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_p__cmstransform_struct_p_void_p_void_unsigned_int__void = {"_p_f_p__cmstransform_struct_p_void_p_void_unsigned_int__void", "void (*)(_cmstransform_struct *,void *,void *,unsigned int)|_cmsCOLORCALLBACKFN", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct__int = {"_p_f_p__lcms_iccprofile_struct__int", "int (*)(_lcms_iccprofile_struct *)|BOOL (*)(_lcms_iccprofile_struct *)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct__int = {"_p_f_p__lcms_iccprofile_struct__int", "int (*)(_lcms_iccprofile_struct *)|LCMSBOOL (*)(_lcms_iccprofile_struct *)", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct__size_t = {"_p_f_p__lcms_iccprofile_struct__size_t", "size_t (*)(_lcms_iccprofile_struct *)", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct_size_t__int = {"_p_f_p__lcms_iccprofile_struct_size_t__int", "int (*)(_lcms_iccprofile_struct *,size_t)|BOOL (*)(_lcms_iccprofile_struct *,size_t)", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct_size_t_p_void__int = {"_p_f_p__lcms_iccprofile_struct_size_t_p_void__int", "int (*)(_lcms_iccprofile_struct *,size_t,void *)|BOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct_size_t__int = {"_p_f_p__lcms_iccprofile_struct_size_t__int", "int (*)(_lcms_iccprofile_struct *,size_t)|LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_p__lcms_iccprofile_struct_size_t_p_void__int = {"_p_f_p__lcms_iccprofile_struct_size_t_p_void__int", "int (*)(_lcms_iccprofile_struct *,size_t,void *)|LCMSBOOL (*)(_lcms_iccprofile_struct *,size_t,LPVOID)", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char = {"_p_f_p_void_a___unsigned_short_p_unsigned_char__p_unsigned_char", "unsigned char *(*)(void *,unsigned short [],unsigned char *)|cmsFORMATTER", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_p_void_size_t_size_t_p__lcms_iccprofile_struct__size_t = {"_p_f_p_void_size_t_size_t_p__lcms_iccprofile_struct__size_t", "size_t (*)(void *,size_t,size_t,_lcms_iccprofile_struct *)", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_icCLutStruct = {"_p_icCLutStruct", "icCLutStruct *", 0, 0, (void*)0, 0};
@@ -33215,7 +32762,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_LPMATSHAPER,
   &_swigt__p_LPWMAT3,
   &_swigt__p_LPWVEC3,
-  &_swigt__p_LPcmsGAMUTEX,
   &_swigt__p_LPcmsNAMEDCOLORLIST,
   &_swigt__p_LPcmsSEQ,
   &_swigt__p_MAT3,
@@ -33240,7 +32786,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_cmsCIEXYZTRIPLE,
   &_swigt__p_cmsCIExyY,
   &_swigt__p_cmsCIExyYTRIPLE,
-  &_swigt__p_cmsGAMUTEX,
   &_swigt__p_cmsJCh,
   &_swigt__p_cmsNAMEDCOLOR,
   &_swigt__p_cmsNAMEDCOLORLIST,
@@ -33300,7 +32845,6 @@ static swig_cast_info _swigc__p_LCMSGAMMAPARAMS[] = {  {&_swigt__p_LCMSGAMMAPARA
 static swig_cast_info _swigc__p_LPMATSHAPER[] = {  {&_swigt__p_LPMATSHAPER, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_LPWMAT3[] = {  {&_swigt__p_LPWMAT3, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_LPWVEC3[] = {  {&_swigt__p_LPWVEC3, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_LPcmsGAMUTEX[] = {  {&_swigt__p_LPcmsGAMUTEX, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_LPcmsNAMEDCOLORLIST[] = {  {&_swigt__p_LPcmsNAMEDCOLORLIST, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_LPcmsSEQ[] = {  {&_swigt__p_LPcmsSEQ, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MAT3[] = {  {&_swigt__p_MAT3, 0, 0, 0},{0, 0, 0, 0}};
@@ -33325,7 +32869,6 @@ static swig_cast_info _swigc__p_cmsCIEXYZ[] = {  {&_swigt__p_cmsCIEXYZ, 0, 0, 0}
 static swig_cast_info _swigc__p_cmsCIEXYZTRIPLE[] = {  {&_swigt__p_cmsCIEXYZTRIPLE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_cmsCIExyY[] = {  {&_swigt__p_cmsCIExyY, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_cmsCIExyYTRIPLE[] = {  {&_swigt__p_cmsCIExyYTRIPLE, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_cmsGAMUTEX[] = {  {&_swigt__p_cmsGAMUTEX, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_cmsJCh[] = {  {&_swigt__p_cmsJCh, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_cmsNAMEDCOLOR[] = {  {&_swigt__p_cmsNAMEDCOLOR, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_cmsNAMEDCOLORLIST[] = {  {&_swigt__p_cmsNAMEDCOLORLIST, 0, 0, 0},{0, 0, 0, 0}};
@@ -33385,7 +32928,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_LPMATSHAPER,
   _swigc__p_LPWMAT3,
   _swigc__p_LPWVEC3,
-  _swigc__p_LPcmsGAMUTEX,
   _swigc__p_LPcmsNAMEDCOLORLIST,
   _swigc__p_LPcmsSEQ,
   _swigc__p_MAT3,
@@ -33410,7 +32952,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_cmsCIEXYZTRIPLE,
   _swigc__p_cmsCIExyY,
   _swigc__p_cmsCIExyYTRIPLE,
-  _swigc__p_cmsGAMUTEX,
   _swigc__p_cmsJCh,
   _swigc__p_cmsNAMEDCOLOR,
   _swigc__p_cmsNAMEDCOLORLIST,
@@ -33904,11 +33445,11 @@ extern "C" {
     swig_type_info **types_initial) {
     size_t i;
     for (i = 0; methods[i].ml_name; ++i) {
-      char *c = methods[i].ml_doc;
+      const char *c = methods[i].ml_doc;
       if (c && (c = strstr(c, "swig_ptr: "))) {
         int j;
         swig_const_info *ci = 0;
-        char *name = c + 10;
+        const char *name = c + 10;
         for (j = 0; const_table[j].type; ++j) {
           if (strncmp(const_table[j].name, name, 
               strlen(const_table[j].name)) == 0) {
@@ -33971,7 +33512,7 @@ SWIGEXPORT void SWIG_init(void) {
   
   
   SWIG_Python_SetConstant(d, "NON_WINDOWS",SWIG_From_int(static_cast< int >(1)));
-  SWIG_Python_SetConstant(d, "LCMS_VERSION",SWIG_From_int(static_cast< int >(116)));
+  SWIG_Python_SetConstant(d, "LCMS_VERSION",SWIG_From_int(static_cast< int >(117)));
   SWIG_Python_SetConstant(d, "MAXCHANNELS",SWIG_From_int(static_cast< int >(16)));
   SWIG_Python_SetConstant(d, "PT_ANY",SWIG_From_int(static_cast< int >(0)));
   SWIG_Python_SetConstant(d, "PT_GRAY",SWIG_From_int(static_cast< int >(3)));
@@ -34145,12 +33686,6 @@ SWIGEXPORT void SWIG_init(void) {
   SWIG_Python_SetConstant(d, "D_CALCULATE",SWIG_From_int(static_cast< int >((-1))));
   SWIG_Python_SetConstant(d, "D_CALCULATE_DISCOUNT",SWIG_From_int(static_cast< int >((-2))));
   SWIG_Python_SetConstant(d, "LCMS_DESC_MAX",SWIG_From_int(static_cast< int >(512)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUTMETHOD_SEGMENTMAXIMA",SWIG_From_int(static_cast< int >(0)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUTMETHOD_CONVEXHULL",SWIG_From_int(static_cast< int >(1)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUTMETHOD_ALPHASHAPE",SWIG_From_int(static_cast< int >(2)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUT_PHYSICAL",SWIG_From_int(static_cast< int >(0)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUT_HP1",SWIG_From_int(static_cast< int >(1)));
-  SWIG_Python_SetConstant(d, "LCMSGAMUT_HP2",SWIG_From_int(static_cast< int >(2)));
   SWIG_Python_SetConstant(d, "LCMS_USED_AS_INPUT",SWIG_From_int(static_cast< int >(0)));
   SWIG_Python_SetConstant(d, "LCMS_USED_AS_OUTPUT",SWIG_From_int(static_cast< int >(1)));
   SWIG_Python_SetConstant(d, "LCMS_USED_AS_PROOF",SWIG_From_int(static_cast< int >(2)));
@@ -34174,7 +33709,7 @@ SWIGEXPORT void SWIG_init(void) {
   SWIG_Python_SetConstant(d, "cmsFLAGS_GAMUTCHECK",SWIG_From_int(static_cast< int >(0x1000)));
   SWIG_Python_SetConstant(d, "cmsFLAGS_SOFTPROOFING",SWIG_From_int(static_cast< int >(0x4000)));
   SWIG_Python_SetConstant(d, "cmsFLAGS_PRESERVEBLACK",SWIG_From_int(static_cast< int >(0x8000)));
-  SWIG_Python_SetConstant(d, "cmsFLAGS_NODEFAULTRESOURCEDEF",SWIG_From_int(static_cast< int >(0x00010000)));
+  SWIG_Python_SetConstant(d, "cmsFLAGS_NODEFAULTRESOURCEDEF",SWIG_From_int(static_cast< int >(0x01000000)));
   SWIG_Python_SetConstant(d, "LCMS_PRESERVE_PURE_K",SWIG_From_int(static_cast< int >(0)));
   SWIG_Python_SetConstant(d, "LCMS_PRESERVE_K_PLANE",SWIG_From_int(static_cast< int >(1)));
   SWIG_Python_SetConstant(d, "LCMS_ERROR_ABORT",SWIG_From_int(static_cast< int >(0)));
