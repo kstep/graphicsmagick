@@ -167,9 +167,7 @@ EXPORTS
     _cmsIsMatrixShaper           = _cmsIsMatrixShaper
     _cmsAddColorantTableTag      = _cmsAddColorantTableTag
     _cmsAddDateTimeTag           = _cmsAddDateTimeTag
-    cmsEvalLUTreverse            = cmsEvalLUTreverse
-    cmsReadExtendedGamut         = cmsReadExtendedGamut
-    cmsFreeExtendedGamut         = cmsFreeExtendedGamut
+    cmsEvalLUTreverse            = cmsEvalLUTreverse    
     cmsGetTagCount               = cmsGetTagCount
     cmsGetTagSignature           = cmsGetTagSignature
     cmsIT8SaveToMem              = cmsIT8SaveToMem
@@ -179,5 +177,7 @@ EXPORTS
     cmsTakeHeaderAttributes      = cmsTakeHeaderAttributes
     cmsSetCMYKPreservationStrategy = cmsSetCMYKPreservationStrategy
     cmsFreeProfileSequenceDescription = cmsFreeProfileSequenceDescription
+    _cmsAddChromaticAdaptationTag = _cmsAddChromaticAdaptationTag
+    
     
 
