@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool) 2.2.2
+# ltmain.sh (GNU libtool 1.2634 2008/04/11 17:21:54) 2.2.3a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool) 2.2.2
+#       $progname:		(GNU libtool 1.2634 2008/04/11 17:21:54) 2.2.3a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -73,9 +73,9 @@
 
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=2.2.2
-TIMESTAMP=""
-package_revision=1.2627
+VERSION=2.2.3a
+TIMESTAMP=" 1.2634 2008/04/11 17:21:54"
+package_revision=1.2634
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -116,15 +116,15 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/usr/bin/grep -E"}
-: ${FGREP="/usr/bin/grep -F"}
-: ${GREP="/usr/bin/grep"}
+: ${EGREP="/usr/sfw/bin/ggrep -E"}
+: ${FGREP="/usr/sfw/bin/ggrep -F"}
+: ${GREP="/usr/sfw/bin/ggrep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
 : ${MV="mv -f"}
 : ${RM="rm -f"}
-: ${SED="/opt/local/bin/gsed"}
+: ${SED="/usr/local/bin/sed"}
 : ${SHELL="${CONFIG_SHELL-/bin/sh}"}
 : ${Xsed="$SED -e 1s/^X//"}
 
@@ -144,6 +144,32 @@ IFS=" 	$lt_nl"
 dirname="s,/[^/]*$,,"
 basename="s,^.*/,,"
 
+# func_dirname_and_basename file append nondir_replacement
+# perform func_basename and func_dirname in a single function
+# call:
+#   dirname:  Compute the dirname of FILE.  If nonempty,
+#             add APPEND to the result, otherwise set result
+#             to NONDIR_REPLACEMENT.
+#             value returned in "$func_dirname_result"
+#   basename: Compute filename of FILE.
+#             value retuned in "$func_basename_result"
+# Implementation must be kept synchronized with func_dirname
+# and func_basename. For efficiency, we do not delegate to
+# those functions but instead duplicate the functionality here.
+func_dirname_and_basename ()
+{
+  # Extract subdirectory from the argument.
+  func_dirname_result=`$ECHO "X${1}" | $Xsed -e "$dirname"`
+  if test "X$func_dirname_result" = "X${1}"; then
+    func_dirname_result="${3}"
+  else
+    func_dirname_result="$func_dirname_result${2}"
+  fi
+  func_basename_result=`$ECHO "X${1}" | $Xsed -e "$basename"`
+}
+
+# Generated shell functions inserted here.
+
 # Work around backward compatibility issue on IRIX 6.5. On IRIX 6.4+, sh
 # is ksh but when the shell is invoked as "sh" and the current value of
 # the _XPG environment variable is not equal to 1 (one), the special
@@ -154,13 +180,17 @@ progpath="$0"
 # The name of this program:
 # In the unlikely event $progname began with a '-', it would play havoc with
 # func_echo (imagine progname=-n), so we prepend ./ in that case:
-progname=`$ECHO "X$progpath" | $Xsed -e "$basename" -e 's,^-,./-,'`
+func_dirname_and_basename "$progpath"
+progname=$func_basename_result
+case $progname in
+  -*) progname=./$progname ;;
+esac
 
 # Make sure we have an absolute path for reexecution:
 case $progpath in
   [\\/]*|[A-Za-z]:\\*) ;;
   *[\\/]*)
-     progdir=`$ECHO "X$progpath" | $Xsed -e "$dirname"`
+     progdir=$func_dirname_result
      progdir=`cd "$progdir" && pwd`
      progpath="$progdir/$progname"
      ;;
@@ -658,191 +688,6 @@ func_enable_tag ()
   esac
 }
 
-
-func_mode_help ()
-{
-    # We need to display help for each of the modes.
-    case $mode in
-      "")
-        # Generic help is extracted from the usage comments
-        # at the start of this file.
-        func_help
-        ;;
-
-      clean)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=clean RM [RM-OPTION]... FILE...
-
-Remove files from the build directory.
-
-RM is the name of the program to use to delete files associated with each FILE
-(typically \`/bin/rm').  RM-OPTIONS are options (such as \`-f') to be passed
-to RM.
-
-If FILE is a libtool library, object or program, all the files associated
-with it are deleted. Otherwise, only FILE itself is deleted using RM."
-        ;;
-
-      compile)
-      $ECHO \
-"Usage: $progname [OPTION]... --mode=compile COMPILE-COMMAND... SOURCEFILE
-
-Compile a source file into a libtool library object.
-
-This mode accepts the following additional options:
-
-  -o OUTPUT-FILE    set the output file name to OUTPUT-FILE
-  -no-suppress      do not suppress compiler output for multiple passes
-  -prefer-pic       try to building PIC objects only
-  -prefer-non-pic   try to building non-PIC objects only
-  -shared           do not build a \`.o' file suitable for static linking
-  -static           only build a \`.o' file suitable for static linking
-
-COMPILE-COMMAND is a command to be used in creating a \`standard' object file
-from the given SOURCEFILE.
-
-The output file name is determined by removing the directory component from
-SOURCEFILE, then substituting the C source code suffix \`.c' with the
-library object suffix, \`.lo'."
-        ;;
-
-      execute)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=execute COMMAND [ARGS]...
-
-Automatically set library path, then run a program.
-
-This mode accepts the following additional options:
-
-  -dlopen FILE      add the directory containing FILE to the library path
-
-This mode sets the library path environment variable according to \`-dlopen'
-flags.
-
-If any of the ARGS are libtool executable wrappers, then they are translated
-into their corresponding uninstalled binary, and any of their required library
-directories are added to the library path.
-
-Then, COMMAND is executed, with ARGS as arguments."
-        ;;
-
-      finish)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=finish [LIBDIR]...
-
-Complete the installation of libtool libraries.
-
-Each LIBDIR is a directory that contains libtool libraries.
-
-The commands that this mode executes may require superuser privileges.  Use
-the \`--dry-run' option if you just want to see what would be executed."
-        ;;
-
-      install)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=install INSTALL-COMMAND...
-
-Install executables or libraries.
-
-INSTALL-COMMAND is the installation command.  The first component should be
-either the \`install' or \`cp' program.
-
-The following components of INSTALL-COMMAND are treated specially:
-
-  -inst-prefix PREFIX-DIR  Use PREFIX-DIR as a staging area for installation
-
-The rest of the components are interpreted as arguments to that command (only
-BSD-compatible install options are recognized)."
-        ;;
-
-      link)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=link LINK-COMMAND...
-
-Link object files or libraries together to form another library, or to
-create an executable program.
-
-LINK-COMMAND is a command using the C compiler that you would use to create
-a program from several object files.
-
-The following components of LINK-COMMAND are treated specially:
-
-  -all-static       do not do any dynamic linking at all
-  -avoid-version    do not add a version suffix if possible
-  -dlopen FILE      \`-dlpreopen' FILE if it cannot be dlopened at runtime
-  -dlpreopen FILE   link in FILE and add its symbols to lt_preloaded_symbols
-  -export-dynamic   allow symbols from OUTPUT-FILE to be resolved with dlsym(3)
-  -export-symbols SYMFILE
-                    try to export only the symbols listed in SYMFILE
-  -export-symbols-regex REGEX
-                    try to export only the symbols matching REGEX
-  -LLIBDIR          search LIBDIR for required installed libraries
-  -lNAME            OUTPUT-FILE requires the installed library libNAME
-  -module           build a library that can dlopened
-  -no-fast-install  disable the fast-install mode
-  -no-install       link a not-installable executable
-  -no-undefined     declare that a library does not refer to external symbols
-  -o OUTPUT-FILE    create OUTPUT-FILE from the specified objects
-  -objectlist FILE  Use a list of object files found in FILE to specify objects
-  -precious-files-regex REGEX
-                    don't remove output files matching REGEX
-  -release RELEASE  specify package release information
-  -rpath LIBDIR     the created library will eventually be installed in LIBDIR
-  -R[ ]LIBDIR       add LIBDIR to the runtime path of programs and libraries
-  -shared           only do dynamic linking of libtool libraries
-  -shrext SUFFIX    override the standard shared library file extension
-  -static           do not do any dynamic linking of uninstalled libtool libraries
-  -static-libtool-libs
-                    do not do any dynamic linking of libtool libraries
-  -version-info CURRENT[:REVISION[:AGE]]
-                    specify library version info [each variable defaults to 0]
-  -weak LIBNAME     declare that the target provides the LIBNAME interface
-
-All other options (arguments beginning with \`-') are ignored.
-
-Every other argument is treated as a filename.  Files ending in \`.la' are
-treated as uninstalled libtool libraries, other files are standard or library
-object files.
-
-If the OUTPUT-FILE ends in \`.la', then a libtool library is created,
-only library objects (\`.lo' files) may be specified, and \`-rpath' is
-required, except when creating a convenience library.
-
-If OUTPUT-FILE ends in \`.a' or \`.lib', then a standard library is created
-using \`ar' and \`ranlib', or on Windows using \`lib'.
-
-If OUTPUT-FILE ends in \`.lo' or \`.${objext}', then a reloadable object file
-is created, otherwise an executable program is created."
-        ;;
-
-      uninstall)
-        $ECHO \
-"Usage: $progname [OPTION]... --mode=uninstall RM [RM-OPTION]... FILE...
-
-Remove libraries from an installation directory.
-
-RM is the name of the program to use to delete files associated with each FILE
-(typically \`/bin/rm').  RM-OPTIONS are options (such as \`-f') to be passed
-to RM.
-
-If FILE is a libtool library, all the files associated with it are deleted.
-Otherwise, only FILE itself is deleted using RM."
-        ;;
-
-      *)
-        func_fatal_help "invalid operation mode \`$mode'"
-        ;;
-    esac
-
-    $ECHO
-    $ECHO "Try \`$progname --help' for more information about other modes."
-
-    exit $?
-}
-
-# Generated shell functions inserted here.
-
-
 # Parse options once, thoroughly.  This comes as soon as possible in
 # the script to make things like `libtool --version' happen quickly.
 {
@@ -954,8 +799,6 @@ Otherwise, only FILE itself is deleted using RM."
     esac
   done
 
-  # Now that we've collected a possible --mode arg, show help if necessary
-  $opt_help && func_mode_help
 
   case $host in
     *cygwin* | *mingw* | *pw32*)
@@ -1012,7 +855,7 @@ _LT_EOF
 ##    Main.    ##
 ## ----------- ##
 
-{
+$opt_help || {
   # Sanity checks first:
   func_check_version_match
 
@@ -1153,55 +996,6 @@ func_source ()
 }
 
 
-# func_win32_libid arg
-# return the library type of file 'arg'
-#
-# Need a lot of goo to handle *both* DLLs and import libs
-# Has to be a shell function in order to 'eat' the argument
-# that is supplied when $file_magic_command is called.
-func_win32_libid ()
-{
-  $opt_debug
-  win32_libid_type="unknown"
-  win32_fileres=`file -L $1 2>/dev/null`
-  case $win32_fileres in
-  *ar\ archive\ import\ library*) # definitely import
-    win32_libid_type="x86 archive import"
-    ;;
-  *ar\ archive*) # could be an import, or static
-    if eval $OBJDUMP -f $1 | $SED -e '10q' 2>/dev/null |
-       $EGREP 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
-      win32_nmres=`eval $NM -f posix -A $1 |
-	$SED -n -e '
-	    1,100{
-		/ I /{
-		    s,.*,import,
-		    p
-		    q
-		}
-	    }'`
-      case $win32_nmres in
-      import*)  win32_libid_type="x86 archive import";;
-      *)        win32_libid_type="x86 archive static";;
-      esac
-    fi
-    ;;
-  *DLL*)
-    win32_libid_type="x86 DLL"
-    ;;
-  *executable*) # but shell scripts are "executable" too...
-    case $win32_fileres in
-    *MS\ Windows\ PE\ Intel*)
-      win32_libid_type="x86 DLL"
-      ;;
-    esac
-    ;;
-  esac
-  $ECHO "$win32_libid_type"
-}
-
-
-
 # func_infer_tag arg
 # Infer tagged configuration to use if any are available and
 # if one wasn't chosen via the "--tag" command line option.
@@ -1257,365 +1051,6 @@ func_infer_tag ()
 	;;
       esac
     fi
-}
-
-
-
-# func_generate_dlsyms outputname originator pic_p
-# Extract symbols from dlprefiles and create ${outputname}S.o with
-# a dlpreopen symbol table.
-func_generate_dlsyms ()
-{
-    $opt_debug
-    my_outputname="$1"
-    my_originator="$2"
-    my_pic_p="${3-no}"
-    my_prefix=`$ECHO "$my_originator" | sed 's%[^a-zA-Z0-9]%_%g'`
-    my_dlsyms=
-
-    if test -n "$dlfiles$dlprefiles" || test "$dlself" != no; then
-      if test -n "$NM" && test -n "$global_symbol_pipe"; then
-	my_dlsyms="${my_outputname}S.c"
-      else
-	func_error "not configured to extract global symbols from dlpreopened files"
-      fi
-    fi
-
-    if test -n "$my_dlsyms"; then
-      case $my_dlsyms in
-      "") ;;
-      *.c)
-	# Discover the nlist of each of the dlfiles.
-	nlist="$output_objdir/${my_outputname}.nm"
-
-	func_show_eval "$RM $nlist ${nlist}S ${nlist}T"
-
-	# Parse the name list into a source file.
-	func_verbose "creating $output_objdir/$my_dlsyms"
-
-	$opt_dry_run || $ECHO > "$output_objdir/$my_dlsyms" "\
-/* $my_dlsyms - symbol resolution table for \`$my_outputname' dlsym emulation. */
-/* Generated by $PROGRAM (GNU $PACKAGE$TIMESTAMP) $VERSION */
-
-#ifdef __cplusplus
-extern \"C\" {
-#endif
-
-/* External symbol declarations for the compiler. */\
-"
-
-	if test "$dlself" = yes; then
-	  func_verbose "generating symbol list for \`$output'"
-
-	  $opt_dry_run || echo ': @PROGRAM@ ' > "$nlist"
-
-	  # Add our own program objects to the symbol list.
-	  progfiles=`$ECHO "X$objs$old_deplibs" | $SP2NL | $Xsed -e "$lo2o" | $NL2SP`
-	  for progfile in $progfiles; do
-	    func_verbose "extracting global C symbols from \`$progfile'"
-	    $opt_dry_run || eval "$NM $progfile | $global_symbol_pipe >> '$nlist'"
-	  done
-
-	  if test -n "$exclude_expsyms"; then
-	    $opt_dry_run || {
-	      eval '$EGREP -v " ($exclude_expsyms)$" "$nlist" > "$nlist"T'
-	      eval '$MV "$nlist"T "$nlist"'
-	    }
-	  fi
-
-	  if test -n "$export_symbols_regex"; then
-	    $opt_dry_run || {
-	      eval '$EGREP -e "$export_symbols_regex" "$nlist" > "$nlist"T'
-	      eval '$MV "$nlist"T "$nlist"'
-	    }
-	  fi
-
-	  # Prepare the list of exported symbols
-	  if test -z "$export_symbols"; then
-	    export_symbols="$output_objdir/$outputname.exp"
-	    $opt_dry_run || {
-	      $RM $export_symbols
-	      eval "${SED} -n -e '/^: @PROGRAM@ $/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
-	      case $host in
-	      *cygwin* | *mingw* )
-                eval "echo EXPORTS "'> "$output_objdir/$outputname.def"'
-                eval 'cat "$export_symbols" >> "$output_objdir/$outputname.def"'
-	        ;;
-	      esac
-	    }
-	  else
-	    $opt_dry_run || {
-	      eval "${SED} -e 's/\([].[*^$]\)/\\\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$outputname.exp"'
-	      eval '$GREP -f "$output_objdir/$outputname.exp" < "$nlist" > "$nlist"T'
-	      eval '$MV "$nlist"T "$nlist"'
-	      case $host in
-	        *cygwin | *mingw* )
-	          eval "echo EXPORTS "'> "$output_objdir/$outputname.def"'
-	          eval 'cat "$nlist" >> "$output_objdir/$outputname.def"'
-	          ;;
-	      esac
-	    }
-	  fi
-	fi
-
-	for dlprefile in $dlprefiles; do
-	  func_verbose "extracting global C symbols from \`$dlprefile'"
-	  func_basename "$dlprefile"
-	  name="$func_basename_result"
-	  $opt_dry_run || {
-	    eval '$ECHO ": $name " >> "$nlist"'
-	    eval "$NM $dlprefile 2>/dev/null | $global_symbol_pipe >> '$nlist'"
-	  }
-	done
-
-	$opt_dry_run || {
-	  # Make sure we have at least an empty file.
-	  test -f "$nlist" || : > "$nlist"
-
-	  if test -n "$exclude_expsyms"; then
-	    $EGREP -v " ($exclude_expsyms)$" "$nlist" > "$nlist"T
-	    $MV "$nlist"T "$nlist"
-	  fi
-
-	  # Try sorting and uniquifying the output.
-	  if $GREP -v "^: " < "$nlist" |
-	      if sort -k 3 </dev/null >/dev/null 2>&1; then
-		sort -k 3
-	      else
-		sort +2
-	      fi |
-	      uniq > "$nlist"S; then
-	    :
-	  else
-	    $GREP -v "^: " < "$nlist" > "$nlist"S
-	  fi
-
-	  if test -f "$nlist"S; then
-	    eval "$global_symbol_to_cdecl"' < "$nlist"S >> "$output_objdir/$my_dlsyms"'
-	  else
-	    $ECHO '/* NONE */' >> "$output_objdir/$my_dlsyms"
-	  fi
-
-	  $ECHO >> "$output_objdir/$my_dlsyms" "\
-
-/* The mapping between symbol names and symbols.  */
-typedef struct {
-  const char *name;
-  void *address;
-} lt_dlsymlist;
-"
-	  case $host in
-	  *cygwin* | *mingw* )
-	    $ECHO >> "$output_objdir/$my_dlsyms" "\
-/* DATA imports from DLLs on WIN32 con't be const, because
-   runtime relocations are performed -- see ld's documentation
-   on pseudo-relocs.  */"
-	    lt_dlsym_const= ;;
-	  *osf5*)
-	    echo >> "$output_objdir/$my_dlsyms" "\
-/* This system does not cope well with relocations in const data */"
-	    lt_dlsym_const= ;;
-	  *)
-	    lt_dlsym_const=const ;;
-	  esac
-
-	  $ECHO >> "$output_objdir/$my_dlsyms" "\
-extern $lt_dlsym_const lt_dlsymlist
-lt_${my_prefix}_LTX_preloaded_symbols[];
-$lt_dlsym_const lt_dlsymlist
-lt_${my_prefix}_LTX_preloaded_symbols[] =
-{\
-  { \"$my_originator\", (void *) 0 },"
-
-	  case $need_lib_prefix in
-	  no)
-	    eval "$global_symbol_to_c_name_address" < "$nlist" >> "$output_objdir/$my_dlsyms"
-	    ;;
-	  *)
-	    eval "$global_symbol_to_c_name_address_lib_prefix" < "$nlist" >> "$output_objdir/$my_dlsyms"
-	    ;;
-	  esac
-	  $ECHO >> "$output_objdir/$my_dlsyms" "\
-  {0, (void *) 0}
-};
-
-/* This works around a problem in FreeBSD linker */
-#ifdef FREEBSD_WORKAROUND
-static const void *lt_preloaded_setup() {
-  return lt_${my_prefix}_LTX_preloaded_symbols;
-}
-#endif
-
-#ifdef __cplusplus
-}
-#endif\
-"
-	} # !$opt_dry_run
-
-	pic_flag_for_symtable=
-	case "$compile_command " in
-	*" -static "*) ;;
-	*)
-	  case $host in
-	  # compiling the symbol table file with pic_flag works around
-	  # a FreeBSD bug that causes programs to crash when -lm is
-	  # linked before any other PIC object.  But we must not use
-	  # pic_flag when linking with -static.  The problem exists in
-	  # FreeBSD 2.2.6 and is fixed in FreeBSD 3.1.
-	  *-*-freebsd2*|*-*-freebsd3.0*|*-*-freebsdelf3.0*)
-	    pic_flag_for_symtable=" $pic_flag -DFREEBSD_WORKAROUND" ;;
-	  *-*-hpux*)
-	    pic_flag_for_symtable=" $pic_flag"  ;;
-	  *)
-	    if test "X$my_pic_p" != Xno; then
-	      pic_flag_for_symtable=" $pic_flag"
-	    fi
-	    ;;
-	  esac
-	  ;;
-	esac
-	symtab_cflags=
-	for arg in $LTCFLAGS; do
-	  case $arg in
-	  -pie | -fpie | -fPIE) ;;
-	  *) symtab_cflags="$symtab_cflags $arg" ;;
-	  esac
-	done
-
-	# Now compile the dynamic symbol file.
-	func_show_eval '(cd $output_objdir && $LTCC$symtab_cflags -c$no_builtin_flag$pic_flag_for_symtable "$my_dlsyms")' 'exit $?'
-
-	# Clean up the generated files.
-	func_show_eval '$RM "$output_objdir/$my_dlsyms" "$nlist" "${nlist}S" "${nlist}T"'
-
-	# Transform the symbol file into the correct name.
-	symfileobj="$output_objdir/${my_outputname}S.$objext"
-	case $host in
-	*cygwin* | *mingw* )
-	  if test -f "$output_objdir/$my_outputname.def"; then
-	    compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/$my_outputname.def $symfileobj%"`
-	    finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/$my_outputname.def $symfileobj%"`
-	  else
-	    compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
-	    finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
-	  fi
-	  ;;
-	*)
-	  compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
-	  finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
-	  ;;
-	esac
-	;;
-      *)
-	func_fatal_error "unknown suffix for \`$my_dlsyms'"
-	;;
-      esac
-    else
-      # We keep going just in case the user didn't refer to
-      # lt_preloaded_symbols.  The linker will fail if global_symbol_pipe
-      # really was required.
-
-      # Nullify the symbol file.
-      compile_command=`$ECHO "X$compile_command" | $Xsed -e "s% @SYMFILE@%%"`
-      finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s% @SYMFILE@%%"`
-    fi
-}
-
-# func_extract_an_archive dir oldlib
-func_extract_an_archive ()
-{
-    $opt_debug
-    f_ex_an_ar_dir="$1"; shift
-    f_ex_an_ar_oldlib="$1"
-    func_show_eval "(cd \$f_ex_an_ar_dir && $AR x \"\$f_ex_an_ar_oldlib\")" 'exit $?'
-    if ($AR t "$f_ex_an_ar_oldlib" | sort | sort -uc >/dev/null 2>&1); then
-     :
-    else
-      func_fatal_error "object name conflicts in archive: $f_ex_an_ar_dir/$f_ex_an_ar_oldlib"
-    fi
-}
-
-
-# func_extract_archives gentop oldlib ...
-func_extract_archives ()
-{
-    $opt_debug
-    my_gentop="$1"; shift
-    my_oldlibs=${1+"$@"}
-    my_oldobjs=""
-    my_xlib=""
-    my_xabs=""
-    my_xdir=""
-
-    for my_xlib in $my_oldlibs; do
-      # Extract the objects.
-      case $my_xlib in
-	[\\/]* | [A-Za-z]:[\\/]*) my_xabs="$my_xlib" ;;
-	*) my_xabs=`pwd`"/$my_xlib" ;;
-      esac
-      func_basename "$my_xlib"
-      my_xlib="$func_basename_result"
-      my_xlib_u=$my_xlib
-      while :; do
-        case " $extracted_archives " in
-	*" $my_xlib_u "*)
-	  extracted_serial=`expr $extracted_serial + 1`
-	  my_xlib_u=lt$extracted_serial-$my_xlib ;;
-	*) break ;;
-	esac
-      done
-      extracted_archives="$extracted_archives $my_xlib_u"
-      my_xdir="$my_gentop/$my_xlib_u"
-
-      func_mkdir_p "$my_xdir"
-
-      case $host in
-      *-darwin*)
-	func_verbose "Extracting $my_xabs"
-	# Do not bother doing anything if just a dry run
-	$opt_dry_run || {
-	  darwin_orig_dir=`pwd`
-	  cd $my_xdir || exit $?
-	  darwin_archive=$my_xabs
-	  darwin_curdir=`pwd`
-	  darwin_base_archive=`basename "$darwin_archive"`
-	  darwin_arches=`lipo -info "$darwin_archive" 2>/dev/null | $GREP Architectures 2>/dev/null || true`
-	  if test -n "$darwin_arches"; then
-	    darwin_arches=`$ECHO "$darwin_arches" | $SED -e 's/.*are://'`
-	    darwin_arch=
-	    func_verbose "$darwin_base_archive has multiple architectures $darwin_arches"
-	    for darwin_arch in  $darwin_arches ; do
-	      func_mkdir_p "unfat-$$/${darwin_base_archive}-${darwin_arch}"
-	      lipo -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
-	      cd "unfat-$$/${darwin_base_archive}-${darwin_arch}"
-	      func_extract_an_archive "`pwd`" "${darwin_base_archive}"
-	      cd "$darwin_curdir"
-	      $RM "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}"
-	    done # $darwin_arches
-            ## Okay now we've a bunch of thin objects, gotta fatten them up :)
-	    darwin_filelist=`find unfat-$$ -type f -name \*.o -print -o -name \*.lo -print| xargs basename | sort -u | $NL2SP`
-	    darwin_file=
-	    darwin_files=
-	    for darwin_file in $darwin_filelist; do
-	      darwin_files=`find unfat-$$ -name $darwin_file -print | $NL2SP`
-	      lipo -create -output "$darwin_file" $darwin_files
-	    done # $darwin_filelist
-	    $RM -rf unfat-$$
-	    cd "$darwin_orig_dir"
-	  else
-	    cd $darwin_orig_dir
-	    func_extract_an_archive "$my_xdir" "$my_xabs"
-	  fi # $darwin_arches
-	} # !$opt_dry_run
-	;;
-      *)
-        func_extract_an_archive "$my_xdir" "$my_xabs"
-	;;
-      esac
-      my_oldobjs="$my_oldobjs "`find $my_xdir -name \*.$objext -print -o -name \*.lo -print | $NL2SP`
-    done
-
-    func_extract_archives_result="$my_oldobjs"
 }
 
 
@@ -1769,26 +1204,15 @@ func_mode_compile ()
 
     # Recognize several different file suffixes.
     # If the user specifies -o file.o, it is replaced with file.lo
-    xform='[cCFSifmso]'
     case $libobj in
-    *.ada) xform=ada ;;
-    *.adb) xform=adb ;;
-    *.ads) xform=ads ;;
-    *.asm) xform=asm ;;
-    *.c++) xform=c++ ;;
-    *.cc) xform=cc ;;
-    *.ii) xform=ii ;;
-    *.class) xform=class ;;
-    *.cpp) xform=cpp ;;
-    *.cxx) xform=cxx ;;
-    *.[fF][09]?) xform='[fF][09].' ;;
-    *.for) xform=for ;;
-    *.java) xform=java ;;
-    *.obj) xform=obj ;;
-    *.sx) xform=sx ;;
+    *.[cCFSifmso] | \
+    *.ada | *.adb | *.ads | *.asm | \
+    *.c++ | *.cc | *.ii | *.class | *.cpp | *.cxx | \
+    *.[fF][09]? | *.for | *.java | *.obj | *.sx)
+      func_xform "$libobj"
+      libobj=$func_xform_result
+      ;;
     esac
-
-    libobj=`$ECHO "X$libobj" | $Xsed -e "s/\.$xform$/.lo/"`
 
     case $libobj in
     *.lo) func_lo2o "$libobj"; obj=$func_lo2o_result ;;
@@ -2019,7 +1443,193 @@ compiler."
     exit $EXIT_SUCCESS
 }
 
+$opt_help || {
 test "$mode" = compile && func_mode_compile ${1+"$@"}
+}
+
+func_mode_help ()
+{
+    # We need to display help for each of the modes.
+    case $mode in
+      "")
+        # Generic help is extracted from the usage comments
+        # at the start of this file.
+        func_help
+        ;;
+
+      clean)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=clean RM [RM-OPTION]... FILE...
+
+Remove files from the build directory.
+
+RM is the name of the program to use to delete files associated with each FILE
+(typically \`/bin/rm').  RM-OPTIONS are options (such as \`-f') to be passed
+to RM.
+
+If FILE is a libtool library, object or program, all the files associated
+with it are deleted. Otherwise, only FILE itself is deleted using RM."
+        ;;
+
+      compile)
+      $ECHO \
+"Usage: $progname [OPTION]... --mode=compile COMPILE-COMMAND... SOURCEFILE
+
+Compile a source file into a libtool library object.
+
+This mode accepts the following additional options:
+
+  -o OUTPUT-FILE    set the output file name to OUTPUT-FILE
+  -no-suppress      do not suppress compiler output for multiple passes
+  -prefer-pic       try to building PIC objects only
+  -prefer-non-pic   try to building non-PIC objects only
+  -shared           do not build a \`.o' file suitable for static linking
+  -static           only build a \`.o' file suitable for static linking
+
+COMPILE-COMMAND is a command to be used in creating a \`standard' object file
+from the given SOURCEFILE.
+
+The output file name is determined by removing the directory component from
+SOURCEFILE, then substituting the C source code suffix \`.c' with the
+library object suffix, \`.lo'."
+        ;;
+
+      execute)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=execute COMMAND [ARGS]...
+
+Automatically set library path, then run a program.
+
+This mode accepts the following additional options:
+
+  -dlopen FILE      add the directory containing FILE to the library path
+
+This mode sets the library path environment variable according to \`-dlopen'
+flags.
+
+If any of the ARGS are libtool executable wrappers, then they are translated
+into their corresponding uninstalled binary, and any of their required library
+directories are added to the library path.
+
+Then, COMMAND is executed, with ARGS as arguments."
+        ;;
+
+      finish)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=finish [LIBDIR]...
+
+Complete the installation of libtool libraries.
+
+Each LIBDIR is a directory that contains libtool libraries.
+
+The commands that this mode executes may require superuser privileges.  Use
+the \`--dry-run' option if you just want to see what would be executed."
+        ;;
+
+      install)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=install INSTALL-COMMAND...
+
+Install executables or libraries.
+
+INSTALL-COMMAND is the installation command.  The first component should be
+either the \`install' or \`cp' program.
+
+The following components of INSTALL-COMMAND are treated specially:
+
+  -inst-prefix PREFIX-DIR  Use PREFIX-DIR as a staging area for installation
+
+The rest of the components are interpreted as arguments to that command (only
+BSD-compatible install options are recognized)."
+        ;;
+
+      link)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=link LINK-COMMAND...
+
+Link object files or libraries together to form another library, or to
+create an executable program.
+
+LINK-COMMAND is a command using the C compiler that you would use to create
+a program from several object files.
+
+The following components of LINK-COMMAND are treated specially:
+
+  -all-static       do not do any dynamic linking at all
+  -avoid-version    do not add a version suffix if possible
+  -dlopen FILE      \`-dlpreopen' FILE if it cannot be dlopened at runtime
+  -dlpreopen FILE   link in FILE and add its symbols to lt_preloaded_symbols
+  -export-dynamic   allow symbols from OUTPUT-FILE to be resolved with dlsym(3)
+  -export-symbols SYMFILE
+                    try to export only the symbols listed in SYMFILE
+  -export-symbols-regex REGEX
+                    try to export only the symbols matching REGEX
+  -LLIBDIR          search LIBDIR for required installed libraries
+  -lNAME            OUTPUT-FILE requires the installed library libNAME
+  -module           build a library that can dlopened
+  -no-fast-install  disable the fast-install mode
+  -no-install       link a not-installable executable
+  -no-undefined     declare that a library does not refer to external symbols
+  -o OUTPUT-FILE    create OUTPUT-FILE from the specified objects
+  -objectlist FILE  Use a list of object files found in FILE to specify objects
+  -precious-files-regex REGEX
+                    don't remove output files matching REGEX
+  -release RELEASE  specify package release information
+  -rpath LIBDIR     the created library will eventually be installed in LIBDIR
+  -R[ ]LIBDIR       add LIBDIR to the runtime path of programs and libraries
+  -shared           only do dynamic linking of libtool libraries
+  -shrext SUFFIX    override the standard shared library file extension
+  -static           do not do any dynamic linking of uninstalled libtool libraries
+  -static-libtool-libs
+                    do not do any dynamic linking of libtool libraries
+  -version-info CURRENT[:REVISION[:AGE]]
+                    specify library version info [each variable defaults to 0]
+  -weak LIBNAME     declare that the target provides the LIBNAME interface
+
+All other options (arguments beginning with \`-') are ignored.
+
+Every other argument is treated as a filename.  Files ending in \`.la' are
+treated as uninstalled libtool libraries, other files are standard or library
+object files.
+
+If the OUTPUT-FILE ends in \`.la', then a libtool library is created,
+only library objects (\`.lo' files) may be specified, and \`-rpath' is
+required, except when creating a convenience library.
+
+If OUTPUT-FILE ends in \`.a' or \`.lib', then a standard library is created
+using \`ar' and \`ranlib', or on Windows using \`lib'.
+
+If OUTPUT-FILE ends in \`.lo' or \`.${objext}', then a reloadable object file
+is created, otherwise an executable program is created."
+        ;;
+
+      uninstall)
+        $ECHO \
+"Usage: $progname [OPTION]... --mode=uninstall RM [RM-OPTION]... FILE...
+
+Remove libraries from an installation directory.
+
+RM is the name of the program to use to delete files associated with each FILE
+(typically \`/bin/rm').  RM-OPTIONS are options (such as \`-f') to be passed
+to RM.
+
+If FILE is a libtool library, all the files associated with it are deleted.
+Otherwise, only FILE itself is deleted using RM."
+        ;;
+
+      *)
+        func_fatal_help "invalid operation mode \`$mode'"
+        ;;
+    esac
+
+    $ECHO
+    $ECHO "Try \`$progname --help' for more information about other modes."
+
+    exit $?
+}
+
+  # Now that we've collected a possible --mode arg, show help if necessary
+  $opt_help && func_mode_help
 
 
 # func_mode_execute arg...
@@ -2672,6 +2282,414 @@ func_mode_install ()
 test "$mode" = install && func_mode_install ${1+"$@"}
 
 
+# func_generate_dlsyms outputname originator pic_p
+# Extract symbols from dlprefiles and create ${outputname}S.o with
+# a dlpreopen symbol table.
+func_generate_dlsyms ()
+{
+    $opt_debug
+    my_outputname="$1"
+    my_originator="$2"
+    my_pic_p="${3-no}"
+    my_prefix=`$ECHO "$my_originator" | sed 's%[^a-zA-Z0-9]%_%g'`
+    my_dlsyms=
+
+    if test -n "$dlfiles$dlprefiles" || test "$dlself" != no; then
+      if test -n "$NM" && test -n "$global_symbol_pipe"; then
+	my_dlsyms="${my_outputname}S.c"
+      else
+	func_error "not configured to extract global symbols from dlpreopened files"
+      fi
+    fi
+
+    if test -n "$my_dlsyms"; then
+      case $my_dlsyms in
+      "") ;;
+      *.c)
+	# Discover the nlist of each of the dlfiles.
+	nlist="$output_objdir/${my_outputname}.nm"
+
+	func_show_eval "$RM $nlist ${nlist}S ${nlist}T"
+
+	# Parse the name list into a source file.
+	func_verbose "creating $output_objdir/$my_dlsyms"
+
+	$opt_dry_run || $ECHO > "$output_objdir/$my_dlsyms" "\
+/* $my_dlsyms - symbol resolution table for \`$my_outputname' dlsym emulation. */
+/* Generated by $PROGRAM (GNU $PACKAGE$TIMESTAMP) $VERSION */
+
+#ifdef __cplusplus
+extern \"C\" {
+#endif
+
+/* External symbol declarations for the compiler. */\
+"
+
+	if test "$dlself" = yes; then
+	  func_verbose "generating symbol list for \`$output'"
+
+	  $opt_dry_run || echo ': @PROGRAM@ ' > "$nlist"
+
+	  # Add our own program objects to the symbol list.
+	  progfiles=`$ECHO "X$objs$old_deplibs" | $SP2NL | $Xsed -e "$lo2o" | $NL2SP`
+	  for progfile in $progfiles; do
+	    func_verbose "extracting global C symbols from \`$progfile'"
+	    $opt_dry_run || eval "$NM $progfile | $global_symbol_pipe >> '$nlist'"
+	  done
+
+	  if test -n "$exclude_expsyms"; then
+	    $opt_dry_run || {
+	      eval '$EGREP -v " ($exclude_expsyms)$" "$nlist" > "$nlist"T'
+	      eval '$MV "$nlist"T "$nlist"'
+	    }
+	  fi
+
+	  if test -n "$export_symbols_regex"; then
+	    $opt_dry_run || {
+	      eval '$EGREP -e "$export_symbols_regex" "$nlist" > "$nlist"T'
+	      eval '$MV "$nlist"T "$nlist"'
+	    }
+	  fi
+
+	  # Prepare the list of exported symbols
+	  if test -z "$export_symbols"; then
+	    export_symbols="$output_objdir/$outputname.exp"
+	    $opt_dry_run || {
+	      $RM $export_symbols
+	      eval "${SED} -n -e '/^: @PROGRAM@ $/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
+	      case $host in
+	      *cygwin* | *mingw* )
+                eval "echo EXPORTS "'> "$output_objdir/$outputname.def"'
+                eval 'cat "$export_symbols" >> "$output_objdir/$outputname.def"'
+	        ;;
+	      esac
+	    }
+	  else
+	    $opt_dry_run || {
+	      eval "${SED} -e 's/\([].[*^$]\)/\\\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$outputname.exp"'
+	      eval '$GREP -f "$output_objdir/$outputname.exp" < "$nlist" > "$nlist"T'
+	      eval '$MV "$nlist"T "$nlist"'
+	      case $host in
+	        *cygwin | *mingw* )
+	          eval "echo EXPORTS "'> "$output_objdir/$outputname.def"'
+	          eval 'cat "$nlist" >> "$output_objdir/$outputname.def"'
+	          ;;
+	      esac
+	    }
+	  fi
+	fi
+
+	for dlprefile in $dlprefiles; do
+	  func_verbose "extracting global C symbols from \`$dlprefile'"
+	  func_basename "$dlprefile"
+	  name="$func_basename_result"
+	  $opt_dry_run || {
+	    eval '$ECHO ": $name " >> "$nlist"'
+	    eval "$NM $dlprefile 2>/dev/null | $global_symbol_pipe >> '$nlist'"
+	  }
+	done
+
+	$opt_dry_run || {
+	  # Make sure we have at least an empty file.
+	  test -f "$nlist" || : > "$nlist"
+
+	  if test -n "$exclude_expsyms"; then
+	    $EGREP -v " ($exclude_expsyms)$" "$nlist" > "$nlist"T
+	    $MV "$nlist"T "$nlist"
+	  fi
+
+	  # Try sorting and uniquifying the output.
+	  if $GREP -v "^: " < "$nlist" |
+	      if sort -k 3 </dev/null >/dev/null 2>&1; then
+		sort -k 3
+	      else
+		sort +2
+	      fi |
+	      uniq > "$nlist"S; then
+	    :
+	  else
+	    $GREP -v "^: " < "$nlist" > "$nlist"S
+	  fi
+
+	  if test -f "$nlist"S; then
+	    eval "$global_symbol_to_cdecl"' < "$nlist"S >> "$output_objdir/$my_dlsyms"'
+	  else
+	    $ECHO '/* NONE */' >> "$output_objdir/$my_dlsyms"
+	  fi
+
+	  $ECHO >> "$output_objdir/$my_dlsyms" "\
+
+/* The mapping between symbol names and symbols.  */
+typedef struct {
+  const char *name;
+  void *address;
+} lt_dlsymlist;
+"
+	  case $host in
+	  *cygwin* | *mingw* )
+	    $ECHO >> "$output_objdir/$my_dlsyms" "\
+/* DATA imports from DLLs on WIN32 con't be const, because
+   runtime relocations are performed -- see ld's documentation
+   on pseudo-relocs.  */"
+	    lt_dlsym_const= ;;
+	  *osf5*)
+	    echo >> "$output_objdir/$my_dlsyms" "\
+/* This system does not cope well with relocations in const data */"
+	    lt_dlsym_const= ;;
+	  *)
+	    lt_dlsym_const=const ;;
+	  esac
+
+	  $ECHO >> "$output_objdir/$my_dlsyms" "\
+extern $lt_dlsym_const lt_dlsymlist
+lt_${my_prefix}_LTX_preloaded_symbols[];
+$lt_dlsym_const lt_dlsymlist
+lt_${my_prefix}_LTX_preloaded_symbols[] =
+{\
+  { \"$my_originator\", (void *) 0 },"
+
+	  case $need_lib_prefix in
+	  no)
+	    eval "$global_symbol_to_c_name_address" < "$nlist" >> "$output_objdir/$my_dlsyms"
+	    ;;
+	  *)
+	    eval "$global_symbol_to_c_name_address_lib_prefix" < "$nlist" >> "$output_objdir/$my_dlsyms"
+	    ;;
+	  esac
+	  $ECHO >> "$output_objdir/$my_dlsyms" "\
+  {0, (void *) 0}
+};
+
+/* This works around a problem in FreeBSD linker */
+#ifdef FREEBSD_WORKAROUND
+static const void *lt_preloaded_setup() {
+  return lt_${my_prefix}_LTX_preloaded_symbols;
+}
+#endif
+
+#ifdef __cplusplus
+}
+#endif\
+"
+	} # !$opt_dry_run
+
+	pic_flag_for_symtable=
+	case "$compile_command " in
+	*" -static "*) ;;
+	*)
+	  case $host in
+	  # compiling the symbol table file with pic_flag works around
+	  # a FreeBSD bug that causes programs to crash when -lm is
+	  # linked before any other PIC object.  But we must not use
+	  # pic_flag when linking with -static.  The problem exists in
+	  # FreeBSD 2.2.6 and is fixed in FreeBSD 3.1.
+	  *-*-freebsd2*|*-*-freebsd3.0*|*-*-freebsdelf3.0*)
+	    pic_flag_for_symtable=" $pic_flag -DFREEBSD_WORKAROUND" ;;
+	  *-*-hpux*)
+	    pic_flag_for_symtable=" $pic_flag"  ;;
+	  *)
+	    if test "X$my_pic_p" != Xno; then
+	      pic_flag_for_symtable=" $pic_flag"
+	    fi
+	    ;;
+	  esac
+	  ;;
+	esac
+	symtab_cflags=
+	for arg in $LTCFLAGS; do
+	  case $arg in
+	  -pie | -fpie | -fPIE) ;;
+	  *) symtab_cflags="$symtab_cflags $arg" ;;
+	  esac
+	done
+
+	# Now compile the dynamic symbol file.
+	func_show_eval '(cd $output_objdir && $LTCC$symtab_cflags -c$no_builtin_flag$pic_flag_for_symtable "$my_dlsyms")' 'exit $?'
+
+	# Clean up the generated files.
+	func_show_eval '$RM "$output_objdir/$my_dlsyms" "$nlist" "${nlist}S" "${nlist}T"'
+
+	# Transform the symbol file into the correct name.
+	symfileobj="$output_objdir/${my_outputname}S.$objext"
+	case $host in
+	*cygwin* | *mingw* )
+	  if test -f "$output_objdir/$my_outputname.def"; then
+	    compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/$my_outputname.def $symfileobj%"`
+	    finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/$my_outputname.def $symfileobj%"`
+	  else
+	    compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
+	    finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
+	  fi
+	  ;;
+	*)
+	  compile_command=`$ECHO "X$compile_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
+	  finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$symfileobj%"`
+	  ;;
+	esac
+	;;
+      *)
+	func_fatal_error "unknown suffix for \`$my_dlsyms'"
+	;;
+      esac
+    else
+      # We keep going just in case the user didn't refer to
+      # lt_preloaded_symbols.  The linker will fail if global_symbol_pipe
+      # really was required.
+
+      # Nullify the symbol file.
+      compile_command=`$ECHO "X$compile_command" | $Xsed -e "s% @SYMFILE@%%"`
+      finalize_command=`$ECHO "X$finalize_command" | $Xsed -e "s% @SYMFILE@%%"`
+    fi
+}
+
+# func_win32_libid arg
+# return the library type of file 'arg'
+#
+# Need a lot of goo to handle *both* DLLs and import libs
+# Has to be a shell function in order to 'eat' the argument
+# that is supplied when $file_magic_command is called.
+func_win32_libid ()
+{
+  $opt_debug
+  win32_libid_type="unknown"
+  win32_fileres=`file -L $1 2>/dev/null`
+  case $win32_fileres in
+  *ar\ archive\ import\ library*) # definitely import
+    win32_libid_type="x86 archive import"
+    ;;
+  *ar\ archive*) # could be an import, or static
+    if eval $OBJDUMP -f $1 | $SED -e '10q' 2>/dev/null |
+       $EGREP 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
+      win32_nmres=`eval $NM -f posix -A $1 |
+	$SED -n -e '
+	    1,100{
+		/ I /{
+		    s,.*,import,
+		    p
+		    q
+		}
+	    }'`
+      case $win32_nmres in
+      import*)  win32_libid_type="x86 archive import";;
+      *)        win32_libid_type="x86 archive static";;
+      esac
+    fi
+    ;;
+  *DLL*)
+    win32_libid_type="x86 DLL"
+    ;;
+  *executable*) # but shell scripts are "executable" too...
+    case $win32_fileres in
+    *MS\ Windows\ PE\ Intel*)
+      win32_libid_type="x86 DLL"
+      ;;
+    esac
+    ;;
+  esac
+  $ECHO "$win32_libid_type"
+}
+
+
+
+# func_extract_an_archive dir oldlib
+func_extract_an_archive ()
+{
+    $opt_debug
+    f_ex_an_ar_dir="$1"; shift
+    f_ex_an_ar_oldlib="$1"
+    func_show_eval "(cd \$f_ex_an_ar_dir && $AR x \"\$f_ex_an_ar_oldlib\")" 'exit $?'
+    if ($AR t "$f_ex_an_ar_oldlib" | sort | sort -uc >/dev/null 2>&1); then
+     :
+    else
+      func_fatal_error "object name conflicts in archive: $f_ex_an_ar_dir/$f_ex_an_ar_oldlib"
+    fi
+}
+
+
+# func_extract_archives gentop oldlib ...
+func_extract_archives ()
+{
+    $opt_debug
+    my_gentop="$1"; shift
+    my_oldlibs=${1+"$@"}
+    my_oldobjs=""
+    my_xlib=""
+    my_xabs=""
+    my_xdir=""
+
+    for my_xlib in $my_oldlibs; do
+      # Extract the objects.
+      case $my_xlib in
+	[\\/]* | [A-Za-z]:[\\/]*) my_xabs="$my_xlib" ;;
+	*) my_xabs=`pwd`"/$my_xlib" ;;
+      esac
+      func_basename "$my_xlib"
+      my_xlib="$func_basename_result"
+      my_xlib_u=$my_xlib
+      while :; do
+        case " $extracted_archives " in
+	*" $my_xlib_u "*)
+	  extracted_serial=`expr $extracted_serial + 1`
+	  my_xlib_u=lt$extracted_serial-$my_xlib ;;
+	*) break ;;
+	esac
+      done
+      extracted_archives="$extracted_archives $my_xlib_u"
+      my_xdir="$my_gentop/$my_xlib_u"
+
+      func_mkdir_p "$my_xdir"
+
+      case $host in
+      *-darwin*)
+	func_verbose "Extracting $my_xabs"
+	# Do not bother doing anything if just a dry run
+	$opt_dry_run || {
+	  darwin_orig_dir=`pwd`
+	  cd $my_xdir || exit $?
+	  darwin_archive=$my_xabs
+	  darwin_curdir=`pwd`
+	  darwin_base_archive=`basename "$darwin_archive"`
+	  darwin_arches=`lipo -info "$darwin_archive" 2>/dev/null | $GREP Architectures 2>/dev/null || true`
+	  if test -n "$darwin_arches"; then
+	    darwin_arches=`$ECHO "$darwin_arches" | $SED -e 's/.*are://'`
+	    darwin_arch=
+	    func_verbose "$darwin_base_archive has multiple architectures $darwin_arches"
+	    for darwin_arch in  $darwin_arches ; do
+	      func_mkdir_p "unfat-$$/${darwin_base_archive}-${darwin_arch}"
+	      lipo -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
+	      cd "unfat-$$/${darwin_base_archive}-${darwin_arch}"
+	      func_extract_an_archive "`pwd`" "${darwin_base_archive}"
+	      cd "$darwin_curdir"
+	      $RM "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}"
+	    done # $darwin_arches
+            ## Okay now we've a bunch of thin objects, gotta fatten them up :)
+	    darwin_filelist=`find unfat-$$ -type f -name \*.o -print -o -name \*.lo -print| xargs basename | sort -u | $NL2SP`
+	    darwin_file=
+	    darwin_files=
+	    for darwin_file in $darwin_filelist; do
+	      darwin_files=`find unfat-$$ -name $darwin_file -print | $NL2SP`
+	      lipo -create -output "$darwin_file" $darwin_files
+	    done # $darwin_filelist
+	    $RM -rf unfat-$$
+	    cd "$darwin_orig_dir"
+	  else
+	    cd $darwin_orig_dir
+	    func_extract_an_archive "$my_xdir" "$my_xabs"
+	  fi # $darwin_arches
+	} # !$opt_dry_run
+	;;
+      *)
+        func_extract_an_archive "$my_xdir" "$my_xabs"
+	;;
+      esac
+      my_oldobjs="$my_oldobjs "`find $my_xdir -name \*.$objext -print -o -name \*.lo -print | $NL2SP`
+    done
+
+    func_extract_archives_result="$my_oldobjs"
+}
+
+
+
 # func_emit_wrapper arg
 #
 # emit a libtool wrapper script on stdout
@@ -2926,9 +2944,13 @@ EOF
 # include <direct.h>
 # include <process.h>
 # include <io.h>
+# define setmode _setmode
 #else
 # include <unistd.h>
 # include <stdint.h>
+# ifdef __CYGWIN__
+#  include <io.h>
+# endif
 #endif
 #include <malloc.h>
 #include <stdarg.h>
@@ -3072,7 +3094,7 @@ EOF
 	    case "$host" in
 	      *mingw* | *cygwin* )
 		# make stdout use "unix" line endings
-		echo "          _setmode(1,_O_BINARY);"
+		echo "          setmode(1,_O_BINARY);"
 		;;
 	      esac
 

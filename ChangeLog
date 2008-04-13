@@ -1,3 +1,8 @@
+2008-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteJPEGImage): Output grayscale images more
+	efficiently.
+
 2008-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lcms: Updated lcms to 1.17.

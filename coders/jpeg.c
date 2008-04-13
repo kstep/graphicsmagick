@@ -1973,10 +1973,21 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               if (p == (const PixelPacket *) NULL)
                 break;
               q=jpeg_pixels;
-              for (x=0; x < (long) image->columns; x++)
+              if (image->is_grayscale)
                 {
-                  *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16);
-                  p++;
+                  for (x=0; x < (long) image->columns; x++)
+                    {
+                      *q++=(JSAMPLE) (ScaleQuantumToShort(GetGraySample(p))/16U);
+                      p++;
+                    }
+                }
+              else
+                {
+                  for (x=0; x < (long) image->columns; x++)
+                    {
+                      *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16U);
+                      p++;
+                    }
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
@@ -2051,10 +2062,21 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             if (p == (const PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
-            for (x=0; x < (long) image->columns; x++)
+            if (image->is_grayscale)
+                {
+                  for (x=0; x < (long) image->columns; x++)
+                  {
+                    *q++=(JSAMPLE) ScaleQuantumToChar(GetGraySample(p));
+                    p++;
+                  }
+                }
+            else
               {
-                *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
-                p++;
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                    p++;
+                  }
               }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
