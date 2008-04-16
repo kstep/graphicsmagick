@@ -273,7 +273,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Annotate the text image.
   */
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;
   (void) CloneString(&draw_info->text,image_info->filename);
@@ -334,7 +334,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->rows=image->rows;
     image=SyncNextImageInList(image);
     (void) strlcpy(image->filename,filename,MaxTextExtent);
-    SetImage(image,OpaqueOpacity);
+    (void) SetImage(image,OpaqueOpacity);
     if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
       break;
   }

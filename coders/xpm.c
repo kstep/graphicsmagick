@@ -358,7 +358,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         r=SetImagePixels(image,0,y,image->columns,1);
         if (r == (PixelPacket *) NULL)
-          break;
+          {
+            CopyException(exception,&image->exception);
+            break;
+          }
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
@@ -376,7 +379,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p+=width;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            CopyException(exception,&image->exception);
+            break;
+          }
       }
       if (y < (long) image->rows)
         ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);

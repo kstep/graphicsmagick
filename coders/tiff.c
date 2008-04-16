@@ -1244,9 +1244,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   AlphaType
     alpha_type=UnspecifiedAlpha;
 
-  unsigned int
+  MagickBool
     filename_is_temporary=False,
     logging,
+    more_frames;
+
+  MagickPassFail
     status;
 
   /*
@@ -1258,6 +1261,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   logging=IsEventLogging();
   image=AllocateImage(image_info);
+  more_frames=MagickFalse;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
@@ -1791,6 +1795,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -1815,6 +1820,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                             planar_config,sample,&quantum_type,
                                             &quantum_samples) == MagickFail)
                       {
+                        CopyException(exception,&image->exception);
                         status=MagickFail;
                         break;
                       }
@@ -1831,6 +1837,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     if (ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline,
                                              &import_options,0) == MagickFail)
                       {
+                        CopyException(exception,&image->exception);
                         status=MagickFail;
                         break;
                       }
@@ -1847,6 +1854,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 */
                 if (!SyncImagePixels(image))
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -1942,6 +1950,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                         planar_config,sample,&quantum_type,
                                         &quantum_samples) == MagickFail)
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -1956,6 +1965,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       q=GetImagePixels(image,0,y,image->columns,1);
                     if (q == (PixelPacket *) NULL)
                       {
+                        CopyException(exception,&image->exception);
                         status=MagickFail;
                         break;
                       }
@@ -1993,6 +2003,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     if (ImportImagePixelArea(image,quantum_type,bits_per_sample,p,
                                              &import_options,0) == MagickFail)
                       {
+                        CopyException(exception,&image->exception);
                         status=MagickFail;
                         break;
                       }
@@ -2007,6 +2018,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     */
                     if (!SyncImagePixels(image))
                       {
+                        CopyException(exception,&image->exception);
                         status=MagickFail;
                         break;
                       }
@@ -2160,6 +2172,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                                 &quantum_type,&quantum_samples)
                             == MagickFail)
                           {
+                            CopyException(exception,&image->exception);
                             status=MagickFail;
                             break;
                           }
@@ -2187,6 +2200,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                               q=GetImagePixels(image,x,yy,tile_set_columns,1);
                             if (q == (PixelPacket *) NULL)
                               {
+                                CopyException(exception,&image->exception);
                                 status=MagickFail;
                                 break;
                               }
@@ -2205,6 +2219,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                                      &import_options,0)
                                 == MagickFail)
                               {
+                                CopyException(exception,&image->exception);
                                 status=MagickFail;
                                 break;
                               }
@@ -2219,6 +2234,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             */
                             if (!SyncImagePixels(image))
                               {
+                                CopyException(exception,&image->exception);
                                 status=MagickFail;
                                 break;
                               }
@@ -2288,6 +2304,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2319,6 +2336,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2408,6 +2426,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 strip=SetImagePixels(image,0,y,image->columns,tile_rows_remaining);
                 if (strip == (PixelPacket *) NULL)
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2475,6 +2494,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2538,6 +2558,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2568,6 +2589,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   DisassociateAlphaRegion(image);
                 if (!SyncImagePixels(image))
                   {
+                    CopyException(exception,&image->exception);
                     status=MagickFail;
                     break;
                   }
@@ -2585,45 +2607,51 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           }
         }
-      if (image->depth > QuantumDepth)
-        image->depth=QuantumDepth;
-      if ((photometric == PHOTOMETRIC_LOGL) ||
-          (photometric == PHOTOMETRIC_MINISBLACK) ||
-          (photometric == PHOTOMETRIC_MINISWHITE))
-        image->is_grayscale=MagickTrue;
-      if ((image->is_grayscale == MagickTrue) && (bits_per_sample == 1))
-        image->is_monochrome=MagickTrue;
-      /*
-        Proceed to next image.
-      */
-      if (image_info->subrange != 0)
-        if (image->scene >= (image_info->subimage+image_info->subrange-1))
-          break;
-      status=TIFFReadDirectory(tiff);
-      if (status == True)
+
+      if (status == MagickPass)
         {
+          if (image->depth > QuantumDepth)
+            image->depth=QuantumDepth;
+          if ((photometric == PHOTOMETRIC_LOGL) ||
+              (photometric == PHOTOMETRIC_MINISBLACK) ||
+              (photometric == PHOTOMETRIC_MINISWHITE))
+            image->is_grayscale=MagickTrue;
+          if ((image->is_grayscale == MagickTrue) && (bits_per_sample == 1))
+            image->is_monochrome=MagickTrue;
           /*
-            Allocate next image structure.
+            Proceed to next image.
           */
-          AllocateNextImage(image_info,image);
-          if (image->next == (Image *) NULL)
+          if (image_info->subrange != 0)
+            if (image->scene >= (image_info->subimage+image_info->subrange-1))
+              break;
+          more_frames=TIFFReadDirectory(tiff);
+          if (more_frames)
             {
-              DestroyImageList(image);
-              return((Image *) NULL);
+              /*
+                Allocate next image structure.
+              */
+              AllocateNextImage(image_info,image);
+              if (image->next == (Image *) NULL)
+                {
+                  DestroyImageList(image);
+                  return((Image *) NULL);
+                }
+              image=SyncNextImageInList(image);
+              status=MagickMonitor(LoadImageText,image->scene-1,image->scene,
+                                   &image->exception);
             }
-          image=SyncNextImageInList(image);
-          status=MagickMonitor(LoadImageText,image->scene-1,image->scene,
-                               &image->exception);
-          if (status == MagickFail)
-            break;
         }
-    } while (status == MagickPass);
+      
+      if (status == MagickFail)
+        break;
+
+    } while ((status == MagickPass) && (more_frames));
   TIFFClose(tiff);
   if (filename_is_temporary)
     (void) LiberateTemporaryFile(filename);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  return(image);
+  if (status == MagickFail)
+      DeleteImageFromList(&image);
+  return GetFirstImageInList(image);
 }
 #endif
 

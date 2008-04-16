@@ -620,7 +620,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
     {
@@ -1059,7 +1059,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "    setting up new layer image");
             }
-          SetImage(layer_info[i].image,OpaqueOpacity);
+          (void) SetImage(layer_info[i].image,OpaqueOpacity);
           layer_info[i].image->compose=
             PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
           if (layer_info[i].visible == False)

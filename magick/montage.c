@@ -545,7 +545,7 @@ MagickExport Image *MontageImages(const Image *images,
     (void) strlcpy(montage->filename,montage_info->filename,MaxTextExtent);
     montage->columns=bounds.width;
     montage->rows=bounds.height;
-    SetImage(montage,OpaqueOpacity);
+    (void) SetImage(montage,OpaqueOpacity);
     /*
       Set montage geometry.
     */

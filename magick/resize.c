@@ -1219,8 +1219,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (status == MagickFail)
     {
       DestroyImage(resize_image);
-      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToResizeImage)
+      return((Image *) NULL);
     }
   resize_image->is_grayscale=image->is_grayscale;
   return(resize_image);

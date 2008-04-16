@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -20,28 +20,29 @@ extern "C" {
 */
 typedef enum
 {
-  UndefinedResource,
-  FileResource,
-  MemoryResource,
-  MapResource,
-  DiskResource
+  UndefinedResource=0, /* Undefined value */
+  DiskResource,        /* Pixel cache total disk space (Gigabytes) */
+  FileResource,        /* Pixel cache number of open files (Files) */
+  MapResource,         /* Pixel cache total file memory-mapping (Megabytes) */
+  MemoryResource,      /* Maximum pixel cache heap memory allocations (Megabytes) */
+  PixelsResource       /* Maximum number of pixels in single image (Pixels) */
 } ResourceType;
 
 /*
   Method declarations.
 */
-extern MagickExport unsigned int
-  AcquireMagickResource(const ResourceType type,const magick_int64_t size),
+extern MagickExport MagickPassFail
+  AcquireMagickResource(const ResourceType type,const magick_uint64_t size),
   ListMagickResourceInfo(FILE *file,ExceptionInfo *exception),
-  SetMagickResourceLimit(const ResourceType type,const unsigned long limit);
+  SetMagickResourceLimit(const ResourceType type,const magick_int64_t limit);
 
-extern MagickExport unsigned long
+extern MagickExport magick_int64_t
   GetMagickResource(const ResourceType type);
 
 extern MagickExport void
   DestroyMagickResources(void),
   InitializeMagickResources(void),
-  LiberateMagickResource(const ResourceType type,const magick_int64_t size);
+  LiberateMagickResource(const ResourceType type,const magick_uint64_t size);
 
 
 #if defined(__cplusplus) || defined(c_plusplus)

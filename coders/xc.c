@@ -79,7 +79,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  unsigned int
+  MagickPassFail
     status;
 
   /*
@@ -97,10 +97,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=QueryColorDatabase((char *) image_info->filename,
     &image->background_color,exception);
-  if (status == False)
+  if (status == MagickFail)
     {
       DestroyImage(image);
-      return((Image *) NULL);
+      return ((Image *) NULL);
     }
   /*
     Create a colormap if image is not DirectClass type.
@@ -115,9 +115,15 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image pixels to the value of image->background_color
   */
-  SetImage(image,image->background_color.opacity);
+  status=SetImage(image,image->background_color.opacity);
+  if (status == MagickFail)
+    {
+      CopyException(exception,&image->exception);
+      DestroyImage(image);
+      image=(Image *) NULL;
+    }
 
-  return(image);
+  return image;
 }
 
 /*

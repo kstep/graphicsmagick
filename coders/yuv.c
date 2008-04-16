@@ -115,7 +115,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *scanline;
 
-  unsigned int
+  MagickPassFail
     status;
 
   InterlaceType
@@ -128,6 +128,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  status=MagickPass;
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,MustSpecifyImageSize,image);
@@ -162,7 +163,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Open image file.
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-      if (status == False)
+      if (status == MagickFail)
         ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       for (i=0; i < image->offset; i++)
         {
@@ -208,10 +209,16 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=scanline;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           chroma_pixels=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
           if (chroma_pixels == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           for (x=0; x < (long) image->columns; x+=2)
           {
             chroma_pixels->red=0;
@@ -235,7 +242,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=scanline;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              break;
+              status=MagickFail;
+            }
           for (x=0; x < (long) image->columns; x++)
           {
             q->red=ScaleCharToQuantum(*p++);
@@ -245,14 +255,25 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
       if (!SyncImagePixels(image))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       if (interlace == NoInterlace)
         if (!SyncImagePixels(chroma_image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
       if (image->previous == (Image *) NULL)
         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
     }
+    if (status == MagickFail)
+      break;
     if (interlace == PartitionInterlace)
       {
         CloseBlob(image);
@@ -269,7 +290,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=scanline;
           q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           for (x=0; x < (long) chroma_image->columns; x++)
           {
             q->red=0;
@@ -278,8 +302,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q++;
           }
           if (!SyncImagePixels(chroma_image))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
         }
+        if (status ==MagickFail)
+          break;
       if (interlace == PartitionInterlace)
         {
           CloseBlob(image);
@@ -294,15 +323,23 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=scanline;
         q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=0; x < (long) chroma_image->columns; x++)
         {
           q->blue=ScaleCharToQuantum(*p++);
           q++;
         }
         if (!SyncImagePixels(chroma_image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
       }
+      if (status == MagickFail)
+        break;
     }
     /*
       Scale image.
@@ -318,7 +355,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       r=AcquireImagePixels(resize_image,0,y,resize_image->columns,1,
         &resize_image->exception);
       if ((q == (PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       for (x=0; x < (long) image->columns; x++)
       {
         q->green=r->green;
@@ -327,9 +367,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q++;
       }
       if (!SyncImagePixels(image))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
     }
     DestroyImage(resize_image);
+    if (status == MagickFail)
+      break;
     image->colorspace=YCbCrColorspace;
     (void) TransformColorspace(image,RGBColorspace);
     if (interlace == PartitionInterlace)

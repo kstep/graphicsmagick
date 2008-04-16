@@ -263,7 +263,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   */
   (void) QueryColorDatabase("black",&histogram_image->background_color,
     &image->exception);
-  SetImage(histogram_image,OpaqueOpacity);
+  (void) SetImage(histogram_image,OpaqueOpacity);
   for (x=0; x < (long) histogram_image->columns; x++)
   {
     q=GetImagePixels(histogram_image,x,0,1,histogram_image->rows);

@@ -145,7 +145,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
     (unsigned long) ceil(max.y-min.y-0.5),True,exception);
   if (affine_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImage(affine_image,TransparentOpacity);
+  (void) SetImage(affine_image,TransparentOpacity);
   transform.sx=affine->sx;
   transform.rx=affine->rx;
   transform.ry=affine->ry;

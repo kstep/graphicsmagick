@@ -48,6 +48,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/profile.h"
+#include "magick/resource.h"
 #include "magick/utility.h"
 
 /*
@@ -651,8 +652,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  unsigned int
-    logging,
+  MagickBool
+    logging;
+
+  MagickPassFail
     status;
 
   unsigned long
@@ -673,7 +676,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         image);
     }
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize image structure.
@@ -691,11 +694,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery))
     {
       jpeg_destroy_decompress(&jpeg_info);
-      if (image->exception.severity > exception->severity)
-        CopyException(exception,&image->exception);
+      //if (image->exception.severity > exception->severity)
+      // CopyException(exception,&image->exception);
+      GetImageException(image,exception);
       CloseBlob(image);
-      number_pixels=image->columns*image->rows;
-      if (number_pixels != 0)
+      if (GetPixelCachePresent(image))
         return(image);
       DestroyImage(image);
       return((Image *) NULL);
@@ -1022,15 +1025,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   scanline[0]=(JSAMPROW) jpeg_pixels;
   for (y=0; y < (long) image->rows; y++)
   {
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFail;
+        break;
+      }
+    indexes=GetIndexes(image);
+
     /* FIXME .... */
     if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
       ThrowReaderException(CorruptImageError,CorruptImage,image);
 
     p=jpeg_pixels;
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
+
     if (jpeg_info.data_precision > 8) /* Should be == 12? */
       {
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
@@ -1080,12 +1088,18 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           }
         }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
   }
-  if (image->colorspace == CMYKColorspace)
+  if ((status == MagickPass) && (image->colorspace == CMYKColorspace))
     {
       /*
         Correct CMYK levels.
@@ -1110,14 +1124,14 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Free jpeg resources.
   */
-  (void) jpeg_finish_decompress(&jpeg_info);
+  if (status == MagickPass)
+    (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
   MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
   if (logging) 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-  if (image->exception.severity > exception->severity)
-    CopyException(exception,&image->exception);
+  GetImageException(image,exception);
   return(image);
 }
 #endif
@@ -1435,7 +1449,7 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
   destination->image=image;
 }
 
-static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   const ImageAttribute
     *attribute;
@@ -1469,7 +1483,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   struct jpeg_error_mgr
     jpeg_error;
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned long
@@ -1477,6 +1491,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     quality;
+
+  magick_int64_t
+    huffman_memory;
 
   ImageCharacteristics
     characteristics;
@@ -1690,14 +1707,22 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.dct_method=JDCT_FLOAT;
 
    /*
-     Don't enable Huffman optimization for large images (> 16 Mpixels)
-     in order to conserve memory.  The JPEG library must buffer the
-     entire image when Huffman optimization is enabled.  In the future
-     this limit may be adjusted via user option or automatically
-     determined based on available memory.
+     Huffman optimization requires that the whole image be buffered in
+     memory.  Since this is such a large consumer, obtain a memory
+     resource for the memory to be consumed.  If the memory resource
+     fails to be acquired, then don't enable huffman optimization.
    */
-  jpeg_info.optimize_coding=(((magick_uint64_t) image->columns * image->rows) <
-                             (magick_uint64_t) 1024UL*1024UL*16UL);
+  huffman_memory=(magick_int64_t) jpeg_info.input_components*
+    image->columns*image->rows*sizeof(JSAMPLE);
+  jpeg_info.optimize_coding=AcquireMagickResource(MemoryResource,huffman_memory);
+  if (!jpeg_info.optimize_coding)
+    huffman_memory=0;
+/*   jpeg_info.optimize_coding=(((magick_uint64_t) image->columns * image->rows) < */
+/*                              (magick_uint64_t) 1024UL*1024UL*16UL); */
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Huffman optimization is %s",
+                          (jpeg_info.optimize_coding ? "enabled" : "disabled"));
 
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)
@@ -1955,10 +1980,14 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to JPEG raster pixels.
   */
-  jpeg_pixels=MagickAllocateMemory(JSAMPLE *,
-    jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
+  jpeg_pixels=MagickAllocateArray(JSAMPLE *,
+    jpeg_info.input_components*image->columns,sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    {
+      if (huffman_memory)
+        LiberateMagickResource(MemoryResource,huffman_memory);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {
@@ -2143,6 +2172,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Free memory.
   */
+  if (huffman_memory)
+    LiberateMagickResource(MemoryResource,huffman_memory);
   jpeg_destroy_compress(&jpeg_info);
   MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);

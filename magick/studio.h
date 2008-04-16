@@ -300,6 +300,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #endif
 
 /*
+  Some 64-bit int support.
+*/
+#if defined(HAVE_STRTOLL) && (SIZEOF_SIGNED_LONG < 8)
+#  define MagickStrToL64(str,endptr,base) (strtoll(str,endptr,base))
+#else
+#  define MagickStrToL64(str,endptr,base) ((magick_int64_t) strtol(str,endptr,base))
+#endif
+#if defined(HAVE_ATOLL) && (SIZEOF_SIGNED_LONG < 8)
+#  define MagickAtoL64(str) (atoll(str))
+#else
+#  define MagickAtoL64(str) ((magick_int64_t) atol(str))
+#endif
+
+/*
   Review these platform specific definitions.
 */
 #if defined(POSIX)

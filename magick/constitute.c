@@ -5998,6 +5998,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
+      if (!magick_info->thread_support)
+        LiberateSemaphoreInfo(&constitute_semaphore);
+
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
@@ -6010,8 +6013,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Returned from \"%.1024s\" decoder, returned image is NULL!",
                               magick_info->name);
-      if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+
+      /*
+        Deal with errors in the image which were not properly reported
+        to exception.  If there is an exception at error level, then
+        destroy image so that bad image is not consumed by user.
+      */
+      if (image != (Image *) NULL)
+        {
+          GetImageException(image,exception);
+          if (exception->severity >= ErrorException)
+            {
+              DestroyImageList(image);
+              image=(Image *) NULL;
+            }
+        }
     }
   else
     {
@@ -6078,6 +6094,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
+      if (!magick_info->thread_support)
+        LiberateSemaphoreInfo(&constitute_semaphore);
+
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
@@ -6090,8 +6109,22 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Returned from \"%.1024s\" decoder: returned image is NULL!",
                               magick_info->name);
-      if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+
+      /*
+        Deal with errors in the image which were not properly reported
+        to exception.  If there is an exception at error level, then
+        destroy image so that bad image is not consumed by user.
+      */
+      if (image != (Image *) NULL)
+        {
+          GetImageException(image,exception);
+          if (exception->severity >= ErrorException)
+            {
+              DestroyImageList(image);
+              image=(Image *) NULL;
+            }
+        }
+
       /*
         Restore original input file magick in case read is from a
         temporary file prepared by an external delegate.  The user

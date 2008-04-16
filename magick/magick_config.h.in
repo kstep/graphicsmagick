@@ -60,6 +60,9 @@
 /* Define to 1 if you have the `argz_stringify' function. */
 #undef HAVE_ARGZ_STRINGIFY
 
+/* Define to 1 if you have the `atoll' function. */
+#undef HAVE_ATOLL
+
 /* define if bool is a built-in type */
 #undef HAVE_BOOL
 
@@ -154,6 +157,9 @@
 
 /* Define if libdlloader will be built on this platform */
 #undef HAVE_LIBDLLOADER
+
+/* Define to 1 if you have the `lltostr' function. */
+#undef HAVE_LLTOSTR
 
 /* Define to 1 if the type `long double' works and has more range or precision
    than `double'. */
@@ -284,6 +290,9 @@
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
+/* Define to 1 if you have the `strtoll' function. */
+#undef HAVE_STRTOLL
+
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
 
@@ -339,6 +348,9 @@
 
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
+
+/* Define to 1 if you have the `ulltostr' function. */
+#undef HAVE_ULLTOSTR
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H

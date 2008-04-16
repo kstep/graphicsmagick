@@ -379,7 +379,7 @@ do { \
     { \
       ThrowException(&image->exception,severity_,reason_,description_); \
     } \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #define ThrowBinaryException2(severity_,reason_,description_) \
@@ -388,7 +388,7 @@ do { \
     { \
       ThrowException2(&image->exception,severity_,reason_,description_); \
     } \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #define ThrowBinaryException3(severity_,reason_,description_) \
@@ -397,7 +397,7 @@ do { \
     { \
       ThrowException3(&image->exception,severity_,reason_,description_); \
     } \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #define ThrowImageException(code_,reason_,description_) \
@@ -440,7 +440,7 @@ do { \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #define ThrowWriterException2(code_,reason_,image_) \
@@ -451,7 +451,7 @@ do { \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #define ThrowWriterException3(code_,reason_,image_) \
@@ -462,7 +462,7 @@ do { \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
-  return(False); \
+  return(MagickFail); \
 } while (0);
 
 #if defined(__cplusplus) || defined(c_plusplus)

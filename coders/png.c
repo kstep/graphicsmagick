@@ -2405,7 +2405,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       MagickFreeMemory(png_pixels);
       image->colors=2;
-      SetImage(image,TransparentOpacity);
+      (void) SetImage(image,TransparentOpacity);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       LiberateSemaphoreInfo(&png_semaphore);
 #endif
@@ -4140,7 +4140,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->background_color=mng_background_color;
                   image->matte=False;
                   image->delay=0;
-                  SetImage(image,OpaqueOpacity);
+                  (void) SetImage(image,OpaqueOpacity);
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                           "  Inserted background layer, L=%ld, R=%ld, T=%ld, B=%ld",
@@ -4608,7 +4608,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->page.x=0;
                   image->page.y=0;
                   image->background_color=mng_background_color;
-                  SetImage(image,TransparentOpacity);
+                  (void) SetImage(image,TransparentOpacity);
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                           "  Inserted transparent background layer, W=%lud, H=%lud",
@@ -4655,7 +4655,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->page.y=mng_info->clip.top;
               image->background_color=mng_background_color;
               image->matte=False;
-              SetImage(image,OpaqueOpacity);
+              (void) SetImage(image,OpaqueOpacity);
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "  Inserted background layer, L=%ld, R=%ld, T=%ld, B=%ld",
@@ -4873,11 +4873,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
 
                   if (image->matte)
-                    SetImage(large_image,TransparentOpacity);
+                    (void) SetImage(large_image,TransparentOpacity);
                   else
                     {
                       large_image->background_color.opacity=OpaqueOpacity;
-                      SetImage(large_image,OpaqueOpacity);
+                      (void) SetImage(large_image,OpaqueOpacity);
                       if (magn_methx == 4)
                         magn_methx=2;
                       if (magn_methx == 5)
@@ -5185,7 +5185,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->columns=1;
                   image->rows=1;
                   image->colors=2;
-                  SetImage(image,TransparentOpacity);
+                  (void) SetImage(image,TransparentOpacity);
                   image->page.width=1;
                   image->page.height=1;
                   image->page.x=0;
@@ -5327,7 +5327,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->background_color=mng_background_color;
       image->matte=False;
       if (!image_info->ping)
-        SetImage(image,OpaqueOpacity);
+        (void) SetImage(image,OpaqueOpacity);
       mng_info->image_found++;
     }
 #endif

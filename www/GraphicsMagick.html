@@ -695,17 +695,6 @@ details.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-cache"></a>-cache <i>&lt;threshold&gt;</i>
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>(This option has been replaced by the -limit option)</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
     <a name="details-channel"></a>-channel <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of channel</td></tr></table>
@@ -2656,26 +2645,41 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, or Memory resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The value for File is in number of files and the values for the other
-resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
-4096MB map, and unlimited disk, but these are adjusted at startup
-time on platforms that can provide information about available resources.
-When the limit is reached, GraphicsMagick will fail in some fashion, or
-take compensating actions if possible.
-For example, <tt>-limit memory 32 -limit map 64</tt> limits memory.
-When the pixel cache reaches the memory limit it uses
-memory mapping.  When that limit is reached it goes to disk.  If disk has
-a hard limit, the program will fail.</font></td></tr></table>
+By default, resource limits are estimated based on the available
+resources of the system. The resource limits are <strong>Disk</strong>, maximum
+total disk space consumed; <strong>File</strong>, maximum number of file
+descriptors allowed to be open at once; <strong>Map</strong>, maximum total number
+of file bytes which may be memory mapped; <strong>Memory</strong>, maximum total
+number of bytes of heap memory used for image storage; and <strong>Pixels</strong>,
+maximum absolute image size (per image).
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+These resource limits are used to decide if (for a given image) the
+decoded image ("pixel cache") should be stored in heap memory (RAM), in a
+memory-mapped disk file, or in a disk file accessed via read/write I/O.
+The number of total pixels in one image may also be limited in order to
+force the reading, or creation of images larger than the limit (in
+pixels) to intentionally fail. The disk limit establishes an overall
+limit since using the disk is the means of last resort. When the disk
+limit has been reached, no more images may be read.
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The value argument is an absolute value, but may have standard binary
+suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
+scaling to the value (based on a multiplier of 1024). Any additional
+characters are ignored. For example, <tt>'-limit Pixels 10MP'</tt> limits
+the maximum image size to 10 megapixels and <tt>'-limit memory 32MB
+-limit map 64MB'</tt> limits memory and memory mapped files to 32
+megabytes and 64 megabytes respectively.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
-<strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MEMORY</strong>, and
-<strong>MAGICK_LIMIT_MAP</strong>, may be used to set the limits for disk space,
-open files, heap memory, and memory map size, respectively.</font></td></tr></table>
+<strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MAP</strong>,
+<strong>MAGICK_LIMIT_MEMORY</strong>, and <strong>MAGICK_LIMIT_PIXELS</strong> may be used to
+set the limits for disk space, open files, memory mapped size, heap
+memory, and per-image pixels respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-You can use the option <tt>-list resource</tt> to find out the limits.</font></td></tr></table>
+Use the option <tt>-list resource</tt> list the current limits.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

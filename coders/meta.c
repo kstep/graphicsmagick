@@ -1051,7 +1051,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   image->columns=1;
   image->rows=1;
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   length=1;
   if (LocaleNCompare(image_info->magick,"8BIM",4) == 0)
     {

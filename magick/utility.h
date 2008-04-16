@@ -146,6 +146,9 @@ extern MagickExport void
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3))),
   FormatStringList(char *string,const char *format,va_list operands);
 
+extern MagickExport magick_int64_t
+  MagickSizeStrToInt64(const char *str,const unsigned int kilo);
+
 extern MagickExport size_t
   MagickStrlCat(char *dst, const char *src, const size_t size),
   MagickStrlCpy(char *dst, const char *src, const size_t size),

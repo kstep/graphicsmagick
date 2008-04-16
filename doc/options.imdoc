@@ -286,18 +286,6 @@ details.</pp>
 
 
 
-<!-- ------------ -cache -------------------------------------------- -->
-
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
-<dopt>-cache <threshold></opt>
-
-<abs>(This option has been replaced by the -limit option)</abs>
-
-</utils>
-
-
-
-
 <!-- ------------ -channel ------------------------------------------ -->
 
 <utils apps=convert,mogrify>
@@ -2510,29 +2498,46 @@ interface works similar to Photoshop's "Image->Adjustments->Levels..."
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-limit <type> <value></opt>
 
-<abs>Disk, File, Map, or Memory resource limit</abs>
+<abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
 
 <pp>
-The value for File is in number of files and the values for the other
-resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
-4096MB map, and unlimited disk, but these are adjusted at startup
-time on platforms that can provide information about available resources.
-When the limit is reached, GraphicsMagick will fail in some fashion, or
-take compensating actions if possible.
-For example, <tt>-limit memory 32 -limit map 64</tt> limits memory.
-When the pixel cache reaches the memory limit it uses
-memory mapping.  When that limit is reached it goes to disk.  If disk has
-a hard limit, the program will fail.</pp>
+By default, resource limits are estimated based on the available
+resources of the system. The resource limits are <s>Disk</s>, maximum
+total disk space consumed; <s>File</s>, maximum number of file
+descriptors allowed to be open at once; <s>Map</s>, maximum total number
+of file bytes which may be memory mapped; <s>Memory</s>, maximum total
+number of bytes of heap memory used for image storage; and <s>Pixels</s>,
+maximum absolute image size (per image).</p>
+
+<pp>
+These resource limits are used to decide if (for a given image) the
+decoded image ("pixel cache") should be stored in heap memory (RAM), in a
+memory-mapped disk file, or in a disk file accessed via read/write I/O.
+The number of total pixels in one image may also be limited in order to
+force the reading, or creation of images larger than the limit (in
+pixels) to intentionally fail. The disk limit establishes an overall
+limit since using the disk is the means of last resort. When the disk
+limit has been reached, no more images may be read.</p>
+
+<pp>
+The value argument is an absolute value, but may have standard binary
+suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
+scaling to the value (based on a multiplier of 1024). Any additional
+characters are ignored. For example, <tt>'-limit Pixels 10MP'</tt> limits
+the maximum image size to 10 megapixels and <tt>'-limit memory 32MB
+-limit map 64MB'</tt> limits memory and memory mapped files to 32
+megabytes and 64 megabytes respectively.</p>
 
 <pp>
 Resource limits may also be set using environment variables. The
 environment variables <s>MAGICK_LIMIT_DISK</s>,
-<s>MAGICK_LIMIT_FILES</s>, <s>MAGICK_LIMIT_MEMORY</s>, and
-<s>MAGICK_LIMIT_MAP</s>, may be used to set the limits for disk space,
-open files, heap memory, and memory map size, respectively.</pp>
+<s>MAGICK_LIMIT_FILES</s>, <s>MAGICK_LIMIT_MAP</s>,
+<s>MAGICK_LIMIT_MEMORY</s>, and <s>MAGICK_LIMIT_PIXELS</s> may be used to
+set the limits for disk space, open files, memory mapped size, heap
+memory, and per-image pixels respectively.</pp>
 
 <pp>
-You can use the option <tt>-list resource</tt> to find out the limits.</pp>
+Use the option <tt>-list resource</tt> list the current limits.</pp>
 
 </utils>
 

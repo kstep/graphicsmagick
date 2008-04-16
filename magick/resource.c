@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -24,6 +24,10 @@
 %                                John Cristy                                  %
 %                               September 2002                                %
 %                                                                             %
+%                            Completely Re-written                            %
+%                               Bob Friesenhahn                               %
+%                                 April 2008                                  %
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,28 +47,37 @@
 /*
   Define  declarations.
 */
-#define ResourceInfinity  (~0UL)
-#define ResourceToMegabytes(value) ((double) (value)*1024.0*1024.0)
-#define MegabytesToResource(value) ((unsigned long) ((value)/1024.0/1024.0))
-#define GigabytesToResource(value) \
-  ((unsigned long) ((value)/1024.0/1024.0/1024.0))
+#define ResourceInfinity  (-1)
+#define ResourceInfoMaxIndex ((unsigned int) PixelsResource)
 
 /*
   Typedef declarations.
 */
+typedef enum
+{
+  AbsoluteLimit,
+  SummationLimit
+} LimitType;
+
+/*
+  Definition of a resource.  We intentionally use signed types to
+  store 'value' and 'limit'.
+*/
 typedef struct _ResourceInfo
 {
-  double
-    file,
-    memory,
-    map,
-    disk;
+  const char
+    *name,
+    *units;
 
-  unsigned long
-    file_limit,
-    memory_limit,
-    map_limit,
-    disk_limit;
+  magick_int64_t
+    value;
+
+  magick_int64_t
+    limit;
+
+  LimitType
+    limit_type;
+
 } ResourceInfo;
 
 /*
@@ -74,9 +87,14 @@ static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
 
 static ResourceInfo
-  resource_info =
+  resource_info[ResourceInfoMaxIndex+1] =
   {
-    0, 0, 0, 0, 256, 1024, 4096, ResourceInfinity
+    { "",       "",  0, ResourceInfinity, SummationLimit },
+    { "disk",   "B", 0, ResourceInfinity, SummationLimit },
+    { "file",   "",  0, 256,              SummationLimit },
+    { "map",    "B", 0, ResourceInfinity, SummationLimit },
+    { "memory", "B", 0, ResourceInfinity, SummationLimit },
+    { "pixels", "P", 0, ResourceInfinity, AbsoluteLimit  }
   };
 
 /*
@@ -95,7 +113,7 @@ static ResourceInfo
 %
 %  The format of the AcquireMagickResource() method is:
 %
-%      unsigned int AcquireMagickResource(const ResourceType type,
+%      MagickPassFail AcquireMagickResource(const ResourceType type,
 %        const magick_int64_t size)
 %
 %  A description of each parameter follows:
@@ -106,72 +124,109 @@ static ResourceInfo
 %
 %
 */
-MagickExport unsigned int AcquireMagickResource(const ResourceType type,
-  const magick_int64_t size)
+static ResourceInfo *GetResourceInfo(const ResourceType type)
 {
+  ResourceInfo
+    *info;
+
   unsigned int
+    index;
+
+  info = (ResourceInfo *) NULL;
+  index = type;
+  if (index <= ResourceInfoMaxIndex)
+    info = &resource_info[index];
+
+  return info;
+}
+
+MagickExport MagickPassFail AcquireMagickResource(const ResourceType type,
+                                                  const magick_uint64_t size)
+{
+  magick_uint64_t
+    value;
+
+  ResourceInfo
+    *info;
+
+  MagickPassFail
     status;
 
-  status=True;
+  status=MagickPass;
+
   AcquireSemaphoreInfo(&resource_semaphore);
-  switch (type)
+
+  if ((info=GetResourceInfo(type)))
     {
-    case FileResource:
-      {
-        resource_info.file+=size;
-        if (resource_info.file_limit == ResourceInfinity)
-          break;
-        status=resource_info.file <= resource_info.file_limit;
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "file +%lu/%lu/%lu",(unsigned long) size,
-                              (unsigned long) resource_info.file,
-                              resource_info.file_limit);
-        break;
-      }
-    case MemoryResource:
-      {
-        resource_info.memory+=size;
-        if (resource_info.memory_limit == ResourceInfinity)
-          break;
-        status=resource_info.memory <=
-          ResourceToMegabytes(resource_info.memory_limit);
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "memory +%lumb/%lumb/%lumb",
-                              MegabytesToResource(size),
-                              MegabytesToResource(resource_info.memory),
-                              resource_info.memory_limit);
-        break;
-      }
-    case MapResource:
-      {
-        resource_info.map+=size;
-        if (resource_info.map_limit == ResourceInfinity)
-          break;
-        status=resource_info.map <=
-          ResourceToMegabytes(resource_info.map_limit);
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "map +%lumb/%lumb/%lumb",MegabytesToResource(size),
-                              MegabytesToResource(resource_info.map),
-                              resource_info.map_limit);
-        break;
-      }
-    case DiskResource:
-      {
-        resource_info.disk+=size;
-        if (resource_info.disk_limit == ResourceInfinity)
-          break;
-        status=resource_info.disk <=
-          ResourceToMegabytes(resource_info.disk_limit);
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "disk +%lumb/%lugb/%lugb",
-                              MegabytesToResource(size),
-                              GigabytesToResource(resource_info.disk),
-                              resource_info.disk_limit/1024);
-        break;
-      }
-    default:
-      break;
+      switch(info->limit_type)
+        {
+        case AbsoluteLimit:
+          {
+            /*
+              Limit depends only on the currently requested size.
+            */
+            if ((info->limit != ResourceInfinity) &&
+                (size > (magick_uint64_t) info->limit))
+              status=MagickFail;
+            break;
+          }
+        case SummationLimit:
+          {
+            /*
+              Limit depends on sum of previous allocations as well as
+              the currently requested size.
+            */
+            value=info->value+size;
+            if ((info->limit != ResourceInfinity) &&
+                (value > (magick_uint64_t) info->limit))
+              status=MagickFail;
+            else
+              info->value=value;
+
+            break;
+          }
+        }
+
+      if (IsEventLogging())
+        {
+          char
+            f_limit[MaxTextExtent],
+            f_size[MaxTextExtent],
+            f_value[MaxTextExtent];
+
+          if (info->limit == ResourceInfinity)
+            {
+              strlcpy(f_limit,"Unlimited",sizeof(f_limit));
+            }
+          else
+            {
+              FormatSize(info->limit, f_limit);
+              strlcat(f_limit,info->units,sizeof(f_limit));
+            }
+
+          FormatSize(size, f_size);
+          strlcat(f_size,info->units,sizeof(f_size));
+
+          if (info->limit_type == AbsoluteLimit)
+            {
+              strlcpy(f_value,"----",sizeof(f_value));
+            }
+          else
+            {
+              FormatSize(info->value, f_value);
+              strlcat(f_value,info->units,sizeof(f_value));
+            }
+
+          (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                "%s %s%s/%s/%s",
+                                info->name,
+                                (status ? "+" : "!"),
+                                f_size,
+                                f_value,
+                                f_limit);
+        }
     }
+
   LiberateSemaphoreInfo(&resource_semaphore);
   return(status);
 }
@@ -219,11 +274,12 @@ MagickExport void DestroyMagickResources(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResource() returns the the specified resource in megabytes.
+%  GetMagickResource() returns the current consumption level for the
+%  specified resource type.
 %
 %  The format of the GetMagickResource() method is:
 %
-%      unsigned long GetMagickResource(const ResourceType type)
+%      magick_uint64_t GetMagickResource(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
@@ -231,38 +287,20 @@ MagickExport void DestroyMagickResources(void)
 %
 %
 */
-MagickExport unsigned long GetMagickResource(const ResourceType type)
+MagickExport magick_int64_t GetMagickResource(const ResourceType type)
 {
-  unsigned long
+  ResourceInfo
+    *info;
+
+  magick_int64_t
     resource;
 
   resource=0;
   AcquireSemaphoreInfo(&resource_semaphore);
-  switch (type)
-  {
-    case FileResource:
-    {
-      resource=(unsigned long) resource_info.file;
-      break;
-    }
-    case MemoryResource:
-    {
-      resource=MegabytesToResource(resource_info.memory);
-      break;
-    }
-    case MapResource:
-    {
-      resource=MegabytesToResource(resource_info.map);
-      break;
-    }
-    case DiskResource:
-    {
-      resource=MegabytesToResource(resource_info.disk);
-      break;
-    }
-    default:
-      break;
-  }
+
+  if ((info=GetResourceInfo(type)))
+    resource=info->value;
+
   LiberateSemaphoreInfo(&resource_semaphore);
   return(resource);
 }
@@ -288,11 +326,12 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 */
 MagickExport void InitializeMagickResources(void)
 {
-  unsigned long
+  magick_int64_t
+    max_disk=-1,
     max_files=256,
-    max_disk=ResourceInfinity,
     max_map=4096,
-    max_memory=1024;
+    max_memory=1024,
+    max_pixels=-1;
 
   /*
     Set Magick resource limits.
@@ -300,7 +339,9 @@ MagickExport void InitializeMagickResources(void)
 #if defined(POSIX)
   {
     long
-      files=-1,
+      files=-1;
+
+    unsigned long
       total_memory=0;
 
 #  if defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
@@ -353,10 +394,20 @@ MagickExport void InitializeMagickResources(void)
       max_files=files/2;
 
     if (total_memory > 0)
-      max_memory=2*total_memory;
+      {
+        /*
+          We are not able to use more than size_t worth of address
+          space.  On 32 bit systems, we can usually only use half or
+          three quarters of it.  Regardless, we need address space
+          for more than just image data.
+        */
+        size_t
+          size_t_max = (size_t) ~0UL;
 
-    if (total_memory > 0)
-      max_map=8*total_memory;
+        size_t_max /= (1024U*1024U);
+        max_memory = Min(size_t_max/2-100,2*total_memory);
+        max_map = Min(size_t_max/2-100,2*total_memory);
+      }
   }
 #endif /* defined(POSIX) */
 
@@ -420,6 +471,24 @@ MagickExport void InitializeMagickResources(void)
 #endif /* defined(MSWINDOWS) */
 
   /*
+    Compute fundamental limits based on build parameters.  Image size
+    is fundamentally limited by how many pixels may reside in one row.
+  */
+  if (sizeof(size_t) == 4)
+    max_pixels=(magick_int64_t) ((unsigned long) ULONG_MAX/(5*sizeof(Quantum)));
+
+
+  /*
+    Disk, map, and memory are in units of MB and need to be scaled up.
+  */
+  if (max_disk > 0)
+    max_disk  *= 1024UL*1024UL;
+  if (max_map > 0)
+    max_map   *= 1024UL*1024UL;
+  if (max_memory > 0)
+    max_memory *= 1024UL*1024UL;
+
+  /*
     Support using environment variables to set limits
   */
   {
@@ -427,22 +496,31 @@ MagickExport void InitializeMagickResources(void)
       *envp;
 
     if ((envp=getenv("MAGICK_LIMIT_DISK")))
-      max_disk=atol(envp);
+      max_disk=MagickSizeStrToInt64(envp,1024);
 
     if ((envp=getenv("MAGICK_LIMIT_FILES")))
-      max_files=atol(envp);
-
-    if ((envp=getenv("MAGICK_LIMIT_MEMORY")))
-      max_memory=atol(envp);
+      max_files=MagickSizeStrToInt64(envp,1024);
 
     if ((envp=getenv("MAGICK_LIMIT_MAP")))
-      max_map=atol(envp);
+      max_map=MagickSizeStrToInt64(envp,1024);
+
+    if ((envp=getenv("MAGICK_LIMIT_MEMORY")))
+      max_memory=MagickSizeStrToInt64(envp,1024);
+
+    if ((envp=getenv("MAGICK_LIMIT_PIXELS")))
+      max_pixels=MagickSizeStrToInt64(envp,1024);
   }
 
-  (void) SetMagickResourceLimit(DiskResource,max_disk);
-  (void) SetMagickResourceLimit(FileResource,max_files);
-  (void) SetMagickResourceLimit(MapResource,max_map);
-  (void) SetMagickResourceLimit(MemoryResource,max_memory);
+  if (max_disk >= 0)
+    (void) SetMagickResourceLimit(DiskResource,max_disk);
+  if (max_files >= 0)
+    (void) SetMagickResourceLimit(FileResource,max_files);
+  if (max_map >= 0)
+    (void) SetMagickResourceLimit(MapResource,max_map);
+  if (max_memory >= 0)
+    (void) SetMagickResourceLimit(MemoryResource,max_memory);
+  if (max_pixels >= 0)
+    (void) SetMagickResourceLimit(PixelsResource,max_pixels);
 }
 
 /*
@@ -472,52 +550,77 @@ MagickExport void InitializeMagickResources(void)
 %
 */
 MagickExport void LiberateMagickResource(const ResourceType type,
-  const magick_int64_t size)
+  const magick_uint64_t size)
 {
+  ResourceInfo
+    *info;
+
   AcquireSemaphoreInfo(&resource_semaphore);
-  switch (type)
+
+  if ((info=GetResourceInfo(type)))
     {
-    case FileResource:
-      {
-        resource_info.file-=size;
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "file -%lu/%lu/%lu",(unsigned long) size,
-                              (unsigned long) resource_info.file,
-                              resource_info.file_limit);
-        break;
-      }
-    case MemoryResource:
-      {
-        resource_info.memory-=size;
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "memory -%lumb/%lumb/%lumb",
-                              MegabytesToResource(size),
-                              MegabytesToResource(resource_info.memory),
-                              resource_info.memory_limit);
-        break;
-      }
-    case MapResource:
-      {
-        resource_info.map-=size;
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"map -%lumb/%lumb/%lumb",
-                              MegabytesToResource(size),
-                              MegabytesToResource(resource_info.map),
-                              resource_info.map_limit);
-        break;
-      }
-    case DiskResource:
-      {
-        resource_info.disk-=size;
-        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                              "disk -%lumb/%lugb/%lugb",
-                              MegabytesToResource(size),
-                              GigabytesToResource(resource_info.disk),
-                              resource_info.disk_limit/1024);
-        break;
-      }
-    default:
-      break;
+      switch(info->limit_type)
+        {
+        case AbsoluteLimit:
+          {
+            /*
+              Limit depends only on the currently requested size.
+            */
+            info->value=0;
+            break;
+          }
+        case SummationLimit:
+          {
+            /*
+              Limit depends on sum of previous allocations as well as
+              the currently requested size.
+            */
+            info->value-=size;
+            break;
+          }
+        }
+
+
+      if (IsEventLogging())
+        {
+          char
+            f_limit[MaxTextExtent],
+            f_size[MaxTextExtent],
+            f_value[MaxTextExtent];
+
+          if (info->limit == ResourceInfinity)
+            {
+              strlcpy(f_limit,"Unlimited",sizeof(f_limit));
+            }
+          else
+            {
+              FormatSize(info->limit, f_limit);
+              strlcat(f_limit,info->units,sizeof(f_limit));
+            }
+
+          FormatSize(size, f_size);
+          strlcat(f_size,info->units,sizeof(f_size));
+
+          if (info->limit_type == AbsoluteLimit)
+            {
+              strlcpy(f_value,"----",sizeof(f_value));
+            }
+          else
+            {
+              FormatSize(info->value, f_value);
+              strlcat(f_value,info->units,sizeof(f_value));
+            }
+
+          (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                "%s %s%s/%s/%s",
+                                info->name,
+                                "-",
+                                f_size,
+                                f_value,
+                                f_limit);
+        }
     }
+
   LiberateSemaphoreInfo(&resource_semaphore);
 }
 
@@ -546,20 +649,42 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %
 %
 */
-MagickExport unsigned int ListMagickResourceInfo(FILE *file,
+MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
   ExceptionInfo *ARGUNUSED(exception))
 {
+  unsigned int
+    index;
+  
+  AcquireSemaphoreInfo(&resource_semaphore);
   if (file == (const FILE *) NULL)
     file=stdout;
-  AcquireSemaphoreInfo(&resource_semaphore);
-  (void) fprintf(file,"File    Memory       Map       Disk\n");
-  (void) fprintf(file,"-----------------------------------\n");
-  (void) fprintf(file,"%4lu  %6lumb  %6lumb  %6lugb\n",
-    resource_info.file_limit,resource_info.memory_limit,resource_info.map_limit,
-    resource_info.disk_limit/1024);
+
+  fprintf(file,"Resource Limits\n");
+  fprintf(file,"----------------------------------------\n");
+  for (index=1 ; index <= ResourceInfoMaxIndex; index++)
+    {
+      char
+        heading[MaxTextExtent],
+        limit[MaxTextExtent];
+
+      if (resource_info[index].limit == ResourceInfinity)
+        {
+          strlcpy(limit,"Unlimited",sizeof(limit));
+        }
+      else
+        {
+          FormatSize(resource_info[index].limit,limit);
+          strlcat(limit,resource_info[index].units,sizeof(limit));
+        }
+      FormatString(heading,"%c%s",toupper(resource_info[index].name[0]),
+                   resource_info[index].name+1);
+
+      fprintf(file,"%8s: %10s\n", heading,limit);
+    }
   (void) fflush(file);
+
   LiberateSemaphoreInfo(&resource_semaphore);
-  return(True);
+  return(MagickPass);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -572,8 +697,14 @@ MagickExport unsigned int ListMagickResourceInfo(FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickResourceLimit() sets the limit for a particular resource in
-%  megabytes.
+%  SetMagickResourceLimit() sets the limit for a particular resource.  The
+%  units for resource types are as follows:
+%
+%    DiskResource    -- Gigabytes
+%    FileResource    -- Open files
+%    MapResource     -- Megabytes
+%    MemoryResource  -- Megabytes
+%    PixelsResource  -- Megapixels
 %
 %  The format of the SetMagickResourceLimit() method is:
 %
@@ -588,44 +719,40 @@ MagickExport unsigned int ListMagickResourceInfo(FILE *file,
 %
 %
 */
-MagickExport unsigned int SetMagickResourceLimit(const ResourceType type,
-  const unsigned long limit)
+MagickExport MagickPassFail SetMagickResourceLimit(const ResourceType type,
+                                                   const magick_int64_t limit)
 {
+  ResourceInfo
+    *info;
+
+  MagickPassFail
+    status;
+
+  status=MagickFail;
+
   AcquireSemaphoreInfo(&resource_semaphore);
-  switch (type)
-  {
-    case FileResource:
+  if ((info=GetResourceInfo(type)))
     {
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-        "Setting file open limit to %lu descriptors", limit);
-      resource_info.file_limit=limit;
-      break;
+      if (limit >= 0)
+        {
+          char
+            f_limit[MaxTextExtent];
+
+          FormatSize((magick_int64_t) limit, f_limit);
+          info->limit = limit;
+          (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                "Set %s resource limit to %s%s",
+                                info->name,f_limit,info->units);
+          status=MagickPass;
+        }
+      else
+        {
+          (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                "Ignored bogus request to set %s resource limit to %ld%s",
+                                info->name,(long) limit,info->units);
+        }
     }
-    case MemoryResource:
-    {
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-        "Setting memory allocation limit to %lu MB",
-          limit);
-      resource_info.memory_limit=limit;
-      break;
-    }
-    case MapResource:
-    {
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-        "Setting memory map limit to %lu MB", limit);
-      resource_info.map_limit=limit;
-      break;
-    }
-    case DiskResource:
-    {
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-        "Setting disk file size limit to %lu GB", limit);
-      resource_info.disk_limit=limit;
-      break;
-    }
-    default:
-      break;
-  }
   LiberateSemaphoreInfo(&resource_semaphore);
-  return(True);
+
+  return(status);
 }

@@ -1,4 +1,4 @@
-# Copyright (C) 2003, 2007 GraphicsMagick Group
+# Copyright (C) 2003, 2007, 2008 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -1021,11 +1021,11 @@ AC_SUBST(UINTPTR_T)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([_exit ftime getexecname getc_unlocked getpagesize getpid \
-  madvise mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen pread \
-  pwrite putc_unlocked raise rand_r readlink realpath select seekdir \
-  sigemptyset sigaction strerror strlcat strlcpy sysconf tempnam times telldir \
-  vsprintf vsnprintf])
+AC_CHECK_FUNCS([atoll _exit ftime getexecname getc_unlocked getpagesize \
+  getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
+  _popen popen pread pwrite putc_unlocked raise rand_r readlink realpath \
+  select seekdir sigemptyset sigaction strerror strlcat strlcpy strtoll \
+  sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
 
 ########
 #

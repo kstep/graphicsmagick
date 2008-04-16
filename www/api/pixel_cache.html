@@ -66,16 +66,16 @@
 <P>IndexPacket * <strong>GetIndexes</strong>( const Image *image );</P>
 <P>PixelPacket  <strong>GetOnePixel</strong>( const Image image, const long x, const long y );</P>
 <P>PixelPacket * <strong>GetPixels</strong>( const Image image );</P>
-<P>unsigned int  <strong>ModifyCache</strong>( Image *image );</P>
+<P>MagickPassFail  <strong>ModifyCache</strong>( Image *image );</P>
 <P>ViewInfo * <strong>OpenCacheView</strong>( Image *image );</P>
 <P>Image * <strong>ReadStream</strong>( const ImageInfo *image_info, StreamHandler stream, ExceptionInfo *exception );</P>
 <P>Cache  <strong>ReferenceCache</strong>( Cache cache_info );</P>
 <P>PixelPacket * <strong>SetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>PixelPacket * <strong>SetImagePixels</strong>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P><strong>SetImageVirtualPixelMethod</strong>( const Image *image, const VirtualPixelMethod method );</P>
-<P>unsigned int  <strong>SyncCacheView</strong>( ViewInfo *view );</P>
+<P>MagickPassFail  <strong>SyncCacheView</strong>( ViewInfo *view );</P>
 <P>MagickPassFail  <strong>SyncImagePixels</strong>( Image *image );</P>
-<P>unsigned int  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, StreamHandler stream );</P>
+<P>MagickPassFail  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, StreamHandler stream );</P>
 <P>
 </P>
 <hr />
@@ -338,7 +338,7 @@
 </P>
 <h2><a name="modifycache">ModifyCache</a></h2>
 <blockquote>ModifyCache() ensures that there is only a single reference to the pixel cache to be modified, updating the provided cache pointer to point to a clone of the original pixel cache if necessary. </blockquote><P>The format of the ModifyCache method is:</P>
-<blockquote>unsigned int ModifyCache ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail ModifyCache ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
 
@@ -470,8 +470,8 @@
       ConstantVPType:  every value outside the image is a constant as
       defines by the pixel parameter.
 =head2 SyncCacheView</pre>
-<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><P>The format of the SyncCacheView method is:</P>
-<blockquote>unsigned int SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns MagickPass if the pixel region is synced, otherwise MagickFail. </blockquote><P>The format of the SyncCacheView method is:</P>
+<blockquote>MagickPassFail SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>view:</strong>
 
@@ -483,12 +483,12 @@
 <P>
 </P>
 <h2><a name="syncimagepixels">SyncImagePixels</a></h2>
-<blockquote>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>MagickPassFail SyncImagePixels ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns MagickPass if the pixel region is synced, otherwise MagickFail. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>MagickPassFail SyncImagePixels ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>status:</strong>
 
 <DD>
-<P><code>SyncImagePixels()</code> returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.</P>
+<P><code>SyncImagePixels()</code> returns MagickPass if the image pixels are transferred to the in-memory or disk cache otherwise MagickFail.</P>
 </dd>
 </li>
 <dt><strong>image:</strong>
@@ -501,7 +501,7 @@
 <P>
 </P>
 <h2><a name="writestream">WriteStream</a></h2>
-<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *, <A HREF="types.html#StreamHandler">StreamHandler</A> stream ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>MagickPassFail WriteStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *, <A HREF="types.html#StreamHandler">StreamHandler</A> stream ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image_info:</strong>
 

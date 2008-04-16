@@ -369,7 +369,11 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
   MagickFreeMemory(prefix);
   MagickFreeMemory(packet);
   if ((status == MagickFail) || (y < (long) image->rows))
-    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
+    {
+      if (image->exception.severity < ErrorException)
+        ThrowException(&image->exception,CorruptImageError,CorruptImage,image->filename);
+      return MagickFail;
+    }
   return(MagickPass);
 }
 
@@ -1048,7 +1052,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=DecodeImage(image,opacity);
     if (!image_info->ping && (status == False)) {
-      MagickFreeMemory(global_colormap);    
+      MagickFreeMemory(global_colormap);
+      GetImageException(image,exception);
       ThrowReaderException(CorruptImageError,CorruptImage,image);
     }
     if (image_info->subrange != 0)

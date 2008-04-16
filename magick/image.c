@@ -624,7 +624,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   append_image=CloneImage(image,width,height,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImage(append_image,OpaqueOpacity);
+  (void) SetImage(append_image,OpaqueOpacity);
   scene=0;
   if (stack)
     {
@@ -4447,7 +4447,7 @@ ReplaceImageColormap(Image *image,
 %
 %
 */
-MagickExport void SetImage(Image *image,const Quantum opacity)
+MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
 {
   unsigned long
     y;
@@ -4464,8 +4464,12 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  status=MagickPass;
   background_color=image->background_color;
   if (opacity != OpaqueOpacity)
     background_color.opacity=opacity;
@@ -4480,7 +4484,10 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
 
       /*
         Set DirectClass pixels
@@ -4499,10 +4506,14 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
             *indexes++=0;
         }
       if (!SyncImagePixels(image))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
     }
   image->is_grayscale=IsGray(image->background_color);
   image->is_monochrome=IsMonochrome(image->background_color);
+  return status;
 }
 
 /*

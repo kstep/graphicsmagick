@@ -1459,6 +1459,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     MagickFreeMemory(compress_pixels);
     if (status == False)
       {
+        GetImageException(image,exception);
         CloseBlob(image);
         DestroyImageList(image);
         return((Image *) NULL);

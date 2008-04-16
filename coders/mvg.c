@@ -174,7 +174,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Render drawing.
   */
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;
   if (GetBlobStreamData(image))

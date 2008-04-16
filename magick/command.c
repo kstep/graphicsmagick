@@ -341,7 +341,7 @@ static void AnimateUsage(void)
       "-geometry geometry   preferred size and location of the Image window",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
@@ -671,18 +671,6 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("colormap",option+1) == 0)
           {
             resource_info.colormap=PrivateColormap;
@@ -959,15 +947,18 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
               }
             break;
           }
@@ -1958,19 +1949,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingArgument,
-                    option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             if (*option == '-')
@@ -2463,16 +2441,19 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                   ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      ThrowCompositeException(OptionError,UnrecognizedResourceType,
-                        type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        ThrowCompositeException(OptionError,UnrecognizedResourceType,
+                          type);
               }
             break;
           }
@@ -2953,7 +2934,7 @@ static void CompositeUsage(void)
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          ssign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-monitor             show progress indication",
@@ -3302,18 +3283,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("channel",option+1) == 0)
           {
             if (*option == '-')
@@ -4000,16 +3969,19 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      ThrowConvertException(OptionError,UnrecognizedResourceType,
-                        type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        ThrowConvertException(OptionError,UnrecognizedResourceType,
+                          type);
               }
             break;
           }
@@ -5130,7 +5102,7 @@ static void ConvertUsage(void)
       "-label name          assign a label to an image",
       "-lat geometry        local adaptive thresholding",
       "-level value         adjust the level of image contrast",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-log format          format of debugging information",
       "-loop iterations     add Netscape loop extension to your GIF animation",
@@ -5465,7 +5437,7 @@ static void DisplayUsage(void)
       "-immutable           displayed image cannot be modified",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-map type            display image using this Standard Colormap",
       "-matte               store matte channel if the image has one",
@@ -5954,18 +5926,6 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("colormap",option+1) == 0)
           {
             resource_info.colormap=PrivateColormap;
@@ -6430,15 +6390,18 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
               }
             break;
           }
@@ -7254,22 +7217,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       }
     switch(*(option+1))
     {
-      case 'c':
-      {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowIdentifyException(OptionError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
-        ThrowIdentifyException(OptionError,UnrecognizedOption,option)
-      }
       case 'd':
       {
         if (LocaleCompare("debug",option+1) == 0)
@@ -7371,6 +7318,38 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       }
       case 'l':
       {
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,MissingArgument,
+                    option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickFatalError(OptionFatalError,MissingArgument,
+                    option);
+                if (LocaleCompare("disk",type) == 0)
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
+                else
+                  if (LocaleCompare("map",type) == 0)
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
+                  else
+                    if (LocaleCompare("memory",type) == 0)
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
+                    else
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
+              }
+            break;
+          }
         if (LocaleCompare("log",option+1) == 0)
           {
             if (*option == '-')
@@ -7518,7 +7497,6 @@ static void IdentifyUsage(void)
   static const char
     *options[]=
     {
-      "-authenticate value  decrypt image with this password",
       "-debug events        display copious debugging information",
       "-define values       Coder/decoder specific options",
       "-density geometry    horizontal and vertical density of the image",
@@ -7526,11 +7504,14 @@ static void IdentifyUsage(void)
       "-format \"string\"   output formatted image characteristics",
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
+
       "-log format          format of debugging information",
-      "-size geometry       width and height of image",
+      "-monitor             show progress indication",
+      "-ping                efficiently determine image attributes",
       "-sampling-factor HxV[,...]",
       "                     horizontal and vertical sampling factors",
+      "-size geometry       width and height of image",
       "-verbose             print detailed information about the image",
       "-version             print version information",
       "-virtual-pixel method",
@@ -10631,18 +10612,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("channel",option+1) == 0)
           {
             if (*option == '-')
@@ -11302,15 +11271,18 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      ThrowMogrifyException(OptionError,UnrecognizedResourceType,type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        ThrowMogrifyException(OptionError,UnrecognizedResourceType,type);
               }
             break;
           }
@@ -12307,7 +12279,7 @@ static void MogrifyUsage(void)
       "-label name          assign a label to an image",
       "-lat geometry        local adaptive thresholding",
       "-level value         adjust the level of image contrast",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-log format          format of debugging information",
       "-loop iterations     add Netscape loop extension to your GIF animation",
@@ -12670,18 +12642,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info.number_colors=0;
@@ -13210,15 +13170,18 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   ThrowMontageException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      ThrowMontageException(OptionError,UnrecognizedResourceType,type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        ThrowMontageException(OptionError,UnrecognizedResourceType,type);
               }
             break;
           }
@@ -13760,7 +13723,7 @@ static void MontageUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
@@ -14063,18 +14026,6 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
-              }
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info->number_colors=0;
@@ -14406,16 +14357,19 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,MagickSizeStrToInt64(argv[i],1024));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,MagickSizeStrToInt64(argv[i],1024));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,MagickSizeStrToInt64(argv[i],1024));
                     else
-                      MagickFatalError(OptionFatalError,UnrecognizedResourceType,
-                                       type);
+                      if (LocaleCompare("pixels",type) == 0)
+                        (void) SetMagickResourceLimit(PixelsResource,MagickSizeStrToInt64(argv[i],1024));
+                      else
+                        MagickFatalError(OptionFatalError,UnrecognizedResourceType,
+                                         type);
               }
             break;
           }
@@ -14815,7 +14769,7 @@ static void ImportUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
       "-label name          assign a label to an image",
-      "-limit type value    Disk, Map, or Memory resource limit",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",

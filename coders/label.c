@@ -149,7 +149,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         metrics.ascent);
     }
   draw_info->geometry=AllocateString(geometry);
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
   return(image);

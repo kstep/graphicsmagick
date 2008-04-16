@@ -279,7 +279,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       {
         coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
         if (coalesce_image->next != (Image *) NULL)
-          SetImage(coalesce_image->next,OpaqueOpacity);
+          (void) SetImage(coalesce_image->next,OpaqueOpacity);
         break;
       }
       case PreviousDispose:
@@ -968,7 +968,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     return((Image *) NULL);
   mosaic_image->columns=page.width;
   mosaic_image->rows=page.height;
-  SetImage(mosaic_image,OpaqueOpacity);
+  (void) SetImage(mosaic_image,OpaqueOpacity);
   /*
     Initialize colormap.
   */

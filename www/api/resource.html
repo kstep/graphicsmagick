@@ -38,8 +38,8 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>AcquireMagickResource</strong>( const ResourceType type, const magick_int64_t size );</P>
-<P>unsigned long  <strong>GetMagickResource</strong>( const ResourceType type );</P>
+<P>MagickPassFail  <strong>AcquireMagickResource</strong>( const ResourceType type, const magick_int64_t size );</P>
+<P>magick_uint64_t  <strong>GetMagickResource</strong>( const ResourceType type );</P>
 <P>void  <strong>LiberateMagickResource</strong>( const ResourceType type, const magick_int64_t size );</P>
 <P>unsigned int  <strong>ListMagickResourceInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
 <P>void  <strong>SetMagickResourceLimit</strong>( const ResourceType type, const unsigned long limit );</P>
@@ -50,7 +50,7 @@
 <P>
 </P>
 <h2><a name="acquiremagickresource">AcquireMagickResource</a></h2>
-<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>MagickPassFail AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_type_3a">type:</a></strong>
 
@@ -68,7 +68,7 @@
 <P>
 </P>
 <h2><a name="getmagickresource">GetMagickResource</a></h2>
-<blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>GetMagickResource() returns the current consumption level for the specified resource type. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>magick_uint64_t GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>type:</strong>
 
@@ -118,7 +118,14 @@
 <P>
 </P>
 <h2><a name="setmagickresourcelimit">SetMagickResourceLimit</a></h2>
-<blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>SetMagickResourceLimit() sets the limit for a particular resource. The units for resource types are as follows: </blockquote><pre>
+  DiskResource    -- Gigabytes
+  FileResource    -- Open files
+  MapResource     -- Megabytes
+  MemoryResource  -- Megabytes
+  PixelsResource  -- Megapixels
+=for html &lt;blockquote&gt;The format of the SetMagickResourceLimit() method is: &lt;/blockquote&gt;</pre>
+<blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>type:</strong>
 

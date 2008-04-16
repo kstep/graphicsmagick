@@ -26210,11 +26210,15 @@ rm -f conftest.mmap
 
 
 
-for ac_func in _exit ftime getexecname getc_unlocked getpagesize getpid \
-  madvise mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen pread \
-  pwrite putc_unlocked raise rand_r readlink realpath select seekdir \
-  sigemptyset sigaction strerror strlcat strlcpy sysconf tempnam times telldir \
-  vsprintf vsnprintf
+
+
+
+
+for ac_func in atoll _exit ftime getexecname getc_unlocked getpagesize \
+  getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
+  _popen popen pread pwrite putc_unlocked raise rand_r readlink realpath \
+  select seekdir sigemptyset sigaction strerror strlcat strlcpy strtoll \
+  sysconf tempnam times telldir ulltostr vsprintf vsnprintf
 do
 as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { $as_echo "$as_me:$LINENO: checking for $ac_func" >&5

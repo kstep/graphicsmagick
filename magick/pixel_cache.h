@@ -112,8 +112,8 @@ extern "C" {
 
     Used only by ReadMPCImage() and WriteMPCImage().
   */
-  extern MagickExport unsigned int
-  PersistCache(Image *image,const char *filename,const unsigned int attach,
+  extern MagickExport MagickPassFail
+  PersistCache(Image *image,const char *filename,const MagickBool attach,
                magick_off_t *offset,ExceptionInfo *exception);
 
   /*
@@ -127,7 +127,7 @@ extern "C" {
     SetImageVirtualPixelMethod() sets the "virtual pixels" method for
     the image.
   */
-  extern MagickExport unsigned int
+  extern MagickExport MagickPassFail
   SetImageVirtualPixelMethod(const Image *image,
                              const VirtualPixelMethod method);
 
@@ -135,7 +135,7 @@ extern "C" {
     SyncImagePixels() saves the image pixels to the in-memory or disk
     cache.
   */
-  extern MagickExport unsigned int
+  extern MagickExport MagickPassFail
   SyncImagePixels(Image *image);
 
   /****
@@ -186,7 +186,7 @@ extern "C" {
   /*
     SyncCacheView() saves any changes to the pixel cache view.
   */
-  extern MagickExport unsigned int
+  extern MagickExport MagickPassFail
   SyncCacheView(ViewInfo *);
 
 
@@ -211,7 +211,7 @@ extern "C" {
 
     Used only by WriteXTRNImage()
   */
-  extern MagickExport unsigned int
+  extern MagickExport MagickPassFail
   WriteStream(const ImageInfo *,Image *,StreamHandler);
 
 #if defined(MAGICK_IMPLEMENTATION)

@@ -1104,13 +1104,16 @@
     <Limit>
       <Error>
         <Message name="CacheResourcesExhausted">
-          Cache resources exhausted
+          Disk space limit exceeded (see -limit Disk)
         </Message>
         <Message name="NoPixelsDefinedInCache">
           No pixels defined in cache
         </Message>
         <Message name="PixelCacheAllocationFailed">
           Pixel cache allocation failed
+        </Message>
+        <Message name="ImagePixelLimitExceeded">
+          Image pixel limit exceeded (see -limit Pixels)
         </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed

@@ -108,6 +108,9 @@ static int
 
 static int
   MagickStrToD(const char *start,char **end,double *value);
+
+static MagickPassFail
+  MagickStrToInt64(const char *start,char **end,magick_int64_t *value);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1078,17 +1081,20 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
   length=size;
   for (i=0; length > 1024; i++)
     length/=1024.0;
-  FormatString(format,"%.1f",length);
+  if (i > 0)
+    FormatString(format,"%.1f",length);
+  else
+    FormatString(format,"%.0f",length);
   switch (i)
     {
     default: break;
     case 0: break;
-    case 1: (void) strcat(format,"k"); break; /* kilo, 10^3 */
-    case 2: (void) strcat(format,"m"); break; /* mega, 10^6 */
-    case 3: (void) strcat(format,"g"); break; /* giga, 10^9 */
-    case 4: (void) strcat(format,"t"); break; /* terra, 10^12 */
-    case 5: (void) strcat(format,"p"); break; /* peta, 10^15 */
-    case 6: (void) strcat(format,"e"); break; /* exa, 10^18 */
+    case 1: (void) strcat(format,"K"); break; /* kilo, 10^3 */
+    case 2: (void) strcat(format,"M"); break; /* mega, 10^6 */
+    case 3: (void) strcat(format,"G"); break; /* giga, 10^9 */
+    case 4: (void) strcat(format,"T"); break; /* terra, 10^12 */
+    case 5: (void) strcat(format,"P"); break; /* peta, 10^15 */
+    case 6: (void) strcat(format,"E"); break; /* exa, 10^18 */
     }
 }
 
@@ -1687,7 +1693,9 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %  This function exists to overcome a Linux GNU libc "feature" in which scanf
 %  treats strings in the form "0x5" as a single hexadecimal value regardless
 %  of the scanf specification. No other scanf has been encountered which
-%  behaves this way. Linux strtod() has the same problem.
+%  behaves this way. Linux strtod() has the same problem.  It seems that
+%  this new behavior of Linux is due to ANSI C'99 which supports hex
+%  parsing.
 %
 %  The format of the GetMagickDimension method is:
 %
@@ -3328,6 +3336,126 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S i z e S t r T o I n t 6 4                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSizeStrToInt64() converts a numeric string expressed using a scaling
+%  suffix (e.g. "100K" is 100 kilo) to a 64-bit integer type.  Even though
+%  this function returns a signed type, it is intended to be used to obtain
+%  positive size values so a negative return value indicates an error.
+%  Specfically, -1 is returned if there is known to be an conversion error.
+%
+%  Binary Prefixes: http://en.wikipedia.org/wiki/Binary_prefix
+%
+%  SI Prefixes: http://en.wikipedia.org/wiki/SI_prefix
+%
+%  The format of the MagickSizeStrToInt64 method is:
+%
+%      magick_int64_t MagickSizeStrToInt64(const char *str,
+%                                          const unsigned int kilo)
+%
+%  A description of each parameter follows:
+%
+%    o str: Input string to convert
+%
+%    o kilo: The unit of "kilo".  Should be either 1000 (SI units)
+%            or 1024 (Binary units).
+%
+*/
+MagickExport magick_int64_t MagickSizeStrToInt64(const char *str,
+                                                 const unsigned int kilo)
+{
+  char
+    *end;
+
+  magick_int64_t
+    result;
+
+  MagickPassFail
+    status;
+
+  result=-1;
+  end=(char *) NULL;
+  if ((status=MagickStrToInt64(str,&end,&result)) == MagickPass)
+    {
+      int
+        c,
+        mult;
+
+      c='\0';
+      if (end != (char *) NULL)
+        c=*end;
+      mult=0;
+
+      switch (tolower(c))
+        {
+        default: break;
+        case 'k': mult=1; break; /* kilo, 10^3 */
+        case 'm': mult=2; break; /* mega, 10^6 */
+        case 'g': mult=3; break; /* giga, 10^9 */
+        case 't': mult=4; break; /* terra, 10^12 */
+        case 'p': mult=5; break; /* peta, 10^15 */
+        case 'e': mult=6; break; /* exa, 10^18 */
+        }
+
+      while (mult-- > 0)
+        result *= kilo;
+    }
+
+  return result;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S t r T o I n t 6 4                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickStrToInt64() converts a string to a 64-bit integer type.  MagickPass
+%  is returned if the conversion succeeds, and MagickFail is returned if
+%  the conversion fails.
+%
+%  The format of the MagickStrToInt64 method is:
+%
+%      MagickPassFail MagickStrToInt64(const char *start,char **end,
+%                                      magick_int64_t *value)
+%
+%  A description of each parameter follows:
+%
+%    o start: Start of string
+%
+%    o end: Pointer to update with address where parsing stopped.
+%
+%    o value: Pointer to value to update
+%
+*/
+static MagickPassFail MagickStrToInt64(const char *start,char **end,
+                                       magick_int64_t *value)
+{
+  magick_int64_t
+    result;
+
+  errno=0;
+  result=MagickStrToL64(start,end,10);
+  if (errno == 0)
+    *value=result;
+
+  return (errno == 0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C r e a t e D i r e c t o r y P a t h                         %
 %                                                                             %
 %                                                                             %
@@ -4085,7 +4213,7 @@ MagickExport double StringToDouble(const char *text,const double interval)
   double
     value;
 
-  if(MagickStrToD(text,&q,&value) == 0)
+  if (MagickStrToD(text,&q,&value) == 0)
     return 0.0;
   if (strchr(q,'%') != (char *) NULL)
     value*=interval/100.0;

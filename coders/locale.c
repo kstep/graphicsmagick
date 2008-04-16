@@ -340,7 +340,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
     }
   image->columns=1;
   image->rows=1;
-  SetImage(image,OpaqueOpacity);
+  (void) SetImage(image,OpaqueOpacity);
   status=ReadConfigureFile(image,image->filename,0,exception);
   return(image);
 }

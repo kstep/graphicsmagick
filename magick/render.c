@@ -1287,7 +1287,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
     }
   (void) QueryColorDatabase("none",&image->clip_mask->background_color,
     &image->exception);
-  SetImage(image->clip_mask,TransparentOpacity);
+  (void) SetImage(image->clip_mask,TransparentOpacity);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),
     "\nbegin clip-path %.1024s",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -3055,7 +3055,7 @@ MagickExport unsigned int DrawPatternPath(Image *image,
   DestroyImageInfo(image_info);
   (void) QueryColorDatabase("none",&(*pattern)->background_color,
     &image->exception);
-  SetImage(*pattern,OpaqueOpacity);
+  (void) SetImage(*pattern,OpaqueOpacity);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),
     "begin pattern-path %.1024s %.1024s",name,geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);

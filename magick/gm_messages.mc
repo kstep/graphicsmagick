@@ -1987,7 +1987,13 @@ default warning
 MessageId       = +1
 SymbolicName    = LimitErrorCacheResourcesExhausted
 Language        = English
-Cache resources exhausted
+Disk space limit exceeded (see -limit Disk)
+.
+
+MessageId       = +1
+SymbolicName    = LimitErrorImagePixelLimitExceeded
+Language        = English
+Image pixel limit exceeded (see -limit Pixels)
 .
 
 MessageId       = +1

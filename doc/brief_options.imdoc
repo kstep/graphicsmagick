@@ -58,10 +58,6 @@
 <lopt>-box <color></opt>
 <abs>set the color of the annotation bounding box</abs>
 </utils>
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
-<lopt>-cache <threshold></opt>
-<abs>(This option has been replaced by the -limit option)</abs>
-</utils>
 <utils apps=convert,mogrify>
 <lopt>-channel <type></opt>
 <abs>the type of channel</abs>
@@ -335,7 +331,7 @@
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-limit <type> <value></opt>
-<abs>Disk, File, Map, or Memory resource limit</abs>
+<abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
 </utils>
 <utils apps=mogrify>
 <opt>-linewidth</opt>

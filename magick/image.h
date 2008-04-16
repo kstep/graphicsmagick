@@ -1064,6 +1064,7 @@ extern MagickExport MagickPassFail
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,
     const unsigned int colors),
+  SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
@@ -1082,7 +1083,6 @@ extern MagickExport void
   GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   ModifyImage(Image **,ExceptionInfo *),
-  SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int);
 
 #if defined(__cplusplus) || defined(c_plusplus)

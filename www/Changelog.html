@@ -21,6 +21,33 @@
 </tr>
 </table>
 <p>
+2008-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/yuv.c (ReadYUVImage): Report exception info correctly.
+  <LI> coders/xpm.c (ReadXPMImage): Report exception info correctly.
+  <LI> coders/xc.c (ReadXCImage): Report exception info correctly.
+  <LI> coders/tiff.c (ReadTIFFImage): Report exception info correctly.
+  <LI> coders/null.c (ReadNULLImage): Report exception info correctly.
+  <LI> coders/jpeg.c (ReadJPEGImage): Report exception info correctly.
+        Use of Huffman optimization is now based on available memory
+        rather than a hard-coded image size.
+  <LI> coders/gif.c (ReadGIFImage): Report exception info correctly.
+  <LI> magick/utility.c (MagickSizeStrToInt64): New function to convert
+        a size string with optional units suffix to a 64-bit integer.
+        (MagickStrToInt64): New function to convert a string to a 64-bit
+        integer, with error checking.<BR>
+  <LI> magick/image.c (SetImage): SetImage now returns error status.
+  <LI> magick/command.c: Eliminated the long-deprecated -cache resource
+        limit option.<BR>
+  <LI> magick/resource.c: Complete re-write of the resource limit
+        system.  Resource specifications are now absolute except that they
+        support a binary metric suffix such as 'K' to scale the value.
+        Added the 'Pixels' limit type to limit the maximum number of
+        pixels allowed for each image.
+
+</UL>
+<p>
 2008-04-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -839,7 +839,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     return False;
 
   /* clear the image based on the layer opacity */
-  SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
+  (void) SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
 
   /* set the compositing mode */
   outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
@@ -982,7 +982,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colorspace=GRAYColorspace;
   } else if ( image_type == GIMP_INDEXED )
     ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
-  SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
+  (void) SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
   /* read properties */
