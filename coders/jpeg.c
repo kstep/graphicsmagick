@@ -694,11 +694,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery))
     {
       jpeg_destroy_decompress(&jpeg_info);
-      //if (image->exception.severity > exception->severity)
-      // CopyException(exception,&image->exception);
       GetImageException(image,exception);
       CloseBlob(image);
-      if (GetPixelCachePresent(image))
+      if (exception->severity < ErrorException)
         return(image);
       DestroyImage(image);
       return((Image *) NULL);

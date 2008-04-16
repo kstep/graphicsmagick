@@ -1,3 +1,8 @@
+2008-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Don't use GetPixelCachePresent()
+	since it is not DLL-exported.
+
 2008-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/yuv.c (ReadYUVImage): Report exception info correctly.
