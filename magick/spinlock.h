@@ -20,11 +20,11 @@
 
 #define SPINLOCK_DELAY_MILLI_SECS 10
 
-static long
-  spinlock_mutex = 0L;
+static LONG volatile
+  spinlock_mutex = 0;
 
 /* Wait for spin lock */
-static void _spinlock_wait (long *sl)
+static void _spinlock_wait (LONG volatile *sl)
 {
   /*
     LONG InterlockedCompareExchange(LONG volatile* dest, LONG xchg,
@@ -41,14 +41,14 @@ static void _spinlock_wait (long *sl)
     To operate on 64-bit values, use the InterlockedCompareExchange64
     function.
   */
-  while (InterlockedCompareExchange (sl, 1L, 0L) != 0)
+  while (InterlockedCompareExchange (sl, 1, 0) != 0)
   {
     /* slight delay - just in case OS does not giveup CPU */
     Sleep (SPINLOCK_DELAY_MILLI_SECS);
   }
 }
 /* Release spin lock */
-static void _spinlock_release (long *sl)
+static void _spinlock_release (LONG volatile *sl)
 {
   /*
     LONG InterlockedExchange (LONG volatile* dest, LONG val)
@@ -62,7 +62,7 @@ static void _spinlock_release (long *sl)
     To operate on a 64-bit variable, use the InterlockedExchange64
     function.
   */
-  InterlockedExchange (sl, 0L);
+  InterlockedExchange (sl, 0);
 }
 #define SPINLOCK_WAIT _spinlock_wait(&spinlock_mutex)
 #define SPINLOCK_RELEASE _spinlock_release(&spinlock_mutex)

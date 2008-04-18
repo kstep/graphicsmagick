@@ -93,7 +93,7 @@ static unsigned int
 static LONG
   semaphore_mutex = 0;
 /* Wait for spin lock */
-static void spinlock_wait (LONG *sl)
+static void spinlock_wait (LONG volatile *sl)
 {
   /*
     InterlockedCompareExchange performs an atomic comparison of the
@@ -109,7 +109,7 @@ static void spinlock_wait (LONG *sl)
   }
 }
 /* Release spin lock */
-static void spinlock_release (LONG *sl)
+static void spinlock_release (LONG volatile *sl)
 {
   /*
     InterlockedExchange atomically exchanges a pair of 32-bit
