@@ -48,9 +48,12 @@
 //
 // QuantumDepth
 //
-// Specify size of PixelPacket color Quantums (8, 16, or 32).
-// A value of 8 uses half the memory than 16 and typically runs 30% faster,
-// but provides 256 times less color resolution than a value of 16.
+// Specify size of PixelPacket color Quantums (8, 16, or 32).  A value
+// of 8 uses half the memory than 16 and typically runs 30% faster,
+// but provides 256 times less color resolution than a value of 16.  A
+// value of 16 is recommended if it is desired that all features be
+// fully supported but even a value of 8 allows reading 16-bit files
+// (while losing precision).
 #define QuantumDepth 8
 
 /////////////
@@ -75,17 +78,6 @@
 // by default since no adverse effects have been found.
 #define ProvideDllMain
 
-/////////////
-//
-// HasX11
-//
-// Define if MIT X11 is available (or stubbed)
-// It is not actually necessary to use X11 or the X11 stubs library.
-// The VisualMagick configure program assumes that X11 stubs is being
-// used if X11 is not supported.  To achieve a slimmer GraphicsMagick,
-// undefine HasX11 and remove the 'xlib' project from the
-// GraphicsMagick workspace.
-#define HasX11
 
 /////////////
 //
@@ -101,7 +93,7 @@
 //
 // Optional packages
 //
-// All packages except autotrace are included by default in the build.
+// All packages except autotrace and X11 are included by default in the build.
 
 // Define to use the autotrace library (obtain sources seperately)
 // #undef HasAUTOTRACE
@@ -141,6 +133,18 @@
 
 // Define to use the libwmf WMF parsing library
 #define HasWMFlite
+
+/////////////
+//
+// HasX11
+//
+// Define if MIT X11 is available (or stubbed) X11 is required in
+// order for the 'animate', 'display', and 'import' commands to be
+// available.  X11 is not usually available under Windows since it
+// requires that another package be installed such as Cygwin's X11.
+// If you know what X11 is and actually plan to use it, then define
+// HasX11.
+// #undef HasX11
 
 // Define to use the GNOME XML library
 #define HasXML

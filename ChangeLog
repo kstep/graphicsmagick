@@ -1,3 +1,10 @@
+2008-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/files-dlls.isx: Comment out inclusion
+	of X11 support DLLs.
+	* VisualMagick/magick/magick_config.h.in: X11 is no longer in the
+	default Windows build.
+
 2008-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c: Eliminate various annoying warnings noticed
