@@ -114,15 +114,21 @@ typedef struct _CommandInfo
 } CommandInfo;
 
 static void
+#if defined(HasX11)
   AnimateUsage(void),
+#endif /* HasX11 */
   BenchmarkUsage(void),
   CompositeUsage(void),
   ConjureUsage(void),
   ConvertUsage(void),
+#if defined(HasX11)
   DisplayUsage(void),
+#endif /* HasX11 */
   GMUsage(void),
   IdentifyUsage(void),
+#if defined(HasX11)
   ImportUsage(void),
+#endif /* HasX11 */
   LiberateArgumentList(const int argc,char **argv),
   MogrifyUsage(void),
   MontageUsage(void);
@@ -311,6 +317,7 @@ static void NormalizeSamplingFactor(ImageInfo *image_info)
 %
 %
 */
+#if defined(HasX11)
 static void AnimateUsage(void)
 {
   const char
@@ -394,6 +401,7 @@ static void AnimateUsage(void)
   for (p=buttons; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
 }
+#endif /* HasX11 */
 MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
@@ -5390,6 +5398,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
 %
 %
 */
+#if defined(HasX11)
 static void DisplayUsage(void)
 {
   const char
@@ -5503,6 +5512,7 @@ static void DisplayUsage(void)
   for (p=buttons; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
 }
+#endif /* HasX11 */
 
 MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
@@ -14738,6 +14748,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 %
 %
 */
+#if defined(HasX11)
 static void ImportUsage(void)
 {
   const char
@@ -14815,6 +14826,7 @@ static void ImportUsage(void)
     "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
   (void) printf("standard input or output.\n");
 }
+#endif /* HasX11 */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

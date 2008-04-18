@@ -2728,19 +2728,19 @@ static inline unsigned char MinimumDepthForValue(const Quantum quantum)
   
   return depth;
 }
-static unsigned char* AllocateDepthMap(void)
+static magick_uint8_t* AllocateDepthMap(void)
 {
-  unsigned char
+  magick_uint8_t 
     *map;
   
-  map = MagickAllocateArray(unsigned char *, MaxRGB, sizeof(char));
+  map = MagickAllocateArray(unsigned char *, MaxRGB, sizeof(magick_uint8_t));
   if (map != (unsigned char *) NULL)
     {
       unsigned int
         i;
       
       for (i=0; i <= MaxRGB; i++)
-        map[i] = MinimumDepthForValue(i);
+        map[i] = (magick_uint8_t) MinimumDepthForValue(i);
     }
   return map;
 }
@@ -2808,8 +2808,8 @@ MagickExport unsigned long GetImageDepth(const Image *image,
       /*
         Use fast table lookups if we can
       */
-      unsigned char
-        *map = (unsigned char*) NULL;
+      magick_uint8_t
+        *map = (magick_uint8_t *) NULL;
       
       map = AllocateDepthMap();
       

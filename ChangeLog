@@ -1,5 +1,14 @@
-2008-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2008-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.c: Eliminate various annoying warnings noticed
+	under MinGW.
+	* magick/spinlock.h (_spinlock_release): Use 'long' rather than
+	'int' in order to eliminate warning under MinGW.
+	* magick/semaphore.c (spinlock_wait): Use 'long' rather than 'int'
+	in order to eliminate warning under MinGW.
+	* magick/log.c (LogMagickEventList): Eliminate warning under MinGW.
+	* magick/compress.h: Clean up interface definitions to use
+	magick_uint8_t for unsigned character data.
 	* coders/jpeg.c (ReadJPEGImage): Don't use GetPixelCachePresent()
 	since it is not DLL-exported.
 

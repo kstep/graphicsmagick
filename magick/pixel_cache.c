@@ -4042,8 +4042,9 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
 #if 1
   /*
     Initialize region to zero to ensure consistent behavior.
+    FIXME: This should not be necessary
   */
-  (void) memset(nexus_info->staging,0,nexus_info->length);
+  (void) memset((void *) nexus_info->staging,0,nexus_info->length);
 #endif
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;

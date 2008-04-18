@@ -275,7 +275,7 @@ MagickExport void Ascii85Flush(Image *image)
   (void) WriteBlobByte(image,'\n');
 }
 
-MagickExport void Ascii85Encode(Image *image,const unsigned long code)
+MagickExport void Ascii85Encode(Image *image,const magick_uint8_t code)
 {
   long
     n;
@@ -289,7 +289,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->ascii85 != (Ascii85Info *) NULL);
-  image->ascii85->buffer[image->ascii85->offset]=(unsigned char) code;
+  image->ascii85->buffer[image->ascii85->offset]=code;
   image->ascii85->offset++;
   if (image->ascii85->offset < 4)
     return;
@@ -317,14 +317,14 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
 MagickExport unsigned int Ascii85WriteByteHook(Image *image, 
   const magick_uint8_t code, void *ARGUNUSED(info))
 {
-  Ascii85Encode(image,(unsigned long)code);
+  Ascii85Encode(image,code);
   return(True);
 }
 
 MagickExport unsigned int BlobWriteByteHook(Image *image,
   const magick_uint8_t code, void *ARGUNUSED(info))
 {
-  return(WriteBlobByte(image,(unsigned long)code));
+  return(WriteBlobByte(image,code));
 }
 
 /*
@@ -991,7 +991,7 @@ MagickExport MagickPassFail HuffmanEncodeImage(const ImageInfo *image_info,
 }
 
 MagickExport MagickPassFail LZWEncode2Image(Image *image,
-  const size_t length,unsigned char *pixels,WriteByteHook write_byte,void *info)
+  const size_t length,magick_uint8_t *pixels,WriteByteHook write_byte,void *info)
 {
   typedef struct _TableType
   {
@@ -1109,7 +1109,7 @@ MagickExport MagickPassFail LZWEncode2Image(Image *image,
 }
 
 MagickExport MagickPassFail LZWEncodeImage(Image *image, const size_t length,
-  unsigned char *pixels)
+  magick_uint8_t *pixels)
 {
   return(LZWEncode2Image(image,length,pixels,BlobWriteByteHook,(void *)NULL));
 }
@@ -1149,7 +1149,7 @@ MagickExport MagickPassFail LZWEncodeImage(Image *image, const size_t length,
 %
 */
 MagickExport MagickPassFail PackbitsEncode2Image(Image *image,
-  const size_t length,unsigned char *pixels,WriteByteHook write_byte, 
+  const size_t length,magick_uint8_t *pixels,WriteByteHook write_byte, 
   void *info)
 {
   int
@@ -1254,7 +1254,7 @@ MagickExport MagickPassFail PackbitsEncode2Image(Image *image,
 }
 
 MagickExport MagickPassFail PackbitsEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
+  magick_uint8_t *pixels)
 {
   return(PackbitsEncode2Image(image,length,pixels,BlobWriteByteHook,(void *)NULL));
 }

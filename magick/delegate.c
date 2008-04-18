@@ -398,6 +398,7 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
 %
 %
 */
+#if defined(POSIX)
 static size_t
 UnixShellTextEscape(char *dst, const char *src, const size_t size)
 {
@@ -441,6 +442,7 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
 
   return length;
 }
+#endif /* POSIX */
 
 MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   const char *decode,const char *encode,ExceptionInfo *exception)

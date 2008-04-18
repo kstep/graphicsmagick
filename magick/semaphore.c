@@ -90,10 +90,10 @@ static CRITICAL_SECTION
 static unsigned int
   active_semaphore = False;
 #else
-static LONG volatile
+static LONG
   semaphore_mutex = 0;
 /* Wait for spin lock */
-static void spinlock_wait (LONG volatile *sl)
+static void spinlock_wait (LONG *sl)
 {
   /*
     InterlockedCompareExchange performs an atomic comparison of the
@@ -109,7 +109,7 @@ static void spinlock_wait (LONG volatile *sl)
   }
 }
 /* Release spin lock */
-static void spinlock_release (LONG volatile *sl)
+static void spinlock_release (LONG *sl)
 {
   /*
     InterlockedExchange atomically exchanges a pair of 32-bit

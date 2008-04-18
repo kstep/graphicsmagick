@@ -1450,7 +1450,7 @@ MagickExport MagickBool NTKernelAPISupported(const char *name)
 %           "LibPath", "CoderModulesPath", "FilterModulesPath", "SharePath".
 %
 */
-MagickExport char *NTRegistryKeyLookup(const char *subkey)
+MagickExport unsigned char *NTRegistryKeyLookup(const char *subkey)
 {
   static HKEY
     reg_key = (HKEY) INVALID_HANDLE_VALUE;
@@ -1483,7 +1483,7 @@ MagickExport char *NTRegistryKeyLookup(const char *subkey)
     Look-up sub-key
   */
   {
-    char
+    unsigned char
       *dest;
     
     DWORD
@@ -1494,12 +1494,12 @@ MagickExport char *NTRegistryKeyLookup(const char *subkey)
       res;
     
     size = 32;
-    dest = MagickAllocateMemory(char *,size);
+    dest = MagickAllocateMemory(unsigned char *,size);
     
     res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
     if (res == ERROR_MORE_DATA && type == REG_SZ)
       {
-        MagickReallocMemory(char *,dest,size);
+        MagickReallocMemory(unsigned char *,dest,size);
         res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
       }
     
@@ -1567,7 +1567,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   else
     handle=GetModuleHandle(0);
   if (!handle)
-    return((char *) NULL);
+    return((unsigned char *) NULL);
   /*
     Locate a resource matching the specified type and name in the
     specified module.
@@ -1577,7 +1577,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   {
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
       "Tried: windows resource \"%.1024s\"",id);
-    return((char *) NULL);
+    return((unsigned char *) NULL);
   }
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Found: windows resource \"%.1024s\"",id);
@@ -1586,7 +1586,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   */
   global=LoadResource(handle,resource);
   if (!global)
-    return((char *) NULL);
+    return((unsigned char *) NULL);
   /*
     Obtain the size (in bytes) of the specified resource.
   */
@@ -1598,7 +1598,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   if (!value)
     {
       FreeResource(global); /* Obsolete 16 bit API */
-      return((char *) NULL);
+      return((unsigned char *) NULL);
     }
   blob=MagickAllocateMemory(unsigned char *,length+1);
   if (blob != (unsigned char *) NULL)

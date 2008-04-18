@@ -603,8 +603,10 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
     {
 #define LOGGING_ERROR_CODE 0
       char
-        buffer[MaxTextExtent],
-        *szList[1];
+        buffer[MaxTextExtent];
+
+      LPCSTR
+        szList[1];
 
       HANDLE
         hSource;
