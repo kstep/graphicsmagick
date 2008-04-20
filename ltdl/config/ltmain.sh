@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2634 2008/04/11 17:21:54) 2.2.3a
+# ltmain.sh (GNU libtool 1.2960 2008-04-19) 2.2.3a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2634 2008/04/11 17:21:54) 2.2.3a
+#       $progname:		(GNU libtool 1.2960 2008-04-19) 2.2.3a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.2.3a
-TIMESTAMP=" 1.2634 2008/04/11 17:21:54"
-package_revision=1.2634
+TIMESTAMP=" 1.2960 2008-04-19"
+package_revision=1.2960
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -1088,7 +1088,7 @@ pic_object=$write_lobj
 non_pic_object=$write_oldobj
 
 EOF
-      mv -f "${write_libobj}T" "${write_libobj}"
+      $MV "${write_libobj}T" "${write_libobj}"
     }
 }
 
@@ -1269,9 +1269,6 @@ func_mode_compile ()
       removelist="$lobj $libobj ${libobj}T"
     fi
 
-    $opt_dry_run || $RM $removelist
-    trap "$opt_dry_run || $RM $removelist; exit $EXIT_FAILURE" 1 2 15
-
     # On Cygwin there's no "real" PIC flag so we must build both object types
     case $host_os in
     cygwin* | mingw* | pw32* | os2*)
@@ -1288,8 +1285,6 @@ func_mode_compile ()
     if test "$compiler_c_o" = no; then
       output_obj=`$ECHO "X$srcfile" | $Xsed -e 's%^.*/%%' -e 's%\.[^.]*$%%'`.${objext}
       lockfile="$output_obj.lock"
-      removelist="$removelist $output_obj $lockfile"
-      trap "$opt_dry_run || $RM $removelist; exit $EXIT_FAILURE" 1 2 15
     else
       output_obj=
       need_locks=no
@@ -1319,16 +1314,19 @@ compiler."
 	$opt_dry_run || $RM $removelist
 	exit $EXIT_FAILURE
       fi
+      removelist="$removelist $output_obj"
       $ECHO "$srcfile" > "$lockfile"
     fi
+
+    $opt_dry_run || $RM $removelist
+    removelist="$removelist $lockfile"
+    trap '$opt_dry_run || $RM $removelist; exit $EXIT_FAILURE' 1 2 15
 
     if test -n "$fix_srcfile_path"; then
       eval srcfile=\"$fix_srcfile_path\"
     fi
     func_quote_for_eval "$srcfile"
     qsrcfile=$func_quote_for_eval_result
-
-    $opt_dry_run || $RM "$libobj" "${libobj}T"
 
     # Only build a PIC object if we are building libtool libraries.
     if test "$build_libtool_libs" = yes; then
@@ -1348,8 +1346,6 @@ compiler."
 	# Place PIC objects in $objdir
 	command="$command -o $lobj"
       fi
-
-      $opt_dry_run || $RM "$lobj" "$output_obj"
 
       func_show_eval_locale "$command"	\
           'test -n "$output_obj" && $RM $removelist; exit $EXIT_FAILURE'
@@ -1400,7 +1396,6 @@ compiler."
 
       # Suppress compiler output if we already did a PIC compilation.
       command="$command$suppress_output"
-      $opt_dry_run || $RM "$obj" "$output_obj"
       func_show_eval_locale "$command" \
         '$opt_dry_run || $RM $removelist; exit $EXIT_FAILURE'
 
@@ -1436,6 +1431,7 @@ compiler."
 
       # Unlock the critical section if it was locked
       if test "$need_locks" != no; then
+	removelist=$lockfile
         $RM "$lockfile"
       fi
     }
@@ -2629,7 +2625,8 @@ func_extract_archives ()
       while :; do
         case " $extracted_archives " in
 	*" $my_xlib_u "*)
-	  extracted_serial=`expr $extracted_serial + 1`
+	  func_arith $extracted_serial + 1
+	  extracted_serial=$func_arith_result
 	  my_xlib_u=lt$extracted_serial-$my_xlib ;;
 	*) break ;;
 	esac
@@ -5098,7 +5095,8 @@ func_mode_link ()
 	      # bleh windows
 	      case $host in
 	      *cygwin* | mingw*)
-		major=`expr $current - $age`
+	        func_arith $current - $age
+		major=$func_arith_result
 		versuffix="-$major"
 		;;
 	      esac
@@ -5661,7 +5659,8 @@ func_mode_link ()
 	  #
 	  case $version_type in
 	  darwin|linux|osf|windows|none)
-	    current=`expr $number_major + $number_minor`
+	    func_arith $number_major + $number_minor
+	    current=$func_arith_result
 	    age="$number_minor"
 	    revision="$number_revision"
 	    ;;
@@ -5671,7 +5670,8 @@ func_mode_link ()
 	    age="0"
 	    ;;
 	  irix|nonstopux)
-	    current=`expr $number_major + $number_minor`
+	    func_arith $number_major + $number_minor
+	    current=$func_arith_result
 	    age="$number_minor"
 	    revision="$number_minor"
 	    lt_irix_increment=no
@@ -5725,10 +5725,12 @@ func_mode_link ()
 	darwin)
 	  # Like Linux, but with the current version available in
 	  # verstring for coding it into the library header
-	  major=.`expr $current - $age`
+	  func_arith $current - $age
+	  major=.$func_arith_result
 	  versuffix="$major.$age.$revision"
 	  # Darwin ld doesn't like 0 for these options...
-	  minor_current=`expr $current + 1`
+	  func_arith $current + 1
+	  minor_current=$func_arith_result
 	  xlcverstring="${wl}-compatibility_version ${wl}$minor_current ${wl}-current_version ${wl}$minor_current.$revision"
 	  verstring="-compatibility_version $minor_current -current_version $minor_current.$revision"
 	  ;;
@@ -5745,10 +5747,11 @@ func_mode_link ()
 
 	irix | nonstopux)
 	  if test "X$lt_irix_increment" = "Xno"; then
-	    major=`expr $current - $age`
+	    func_arith $current - $age
 	  else
-	    major=`expr $current - $age + 1`
+	    func_arith $current - $age + 1
 	  fi
+	  major=$func_arith_result
 
 	  case $version_type in
 	    nonstopux) verstring_prefix=nonstopux ;;
@@ -5759,8 +5762,10 @@ func_mode_link ()
 	  # Add in all the interfaces that we are compatible with.
 	  loop=$revision
 	  while test "$loop" -ne 0; do
-	    iface=`expr $revision - $loop`
-	    loop=`expr $loop - 1`
+	    func_arith $revision - $loop
+	    iface=$func_arith_result
+	    func_arith $loop - 1
+	    loop=$func_arith_result
 	    verstring="$verstring_prefix$major.$iface:$verstring"
 	  done
 
@@ -5770,20 +5775,24 @@ func_mode_link ()
 	  ;;
 
 	linux)
-	  major=.`expr $current - $age`
+	  func_arith $current - $age
+	  major=.$func_arith_result
 	  versuffix="$major.$age.$revision"
 	  ;;
 
 	osf)
-	  major=.`expr $current - $age`
+	  func_arith $current - $age
+	  major=.$func_arith_result
 	  versuffix=".$current.$age.$revision"
 	  verstring="$current.$age.$revision"
 
 	  # Add in all the interfaces that we are compatible with.
 	  loop=$age
 	  while test "$loop" -ne 0; do
-	    iface=`expr $current - $loop`
-	    loop=`expr $loop - 1`
+	    func_arith $current - $loop
+	    iface=$func_arith_result
+	    func_arith $loop - 1
+	    loop=$func_arith_result
 	    verstring="$verstring:${iface}.0"
 	  done
 
@@ -5804,7 +5813,8 @@ func_mode_link ()
 	windows)
 	  # Use '-' rather than '.', since we only want one
 	  # extension on DOS 8.3 filesystems.
-	  major=`expr $current - $age`
+	  func_arith $current - $age
+	  major=$func_arith_result
 	  versuffix="-$major"
 	  ;;
 
@@ -6000,9 +6010,10 @@ EOF
 	  if $LTCC $LTCFLAGS -o conftest conftest.c $deplibs; then
 	    ldd_output=`ldd conftest`
 	    for i in $deplibs; do
-	      name=`expr $i : '-l\(.*\)'`
-	      # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" && test "$name" != "0"; then
+	      case $i in
+	      -l*)
+		func_stripname -l '' "$i"
+		name=$func_stripname_result
 		if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
 		  case " $predeps $postdeps " in
 		  *" $i "*)
@@ -6029,17 +6040,20 @@ EOF
 		    $ECHO "*** its dynamic dependency list that programs get resolved with at runtime."
 		  fi
 		fi
-	      else
+		;;
+	      *)
 		newdeplibs="$newdeplibs $i"
-	      fi
+		;;
+	      esac
 	    done
 	  else
 	    # Error occurred in the first compile.  Let's try to salvage
 	    # the situation: Compile a separate program for each library.
 	    for i in $deplibs; do
-	      name=`expr $i : '-l\(.*\)'`
-	      # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" && test "$name" != "0"; then
+	      case $i in
+	      -l*)
+		func_stripname -l '' "$i"
+		name=$func_stripname_result
 		$opt_dry_run || $RM conftest
 		if $LTCC $LTCFLAGS -o conftest conftest.c $i; then
 		  ldd_output=`ldd conftest`
@@ -6077,9 +6091,11 @@ EOF
 		  $ECHO "*** library that it depends on before this library will be fully"
 		  $ECHO "*** functional.  Installing it before continuing would be even better."
 		fi
-	      else
+		;;
+	      *)
 		newdeplibs="$newdeplibs $i"
-	      fi
+		;;
+	      esac
 	    done
 	  fi
 	  ;;
@@ -6087,9 +6103,10 @@ EOF
 	  set dummy $deplibs_check_method; shift
 	  file_magic_regex=`expr "$deplibs_check_method" : "$1 \(.*\)"`
 	  for a_deplib in $deplibs; do
-	    name=`expr $a_deplib : '-l\(.*\)'`
-	    # If $name is empty we are operating on a -L argument.
-	    if test "$name" != "" && test  "$name" != "0"; then
+	    case $a_deplib in
+	    -l*)
+	      func_stripname -l '' "$a_deplib"
+	      name=$func_stripname_result
 	      if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
 		case " $predeps $postdeps " in
 		*" $a_deplib "*)
@@ -6146,19 +6163,22 @@ EOF
 		  $ECHO "*** using a file magic. Last file checked: $potlib"
 		fi
 	      fi
-	    else
+	      ;;
+	    *)
 	      # Add a -L argument.
 	      newdeplibs="$newdeplibs $a_deplib"
-	    fi
+	      ;;
+	    esac
 	  done # Gone through all deplibs.
 	  ;;
 	match_pattern*)
 	  set dummy $deplibs_check_method; shift
 	  match_pattern_regex=`expr "$deplibs_check_method" : "$1 \(.*\)"`
 	  for a_deplib in $deplibs; do
-	    name=`expr $a_deplib : '-l\(.*\)'`
-	    # If $name is empty we are operating on a -L argument.
-	    if test -n "$name" && test "$name" != "0"; then
+	    case $a_deplib in
+	    -l*)
+	      func_stripname -l '' "$a_deplib"
+	      name=$func_stripname_result
 	      if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
 		case " $predeps $postdeps " in
 		*" $a_deplib "*)
@@ -6197,10 +6217,12 @@ EOF
 		  $ECHO "*** using a regex pattern. Last file checked: $potlib"
 		fi
 	      fi
-	    else
+	      ;;
+	    *)
 	      # Add a -L argument.
 	      newdeplibs="$newdeplibs $a_deplib"
-	    fi
+	      ;;
+	    esac
 	  done # Gone through all deplibs.
 	  ;;
 	none | unknown | *)
@@ -6452,8 +6474,9 @@ EOF
 	    for cmd in $cmds; do
 	      IFS="$save_ifs"
 	      eval cmd=\"$cmd\"
-	      if len=`expr "X$cmd" : ".*"` &&
-	       test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
+	      func_len " $cmd"
+	      len=$func_len_result
+	      if test "$len" -lt "$max_cmd_len" || test "$max_cmd_len" -le -1; then
 		func_show_eval "$cmd" 'exit $?'
 		skipped_export=false
 	      else
@@ -6556,8 +6579,9 @@ EOF
 	fi
 
 	if test "X$skipped_export" != "X:" &&
-	   len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
-	   test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
+	   func_len " $test_cmds" &&
+	   len=$func_len_result &&
+	   test "$len" -lt "$max_cmd_len" || test "$max_cmd_len" -le -1; then
 	  :
 	else
 	  # The command line is too long to link in one step, link piecewise
@@ -6617,14 +6641,20 @@ EOF
 	    if test -n "$save_libobjs"; then
 	      func_verbose "creating reloadable object files..."
 	      output=$output_objdir/$output_la-${k}.$objext
+	      eval test_cmds=\"$reload_cmds\"
+	      func_len " $test_cmds"
+	      len0=$func_len_result
+	      len=$len0
+
 	      # Loop over the list of objects to be linked.
 	      for obj in $save_libobjs
 	      do
-		eval test_cmds=\"$reload_cmds $objlist $last_robj\"
+		func_len " $obj"
+		func_arith $len + $func_len_result
+		len=$func_arith_result
 		if test "X$objlist" = X ||
-		   { len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
-		     test "$len" -le "$max_cmd_len"; }; then
-		  objlist="$objlist $obj"
+		   test "$len" -lt "$max_cmd_len"; then
+		  func_append objlist " $obj"
 		else
 		  # The command $test_cmds is almost too long, add a
 		  # command to the queue.
@@ -6637,10 +6667,13 @@ EOF
 		    eval concat_cmds=\"\$concat_cmds~$reload_cmds $objlist $last_robj~\$RM $last_robj\"
 		  fi
 		  last_robj=$output_objdir/$output_la-${k}.$objext
-		  k=`expr $k + 1`
+		  func_arith $k + 1
+		  k=$func_arith_result
 		  output=$output_objdir/$output_la-${k}.$objext
 		  objlist=$obj
-		  len=1
+		  func_len " $last_robj"
+		  func_arith $len0 + $func_len_result
+		  len=$func_arith_result
 		fi
 	      done
 	      # Handle the remaining objects by creating one last
@@ -7375,7 +7408,8 @@ EOF
 		# Make sure we don't pick an alternate name that also
 		# overlaps.
 		newobj=lt$counter-$objbase
-		counter=`expr $counter + 1`
+		func_arith $counter + 1
+		counter=$func_arith_result
 		case " $oldobjs " in
 		*[\ /]"$newobj "*) ;;
 		*) if test ! -f "$gentop/$newobj"; then break; fi ;;
@@ -7390,8 +7424,9 @@ EOF
 	fi
 	eval cmds=\"$old_archive_cmds\"
 
-	if len=`expr "X$cmds" : ".*" 2>/dev/null` &&
-	   test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
+	func_len " $cmds"
+	len=$func_len_result
+	if test "$len" -lt "$max_cmd_len" || test "$max_cmd_len" -le -1; then
 	  cmds=$old_archive_cmds
 	else
 	  # the command line is too long to link in one step, link in parts
@@ -7401,18 +7436,23 @@ EOF
 	  objlist=
 	  concat_cmds=
 	  save_oldobjs=$oldobjs
+	  oldobjs=
 	  # Is there a better way of finding the last object in the list?
 	  for obj in $save_oldobjs
 	  do
 	    last_oldobj=$obj
 	  done
+	  eval test_cmds=\"$old_archive_cmds\"
+	  func_len " $test_cmds"
+	  len0=$func_len_result
+	  len=$len0
 	  for obj in $save_oldobjs
 	  do
-	    oldobjs="$objlist $obj"
-	    objlist="$objlist $obj"
-	    eval test_cmds=\"$old_archive_cmds\"
-	    if len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
-	       test "$len" -le "$max_cmd_len"; then
+	    func_len " $obj"
+	    func_arith $len + $func_len_result
+	    len=$func_arith_result
+	    func_append objlist " $obj"
+	    if test "$len" -lt "$max_cmd_len"; then
 	      :
 	    else
 	      # the above command should be used before it gets too long
@@ -7423,6 +7463,7 @@ EOF
 	      test -z "$concat_cmds" || concat_cmds=$concat_cmds~
 	      eval concat_cmds=\"\${concat_cmds}$old_archive_cmds\"
 	      objlist=
+	      len=$len0
 	    fi
 	  done
 	  RANLIB=$save_RANLIB

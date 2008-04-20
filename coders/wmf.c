@@ -256,7 +256,7 @@ static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply br
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
 
 /* Progress callback */
-int magick_progress_callback (void* context,float quantum)
+static int magick_progress_callback (void* context,float quantum)
 {
   Image
     *image;
