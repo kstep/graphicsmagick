@@ -1,8 +1,10 @@
-2008-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2008-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/delegate.h: It seems that the modern
 	convention is to store ghostscript headers in a subdirectory
 	called 'ghostscript' rather than 'ps'.
+	We don't actually need Ghostscript errors.h and that is a good
+	thing since it seems that some newer Ghostscript calls it ierrors.h
 
 2008-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

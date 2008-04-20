@@ -46,7 +46,6 @@ typedef struct _DelegateInfo
 
 #if defined(HasGS)
 #include "ghostscript/iapi.h"
-#include "ghostscript/errors.h"
 #endif
 
 #ifndef gs_main_instance_DEFINED
