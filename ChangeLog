@@ -1,3 +1,9 @@
+2008-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac, magick/delegate.h: It seems that the modern
+	convention is to store ghostscript headers in a subdirectory
+	called 'ghostscript' rather than 'ps'.
+
 2008-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/installer/inc/files-dlls.isx: Comment out inclusion

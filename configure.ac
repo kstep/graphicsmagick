@@ -1809,8 +1809,8 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(ps/iapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_HEADER(ps/errors.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(ghostscript/iapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(ghostscript/errors.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(gs,gsapi_new_instance,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if Ghostscript library package is complete)
     if test $passed -gt 0

@@ -45,8 +45,8 @@ typedef struct _DelegateInfo
 #if defined(MAGICK_IMPLEMENTATION)
 
 #if defined(HasGS)
-#include "ps/iapi.h"
-#include "ps/errors.h"
+#include "ghostscript/iapi.h"
+#include "ghostscript/errors.h"
 #endif
 
 #ifndef gs_main_instance_DEFINED
