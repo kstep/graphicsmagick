@@ -1,5 +1,7 @@
 2008-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac, magick/Makefile.am: Don't use libtdl unless we are
+	supposed to be using it!
 	* libtool: Updated to GNU libtool 1.2960 2008-04-19.
 	* configure.ac, magick/delegate.h: It seems that the modern
 	convention is to store ghostscript headers in a subdirectory
