@@ -1,3 +1,8 @@
+2008-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOneJNGImage): Deal with ReadImage() returning
+	a NULL pointer when reading JPEG sub-image.
+
 2008-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (ExportImageChannel): Added progress monitor

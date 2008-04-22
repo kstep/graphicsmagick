@@ -1558,14 +1558,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (ping_info == (png_info *) NULL)
     {
       png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-        }
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   end_info=png_create_info_struct(ping);
   if (end_info == (png_info *) NULL)
     {
       png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-        }
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   png_pixels=(unsigned char *) NULL;
   if (setjmp(ping->jmpbuf))
     {
@@ -2986,8 +2986,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 {
                   DestroyImage(alpha_image);
                   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                       alpha_image)
-                    }
+                                       alpha_image);
+                }
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "    Creating alpha_blob.");
@@ -3238,12 +3238,19 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   FormatString(color_image_info->filename,"%.1024s",color_image->filename);
 
-  color_image_info->ping=False;   /* To do: avoid this */
+  color_image_info->ping=MagickFalse;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
-
   (void) LiberateUniqueFileResource(color_image->filename);
   DestroyImage(color_image);
   DestroyImageInfo(color_image_info);
+
+  if (jng_image == (Image *) NULL)
+    {
+      /*
+        Don't throw exception here since ReadImage() will already have thrown it.
+      */
+      return (Image *) NULL;
+    }
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

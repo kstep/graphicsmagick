@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2960 2008-04-19) 2.2.3a
+# ltmain.sh (GNU libtool 1.2963 2008-04-21) 2.2.3a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2960 2008-04-19) 2.2.3a
+#       $progname:		(GNU libtool 1.2963 2008-04-21) 2.2.3a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.2.3a
-TIMESTAMP=" 1.2960 2008-04-19"
-package_revision=1.2960
+TIMESTAMP=" 1.2963 2008-04-21"
+package_revision=1.2963
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -2646,26 +2646,26 @@ func_extract_archives ()
 	  darwin_archive=$my_xabs
 	  darwin_curdir=`pwd`
 	  darwin_base_archive=`basename "$darwin_archive"`
-	  darwin_arches=`lipo -info "$darwin_archive" 2>/dev/null | $GREP Architectures 2>/dev/null || true`
+	  darwin_arches=`$LIPO -info "$darwin_archive" 2>/dev/null | $GREP Architectures 2>/dev/null || true`
 	  if test -n "$darwin_arches"; then
 	    darwin_arches=`$ECHO "$darwin_arches" | $SED -e 's/.*are://'`
 	    darwin_arch=
 	    func_verbose "$darwin_base_archive has multiple architectures $darwin_arches"
 	    for darwin_arch in  $darwin_arches ; do
 	      func_mkdir_p "unfat-$$/${darwin_base_archive}-${darwin_arch}"
-	      lipo -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
+	      $LIPO -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
 	      cd "unfat-$$/${darwin_base_archive}-${darwin_arch}"
 	      func_extract_an_archive "`pwd`" "${darwin_base_archive}"
 	      cd "$darwin_curdir"
 	      $RM "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}"
 	    done # $darwin_arches
             ## Okay now we've a bunch of thin objects, gotta fatten them up :)
-	    darwin_filelist=`find unfat-$$ -type f -name \*.o -print -o -name \*.lo -print| xargs basename | sort -u | $NL2SP`
+	    darwin_filelist=`find unfat-$$ -type f -name \*.o -print -o -name \*.lo -print | $SED -e "$basename" | sort -u`
 	    darwin_file=
 	    darwin_files=
 	    for darwin_file in $darwin_filelist; do
 	      darwin_files=`find unfat-$$ -name $darwin_file -print | $NL2SP`
-	      lipo -create -output "$darwin_file" $darwin_files
+	      $LIPO -create -output "$darwin_file" $darwin_files
 	    done # $darwin_filelist
 	    $RM -rf unfat-$$
 	    cd "$darwin_orig_dir"
