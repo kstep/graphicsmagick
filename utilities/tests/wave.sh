@@ -11,5 +11,5 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -background '#000000FF' \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -background '#000000FF' \
         -wave 25x150 -label Wave Wave_out.miff

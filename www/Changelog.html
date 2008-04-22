@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2008-04-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (ExportImageChannel): Added progress monitor
+        support.<BR>
+        (SetImageChannelDepth): Added progress monitor support.
+        (ChannelImage): Don't preserve matte channel when extracting
+        channel.<BR>
+  <LI> magick/image.c (SetImageOpacity): Avoid integer overflow in Q32
+        build.  Added progress monitor support.
+        (SyncImage): Added progress monitor support.
+        (SetImage): Added progress monitor support.
+        (CycleColormapImage): Added progress monitor support.
+        (GetImageBoundingBox): Added progress monitor support.
+        (SortColormapByIntensity): Added progress monitor support.
+
+</UL>
+<p>
 2008-04-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

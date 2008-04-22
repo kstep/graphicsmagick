@@ -11,5 +11,5 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -fill black -rotate 45 \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -rotate 45 \
         -transparent black -label Rotate Rotate_out.miff

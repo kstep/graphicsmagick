@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -gaussian 0x1.5 -label GaussianBlur GB_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -gaussian 0x1.5 -label GaussianBlur GB_out.miff

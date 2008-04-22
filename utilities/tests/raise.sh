@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -raise 10x10 -label Raise Raise_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -raise 10x10 -label Raise Raise_out.miff

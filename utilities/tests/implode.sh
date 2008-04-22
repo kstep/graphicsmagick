@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -implode 0.5 -label Implode Implode_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -implode 0.5 -label Implode Implode_out.miff

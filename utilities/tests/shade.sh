@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -shade 30x30 -label Shade Shade_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -shade 30x30 -label Shade Shade_out.miff

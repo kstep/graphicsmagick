@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff

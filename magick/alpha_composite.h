@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2005 GraphicsMagick Group
+  Copyright (C) 2003, 2005, 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -17,6 +17,23 @@ extern "C" {
 
 #if defined(MAGICK_IMPLEMENTATION)
 
+static inline magick_uint32_t BlendQuantumOpacity(magick_uint32_t q,
+  const magick_uint32_t opacity)
+{
+  magick_uint32_t
+    result = 0U;
+
+  if (opacity != 0U)
+    {
+#if QuantumDepth > 16
+      result = ((magick_uint64_t) opacity*q)/MaxRGB;
+#else
+      result = ((magick_uint32_t) opacity*q)/MaxRGB;
+#endif
+    }
+  return result;
+}
+
 static inline PixelPacket BlendComposite(const PixelPacket *p,
   const PixelPacket *q,const double alpha)
 {
@@ -27,14 +44,14 @@ static inline PixelPacket BlendComposite(const PixelPacket *p,
     composite;
 
   color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  composite.red=RoundSignedToQuantum(color);
+
   color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  composite.green=RoundSignedToQuantum(color);
+
   color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  composite.blue=RoundSignedToQuantum(color);
+
   composite.opacity=p->opacity;
   return(composite);
 }
@@ -46,19 +63,25 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
     composite;
 
   double
+    color,
     MaxRGB_alpha,
     MaxRGB_beta;
 
   MaxRGB_alpha=MaxRGB-alpha;
   MaxRGB_beta=MaxRGB-beta;
-  composite.red=(Quantum)
-    ((MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB+0.5);
-  composite.green=(Quantum)
-    ((MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB+0.5);
-  composite.blue=(Quantum)
-    ((MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB+0.5);
-  composite.opacity=(Quantum)
-    (MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB)+0.5);
+
+  color=(MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB;
+  composite.red=RoundSignedToQuantum(color);
+
+  color=(MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB;
+  composite.green=RoundSignedToQuantum(color);
+
+  color=(MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB;
+  composite.blue=RoundSignedToQuantum(color);
+
+  color=MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB);
+  composite.opacity=RoundSignedToQuantum(color);
+
   return(composite);
 }
 #endif /* defined(MAGICK_IMPLEMENTATION) */

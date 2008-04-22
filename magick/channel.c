@@ -76,13 +76,13 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 {
 #define ChannelImageText  "  Extract a channel from the image...  "
 
-  long
+  unsigned long
     y;
 
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
@@ -101,7 +101,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       status &= SyncImage(image);
       image->storage_class=DirectClass;
     }
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -114,10 +114,11 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       case RedChannel:
       case CyanChannel:
         {
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             {
               q->green=q->red;
               q->blue=q->red;
+              q->opacity=OpaqueOpacity;
               q++;
             }
           break;
@@ -125,10 +126,11 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       case GreenChannel:
       case MagentaChannel:
         {
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             {
               q->red=q->green;
               q->blue=q->green;
+              q->opacity=OpaqueOpacity;
               q++;
             }
           break;
@@ -136,10 +138,11 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       case BlueChannel:
       case YellowChannel:
         {
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             {
               q->red=q->blue;
               q->green=q->blue;
+              q->opacity=OpaqueOpacity;
               q++;
             }
           break;
@@ -154,7 +157,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
                   status=MagickFail;
                   break;
                 }
-              for (x=(long) image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   q->red=*indexes;
                   q->green=*indexes;
@@ -166,7 +169,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
             }
           else
             {
-              for (x=(long) image->columns; x > 0; x--)
+              for (x=image->columns; x != 0; x--)
                 {
                   q->red=q->opacity;
                   q->green=q->opacity;
@@ -181,7 +184,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       case MatteChannel:
       case BlackChannel:
         {
-          for (x=(long) image->columns; x > 0; x--)
+          for (x=image->columns; x != 0; x--)
             {
               q->red=q->opacity;
               q->green=q->opacity;
@@ -203,10 +206,14 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
       }
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(ChannelImageText,y,image->rows,&image->exception))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
   }
+  image->matte=MagickFalse;
   image->colorspace=RGBColorspace;
-  image->is_grayscale=True;
+  image->is_grayscale=MagickTrue;
   return(status);
 }
 
@@ -266,6 +273,7 @@ do { \
     } \
 } while (0);
 
+#define ExportImageChannelText "  Export image channel...  "
 MagickExport Image *ExportImageChannel(const Image *src_image,
                                        const ChannelType channel,
                                        ExceptionInfo *exception)
@@ -275,9 +283,6 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
 
   long
     y;
-
-/*   register IndexPacket */
-/*     *dst_indexes; */
 
   register const PixelPacket
     *p;
@@ -367,6 +372,9 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
 
       if (!SyncImagePixels(dst_image))
         break;
+      if (QuantumTick(y,src_image->rows))
+        if (!MagickMonitor(ExportImageChannelText,y,src_image->rows,exception))
+          break;
     }
   dst_image->is_grayscale=True;
   dst_image->is_monochrome=src_image->is_monochrome;
@@ -578,11 +586,11 @@ do { \
     } \
 } while (0);
 
+#define ImportImageChannelText  "  Import a channel into the image...  "
 MagickPassFail ImportImageChannel(const Image *src_image,
                                   Image *dst_image,
                                   const ChannelType channel)
 {
-#define ImageImageChannelText  "  Import a channel into the image...  "
   long
     y;
 
@@ -675,7 +683,7 @@ MagickPassFail ImportImageChannel(const Image *src_image,
           break;
         }
       if (QuantumTick(y,dst_image->rows))
-        if (!MagickMonitor(ImageImageChannelText,y,dst_image->rows,&dst_image->exception))
+        if (!MagickMonitor(ImportImageChannelText,y,dst_image->rows,&dst_image->exception))
           break;
     }
   return(status);
@@ -716,6 +724,7 @@ MagickPassFail ImportImageChannel(const Image *src_image,
 %
 %
 */
+#define SetChannelDepthText  "  SetChannelDepth...  "
 #define SET_CHANNEL_DEPTH(image,desired_depth,channel,parameter,status) \
 { \
   long \
@@ -751,6 +760,12 @@ MagickPassFail ImportImageChannel(const Image *src_image,
           status=MagickFail; \
           break; \
         } \
+      if (QuantumTick(y,image->rows)) \
+        if (!MagickMonitor(SetChannelDepthText,y,image->rows,&image->exception)) \
+           { \
+             status=MagickFail; \
+             break; \
+           } \
     } \
   if (image->storage_class == PseudoClass) \
     { \
@@ -762,6 +777,8 @@ MagickPassFail ImportImageChannel(const Image *src_image,
         { \
           parameter=scale*((parameter)/scale); \
           q++; \
+          if (QuantumTick(i,image->colors)) \
+            (void) MagickMonitor(SetChannelDepthText,i,image->colors,&image->exception); \
         } \
     } \
 }

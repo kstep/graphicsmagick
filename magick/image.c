@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003 - 2008 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -692,9 +692,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
 %
 %
 */
+#define AverageImageText  "  Average image sequence...  "
 MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 {
-#define AverageImageText  "  Average image sequence...  "
 
   DoublePixelPacket
     *pixels_array;
@@ -930,10 +930,10 @@ MagickExport MagickPassFail ClipImage(Image *image)
   return(ClipPathImage(image,"#1",True));
 }
 
+#define ClipPathImageTag  "ClipPath/Image"
 MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
   const unsigned int inside)
 {
-#define ClipPathImageTag  "ClipPath/Image"
 
   char
     key[MaxTextExtent];
@@ -1329,6 +1329,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
+#define CycleColormapImageText "  Cycle image colormap...  "
 MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
 {
   long
@@ -1381,6 +1382,12 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
         status=MagickFail;
         break;
       }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(CycleColormapImageText,y,image->rows,&image->exception))
+        {
+          status=MagickFail;
+          break;
+        }
   }
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
@@ -2553,6 +2560,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %
 */
+#define GetImageBoundingBoxText "  Get image bounding box...  "
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
@@ -2619,6 +2627,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
             bounds.height=y;
         p++;
       }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(GetImageBoundingBoxText,y,image->rows,exception))
+        break;
   }
   if ((bounds.width != 0) || (bounds.height != 0))
     {
@@ -4447,6 +4458,7 @@ ReplaceImageColormap(Image *image,
 %
 %
 */
+#define SetImageColorText "  Set image color...  "
 MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
 {
   unsigned long
@@ -4510,6 +4522,12 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
           status=MagickFail;
           break;
         }
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitor(SetImageColorText,y,image->rows,&image->exception))
+          {
+            status=MagickFail;
+            break;
+          }
     }
   image->is_grayscale=IsGray(image->background_color);
   image->is_monochrome=IsMonochrome(image->background_color);
@@ -5050,6 +5068,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 %
 %
 */
+#define SetImageOpacityText "  Set image opacity...  "
 MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 {
   unsigned long
@@ -5090,8 +5109,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
             {
               for (x=image->columns; x != 0; --x)
                 {
-                  *indexes=(IndexPacket)
-                    ((unsigned long) (opacity*(*indexes))/MaxRGB);
+                  *indexes=(IndexPacket) BlendQuantumOpacity(*indexes,opacity);
                   indexes++;
                 }
             }
@@ -5099,13 +5117,15 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
             {
               for (x=image->columns; x != 0; --x)
                 {
-                  q->opacity=(Quantum)
-                    ((unsigned long) (opacity*q->opacity)/MaxRGB);
+                  q->opacity=(Quantum) BlendQuantumOpacity(q->opacity,opacity);
                   q++;
                 }
             }
           if (!SyncImagePixels(image))
             break;
+          if (QuantumTick(y,image->rows))
+            if (!MagickMonitor(SetImageOpacityText,y,image->rows,&image->exception))
+              break;
         }
     }
   else
@@ -5135,6 +5155,9 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
             }
           if (!SyncImagePixels(image))
             break;
+          if (QuantumTick(y,image->rows))
+            if (!MagickMonitor(SetImageOpacityText,y,image->rows,&image->exception))
+              break;
         }
     }
   image->is_grayscale=is_grayscale;
@@ -5455,6 +5478,7 @@ static int InverseIntensityCompare(const void *x,const void *y)
 }
 #endif
 
+#define SortColormapByIntensityText "  Sorting colormap by intensity...  "
 MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 {
   IndexPacket
@@ -5526,6 +5550,12 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
       indexes[x]=index;
       *q++=image->colormap[index];
     }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(SortColormapByIntensityText,y,image->rows,&image->exception))
+        {
+          status=MagickFail;
+          break;
+        }
   }
   MagickFreeMemory(pixels);
   image->is_grayscale=is_grayscale;
@@ -5556,6 +5586,7 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 %
 %
 */
+#define SyncImageText "  Synchronizing DirectClass pixels to colormap...  "
 MagickExport MagickPassFail SyncImage(Image *image)
 {
   unsigned long
@@ -5631,6 +5662,12 @@ MagickExport MagickPassFail SyncImage(Image *image)
         status=MagickFail;
         break;
       }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(SyncImageText,y,image->rows,&image->exception))
+        {
+          status=MagickFail;
+          break;
+        }
   }
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
@@ -5665,9 +5702,9 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %
 */
 
+#define TextureImageText  "  Apply image texture...  "
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
-#define TextureImageText  "  Apply image texture...  "
 
   const PixelPacket
     *pixels;

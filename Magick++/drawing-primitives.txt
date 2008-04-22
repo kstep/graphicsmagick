@@ -85,7 +85,7 @@ color x,y (point|replace|floodfill|filltoborder|reset)
 decorate (none|underline|overline|line-through)
 ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
 fill colorspec
-fill-opacity opacity
+fill-opacity opacity[%]
 fill-rule (evenodd|nonzero)
 font fontname
 font-family familyname (e.g. "helvetica")
@@ -104,7 +104,7 @@ image (Add|Atop|Bumpmap|Clear|CopyBlue|CopyGreen|CopyOpacity|CopyRed|
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
 offset  ???
-opacity fill stroke
+opacity value[%]
 path 'SVG-compatible path arguments'
 point x,y
 polygon x1,y1, x2,y2, x3,y3, ..., xN,yN
@@ -134,7 +134,7 @@ stroke-dashoffset dashoffset
 stroke-linecap (butt|round|square)
 stroke-linejoin (butt|miter|round|square)
 stroke-miterlimit limit
-stroke-opacity opacity
+stroke-opacity opacity[%]
 stroke-width linewidth
 text x,y "some text"
 text-antialias (0|1)

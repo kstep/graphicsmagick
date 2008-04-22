@@ -11,7 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -fill gold -pointsize 14 \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill gold -pointsize 14 \
 	-font ${GENERIC_TTF} \
 	-draw 'gravity North text 0,20 "Magick"' \
 	-label Annotate Annotate_out.miff

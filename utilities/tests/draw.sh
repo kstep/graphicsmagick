@@ -11,5 +11,5 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -fill none -stroke gold \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill none -stroke gold \
          -draw 'circle 60,90 60,120' -label Draw Draw_out.miff

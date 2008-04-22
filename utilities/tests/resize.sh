@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -resize 50% -label Resize Resize_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -resize 50% -label Resize Resize_out.miff

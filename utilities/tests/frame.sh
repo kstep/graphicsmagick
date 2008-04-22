@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -frame 15x15+3+3 -label Frame Frame_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -frame 15x15+3+3 -label Frame Frame_out.miff

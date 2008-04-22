@@ -1,3 +1,18 @@
+2008-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/channel.c (ExportImageChannel): Added progress monitor
+	support.
+	(SetImageChannelDepth): Added progress monitor support.
+	(ChannelImage): Don't preserve matte channel when extracting
+	channel.
+	* magick/image.c (SetImageOpacity): Avoid integer overflow in Q32
+	build.  Added progress monitor support.
+	(SyncImage): Added progress monitor support.
+	(SetImage): Added progress monitor support.
+	(CycleColormapImage): Added progress monitor support.
+	(GetImageBoundingBox): Added progress monitor support.
+	(SortColormapByIntensity): Added progress monitor support.
+
 2008-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/Makefile.am: Don't use libtdl unless we are

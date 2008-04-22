@@ -11,5 +11,5 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -colorspace gray -colors 2 \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace gray -colors 2 \
                    +dither -label Monochrome Mono_out.miff

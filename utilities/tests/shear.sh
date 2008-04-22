@@ -11,6 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -fill black -shear 45x45 \
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -shear 45x45 \
         -transparent black -label Shear Shear_out.miff
 

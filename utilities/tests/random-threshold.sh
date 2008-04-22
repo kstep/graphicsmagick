@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -equalize -random-threshold intensity '10%' -label 'Random10%%' Random10_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -random-threshold intensity '10%' -label 'Random10%%' Random10_out.miff
