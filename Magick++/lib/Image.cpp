@@ -2455,13 +2455,6 @@ void Magick::Image::depth ( const unsigned int depth_ )
   if (depth > QuantumDepth)
     depth=QuantumDepth;
 
-  if (depth < 8)
-    depth=8;
-  else if (depth > 8 && depth < 16)
-    depth=16;
-  else if (depth > 16 && depth < 32)
-    depth=32;
-
   modifyImage();
   image()->depth=depth;
   options()->depth( depth );

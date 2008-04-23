@@ -1,3 +1,8 @@
+2008-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Prepare 1.2beta1 release.
+	* NEWS.txt: Updated with latest news.
+
 2008-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Update to 1.2965 2008-04-22

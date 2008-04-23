@@ -225,7 +225,7 @@ magick-version: magick/version.h
 	fi ; \
 	touch magick-version
 
-${srcdir}/configure: ${srcdir}/version.sh
+magick/version.h: $(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 
 if HasRST2HTML
 RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time

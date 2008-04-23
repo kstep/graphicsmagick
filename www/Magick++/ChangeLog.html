@@ -21,6 +21,338 @@
 </tr>
 </table>
 <p>
+2008-04-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> NEWS.txt: Updated with latest news.
+
+</UL>
+<p>
+2008-04-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> libtool: Update to 1.2965 2008-04-22
+  <LI> coders/png.c (ReadOneJNGImage): Deal with ReadImage() returning
+        a NULL pointer when reading JPEG sub-image.
+
+</UL>
+<p>
+2008-04-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (ExportImageChannel): Added progress monitor
+        support.<BR>
+        (SetImageChannelDepth): Added progress monitor support.
+        (ChannelImage): Don't preserve matte channel when extracting
+        channel.<BR>
+  <LI> magick/image.c (SetImageOpacity): Avoid integer overflow in Q32
+        build.  Added progress monitor support.
+        (SyncImage): Added progress monitor support.
+        (SetImage): Added progress monitor support.
+        (CycleColormapImage): Added progress monitor support.
+        (GetImageBoundingBox): Added progress monitor support.
+        (SortColormapByIntensity): Added progress monitor support.
+
+</UL>
+<p>
+2008-04-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac, magick/Makefile.am: Don't use libtdl unless we are
+        supposed to be using it!<BR>
+  <LI> libtool: Updated to GNU libtool 1.2960 2008-04-19.
+  <LI> configure.ac, magick/delegate.h: It seems that the modern
+        convention is to store ghostscript headers in a subdirectory
+        called 'ghostscript' rather than 'ps'.
+        We don't actually need Ghostscript errors.h and that is a good
+        thing since it seems that some newer Ghostscript calls it ierrors.h
+
+</UL>
+<p>
+2008-04-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/installer/inc/files-dlls.isx: Comment out inclusion
+        of X11 support DLLs.<BR>
+  <LI> VisualMagick/magick/magick_config.h.in: X11 is no longer in the
+        default Windows build.
+
+</UL>
+<p>
+2008-04-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c: Eliminate various annoying warnings noticed
+        under MinGW.<BR>
+  <LI> magick/spinlock.h (_spinlock_release): Use 'long' rather than
+        'int' in order to eliminate warning under MinGW.
+  <LI> magick/semaphore.c (spinlock_wait): Use 'long' rather than 'int'
+        in order to eliminate warning under MinGW.
+  <LI> magick/log.c (LogMagickEventList): Eliminate warning under MinGW.
+  <LI> magick/compress.h: Clean up interface definitions to use
+        magick_uint8_t for unsigned character data.
+  <LI> coders/jpeg.c (ReadJPEGImage): Don't use GetPixelCachePresent()
+        since it is not DLL-exported.
+
+</UL>
+<p>
+2008-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/yuv.c (ReadYUVImage): Report exception info correctly.
+  <LI> coders/xpm.c (ReadXPMImage): Report exception info correctly.
+  <LI> coders/xc.c (ReadXCImage): Report exception info correctly.
+  <LI> coders/tiff.c (ReadTIFFImage): Report exception info correctly.
+  <LI> coders/null.c (ReadNULLImage): Report exception info correctly.
+  <LI> coders/jpeg.c (ReadJPEGImage): Report exception info correctly.
+        Use of Huffman optimization is now based on available memory
+        rather than a hard-coded image size.
+  <LI> coders/gif.c (ReadGIFImage): Report exception info correctly.
+  <LI> magick/utility.c (MagickSizeStrToInt64): New function to convert
+        a size string with optional units suffix to a 64-bit integer.
+        (MagickStrToInt64): New function to convert a string to a 64-bit
+        integer, with error checking.<BR>
+  <LI> magick/image.c (SetImage): SetImage now returns error status.
+  <LI> magick/command.c: Eliminated the long-deprecated -cache resource
+        limit option.<BR>
+  <LI> magick/resource.c: Complete re-write of the resource limit
+        system.  Resource specifications are now absolute except that they
+        support a binary metric suffix such as 'K' to scale the value.
+        Added the 'Pixels' limit type to limit the maximum number of
+        pixels allowed for each image.
+
+</UL>
+<p>
+2008-04-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): Output grayscale images more
+        efficiently.
+
+</UL>
+<p>
+2008-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lcms: Updated lcms to 1.17.
+  <LI> png: Updated libpng to 1.2.26.
+
+</UL>
+<p>
+2008-04-09  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
+
+<UL>
+  <LI> coders/png.c (ReadOnePNGImage) Use the low bits of the PNG
+        tRNS values instead of scaling them when reducing from 16-bits.
+
+</UL>
+<p>
+2008-04-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Updated to Autoconf 2.62.
+
+</UL>
+<p>
+2008-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImageCommand): New -create-directories
+        option automatically creates subdirectories as needed when
+        -output-directory option is used.  This is useful when one
+        directory tree of files is being mogrified to a new tree.
+
+</UL>
+<p>
+2008-04-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (MagickCreateDirectoryPath): New function to
+        create a directory path.  Will be used later.
+  <LI> configure.ac: Tweaks to produce a successful MinGW cross-compile.
+
+</UL>
+<p>
+2008-04-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Added a simple sentinel
+        assertion to hopefully flush out any remaining cases where
+        ExportImagePixelArea() writes past the end of its buffer.
+  <LI> magick/constitute.c (ExportImagePixelArea): GrayQuantum case for
+        DirectClass pixels was sometimes writing a zero byte one past the
+        end of the allocated buffer.  Thanks to Josue Gomes for reporting
+        this bug.
+
+</UL>
+<p>
+2008-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/{pcd.c,pcx.c,pdb.c,pict.c,stegano.c,wpg.c,xcf.c}:
+        Warnings reduction.<BR>
+  <LI> magick/{channel.c,image.c,unix_port.c,render.c}: Warnings
+        reduction.<BR>
+  <LI> coders/mat.c: Convert C99 comments to C89 comments so code can
+        compile with a C89 compiler.<BR>
+  <LI> coders/tiff.c (WriteTIFFImage): Add an assertion to enforce that
+        the bytes output to the scanline is no more than the bytes
+        allocated for the scanline.<BR>
+  <LI> NEWS.txt: Updated with latest NEWS.
+
+</UL>
+<p>
+2008-04-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pdf.c (WritePDFImage): Default to ZIP compression if
+        available.  Ignore Image compression setting since the useful
+        value (set by the user) usually comes from ImageInfo.
+  <LI> coders/png.c (WriteOnePNGImage): Fix progress monitor when
+        writing PNG.<BR>
+  <LI> magick/channel.c (GetImageChannelDepth): Added progress monitor
+        support.<BR>
+  <LI> magick/signature.c (SignatureImage): Added progress monitor support.
+  <LI> magick/image.c (GetImageDepth): Added progress monitor support.
+
+</UL>
+<p>
+2008-04-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> libtool:  Update to libtool 2.2.2.
+  <LI> coders/jpeg.c: Convert more code to use size_t for sized values
+        rather than long.<BR>
+  <LI> coders/wpg.c (InsertRow): Fix log format string specification.
+  <LI> coders/dpx.c (WriteDPXImage): Fix typo in casts.
+  <LI> coders/fpx.c (ReadFPXImage): Apply FreeBSD patch from Mikhail
+        Teterin to allow FlashPIX to work better for 64-bit builds.
+        Addresses SourceForge issue 1824658 "FPX should work again now".
+  <LI> magick/blob.c (ImageToBlob): Fix typo in cast.
+
+</UL>
+<p>
+2008-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> CONTRIBUTE.txt: Convert contribute.html to reStucturedText
+        format and generate HTML version from it.
+  <LI> PROCESS.txt: Convert description of development process to
+        reStucturedText format and generate HTML version from it.
+  <LI> INSTALL-windows.txt: Add instructions for how to install from
+        setup.exe style installer.  Also add instructions for how the
+        distribution package is built.<BR>
+  <LI> Copyright.txt: Reformat in reStucturedText format and generate
+        HTML version from it.<BR>
+  <LI> VisualMagick/installer/inc/body.isx: No longer include
+        development headers and libraries in the Windows DLL install
+        package since they are large and they may only work with the
+        version of Visual C++ used to perform the build.  It is much safer
+        for the developer to build the package from source with his own
+        compiler.
+
+</UL>
+<p>
+2008-03-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Fix compilation issues with Microsoft Visual Studio.
+
+</UL>
+<p>
+2008-03-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage, WriteDPXImage): Use lookup tables to
+        speed up value conversion.<BR>
+  <LI> magick/memory.h (MagickAllocateArray): Renamed from
+        MagickAllocateMemoryElements.
+
+</UL>
+<p>
+2008-03-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/Magick.xs: Use memory allocation macros like the rest
+        of the code.<BR>
+  <LI> magick/memory.c (MagickMalloc): New function which behaves
+        similar to malloc().<BR>
+        (MagickMallocArray): New function for allocating an array.
+        (MagickRealloc): New function which behaves similar to realloc().
+        (MagickFree): New function which behaves similar to free().
+        (MagickAllocFunctions): New function to allow the user to specify
+        the memory allocation functions.
+  <LI> magick/memory.h: New header file to define memory allocation
+        functions.<BR>
+  <LI> magick/deprecate.c (DeleteImageList, DestroyImages,
+        GetImageList, GetImageListIndex, GetImageListSize, GetNextImage,
+        GetNumberScenes, GetPreviousImage, ParseImageGeometry,
+        PopImageList, PostscriptGeometry, PushImageList,
+        SetCacheThreshold, SetImageList, ShiftImageList, SizeBlob,
+        SpliceImageList, UnshiftImageList): Remove functions which were
+        already deprecated in ImageMagick 5.5.2 or earlier.
+
+</UL>
+<p>
+2008-03-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (WriteDPXImage): Support writing image which is
+        already in a YCbCr colorspace.<BR>
+        (ReadDPXImage): Return YCbCr images in YCbCr colorspace unless
+        they are also Cineon log encoded.
+  <LI> magick/image.c (CloneImage): Use CloneImageAttributes().
+  <LI> magick/attribute.c (CloneImageAttributes): New function for
+        copying image attributes from one image to another.
+  <LI> magick/utility.c (TranslateTextEx): Check if the pixel cache is
+        initialized before using a function which requires using it.
+        Thanks to Micha³ Kowalczuk for bringing this issue to my
+        attention.<BR>
+  <LI> magick/attribute.c (SetImageAttribute): Only apply
+        transformations to "comment" and "label" attributes.
+  <LI> magick/pixel_cache.c (GetPixelCachePresent): New function to
+        test if the image pixel cache is present and initialized.
+
+</UL>
+<p>
+2008-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformPacket): Rationalize casts for
+        improved performance.<BR>
+  <LI> magick/image.c (GetImageDepth): Use table lookups to improve
+        performance.
+
+</UL>
+<p>
+2008-03-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (AllocateImage): Transfer any attributes from
+        ImageInfo to allocated image.<BR>
+        (SetImageDepth): Use table lookups to improve performance.
+
+</UL>
+<p>
+2008-03-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImageCommand): Added an
+        -output-directory option to 'mogrify' to send output files to the
+        specified directory.
+
+</UL>
+<p>
+2008-03-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/read.t: Add input_logical_lsb_08bit.mat to
+        PerlMagick tests.<BR>
+  <LI> magick/nt_feature.c (CropImageToHBITMAP, ImageToHBITMAP): Use
+        GlobalFree() to free bitmap handle.
+
+</UL>
+<p>
 2008-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

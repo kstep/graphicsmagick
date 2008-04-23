@@ -1,3 +1,7 @@
+2008-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (depth): Remove 8/16/32 restriction on depth value.
+
 2008-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Geometry.cpp, lib/Image.cpp: Include <strings.h> since it is
