@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2963 2008-04-21) 2.2.3a
+# ltmain.sh (GNU libtool 1.2965 2008-04-22) 2.2.3a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2963 2008-04-21) 2.2.3a
+#       $progname:		(GNU libtool 1.2965 2008-04-22) 2.2.3a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.2.3a
-TIMESTAMP=" 1.2963 2008-04-21"
-package_revision=1.2963
+TIMESTAMP=" 1.2965 2008-04-22"
+package_revision=1.2965
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -3598,9 +3598,6 @@ func_mode_link ()
 	  fi
 	  if test -n "$link_static_flag"; then
 	    dlopen_self=$dlopen_self_static
-	    # See comment for -static flag below, for more details.
-	    func_append compile_command " $link_static_flag"
-	    func_append finalize_command " $link_static_flag"
 	  fi
 	  prefer_static_libs=yes
 	  ;;
@@ -3888,7 +3885,11 @@ func_mode_link ()
 
       case $arg in
       -all-static)
-	# The effects of -all-static are defined in a previous loop.
+	if test -n "$link_static_flag"; then
+	  # See comment for -static flag below, for more details.
+	  func_append compile_command " $link_static_flag"
+	  func_append finalize_command " $link_static_flag"
+	fi
 	continue
 	;;
 

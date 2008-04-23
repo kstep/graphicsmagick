@@ -1,5 +1,6 @@
 2008-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* libtool: Update to 1.2965 2008-04-22
 	* coders/png.c (ReadOneJNGImage): Deal with ReadImage() returning
 	a NULL pointer when reading JPEG sub-image.
 
