@@ -16,7 +16,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 
-BEGIN { $| = 1; $test=1; print "1..34\n"; }
+BEGIN { $| = 1; $test=1; print "1..33\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -227,12 +227,12 @@ testReadWrite( 'XPM:input.xpm',
   'f84cb6b5817ea2f6f313c2bdd90c94af0d0e7fb144528994050b355f8d5e6a94');
 
 
-print("X Windows system window dump file (color) ...\n");
-++$test;
-testReadWrite( 'XWD:input.xwd',
-  'XWD:output.xwd',
-  q//,
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+#print("X Windows system window dump file (color) ...\n");
+#++$test;
+#testReadWrite( 'XWD:input.xwd',
+#  'XWD:output.xwd',
+#  q//,
+#  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
 
 print("CMYK format ...\n");
 ++$test;
