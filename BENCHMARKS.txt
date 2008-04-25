@@ -1,0 +1,570 @@
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
+========================================================
+GraphicsMagick 1.2 vs ImageMagick 6.3.6 Benchmark Report
+========================================================
+
+.. contents::
+  :local:
+
+On April 24, 2008, the first GraphicsMagick 1.2 beta was benchmarked
+against the most recent ImageMagick delivered by the FreeBSD Ports system
+at that time (ImageMagick 6.3.6). Testing was done on a dual-CPU Intel
+Xeon 2.4GHz system, with 2GB RAM and running FreeBSD 7.0. The software
+involved in the testing identified itself as::
+
+  GraphicsMagick 1.2beta1 2008-04-23 Q16 http://www.GraphicsMagick.org/
+
+  ImageMagick 6.3.6 03/30/08 Q16 http://www.imagemagick.org
+
+The '-type Optimize' option was added for the benchmark in order to
+ensure that both programs attempted to write smaller output.
+
+Purpose
+=======
+
+The purpose of the benchmark was to measure the raw throughput of the
+sofware with medium sized (600 DPI) files. We consider 600 DPI to be
+"medium" since today's printers typically support 1200 or 2400 DPI. Raw
+throughput is important since testing showed that reading and writing
+files often dominates image processing time. We threw in a little bit of
+image processing as well. The benchmark uses Ghostscript and the
+'golfer.ps' and 'tiger.ps' sample files to render test input TIFF files
+at 600 DPI.
+
+The benchmark is available via anonymous ftp so that you can try it on
+your own computer. Retrieve it from
+"ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/benchmark/magick-bench.tar.gz".
+
+Executive Summary
+=================
+
+GraphicsMagick is often 2X to 200X faster at converting from one file to
+another than ImageMagick 6.3.6 is on garden variety hardware. Typical
+image processing tasks are faster as well. If time and money are
+important to you, then you should consider using GraphicsMagick rather
+than ImageMagick. If time and money are not important to you, then you
+should continue using ImageMagick.
+
+Input Files
+===========
+
+The following input files are used (alphabetical order):
+
+=================================  ===============================================
+Name				   Description
+=================================  ===============================================
+golfer-600-bilevel-truecolor.tiff  Black/white (8 bits/sample) in "RGB" format
+golfer-600-bilevel.tiff            Black/white (1 bit/sample) in bilevel format
+golfer-600-gray-truecolor.tiff     Grayscale (8 bits/sample)in "RGB" format
+golfer-600-gray.tiff               Grayscale (8 bits/sample) in compact format
+golfer-600-gray16.tiff             Graycale (16 bits/sample) in a compact format.
+golfer-600-palette16.tiff          Grayscale, indexed (4 bits/sample)
+golfer-600-pallet2.tiff            Black/white, indexed (1 bit/sample)
+tiger-600-palette256.tiff          Color (RGB) indexed (8 bits/sample)
+tiger-600-rgb.tiff                 Color (RGB) truecolor (8 bits/sample)
+tiger-600-rgb16.tiff               Color (RGB) truecolor (16 bits/sample)
+tiger-600-rgba.tiff                Color (RGBA) truecolor (8 bits/sample)
+=================================  ===============================================
+
+The 'golfer-600' files have pixel dimensions of 4750x5792, and the
+'tiger-600' files have pixel dimensions of 4542x4725.
+
+The benchmark is run via a simple script which runs a 'convert' command to convert the
+input file to an output file with the specified format.
+
+File Conversion Results
+=======================
+
+BMP Format
+----------
+
+BMP is a popular format on Windows systems. Since it is uncompressed, it
+should be fast. GraphicsMagick is clearly much faster at writing BMP than
+ImageMagick is.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 0.66s | 0.88s  | 1.30s | 3.11s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.46s | 0.59s  | 0.90s | 1.07s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 0.61s | 0.93s  | 1.33s | 3.05s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.60s | 0.89s  | 1.13s | 3.02s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.66s | 0.85s  | 1.19s | 2.93s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.64s | 0.49s  | 0.62s | 1.50s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.65s | 0.42s  | 0.68s | 0.76s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.50s | 0.45s  | 0.75s | 2.29s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.43s | 0.78s  | 0.98s | 2.52s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.58s | 0.84s  | 1.08s | 2.65s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 0.62s | 0.84s  | 1.14s | 2.48s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+DPX Format
+----------
+
+DPX format is used by the motion picture industry. It is rarely used
+outside that industry. Since a typical motion picture contains 144K image
+frames (and millions of frames may be processed), processing speed is
+quite important. Even though GraphicsMagick's DPX implementation
+prioritizes flexibility and correctness over speed, it compares well with
+ImageMagick.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 0.87s | 0.67s  | 1.32s | 2.87s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.90s | 0.74s  | 5.24s | 0.61s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 0.88s | 0.68s  | 1.22s | 3.04s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.84s | 0.65s  | 0.91s | 3.05s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.79s | 1.03s  | 0.86s | 3.21s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.89s | 1.05s  | 5.21s | 1.45s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.91s | 0.75s  | 5.40s | 0.80s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.65s | 0.89s  | 1.05s | 2.46s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.54s | 0.68s  | 0.92s | 2.44s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.67s | 1.00s  | 0.91s | 2.75s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 0.69s | 0.73s  | 0.89s | 2.33s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+
+GIF Format
+----------
+
+GIF format is quite popular on the Internet. It seems that GraphicsMagick
+is sometimes 3X to 50X faster than ImageMagick at outputting GIF files.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.19s | 0.63s  | 41.21s| 3.40s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.88s | 0.58s  | 45.67s| 1.26s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.14s | 0.60s  | 50.16s| 3.32s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.96s | 0.60s  | 52.96s| 3.35s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 1.06s | 0.52s  | 52.99s| 3.33s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.97s | 0.48s  | 1.02s | 1.43s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.94s | 0.51s  | 1.09s | 0.72s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.72s | 0.40s  | 0.93s | 2.30s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 12.75s| 0.48s  | 34.63s| 2.84s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 12.70s| 0.66s  | 34.96s| 2.78s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 12.57s| 0.50s  | 73.41s| 3.12s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+
+
+JPEG Format
+-----------
+
+JPEG is a quite popular format for still photos and on the Internet.
+GraphicsMagick writes JPEG files faster than ImageMagick.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 2.26s | 0.61s  | 3.73s | 2.74s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 2.16s | 0.65s  | 3.41s | 0.72s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.67s | 0.59s  | 2.80s | 2.81s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 1.37s | 0.66s  | 2.70s | 2.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 1.48s | 0.56s  | 2.77s | 2.64s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 1.49s | 0.71s  | 2.63s | 1.49s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 2.15s | 0.66s  | 3.53s | 0.81s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 2.21s | 0.52s  | 2.91s | 2.48s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 2.14s | 0.47s  | 2.93s | 2.31s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 2.12s | 0.72s  | 3.02s | 2.50s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 2.24s | 0.55s  | 3.00s | 2.08s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+PCX Format
+----------
+
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.48s | 0.47s  | 1.85s | 2.70s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.52s | 0.53s  | 1.58s | 0.64s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.15s | 0.58s  | 1.51s | 2.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 1.07s | 0.46s  | 1.49s | 2.55s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 1.03s | 0.52s  | 1.39s | 2.64s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.61s | 0.54s  | 0.71s | 1.45s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.56s | 0.52s  | 0.87s | 0.75s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.44s | 0.51s  | 0.77s | 2.29s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.86s | 0.42s  | 1.31s | 2.14s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.93s | 0.56s  | 1.50s | 2.20s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 1.13s | 0.53s  | 1.55s | 1.95s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+PDF Format
+----------
+
+PDF format is important since it is used for documents and by the
+pre-press industry. GraphicsMagick writes PDF files much faster than
+ImageMagick.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.78s | 0.55s  | 4.38s | 2.84s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 1.68s | 0.59s  | 4.07s | 0.76s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.71s | 0.52s  | 4.45s | 2.76s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 1.51s | 0.53s  | 4.25s | 2.77s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 1.48s | 0.58s  | 4.23s | 2.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 1.69s | 0.58s  | 4.40s | 1.48s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 1.80s | 0.49s  | 4.07s | 0.80s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 1.24s | 0.51s  | 2.85s | 2.26s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 2.70s | 0.43s  | 6.85s | 2.54s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 2.68s | 0.67s  | 7.11s | 2.56s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 2.80s | 0.57s  | 9.25s | 2.51s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+PNM Format
+----------
+
+The PNM format (from pbmplus/netpbm) is designed for blazing speed since
+it is often used as part of image processing pipelines. Unfortunately the
+ImageMagick implementation does not offer blazing speed and is 200X
+slower than GraphicsMagick.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 0.78s | 0.42s  | 98.05s| 3.78s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.49s | 0.57s  | 98.00s| 1.62s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 0.70s | 0.57s  | 97.89s| 3.88s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.56s | 0.54s  | 98.11s| 3.80s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.54s | 0.60s  | 99.53s| 4.37s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.63s | 0.64s  | 98.09s| 2.47s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.59s | 0.50s  | 98.04s| 1.78s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.56s | 0.79s  | 76.47s| 3.20s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.58s | 0.51s  | 76.62s| 2.95s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.55s | 0.93s  | 77.71s| 3.44s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 0.49s | 0.79s  | 76.51s| 2.98s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+Postscript Format
+-----------------
+
+Sending jobs to Postscript printers can be slow, and now we know why.
+GraphicsMagick is 50-40X more efficient at outputting Level I Postscript
+than ImageMagick is.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.06s | 0.56s  | 10.73s| 2.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.55s | 0.57s  | 10.45s| 0.62s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 0.83s | 0.64s  | 75.58s| 3.07s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.65s | 0.62s  | 75.31s| 2.71s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.64s | 0.67s  | 75.23s| 2.72s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.75s | 0.67s  | 75.09s| 1.52s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.63s | 0.48s  | 10.54s| 0.74s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.57s | 0.52s  | 58.38s| 2.28s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.98s | 0.78s  | 72.56s| 2.56s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 1.10s | 0.89s  | 72.48s| 2.79s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 1.20s | 0.75s  | 72.78s| 2.54s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+SGI Format
+----------
+
+SGI format is a legacy format which is still used for heavy-duty image
+processing. GraphicsMagick is several times faster at dealing with SGI
+format than ImageMagick is.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 0.99s | 0.75s  | 2.75s | 2.94s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 1.01s | 0.67s  | 2.47s | 0.85s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.01s | 0.66s  | 2.69s | 3.03s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.82s | 0.67s  | 2.57s | 2.95s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.80s | 0.71s  | 2.40s | 3.04s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.92s | 0.72s  | 2.47s | 1.65s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 1.02s | 0.67s  | 2.54s | 0.99s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.88s | 0.53s  | 3.57s | 2.70s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.77s | 0.53s  | 3.54s | 2.55s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.84s | 0.68s  | 3.72s | 3.05s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 0.90s | 0.60s  | 4.42s | 2.33s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+TIFF Format
+-----------
+
+TIFF is one of the world's most important image file formats. Since it is
+often used serious image processing, it needs to be as efficient as
+possible. Clearly GraphicsMagick is much faster than ImageMagick at
+processing TIFF files.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 0.74s | 0.49s  | 1.25s | 2.76s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.60s | 0.46s  | 0.89s | 0.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 0.65s | 0.68s  | 1.91s | 2.80s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.56s | 0.58s  | 1.70s | 2.88s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.56s | 0.63s  | 1.32s | 2.67s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.49s | 0.61s  | 1.55s | 1.45s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 0.58s | 0.50s  | 1.04s | 0.77s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.36s | 0.60s  | 0.77s | 2.32s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.51s | 0.63s  | 0.84s | 2.52s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.46s | 1.05s  | 0.86s | 2.73s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 0.74s | 0.74s  | 1.27s | 2.37s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+Image Processing Results
+========================
+
+For these tests, we convert between two TIFF files with a simple image
+processing step added in. The pupose of these tests is to show that the
+performance advantages of GraphicsMagick carry over to simple image
+processing tasks as well.
+
+-rotate 90
+----------
+
+This test is the same as a TIFF to TIFF conversion except that
+'-rotate 90' is included so that there is some simple image processing.
+Rotating by 90 degrees is a common requirement. For this system,
+GraphicsMagick is typically 2X faster for this task.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.28s | 1.02s  | 2.82s | 3.20s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 1.46s | 1.19s  | 2.63s | 1.02s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.25s | 1.15s  | 3.40s | 3.29s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 1.18s | 1.01s  | 3.42s | 3.12s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 1.11s | 1.15s  | 3.47s | 2.98s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 1.55s | 1.13s  | 4.15s | 2.11s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 1.59s | 1.08s  | 3.51s | 1.17s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 1.15s | 1.04s  | 3.28s | 2.63s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 1.15s | 0.86s  | 2.39s | 3.01s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.96s | 1.42s  | 2.60s | 3.00s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 1.23s | 1.11s  | 2.67s | 2.96s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+-resize 50%
+-----------
+
+This test is the same as a TIFF to TIFF conversion except that
+'-resize 50%' is included so that there is some more serious image
+procesing. We have done nothing at all to try to improve image resize
+performance (considerable speed-up is possible). Regardless,
+GraphicsMagick is still faster.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 9.38s | 0.95s  | 10.78s| 3.15s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 7.38s | 1.02s  | 10.55s| 0.96s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 9.46s | 0.86s  | 10.84s| 3.04s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 9.40s | 0.84s  | 10.61s| 3.06s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 9.55s | 0.83s  | 10.73s| 2.94s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 7.40s | 0.93s  | 8.79s | 2.08s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 7.60s | 0.82s  | 8.48s | 1.57s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 5.53s | 0.90s  | 6.91s | 2.88s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 7.21s | 0.71s  | 8.28s | 2.51s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 7.14s | 1.03s  | 8.41s | 2.67s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 6.29s | 0.79s  | 7.63s | 2.46s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+-gamma 1.2
+----------
+
+This test is the same as a TIFF to TIFF conversion except that
+'-gamma 1.2' is included. Clearly GraphicsMagick is much faster at this
+task.
+
++-----------------------------------+----------------+----------------+
+|               Name                | GraphicsMagick |  ImageMagick   |
+|                                   +-------+--------+-------+--------+
+|                                   | User  | System | User  | System |
++===================================+=======+========+=======+========+
+| golfer-600-bilevel-truecolor.tiff | 1.03s | 0.57s  | 1.77s | 2.81s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-bilevel.tiff           | 0.99s | 0.52s  | 1.48s | 0.71s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray-truecolor.tiff    | 1.08s | 0.63s  | 2.54s | 2.92s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray.tiff              | 0.88s | 0.63s  | 2.41s | 2.89s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-gray16.tiff            | 0.97s | 0.61s  | 2.41s | 2.79s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-palette16.tiff         | 0.97s | 0.56s  | 2.59s | 1.41s  |
++-----------------------------------+-------+--------+-------+--------+
+| golfer-600-pallet2.tiff           | 1.02s | 0.48s  | 1.62s | 0.78s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-palette256.tiff         | 0.72s | 0.59s  | 1.84s | 2.43s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb.tiff                | 0.80s | 0.66s  | 1.83s | 2.56s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgb16.tiff              | 0.75s | 1.07s  | 1.75s | 2.85s  |
++-----------------------------------+-------+--------+-------+--------+
+| tiger-600-rgba.tiff               | 1.13s | 0.66s  | 1.90s | 2.71s  |
++-----------------------------------+-------+--------+-------+--------+
+
+
+
+--------------------------------------------------------------------------
+
+| Copyright (C) 2008 GraphicsMagick Group
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+

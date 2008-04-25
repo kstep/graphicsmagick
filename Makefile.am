@@ -77,14 +77,18 @@ XFAIL_TESTS = \
 
 TOP_EXTRA_DIST = \
 	AUTHORS.txt \
+	BENCHMARKS.txt \
 	BUGS.txt \
+	CONTRIBUTE.txt \
 	ChangeLog \
 	Copyright.txt \
 	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
+	MISSION.txt \
 	NEWS.txt \
 	PLATFORMS.txt \
+	PROCESS.txt \
 	README.txt \
 	TODO.txt \
 	index.html \
@@ -232,6 +236,7 @@ RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --ti
 RST2HTML_TARGETS = \
 	$(top_srcdir)/www/AUTHORS.html \
 	$(top_srcdir)/www/BUGS.html \
+	$(top_srcdir)/www/BENCHMARKS.html \
 	$(top_srcdir)/www/contribute.html \
 	$(top_srcdir)/www/Copyright.html \
 	$(top_srcdir)/www/development.html \
@@ -262,6 +267,10 @@ $(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
 # Build HTML version of BUGS.txt
 $(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
+
+# Build HTML version of BENCHMARKS.txt
+$(top_srcdir)/www/BENCHMARKS.html: $(top_srcdir)/BENCHMARKS.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/BENCHMARKS.txt $(top_srcdir)/www/BENCHMARKS.html
 
 # Build HTML version of CONTRIBUTE.txt
 $(top_srcdir)/www/contribute.html: $(top_srcdir)/CONTRIBUTE.txt
