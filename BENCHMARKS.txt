@@ -335,7 +335,7 @@ Postscript Format
 -----------------
 
 Sending jobs to Postscript printers can be slow, and now we know why.
-GraphicsMagick is 50-40X more efficient at outputting Level I Postscript
+GraphicsMagick is 10-40X more efficient at outputting Level I Postscript
 than ImageMagick is.
 
 +-----------------------------------+----------------+----------------+
