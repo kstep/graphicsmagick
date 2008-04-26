@@ -1,3 +1,9 @@
+2008-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (WriteOnePNGImage): TrueColor RGB was usually
+	written rather than the desired more compact format.  This is a
+	first pass at fixing that.
+
 2008-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* BENCHMARKS.txt: Added a benchmark summary.
