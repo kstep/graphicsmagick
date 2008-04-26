@@ -1,3 +1,13 @@
+2008-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Ensure that the file extension
+	does not trigger unwanted activity such as access to an X11
+	server, printer, or the launch delegate.
+	* config/Makefile.am (configshare_DATA): Install colors.mgk in
+	share path.
+	* magick/blob.c (GetConfigureBlob): Search 'share' config path
+	prior to 'lib' config path.
+
 2008-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (WriteOnePNGImage): TrueColor RGB was usually

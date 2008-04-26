@@ -4890,35 +4890,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       /* Restore p to end of modified filename */
       p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
     }
-  while ((*p != '.') && (p > (image_info->filename+1)))
-    p--;
-  if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
-      (LocaleCompare(p,".bz2") == 0))
-    do
-    {
-      p--;
-    } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (strlen(p) < (long) sizeof(magic)))
-    {
-      /*
-        User specified image format.
-      */
-      (void) strlcpy(magic,p+1,MaxTextExtent);
-      for (q=magic; *q != '\0'; q++)
-        if (*q == '.')
-          {
-            *q='\0';
-            break;
-          }
-      LocaleUpper(magic);
-      /*
-        SGI and RGB are ambiguous;  TMP must be set explicitly.
-      */
-      if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
-          (LocaleCompare(magic,"RGB") != 0)) &&
-          (LocaleCompare(magic,"TMP") != 0))
-        (void) strlcpy(image_info->magick,magic,MaxTextExtent);
-    }
+
   /*
     Look for explicit 'format:image' in filename.
   */
@@ -4965,6 +4937,55 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
             image_info->temporary=True;
         }
     }
+
+  /*
+    If we have not set the magic yet then set magic based on file
+    extension.  Some extensions are intentionally not recognized
+    because they are confusing or dangerous.
+  */
+  if (*magic == '\0')
+    {
+      /* Restore p to end of modified filename */
+      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+
+      while ((*p != '.') && (p > (image_info->filename+1)))
+        p--;
+      if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
+          (LocaleCompare(p,".bz2") == 0))
+        do
+          {
+            p--;
+          } while ((*p != '.') && (p > (image_info->filename+1)));
+      if ((*p == '.') && (strlen(p) < (long) sizeof(magic)))
+        {
+          /*
+            User specified image format.
+          */
+          (void) strlcpy(magic,p+1,MaxTextExtent);
+          for (q=magic; *q != '\0'; q++)
+            if (*q == '.')
+              {
+                *q='\0';
+                break;
+              }
+          LocaleUpper(magic);
+          /*
+            SGI and RGB are ambiguous;  TMP must be set explicitly.
+            Don't allow X11 to be accessed via file extension.
+          */
+          if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
+               (LocaleCompare(magic,"RGB") != 0)) &&
+              (LocaleCompare(magic,"LAUNCH") != 0) &&
+              (LocaleCompare(magic,"PRINT") != 0) &&
+              (LocaleCompare(magic,"TMP") != 0) &&
+              (LocaleCompare(magic,"WIN") != 0) &&
+              (LocaleCompare(magic,"XC") != 0) &&
+              (LocaleCompare(magic,"X") != 0)
+              )
+            (void) strlcpy(image_info->magick,magic,MaxTextExtent);
+        }
+    }
+
   if (rectify)
     {
       /*

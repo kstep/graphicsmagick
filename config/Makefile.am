@@ -12,6 +12,7 @@
 # (share/GraphicsMagick-version)
 configsharedir = $(MagickShareConfigPath)
 configshare_DATA = \
+	config/colors.mgk \
 	config/log.mgk \
 	config/modules.mgk \
 	config/magic.mgk
@@ -20,7 +21,6 @@ configshare_DATA = \
 # (lib/GraphicsMagick-version)
 configlibdir =  $(MagickLibConfigPath)
 configlib_DATA = \
-	config/colors.mgk \
 	config/delegates.mgk \
 	config/type-ghostscript.mgk \
 	config/type.mgk \

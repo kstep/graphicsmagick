@@ -1547,13 +1547,13 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 
 #if defined(UseInstalledMagick)
 
-# if defined(MagickLibConfigPath)
-  AddConfigurePath(path_map,&path_index,MagickLibConfigPath,exception);
-# endif /* defined(MagickLibConfigPath) */
-
 # if defined(MagickShareConfigPath)
   AddConfigurePath(path_map,&path_index,MagickShareConfigPath,exception);
 # endif /* defined(MagickShareConfigPath) */
+
+# if defined(MagickLibConfigPath)
+  AddConfigurePath(path_map,&path_index,MagickLibConfigPath,exception);
+# endif /* defined(MagickLibConfigPath) */
 
 # if defined(MSWINDOWS) && !(defined(MagickLibConfigPath) || defined(MagickShareConfigPath))
   {
@@ -1590,12 +1590,12 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     if (magick_home)
       {
 #if defined(POSIX)
-        FormatString(path,"%.1024s/lib/%s/",magick_home,
-          MagickLibConfigSubDir);
-        AddConfigurePath(path_map,&path_index,path,exception);
-
         FormatString(path,"%.1024s/share/%s/",magick_home,
           MagickShareConfigSubDir);
+        AddConfigurePath(path_map,&path_index,path,exception);
+
+        FormatString(path,"%.1024s/lib/%s/",magick_home,
+          MagickLibConfigSubDir);
         AddConfigurePath(path_map,&path_index,path,exception);
 #else
         FormatString(path,"%.1024s%s",magick_home,
