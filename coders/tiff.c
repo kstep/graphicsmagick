@@ -4114,7 +4114,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                     "Using scanline %s write method with %u bits per sample (%lu bytes/scanline)",
                                     PhotometricTagToString(photometric),bits_per_sample, (unsigned long) scanline_size);
 
-            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size+1);
+            scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size);
             if (scanline == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             /*
@@ -4171,11 +4171,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                         status=MagickFail;
                         break;
                       }
-                    /*
-                      Enforce that we did not overrun our buffer.
-                    */
-                    assert(export_info.bytes_exported <= (size_t) scanline_size);
-                    assert(scanline[scanline_size] == 0xbf);
                     /*
                       Write scanline.
                     */
