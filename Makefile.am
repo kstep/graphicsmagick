@@ -81,6 +81,13 @@ TOP_EXTRA_DIST = \
 	BUGS.txt \
 	CONTRIBUTE.txt \
 	ChangeLog \
+	ChangeLog.2001 \
+	ChangeLog.2002 \
+	ChangeLog.2003 \
+	ChangeLog.2004 \
+	ChangeLog.2005 \
+	ChangeLog.2006 \
+	ChangeLog.2007 \
 	Copyright.txt \
 	FAQ.txt \
 	INSTALL-unix.txt \
