@@ -1816,7 +1816,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   blob=(unsigned char *) FileToBlob(image->filename,length,exception);
   LiberateTemporaryFile(image->filename);
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
-  if (blob == (unsigned char ) NULL)
+  if (blob == (unsigned char *) NULL)
     {
       ThrowException(exception,BlobError,UnableToReadFile,filename);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),

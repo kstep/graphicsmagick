@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2008-04-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Ensure that the file extension
+        does not trigger unwanted activity such as access to an X11
+        server, printer, or the launch delegate.
+
+</UL>
+<p>
+2008-04-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Some recent libtiff versions
+        produce wrong pointer values when private tag 36867 is requested.
+        Since we don't make any special use of these tags, simply don't
+        request them.
+
+</UL>
+<p>
 2008-03-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

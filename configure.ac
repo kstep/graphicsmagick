@@ -557,11 +557,11 @@ fi
 
 # Enable Ghostscript library support.
 AC_ARG_WITH(gslib,
-	      [  --with-gslib            enable Ghostscript library support],
+	      [  --with-gslib            enable Ghostscript library support (not recommended)],
 	      [with_gslib=$withval],
 	      [with_gslib='no'])
 if test "$with_gslib" != 'yes' ; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gzlib=$with_gslib "
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gslib=$with_gslib "
 fi
 
 # # Enable HDF.

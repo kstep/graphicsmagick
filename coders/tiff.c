@@ -757,10 +757,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"model",text);
     if (TIFFGetField(tiff,33432,&text) == 1)
       (void) SetImageAttribute(image,"copyright",text);
-    if (TIFFGetField(tiff,33423,&text) == 1)
-      (void) SetImageAttribute(image,"kodak-33423",text);
-    if (TIFFGetField(tiff,36867,&text) == 1)
-      (void) SetImageAttribute(image,"kodak-36867",text);
+/*     if (TIFFGetField(tiff,33423,&text) == 1) */
+/*       (void) SetImageAttribute(image,"kodak-33423",text); */
+/*     if (TIFFGetField(tiff,36867,&text) == 1) */
+/*       (void) SetImageAttribute(image,"kodak-36867",text); */
     if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)

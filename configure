@@ -1738,7 +1738,7 @@ Optional Packages:
   --without-bzlib         disable BZLIB support
   --without-dps           disable Display Postscript support
   --without-fpx           disable FlashPIX support
-  --with-gslib            enable Ghostscript library support
+  --with-gslib            enable Ghostscript library support (not recommended)
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG v2 support
@@ -18222,7 +18222,7 @@ else
 fi
 
 if test "$with_gslib" != 'yes' ; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gzlib=$with_gslib "
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gslib=$with_gslib "
 fi
 
 # # Enable HDF.

@@ -1,3 +1,16 @@
+2008-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Ensure that the file extension
+	does not trigger unwanted activity such as access to an X11
+	server, printer, or the launch delegate.
+
+2008-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Some recent libtiff versions
+	produce wrong pointer values when private tag 36867 is requested.
+	Since we don't make any special use of these tags, simply don't
+	request them.
+
 2008-03-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (CloneImage): Use CloneImageAttributes().

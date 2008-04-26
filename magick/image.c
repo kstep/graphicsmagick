@@ -6192,12 +6192,20 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
             break;
           }
       LocaleUpper(magic);
+
       /*
         SGI and RGB are ambiguous;  TMP must be set explicitly.
+        Don't allow X11 to be accessed via file extension.
       */
       if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
-          (LocaleCompare(magic,"RGB") != 0)) &&
-          (LocaleCompare(magic,"TMP") != 0))
+           (LocaleCompare(magic,"RGB") != 0)) &&
+          (LocaleCompare(magic,"LAUNCH") != 0) &&
+          (LocaleCompare(magic,"PRINT") != 0) &&
+          (LocaleCompare(magic,"TMP") != 0) &&
+          (LocaleCompare(magic,"WIN") != 0) &&
+          (LocaleCompare(magic,"XC") != 0) &&
+          (LocaleCompare(magic,"X") != 0)
+          )
         (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
     }
   /*
