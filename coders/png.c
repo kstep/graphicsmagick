@@ -6348,11 +6348,6 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->bit_depth=8;
           mng_info->IsPalette=MagickTrue;
-          //image->depth=8;
-
-/*           mng_info->IsPalette=MagickTrue; */
-/*           ping_info->color_type=PNG_COLOR_TYPE_PALETTE; */
-/*           ping_info->bit_depth=8; */
         }
       else
         {
