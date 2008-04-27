@@ -4163,7 +4163,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     /*
                       Export pixels to scanline.
                     */
-                    scanline[scanline_size]=0xbf;
                     if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
                                              scanline,&export_options,&export_info)
                         == MagickFail)
