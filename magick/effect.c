@@ -1350,7 +1350,7 @@ typedef struct _MedianSkipList
     level;
 
   MedianListNode
-    nodes[65537];
+    *nodes;
 } MedianSkipList;
 
 typedef struct _MedianPixelList
@@ -1466,11 +1466,32 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   return(pixel);
 }
 
-static void InitializeMedianList(MedianPixelList *pixel_list,long width)
+static int InitializeMedianList(MedianPixelList *pixel_list,long width)
 {
+  register int i;
   pixel_list->center=width*width/2;
   pixel_list->signature=MagickSignature;
   (void) memset((void *) pixel_list->lists,0,4*sizeof(MedianSkipList));
+  for(i=0;i<4;i++)
+  {
+    pixel_list->lists[i].nodes = MagickAllocateMemory(MedianListNode *,65537 * sizeof(MedianListNode));
+	if(!pixel_list->lists[i].nodes)
+	{
+	  assert(0);
+	  return (False);
+	}
+  }
+  return (True);
+}
+
+static void CleanMedianList(MedianPixelList *pixel_list)
+{
+  register int i;
+  for(i=0;i<4;i++)
+  {
+	if(pixel_list->lists[i].nodes)
+	  MagickFreeMemory(pixel_list->lists[i].nodes);
+  }
 }
 
 static inline void InsertMedianList(MedianPixelList *pixel_list,
@@ -1597,7 +1618,13 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   /*
     Median filter each image row.
   */
-  InitializeMedianList(skiplist,width);
+  if(!InitializeMedianList(skiplist,width))
+  {
+    DestroyImage(median_image);
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+	  UnableToMedianFilterImage)
+  }
+
   for (y=0; y < (long) median_image->rows; y++)
   {
     p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
@@ -1624,6 +1651,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       if (!MagickMonitor(MedianFilterImageText,y,median_image->rows,exception))
         break;
   }
+  CleanMedianList(skiplist);
   MagickFreeMemory(skiplist);
   median_image->is_grayscale=image->is_grayscale;
   return(median_image);
@@ -2207,7 +2235,13 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   /*
     Median filter each image row.
   */
-  InitializeMedianList(skiplist,width);
+  if(!InitializeMedianList(skiplist,width))
+  {
+    DestroyImage(noise_image);
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+	  UnableToMedianFilterImage)
+  }
+
   for (y=0; y < (long) noise_image->rows; y++)
   {
     p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
@@ -2236,6 +2270,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       if (!MagickMonitor(ReduceNoiseImageText,y,noise_image->rows,exception))
         break;
   }
+  CleanMedianList(skiplist);
   MagickFreeMemory(skiplist);
   noise_image->is_grayscale=image->is_grayscale;
   return(noise_image);
