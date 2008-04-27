@@ -138,7 +138,7 @@ MagickExport void DestroyMagick(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickInfo() deallocates memory associated MagickInfo list.
+%  DestroyMagickInfo() deallocates memory associated with the MagickInfo list.
 %
 %  The format of the DestroyMagickInfo method is:
 %

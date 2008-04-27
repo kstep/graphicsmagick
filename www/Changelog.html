@@ -24,6 +24,8 @@
 2008-04-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magick.h (MagickInfo): Remove image_info member since I
+        can not find any purpose for it.
   <LI> coders/tiff.c (WriteTIFFImage): Remove assertion check on
         scanline size since it has not caught anything.
   <LI> magick/image.c (SetImageInfo): Ensure that the file extension

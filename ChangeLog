@@ -1,5 +1,7 @@
 2008-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.h (MagickInfo): Remove image_info member since I
+	can not find any purpose for it.
 	* coders/tiff.c (WriteTIFFImage): Remove assertion check on
 	scanline size since it has not caught anything.
 	* magick/image.c (SetImageInfo): Ensure that the file extension

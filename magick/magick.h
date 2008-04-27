@@ -32,9 +32,6 @@ typedef struct _MagickInfo
     *version,           /* support library version */
     *module;            /* name of loadable module */
 
-  ImageInfo
-    *image_info;        /* huh??? */
-
   DecoderHandler
     decoder;            /* function vector to decoding routine */
 
@@ -47,7 +44,7 @@ typedef struct _MagickInfo
   void
     *client_data;       /* arbitrary user supplied data */
 
-  unsigned int
+  MagickBool
     adjoin,             /* coder may read/write multiple frames (default True) */
     raw,                /* coder requires that size be set (default False) */
     stealth,            /* coder should not appear in formats listing (default False) */
