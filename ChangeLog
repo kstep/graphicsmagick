@@ -1,3 +1,8 @@
+2008-04-27  Darko Kojic  <dkc@sf.net>
+
+	* magick/effect.c (MedianFilterImage): Fixes to compile on ARM
+	CPU.
+
 2008-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Ensure that the file extension
