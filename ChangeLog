@@ -1,3 +1,10 @@
+2008-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.1.12 released.
+	* magick/image.c (SetImageInfo): Ignore file extensions which
+	match defined virtual delegate entries (including stealth
+	entries).
+
 2008-04-27  Darko Kojic  <dkc@sf.net>
 
 	* magick/effect.c (MedianFilterImage): Fixes to compile on ARM

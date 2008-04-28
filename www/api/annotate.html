@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>annotate - Annotate an image with text</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -45,53 +47,55 @@
 <blockquote>AnnotateImage() annotates an image with text. Optionally you can include any of the following bits of information about the image by embedding the appropriate special characters: </blockquote><P>The format of the AnnotateImage method is:</P>
 <blockquote>unsigned int AnnotateImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_status_3a">status:</a></strong>
+
 <DD>
-Method AnnotateImage returns True if the image is annotated otherwise False.
+<P>Method AnnotateImage returns True if the image is annotated otherwise False.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="gettypemetrics">GetTypeMetrics</a></h2>
 <blockquote>GetTypeMetrics() returns the following information for the specified font and text: </blockquote><dl>
-<dt><strong><a name="item_o">o</a></strong><br />
-</dt>
+<dt><strong><a name="item_o">o</a></strong>
+
 <DD>
-character width o character height o ascent o descent o text width o text height o maximum horizontal advance o underline position o underline thickness
+<P>character width o character height o ascent o descent o text width o text height o maximum horizontal advance o underline position o underline thickness</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>The format of the GetTypeMetrics method is:</P>
 <blockquote>unsigned int GetTypeMetrics ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, <A HREF="types.html#TypeMetric">TypeMetric</A> *metrics ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>draw_info:</strong><br />
-</dt>
+</li>
+<dt><strong>draw_info:</strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_metrics_3a">metrics:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_metrics_3a">metrics:</a></strong>
+
 <DD>
-Return the font metrics in this structure.
+<P>Return the font metrics in this structure.</P>
 </dd>
 </dl>
 

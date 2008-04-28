@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>signature - Add a digital signature to the image</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -52,12 +54,13 @@
 <P>The format of the FinalizeSignature method is:</P>
 <blockquote>FinalizeSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_signature_info_3a">signature_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_signature_info_3a">signature_info:</a></strong>
+
 <DD>
-The address of a structure of type SignatureInfo.
+<P>The address of a structure of type SignatureInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getsignatureinfo">GetSignatureInfo</a></h2>
@@ -65,58 +68,61 @@ The address of a structure of type SignatureInfo.
 <P>The format of the GetSignatureInfo method is:</P>
 <blockquote>GetSignatureInfo ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>signature_info:</strong><br />
-</dt>
+<dt><strong>signature_info:</strong>
+
 <DD>
-The address of a structure of type SignatureInfo.
+<P>The address of a structure of type SignatureInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="signatureimage">SignatureImage</a></h2>
 <blockquote>SignatureImage() computes a message digest from an image pixel stream with an implementation of the NIST SHA-256 Message Digest algorithm. This signature uniquely identifies the image and is convenient for determining if an image has been modified or whether two images are identical. </blockquote><P>The format of the SignatureImage method is:</P>
 <blockquote>unsigned int SignatureImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="transformsignature">TransformSignature</a></h2>
 <blockquote>TransformSignature() transforms the SHA message digest. </blockquote><P>The format of the TransformSignature method is:</P>
 <blockquote>TransformSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>signature_info:</strong><br />
-</dt>
+<dt><strong>signature_info:</strong>
+
 <DD>
-The address of a structure of type SignatureInfo.
+<P>The address of a structure of type SignatureInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="updatesignature">UpdateSignature</a></h2>
 <blockquote>UpdateSignature() updates the SHA message digest. </blockquote><P>The format of the UpdateSignature method is:</P>
 <blockquote>UpdateSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info, const unsigned char *message, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>signature_info:</strong><br />
-</dt>
+<dt><strong>signature_info:</strong>
+
 <DD>
-The address of a structure of type SignatureInfo.
+<P>The address of a structure of type SignatureInfo.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_message_3a">message:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_message_3a">message:</a></strong>
+
 <DD>
-the message
+<P>the message</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_length_3a">length:</a></strong>
+
 <DD>
-The length of the message.
+<P>The length of the message.</P>
 </dd>
 </dl>
 

@@ -1,6 +1,31 @@
-This file was last updated on February 23, 2008.
+This file was last updated on April 28, 2008.
 
-Significant changes associated with GraphicsMagick 1.1.11 (released September 23, 2007)
+
+Significant changes associated with GraphicsMagick 1.1.12 (released April 28, 2008)
+
+  Security Fixes:
+
+    o Do not access X11 or invoke convenience or stealth delegate
+      programs based on the file extension. In particular, these file
+      extensions are rejected for consideration as a format specifier:
+      'autotrace', 'browse', 'dcraw', 'edit', 'gs-color',
+      'gs-color+alpha', 'gs-gray', 'gs-mono', 'launch', 'mpeg-encode',
+      'print', 'scan', 'show', 'win', 'xc', and 'x'.
+
+  Bugs Fixed:
+
+    o magick/effect.c: Should now compile for ARM CPU.
+
+    o TIFF: Don't request Kodak private tags since these cause some
+      versions of libtiff to misbehave.
+
+    o When performing string expansion of image attribute identifiers, skip
+      those which require access to image pixels if image pixels are not
+      present.
+
+    o CropImageToHBITMAP(), ImageToHBITMAP(): Fix leak of bitmap handle.
+
+Significant changes associated with GraphicsMagick 1.1.11 (released February 23, 2008)
 
   Bugs Fixed:
 

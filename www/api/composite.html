@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>composite - Merge image pixels using a specified algorithm</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -43,34 +45,34 @@
 <blockquote>CompositeImage() returns the second image ( composite_image ) composited onto the first ( canvas_image ) at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
 <blockquote>unsigned int CompositeImage ( <A HREF="types.html#Image">Image</A> *canvas_image, const <A HREF="types.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types.html#Image">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_canvas_image_3a">canvas_image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_canvas_image_3a">canvas_image:</a></strong>
+
 <DD>
-The image to be updated.
+<P>The image to be updated.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_compose_3a">compose:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_compose_3a">compose:</a></strong>
+
 <DD>
-This operator affects how the composite is applied to the image.  The default is Over.  Choose from one of these operators: OverCompositeOp, InCompositeOp, OutCompositeOP, AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP, AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP, BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP, CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
+<P>This operator affects how the composite is applied to the image.  The default is Over.  Choose from one of these operators: OverCompositeOp, InCompositeOp, OutCompositeOP, AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP, AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP, BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP, CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_composite_image_3a">composite_image:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_composite_image_3a">composite_image:</a></strong>
+
 <DD>
-The composite image.
+<P>The composite image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_offset_3a">x_offset:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_offset_3a">x_offset:</a></strong>
+
 <DD>
-The column offset of the composited image.
+<P>The column offset of the composited image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_y_offset_3a">y_offset:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_y_offset_3a">y_offset:</a></strong>
+
 <DD>
-The row offset of the composited image.
+<P>The row offset of the composited image.</P>
 </dd>
 </dl>
 

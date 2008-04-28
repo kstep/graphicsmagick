@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>decorate - Add decorative frames and borders</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -47,70 +49,72 @@
 <blockquote>BorderImage() surrounds the image with a border of the color defined by the bordercolor member of the image structure. The width and height of the border are defined by the corresponding members of the border_info structure. </blockquote><P>The format of the BorderImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *BorderImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#RectangleInfo">RectangleInfo</A> *border_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_border_info_3a">border_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_border_info_3a">border_info:</a></strong>
+
 <DD>
-Define the width and height of the border.
+<P>Define the width and height of the border.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="frameimage">FrameImage</a></h2>
 <blockquote>FrameImage() adds a simulated three-dimensional border around the image. The color of the border is defined by the matte_color member of image. Members width and height of frame_info specify the border width of the vertical and horizontal sides of the frame. Members inner and outer indicate the width of the inner and outer shadows of the frame. </blockquote><P>The format of the FrameImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *FrameImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#FrameInfo">FrameInfo</A> *frame_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_frame_info_3a">frame_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_frame_info_3a">frame_info:</a></strong>
+
 <DD>
-Define the width and height of the frame and its bevels.
+<P>Define the width and height of the frame and its bevels.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="raiseimage">RaiseImage</a></h2>
 <blockquote>RaiseImage() creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect. </blockquote><P>The format of the RaiseImage method is:</P>
 <blockquote>unsigned int RaiseImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#RectangleInfo">RectangleInfo</A> *raise_info, const int raise ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_raise_info_3a">raise_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_raise_info_3a">raise_info:</a></strong>
+
 <DD>
-Define the width and height of the raise area.
+<P>Define the width and height of the raise area.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_raise_3a">raise:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_raise_3a">raise:</a></strong>
+
 <DD>
-A value other than zero creates a 3-D raise effect, otherwise it has a lowered effect.
+<P>A value other than zero creates a 3-D raise effect, otherwise it has a lowered effect.</P>
 </dd>
 </dl>
 

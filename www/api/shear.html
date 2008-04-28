@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>shear - Rotate image, shear image, or apply a 2D affine transformation</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -47,24 +49,25 @@
 <blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types.html#Image">Image</A> structure and returns a pointer to the new image. </blockquote><P>The format of the AffineTransformImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *AffineTransformImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_affine_3a">affine:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_affine_3a">affine:</a></strong>
+
 <DD>
-The affine transform.
+<P>The affine transform.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="rotateimage">RotateImage</a></h2>
@@ -73,30 +76,31 @@ Return any errors or warnings in this structure.
 <P>The format of the RotateImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *RotateImage ( const <A HREF="types.html#Image">Image</A> *image, const double degrees, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_status_3a">status:</a></strong>
+
 <DD>
-Method RotateImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.
+<P>Method RotateImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image; returned from ReadImage.
+<P>The image; returned from ReadImage.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_degrees_3a">degrees:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_degrees_3a">degrees:</a></strong>
+
 <DD>
-Specifies the number of degrees to rotate the image.
+<P>Specifies the number of degrees to rotate the image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="shearimage">ShearImage</a></h2>
@@ -105,28 +109,28 @@ Return any errors or warnings in this structure.
 <P>The format of the ShearImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ShearImage ( const <A HREF="types.html#Image">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong>status:</strong><br />
-</dt>
+<dt><strong>status:</strong>
+
 <DD>
-Method ShearImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.
+<P>Method ShearImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image; returned from ReadImage.
+<P>The image; returned from ReadImage.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_shear_2c_y_shear_3a">x_shear, y_shear:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_shear_2c_y_shear_3a">x_shear, y_shear:</a></strong>
+
 <DD>
-Specifies the number of degrees to shear the image.
+<P>Specifies the number of degrees to shear the image.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
 </dl>
 

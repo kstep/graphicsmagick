@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.11 News</TITLE>
+<TITLE>GraphicsMagick 1.1.12 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,14 +17,46 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.11 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.12 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on February 23, 2008.
+This file was last updated on April 28, 2008.
+
 
 <p>
-Significant changes associated with GraphicsMagick 1.1.11 (released September 23, 2007)
+Significant changes associated with GraphicsMagick 1.1.12 (released April 28, 2008)
+
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Do not access X11 or invoke convenience or stealth delegate
+      programs based on the file extension. In particular, these file
+      extensions are rejected for consideration as a format specifier:
+      'autotrace', 'browse', 'dcraw', 'edit', 'gs-color',
+      'gs-color+alpha', 'gs-gray', 'gs-mono', 'launch', 'mpeg-encode',
+      'print', 'scan', 'show', 'win', 'xc', and 'x'.
+
+</UL>
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> magick/effect.c: Should now compile for ARM CPU.
+
+  <LI> TIFF: Don't request Kodak private tags since these cause some
+      versions of libtiff to misbehave.
+
+  <LI> When performing string expansion of image attribute identifiers, skip
+      those which require access to image pixels if image pixels are not
+      present.
+
+  <LI> CropImageToHBITMAP(), ImageToHBITMAP(): Fix leak of bitmap handle.
+
+</UL>
+<p>
+Significant changes associated with GraphicsMagick 1.1.11 (released February 23, 2008)
 
 <p>
   Bugs Fixed:

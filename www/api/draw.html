@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>draw - User-friendly methods to draw on an image</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -259,264 +261,276 @@
 <blockquote>DrawAnnotation() draws text on the image. </blockquote><P>The format of the DrawAnnotation method is:</P>
 <blockquote>void DrawAnnotation ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y, const unsigned char *text ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_context_3a">context:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_context_3a">context:</a></strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_3a">x:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_3a">x:</a></strong>
+
 <DD>
-x ordinate to left of text
+<P>x ordinate to left of text</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_y_3a">y:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_y_3a">y:</a></strong>
+
 <DD>
-y ordinate to text baseline
+<P>y ordinate to text baseline</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_text_3a">text:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_text_3a">text:</a></strong>
+
 <DD>
-text to draw
+<P>text to draw</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawaffine">DrawAffine</a></h2>
 <blockquote>DrawAffine() adjusts the current affine transformation matrix with the specified affine transformation matrix. Note that the current affine transform is adjusted rather than replaced. </blockquote><P>The format of the DrawAffine method is:</P>
 <blockquote>void DrawAffine ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-Drawing context
+<P>Drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_affine_3a">affine:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_affine_3a">affine:</a></strong>
+
 <DD>
-Affine matrix parameters
+<P>Affine matrix parameters</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawallocatecontext">DrawAllocateContext</a></h2>
 <blockquote>DrawAllocateContext() allocates an initial drawing context which is an opaque handle required by the remaining drawing methods. </blockquote><P>The format of the DrawAllocateContext method is:</P>
 <blockquote><A HREF="types.html#DrawContext">DrawContext</A> DrawAllocateContext ( const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
+
 <DD>
-Initial drawing defaults.  Set to NULL to use GraphicsMagick defaults.
+<P>Initial drawing defaults.  Set to NULL to use GraphicsMagick defaults.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image to draw on.
+<P>The image to draw on.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawarc">DrawArc</a></h2>
 <blockquote>DrawArc() draws an arc falling within a specified bounding rectangle on the image. </blockquote><P>The format of the DrawArc method is:</P>
 <blockquote>void DrawArc ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double sx, const double sy, const double ex, const double ey, const double sd, const double ed ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_sx_3a">sx:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_sx_3a">sx:</a></strong>
+
 <DD>
-starting x ordinate of bounding rectangle
+<P>starting x ordinate of bounding rectangle</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_sy_3a">sy:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_sy_3a">sy:</a></strong>
+
 <DD>
-starting y ordinate of bounding rectangle
+<P>starting y ordinate of bounding rectangle</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_ex_3a">ex:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_ex_3a">ex:</a></strong>
+
 <DD>
-ending x ordinate of bounding rectangle
+<P>ending x ordinate of bounding rectangle</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_ey_3a">ey:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_ey_3a">ey:</a></strong>
+
 <DD>
-ending y ordinate of bounding rectangle
+<P>ending y ordinate of bounding rectangle</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_sd_3a">sd:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_sd_3a">sd:</a></strong>
+
 <DD>
-starting degrees of rotation
+<P>starting degrees of rotation</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_ed_3a">ed:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_ed_3a">ed:</a></strong>
+
 <DD>
-ending degrees of rotation
+<P>ending degrees of rotation</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawbezier">DrawBezier</a></h2>
 <blockquote>DrawBezier() draws a bezier curve through a set of points on the image. </blockquote><P>The format of the DrawBezier method is:</P>
 <blockquote>void DrawBezier ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_num_coords_3a">num_coords:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_num_coords_3a">num_coords:</a></strong>
+
 <DD>
-number of coordinates
+<P>number of coordinates</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_coordinates_3a">coordinates:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_coordinates_3a">coordinates:</a></strong>
+
 <DD>
-coordinates
+<P>coordinates</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawcircle">DrawCircle</a></h2>
 <blockquote>DrawCircle() draws a circle on the image. </blockquote><P>The format of the DrawCircle method is:</P>
 <blockquote>void DrawCircle ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double ox, const double oy, const double px, const double py ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_ox_3a">ox:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_ox_3a">ox:</a></strong>
+
 <DD>
-origin x ordinate
+<P>origin x ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_oy_3a">oy:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_oy_3a">oy:</a></strong>
+
 <DD>
-origin y ordinate
+<P>origin y ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_px_3a">px:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_px_3a">px:</a></strong>
+
 <DD>
-perimeter x ordinate
+<P>perimeter x ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_py_3a">py:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_py_3a">py:</a></strong>
+
 <DD>
-perimeter y ordinate
+<P>perimeter y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetclippath">DrawGetClipPath</a></h2>
 <blockquote>DrawGetClipPath() obtains the current clipping path ID. The value returned must be deallocated by the user when it is no longer needed. </blockquote><P>The format of the DrawGetClipPath method is:</P>
 <blockquote>char *DrawGetClipPath ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetclippath">DrawSetClipPath</a></h2>
 <blockquote>DrawSetClipPath() associates a named clipping path with the image. Only the areas drawn on by the clipping path will be modified as long as it remains in effect. </blockquote><P>The format of the DrawSetClipPath method is:</P>
 <blockquote>void DrawSetClipPath ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *clip_path ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_clip_path_3a">clip_path:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_clip_path_3a">clip_path:</a></strong>
+
 <DD>
-name of clipping path to associate with image
+<P>name of clipping path to associate with image</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetcliprule">DrawGetClipRule</a></h2>
 <blockquote>DrawGetClipRule() returns the current polygon fill rule to be used by the clipping path. </blockquote><P>The format of the DrawGetClipRule method is:</P>
 <blockquote><A HREF="types.html#FillRule">FillRule</A> DrawGetClipRule ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetcliprule">DrawSetClipRule</a></h2>
 <blockquote>DrawSetClipRule() set the polygon fill rule to be used by the clipping path. </blockquote><P>The format of the DrawSetClipRule method is:</P>
 <blockquote>void DrawSetClipRule ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#FillRule">FillRule</A> fill_rule ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_fill_rule_3a">fill_rule:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_fill_rule_3a">fill_rule:</a></strong>
+
 <DD>
-fill rule (EvenOddRule or NonZeroRule)
+<P>fill rule (EvenOddRule or NonZeroRule)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetclipunits">DrawGetClipUnits</a></h2>
 <blockquote>DrawGetClipUnits() returns the interpretation of clip path units. </blockquote><P>The format of the DrawGetClipUnits method is:</P>
 <blockquote><A HREF="types.html#ClipPathUnits">ClipPathUnits</A> DrawGetClipUnits ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetclipunits">DrawSetClipUnits</a></h2>
 <blockquote>DrawSetClipUnits() sets the interpretation of clip path units. </blockquote><P>The format of the DrawSetClipUnits method is:</P>
 <blockquote>void DrawSetClipUnits ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#ClipPathUnits">ClipPathUnits</A> clip_units ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_clip_units_3a">clip_units:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_clip_units_3a">clip_units:</a></strong>
+
 <DD>
-units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)
+<P>units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawcolor">DrawColor</a></h2>
@@ -529,108 +543,112 @@ units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)
 <P>The format of the DrawColor method is:</P>
 <blockquote>void DrawColor ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y, const <A HREF="types.html#PaintMethod">PaintMethod</A> paintMethod ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate
+<P>x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate
+<P>y ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_paintmethod_3a">paintMethod:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_paintmethod_3a">paintMethod:</a></strong>
+
 <DD>
-paint method
+<P>paint method</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawcomment">DrawComment</a></h2>
 <blockquote>DrawComment() adds a comment to a vector output stream. </blockquote><P>The format of the DrawComment method is:</P>
 <blockquote>void DrawComment ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *comment ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_comment_3a">comment:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_comment_3a">comment:</a></strong>
+
 <DD>
-comment text
+<P>comment text</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawdestroycontext">DrawDestroyContext</a></h2>
 <blockquote>DrawDestroyContext() frees all resources associated with the drawing context. Once the drawing context has been freed, it should not be used any further unless it re-allocated. </blockquote><P>The format of the DrawDestroyContext method is:</P>
 <blockquote>void DrawDestroyContext ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context to destroy
+<P>drawing context to destroy</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawellipse">DrawEllipse</a></h2>
 <blockquote>DrawEllipse() draws an ellipse on the image. </blockquote><P>The format of the DrawEllipse method is:</P>
 <blockquote>void DrawEllipse ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double ox, const double oy, const double rx, const double ry, const double start, const double end ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>ox:</strong><br />
-</dt>
+</li>
+<dt><strong>ox:</strong>
+
 <DD>
-origin x ordinate
+<P>origin x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>oy:</strong><br />
-</dt>
+</li>
+<dt><strong>oy:</strong>
+
 <DD>
-origin y ordinate
+<P>origin y ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_rx_3a">rx:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_rx_3a">rx:</a></strong>
+
 <DD>
-radius in x
+<P>radius in x</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_ry_3a">ry:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_ry_3a">ry:</a></strong>
+
 <DD>
-radius in y
+<P>radius in y</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_start_3a">start:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_start_3a">start:</a></strong>
+
 <DD>
-starting rotation in degrees
+<P>starting rotation in degrees</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_end_3a">end:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_end_3a">end:</a></strong>
+
 <DD>
-ending rotation in degrees
+<P>ending rotation in degrees</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfillcolor">DrawGetFillColor</a></h2>
@@ -640,93 +658,99 @@ ending rotation in degrees
 </P>
 <h2><a name="drawsetfillcolor">DrawSetFillColor</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFillColor() sets the fill color to be used for drawing filled objects. </blockquote><P>The format of the DrawSetFillColor method is:</P>
 <blockquote>void DrawSetFillColor ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#PixelPacket">PixelPacket</A> *fill_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_fill_color_3a">fill_color:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_fill_color_3a">fill_color:</a></strong>
+
 <DD>
-fill color
+<P>fill color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetfillcolorstring">DrawSetFillColorString</a></h2>
 <blockquote>DrawSetFillColorString() sets the fill color to be used for drawing filled objects. </blockquote><P>The format of the DrawSetFillColorString method is:</P>
 <blockquote>void DrawSetFillColorString ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *fill_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>fill_color:</strong><br />
-</dt>
+</li>
+<dt><strong>fill_color:</strong>
+
 <DD>
-fill color
+<P>fill color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetfillpatternurl">DrawSetFillPatternURL</a></h2>
 <blockquote>DrawSetFillPatternURL() sets the URL to use as a fill pattern for filling objects. Only local URLs ( "#identifier" ) are supported at this time. These local URLs are normally created by defining a named fill pattern with DrawPushPattern/DrawPopPattern. </blockquote><P>The format of the DrawSetFillPatternURL method is:</P>
 <blockquote>void DrawSetFillPatternURL ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *fill_url ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_fill_url_3a">fill_url:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_fill_url_3a">fill_url:</a></strong>
+
 <DD>
-URL to use to obtain fill pattern.
+<P>URL to use to obtain fill pattern.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfillopacity">DrawGetFillOpacity</a></h2>
 <blockquote>DrawGetFillOpacity() returns the opacity used when drawing using the fill color or fill texture. Fully opaque is 1.0. </blockquote><P>The format of the DrawGetFillOpacity method is:</P>
 <blockquote>double DrawGetFillOpacity ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetfillopacity">DrawSetFillOpacity</a></h2>
 <blockquote>DrawSetFillOpacity() sets the opacity to use when drawing using the fill color or fill texture. Fully opaque is 1.0. </blockquote><P>The format of the DrawSetFillOpacity method is:</P>
 <blockquote>void DrawSetFillOpacity ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double fill_opacity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_fill_opacity_3a">fill_opacity:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_fill_opacity_3a">fill_opacity:</a></strong>
+
 <DD>
-fill opacity
+<P>fill opacity</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfillrule">DrawGetFillRule</a></h2>
@@ -736,27 +760,29 @@ fill opacity
 </P>
 <h2><a name="drawsetfillrule">DrawSetFillRule</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFillRule() sets the fill rule to use while drawing polygons. </blockquote><P>The format of the DrawSetFillRule method is:</P>
 <blockquote>void DrawSetFillRule ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#FillRule">FillRule</A> fill_rule ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>fill_rule:</strong><br />
-</dt>
+</li>
+<dt><strong>fill_rule:</strong>
+
 <DD>
-fill rule (EvenOddRule or NonZeroRule)
+<P>fill rule (EvenOddRule or NonZeroRule)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfont">DrawGetFont</a></h2>
@@ -766,27 +792,29 @@ fill rule (EvenOddRule or NonZeroRule)
 </P>
 <h2><a name="drawsetfont">DrawSetFont</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFont() sets the fully-sepecified font to use when annotating with text. </blockquote><P>The format of the DrawSetFont method is:</P>
 <blockquote>void DrawSetFont ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *font_name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_font_name_3a">font_name:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_font_name_3a">font_name:</a></strong>
+
 <DD>
-font name
+<P>font name</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfontfamily">DrawGetFontFamily</a></h2>
@@ -796,27 +824,29 @@ font name
 </P>
 <h2><a name="drawsetfontfamily">DrawSetFontFamily</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFontFamily() sets the font family to use when annotating with text. </blockquote><P>The format of the DrawSetFontFamily method is:</P>
 <blockquote>void DrawSetFontFamily ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *font_family ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_font_family_3a">font_family:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_font_family_3a">font_family:</a></strong>
+
 <DD>
-font family
+<P>font family</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfontsize">DrawGetFontSize</a></h2>
@@ -826,27 +856,29 @@ font family
 </P>
 <h2><a name="drawsetfontsize">DrawSetFontSize</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFontSize() sets the font pointsize to use when annotating with text. </blockquote><P>The format of the DrawSetFontSize method is:</P>
 <blockquote>void DrawSetFontSize ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double pointsize ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_pointsize_3a">pointsize:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_pointsize_3a">pointsize:</a></strong>
+
 <DD>
-text pointsize
+<P>text pointsize</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfontstretch">DrawGetFontStretch</a></h2>
@@ -856,27 +888,29 @@ text pointsize
 </P>
 <h2><a name="drawsetfontstretch">DrawSetFontStretch</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFontStretch() sets the font stretch to use when annotating with text. The AnyStretch enumeration acts as a wild-card "don't care" option. </blockquote><P>The format of the DrawSetFontStretch method is:</P>
 <blockquote>void DrawSetFontStretch ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#StretchType">StretchType</A> font_stretch ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_font_stretch_3a">font_stretch:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_font_stretch_3a">font_stretch:</a></strong>
+
 <DD>
-font stretch (NormalStretch, UltraCondensedStretch, CondensedStretch, SemiCondensedStretch, SemiExpandedStretch, ExpandedStretch, ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)
+<P>font stretch (NormalStretch, UltraCondensedStretch, CondensedStretch, SemiCondensedStretch, SemiExpandedStretch, ExpandedStretch, ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfontstyle">DrawGetFontStyle</a></h2>
@@ -886,27 +920,29 @@ font stretch (NormalStretch, UltraCondensedStretch, CondensedStretch, SemiConden
 </P>
 <h2><a name="drawsetfontstyle">DrawSetFontStyle</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFontStyle() sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option. </blockquote><P>The format of the DrawSetFontStyle method is:</P>
 <blockquote>void DrawSetFontStyle ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#StyleType">StyleType</A> style ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_style_3a">style:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_style_3a">style:</a></strong>
+
 <DD>
-font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)
+<P>font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetfontweight">DrawGetFontWeight</a></h2>
@@ -916,27 +952,29 @@ font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)
 </P>
 <h2><a name="drawsetfontweight">DrawSetFontWeight</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetFontWeight() sets the font weight to use when annotating with text. </blockquote><P>The format of the DrawSetFontWeight method is:</P>
 <blockquote>void DrawSetFontWeight ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long font_weight ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_font_weight_3a">font_weight:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_font_weight_3a">font_weight:</a></strong>
+
 <DD>
-font weight (valid range 100-900)
+<P>font weight (valid range 100-900)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetgravity">DrawGetGravity</a></h2>
@@ -946,111 +984,115 @@ font weight (valid range 100-900)
 </P>
 <h2><a name="drawsetgravity">DrawSetGravity</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetGravity() sets the text placement gravity to use when annotating with text. </blockquote><P>The format of the DrawSetGravity method is:</P>
 <blockquote>void DrawSetGravity ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#GravityType">GravityType</A> gravity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_gravity_3a">gravity:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_gravity_3a">gravity:</a></strong>
+
 <DD>
-positioning gravity (NorthWestGravity, NorthGravity, NorthEastGravity, WestGravity, CenterGravity, EastGravity, SouthWestGravity, SouthGravity, SouthEastGravity)
+<P>positioning gravity (NorthWestGravity, NorthGravity, NorthEastGravity, WestGravity, CenterGravity, EastGravity, SouthWestGravity, SouthGravity, SouthEastGravity)</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawcomposite">DrawComposite</a></h2>
 <blockquote>DrawComposite() composites an image onto the current image, using the specified composition operator, specified position, and at the specified size. </blockquote><P>The format of the DrawComposite method is:</P>
 <blockquote>void DrawComposite ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#CompositeOperator">CompositeOperator</A> composite_operator, const double x, const double y, const double width, const double height, const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_composite_operator_3a">composite_operator:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_composite_operator_3a">composite_operator:</a></strong>
+
 <DD>
-composition operator
+<P>composition operator</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of top left corner
+<P>x ordinate of top left corner</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of top left corner
+<P>y ordinate of top left corner</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_width_3a">width:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_width_3a">width:</a></strong>
+
 <DD>
-Width to resize image to prior to compositing.  Specify zero to use existing width.
+<P>Width to resize image to prior to compositing.  Specify zero to use existing width.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_height_3a">height:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_height_3a">height:</a></strong>
+
 <DD>
-Height to resize image to prior to compositing.  Specify zero to use existing height.
+<P>Height to resize image to prior to compositing.  Specify zero to use existing height.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-Image to composite
+<P>Image to composite</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawline">DrawLine</a></h2>
 <blockquote>DrawLine() draws a line on the image using the current stroke color, stroke opacity, and stroke width. </blockquote><P>The format of the DrawLine method is:</P>
 <blockquote>void DrawLine ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double sx, const double sy, const double ex, const double ey ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>sx:</strong><br />
-</dt>
+</li>
+<dt><strong>sx:</strong>
+
 <DD>
-starting x ordinate
+<P>starting x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>sy:</strong><br />
-</dt>
+</li>
+<dt><strong>sy:</strong>
+
 <DD>
-starting y ordinate
+<P>starting y ordinate</P>
 </dd>
-<P></P>
-<dt><strong>ex:</strong><br />
-</dt>
+</li>
+<dt><strong>ex:</strong>
+
 <DD>
-ending x ordinate
+<P>ending x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>ey:</strong><br />
-</dt>
+</li>
+<dt><strong>ey:</strong>
+
 <DD>
-ending y ordinate
+<P>ending y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawmatte">DrawMatte</a></h2>
@@ -1064,138 +1106,142 @@ ending y ordinate
 <P>The format of the DrawMatte method is:</P>
 <blockquote>void DrawMatte ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y, const <A HREF="types.html#PaintMethod">PaintMethod</A> paint_method ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate
+<P>x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate
+<P>y ordinate</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o">o</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o">o</a></strong>
+
 <DD>
-paint_method:
+<P>paint_method:</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathclose">DrawPathClose</a></h2>
 <blockquote>DrawPathClose() adds a path element to the current path which closes the current subpath by drawing a straight line from the current point to the current subpath's most recent starting point ( usually, the most recent moveto point ) . </blockquote><P>The format of the DrawPathClose method is:</P>
 <blockquote>void DrawPathClose ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathcurvetoabsolute">DrawPathCurveToAbsolute</a></h2>
 <blockquote>DrawPathCurveToAbsolute() draws a cubic Bézier curve from the current point to ( x, y ) using ( x1, y1 ) as the control point at the beginning of the curve and ( x2, y2 ) as the control point at the end of the curve using absolute coordinates. At the end of the command, the new current point becomes the final ( x, y ) coordinate pair used in the polybezier. </blockquote><P>The format of the DrawPathCurveToAbsolute method is:</P>
 <blockquote>void DrawPathCurveToAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x1, const double y1, const double x2, const double y2, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x1_3a">x1:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x1_3a">x1:</a></strong>
+
 <DD>
-x ordinate of control point for curve beginning
+<P>x ordinate of control point for curve beginning</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_y1_3a">y1:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_y1_3a">y1:</a></strong>
+
 <DD>
-y ordinate of control point for curve beginning
+<P>y ordinate of control point for curve beginning</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x2_3a">x2:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x2_3a">x2:</a></strong>
+
 <DD>
-x ordinate of control point for curve ending
+<P>x ordinate of control point for curve ending</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_y2_3a">y2:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_y2_3a">y2:</a></strong>
+
 <DD>
-y ordinate of control point for curve ending
+<P>y ordinate of control point for curve ending</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of the end of the curve
+<P>x ordinate of the end of the curve</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of the end of the curve
+<P>y ordinate of the end of the curve</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathcurvetorelative">DrawPathCurveToRelative</a></h2>
 <blockquote>DrawPathCurveToRelative() draws a cubic Bézier curve from the current point to ( x, y ) using ( x1, y1 ) as the control point at the beginning of the curve and ( x2, y2 ) as the control point at the end of the curve using relative coordinates. At the end of the command, the new current point becomes the final ( x, y ) coordinate pair used in the polybezier. </blockquote><P>The format of the DrawPathCurveToRelative method is:</P>
 <blockquote>void DrawPathCurveToRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x1, const double y1, const double x2, const double y2, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x1:</strong><br />
-</dt>
+</li>
+<dt><strong>x1:</strong>
+
 <DD>
-x ordinate of control point for curve beginning
+<P>x ordinate of control point for curve beginning</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-y ordinate of control point for curve beginning
+<P>y ordinate of control point for curve beginning</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-x ordinate of control point for curve ending
+<P>x ordinate of control point for curve ending</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-y ordinate of control point for curve ending
+<P>y ordinate of control point for curve ending</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of the end of the curve
+<P>x ordinate of the end of the curve</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of the end of the curve
+<P>y ordinate of the end of the curve</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P><code>DrawPathCurveToQuadraticBezierAbsolute()</code> draws a quadratic Bézier curve from the current point to (x,y) using (x1,y1) as the control point using absolute coordinates.  At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</P>
 <P>The format of the DrawPathCurveToQuadraticBezierAbsolute method is:</P>
 <pre>
@@ -1206,36 +1252,37 @@ y ordinate of the end of the curve
                                                 const double y)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x1:</strong><br />
-</dt>
+</li>
+<dt><strong>x1:</strong>
+
 <DD>
-x ordinate of the control point
+<P>x ordinate of the control point</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-y ordinate of the control point
+<P>y ordinate of the control point</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of final point
+<P>x ordinate of final point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of final point
+<P>y ordinate of final point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P><code>DrawPathCurveToQuadraticBezierRelative()</code> draws a quadratic Bézier curve from the current point to (x,y) using (x1,y1) as the control point using relative coordinates.  At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</P>
 <P>The format of the DrawPathCurveToQuadraticBezierRelative method is:</P>
 <pre>
@@ -1246,36 +1293,37 @@ y ordinate of final point
                                                 const double y)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x1:</strong><br />
-</dt>
+</li>
+<dt><strong>x1:</strong>
+
 <DD>
-x ordinate of the control point
+<P>x ordinate of the control point</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-y ordinate of the control point
+<P>y ordinate of the control point</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of final point
+<P>x ordinate of final point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of final point
+<P>y ordinate of final point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P><code>DrawPathCurveToQuadraticBezierSmoothAbsolute()</code> draws a quadratic Bézier curve (using absolute coordinates) from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous command relative to the current point.  (If there is no previous command or if the previous command was not a DrawPathCurveToQuadraticBezierAbsolute, DrawPathCurveToQuadraticBezierRelative, DrawPathCurveToQuadraticBezierSmoothAbsolut or DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is coincident with the current point.). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</P>
 <P>The format of the DrawPathCurveToQuadraticBezierSmoothAbsolute method is:</P>
 <pre>
@@ -1285,24 +1333,25 @@ y ordinate of final point
                                                       const double y)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of final point
+<P>x ordinate of final point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of final point
+<P>y ordinate of final point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P><code>DrawPathCurveToQuadraticBezierSmoothAbsolute()</code> draws a quadratic Bézier curve (using relative coordinates) from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous command relative to the current point.  (If there is no previous command or if the previous command was not a DrawPathCurveToQuadraticBezierAbsolute, DrawPathCurveToQuadraticBezierRelative, DrawPathCurveToQuadraticBezierSmoothAbsolut or DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is coincident with the current point.). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</P>
 <P>The format of the DrawPathCurveToQuadraticBezierSmoothRelative method is:</P>
 <pre>
@@ -1312,846 +1361,885 @@ y ordinate of final point
                                                       const double y)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of final point
+<P>x ordinate of final point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of final point
+<P>y ordinate of final point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathcurvetosmoothabsolute">DrawPathCurveToSmoothAbsolute</a></h2>
 <blockquote>DrawPathCurveToSmoothAbsolute() draws a cubic Bézier curve from the current point to ( x, y ) using absolute coordinates. The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. ( If there is no previous command or if the previous command was not an DrawPathCurveToAbsolute, DrawPathCurveToRelative, DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the first control point is coincident with the current point. ) ( x2, y2 ) is the second control point ( i.e., the control point at the end of the curve ) . At the end of the command, the new current point becomes the final ( x, y ) coordinate pair used in the polybezier. </blockquote><P>The format of the DrawPathCurveToSmoothAbsolute method is:</P>
 <blockquote>void DrawPathCurveToSmoothAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x2, const double y2, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-x ordinate of second control point
+<P>x ordinate of second control point</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-y ordinate of second control point
+<P>y ordinate of second control point</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of termination point
+<P>x ordinate of termination point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of termination point
+<P>y ordinate of termination point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathcurvetosmoothrelative">DrawPathCurveToSmoothRelative</a></h2>
 <blockquote>DrawPathCurveToSmoothRelative() draws a cubic Bézier curve from the current point to ( x, y ) using relative coordinates. The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. ( If there is no previous command or if the previous command was not an DrawPathCurveToAbsolute, DrawPathCurveToRelative, DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the first control point is coincident with the current point. ) ( x2, y2 ) is the second control point ( i.e., the control point at the end of the curve ) . At the end of the command, the new current point becomes the final ( x, y ) coordinate pair used in the polybezier. </blockquote><P>The format of the DrawPathCurveToSmoothRelative method is:</P>
 <blockquote>void DrawPathCurveToSmoothRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x2, const double y2, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-x ordinate of second control point
+<P>x ordinate of second control point</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-y ordinate of second control point
+<P>y ordinate of second control point</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of termination point
+<P>x ordinate of termination point</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of termination point
+<P>y ordinate of termination point</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathellipticarcabsolute">DrawPathEllipticArcAbsolute</a></h2>
 <blockquote>DrawPathEllipticArcAbsolute() draws an elliptical arc from the current point to ( x, y ) using absolute coordinates. The size and orientation of the ellipse are defined by two radii ( rx, ry ) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center ( cx, cy ) of the ellipse is calculated automatically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation. </blockquote><P>The format of the DrawPathEllipticArcAbsolute method is:</P>
 <blockquote>void DrawPathEllipticArcAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double rx, const double ry, const double x_axis_rotation, unsigned int large_arc_flag, unsigned int sweep_flag, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>rx:</strong><br />
-</dt>
+</li>
+<dt><strong>rx:</strong>
+
 <DD>
-x radius
+<P>x radius</P>
 </dd>
-<P></P>
-<dt><strong>ry:</strong><br />
-</dt>
+</li>
+<dt><strong>ry:</strong>
+
 <DD>
-y radius
+<P>y radius</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_axis_rotation_3a">x_axis_rotation:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_axis_rotation_3a">x_axis_rotation:</a></strong>
+
 <DD>
-indicates how the ellipse as a whole is rotated relative to the current coordinate system
+<P>indicates how the ellipse as a whole is rotated relative to the current coordinate system</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_large_arc_flag_3a">large_arc_flag:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_large_arc_flag_3a">large_arc_flag:</a></strong>
+
 <DD>
-If non-zero (true) then draw the larger of the available arcs
+<P>If non-zero (true) then draw the larger of the available arcs</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_sweep_flag_3a">sweep_flag:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_sweep_flag_3a">sweep_flag:</a></strong>
+
 <DD>
-If non-zero (true) then draw the arc matching a clock-wise rotation
+<P>If non-zero (true) then draw the arc matching a clock-wise rotation</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathellipticarcrelative">DrawPathEllipticArcRelative</a></h2>
 <blockquote>DrawPathEllipticArcRelative() draws an elliptical arc from the current point to ( x, y ) using relative coordinates. The size and orientation of the ellipse are defined by two radii ( rx, ry ) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center ( cx, cy ) of the ellipse is calculated automatically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation. </blockquote><P>The format of the DrawPathEllipticArcRelative method is:</P>
 <blockquote>void DrawPathEllipticArcRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double rx, const double ry, const double x_axis_rotation, unsigned int large_arc_flag, unsigned int sweep_flag, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>rx:</strong><br />
-</dt>
+</li>
+<dt><strong>rx:</strong>
+
 <DD>
-x radius
+<P>x radius</P>
 </dd>
-<P></P>
-<dt><strong>ry:</strong><br />
-</dt>
+</li>
+<dt><strong>ry:</strong>
+
 <DD>
-y radius
+<P>y radius</P>
 </dd>
-<P></P>
-<dt><strong>x_axis_rotation:</strong><br />
-</dt>
+</li>
+<dt><strong>x_axis_rotation:</strong>
+
 <DD>
-indicates how the ellipse as a whole is rotated relative to the current coordinate system
+<P>indicates how the ellipse as a whole is rotated relative to the current coordinate system</P>
 </dd>
-<P></P>
-<dt><strong>large_arc_flag:</strong><br />
-</dt>
+</li>
+<dt><strong>large_arc_flag:</strong>
+
 <DD>
-If non-zero (true) then draw the larger of the available arcs
+<P>If non-zero (true) then draw the larger of the available arcs</P>
 </dd>
-<P></P>
-<dt><strong>sweep_flag:</strong><br />
-</dt>
+</li>
+<dt><strong>sweep_flag:</strong>
+
 <DD>
-If non-zero (true) then draw the arc matching a clock-wise rotation
+<P>If non-zero (true) then draw the arc matching a clock-wise rotation</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathfinish">DrawPathFinish</a></h2>
 <blockquote>DrawPathFinish() terminates the current path. </blockquote><P>The format of the DrawPathFinish method is:</P>
 <blockquote>void DrawPathFinish ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetoabsolute">DrawPathLineToAbsolute</a></h2>
 <blockquote>DrawPathLineToAbsolute() draws a line path from the current point to the given coordinate using absolute coordinates. The coordinate then becomes the new current point. </blockquote><P>The format of the DrawPathLineToAbsolute method is:</P>
 <blockquote>void DrawPathLineToAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetorelative">DrawPathLineToRelative</a></h2>
 <blockquote>DrawPathLineToRelative() draws a line path from the current point to the given coordinate using relative coordinates. The coordinate then becomes the new current point. </blockquote><P>The format of the DrawPathLineToRelative method is:</P>
 <blockquote>void DrawPathLineToRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetohorizontalabsolute">DrawPathLineToHorizontalAbsolute</a></h2>
 <blockquote>DrawPathLineToHorizontalAbsolute() draws a horizontal line path from the current point to the target point using absolute coordinates. The target point then becomes the new current point. </blockquote><P>The format of the DrawPathLineToHorizontalAbsolute method is:</P>
 <blockquote>void DrawPathLineToHorizontalAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetohorizontalrelative">DrawPathLineToHorizontalRelative</a></h2>
 <blockquote>DrawPathLineToHorizontalRelative() draws a horizontal line path from the current point to the target point using relative coordinates. The target point then becomes the new current point. </blockquote><P>The format of the DrawPathLineToHorizontalRelative method is:</P>
 <blockquote>void DrawPathLineToHorizontalRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetoverticalabsolute">DrawPathLineToVerticalAbsolute</a></h2>
 <blockquote>DrawPathLineToVerticalAbsolute() draws a vertical line path from the current point to the target point using absolute coordinates. The target point then becomes the new current point. </blockquote><P>The format of the DrawPathLineToVerticalAbsolute method is:</P>
 <blockquote>void DrawPathLineToVerticalAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathlinetoverticalrelative">DrawPathLineToVerticalRelative</a></h2>
 <blockquote>DrawPathLineToVerticalRelative() draws a vertical line path from the current point to the target point using relative coordinates. The target point then becomes the new current point. </blockquote><P>The format of the DrawPathLineToVerticalRelative method is:</P>
 <blockquote>void DrawPathLineToVerticalRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathmovetoabsolute">DrawPathMoveToAbsolute</a></h2>
 <blockquote>DrawPathMoveToAbsolute() starts a new sub-path at the given coordinate using absolute coordinates. The current point then becomes the specified coordinate. </blockquote><P>The format of the DrawPathMoveToAbsolute method is:</P>
 <blockquote>void DrawPathMoveToAbsolute ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathmovetorelative">DrawPathMoveToRelative</a></h2>
 <blockquote>DrawPathMoveToRelative() starts a new sub-path at the given coordinate using relative coordinates. The current point then becomes the specified coordinate. </blockquote><P>The format of the DrawPathMoveToRelative method is:</P>
 <blockquote>void DrawPathMoveToRelative ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x ordinate
+<P>target x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y ordinate
+<P>target y ordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpathstart">DrawPathStart</a></h2>
 <blockquote>DrawPathStart() declares the start of a path drawing list which is terminated by a matching DrawPathFinish ( ) command. All other DrawPath commands must be enclosed between a DrawPathStart ( ) and a DrawPathFinish ( ) command. This is because path drawing commands are subordinate commands and they do not function by themselves. </blockquote><P>The format of the DrawPathStart method is:</P>
 <blockquote>void DrawPathStart ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpeekgraphiccontext">DrawPeekGraphicContext</a></h2>
 <blockquote>DrawPeekGraphicContext() returns a copy of the the <A HREF="types.html#DrawInfo">DrawInfo</A> structure at the head of the drawing context stack. The user is responsible for deallocating the returned object using DestroyDrawInfo. </blockquote><P>The format of the DrawPeekGraphicContext method is:</P>
 <blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *DrawPeekGraphicContext ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpoint">DrawPoint</a></h2>
 <blockquote>DrawPoint() draws a point using the current stroke color and stroke thickness at the specified coordinates. </blockquote><P>The format of the DrawPoint method is:</P>
 <blockquote>void DrawPoint ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-target x coordinate
+<P>target x coordinate</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-target y coordinate
+<P>target y coordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpolygon">DrawPolygon</a></h2>
 <blockquote>DrawPolygon() draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates. </blockquote><P>The format of the DrawPolygon method is:</P>
 <blockquote>void DrawPolygon ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>num_coords:</strong><br />
-</dt>
+</li>
+<dt><strong>num_coords:</strong>
+
 <DD>
-number of coordinates
+<P>number of coordinates</P>
 </dd>
-<P></P>
-<dt><strong>coordinates:</strong><br />
-</dt>
+</li>
+<dt><strong>coordinates:</strong>
+
 <DD>
-coordinate array
+<P>coordinate array</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpolyline">DrawPolyline</a></h2>
 <blockquote>DrawPolyline() draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates. </blockquote><P>The format of the DrawPolyline method is:</P>
 <blockquote>void DrawPolyline ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>num_coords:</strong><br />
-</dt>
+</li>
+<dt><strong>num_coords:</strong>
+
 <DD>
-number of coordinates
+<P>number of coordinates</P>
 </dd>
-<P></P>
-<dt><strong>coordinates:</strong><br />
-</dt>
+</li>
+<dt><strong>coordinates:</strong>
+
 <DD>
-coordinate array
+<P>coordinate array</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpopclippath">DrawPopClipPath</a></h2>
 <blockquote>DrawPopClipPath() terminates a clip path definition. </blockquote><P>The format of the DrawPopClipPath method is:</P>
 <blockquote>void DrawPopClipPath ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpopdefs">DrawPopDefs</a></h2>
 <blockquote>DrawPopDefs() terminates a definition list </blockquote><P>The format of the DrawPopDefs method is:</P>
 <blockquote>void DrawPopDefs ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpopgraphiccontext">DrawPopGraphicContext</a></h2>
 <blockquote>DrawPopGraphicContext() destroys the current context returning to the previously pushed context. Multiple contexts may exist. It is an error to attempt to pop more contexts than have been pushed, and it is proper form to pop all contexts which have been pushed. </blockquote><P>The format of the DrawPopGraphicContext method is:</P>
 <blockquote>void DrawPopGraphicContext ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpoppattern">DrawPopPattern</a></h2>
 <blockquote>DrawPopPattern() terminates a pattern definition. </blockquote><P>The format of the DrawPopPattern method is:</P>
 <blockquote>void DrawPopPattern ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpushclippath">DrawPushClipPath</a></h2>
 <blockquote>DrawPushClipPath() starts a clip path definition which is comprized of any number of drawing commands and terminated by a DrawPopClipPath ( ) command. </blockquote><P>The format of the DrawPushClipPath method is:</P>
 <blockquote>void DrawPushClipPath ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *clip_path_id ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_clip_path_id_3a">clip_path_id:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_clip_path_id_3a">clip_path_id:</a></strong>
+
 <DD>
-string identifier to associate with the clip path for later use.
+<P>string identifier to associate with the clip path for later use.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpushdefs">DrawPushDefs</a></h2>
 <blockquote>DrawPushDefs() indicates that commands up to a terminating DrawPopDefs ( ) command create named elements ( e.g. clip-paths, textures, etc. ) which may safely be processed earlier for the sake of efficiency. </blockquote><P>The format of the DrawPushDefs method is:</P>
 <blockquote>void DrawPushDefs ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpushgraphiccontext">DrawPushGraphicContext</a></h2>
 <blockquote>DrawPushGraphicContext() clones the current drawing context to create a new drawing context. The original drawing context ( s ) may be returned to by invoking DrawPopGraphicContext ( ) . The contexts are stored on a context stack. For every Pop there must have already been an equivalent Push. </blockquote><P>The format of the DrawPushGraphicContext method is:</P>
 <blockquote>void DrawPushGraphicContext ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpushpattern">DrawPushPattern</a></h2>
 <blockquote>DrawPushPattern() indicates that subsequent commands up to a DrawPopPattern ( ) command comprise the definition of a named pattern. The pattern space is assigned top left corner coordinates, a width and height, and becomes its own drawing space. Anything which can be drawn may be used in a pattern definition. Named patterns may be used as stroke or brush definitions. </blockquote><P>The format of the DrawPushPattern method is:</P>
 <blockquote>void DrawPushPattern ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *pattern_id, const double x, const double y, const double width, const double height ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_pattern_id_3a">pattern_id:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_pattern_id_3a">pattern_id:</a></strong>
+
 <DD>
-pattern identification for later reference
+<P>pattern identification for later reference</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-x ordinate of top left corner
+<P>x ordinate of top left corner</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-y ordinate of top left corner
+<P>y ordinate of top left corner</P>
 </dd>
-<P></P>
-<dt><strong>width:</strong><br />
-</dt>
+</li>
+<dt><strong>width:</strong>
+
 <DD>
-width of pattern space
+<P>width of pattern space</P>
 </dd>
-<P></P>
-<dt><strong>height:</strong><br />
-</dt>
+</li>
+<dt><strong>height:</strong>
+
 <DD>
-height of pattern space
+<P>height of pattern space</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawrectangle">DrawRectangle</a></h2>
 <blockquote>DrawRectangle() draws a rectangle given two coordinates and using the current stroke, stroke width, and fill settings. </blockquote><P>The format of the DrawRectangle method is:</P>
 <blockquote>void DrawRectangle ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x1, const double y1, const double x2, const double y2 ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>x1:</strong><br />
-</dt>
+<dt><strong>x1:</strong>
+
 <DD>
-x ordinate of first coordinate
+<P>x ordinate of first coordinate</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-y ordinate of first coordinate
+<P>y ordinate of first coordinate</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-x ordinate of second coordinate
+<P>x ordinate of second coordinate</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-y ordinate of second coordinate
+<P>y ordinate of second coordinate</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawrender">DrawRender</a></h2>
 <blockquote>DrawRender() renders all preceding drawing commands onto the image. </blockquote><P>The format of the DrawRender method is:</P>
 <blockquote>int DrawRender ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawrotate">DrawRotate</a></h2>
 <blockquote>DrawRotate() applies the specified rotation to the current coordinate space. </blockquote><P>The format of the DrawRotate method is:</P>
 <blockquote>void DrawRotate ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double degrees ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_degrees_3a">degrees:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_degrees_3a">degrees:</a></strong>
+
 <DD>
-degrees of rotation
+<P>degrees of rotation</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawroundrectangle">DrawRoundRectangle</a></h2>
 <blockquote>DrawRoundRectangle() draws a rounted rectangle given two coordinates, x & y corner radiuses and using the current stroke, stroke width, and fill settings. </blockquote><P>The format of the DrawRoundRectangle method is:</P>
 <blockquote>void DrawRoundRectangle ( <A HREF="types.html#DrawContext">DrawContext</A> context, double x1, double y1, double x2, double y2, double rx, double ry ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x1:</strong><br />
-</dt>
+</li>
+<dt><strong>x1:</strong>
+
 <DD>
-x ordinate of first coordinate
+<P>x ordinate of first coordinate</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-y ordinate of first coordinate
+<P>y ordinate of first coordinate</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-x ordinate of second coordinate
+<P>x ordinate of second coordinate</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-y ordinate of second coordinate
+<P>y ordinate of second coordinate</P>
 </dd>
-<P></P>
-<dt><strong>rx:</strong><br />
-</dt>
+</li>
+<dt><strong>rx:</strong>
+
 <DD>
-radius of corner in horizontal direction
+<P>radius of corner in horizontal direction</P>
 </dd>
-<P></P>
-<dt><strong>ry:</strong><br />
-</dt>
+</li>
+<dt><strong>ry:</strong>
+
 <DD>
-radius of corner in vertical direction
+<P>radius of corner in vertical direction</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawscale">DrawScale</a></h2>
 <blockquote>DrawScale() adjusts the scaling factor to apply in the horizontal and vertical directions to the current coordinate space. </blockquote><P>The format of the DrawScale method is:</P>
 <blockquote>void DrawScale ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-horizontal scale factor
+<P>horizontal scale factor</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-vertical scale factor
+<P>vertical scale factor</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawskewx">DrawSkewX</a></h2>
 <blockquote>DrawSkewX() skews the current coordinate system in the horizontal direction. </blockquote><P>The format of the DrawSkewX method is:</P>
 <blockquote>void DrawSkewX ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double degrees ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>degrees:</strong><br />
-</dt>
+</li>
+<dt><strong>degrees:</strong>
+
 <DD>
-number of degrees to skew the coordinates
+<P>number of degrees to skew the coordinates</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawskewy">DrawSkewY</a></h2>
 <blockquote>DrawSkewY() skews the current coordinate system in the vertical direction. </blockquote><P>The format of the DrawSkewY method is:</P>
 <blockquote>void DrawSkewY ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double degrees ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>degrees:</strong><br />
-</dt>
+</li>
+<dt><strong>degrees:</strong>
+
 <DD>
-number of degrees to skew the coordinates
+<P>number of degrees to skew the coordinates</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstopcolor">DrawSetStopColor</a></h2>
 <blockquote>DrawSetStopColor() sets the stop color and offset for gradients </blockquote><P>The format of the DrawSetStopColor method is:</P>
 <blockquote>void DrawSetStopColor ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#PixelPacket">PixelPacket</A> *stop_color, const double offset ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>o</strong><br />
-</dt>
+</li>
+<dt><strong>o</strong>
+
 <DD>
-stop_color:
+<P>stop_color:</P>
 </dd>
-<P></P>
-<dt><strong>o</strong><br />
-</dt>
+</li>
+<dt><strong>o</strong>
+
 <DD>
-offset:
+<P>offset:</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokecolor">DrawGetStrokeColor</a></h2>
 <blockquote>DrawGetStrokeColor() returns the color used for stroking object outlines. </blockquote><P>The format of the DrawGetStrokeColor method is:</P>
 <blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> DrawGetStrokeColor ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokecolor">DrawSetStrokeColor</a></h2>
 <blockquote>DrawSetStrokeColor() sets the color used for stroking object outlines. </blockquote><P>The format of the DrawSetStrokeColor method is:</P>
 <blockquote>void DrawSetStrokeColor ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#PixelPacket">PixelPacket</A> *stroke_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stroke_color_3a">stroke_color:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stroke_color_3a">stroke_color:</a></strong>
+
 <DD>
-stroke color
+<P>stroke color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokecolorstring">DrawSetStrokeColorString</a></h2>
 <blockquote>DrawSetStrokeColorString() sets the color used for stroking object outlines. </blockquote><P>The format of the DrawSetStrokeColorString method is:</P>
 <blockquote>void DrawSetStrokeColorString ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *stroke_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>stroke_color:</strong><br />
-</dt>
+</li>
+<dt><strong>stroke_color:</strong>
+
 <DD>
-stroke color
+<P>stroke color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokepatternurl">DrawSetStrokePatternURL</a></h2>
 <blockquote>DrawSetStrokePatternURL() sets the pattern used for stroking object outlines. </blockquote><P>The format of the DrawSetStrokePatternURL method is:</P>
 <blockquote>void DrawSetStrokePatternURL ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *stroke_url ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stroke_url_3a">stroke_url:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stroke_url_3a">stroke_url:</a></strong>
+
 <DD>
-URL specifying pattern ID (e.g.  ``#pattern_id'')
+<P>URL specifying pattern ID (e.g.  ``#pattern_id'')</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokeantialias">DrawGetStrokeAntialias</a></h2>
@@ -2161,45 +2249,48 @@ URL specifying pattern ID (e.g.  ``#pattern_id'')
 </P>
 <h2><a name="drawsetstrokeantialias">DrawSetStrokeAntialias</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetStrokeAntialias() controls whether stroked outlines are antialiased. Stroked outlines are antialiased by default. When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used. </blockquote><P>The format of the DrawSetStrokeAntialias method is:</P>
 <blockquote>void DrawSetStrokeAntialias ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned int stroke_antialias ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stroke_antialias_3a">stroke_antialias:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stroke_antialias_3a">stroke_antialias:</a></strong>
+
 <DD>
-set to false (zero) to disable antialiasing
+<P>set to false (zero) to disable antialiasing</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokedasharray">DrawGetStrokeDashArray</a></h2>
 <blockquote>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths ( see DrawSetStrokeDashArray ) . The array must be freed once it is no longer required by the user. </blockquote><P>The format of the DrawGetStrokeDashArray method is:</P>
 <blockquote>double *DrawGetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, unsigned long *num_elems ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_num_elems_3a">num_elems:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_num_elems_3a">num_elems:</a></strong>
+
 <DD>
-address to place number of elements in dash array
+<P>address to place number of elements in dash array</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokedasharray">DrawSetStrokeDashArray</a></h2>
@@ -2207,24 +2298,25 @@ address to place number of elements in dash array
 <blockquote>DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. To remove an existing dash array, pass a zero num_elems argument and null dasharray. A typical strokeDashArray_ array might contain the members 5 3 2. </blockquote><P>The format of the DrawSetStrokeDashArray method is:</P>
 <blockquote>void DrawSetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_elems, const double *dasharray ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>num_elems:</strong><br />
-</dt>
+</li>
+<dt><strong>num_elems:</strong>
+
 <DD>
-number of elements in dash array
+<P>number of elements in dash array</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_dasharray_3a">dasharray:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_dasharray_3a">dasharray:</a></strong>
+
 <DD>
-dash array values
+<P>dash array values</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokedashoffset">DrawGetStrokeDashOffset</a></h2>
@@ -2232,42 +2324,45 @@ dash array values
 <blockquote>DrawGetStrokeDashOffset() returns the offset into the dash pattern to start the dash. </blockquote><P>The format of the DrawGetStrokeDashOffset method is:</P>
 <blockquote>double DrawGetStrokeDashOffset ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokedashoffset">DrawSetStrokeDashOffset</a></h2>
 <blockquote>DrawSetStrokeDashOffset() specifies the offset into the dash pattern to start the dash. </blockquote><P>The format of the DrawSetStrokeDashOffset method is:</P>
 <blockquote>void DrawSetStrokeDashOffset ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double dash_offset ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_dash_offset_3a">dash_offset:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_dash_offset_3a">dash_offset:</a></strong>
+
 <DD>
-dash offset
+<P>dash offset</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokelinecap">DrawGetStrokeLineCap</a></h2>
 <blockquote>DrawGetStrokeLineCap() returns the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap. </blockquote><P>The format of the DrawGetStrokeLineCap method is:</P>
 <blockquote>LineCap DrawGetStrokeLineCap ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokelinecap">DrawSetStrokeLineCap</a></h2>
@@ -2275,18 +2370,19 @@ drawing context
 <blockquote>DrawSetStrokeLineCap() specifies the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap. </blockquote><P>The format of the DrawSetStrokeLineCap method is:</P>
 <blockquote>void DrawSetStrokeLineCap ( <A HREF="types.html#DrawContext">DrawContext</A> context, const LineCap linecap ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_linecap_3a">linecap:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_linecap_3a">linecap:</a></strong>
+
 <DD>
-linecap style
+<P>linecap style</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokelinejoin">DrawGetStrokeLineJoin</a></h2>
@@ -2294,12 +2390,13 @@ linecap style
 <blockquote>DrawGetStrokeLineJoin() returns the shape to be used at the corners of paths ( or other vector shapes ) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin. </blockquote><P>The format of the DrawGetStrokeLineJoin method is:</P>
 <blockquote>LineJoin DrawGetStrokeLineJoin ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokelinejoin">DrawSetStrokeLineJoin</a></h2>
@@ -2307,18 +2404,19 @@ drawing context
 <blockquote>DrawSetStrokeLineJoin() specifies the shape to be used at the corners of paths ( or other vector shapes ) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin. </blockquote><P>The format of the DrawSetStrokeLineJoin method is:</P>
 <blockquote>void DrawSetStrokeLineJoin ( <A HREF="types.html#DrawContext">DrawContext</A> context, const LineJoin linejoin ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_linejoin_3a">linejoin:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_linejoin_3a">linejoin:</a></strong>
+
 <DD>
-line join style
+<P>line join style</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokemiterlimit">DrawGetStrokeMiterLimit</a></h2>
@@ -2326,12 +2424,13 @@ line join style
 <blockquote>DrawGetStrokeMiterLimit() returns the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'. </blockquote><P>The format of the DrawGetStrokeMiterLimit method is:</P>
 <blockquote>unsigned long DrawGetStrokeMiterLimit ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokemiterlimit">DrawSetStrokeMiterLimit</a></h2>
@@ -2339,18 +2438,19 @@ drawing context
 <blockquote>DrawSetStrokeMiterLimit() specifies the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'. </blockquote><P>The format of the DrawSetStrokeMiterLimit method is:</P>
 <blockquote>void DrawSetStrokeMiterLimit ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long miterlimit ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_miterlimit_3a">miterlimit:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_miterlimit_3a">miterlimit:</a></strong>
+
 <DD>
-miter limit
+<P>miter limit</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokeopacity">DrawGetStrokeOpacity</a></h2>
@@ -2361,129 +2461,138 @@ miter limit
 </P>
 <h2><a name="drawsetstrokeopacity">DrawSetStrokeOpacity</a></h2>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <blockquote>DrawSetStrokeOpacity() specifies the opacity of stroked object outlines. </blockquote><P>The format of the DrawSetStrokeOpacity method is:</P>
 <blockquote>void DrawSetStrokeOpacity ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double stroke_opacity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stroke_opacity_3a">stroke_opacity:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stroke_opacity_3a">stroke_opacity:</a></strong>
+
 <DD>
-stroke opacity.  The value 1.0 is opaque.
+<P>stroke opacity.  The value 1.0 is opaque.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgetstrokewidth">DrawGetStrokeWidth</a></h2>
 <blockquote>DrawGetStrokeWidth() returns the width of the stroke used to draw object outlines. </blockquote><P>The format of the DrawGetStrokeWidth method is:</P>
 <blockquote>double DrawGetStrokeWidth ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetstrokewidth">DrawSetStrokeWidth</a></h2>
 <blockquote>DrawSetStrokeWidth() sets the width of the stroke used to draw object outlines. </blockquote><P>The format of the DrawSetStrokeWidth method is:</P>
 <blockquote>void DrawSetStrokeWidth ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double stroke_width ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stroke_width_3a">stroke_width:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stroke_width_3a">stroke_width:</a></strong>
+
 <DD>
-stroke width
+<P>stroke width</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgettextantialias">DrawGetTextAntialias</a></h2>
 <blockquote>DrawGetTextAntialias() returns the current text antialias setting, which determines whether text is antialiased. Text is antialiased by default. </blockquote><P>The format of the DrawGetTextAntialias method is:</P>
 <blockquote>unsigned int DrawGetTextAntialias ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsettextantialias">DrawSetTextAntialias</a></h2>
 <blockquote>DrawSetTextAntialias() controls whether text is antialiased. Text is antialiased by default. </blockquote><P>The format of the DrawSetTextAntialias method is:</P>
 <blockquote>void DrawSetTextAntialias ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned int text_antialias ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_text_antialias_3a">text_antialias:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_text_antialias_3a">text_antialias:</a></strong>
+
 <DD>
-antialias boolean.  Set to false (0) to disable antialiasing.
+<P>antialias boolean.  Set to false (0) to disable antialiasing.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgettextdecoration">DrawGetTextDecoration</a></h2>
 <blockquote>DrawGetTextDecoration() returns the decoration applied when annotating with text. </blockquote><P>The format of the DrawGetTextDecoration method is:</P>
 <blockquote><A HREF="types.html#DecorationType">DecorationType</A> DrawGetTextDecoration ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsettextdecoration">DrawSetTextDecoration</a></h2>
 <blockquote>DrawSetTextDecoration() specifies a decoration to be applied when annotating with text. </blockquote><P>The format of the DrawSetTextDecoration method is:</P>
 <blockquote>void DrawSetTextDecoration ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#DecorationType">DecorationType</A> decoration ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_decoration_3a">decoration:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_decoration_3a">decoration:</a></strong>
+
 <DD>
-text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, or LineThroughDecoration
+<P>text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, or LineThroughDecoration</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgettextencoding">DrawGetTextEncoding</a></h2>
 <blockquote>DrawGetTextEncoding() returns a null-terminated string which specifies the code set used for text annotations. The string must be freed by the user once it is no longer required. </blockquote><P>The format of the DrawGetTextEncoding method is:</P>
 <blockquote>char *DrawGetTextEncoding ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsettextencoding">DrawSetTextEncoding</a></h2>
@@ -2491,124 +2600,129 @@ drawing context
 <blockquote>DrawSetTextEncoding() specifies specifies the code set to use for text annotations. The only character encoding which may be specified at this time is "UTF-8" for representing Unicode as a sequence of bytes. Specify an empty string to set text encoding to the system's default. Successful text annotation using Unicode may require fonts designed to support Unicode. </blockquote><P>The format of the DrawSetTextEncoding method is:</P>
 <blockquote>void DrawSetTextEncoding ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *encoding ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_encoding_3a">encoding:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_encoding_3a">encoding:</a></strong>
+
 <DD>
-character string specifying text encoding
+<P>character string specifying text encoding</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawgettextundercolor">DrawGetTextUnderColor</a></h2>
 <blockquote>DrawGetTextUnderColor() returns the color of a background rectangle to place under text annotations. </blockquote><P>The format of the DrawGetTextUnderColor method is:</P>
 <blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> DrawGetTextUnderColor ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsettextundercolor">DrawSetTextUnderColor</a></h2>
 <blockquote>DrawSetTextUnderColor() specifies the color of a background rectangle to place under text annotations. </blockquote><P>The format of the DrawSetTextUnderColor method is:</P>
 <blockquote>void DrawSetTextUnderColor ( <A HREF="types.html#DrawContext">DrawContext</A> context, const <A HREF="types.html#PixelPacket">PixelPacket</A> *under_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_under_color_3a">under_color:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_under_color_3a">under_color:</a></strong>
+
 <DD>
-text under color
+<P>text under color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsettextundercolorstring">DrawSetTextUnderColorString</a></h2>
 <blockquote>DrawSetTextUnderColorString() specifies the color of a background rectangle to place under text annotations. </blockquote><P>The format of the DrawSetTextUnderColorString method is:</P>
 <blockquote>void DrawSetTextUnderColorString ( <A HREF="types.html#DrawContext">DrawContext</A> context, const char *under_color ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>under_color:</strong><br />
-</dt>
+</li>
+<dt><strong>under_color:</strong>
+
 <DD>
-text under color
+<P>text under color</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawtranslate">DrawTranslate</a></h2>
 <blockquote>DrawTranslate() applies a translation to the current coordinate system which moves the coordinate system origin to the specified coordinate. </blockquote><P>The format of the DrawTranslate method is:</P>
 <blockquote>void DrawTranslate ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x:</strong><br />
-</dt>
+</li>
+<dt><strong>x:</strong>
+
 <DD>
-new x ordinate for coordinate system origin
+<P>new x ordinate for coordinate system origin</P>
 </dd>
-<P></P>
-<dt><strong>y:</strong><br />
-</dt>
+</li>
+<dt><strong>y:</strong>
+
 <DD>
-new y ordinate for coordinate system origin
+<P>new y ordinate for coordinate system origin</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawsetviewbox">DrawSetViewbox</a></h2>
 <blockquote>DrawSetViewbox() sets the overall canvas size to be recorded with the drawing vector data. Usually this will be specified using the same size as the canvas image. When the vector data is saved to SVG or MVG formats, the viewbox is use to specify the size of the canvas image that a viewer will render the vector data on. </blockquote><P>The format of the DrawSetViewbox method is:</P>
 <blockquote>void DrawSetViewbox ( <A HREF="types.html#DrawContext">DrawContext</A> context, unsigned long x1, unsigned long y1, unsigned long x2, unsigned long y2 ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>context:</strong><br />
-</dt>
+<dt><strong>context:</strong>
+
 <DD>
-drawing context
+<P>drawing context</P>
 </dd>
-<P></P>
-<dt><strong>x1:</strong><br />
-</dt>
+</li>
+<dt><strong>x1:</strong>
+
 <DD>
-left x ordinate
+<P>left x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y1:</strong><br />
-</dt>
+</li>
+<dt><strong>y1:</strong>
+
 <DD>
-top y ordinate
+<P>top y ordinate</P>
 </dd>
-<P></P>
-<dt><strong>x2:</strong><br />
-</dt>
+</li>
+<dt><strong>x2:</strong>
+
 <DD>
-right x ordinate
+<P>right x ordinate</P>
 </dd>
-<P></P>
-<dt><strong>y2:</strong><br />
-</dt>
+</li>
+<dt><strong>y2:</strong>
+
 <DD>
-bottom y ordinate
+<P>bottom y ordinate</P>
 </dd>
 </dl>
 

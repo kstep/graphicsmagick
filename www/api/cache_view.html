@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>cache_view - Low-level access to image pixels with multiple views</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -58,66 +60,69 @@
 <P>The format of the AcquireCacheView method is:</P>
 <blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireCacheView ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong>
+
 <DD>
-Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
+<P>Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_view_3a">view:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_view_3a">view:</a></strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_2cy_2ccolumns_2crows_3a">x,y,columns,rows:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_2cy_2ccolumns_2crows_3a">x,y,columns,rows:</a></strong>
+
 <DD>
-These values define the perimeter of a region of pixels.
+<P>These values define the perimeter of a region of pixels.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="closecacheview">CloseCacheView</a></h2>
 <blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><P>The format of the CloseCacheView method is:</P>
 <blockquote>void CloseCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>view:</strong><br />
-</dt>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getcacheview">GetCacheView</a></h2>
 <blockquote>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the GetCacheView method is:</P>
 <blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>pixels:</strong><br />
-</dt>
+<dt><strong>pixels:</strong>
+
 <DD>
-Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
+<P>Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.</P>
 </dd>
-<P></P>
-<dt><strong>view:</strong><br />
-</dt>
+</li>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P>
-<dt><strong>x,y,columns,rows:</strong><br />
-</dt>
+</li>
+<dt><strong>x,y,columns,rows:</strong>
+
 <DD>
-These values define the perimeter of a region of pixels.
+<P>These values define the perimeter of a region of pixels.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getcacheviewindexes">GetCacheViewIndexes</a></h2>
@@ -125,70 +130,74 @@ These values define the perimeter of a region of pixels.
 <P>The format of the GetCacheViewIndexes method is:</P>
 <blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_indexes_3a">indexes:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_indexes_3a">indexes:</a></strong>
+
 <DD>
-Method GetCacheViewIndexes returns the indexes associated with the specified view.
+<P>Method GetCacheViewIndexes returns the indexes associated with the specified view.</P>
 </dd>
-<P></P>
-<dt><strong>view:</strong><br />
-</dt>
+</li>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getcacheviewpixels">GetCacheViewPixels</a></h2>
 <blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><P>The format of the GetCacheViewPixels method is:</P>
 <blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>view:</strong><br />
-</dt>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="opencacheview">OpenCacheView</a></h2>
 <blockquote>OpenCacheView() opens a view into the pixel cache. </blockquote><P>The format of the OpenCacheView method is:</P>
 <blockquote><A HREF="types.html#ViewInfo">ViewInfo</A> *OpenCacheView ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setcacheview">SetCacheView</a></h2>
 <blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the SetCacheView method is:</P>
 <blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *SetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>view:</strong><br />
-</dt>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
-<P></P>
-<dt><strong>x,y,columns,rows:</strong><br />
-</dt>
+</li>
+<dt><strong>x,y,columns,rows:</strong>
+
 <DD>
-These values define the perimeter of a region of pixels.
+<P>These values define the perimeter of a region of pixels.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="synccacheview">SyncCacheView</a></h2>
 <blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><P>The format of the SyncCacheView method is:</P>
 <blockquote>unsigned int SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>view:</strong><br />
-</dt>
+<dt><strong>view:</strong>
+
 <DD>
-The address of a structure of type ViewInfo.
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
 </dl>
 

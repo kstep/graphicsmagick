@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>error - Error reporting methods</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -68,72 +70,77 @@
 <blockquote>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity. </blockquote><P>The format of the CatchException method is:</P>
 <blockquote>CatchException ( const <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-The exception info.
+<P>The exception info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="copyexception">CopyException</a></h2>
 <blockquote>CopyException() copies exception data from one <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> structure to another. </blockquote><P>The format of the CopyException method is:</P>
 <blockquote>void CopyException ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *copy, const <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *original ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_copy_3a">copy:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_copy_3a">copy:</a></strong>
+
 <DD>
-The exception to copy to.
+<P>The exception to copy to.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_original_3a">original:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_original_3a">original:</a></strong>
+
 <DD>
-The exception to copy from.
+<P>The exception to copy from.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="destroyexceptioninfo">DestroyExceptionInfo</a></h2>
 <blockquote>DestroyExceptionInfo() deallocates memory associated with exception. </blockquote><P>The format of the DestroyExceptionInfo method is:</P>
 <blockquote>void DestroyExceptionInfo ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-The exception info.
+<P>The exception info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getexceptioninfo">GetExceptionInfo</a></h2>
 <blockquote>GetExceptionInfo() initializes an exception to default values. </blockquote><P>The format of the GetExceptionInfo method is:</P>
 <blockquote>GetExceptionInfo ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-The exception info.
+<P>The exception info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getlocaleexceptionmessage">GetLocaleExceptionMessage</a></h2>
 <blockquote>GetLocaleExceptionMessage() converts a enumerated exception severity and tag to a message in the current locale. </blockquote><P>The format of the GetLocaleExceptionMessage method is:</P>
 <blockquote>const char *GetLocaleExceptionMessage ( const <A HREF="types.html#ExceptionType">ExceptionType</A> severity, const char *tag ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_severity_3a">severity:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_severity_3a">severity:</a></strong>
+
 <DD>
-the severity of the exception.
+<P>the severity of the exception.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_tag_3a">tag:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_tag_3a">tag:</a></strong>
+
 <DD>
-the message tag.
+<P>the message tag.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="magickerror">MagickError</a></h2>
@@ -141,48 +148,50 @@ the message tag.
 <P>The format of the MagickError method is:</P>
 <blockquote>void MagickError ( const <A HREF="types.html#ExceptionType">ExceptionType</A> error, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-Specifies the numeric error category.
+<P>Specifies the numeric error category.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_reason_3a">reason:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_reason_3a">reason:</a></strong>
+
 <DD>
-Specifies the reason to display before terminating the program.
+<P>Specifies the reason to display before terminating the program.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_description_3a">description:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_description_3a">description:</a></strong>
+
 <DD>
-Specifies any description to the reason.
+<P>Specifies any description to the reason.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="magickfatalerror">MagickFatalError</a></h2>
 <blockquote>MagickFatalError() calls the fatal error handler methods with an error reason. </blockquote><P>The format of the MagickError method is:</P>
 <blockquote>void MagickFatalError ( const <A HREF="types.html#ExceptionType">ExceptionType</A> error, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-Specifies the numeric error category.
+<P>Specifies the numeric error category.</P>
 </dd>
-<P></P>
-<dt><strong>reason:</strong><br />
-</dt>
+</li>
+<dt><strong>reason:</strong>
+
 <DD>
-Specifies the reason to display before terminating the program.
+<P>Specifies the reason to display before terminating the program.</P>
 </dd>
-<P></P>
-<dt><strong>description:</strong><br />
-</dt>
+</li>
+<dt><strong>description:</strong>
+
 <DD>
-Specifies any description to the reason.
+<P>Specifies any description to the reason.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="magickwarning">MagickWarning</a></h2>
@@ -190,54 +199,57 @@ Specifies any description to the reason.
 <P>The format of the MagickWarning method is:</P>
 <blockquote>void MagickWarning ( const <A HREF="types.html#ExceptionType">ExceptionType</A> warning, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_warning_3a">warning:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_warning_3a">warning:</a></strong>
+
 <DD>
-The warning severity.
+<P>The warning severity.</P>
 </dd>
-<P></P>
-<dt><strong>reason:</strong><br />
-</dt>
+</li>
+<dt><strong>reason:</strong>
+
 <DD>
-Define the reason for the warning.
+<P>Define the reason for the warning.</P>
 </dd>
-<P></P>
-<dt><strong>description:</strong><br />
-</dt>
+</li>
+<dt><strong>description:</strong>
+
 <DD>
-Describe the warning.
+<P>Describe the warning.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="seterrorhandler">SetErrorHandler</a></h2>
 <blockquote>SetErrorHandler() sets the error handler to the specified method and returns the previous error handler. </blockquote><P>The format of the SetErrorHandler method is:</P>
 <blockquote><A HREF="types.html#ErrorHandler">ErrorHandler</A> SetErrorHandler ( <A HREF="types.html#ErrorHandler">ErrorHandler</A> handler ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_handler_3a">handler:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_handler_3a">handler:</a></strong>
+
 <DD>
-The method to handle errors.
+<P>The method to handle errors.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setexceptioninfo">SetExceptionInfo</a></h2>
 <blockquote>SetExceptionInfo() set the exception severity. </blockquote><P>The format of the SetExceptionInfo method is:</P>
 <blockquote>SetExceptionInfo ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception, <A HREF="types.html#ExceptionType">ExceptionType</A> severity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-The exception info.
+<P>The exception info.</P>
 </dd>
-<P></P>
-<dt><strong>severity:</strong><br />
-</dt>
+</li>
+<dt><strong>severity:</strong>
+
 <DD>
-The exception severity.
+<P>The exception severity.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setfatalerrorhandler">SetFatalErrorHandler</a></h2>
@@ -246,54 +258,57 @@ The exception severity.
     ErrorHandler SetErrorHandler(ErrorHandler handler)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>handler:</strong><br />
-</dt>
+<dt><strong>handler:</strong>
+
 <DD>
-The method to handle errors.
+<P>The method to handle errors.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setwarninghandler">SetWarningHandler</a></h2>
 <blockquote>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler. </blockquote><P>The format of the SetWarningHandler method is:</P>
 <blockquote><A HREF="types.html#ErrorHandler">ErrorHandler</A> SetWarningHandler ( <A HREF="types.html#ErrorHandler">ErrorHandler</A> handler ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>handler:</strong><br />
-</dt>
+<dt><strong>handler:</strong>
+
 <DD>
-The method to handle warnings.
+<P>The method to handle warnings.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="throwexception">ThrowException</a></h2>
 <blockquote>ThrowException() throws an exception with the specified severity code, reason, and optional description. </blockquote><P>The format of the ThrowException method is:</P>
 <blockquote>void ThrowException ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception, const <A HREF="types.html#ExceptionType">ExceptionType</A> severity, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-The exception.
+<P>The exception.</P>
 </dd>
-<P></P>
-<dt><strong>severity:</strong><br />
-</dt>
+</li>
+<dt><strong>severity:</strong>
+
 <DD>
-The severity of the exception.
+<P>The severity of the exception.</P>
 </dd>
-<P></P>
-<dt><strong>reason:</strong><br />
-</dt>
+</li>
+<dt><strong>reason:</strong>
+
 <DD>
-The reason of the exception.
+<P>The reason of the exception.</P>
 </dd>
-<P></P>
-<dt><strong>description:</strong><br />
-</dt>
+</li>
+<dt><strong>description:</strong>
+
 <DD>
-The exception description.
+<P>The exception description.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="throwloggedexception">ThrowLoggedException</a></h2>
@@ -302,46 +317,46 @@ The exception description.
  void ThrowLoggedException( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description, const char *module, const char *function, const unsigned long line;</pre>
 <P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>exception:</strong><br />
-</dt>
+<dt><strong>exception:</strong>
+
 <DD>
-The exception.
+<P>The exception.</P>
 </dd>
-<P></P>
-<dt><strong>severity:</strong><br />
-</dt>
+</li>
+<dt><strong>severity:</strong>
+
 <DD>
-The severity of the exception.
+<P>The severity of the exception.</P>
 </dd>
-<P></P>
-<dt><strong>reason:</strong><br />
-</dt>
+</li>
+<dt><strong>reason:</strong>
+
 <DD>
-The reason of the exception.
+<P>The reason of the exception.</P>
 </dd>
-<P></P>
-<dt><strong>description:</strong><br />
-</dt>
+</li>
+<dt><strong>description:</strong>
+
 <DD>
-The exception description.
+<P>The exception description.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_filename_3a">filename:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_filename_3a">filename:</a></strong>
+
 <DD>
-The source module filename.
+<P>The source module filename.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_function_3a">function:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_function_3a">function:</a></strong>
+
 <DD>
-The function name.
+<P>The function name.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_line_3a">line:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_line_3a">line:</a></strong>
+
 <DD>
-The line number of the source module.
+<P>The line number of the source module.</P>
 </dd>
 </dl>
 

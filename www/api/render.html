@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>render - Low-level methods to draw on an image</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -53,78 +55,82 @@
 <blockquote>CloneDrawInfo() makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneDrawInfo method is:</P>
 <blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="destroydrawinfo">DestroyDrawInfo</a></h2>
 <blockquote>DestroyDrawInfo() deallocates memory associated with an <A HREF="types.html#DrawInfo">DrawInfo</A> structure. </blockquote><P>The format of the DestroyDrawInfo method is:</P>
 <blockquote>void DestroyDrawInfo ( <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>draw_info:</strong><br />
-</dt>
+<dt><strong>draw_info:</strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawaffineimage">DrawAffineImage</a></h2>
 <blockquote>DrawAffineImage() composites the source over the destination image as dictated by the affine transform. </blockquote><P>The format of the DrawAffineImage method is:</P>
 <blockquote>unsigned int DrawAffineImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *composite, const <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The composite image.
+<P>The composite image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_affine_3a">affine:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_affine_3a">affine:</a></strong>
+
 <DD>
-The affine transform.
+<P>The affine transform.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawclippath">DrawClipPath</a></h2>
 <blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
 <blockquote>unsigned int DrawClipPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>draw_info:</strong><br />
-</dt>
+</li>
+<dt><strong>draw_info:</strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_name_3a">name:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_name_3a">name:</a></strong>
+
 <DD>
-The name of the clip path.
+<P>The name of the clip path.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawimage">DrawImage</a></h2>
@@ -132,46 +138,47 @@ The name of the clip path.
 <P>The format of the DrawImage method is:</P>
 <blockquote>unsigned int DrawImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>draw_info:</strong><br />
-</dt>
+</li>
+<dt><strong>draw_info:</strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="drawpatternpath">DrawPatternPath</a></h2>
 <blockquote>DrawPatternPath() draws a pattern. </blockquote><P>The format of the DrawPatternPath method is:</P>
 <blockquote>unsigned int DrawPatternPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name, <A HREF="types.html#Image">Image</A> **pattern ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>draw_info:</strong><br />
-</dt>
+</li>
+<dt><strong>draw_info:</strong>
+
 <DD>
-The draw info.
+<P>The draw info.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-The pattern name.
+<P>The pattern name.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
 </dl>
 

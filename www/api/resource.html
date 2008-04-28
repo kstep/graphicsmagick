@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>resource - Set resource consumption limits</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -50,46 +52,49 @@
 <h2><a name="acquiremagickresource">AcquireMagickResource</a></h2>
 <blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_type_3a">type:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_type_3a">type:</a></strong>
+
 <DD>
-The type of resource.
+<P>The type of resource.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_size_3a">size:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_size_3a">size:</a></strong>
+
 <DD>
-The number of bytes needed from for this resource.
+<P>The number of bytes needed from for this resource.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getmagickresource">GetMagickResource</a></h2>
 <blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>type:</strong><br />
-</dt>
+<dt><strong>type:</strong>
+
 <DD>
-The type of resource.
+<P>The type of resource.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="liberatemagickresource">LiberateMagickResource</a></h2>
 <blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>type:</strong><br />
-</dt>
+<dt><strong>type:</strong>
+
 <DD>
-The type of resource.
+<P>The type of resource.</P>
 </dd>
-<P></P>
-<dt><strong>size:</strong><br />
-</dt>
+</li>
+<dt><strong>size:</strong>
+
 <DD>
-The size of the resource.
+<P>The size of the resource.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="listmagickresourceinfo">ListMagickResourceInfo</a></h2>
@@ -97,33 +102,34 @@ The size of the resource.
 <P>The format of the ListMagickResourceInfo method is:</P>
 <blockquote>unsigned int ListMagickResourceInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
-<dt><strong><a name="item_o_file_3a">file:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_file_3a">file:</a></strong>
+
 <DD>
-An pointer to a FILE.
+<P>An pointer to a FILE.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setmagickresourcelimit">SetMagickResourceLimit</a></h2>
 <blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>type:</strong><br />
-</dt>
+<dt><strong>type:</strong>
+
 <DD>
-The type of resource.
+<P>The type of resource.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_limit_3a">limit:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_limit_3a">limit:</a></strong>
+
 <DD>
-The maximum limit for the resource.
+<P>The maximum limit for the resource.</P>
 </dd>
 </dl>
 

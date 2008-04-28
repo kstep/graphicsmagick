@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>stream - Low-level image pixel FIFO</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -44,39 +46,40 @@
 <h2><a name="readstream">ReadStream</a></h2>
 <blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types.html#Image">Image</A> *ReadStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#StreamHandler">StreamHandler</A> stream, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_stream_3a">stream:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_stream_3a">stream:</a></strong>
+
 <DD>
-a callback method.
+<P>a callback method.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="writestream">WriteStream</a></h2>
 <blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *, <A HREF="types.html#StreamHandler">StreamHandler</A> stream ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image_info:</strong><br />
-</dt>
+<dt><strong>image_info:</strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong>stream:</strong><br />
-</dt>
+</li>
+<dt><strong>stream:</strong>
+
 <DD>
-A callback method.
+<P>A callback method.</P>
 </dd>
 </dl>
 

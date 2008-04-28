@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>constitute - Read or write an image</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -63,42 +65,43 @@
 <blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, const void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_width_3a">width:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_width_3a">width:</a></strong>
+
 <DD>
-width in pixels of the image.
+<P>width in pixels of the image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_height_3a">height:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_height_3a">height:</a></strong>
+
 <DD>
-height in pixels of the image.
+<P>height in pixels of the image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_map_3a">map:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_map_3a">map:</a></strong>
+
 <DD>
-This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha (same as Transparency), O = Opacity, T = Transparency, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for grayscale). Specify ``P'' = pad, to skip over a quantum which is intentionally ignored.  Creation of an alpha channel for CMYK images is currently not supported.
+<P>This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha (same as Transparency), O = Opacity, T = Transparency, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for grayscale). Specify ``P'' = pad, to skip over a quantum which is intentionally ignored.  Creation of an alpha channel for CMYK images is currently not supported.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_type_3a">type:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_type_3a">type:</a></strong>
+
 <DD>
-Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
+<P>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong>
+
 <DD>
-This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.
+<P>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="destroyconstitute">DestroyConstitute</a></h2>
@@ -112,162 +115,168 @@ Return any errors or warnings in this structure.
 <blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
 <blockquote>unsigned int DispatchImage ( const <A HREF="types.html#Image">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_x_offset_2c_y_offset_2c_columns_2c_rows_3a">x_offset, y_offset, columns, rows:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_x_offset_2c_y_offset_2c_columns_2c_rows_3a">x_offset, y_offset, columns, rows:</a></strong>
+
 <DD>
-These values define the perimeter of a region of pixels you want to extract.
+<P>These values define the perimeter of a region of pixels you want to extract.</P>
 </dd>
-<P></P>
-<dt><strong>map:</strong><br />
-</dt>
+</li>
+<dt><strong>map:</strong>
+
 <DD>
-This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha (same as Transparency), O = Opacity, T = Transparency, C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale). Specify ``P'' = pad, to output a pad quantum.  Pad quantums are zero-value.
+<P>This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha (same as Transparency), O = Opacity, T = Transparency, C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale). Specify ``P'' = pad, to output a pad quantum.  Pad quantums are zero-value.</P>
 </dd>
-<P></P>
-<dt><strong>type:</strong><br />
-</dt>
+</li>
+<dt><strong>type:</strong>
+
 <DD>
-Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
+<P>Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.</P>
 </dd>
-<P></P>
-<dt><strong>pixels:</strong><br />
-</dt>
+</li>
+<dt><strong>pixels:</strong>
+
 <DD>
-This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.
+<P>This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="pingimage">PingImage</a></h2>
 <blockquote>PingImage() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *PingImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong>
+
 <DD>
-Ping the image defined by the file or filename members of this structure.
+<P>Ping the image defined by the file or filename members of this structure.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="popimagepixels">PopImagePixels</a></h2>
 <blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
 <blockquote>unsigned int PopImagePixels ( const <A HREF="types.html#Image">Image</A> *, const <A HREF="types.html#QuantumType">QuantumType</A> quantum, unsigned char *destination ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_status_3a">status:</a></strong>
+
 <DD>
-Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.
+<P>Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong>
+
 <DD>
-Declare which pixel components to transfer (RGB, RGBA, etc).
+<P>Declare which pixel components to transfer (RGB, RGBA, etc).</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_destination_3a">destination:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_destination_3a">destination:</a></strong>
+
 <DD>
-The components are transferred to this buffer.
+<P>The components are transferred to this buffer.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="pushimagepixels">PushImagePixels</a></h2>
 <blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
 <blockquote>unsigned int PushImagePixels ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned char *source ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>status:</strong><br />
-</dt>
+<dt><strong>status:</strong>
+
 <DD>
-Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
+<P>Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_quantum_type_3a">quantum_type:</a></strong>
+
 <DD>
-Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).
+<P>Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_source_3a">source:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_source_3a">source:</a></strong>
+
 <DD>
-The pixel components are transferred from this buffer.
+<P>The pixel components are transferred from this buffer.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="readimage">ReadImage</a></h2>
 <blockquote>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ReadImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image_info:</strong><br />
-</dt>
+<dt><strong>image_info:</strong>
+
 <DD>
-Read the image defined by the file or filename members of this structure.
+<P>Read the image defined by the file or filename members of this structure.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="readinlineimage">ReadInlineImage</a></h2>
 <blockquote>ReadInlineImage() reads a Base64-encoded inline image or image sequence. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadInlineImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *ReadInlineImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *content, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image_info:</strong><br />
-</dt>
+<dt><strong>image_info:</strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_content_3a">content:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_content_3a">content:</a></strong>
+
 <DD>
-The image encoded in Base64.
+<P>The image encoded in Base64.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="writeimage">WriteImage</a></h2>
@@ -275,46 +284,47 @@ Return any errors or warnings in this structure.
 <P>The format of the WriteImage method is:</P>
 <blockquote>unsigned int WriteImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image_info:</strong><br />
-</dt>
+<dt><strong>image_info:</strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong>image:</strong><br />
-</dt>
+</li>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="writeimages">WriteImages</a></h2>
 <blockquote>WriteImages() writes an image sequence. </blockquote><P>The format of the WriteImages method is:</P>
 <blockquote>unsigned int WriteImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image, const char *filename, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image_info:</strong><br />
-</dt>
+<dt><strong>image_info:</strong>
+
 <DD>
-The image info.
+<P>The image info.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_images_3a">images:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_images_3a">images:</a></strong>
+
 <DD>
-The image list.
+<P>The image list.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_filename_3a">filename:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_filename_3a">filename:</a></strong>
+
 <DD>
-The image filename.
+<P>The image filename.</P>
 </dd>
-<P></P>
-<dt><strong>exception:</strong><br />
-</dt>
+</li>
+<dt><strong>exception:</strong>
+
 <DD>
-Return any errors or warnings in this structure.
+<P>Return any errors or warnings in this structure.</P>
 </dd>
 </dl>
 

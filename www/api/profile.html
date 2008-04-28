@@ -1,7 +1,9 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>profile - Manipulate embedded profiles</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
@@ -50,18 +52,19 @@
 <P>The format of the DeleteImageProfile method is:</P>
 <blockquote>unsigned int DeleteImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
-</dt>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_name_3a">name:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_name_3a">name:</a></strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic profile name.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic profile name.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="getimageprofile">GetImageProfile</a></h2>
@@ -69,24 +72,25 @@ Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic pr
 <P>The format of the GetImageProfile method is:</P>
 <blockquote>const unsigned char *GetImageProfile ( const <A HREF="types.html#Image">Image</A> *image, const char *name, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an existing generic profile name.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an existing generic profile name.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_length_3a">length:</a></strong>
+
 <DD>
-Updated with profile length if profile is present.
+<P>Updated with profile length if profile is present.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="profileimage">ProfileImage</a></h2>
@@ -96,36 +100,37 @@ Updated with profile length if profile is present.
 <P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Name of profile to add or remove: ICM, IPTC, or generic profile.
+<P>Name of profile to add or remove: ICM, IPTC, or generic profile.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_profile_3a">profile:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_profile_3a">profile:</a></strong>
+
 <DD>
-The profile.
+<P>The profile.</P>
 </dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
+</li>
+<dt><strong>length:</strong>
+
 <DD>
-The length of the profile.
+<P>The length of the profile.</P>
 </dd>
-<P></P>
-<dt><strong><a name="item_o_clone_3a">clone:</a></strong><br />
-</dt>
+</li>
+<dt><strong><a name="item_o_clone_3a">clone:</a></strong>
+
 <DD>
-If set True, then copy the profile rather than taking ownership of it.
+<P>If set True, then copy the profile rather than taking ownership of it.</P>
 </dd>
-<P></P></dl>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="setimageprofile">SetImageProfile</a></h2>
@@ -133,28 +138,28 @@ If set True, then copy the profile rather than taking ownership of it.
 <P>The format of the SetImageProfile method is:</P>
 <blockquote>unsigned int SetImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong>image:</strong><br />
-</dt>
+<dt><strong>image:</strong>
+
 <DD>
-The image.
+<P>The image.</P>
 </dd>
-<P></P>
-<dt><strong>name:</strong><br />
-</dt>
+</li>
+<dt><strong>name:</strong>
+
 <DD>
-Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an generic profile name.
+<P>Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an generic profile name.</P>
 </dd>
-<P></P>
-<dt><strong>profile:</strong><br />
-</dt>
+</li>
+<dt><strong>profile:</strong>
+
 <DD>
-Address of profile to add.  Pass zero to remove an existing profile.
+<P>Address of profile to add.  Pass zero to remove an existing profile.</P>
 </dd>
-<P></P>
-<dt><strong>length:</strong><br />
-</dt>
+</li>
+<dt><strong>length:</strong>
+
 <DD>
-The length of the profile.
+<P>The length of the profile.</P>
 </dd>
 </dl>
 
