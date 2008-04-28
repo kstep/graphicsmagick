@@ -1,3 +1,7 @@
+2008-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* BENCHMARKS.txt: Added timings for -blur.
+
 2008-04-27  Darko Kojic  <dkc@sf.net>
 
 	* magick/effect.c (MedianFilterImage): Fixes to compile on ARM

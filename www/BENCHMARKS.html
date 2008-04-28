@@ -265,9 +265,10 @@ A.leftcolnav:VISITED  {
 </ul>
 </li>
 <li><a class="reference" href="#image-processing-results" id="id15" name="id15">Image Processing Results</a><ul>
-<li><a class="reference" href="#rotate-90" id="id16" name="id16">-rotate 90</a></li>
-<li><a class="reference" href="#resize-50" id="id17" name="id17">-resize 50%</a></li>
-<li><a class="reference" href="#gamma-1-2" id="id18" name="id18">-gamma 1.2</a></li>
+<li><a class="reference" href="#blur-0-0x1-0-up-to-162-faster" id="id16" name="id16">-blur 0.0x1.0 (up to 162% faster)</a></li>
+<li><a class="reference" href="#gamma-1-2-up-to-219-faster" id="id17" name="id17">-gamma 1.2 (up to 219% faster)</a></li>
+<li><a class="reference" href="#resize-50-only-34-faster" id="id18" name="id18">-resize 50% (only 34% faster)</a></li>
+<li><a class="reference" href="#rotate-90-up-to-134-faster" id="id19" name="id19">-rotate 90 (up to 134% faster)</a></li>
 </ul>
 </li>
 </ul>
@@ -1311,7 +1312,293 @@ processing step added in. The pupose of these tests is to show that the
 performance advantages of GraphicsMagick carry over to simple image
 processing tasks as well.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id16" id="rotate-90" name="rotate-90">-rotate 90</a></h2>
+<h2><a class="toc-backref" href="#id16" id="blur-0-0x1-0-up-to-162-faster" name="blur-0-0x1-0-up-to-162-faster">-blur 0.0x1.0 (up to 162% faster)</a></h2>
+<p>This test is the same as a TIFF to TIFF conversion except that
+'-blur 0.0x1.0' is included. GraphicsMagick seems to be 2X faster than
+ImageMagick for -blur.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="11%" />
+<col width="12%" />
+<col width="11%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head" rowspan="2">Name</th>
+<th class="head" colspan="2">GraphicsMagick</th>
+<th class="head" colspan="2">ImageMagick</th>
+</tr>
+<tr><th class="head">User</th>
+<th class="head">System</th>
+<th class="head">User</th>
+<th class="head">System</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>golfer-600-bilevel-truecolor.tiff</td>
+<td>19.22s</td>
+<td>1.25s</td>
+<td>49.89s</td>
+<td>3.46s</td>
+</tr>
+<tr><td>golfer-600-bilevel.tiff</td>
+<td>19.25s</td>
+<td>0.98s</td>
+<td>36.89s</td>
+<td>1.32s</td>
+</tr>
+<tr><td>golfer-600-gray-truecolor.tiff</td>
+<td>19.29s</td>
+<td>1.18s</td>
+<td>50.13s</td>
+<td>3.41s</td>
+</tr>
+<tr><td>golfer-600-gray.tiff</td>
+<td>19.24s</td>
+<td>0.92s</td>
+<td>37.31s</td>
+<td>3.12s</td>
+</tr>
+<tr><td>golfer-600-gray16.tiff</td>
+<td>19.09s</td>
+<td>1.12s</td>
+<td>37.10s</td>
+<td>3.29s</td>
+</tr>
+<tr><td>golfer-600-palette16.tiff</td>
+<td>19.15s</td>
+<td>1.17s</td>
+<td>37.38s</td>
+<td>2.11s</td>
+</tr>
+<tr><td>golfer-600-pallet2.tiff</td>
+<td>19.31s</td>
+<td>0.92s</td>
+<td>37.04s</td>
+<td>1.46s</td>
+</tr>
+<tr><td>tiger-600-palette256.tiff</td>
+<td>14.61s</td>
+<td>1.13s</td>
+<td>28.63s</td>
+<td>2.88s</td>
+</tr>
+<tr><td>tiger-600-rgb.tiff</td>
+<td>14.36s</td>
+<td>0.96s</td>
+<td>28.17s</td>
+<td>2.91s</td>
+</tr>
+<tr><td>tiger-600-rgb16.tiff</td>
+<td>14.32s</td>
+<td>1.42s</td>
+<td>28.30s</td>
+<td>3.03s</td>
+</tr>
+<tr><td>tiger-600-rgba.tiff</td>
+<td>14.60s</td>
+<td>0.98s</td>
+<td>28.41s</td>
+<td>3.00s</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id17" id="gamma-1-2-up-to-219-faster" name="gamma-1-2-up-to-219-faster">-gamma 1.2 (up to 219% faster)</a></h2>
+<p>This test is the same as a TIFF to TIFF conversion except that
+'-gamma 1.2' is included. Clearly GraphicsMagick is much faster at this
+task.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="11%" />
+<col width="12%" />
+<col width="11%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head" rowspan="2">Name</th>
+<th class="head" colspan="2">GraphicsMagick</th>
+<th class="head" colspan="2">ImageMagick</th>
+</tr>
+<tr><th class="head">User</th>
+<th class="head">System</th>
+<th class="head">User</th>
+<th class="head">System</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>golfer-600-bilevel-truecolor.tiff</td>
+<td>1.03s</td>
+<td>0.57s</td>
+<td>1.77s</td>
+<td>2.81s</td>
+</tr>
+<tr><td>golfer-600-bilevel.tiff</td>
+<td>0.99s</td>
+<td>0.52s</td>
+<td>1.48s</td>
+<td>0.71s</td>
+</tr>
+<tr><td>golfer-600-gray-truecolor.tiff</td>
+<td>1.08s</td>
+<td>0.63s</td>
+<td>2.54s</td>
+<td>2.92s</td>
+</tr>
+<tr><td>golfer-600-gray.tiff</td>
+<td>0.88s</td>
+<td>0.63s</td>
+<td>2.41s</td>
+<td>2.89s</td>
+</tr>
+<tr><td>golfer-600-gray16.tiff</td>
+<td>0.97s</td>
+<td>0.61s</td>
+<td>2.41s</td>
+<td>2.79s</td>
+</tr>
+<tr><td>golfer-600-palette16.tiff</td>
+<td>0.97s</td>
+<td>0.56s</td>
+<td>2.59s</td>
+<td>1.41s</td>
+</tr>
+<tr><td>golfer-600-pallet2.tiff</td>
+<td>1.02s</td>
+<td>0.48s</td>
+<td>1.62s</td>
+<td>0.78s</td>
+</tr>
+<tr><td>tiger-600-palette256.tiff</td>
+<td>0.72s</td>
+<td>0.59s</td>
+<td>1.84s</td>
+<td>2.43s</td>
+</tr>
+<tr><td>tiger-600-rgb.tiff</td>
+<td>0.80s</td>
+<td>0.66s</td>
+<td>1.83s</td>
+<td>2.56s</td>
+</tr>
+<tr><td>tiger-600-rgb16.tiff</td>
+<td>0.75s</td>
+<td>1.07s</td>
+<td>1.75s</td>
+<td>2.85s</td>
+</tr>
+<tr><td>tiger-600-rgba.tiff</td>
+<td>1.13s</td>
+<td>0.66s</td>
+<td>1.90s</td>
+<td>2.71s</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id18" id="resize-50-only-34-faster" name="resize-50-only-34-faster">-resize 50% (only 34% faster)</a></h2>
+<p>This test is the same as a TIFF to TIFF conversion except that '-resize
+50%' is included so that there is some more serious image procesing. We
+have done nothing at all to try to improve image resize performance
+(considerable speed-up is possible). Image resize currently has severe
+performance problems (compared to what is possible) due to the way the
+algorithm accesses memory. Regardless, GraphicsMagick is still somewhat
+faster.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="11%" />
+<col width="12%" />
+<col width="11%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head" rowspan="2">Name</th>
+<th class="head" colspan="2">GraphicsMagick</th>
+<th class="head" colspan="2">ImageMagick</th>
+</tr>
+<tr><th class="head">User</th>
+<th class="head">System</th>
+<th class="head">User</th>
+<th class="head">System</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>golfer-600-bilevel-truecolor.tiff</td>
+<td>9.38s</td>
+<td>0.95s</td>
+<td>10.78s</td>
+<td>3.15s</td>
+</tr>
+<tr><td>golfer-600-bilevel.tiff</td>
+<td>7.38s</td>
+<td>1.02s</td>
+<td>10.55s</td>
+<td>0.96s</td>
+</tr>
+<tr><td>golfer-600-gray-truecolor.tiff</td>
+<td>9.46s</td>
+<td>0.86s</td>
+<td>10.84s</td>
+<td>3.04s</td>
+</tr>
+<tr><td>golfer-600-gray.tiff</td>
+<td>9.40s</td>
+<td>0.84s</td>
+<td>10.61s</td>
+<td>3.06s</td>
+</tr>
+<tr><td>golfer-600-gray16.tiff</td>
+<td>9.55s</td>
+<td>0.83s</td>
+<td>10.73s</td>
+<td>2.94s</td>
+</tr>
+<tr><td>golfer-600-palette16.tiff</td>
+<td>7.40s</td>
+<td>0.93s</td>
+<td>8.79s</td>
+<td>2.08s</td>
+</tr>
+<tr><td>golfer-600-pallet2.tiff</td>
+<td>7.60s</td>
+<td>0.82s</td>
+<td>8.48s</td>
+<td>1.57s</td>
+</tr>
+<tr><td>tiger-600-palette256.tiff</td>
+<td>5.53s</td>
+<td>0.90s</td>
+<td>6.91s</td>
+<td>2.88s</td>
+</tr>
+<tr><td>tiger-600-rgb.tiff</td>
+<td>7.21s</td>
+<td>0.71s</td>
+<td>8.28s</td>
+<td>2.51s</td>
+</tr>
+<tr><td>tiger-600-rgb16.tiff</td>
+<td>7.14s</td>
+<td>1.03s</td>
+<td>8.41s</td>
+<td>2.67s</td>
+</tr>
+<tr><td>tiger-600-rgba.tiff</td>
+<td>6.29s</td>
+<td>0.79s</td>
+<td>7.63s</td>
+<td>2.46s</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id19" id="rotate-90-up-to-134-faster" name="rotate-90-up-to-134-faster">-rotate 90 (up to 134% faster)</a></h2>
 <p>This test is the same as a TIFF to TIFF conversion except that
 '-rotate 90' is included so that there is some simple image processing.
 Rotating by 90 degrees is a common requirement. For this system,
@@ -1404,196 +1691,6 @@ GraphicsMagick is typically 2X faster for this task.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id17" id="resize-50" name="resize-50">-resize 50%</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that
-'-resize 50%' is included so that there is some more serious image
-procesing. We have done nothing at all to try to improve image resize
-performance (considerable speed-up is possible). Regardless,
-GraphicsMagick is still faster.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>9.38s</td>
-<td>0.95s</td>
-<td>10.78s</td>
-<td>3.15s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>7.38s</td>
-<td>1.02s</td>
-<td>10.55s</td>
-<td>0.96s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>9.46s</td>
-<td>0.86s</td>
-<td>10.84s</td>
-<td>3.04s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>9.40s</td>
-<td>0.84s</td>
-<td>10.61s</td>
-<td>3.06s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>9.55s</td>
-<td>0.83s</td>
-<td>10.73s</td>
-<td>2.94s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>7.40s</td>
-<td>0.93s</td>
-<td>8.79s</td>
-<td>2.08s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>7.60s</td>
-<td>0.82s</td>
-<td>8.48s</td>
-<td>1.57s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>5.53s</td>
-<td>0.90s</td>
-<td>6.91s</td>
-<td>2.88s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>7.21s</td>
-<td>0.71s</td>
-<td>8.28s</td>
-<td>2.51s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>7.14s</td>
-<td>1.03s</td>
-<td>8.41s</td>
-<td>2.67s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>6.29s</td>
-<td>0.79s</td>
-<td>7.63s</td>
-<td>2.46s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id18" id="gamma-1-2" name="gamma-1-2">-gamma 1.2</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that
-'-gamma 1.2' is included. Clearly GraphicsMagick is much faster at this
-task.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.03s</td>
-<td>0.57s</td>
-<td>1.77s</td>
-<td>2.81s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.99s</td>
-<td>0.52s</td>
-<td>1.48s</td>
-<td>0.71s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.08s</td>
-<td>0.63s</td>
-<td>2.54s</td>
-<td>2.92s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.88s</td>
-<td>0.63s</td>
-<td>2.41s</td>
-<td>2.89s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.97s</td>
-<td>0.61s</td>
-<td>2.41s</td>
-<td>2.79s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.97s</td>
-<td>0.56s</td>
-<td>2.59s</td>
-<td>1.41s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>1.02s</td>
-<td>0.48s</td>
-<td>1.62s</td>
-<td>0.78s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.72s</td>
-<td>0.59s</td>
-<td>1.84s</td>
-<td>2.43s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.80s</td>
-<td>0.66s</td>
-<td>1.83s</td>
-<td>2.56s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.75s</td>
-<td>1.07s</td>
-<td>1.75s</td>
-<td>2.85s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>1.13s</td>
-<td>0.66s</td>
-<td>1.90s</td>
-<td>2.71s</td>
-</tr>
-</tbody>
-</table>
 <hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2008 GraphicsMagick Group</div>
@@ -1606,7 +1703,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-04-25 00:59 UTC.
+Generated on: 2008-04-28 02:03 UTC.
 
 </div>
 </body>
