@@ -1,6 +1,7 @@
 2008-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2 released.
+	CVS head is now 1.3 development.
 	* png: Updated libpng to 1.2.27.
 
 2008-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

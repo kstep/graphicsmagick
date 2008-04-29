@@ -35,11 +35,11 @@ extern "C" {
 */
 #define MagickPackageName "GraphicsMagick"
 #define MagickCopyright  "Copyright (C) 2002-2008 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
-#define MagickLibVersion  0x020000
-#define MagickLibVersionText  "1.2"
-#define MagickLibVersionNumber 2,0,0
+#define MagickLibVersion  0x030000
+#define MagickLibVersionText  "1.3"
+#define MagickLibVersionNumber 3,0,0
 #define MagickChangeDate   "20080429"
-#define MagickReleaseDate  "2008-04-29"
+#define MagickReleaseDate  "unreleased"
 
 
 #if (QuantumDepth == 8)
