@@ -4812,7 +4812,7 @@ static inline unsigned int IsFrame(const char *point)
 }
 
 MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
-  const unsigned int rectify,ExceptionInfo *exception)
+  const MagickBool rectify,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
@@ -4972,11 +4972,23 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           /*
             SGI and RGB are ambiguous;  TMP must be set explicitly.
             Don't allow X11 to be accessed via file extension.
+            Block activation of "virtual" delegates.
           */
           if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
                (LocaleCompare(magic,"RGB") != 0)) &&
+              (LocaleCompare(magic,"AUTOTRACE") != 0) &&
+              (LocaleCompare(magic,"BROWSE") != 0) &&
+              (LocaleCompare(magic,"DCRAW") != 0) &&
+              (LocaleCompare(magic,"EDIT") != 0) &&
+              (LocaleCompare(magic,"GS-COLOR") != 0) &&
+              (LocaleCompare(magic,"GS-COLOR+ALPHA") != 0) &&
+              (LocaleCompare(magic,"GS-GRAY") != 0) &&
+              (LocaleCompare(magic,"GS-MONO") != 0) &&
               (LocaleCompare(magic,"LAUNCH") != 0) &&
+              (LocaleCompare(magic,"MPEG-ENCODE") != 0) &&
               (LocaleCompare(magic,"PRINT") != 0) &&
+              (LocaleCompare(magic,"SCAN") != 0) &&
+              (LocaleCompare(magic,"SHOW") != 0) &&
               (LocaleCompare(magic,"TMP") != 0) &&
               (LocaleCompare(magic,"WIN") != 0) &&
               (LocaleCompare(magic,"XC") != 0) &&

@@ -1067,7 +1067,7 @@ extern MagickExport MagickPassFail
   SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
-  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
   SyncImage(Image *),
