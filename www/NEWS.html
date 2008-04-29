@@ -246,19 +246,19 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on April 23, 2007</p>
+<p>This file was last updated on April 29, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#april-23-2008-beta1" id="id1" name="id1">1.2 (April 23, 2008 Beta1)</a></li>
+<li><a class="reference" href="#april-29-2008" id="id1" name="id1">1.2 (April 29, 2008)</a></li>
 <li><a class="reference" href="#released-april-4-2004" id="id2" name="id2">1.1 (Released April 4, 2004)</a></li>
 <li><a class="reference" href="#released-in-may-2003" id="id3" name="id3">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="april-23-2008-beta1" name="april-23-2008-beta1">1.2 (April 23, 2008 Beta1)</a></h1>
+<h1><a class="toc-backref" href="#id1" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -281,6 +281,12 @@ ChangeLog file for full details.</p>
 with the more security conscious strlcat and strlcpy.</li>
 <li>DCM, DIB, XCF, XBM, and XWD security fix for integer overflow
 vulnerability (IDefense 09.19.07).</li>
+<li>Do not access X11 or invoke convenience or stealth delegate programs
+based on the file extension. In particular, these file extensions are
+rejected for consideration as a format specifier: 'autotrace',
+'browse', 'dcraw', 'edit', 'gs-color', 'gs-color+alpha', 'gs-gray',
+'gs-mono', 'launch', 'mpeg-encode', 'print', 'scan', 'show', 'win',
+'xc', and 'x'.</li>
 </ul>
 </blockquote>
 <p>Bug fixes:</p>
@@ -488,7 +494,7 @@ performance.</li>
 <li>Updated Jasper library to version 1.900.1.</li>
 <li>Updated jbigkit to 1.6</li>
 <li>Updated lcms to 1.17</li>
-<li>Updated libpng to 1.2.26.</li>
+<li>Updated libpng to 1.2.27.</li>
 <li>Updated libtiff to 3.8.2</li>
 <li>Updated zlib to 1.2.3.</li>
 <li>Libtiff supports LZW compression.</li>
@@ -904,7 +910,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-04-23 22:46 UTC.
+Generated on: 2008-04-29 17:12 UTC.
 
 </div>
 </body>

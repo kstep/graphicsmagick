@@ -353,9 +353,10 @@ variables by specifying them on the configure command line, e.g.:</p>
 <p>Options which should be common to packages installed under the same
 directory heirarchy may be supplied via a 'config.site' file located
 under the installation prefix via the path ${prefix}/share/config.site
-where ${prefix} is the installation prefix.  This file is used for all
-packages installed under that prefix.  This is an example config.site
-file:</p>
+where ${prefix} is the installation prefix. This file is used for all
+packages installed under that prefix. As an alternative, the CONFIG_SITE
+environment variable may be used to specify the path of a site
+configuration file to load. This is an example config.site file:</p>
 <pre class="literal-block">
 # Configuration values for all packages installed under this prefix
 CC=gcc
@@ -450,9 +451,25 @@ follows (execute 'configure --help' to see all options).</p>
 <kbd><span class="option">--with-quantum-depth</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td>number of bits in a pixel quantum (default 8)</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--enable-ltdl-install</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>install libltdl</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--with-included-ltdl</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>use the GNU ltdl sources included here</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--with-ltdl-include=<var>DIR</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>use the ltdl headers installed in DIR</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--with-ltdl-lib=<var>DIR</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>use the libltdl.la installed in DIR</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--with-modules</span></kbd></td>
-<td>enable support for dynamically loadable modules</td></tr>
+<td>enable building dynamically loadable modules</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--with-cache</span></kbd></td>
 <td>set pixel cache threshhold (defaults to available memory)</td></tr>
@@ -567,6 +584,20 @@ disable a package is if a package exists but it is unsuitable for
 the build (perhaps an old version or not compiled with the right
 compilation flags).</p>
 <p>Several configure options require special note:</p>
+<p>--with-included-ltdl, --enable-ltdl-install:</p>
+<blockquote>
+GraphicsMagick supports loadable coder and filter modules if
+--enable-shared (see below) is specified in order to enable building
+shared libraries. This is true even if --with-modules (see below) has
+not been specified. The libldtl library is used to support this
+feature. A copy of libltdl is included with GraphicsMagick. By default,
+if a suitable libltdl is already installed on the system, it will be
+used. If there is no suitable libltdl installed, then it may be
+necessary to specify --with-included-ltdl to use libltdl as provided
+with GraphicsMagick. The --enable-ltdl-install option enables building
+libltdl locally and also formally installing it at time of 'make
+install'. If your already installed libltdl is supported via a package
+management system then you probably don't want to use this option.</blockquote>
 <p>--enable-shared:</p>
 <blockquote>
 <p>The shared libraries are built and support for loading coder and
@@ -1029,7 +1060,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-04-03 03:12 UTC.
+Generated on: 2008-04-29 16:07 UTC.
 
 </div>
 </body>

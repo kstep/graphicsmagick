@@ -102,9 +102,10 @@ variables by specifying them on the configure command line, e.g.::
 Options which should be common to packages installed under the same
 directory heirarchy may be supplied via a 'config.site' file located
 under the installation prefix via the path ${prefix}/share/config.site
-where ${prefix} is the installation prefix.  This file is used for all
-packages installed under that prefix.  This is an example config.site
-file::
+where ${prefix} is the installation prefix. This file is used for all
+packages installed under that prefix. As an alternative, the CONFIG_SITE
+environment variable may be used to specify the path of a site
+configuration file to load. This is an example config.site file::
 
   # Configuration values for all packages installed under this prefix
   CC=gcc
@@ -186,97 +187,109 @@ Optional Features:
 
 Optional Packages/Options:
   --with-quantum-depth
-   number of bits in a pixel quantum (default 8)
+    number of bits in a pixel quantum (default 8)
+
+  --enable-ltdl-install
+    install libltdl
+
+  --with-included-ltdl
+    use the GNU ltdl sources included here
+
+  --with-ltdl-include=DIR
+    use the ltdl headers installed in DIR
+
+  --with-ltdl-lib=DIR
+    use the libltdl.la installed in DIR
 
   --with-modules
-   enable support for dynamically loadable modules
+    enable building dynamically loadable modules
 
   --with-cache
-   set pixel cache threshhold (defaults to available memory)
+    set pixel cache threshhold (defaults to available memory)
 
   --without-threads
-   disable threads support
+    disable threads support
 
   --with-frozenpaths
-   enable frozen delegate paths
+    enable frozen delegate paths
 
   --without-magick-plus-plus
-   disable build/install of Magick++
+    disable build/install of Magick++
 
   --without-perl
-   disable build/install of PerlMagick
+    disable build/install of PerlMagick
 
   --with-perl=PERL
-   use specified Perl binary to configure PerlMagick
+    use specified Perl binary to configure PerlMagick
 
   --with-perl-options=OPTIONS
-   options to pass on command-line when generating PerlMagick's Makefile from Makefile.PL
+    options to pass on command-line when generating PerlMagick's Makefile from Makefile.PL
 
   --without-bzlib
-   disable BZLIB support
+    disable BZLIB support
 
   --without-dps
-   disable Display Postscript support
+    disable Display Postscript support
 
   --with-fpx
-   enable FlashPIX support
+    enable FlashPIX support
 
   --with-gslib
-   enable Ghostscript library support (not recommended)
+    enable Ghostscript library support (not recommended)
 
   --without-jbig
-   disable JBIG support
+    disable JBIG support
 
   --without-jpeg
-   disable JPEG support
+    disable JPEG support
 
   --without-jp2
-   disable JPEG v2 support
+    disable JPEG v2 support
 
   --without-lcms
-   disable LCMS support
+    disable LCMS support
 
   --without-png
-   disable PNG support
+    disable PNG support
 
   --without-tiff
-   disable TIFF support
+    disable TIFF support
 
   --without-trio
-   disable TRIO library support
+    disable TRIO library support
 
   --without-ttf
-   disable TrueType support
+    disable TrueType support
 
   --with-umem
-   enable umem memory allocation library support
+    enable umem memory allocation library support
 
   --without-wmf
-   disable WMF support
+    disable WMF support
 
   --with-fontpath
-   prepend to default font search path
+    prepend to default font search path
 
   --with-gs-font-dir
-   directory containing Ghostscript fonts
+    directory containing Ghostscript fonts
 
   --with-windows-font-dir
-   directory containing MS-Windows fonts
+    directory containing MS-Windows fonts
 
   --without-xml
-   disable XML support
+    disable XML support
 
   --without-zlib
-   disable ZLIB support
+    disable ZLIB support
 
   --with-x
-   use the X Window System
+    use the X Window System
 
   --with-share-path=DIR
-   Alternate path to share directory (default share/GraphicsMagick)
+    Alternate path to share directory (default share/GraphicsMagick)
 
   --with-libstdc=DIR
-   use libstdc++ in DIR (for GNU C++)
+    use libstdc++ in DIR (for GNU C++)
 
 GraphicsMagick options represent either features to be enabled, disabled,
 or packages to be included in the build.  When a feature is enabled (via
@@ -291,6 +304,21 @@ the build (perhaps an old version or not compiled with the right
 compilation flags).
 
 Several configure options require special note:
+
+--with-included-ltdl, --enable-ltdl-install:
+
+  GraphicsMagick supports loadable coder and filter modules if
+  --enable-shared (see below) is specified in order to enable building
+  shared libraries. This is true even if --with-modules (see below) has
+  not been specified. The libldtl library is used to support this
+  feature. A copy of libltdl is included with GraphicsMagick. By default,
+  if a suitable libltdl is already installed on the system, it will be
+  used. If there is no suitable libltdl installed, then it may be
+  necessary to specify --with-included-ltdl to use libltdl as provided
+  with GraphicsMagick. The --enable-ltdl-install option enables building
+  libltdl locally and also formally installing it at time of 'make
+  install'. If your already installed libltdl is supported via a package
+  management system then you probably don't want to use this option.
 
 --enable-shared:
 

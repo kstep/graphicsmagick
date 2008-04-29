@@ -373,7 +373,7 @@ fi
 # Enable support for building loadable modules
 #
 AC_ARG_WITH(modules,
-	      [  --with-modules          enable support for dynamically loadable modules],
+	      [  --with-modules          enable building dynamically loadable modules],
 	      [with_modules=$withval],
 	      [with_modules='no'])
 

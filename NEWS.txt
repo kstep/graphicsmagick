@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on April 23, 2007
+This file was last updated on April 29, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,8 +14,8 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.2 (April 23, 2008 Beta1)
-==========================
+1.2 (April 29, 2008)
+====================
 
 Security fixes:
 
@@ -38,6 +38,12 @@ Security fixes:
     with the more security conscious strlcat and strlcpy.
   * DCM, DIB, XCF, XBM, and XWD security fix for integer overflow
     vulnerability (IDefense 09.19.07).
+  * Do not access X11 or invoke convenience or stealth delegate programs
+    based on the file extension. In particular, these file extensions are
+    rejected for consideration as a format specifier: 'autotrace',
+    'browse', 'dcraw', 'edit', 'gs-color', 'gs-color+alpha', 'gs-gray',
+    'gs-mono', 'launch', 'mpeg-encode', 'print', 'scan', 'show', 'win',
+    'xc', and 'x'.
 
 Bug fixes:
 
@@ -231,7 +237,7 @@ Windows-specific improvements/changes:
   * Updated Jasper library to version 1.900.1.
   * Updated jbigkit to 1.6
   * Updated lcms to 1.17
-  * Updated libpng to 1.2.26.
+  * Updated libpng to 1.2.27.
   * Updated libtiff to 3.8.2
   * Updated zlib to 1.2.3.
   * Libtiff supports LZW compression.

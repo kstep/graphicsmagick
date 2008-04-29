@@ -1899,7 +1899,7 @@ Optional Packages:
   --with-included-ltdl    use the GNU ltdl sources included here
   --with-ltdl-include=DIR use the ltdl headers installed in DIR
   --with-ltdl-lib=DIR     use the libltdl.la installed in DIR
-  --with-modules          enable support for dynamically loadable modules
+  --with-modules          enable building dynamically loadable modules
   --with-quantum-depth    number of bits in a pixel quantum (default 8)
   --with-cache            set pixel cache threshhold in MB (default available memory)
   --with-frozenpaths      enable frozen delegate paths
