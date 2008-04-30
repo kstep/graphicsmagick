@@ -1145,56 +1145,18 @@ MagickExport char *MagickToMime(const char *magick)
 */
 MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 {
-  register MagickInfo
-    *p;
-
-  /*
-    Delete any existing name.
-  */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  (void) UnregisterMagickInfo(magick_info->name);
+
+  /*
+    Add to front of list.
+  */
   AcquireSemaphoreInfo(&magick_semaphore);
   magick_info->previous=(MagickInfo *) NULL;
-  magick_info->next=(MagickInfo *) NULL;
-  if (magick_list == (MagickInfo *) NULL)
-    {
-      /*
-        Start magick list.
-      */
-      magick_list=magick_info;
-      LiberateSemaphoreInfo(&magick_semaphore);
-      return(magick_info);
-    }
-  /*
-    Tag is added in lexographic order.
-  */
-  for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->name,magick_info->name) >= 0)
-      break;
-  if (LocaleCompare(p->name,magick_info->name) < 0)
-    {
-      /*
-        Add entry after target.
-      */
-      magick_info->next=p->next;
-      p->next=magick_info;
-      magick_info->previous=p;
-      if (magick_info->next != (MagickInfo *) NULL)
-        magick_info->next->previous=magick_info;
-      LiberateSemaphoreInfo(&magick_semaphore);
-      return(magick_info);
-    }
-  /*
-    Add entry before target.
-  */
-  magick_info->next=p;
-  magick_info->previous=p->previous;
-  p->previous=magick_info;
-  if (magick_info->previous != (MagickInfo *) NULL)
-    magick_info->previous->next=magick_info;
-  if (p == magick_list)
-    magick_list=magick_info;
+  magick_info->next=magick_list;
+  if (magick_info->next != (MagickInfo *) NULL)
+    magick_info->next->previous=magick_info;
+  magick_list=magick_info;
   LiberateSemaphoreInfo(&magick_semaphore);
   return(magick_info);
 }

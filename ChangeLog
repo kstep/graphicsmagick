@@ -1,3 +1,9 @@
+2008-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (RegisterMagickInfo): Simplify dramatically by
+	adding to the front of the list rather than maintaining alpha
+	order.
+
 2008-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2 released.
