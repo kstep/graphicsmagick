@@ -71,6 +71,9 @@ typedef enum  {
   InitInitialized
 } MagickInitializationState;
 
+static void
+  DestroyMagickInfoList(void);
+
 static SemaphoreInfo
   *magick_semaphore = (SemaphoreInfo *) NULL;
 
@@ -78,6 +81,9 @@ static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
 static MagickInitializationState MagickInitialized = InitDefault;
+
+static void DestroyMagickInfo(MagickInfo** magick_info);
+static void DestroyMagickInfoList(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,7 +116,7 @@ MagickExport void DestroyMagick(void)
   DestroyDelegateInfo();
   DestroyTypeInfo();
   DestroyMagicInfo();
-  DestroyMagickInfo();
+  DestroyMagickInfoList();
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyMagickResources();
@@ -126,6 +132,9 @@ MagickExport void DestroyMagick(void)
 
   MagickInitialized=InitUninitialized;
 }
+/*
+  Destroy MagickInfo structure.
+*/
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,14 +147,50 @@ MagickExport void DestroyMagick(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickInfo() deallocates memory associated with the MagickInfo list.
+%  DestroyMagickInfo() destroys a MagickInfo structure.
 %
-%  The format of the DestroyMagickInfo method is:
+%  The format of the DestroyMagickInfoList method is:
 %
-%      void DestroyMagickInfo(void)
+%      void DestroyMagickInfo(MagickInfo** magick_info)
 %
 */
-MagickExport void DestroyMagickInfo(void)
+static void DestroyMagickInfo(MagickInfo** magick_info)
+{
+  MagickInfo
+    *p;
+
+  p=*magick_info;
+  if (p)
+    {
+      p->name=0;
+      MagickFreeMemory(p->description);
+      MagickFreeMemory(p->version);
+      MagickFreeMemory(p->note);
+      MagickFreeMemory(p->module);
+      MagickFreeMemory(p);
+      *magick_info=p;
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y M a g i c k I n f o L i s t                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyMagickInfo() deallocates memory associated with the MagickInfo list.
+%
+%  The format of the DestroyMagickInfoList method is:
+%
+%      void DestroyMagickInfoList(void)
+%
+*/
+static void DestroyMagickInfoList(void)
 {
   MagickInfo
     *magick_info;
@@ -173,12 +218,7 @@ MagickExport void DestroyMagickInfo(void)
 
     (void) printf("Warning: module registration for \"%s\" from module \"%s\" still present!\n",
                   magick_info->name, magick_info->module);
-    MagickFreeMemory(magick_info->name);
-    MagickFreeMemory(magick_info->description);
-    MagickFreeMemory(magick_info->version);
-    MagickFreeMemory(magick_info->note);
-    MagickFreeMemory(magick_info->module);
-    MagickFreeMemory(magick_info);
+    DestroyMagickInfo(&magick_info);
   }
   magick_list=(MagickInfo *) NULL;
   LiberateSemaphoreInfo(&magick_semaphore);
@@ -868,7 +908,7 @@ MagickExport void InitializeMagick(const char *path)
 %
 %  The format of the IsMagickConflict method is:
 %
-%      unsigned int IsMagickConflict(const char *magick)
+%      MagickBool IsMagickConflict(const char *magick)
 %
 %  A description of each parameter follows:
 %
@@ -879,13 +919,13 @@ MagickExport void InitializeMagick(const char *path)
 %
 %
 */
-MagickExport int unsigned IsMagickConflict(const char *magick)
+MagickExport MagickBool IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
 #if defined(MSWINDOWS) || defined(__CYGWIN__)
   return(NTIsMagickConflict(magick));
 #endif
-  return(False);
+  return(MagickFalse);
 }
 
 /*
@@ -903,7 +943,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 %
 %  The format of the ListMagickInfo method is:
 %
-%      unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
+%      MagickPassFail ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -913,7 +953,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 %
 %
 */
-MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
+MagickExport MagickPassFail ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
 
   MagickInfo
@@ -967,7 +1007,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
   MagickFreeMemory(magick_array);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -986,7 +1026,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the ListModuleMap method is:
 %
-%      unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
+%      MagickPassFail ListModuleMap(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -996,7 +1036,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
+MagickExport MagickPassFail ListModuleMap(FILE *file,ExceptionInfo *exception)
 {
   MagickInfo
     **magick_array;
@@ -1009,7 +1049,7 @@ MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
 
    magick_array=GetMagickInfoArray(exception);
    if ((!magick_array) || (exception->severity > UndefinedException))
-     return False;
+     return MagickFail;
 
    (void) fprintf(file, "<?xml version=\"1.0\"?>\n");
    (void) fprintf(file, "<!-- %s -->\n",GetMagickCopyright());
@@ -1032,7 +1072,7 @@ MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
 
    MagickFreeMemory(magick_array);
 
-   return(True);
+   return(MagickPass);
 }
 
 /*
@@ -1145,56 +1185,18 @@ MagickExport char *MagickToMime(const char *magick)
 */
 MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 {
-  register MagickInfo
-    *p;
-
-  /*
-    Delete any existing name.
-  */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  (void) UnregisterMagickInfo(magick_info->name);
+
+  /*
+    Add to front of list.
+  */
   AcquireSemaphoreInfo(&magick_semaphore);
   magick_info->previous=(MagickInfo *) NULL;
-  magick_info->next=(MagickInfo *) NULL;
-  if (magick_list == (MagickInfo *) NULL)
-    {
-      /*
-        Start magick list.
-      */
-      magick_list=magick_info;
-      LiberateSemaphoreInfo(&magick_semaphore);
-      return(magick_info);
-    }
-  /*
-    Tag is added in lexographic order.
-  */
-  for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->name,magick_info->name) >= 0)
-      break;
-  if (LocaleCompare(p->name,magick_info->name) < 0)
-    {
-      /*
-        Add entry after target.
-      */
-      magick_info->next=p->next;
-      p->next=magick_info;
-      magick_info->previous=p;
-      if (magick_info->next != (MagickInfo *) NULL)
-        magick_info->next->previous=magick_info;
-      LiberateSemaphoreInfo(&magick_semaphore);
-      return(magick_info);
-    }
-  /*
-    Add entry before target.
-  */
-  magick_info->next=p;
-  magick_info->previous=p->previous;
-  p->previous=magick_info;
-  if (magick_info->previous != (MagickInfo *) NULL)
-    magick_info->previous->next=magick_info;
-  if (p == magick_list)
-    magick_list=magick_info;
+  magick_info->next=magick_list;
+  if (magick_info->next != (MagickInfo *) NULL)
+    magick_info->next->previous=magick_info;
+  magick_list=magick_info;
   LiberateSemaphoreInfo(&magick_semaphore);
   return(magick_info);
 }
@@ -1238,7 +1240,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateMagickInfo);
   (void) memset(magick_info,0,sizeof(MagickInfo));
-  magick_info->name=AcquireString(name);
+  magick_info->name=name;
   magick_info->adjoin=True;
   magick_info->blob_support=True;
   magick_info->thread_support=True;
@@ -1258,7 +1260,8 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method UnregisterMagickInfo removes a name from the magick info list.  It
-%  returns False if the name does not exist in the list otherwise True.
+%  returns MagickFail if the name does not exist in the list otherwise
+%  MagickPass.
 %
 %  The format of the UnregisterMagickInfo method is:
 %
@@ -1273,7 +1276,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 %      looking for.
 %
 */
-MagickExport unsigned int UnregisterMagickInfo(const char *name)
+MagickExport MagickPassFail UnregisterMagickInfo(const char *name)
 {
   MagickInfo
     *magick_info;
@@ -1285,7 +1288,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
     status;
 
   assert(name != (const char *) NULL);
-  status=False;
+  status=MagickFail;
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
@@ -1298,17 +1301,8 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
     else
       magick_list=p->next;
     magick_info=p;
-    MagickFreeMemory(magick_info->name);
-    if (magick_info->description != (char *) NULL)
-      MagickFreeMemory(magick_info->description);
-    if (magick_info->version != (char *) NULL)
-      MagickFreeMemory(magick_info->version);
-    if (magick_info->note != (char *) NULL)
-      MagickFreeMemory(magick_info->note);
-    if (magick_info->module != (char *) NULL)
-      MagickFreeMemory(magick_info->module);
-    MagickFreeMemory(magick_info);
-    status=True;
+    DestroyMagickInfo(&magick_info);
+    status=MagickPass;
     break;
   }
   LiberateSemaphoreInfo(&magick_semaphore);

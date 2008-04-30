@@ -1,3 +1,19 @@
+2008-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (DestroyMagickInfoList): Use DestroyMagickInfo().
+	(UnregisterMagickInfo): Use DestroyMagickInfo().
+	(RegisterMagickInfo): Simplify dramatically by adding to the front
+	of the list rather than maintaining alpha order.
+	* magick/image.c (DestroyImageInfo): Tidy up and simplify code.
+	* magick/constitute.c (WriteImage): Comment out the "bi-modal
+	delegate" execution code until we determine what value it offers.
+	The test suite passes without it.
+	* magick/magick.h (struct MagickInfo): There is no need for 'name'
+	to be allocated data so make it const.	
+	(DestroyMagickInfo): Add a static function to destroy a MagickInfo
+	structure.  Renamed previous DestroyMagickInfo to
+	DestroyMagickInfoList and made it static.
+
 2008-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2 released.

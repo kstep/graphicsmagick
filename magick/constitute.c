@@ -6499,6 +6499,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   (void) SetImageInfo(clone_info,True,&image->exception);
   (void) strlcpy(image->filename,clone_info->filename,MaxTextExtent);
   image->dither=image_info->dither;
+#if 0
+  /*
+    FIXME: What is this chunk of "bi-modal delegate" code for?
+  */
   if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
       (image->previous == (Image *) NULL) &&
       (clone_info->page == (char *) NULL) && !IsTaintImage(image))
@@ -6519,6 +6523,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           return(!status);
         }
       }
+#endif
   /*
     Call appropriate image writer based on image type.
   */

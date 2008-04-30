@@ -2371,7 +2371,6 @@ MagickExport void DestroyImage(Image *image)
   DestroyBlob(image);
   if (image->semaphore)
     DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
-  (void) memset((void *)image,0xbf,sizeof(Image));
   MagickFreeMemory(image);
 }
 
@@ -2403,33 +2402,22 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  if (image_info->size != (char *) NULL)
-    MagickFreeMemory(image_info->size);
-  if (image_info->tile != (char *) NULL)
-    MagickFreeMemory(image_info->tile);
-  if (image_info->page != (char *) NULL)
-    MagickFreeMemory(image_info->page);
-  if (image_info->sampling_factor != (char *) NULL)
-    MagickFreeMemory(image_info->sampling_factor);
-  if (image_info->server_name != (char *) NULL)
-    MagickFreeMemory(image_info->server_name);
-  if (image_info->font != (char *) NULL)
-    MagickFreeMemory(image_info->font);
-  if (image_info->texture != (char *) NULL)
-    MagickFreeMemory(image_info->texture);
-  if (image_info->density != (char *) NULL)
-    MagickFreeMemory(image_info->density);
-  if (image_info->view != (char *) NULL)
-    MagickFreeMemory(image_info->view);
-  if (image_info->authenticate != (char *) NULL)
-    MagickFreeMemory(image_info->authenticate);
+  MagickFreeMemory(image_info->size);
+  MagickFreeMemory(image_info->tile);
+  MagickFreeMemory(image_info->page);
+  MagickFreeMemory(image_info->sampling_factor);
+  MagickFreeMemory(image_info->server_name);
+  MagickFreeMemory(image_info->font);
+  MagickFreeMemory(image_info->texture);
+  MagickFreeMemory(image_info->density);
+  MagickFreeMemory(image_info->view);
+  MagickFreeMemory(image_info->authenticate);
   if (image_info->attributes != (Image *) NULL)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
   if (image_info->definitions != (MagickMap) NULL)
     MagickMapDeallocateMap((MagickMap) image_info->definitions);
-  (void) memset((void *)image_info,0xbf,sizeof(ImageInfo));
   MagickFreeMemory(image_info);
 }
 

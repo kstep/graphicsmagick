@@ -763,18 +763,21 @@ ModuleExport void RegisterPNMImage(void)
   entry->description=AcquireString("Xv thumbnail format");
   entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PBM");
   entry->decoder=(DecoderHandler) ReadPNMImage;
   entry->encoder=(EncoderHandler) WritePNMImage;
   entry->description=AcquireString("Portable bitmap format (black and white)");
   entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PGM");
   entry->decoder=(DecoderHandler) ReadPNMImage;
   entry->encoder=(EncoderHandler) WritePNMImage;
   entry->description=AcquireString("Portable graymap format (gray scale)");
   entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PNM");
   entry->decoder=(DecoderHandler) ReadPNMImage;
   entry->encoder=(EncoderHandler) WritePNMImage;
@@ -782,6 +785,7 @@ ModuleExport void RegisterPNMImage(void)
   entry->description=AcquireString("Portable anymap");
   entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PPM");
   entry->decoder=(DecoderHandler) ReadPNMImage;
   entry->encoder=(EncoderHandler) WritePNMImage;

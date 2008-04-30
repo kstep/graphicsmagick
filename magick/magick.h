@@ -25,8 +25,11 @@ typedef unsigned int
 
 typedef struct _MagickInfo
 {
+
+  const char
+    *name;              /* format ID ("magick") */
+
   char
-    *name,              /* format ID ("magick") */
     *description,       /* format description */
     *note,              /* usage note for user */
     *version,           /* support library version */
@@ -69,33 +72,32 @@ typedef struct _MagickInfo
   Magick method declaractions.
 */
 extern MagickExport char
-  *MagickToMime(const char *);
+  *MagickToMime(const char *magick);
 
 extern MagickExport const char
-  *GetImageMagick(const unsigned char *,const size_t);
+  *GetImageMagick(const unsigned char *magick,const size_t length);
 
 extern MagickExport MagickBool
-  IsMagickConflict(const char *);
+  IsMagickConflict(const char *magick);
 
 extern MagickExport MagickPassFail
-  ListModuleMap(FILE *,ExceptionInfo *),
-  ListMagickInfo(FILE *,ExceptionInfo *),
-  UnregisterMagickInfo(const char *);
+  ListModuleMap(FILE *file,ExceptionInfo *exception),
+  ListMagickInfo(FILE *file,ExceptionInfo *exception),
+  UnregisterMagickInfo(const char *name);
 
 extern MagickExport void
   DestroyMagick(void),
-  DestroyMagickInfo(void),
-  InitializeMagick(const char *);
+  InitializeMagick(const char *path);
 
 extern MagickExport const MagickInfo
-*GetMagickInfo(const char *,ExceptionInfo *exception);
+  *GetMagickInfo(const char *name,ExceptionInfo *exception);
 
 extern MagickExport MagickInfo
   **GetMagickInfoArray(ExceptionInfo *exception);
 
 extern MagickExport MagickInfo
-  *RegisterMagickInfo(MagickInfo *),
-  *SetMagickInfo(const char *);
+  *RegisterMagickInfo(MagickInfo *magick_info),
+  *SetMagickInfo(const char *name);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
