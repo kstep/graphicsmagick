@@ -707,6 +707,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 	{
 	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	  if(i==0) goto done_reading;		// Skip image rotation. 
 	  goto ExitLoop;
 	}
         if(ReadBlob(image,ldblk,(char *)BImgBuff) != (size_t) ldblk)
