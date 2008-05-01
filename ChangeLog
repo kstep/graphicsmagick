@@ -1,3 +1,8 @@
+2008-05-01  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* mat.c: gm convert -limit Pixels 1 input_gray_lsb_16bit.mat crap.miff
+	don't rotate partial image.
+
 2008-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (DestroyMagickInfoList): Use DestroyMagickInfo().
