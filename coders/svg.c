@@ -2778,7 +2778,7 @@ ModuleExport void RegisterSVGImage(void)
   entry->decoder=(DecoderHandler) ReadSVGImage;
 #endif
   entry->encoder=(EncoderHandler) WriteSVGImage;
-  entry->description=AcquireString("Scalable Vector Gaphics");
+  entry->description=AcquireString("Scalable Vector Graphics");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("SVG");
@@ -2789,7 +2789,7 @@ ModuleExport void RegisterSVGImage(void)
   entry->decoder=(DecoderHandler) ReadSVGImage;
 #endif
   entry->encoder=(EncoderHandler) WriteSVGImage;
-  entry->description=AcquireString("Scalable Vector Gaphics (ZIP compressed)");
+  entry->description=AcquireString("Scalable Vector Graphics (ZIP compressed)");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("SVG");
