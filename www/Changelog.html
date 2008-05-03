@@ -24,6 +24,8 @@
 2008-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/module.c (OpenModule): Ignore requests to open modules
+        which have already been opened.
   <LI> GraphicsMagick.spec.in: NEWS was renamed to NEWS.txt.  Enable
         libtool verbose output so it is possible to diagnose build
         failures.

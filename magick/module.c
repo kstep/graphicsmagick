@@ -1279,6 +1279,17 @@ MagickExport unsigned int OpenModule(const char *module,
             (void) strlcpy(module_name,p->name,MaxTextExtent);
             break;
           }
+
+    /*
+      Ignore already loaded modules.
+    */
+    for (coder_info=coder_list; coder_info != (CoderInfo *) NULL;
+         coder_info=coder_info->next)
+      if (LocaleCompare(coder_info->tag,module_name) == 0)
+        break;
+    if (coder_info != (CoderInfo *) NULL)
+      return MagickPass;
+
     /*
       Find module file.
     */
