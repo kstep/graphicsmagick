@@ -1,3 +1,10 @@
+2008-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c (RegisterSVGImage): Fix spelling of "Graphics" in
+        registered description.
+	* magick/module.c (OpenModule): Ignore requests to open modules
+        which have already been opened.
+
 2008-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.1.12 released.
