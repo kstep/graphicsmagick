@@ -133,7 +133,8 @@ fi
 # This shouldn't be there yet.
 rm -f PerlMagick/Makefile.PL
 
-%configure --enable-libtool-verbose --enable-shared --disable-static \
+%configure --enable-libtool-verbose --with-included-ltdl \
+        --enable-shared --disable-static \
 	--with-modules --enable-lzw \
 	--with-frozenpaths \
 %if %{perlm}

@@ -2828,20 +2828,58 @@ fi
 # Build library dependency list for libMagick
 #
 
-MAGICK_LIBLTDL=''
-MAGICK_LTDLDEPS=''
+# The with_ltdl variable is set to 'yes' if we are building shared
+# libraries, regardless of whether modules are built or not.
+#
+# The with_modules variable is set to 'yes' if coders and filters are
+# to be built as modules.  Even if coders and filters are not built,
+# module loading is supported by shared library builds.
+
+# This is kind of tricky since if ${LIBLTDL} references a .la file,
+# that .la file may represent a convenience library, or it may
+# reference a shared library which will be formally installed.  It may
+# also reference an already formally installed libltdl using -lltdl
+# syntax.
+
+# --with-included-ltdl (with_included_ltdl)
+#   Use our libltdl
+# Set to empty by default.
+# Set to 'no' if --with-ltdl-include and --with-ltdl-lib are used.
+# Set to 'no' if --with-included-ltdl=no or --without-included-ltdl are used.
+
+# --enable-ltdl-install (enable_ltdl_install)
+#   Our libltdl will be formally installed
+# Set to 'yes' if enable_ltdl_install or enable_ltdl_convenience is 'yes'.
+
+# --enable-ltdl-convenience (enable_ltdl_convenience = 'yes')
+#   Our libltdl is built as a convenience library
+#
+# Make conditionals INSTALL_LTDL and CONVENIENCE_LTDL
+
+#echo "with_included_ltdl      = $with_included_ltdl"
+#echo "enable_ltdl_install     = $enable_ltdl_install"
+#echo "enable_ltdl_convenience = $enable_ltdl_convenience"
+
+MAGICK_LIBLTDL='' # Libltdl for GraphicsMagick build
+MAGICK_API_LIBLTDL=''   # Libltdl for dependent application (API) build
+MAGICK_LTDLDEPS=''      # Extra libltdl dependencies
 if test "$with_ltdl" != 'no'
 then
+  if test \( "$with_included_ltdl" = 'no' -o "$enable_ltdl_convenience" = 'no' \) -o "$enable_ltdl_install" = 'yes'
+  then
+    MAGICK_API_LIBLTDL='-lltdl'
+  fi
   MAGICK_LIBLTDL=${LIBLTDL}
   MAGICK_LTDLDEPS=${LTDLDEPS}
 fi
+AC_SUBST(MAGICK_LIBLTDL)
 AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $MAGICK_LIBLTDL $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $MAGICK_LIBLTDL $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2886,7 +2924,7 @@ AC_SUBST(X_CFLAGS)
 MAGICK_API_CFLAGS=$CFLAGS
 MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 AC_SUBST(MAGICK_API_CFLAGS)
 AC_SUBST(MAGICK_API_CPPFLAGS)

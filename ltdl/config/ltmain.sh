@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2970 2008-04-24) 2.2.3a
+# ltmain.sh (GNU libtool) 2.2.4
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2970 2008-04-24) 2.2.3a
+#       $progname:		(GNU libtool) 2.2.4
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -73,9 +73,9 @@
 
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=2.2.3a
-TIMESTAMP=" 1.2970 2008-04-24"
-package_revision=1.2970
+VERSION=2.2.4
+TIMESTAMP=""
+package_revision=1.2976
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -116,15 +116,15 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/usr/sfw/bin/ggrep -E"}
-: ${FGREP="/usr/sfw/bin/ggrep -F"}
-: ${GREP="/usr/sfw/bin/ggrep"}
+: ${EGREP="/usr/bin/grep -E"}
+: ${FGREP="/usr/bin/grep -F"}
+: ${GREP="/usr/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
 : ${MV="mv -f"}
 : ${RM="rm -f"}
-: ${SED="/usr/local/bin/sed"}
+: ${SED="/opt/local/bin/gsed"}
 : ${SHELL="${CONFIG_SHELL-/bin/sh}"}
 : ${Xsed="$SED -e 1s/^X//"}
 
@@ -236,6 +236,7 @@ opt_dry_run=false
 opt_help=false
 opt_quiet=false
 opt_verbose=false
+opt_warning=:
 
 # func_echo arg...
 # Echo program name prefixed message, along with the current mode
@@ -268,7 +269,10 @@ func_error ()
 # Echo program name prefixed warning message to standard error.
 func_warning ()
 {
-    $ECHO "$progname${mode+: }$mode: warning: "${1+"$@"} 1>&2
+    $opt_warning && $ECHO "$progname${mode+: }$mode: warning: "${1+"$@"} 1>&2
+
+    # bash bug again:
+    :
 }
 
 # func_fatal_error arg...
@@ -5389,11 +5393,9 @@ func_mode_link ()
 		    done
 		    if test -f "$absdir/$objdir/$depdepl" ; then
 		      depdepl="$absdir/$objdir/$depdepl"
-		      darwin_install_name=`otool -L $depdepl | $SED -n -e '3q;2,2p' | $SED -e 's/(.*//'`
-		      darwin_install_name=`$ECHO $darwin_install_name`
+		      darwin_install_name=`${OTOOL} -L $depdepl | awk '{if (NR == 2) {print $1;exit}}'`
                       if test -z "$darwin_install_name"; then
-                          darwin_install_name=`otool64 -L $depdepl | $SED -n -e '3q;2,2p' | $SED -e 's/(.*//'`
-                          darwin_install_name=`$ECHO $darwin_install_name`
+                          darwin_install_name=`${OTOOL64} -L $depdepl  | awk '{if (NR == 2) {print $1;exit}}'`
                       fi
 		      compiler_flags="$compiler_flags ${wl}-dylib_file ${wl}${darwin_install_name}:${depdepl}"
 		      linker_flags="$linker_flags -dylib_file ${darwin_install_name}:${depdepl}"

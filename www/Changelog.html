@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2008-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> libtool: Update to libtool 1.2.4.
+  <LI> GraphicsMagick.spec.in: Add --with-included-ltdl to the default
+        options since this seems safest until the libltdl validation logic
+        is fully robust.<BR>
+  <LI> magick/Makefile.am (magick_libGraphicsMagick_la_LIBADD): Apply
+        libltdl dependency argument as required for building.
+  <LI> configure.ac: Intuit if the GraphicsMagick library will depend
+        on -lltdl.<BR>
+  <LI> Magick++/bin/GraphicsMagick++-config.in: Use substitutions
+        rather than invoking GraphicsMagick-config in order to determine
+        GraphicsMagick library usage requirements.  This avoids problems
+        when GraphicsMagick-config is not in the executable search path.
+
+</UL>
+<p>
 2008-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
