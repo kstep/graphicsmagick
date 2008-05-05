@@ -306,92 +306,93 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %
 */
+static MagickInfo *GetMagickInfoEntryLocked(const char *name)
+{
+  register MagickInfo
+    *p;
+
+  AcquireSemaphoreInfo(&magick_semaphore);
+
+  p=magick_list;
+
+  if ((name != (const char *) NULL) && (name[0] != '*'))
+    {
+      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->name,name) == 0)
+          break;
+      
+      if (p != (MagickInfo *) NULL)
+        if (p != magick_list)
+          {
+            /*
+              Self-adjusting list.
+            */
+            if (p->previous != (MagickInfo *) NULL)
+              p->previous->next=p->next;
+            if (p->next != (MagickInfo *) NULL)
+              p->next->previous=p->previous;
+            p->previous=(MagickInfo *) NULL;
+            p->next=magick_list;
+            magick_list->previous=p;
+            magick_list=p;
+          }
+    }
+
+  LiberateSemaphoreInfo(&magick_semaphore);
+
+  return p;
+}
 MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *ARGUNUSED(exception))
 {
   register MagickInfo
     *p;
 
-#if defined(SupportMagickModules)
-  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    {
-      /*
-        If all modules are requested, then use OpenModules to load
-        all modules.
-      */
-      if (!OpenModules(exception))
-        return 0;
-    }
-#endif /* #if defined(SupportMagickModules) */
-
-  AcquireSemaphoreInfo(&magick_semaphore);
-  if (magick_list != (MagickInfo *) NULL)
-    LiberateSemaphoreInfo(&magick_semaphore);
-  else
-    {
-      /*
-        Register image formats.
-      */
-      LiberateSemaphoreInfo(&magick_semaphore);
-
-#if defined(SupportMagickModules)
-      /*
-        Load module aliases and check for any error
-      */
-      if (!GetModuleInfo((char *) NULL,exception))
-        return 0;
-#endif
 #if !defined(BuildMagickModules)
+  if ((magick_list == (MagickInfo *) NULL) &&
+      (GetMagickInfoEntryLocked(NULL) == (MagickInfo *) NULL))
+    {
       /*
         Register all static modules
       */
       RegisterStaticModules();
-#endif
     }
-  if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
-    return((const MagickInfo *) magick_list);
+#endif /* !defined(BuildMagickModules) */
+
   /*
-    Find name in list
+    If name is NULL, then return head of list (as it currently
+    exists).
   */
-  AcquireSemaphoreInfo(&magick_semaphore);
-  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->name,name) == 0)
-      break;
+  if (name == (const char *) NULL)
+    return GetMagickInfoEntryLocked(name);
+
 #if defined(SupportMagickModules)
-  if (p == (MagickInfo *) NULL)
+  /*
+    Load module aliases (does nothing if already loaded)
+  */
+  (void) GetModuleInfo((char *) NULL,exception);
+
+  if (name[0] == '*')
+    {
+      /*
+        If all modules are requested, then use OpenModules to load all
+        modules.
+      */
+      (void) OpenModules(exception);
+    }
+  else
     {
       /*
         Try to load a supporting module.
       */
-      if (*name != '\0')
-        {
-          /* Pass all exceptions up */
-          LiberateSemaphoreInfo(&magick_semaphore);
-          (void) OpenModule(name,exception);
-          AcquireSemaphoreInfo(&magick_semaphore);
-        }
-      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-        if (LocaleCompare(p->name,name) == 0)
-          break;
+      (void) OpenModule(name,exception);
     }
 #endif /* #if defined(SupportMagickModules) */
-  if (p != (MagickInfo *) NULL)
-    if (p != magick_list)
-      {
-        /*
-          Self-adjusting list.
-        */
-        if (p->previous != (MagickInfo *) NULL)
-          p->previous->next=p->next;
-        if (p->next != (MagickInfo *) NULL)
-          p->next->previous=p->previous;
-        p->previous=(MagickInfo *) NULL;
-        p->next=magick_list;
-        magick_list->previous=p;
-        magick_list=p;
-      }
-  LiberateSemaphoreInfo(&magick_semaphore);
-  return((const MagickInfo *) p);
+
+  /*
+    Return whatever we've got
+  */
+  return GetMagickInfoEntryLocked(name);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1195,7 +1196,11 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
 
-  /* (void) UnregisterMagickInfo(magick_info->name); */
+  /*
+    Remove any existing entry.
+  */
+  (void) UnregisterMagickInfo(magick_info->name);
+
   /*
     Add to front of list.
   */
