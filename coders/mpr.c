@@ -136,17 +136,18 @@ ModuleExport void RegisterMPRImage(void)
   entry->encoder=(EncoderHandler) WriteMPRImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPR");
+  entry->description="Magick Persistent Registry";
+  entry->module="MPR";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("MPRI");
   entry->decoder=(DecoderHandler) ReadMPRImage;
   entry->encoder=(EncoderHandler) WriteMPRImage;
   entry->stealth=True;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPRI");
+  entry->description="Magick Persistent Registry";
+  entry->module="MPRI";
   (void) RegisterMagickInfo(entry);
 }
 

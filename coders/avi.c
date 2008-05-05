@@ -878,8 +878,8 @@ ModuleExport void RegisterAVIImage(void)
   entry=SetMagickInfo("AVI");
   entry->decoder=(DecoderHandler) ReadAVIImage;
   entry->magick=(MagickHandler) IsAVI;
-  entry->description=AcquireString("Microsoft Audio/Visual Interleaved");
-  entry->module=AcquireString("AVI");
+  entry->description="Microsoft Audio/Visual Interleaved";
+  entry->module="AVI";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -277,8 +277,8 @@ ModuleExport void RegisterSCTImage(void)
   entry->decoder=(DecoderHandler) ReadSCTImage;
   entry->magick=(MagickHandler) IsSCT;
   entry->adjoin=False;
-  entry->description=AcquireString("Scitex HandShake");
-  entry->module=AcquireString("SCT");
+  entry->description="Scitex HandShake";
+  entry->module="SCT";
   (void) RegisterMagickInfo(entry);
 }
 

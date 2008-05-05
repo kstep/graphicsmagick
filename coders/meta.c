@@ -1334,8 +1334,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Photoshop resource format");
-  entry->module=AllocateString("META");
+  entry->description="Photoshop resource format";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("8BIMTEXT");
@@ -1343,8 +1343,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Photoshop resource text format");
-  entry->module=AllocateString("META");
+  entry->description="Photoshop resource text format";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("8BIMWTEXT");
@@ -1352,8 +1352,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Photoshop resource wide text format");
-  entry->module=AllocateString("META");
+  entry->description="Photoshop resource wide text format";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1");
@@ -1361,8 +1361,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Raw application information");
-  entry->module=AllocateString("META");
+  entry->description="Raw application information";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1JPEG");
@@ -1370,8 +1370,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Raw JPEG binary data");
-  entry->module=AllocateString("META");
+  entry->description="Raw JPEG binary data";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EXIF");
@@ -1379,8 +1379,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Exif digital camera binary data");
-  entry->module=AllocateString("META");
+  entry->description="Exif digital camera binary data";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XMP");
@@ -1388,8 +1388,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Adobe XML metadata");
-  entry->module=AllocateString("META");
+  entry->description="Adobe XML metadata";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICM");
@@ -1397,8 +1397,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("ICC Color Profile");
-  entry->module=AllocateString("META");
+  entry->description="ICC Color Profile";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICC");
@@ -1406,8 +1406,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("ICC Color Profile");
-  entry->module=AllocateString("META");
+  entry->description="ICC Color Profile";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTC");
@@ -1415,8 +1415,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("IPTC Newsphoto");
-  entry->module=AllocateString("META");
+  entry->description="IPTC Newsphoto";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTCTEXT");
@@ -1424,8 +1424,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("IPTC Newsphoto text format");
-  entry->module=AllocateString("META");
+  entry->description="IPTC Newsphoto text format";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTCWTEXT");
@@ -1433,8 +1433,8 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("IPTC Newsphoto text format");
-  entry->module=AllocateString("META");
+  entry->description="IPTC Newsphoto text format";
+  entry->module="META";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -207,14 +207,15 @@ ModuleExport void RegisterPLASMAImage(void)
   entry=SetMagickInfo("PLASMA");
   entry->decoder=(DecoderHandler) ReadPlasmaImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Plasma fractal image");
-  entry->module=AcquireString("PLASMA");
+  entry->description="Plasma fractal image";
+  entry->module="PLASMA";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("FRACTAL");
   entry->decoder=(DecoderHandler) ReadPlasmaImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Plasma fractal image");
-  entry->module=AcquireString("PLASMA");
+  entry->description="Plasma fractal image";
+  entry->module="PLASMA";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -497,8 +497,8 @@ ModuleExport void RegisterFPXImage(void)
   entry->seekable_stream=True;
   entry->blob_support=False;
   entry->magick=(MagickHandler) IsFPX;
-  entry->description=AcquireString("FlashPix Format");
-  entry->module=AcquireString("FPX");
+  entry->description="FlashPix Format";
+  entry->module="FPX";
   (void) RegisterMagickInfo(entry);
 }
 

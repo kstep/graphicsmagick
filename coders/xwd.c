@@ -500,8 +500,8 @@ ModuleExport void RegisterXWDImage(void)
 #endif
   entry->magick=(MagickHandler) IsXWD;
   entry->adjoin=False;
-  entry->description=AcquireString("X Windows system window dump (color)");
-  entry->module=AcquireString("XWD");
+  entry->description="X Windows system window dump (color)";
+  entry->module="XWD";
   (void) RegisterMagickInfo(entry);
 }
 

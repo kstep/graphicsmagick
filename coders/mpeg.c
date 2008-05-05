@@ -119,24 +119,24 @@ ModuleExport void RegisterMPEGImage(void)
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
-  entry->description=AcquireString("MPEG Video Stream");
-  entry->module=AcquireString("MPEG");
+  entry->description="MPEG Video Stream";
+  entry->module="MPEG";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("MPG");
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
-  entry->description=AcquireString("MPEG Video Stream");
-  entry->module=AcquireString("MPEG");
+  entry->description="MPEG Video Stream";
+  entry->module="MPEG";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("M2V");
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
-  entry->description=AcquireString("MPEG Video Stream");
-  entry->module=AcquireString("MPEG");
+  entry->description="MPEG Video Stream";
+  entry->module="MPEG";
   (void) RegisterMagickInfo(entry);
 }
 

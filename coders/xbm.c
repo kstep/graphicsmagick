@@ -387,9 +387,8 @@ ModuleExport void RegisterXBMImage(void)
   entry->encoder=(EncoderHandler) WriteXBMImage;
   entry->magick=(MagickHandler) IsXBM;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("X Windows system bitmap (black and white)");
-  entry->module=AcquireString("XBM");
+  entry->description="X Windows system bitmap (black/white)";
+  entry->module="XBM";
   (void) RegisterMagickInfo(entry);
 }
 

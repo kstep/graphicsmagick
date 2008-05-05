@@ -669,8 +669,8 @@ ModuleExport void RegisterPALMImage(void)
   entry->encoder=(EncoderHandler) WritePALMImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Palm pixmap");
-  entry->module=AcquireString("PALM");
+  entry->description="Palm pixmap";
+  entry->module="PALM";
   (void) RegisterMagickInfo(entry);
 }
 

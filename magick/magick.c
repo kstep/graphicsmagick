@@ -112,25 +112,26 @@ MagickExport void DestroyMagick(void)
 #if defined(HasX11)
   MagickXDestroyX11Resources();
 #endif
-  DestroyColorInfo();
-  DestroyDelegateInfo();
-  DestroyTypeInfo();
-  DestroyMagicInfo();
-  DestroyMagickInfoList();
-  DestroyConstitute();
-  DestroyMagickRegistry();
-  DestroyMagickResources();
-  DestroyTemporaryFiles();
+  DestroyColorInfo();           /* Color database */
+  DestroyDelegateInfo();        /* External delegate information */
+  DestroyTypeInfo();            /* Font information */
+  DestroyMagicInfo();           /* File format detection */
+  DestroyMagickInfoList();      /* Coder registrations + modules */
+  DestroyConstitute();          /* Constitute semaphore */
+  DestroyMagickRegistry();      /* Registered images */
+  DestroyMagickResources();     /* Resource semaphore */
+  DestroyTemporaryFiles();      /* Temporary files */
 #if defined(MSWINDOWS)
-  NTGhostscriptUnLoadDLL();
+  NTGhostscriptUnLoadDLL();     /* Ghostscript DLL */
 #endif /* defined(MSWINDOWS) */
   /*
     Destroy logging last since some components log their destruction.
   */
-  DestroyLogInfo();
-  DestroySemaphore();
+  DestroyLogInfo();             /* Logging configuration */
+  DestroySemaphore();           /* Semaphores framework */
 
   MagickInitialized=InitUninitialized;
+
 }
 /*
   Destroy MagickInfo structure.
@@ -163,10 +164,10 @@ static void DestroyMagickInfo(MagickInfo** magick_info)
   if (p)
     {
       p->name=0;
-      MagickFreeMemory(p->description);
-      MagickFreeMemory(p->version);
-      MagickFreeMemory(p->note);
-      MagickFreeMemory(p->module);
+      p->description=0;
+      p->version=0;
+      p->note=0;
+      p->module=0;
       MagickFreeMemory(p);
       *magick_info=p;
     }
@@ -211,13 +212,19 @@ static void DestroyMagickInfoList(void)
     entries anyway.
   */
   AcquireSemaphoreInfo(&magick_semaphore);
+#if defined(BuildMagickModules)
+  if (magick_list != (MagickInfo *) NULL)
+    (void) printf("Warning: module registrations are still present!\n");
+#endif /* defined(BuildMagickModules) */
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     magick_info=p;
     p=p->next;
 
+#if !defined(BuildMagickModules)
     (void) printf("Warning: module registration for \"%s\" from module \"%s\" still present!\n",
                   magick_info->name, magick_info->module);
+#endif /* !defined(BuildMagickModules) */
     DestroyMagickInfo(&magick_info);
   }
   magick_list=(MagickInfo *) NULL;
@@ -1188,6 +1195,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
 
+  /* (void) UnregisterMagickInfo(magick_info->name); */
   /*
     Add to front of list.
   */

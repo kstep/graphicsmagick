@@ -80,8 +80,8 @@ ModuleExport void RegisterUILImage(void)
   entry=SetMagickInfo("UIL");
   entry->encoder=(EncoderHandler) WriteUILImage;
   entry->adjoin=False;
-  entry->description=AcquireString("X-Motif UIL table");
-  entry->module=AcquireString("UIL");
+  entry->description="X-Motif UIL table";
+  entry->module="UIL";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -406,9 +406,8 @@ ModuleExport void RegisterEPTImage(void)
   entry->magick=(MagickHandler) IsEPT;
   entry->adjoin=False;
   entry->blob_support=False;
-  entry->description=
-    AcquireString("Adobe Encapsulated PostScript with MS-DOS TIFF preview");
-  entry->module=AcquireString("EPT");
+  entry->description="Adobe Encapsulated PostScript with MS-DOS TIFF preview";
+  entry->module="EPT";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT2");
@@ -417,9 +416,8 @@ ModuleExport void RegisterEPTImage(void)
   entry->magick=(MagickHandler) IsEPT;
   entry->adjoin=False;
   entry->blob_support=False;
-  entry->description=
-    AcquireString("Adobe Level II Encapsulated PostScript with MS-DOS TIFF preview");
-  entry->module=AcquireString("EPT");
+  entry->description="Adobe Level II Encapsulated PostScript with MS-DOS TIFF preview";
+  entry->module="EPT";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT3");
@@ -428,9 +426,8 @@ ModuleExport void RegisterEPTImage(void)
   entry->magick=(MagickHandler) IsEPT;
   entry->adjoin=False;
   entry->blob_support=False;
-  entry->description=
-    AcquireString("Adobe Level III Encapsulated PostScript with MS-DOS TIFF preview");
-  entry->module=AcquireString("EPT");
+  entry->description="Adobe Level III Encapsulated PostScript with MS-DOS TIFF preview";
+  entry->module="EPT";
   (void) RegisterMagickInfo(entry);
 }
 

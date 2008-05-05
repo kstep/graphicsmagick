@@ -642,8 +642,8 @@ ModuleExport void RegisterJP2Image(void)
     *entry;
 
   entry=SetMagickInfo("JP2");
-  entry->description=AcquireString("JPEG-2000 JP2 File Format Syntax");
-  entry->module=AcquireString("JP2");
+  entry->description="JPEG-2000 JP2 File Format Syntax";
+  entry->module="JP2";
   entry->magick=(MagickHandler) IsJP2;
   entry->adjoin=False;
   entry->seekable_stream=True;
@@ -655,8 +655,8 @@ ModuleExport void RegisterJP2Image(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPC");
-  entry->description=AcquireString("JPEG-2000 Code Stream Syntax");
-  entry->module=AcquireString("JPC");
+  entry->description="JPEG-2000 Code Stream Syntax";
+  entry->module="JPC";
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->seekable_stream=True;
@@ -668,8 +668,8 @@ ModuleExport void RegisterJP2Image(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PGX");
-  entry->description=AcquireString("JPEG-2000 VM Format");
-  entry->module=AcquireString("PGX");
+  entry->description="JPEG-2000 VM Format";
+  entry->module="PGX";
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->seekable_stream=True;

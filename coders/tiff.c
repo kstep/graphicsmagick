@@ -2685,7 +2685,7 @@ ModuleExport void RegisterTIFFImage(void)
 #define PTIFDescription "Pyramid encoded TIFF"
 #if defined(HasTIFF)
 
-  char
+  static char
     version[MaxTextExtent];
 
   MagickInfo
@@ -2716,8 +2716,8 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
   entry->adjoin=False;
-  entry->description=AcquireString(BIGTIFFDescription);
-  entry->module=AcquireString("TIFF");
+  entry->description=BIGTIFFDescription;
+  entry->module="TIFF";
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasBigTIFF) */
 
@@ -2729,8 +2729,8 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WritePTIFImage;
   entry->adjoin=False;
-  entry->description=AcquireString(PTIFDescription);
-  entry->module=AcquireString("TIFF");
+  entry->description=PTIFDescription;
+  entry->module="TIFF";
   (void) RegisterMagickInfo(entry);
 
   /*
@@ -2740,11 +2740,11 @@ ModuleExport void RegisterTIFFImage(void)
   entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
-  entry->description=AcquireString(TIFFDescription);
+  entry->description=TIFFDescription;
   if (*version != '\0')
-    entry->version=AcquireString(version);
+    entry->version=version;
   entry->stealth=MagickTrue; /* Don't list in '-list format' output */
-  entry->module=AcquireString("TIFF");
+  entry->module="TIFF";
   (void) RegisterMagickInfo(entry);
 
   /*
@@ -2755,10 +2755,10 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
   entry->magick=(MagickHandler) IsTIFF;
-  entry->description=AcquireString(TIFFDescription);
+  entry->description=TIFFDescription;
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("TIFF");
+    entry->version=version;
+  entry->module="TIFF";
   (void) RegisterMagickInfo(entry);
 
 #if defined(EXTEND_TIFF_TAGS)

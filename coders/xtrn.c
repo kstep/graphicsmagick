@@ -326,8 +326,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("External transfer of a file");
-  entry->module=AllocateString("XTRN");
+  entry->description="External transfer of a file";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XTRNIMAGE");
@@ -335,8 +335,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("External transfer of a image in memory");
-  entry->module=AllocateString("XTRN");
+  entry->description="External transfer of a image in memory";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XTRNBLOB");
@@ -344,8 +344,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("IExternal transfer of a blob in memory");
-  entry->module=AllocateString("XTRN");
+  entry->description="IExternal transfer of a blob in memory";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XTRNSTREAM");
@@ -353,8 +353,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("External transfer via a streaming interface");
-  entry->module=AllocateString("XTRN");
+  entry->description="External transfer via a streaming interface";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XTRNARRAY");
@@ -362,8 +362,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("External transfer via a smart array interface");
-  entry->module=AllocateString("XTRN");
+  entry->description="External transfer via a smart array interface";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XTRNBSTR");
@@ -371,8 +371,8 @@ ModuleExport void RegisterXTRNImage(void)
   entry->encoder=WriteXTRNImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("External transfer via a smart array interface");
-  entry->module=AllocateString("XTRN");
+  entry->description="External transfer via a smart array interface";
+  entry->module="XTRN";
   RegisterMagickInfo(entry);
 }
 

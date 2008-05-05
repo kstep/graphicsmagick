@@ -155,8 +155,8 @@ ModuleExport void RegisterNULLImage(void)
   entry->decoder=(DecoderHandler) ReadNULLImage;
   entry->encoder=(EncoderHandler) WriteNULLImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Constant image of uniform color");
-  entry->module=AcquireString("NULL");
+  entry->description="Constant image of uniform color";
+  entry->module="NULL";
   (void) RegisterMagickInfo(entry);
 }
 

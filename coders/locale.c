@@ -378,32 +378,32 @@ ModuleExport void RegisterLOCALEImage(void)
   entry->encoder=(EncoderHandler) WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Locale Message File");
-  entry->module=AcquireString("LOCALE");
+  entry->description="Locale Message File";
+  entry->module="LOCALE";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("LOCALEMC");
   entry->encoder=(EncoderHandler) WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Microsoft Message File");
-  entry->module=AcquireString("LOCALE");
+  entry->description="Microsoft Message File";
+  entry->module="LOCALE";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("LOCALEC");
   entry->encoder=(EncoderHandler) WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Locale Message File - C code");
-  entry->module=AcquireString("LOCALE");
+  entry->description="Locale Message File - C code";
+  entry->module="LOCALE";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("LOCALEH");
   entry->encoder=(EncoderHandler) WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Locale Message File - C header file");
-  entry->module=AcquireString("LOCALE");
+  entry->description="Locale Message File - C header file";
+  entry->module="LOCALE";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -158,8 +158,8 @@ ModuleExport void RegisterXCImage(void)
   entry->decoder=(DecoderHandler) ReadXCImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("Constant image uniform color");
-  entry->module=AcquireString("XC");
+  entry->description="Constant image uniform color";
+  entry->module="XC";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -835,15 +835,16 @@ ModuleExport void RegisterMPCImage(void)
     *entry;
 
   entry=SetMagickInfo("CACHE");
-  entry->description=AcquireString("Magick Persistent Cache image format");
-  entry->module=AcquireString("CACHE");
+  entry->description="Magick Persistent Cache image format";
+  entry->module="CACHE";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("MPC");
   entry->decoder=(DecoderHandler) ReadMPCImage;
   entry->encoder=(EncoderHandler) WriteMPCImage;
   entry->magick=(MagickHandler) IsMPC;
-  entry->description=AcquireString("Magick Persistent Cache image format");
-  entry->module=AcquireString("MPC");
+  entry->description="Magick Persistent Cache image format";
+  entry->module="MPC";
   (void) RegisterMagickInfo(entry);
 }
 

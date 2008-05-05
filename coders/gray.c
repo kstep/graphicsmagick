@@ -262,72 +262,80 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
-  entry->description=AcquireString("Raw gray samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw gray samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("R");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw red samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw red samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("C");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw cyan samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw cyan samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("G");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw green samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw green samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("M");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw magenta samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw magenta samples";
+  entry->module="GRAY";
+
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("B");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw blue samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw blue samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("Y");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw yellow samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw yellow samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("O");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw opacity samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw opacity samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("K");
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AcquireString("Raw black samples");
-  entry->module=AcquireString("GRAY");
+  entry->description="Raw black samples";
+  entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
 }
 

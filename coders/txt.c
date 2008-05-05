@@ -389,15 +389,15 @@ ModuleExport void RegisterTXTImage(void)
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
   entry->raw=True;
-  entry->description=AcquireString("Text");
-  entry->module=AcquireString("TXT");
+  entry->description="Text";
+  entry->module="TXT";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("TXT");
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
-  entry->description=AcquireString("Text");
-  entry->module=AcquireString("TXT");
+  entry->description="Text";
+  entry->module="TXT";
   (void) RegisterMagickInfo(entry);
 }
 

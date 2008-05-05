@@ -1101,9 +1101,9 @@ ModuleExport void RegisterGIFImage(void)
   entry->decoder=(DecoderHandler) ReadGIFImage;
   entry->encoder=(EncoderHandler) WriteGIFImage;
   entry->magick=(MagickHandler) IsGIF;
-  entry->description=AcquireString("CompuServe graphics interchange format");
-  entry->version=AcquireString("version 89a");
-  entry->module=AcquireString("GIF");
+  entry->description="CompuServe graphics interchange format";
+  entry->version="version 89a";
+  entry->module="GIF";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("GIF87");
@@ -1111,9 +1111,9 @@ ModuleExport void RegisterGIFImage(void)
   entry->encoder=(EncoderHandler) WriteGIFImage;
   entry->magick=(MagickHandler) IsGIF;
   entry->adjoin=False;
-  entry->description=AcquireString("CompuServe graphics interchange format");
-  entry->version=AcquireString("version 87a");
-  entry->module=AcquireString("GIF");
+  entry->description="CompuServe graphics interchange format";
+  entry->version="version 87a";
+  entry->module="GIF";
   (void) RegisterMagickInfo(entry);
 }
 

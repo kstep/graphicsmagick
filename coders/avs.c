@@ -243,8 +243,8 @@ ModuleExport void RegisterAVSImage(void)
   entry=SetMagickInfo("AVS");
   entry->decoder=(DecoderHandler) ReadAVSImage;
   entry->encoder=(EncoderHandler) WriteAVSImage;
-  entry->description=AcquireString("AVS X image");
-  entry->module=AcquireString("AVS");
+  entry->description="AVS X image";
+  entry->module="AVS";
   (void) RegisterMagickInfo(entry);
 }
 

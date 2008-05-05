@@ -589,8 +589,8 @@ ModuleExport void RegisterRLEImage(void)
   entry->decoder=(DecoderHandler) ReadRLEImage;
   entry->magick=(MagickHandler) IsRLE;
   entry->adjoin=False;
-  entry->description=AcquireString("Utah Run length encoded image");
-  entry->module=AcquireString("RLE");
+  entry->description="Utah Run length encoded image";
+  entry->module="RLE";
   (void) RegisterMagickInfo(entry);
 }
 

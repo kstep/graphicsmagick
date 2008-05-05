@@ -311,8 +311,8 @@ ModuleExport void RegisterVICARImage(void)
   entry->encoder=(EncoderHandler) WriteVICARImage;
   entry->magick=(MagickHandler) IsVICAR;
   entry->adjoin=False;
-  entry->description=AcquireString("VICAR rasterfile format");
-  entry->module=AcquireString("VICAR");
+  entry->description="VICAR rasterfile format";
+  entry->module="VICAR";
   (void) RegisterMagickInfo(entry);
 }
 

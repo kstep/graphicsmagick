@@ -5191,8 +5191,8 @@ ModuleExport void RegisterLOGOImage(void)
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Granite texture");
-  entry->module=AcquireString("LOGO");
+  entry->description="Granite texture";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("H");
@@ -5200,15 +5200,15 @@ ModuleExport void RegisterLOGOImage(void)
   entry->encoder=(EncoderHandler) WriteLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Internal format");
-  entry->module=AcquireString("LOGO");
+  entry->description="Internal format";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IMAGE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
-  entry->description=AcquireString("GraphicsMagick Embedded Image");
-  entry->module=AcquireString("LOGO");
+  entry->description="GraphicsMagick Embedded Image";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("LOGO");
@@ -5216,32 +5216,32 @@ ModuleExport void RegisterLOGOImage(void)
   entry->encoder=(EncoderHandler) WriteLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("GraphicsMagick Logo");
-  entry->module=AcquireString("LOGO");
+  entry->description="GraphicsMagick Logo";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Netscape 216 color cube");
-  entry->module=AcquireString("LOGO");
+  entry->description="Netscape 216 color cube";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PATTERN");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Tiled pattern image");
-  entry->module=AcquireString("LOGO");
+  entry->description="Tiled pattern image";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ROSE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("70x46 Truecolor rose");
-  entry->module=AcquireString("LOGO");
+  entry->description="70x46 Truecolor rose";
+  entry->module="LOGO";
   (void) RegisterMagickInfo(entry);
 }
 

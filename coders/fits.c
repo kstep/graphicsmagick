@@ -606,8 +606,8 @@ ModuleExport void RegisterFITSImage(void)
   entry->encoder=(EncoderHandler) WriteFITSImage;
   entry->magick=(MagickHandler) IsFITS;
   entry->adjoin=False;
-  entry->description=AcquireString("Flexible Image Transport System");
-  entry->module=AcquireString("FITS");
+  entry->description="Flexible Image Transport System";
+  entry->module="FITS";
   (void) RegisterMagickInfo(entry);
 }
 

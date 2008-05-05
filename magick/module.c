@@ -268,12 +268,9 @@ MagickExport void DestroyModuleInfo(void)
   {
     module_info=q;
     q=q->next;
-    if (module_info->path != (char *) NULL)
-      MagickFreeMemory(module_info->path);
-    if (module_info->magick != (char *) NULL)
-      MagickFreeMemory(module_info->magick);
-    if (module_info->name != (char *) NULL)
-      MagickFreeMemory(module_info->name);
+    MagickFreeMemory(module_info->path);
+    MagickFreeMemory(module_info->magick);
+    MagickFreeMemory(module_info->name);
     MagickFreeMemory(module_info);
   }
   module_list=(ModuleInfo *) NULL;
@@ -1102,7 +1099,7 @@ MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
 %
 %  GetModuleInfo() returns a pointer to a ModuleInfo structure that matches
 %  the specified tag.  If tag is NULL, the head of the module alias list is
-%  returned. If no modules magick are loaded, or the requested alias is not
+%  returned. If no modules are loaded, or the requested alias is not
 %  found, NULL is returned.
 %
 %  The format of the GetModuleInfo method is:
@@ -1230,16 +1227,16 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  OpenModule() loads a module, and invokes its registration method.  It
-%  returns True on success, and False if there is an error.
+%  returns MagickPass on success, and MagickFail if there is an error.
 %
 %  The format of the OpenModule method is:
 %
-%      unsigned int OpenModule(const char *module,ExceptionInfo *exception)
+%      MagickPassFail OpenModule(const char *module,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method OpenModule returns True if the specified module is
-%      loaded, otherwise False.
+%    o status: Method OpenModule returns MagickPass if the specified module is
+%      loaded, otherwise MagickFail.
 %
 %    o module: a character string that indicates the module to load.
 %
@@ -1247,7 +1244,7 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int OpenModule(const char *module,
+MagickExport MagickPassFail OpenModule(const char *module,
   ExceptionInfo *exception)
 {
   {
@@ -1279,6 +1276,17 @@ MagickExport unsigned int OpenModule(const char *module,
             (void) strlcpy(module_name,p->name,MaxTextExtent);
             break;
           }
+
+    /*
+      Ignore already loaded modules.
+    */
+    for (coder_info=coder_list; coder_info != (CoderInfo *) NULL;
+         coder_info=coder_info->next)
+      if (LocaleCompare(coder_info->tag,module_name) == 0)
+        break;
+    if (coder_info != (CoderInfo *) NULL)
+      return MagickPass;
+
     /*
       Find module file.
     */
@@ -1315,7 +1323,7 @@ MagickExport unsigned int OpenModule(const char *module,
       {
         FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
         ThrowException(exception,ModuleError,UnableToLoadModule,message);
-        return(False);
+        return(MagickFail);
       }
     /*
       Add module to coder module list.
@@ -1324,7 +1332,7 @@ MagickExport unsigned int OpenModule(const char *module,
     if (coder_info == (CoderInfo*) NULL)
       {
         (void) lt_dlclose(handle);
-        return(False);
+        return(MagickFail);
       }
     coder_info->handle=handle;
     (void) time(&coder_info->load_time);
@@ -1340,7 +1348,7 @@ MagickExport unsigned int OpenModule(const char *module,
         FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
         ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
           message);
-        return(False);
+        return(MagickFail);
       }
 
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
@@ -1357,7 +1365,7 @@ MagickExport unsigned int OpenModule(const char *module,
         FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
         ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
           message);
-        return(False);
+        return(MagickFail);
       }
 
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
@@ -1369,7 +1377,7 @@ MagickExport unsigned int OpenModule(const char *module,
     */
     coder_info->register_function();
   }
-  return(True);
+  return(MagickPass);
 }
 
 /*

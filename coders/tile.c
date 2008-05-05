@@ -152,9 +152,9 @@ ModuleExport void RegisterTILEImage(void)
   entry=SetMagickInfo("TILE");
   entry->decoder=(DecoderHandler) ReadTILEImage;
   entry->raw=True;
-  entry->description=AcquireString("Tile image with a texture");
-  entry->note=AcquireString(TILENote);
-  entry->module=AcquireString("TILE");
+  entry->description="Tile image with a texture";
+  entry->note=TILENote;
+  entry->module="TILE";
   (void) RegisterMagickInfo(entry);
 }
 

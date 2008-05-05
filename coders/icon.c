@@ -507,24 +507,24 @@ ModuleExport void RegisterICONImage(void)
   entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Microsoft Cursor Icon");
-  entry->module=AcquireString("ICON");
+  entry->description="Microsoft Cursor Icon";
+  entry->module="ICON";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICO");
   entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Microsoft Icon");
-  entry->module=AcquireString("ICON");
+  entry->description="Microsoft Icon";
+  entry->module="ICON";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICON");
   entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Microsoft Icon");
-  entry->module=AcquireString("ICON");
+  entry->description="Microsoft Icon";
+  entry->module="ICON";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -209,16 +209,17 @@ ModuleExport void RegisterUYVYImage(void)
   entry->encoder=(EncoderHandler) WriteUYVYImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("16bit/pixel interleaved YUV");
-  entry->module=AcquireString("UYVY");
+  entry->description="16bit/pixel interleaved YUV";
+  entry->module="UYVY";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("UYVY");
   entry->decoder=(DecoderHandler) ReadUYVYImage;
   entry->encoder=(EncoderHandler) WriteUYVYImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("16bit/pixel interleaved YUV");
-  entry->module=AcquireString("UYVY");
+  entry->description="16bit/pixel interleaved YUV";
+  entry->module="UYVY";
   (void) RegisterMagickInfo(entry);
 }
 

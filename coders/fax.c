@@ -199,23 +199,12 @@ ModuleExport void RegisterFAXImage(void)
   MagickInfo
     *entry;
 
-  static const char
-    *FAXNote=
-    {
-      "Note that FAX machines use non-square pixels which are 1.5 times\n"
-      "wider than they are tall but computer displays use square pixels,\n"
-      "so FAX images may appear to be narrow unless they are explicitly\n"
-      "resized using a resize specification of \"150x100%\". Please note\n"
-      "that this is *not* a TIFF format."
-    };
-
   entry=SetMagickInfo("FAX");
   entry->decoder=(DecoderHandler) ReadFAXImage;
   entry->encoder=(EncoderHandler) WriteFAXImage;
   entry->magick=(MagickHandler) IsFAX;
-  entry->description=AcquireString("Group 3 FAX");
-  entry->note=AcquireString(FAXNote);
-  entry->module=AcquireString("FAX");
+  entry->description="Group 3 FAX (Not TIFF Group3 FAX!)";
+  entry->module="FAX";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("G3");
@@ -223,8 +212,9 @@ ModuleExport void RegisterFAXImage(void)
   entry->encoder=(EncoderHandler) WriteFAXImage;
   entry->magick=(MagickHandler) IsFAX;
   entry->adjoin=False;
-  entry->description=AcquireString("Group 3 FAX (same as \"FAX\")");
-  entry->module=AcquireString("FAX");
+  entry->description="Group 3 FAX (same as \"FAX\")";
+  entry->stealth=MagickTrue;
+  entry->module="FAX";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -2763,7 +2763,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterSVGImage(void)
 {
-  char
+  static char
     version[MaxTextExtent];
 
   MagickInfo
@@ -2773,15 +2773,16 @@ ModuleExport void RegisterSVGImage(void)
 #if defined(LIBXML_DOTTED_VERSION)
   (void) strlcpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent);
 #endif
+
   entry=SetMagickInfo("SVG");
 #if defined(HasXML)
   entry->decoder=(DecoderHandler) ReadSVGImage;
 #endif
   entry->encoder=(EncoderHandler) WriteSVGImage;
-  entry->description=AcquireString("Scalable Vector Gaphics");
+  entry->description="Scalable Vector Graphics";
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("SVG");
+    entry->version=version;
+  entry->module="SVG";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("SVGZ");
@@ -2789,10 +2790,10 @@ ModuleExport void RegisterSVGImage(void)
   entry->decoder=(DecoderHandler) ReadSVGImage;
 #endif
   entry->encoder=(EncoderHandler) WriteSVGImage;
-  entry->description=AcquireString("Scalable Vector Gaphics (ZIP compressed)");
+  entry->description="Scalable Vector Graphics (ZIP compressed)";
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("SVG");
+    entry->version=version;
+  entry->module="SVG";
   (void) RegisterMagickInfo(entry);
 }
 

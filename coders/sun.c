@@ -573,14 +573,15 @@ ModuleExport void RegisterSUNImage(void)
   entry->decoder=(DecoderHandler) ReadSUNImage;
   entry->encoder=(EncoderHandler) WriteSUNImage;
   entry->magick=(MagickHandler) IsSUN;
-  entry->description=AcquireString("SUN Rasterfile");
-  entry->module=AcquireString("SUN");
+  entry->description="SUN Rasterfile";
+  entry->module="SUN";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("SUN");
   entry->decoder=(DecoderHandler) ReadSUNImage;
   entry->encoder=(EncoderHandler) WriteSUNImage;
-  entry->description=AcquireString("SUN Rasterfile");
-  entry->module=AcquireString("SUN");
+  entry->description="SUN Rasterfile";
+  entry->module="SUN";
   (void) RegisterMagickInfo(entry);
 }
 

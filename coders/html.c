@@ -121,27 +121,25 @@ ModuleExport void RegisterHTMLImage(void)
   entry->encoder=(EncoderHandler) WriteHTMLImage;
   entry->magick=(MagickHandler) IsHTML;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Hypertext Markup Language and a client-side image map");
-  entry->module=AcquireString("HTML");
+  entry->description="Hypertext Markup Language and a client-side image map";
+  entry->stealth=MagickTrue;
+  entry->module="HTML";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("HTML");
   entry->encoder=(EncoderHandler) WriteHTMLImage;
   entry->magick=(MagickHandler) IsHTML;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Hypertext Markup Language and a client-side image map");
-  entry->module=AcquireString("HTML");
+  entry->description="Hypertext Markup Language and a client-side image map";
+  entry->module="HTML";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("SHTML");
   entry->encoder=(EncoderHandler) WriteHTMLImage;
   entry->magick=(MagickHandler) IsHTML;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Hypertext Markup Language and a client-side image map");
-  entry->module=AcquireString("HTML");
+  entry->description="Hypertext Markup Language and a client-side image map";
+  entry->module="HTML";
   (void) RegisterMagickInfo(entry);
 }
 

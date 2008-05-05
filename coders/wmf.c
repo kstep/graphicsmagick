@@ -2723,11 +2723,11 @@ ModuleExport void RegisterWMFImage(void)
 
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
-  entry->description = AcquireString("Windows Meta File");
-  entry->note=AcquireString(WMFNote);
+  entry->description = "Windows Meta File";
+  entry->note=WMFNote;
   entry->blob_support = True;
   entry->seekable_stream=True;
-  entry->module = AcquireString("WMF");
+  entry->module = "WMF";
   (void) RegisterMagickInfo(entry);
 #endif /* HasWMF || HasWMFlite */
 }

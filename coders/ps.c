@@ -412,9 +412,8 @@ ModuleExport void RegisterPSImage(void)
   entry->encoder=(EncoderHandler) WritePSImage;
   entry->magick=(MagickHandler) IsPS;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Adobe Encapsulated PostScript Interchange format");
-  entry->module=AcquireString("PS");
+  entry->description="Adobe Encapsulated PostScript Interchange format";
+  entry->module="PS";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPS");
@@ -422,8 +421,8 @@ ModuleExport void RegisterPSImage(void)
   entry->encoder=(EncoderHandler) WritePSImage;
   entry->magick=(MagickHandler) IsPS;
   entry->adjoin=False;
-  entry->description=AcquireString("Adobe Encapsulated PostScript");
-  entry->module=AcquireString("PS");
+  entry->description="Adobe Encapsulated PostScript";
+  entry->module="PS";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPSF");
@@ -431,8 +430,8 @@ ModuleExport void RegisterPSImage(void)
   entry->encoder=(EncoderHandler) WritePSImage;
   entry->magick=(MagickHandler) IsPS;
   entry->adjoin=False;
-  entry->description=AcquireString("Adobe Encapsulated PostScript");
-  entry->module=AcquireString("PS");
+  entry->description="Adobe Encapsulated PostScript";
+  entry->module="PS";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPSI");
@@ -440,17 +439,16 @@ ModuleExport void RegisterPSImage(void)
   entry->encoder=(EncoderHandler) WritePSImage;
   entry->magick=(MagickHandler) IsPS;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Adobe Encapsulated PostScript Interchange format");
-  entry->module=AcquireString("PS");
+  entry->description="Adobe Encapsulated PostScript Interchange format";
+  entry->module="PS";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PS");
   entry->decoder=(DecoderHandler) ReadPSImage;
   entry->encoder=(EncoderHandler) WritePSImage;
   entry->magick=(MagickHandler) IsPS;
-  entry->description=AcquireString("Adobe PostScript");
-  entry->module=AcquireString("PS");
+  entry->description="Adobe PostScript";
+  entry->module="PS";
   (void) RegisterMagickInfo(entry);
 }
 

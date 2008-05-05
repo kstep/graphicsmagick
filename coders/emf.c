@@ -440,16 +440,17 @@ ModuleExport void RegisterEMFImage(void)
     *entry;
 
   entry = SetMagickInfo("EMF");
-  entry->decoder = ReadEMFImage;
-  entry->description = AcquireString("Windows WIN32 API rendered Enhanced Meta File");
-  entry->blob_support = False;
-  entry->module = AcquireString("WMF");
+  entry->decoder=ReadEMFImage;
+  entry->description="Windows WIN32 API rendered Enhanced Meta File";
+  entry->blob_support=False;
+  entry->module="WMF";
   (void) RegisterMagickInfo(entry);
+
   entry = SetMagickInfo("WMFWIN32");
-  entry->decoder = ReadEMFImage;
-  entry->description = AcquireString("Windows WIN32 API rendered Meta File");
-  entry->blob_support = False;
-  entry->module = AcquireString("WMFWIN32");
+  entry->decoder=ReadEMFImage;
+  entry->description="Windows WIN32 API rendered Meta File";
+  entry->blob_support=False;
+  entry->module="WMFWIN32";
   (void) RegisterMagickInfo(entry);
 #endif /* HasWINGDI32 */
 }

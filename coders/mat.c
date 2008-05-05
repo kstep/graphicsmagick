@@ -1038,8 +1038,8 @@ ModuleExport void RegisterMATImage(void)
   entry->decoder = (DecoderHandler) ReadMATImage;
   entry->encoder = (EncoderHandler) WriteMATLABImage;
   entry->seekable_stream = True;
-  entry->description = AcquireString("MATLAB image format");
-  entry->module = AcquireString("MAT");
+  entry->description = "MATLAB image format";
+  entry->module = "MAT";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -5591,7 +5591,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterPNGImage(void)
 {
-  char
+  static char
     version[MaxTextExtent];
 
   MagickInfo
@@ -5600,18 +5600,20 @@ ModuleExport void RegisterPNGImage(void)
   static const char
     *PNGNote=
     {
-      "See http://www.libpng.org/ for details about the PNG format."
-    },
+      "See http://www.libpng.org/ for information on PNG.."
+    };
+  
+  static const char
     *JNGNote=
-      {
-        "See http://www.libpng.org/pub/mng/ for details about the JNG\n"
-        "format."
-      },
-      *MNGNote=
-        {
-          "See http://www.libpng.org/pub/mng/ for details about the MNG\n"
-          "format."
-        };
+    {
+      "See http://www.libpng.org/pub/mng/ for information on JNG."
+    };
+  
+  static const char
+    *MNGNote=
+    {
+      "See http://www.libpng.org/pub/mng/ for information on MNG."
+    };
 
       *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
@@ -5625,6 +5627,19 @@ ModuleExport void RegisterPNGImage(void)
         }
 #endif
 #endif
+
+#if defined(ZLIB_VERSION)
+      if (*version != '\0')
+        (void) strlcat(version,", ",MaxTextExtent);
+      (void) strlcat(version,"zlib ",MaxTextExtent);
+      (void) strlcat(version,ZLIB_VERSION,MaxTextExtent);
+      if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
+        {
+          (void) strlcat(version,",",MaxTextExtent);
+          (void) strlcat(version,zlib_version,MaxTextExtent);
+        }
+#endif
+
       entry=SetMagickInfo("MNG");
       entry->seekable_stream=True;  /* To do: eliminate this. */
       entry->thread_support=True;
@@ -5633,11 +5648,11 @@ ModuleExport void RegisterPNGImage(void)
       entry->encoder=(EncoderHandler) WriteMNGImage;
 #endif
       entry->magick=(MagickHandler) IsMNG;
-      entry->description=AcquireString("Multiple-image Network Graphics");
+      entry->description="Multiple-image Network Graphics";
       if (*version != '\0')
-        entry->version=AcquireString(version);
-      entry->module=AcquireString("PNG");
-      entry->note=AcquireString(MNGNote);
+        entry->version=version;
+      entry->module="PNG";
+      entry->note=MNGNote;
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG");
@@ -5648,11 +5663,11 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsPNG;
       entry->adjoin=False;
       entry->thread_support=True;
-      entry->description=AcquireString("Portable Network Graphics");
-      entry->module=AcquireString("PNG");
+      entry->description="Portable Network Graphics";
       if (*version != '\0')
-        entry->version=AcquireString(version);
-      entry->note=AcquireString(PNGNote);
+        entry->version=version;
+      entry->note=PNGNote;
+      entry->module="PNG";
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG8");
@@ -5663,24 +5678,13 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsPNG;
       entry->adjoin=False;
       entry->thread_support=True;
-      entry->description=AcquireString(
-                                       "8-bit indexed PNG, binary transparency only");
-      entry->module=AcquireString("PNG");
+      entry->description="8-bit indexed PNG, binary transparency only";
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG24");
-      *version='\0';
-#if defined(ZLIB_VERSION)
-      (void) strlcat(version,"zlib ",MaxTextExtent);
-      (void) strlcat(version,ZLIB_VERSION,MaxTextExtent);
-      if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
-        {
-          (void) strlcat(version,",",MaxTextExtent);
-          (void) strlcat(version,zlib_version,MaxTextExtent);
-        }
-#endif
-      if (*version != '\0')
-        entry->version=AcquireString(version);
 #if defined(HasPNG)
       entry->decoder=(DecoderHandler) ReadPNGImage;
       entry->encoder=(EncoderHandler) WritePNGImage;
@@ -5688,8 +5692,10 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsPNG;
       entry->adjoin=False;
       entry->thread_support=True;
-      entry->description=AcquireString("24-bit RGB PNG, opaque only");
-      entry->module=AcquireString("PNG");
+      entry->description="24-bit RGB PNG, opaque only";
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG32");
@@ -5700,8 +5706,10 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsPNG;
       entry->adjoin=False;
       entry->thread_support=True;
-      entry->description=AcquireString("32-bit RGBA PNG, semitransparency OK");
-      entry->module=AcquireString("PNG");
+      entry->description="32-bit RGBA PNG, semitransparency OK";
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("JNG");
@@ -5714,9 +5722,11 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsJNG;
       entry->adjoin=False;
       entry->thread_support=True;
-      entry->description=AcquireString("JPEG Network Graphics");
-      entry->module=AcquireString("PNG");
-      entry->note=AcquireString(JNGNote);
+      entry->description="JPEG Network Graphics";
+      entry->note=JNGNote;
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
       (void) RegisterMagickInfo(entry);
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)

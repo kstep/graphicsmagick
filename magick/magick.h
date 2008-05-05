@@ -25,11 +25,8 @@ typedef unsigned int
 
 typedef struct _MagickInfo
 {
-
   const char
-    *name;              /* format ID ("magick") */
-
-  char
+    *name,              /* format ID ("magick") */
     *description,       /* format description */
     *note,              /* usage note for user */
     *version,           /* support library version */

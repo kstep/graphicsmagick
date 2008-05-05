@@ -133,7 +133,8 @@ fi
 # This shouldn't be there yet.
 rm -f PerlMagick/Makefile.PL
 
-%configure --enable-shared --disable-static \
+%configure --enable-libtool-verbose --with-included-ltdl \
+        --enable-shared --disable-static \
 	--with-modules --enable-lzw \
 	--with-frozenpaths \
 %if %{perlm}
@@ -169,7 +170,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, 755)
-%doc ChangeLog Copyright.txt README.txt NEWS
+%doc ChangeLog Copyright.txt README.txt NEWS.txt
 %doc %{_datadir}/%{name}-%{base_version}
 %{_libdir}/lib%{name}.so.*
 %{_libdir}/lib%{name}Wand.so.*

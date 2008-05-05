@@ -220,20 +220,22 @@ ModuleExport void RegisterURLImage(void)
 
   entry=SetMagickInfo("HTTP");
   entry->decoder=(DecoderHandler) ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator (http://)");
-  entry->module=AcquireString("URL");
+  entry->description="Uniform Resource Locator (http://)";
+  entry->module="URL";
   entry->stealth=True;
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("FTP");
   entry->decoder=(DecoderHandler) ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator (ftp://)");
-  entry->module=AcquireString("URL");
+  entry->description="Uniform Resource Locator (ftp://)";
+  entry->module="URL";
   entry->stealth=True;
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("FILE");
   entry->decoder=(DecoderHandler) ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator (file://)");
-  entry->module=AcquireString("URL");
+  entry->description="Uniform Resource Locator (file://)";
+  entry->module="URL";
   entry->stealth=True;
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasXML) */

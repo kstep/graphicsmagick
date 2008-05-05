@@ -118,8 +118,8 @@ ModuleExport void RegisterXImage(void)
   entry->encoder=(EncoderHandler) WriteXImage;
 #endif /* defined(HasX11) */
   entry->adjoin=False;
-  entry->description=AcquireString("X Window System");
-  entry->module=AcquireString("X");
+  entry->description="X Window System";
+  entry->module="X";
   (void) RegisterMagickInfo(entry);
 }
 

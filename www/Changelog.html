@@ -21,6 +21,54 @@
 </tr>
 </table>
 <p>
+2008-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> libtool: Update to libtool 1.2.4.
+
+  <LI> magick/magick.h (MagickInfo): Store string attributes as 'const
+        char *' to statically allocated data rather than as heap allocated
+        strings.  THIS IS AN INTERFACE CHANGE.  Using a coder written to
+        the old interface is non-fatal but may resemble a small memory
+        leak.  The reason for the change is to avoid at least 880 needless
+        malloc()/strlen()/strlcpy() operations at initialization time, and
+        at least 880 free() calls at destruction time.  While these
+        operations did not take long, they are still an unnecessary
+        overhead, which is increased in thread-safe applications.
+  <LI> magick/module.c (OpenModule): Ignore requests to open modules
+        which have already been opened.
+  <LI> GraphicsMagick.spec.in: Add --with-included-ltdl to the default
+        options since this seems safest until the libltdl validation logic
+        is fully robust.  This should be made user-configurable in the
+        future.<BR>
+  <LI> magick/Makefile.am (magick_libGraphicsMagick_la_LIBADD): Apply
+        libltdl dependency argument as required for building.
+  <LI> configure.ac: Intuit if the GraphicsMagick library will depend
+        on -lltdl.<BR>
+  <LI> Magick++/bin/GraphicsMagick++-config.in: Use substitutions
+        rather than invoking GraphicsMagick-config in order to determine
+        GraphicsMagick library usage requirements.  This avoids problems
+        when GraphicsMagick-config is not in the executable search path.
+
+</UL>
+<p>
+2008-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> GraphicsMagick.spec.in: NEWS was renamed to NEWS.txt.  Enable
+        libtool verbose output so it is possible to diagnose build
+        failures.
+
+</UL>
+<p>
+2008-05-01  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c: gm convert -limit Pixels 1 input_gray_lsb_16bit.mat crap.miff
+        don't rotate partial image.
+
+</UL>
+<p>
 2008-04-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

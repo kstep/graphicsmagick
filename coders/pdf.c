@@ -554,8 +554,8 @@ ModuleExport void RegisterPDFImage(void)
   entry->adjoin=False;
   entry->blob_support=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Encapsulated Portable Document Format");
-  entry->module=AcquireString("PDF");
+  entry->description="Encapsulated Portable Document Format";
+  entry->module="PDF";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PDF");
@@ -564,8 +564,8 @@ ModuleExport void RegisterPDFImage(void)
   entry->magick=(MagickHandler) IsPDF;
   entry->blob_support=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Portable Document Format");
-  entry->module=AcquireString("PDF");
+  entry->description="Portable Document Format";
+  entry->module="PDF";
   (void) RegisterMagickInfo(entry);
 }
 

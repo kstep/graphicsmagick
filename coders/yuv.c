@@ -451,8 +451,8 @@ ModuleExport void RegisterYUVImage(void)
   entry->encoder=(EncoderHandler) WriteYUVImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("CCIR 601 4:1:1 or 4:2:2 (8-bit only)");
-  entry->module=AcquireString("YUV");
+  entry->description="CCIR 601 4:1:1 or 4:2:2 (8-bit only)";
+  entry->module="YUV";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -267,19 +267,11 @@ ModuleExport void RegisterARTImage(void)
   MagickInfo
     *entry;
 
-  static const char
-    *ARTNote=
-    {
-      "Format originally used on the Macintosh (MacPaint?) and later\n"
-      "used for PFS: 1st Publisher clip art.  NOT the AOL ART format."
-    };
-
   entry=SetMagickInfo("ART");
   entry->decoder = (DecoderHandler)ReadARTImage;
   entry->encoder = (EncoderHandler)WriteARTImage;
-  entry->description=AcquireString("PFS: 1st Publisher");
-  entry->module=AcquireString("ART");
-  entry->note=AcquireString(ARTNote);
+  entry->description="PFS: 1st Publisher";
+  entry->module="ART";
   (void) RegisterMagickInfo(entry);
 }
 

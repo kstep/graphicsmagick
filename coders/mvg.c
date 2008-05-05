@@ -223,8 +223,8 @@ ModuleExport void RegisterMVGImage(void)
   entry->magick=(MagickHandler) IsMVG;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Magick Vector Graphics");
-  entry->module=AcquireString("MVG");
+  entry->description="Magick Vector Graphics";
+  entry->module="MVG";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -4077,8 +4077,8 @@ ModuleExport void RegisterMSLImage(void)
   entry=SetMagickInfo("MSL");
   entry->decoder=(DecoderHandler) ReadMSLImage;
   entry->encoder=(EncoderHandler) WriteMSLImage;
-  entry->description=AcquireString("Magick Scripting Language");
-  entry->module=AcquireString("MSL");
+  entry->description="Magick Scripting Language";
+  entry->module="MSL";
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasXML) */
 }

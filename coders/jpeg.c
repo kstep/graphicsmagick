@@ -1159,8 +1159,16 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJPEGImage(void)
 {
+  static char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
+
+  version[0]='\0';
+#if defined(JPEG_LIB_VERSION)
+  FormatString(version,"%d",JPEG_LIB_VERSION);
+#endif
 
   entry=SetMagickInfo("JPEG");
   entry->thread_support=False; /* libjpeg is not thread safe */
@@ -1170,18 +1178,9 @@ ModuleExport void RegisterJPEGImage(void)
 #endif
   entry->magick=(MagickHandler) IsJPEG;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Joint Photographic Experts Group JFIF format");
-#if defined(JPEG_LIB_VERSION)
-  {
-    char
-      version[MaxTextExtent];
-
-    FormatString(version,"%d",JPEG_LIB_VERSION);
-    entry->version=AcquireString(version);
-  }
-#endif
-  entry->module=AcquireString("JPEG");
+  entry->description="Joint Photographic Experts Group JFIF format";
+  if (version[0] != '\0')
+    entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPG");
@@ -1191,9 +1190,10 @@ ModuleExport void RegisterJPEGImage(void)
   entry->encoder=(EncoderHandler) WriteJPEGImage;
 #endif
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Joint Photographic Experts Group JFIF format");
-  entry->module=AcquireString("JPEG");
+  entry->description="Joint Photographic Experts Group JFIF format";
+  if (version[0] != '\0')
+    entry->version=version;
+  entry->module="JPEG";
   (void) RegisterMagickInfo(entry);
 }
 

@@ -83,8 +83,8 @@ ModuleExport void RegisterHISTOGRAMImage(void)
   entry=SetMagickInfo("HISTOGRAM");
   entry->encoder=(EncoderHandler) WriteHISTOGRAMImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Histogram of the image");
-  entry->module=AcquireString("HISTOGRAM");
+  entry->description="Histogram of the image";
+  entry->module="HISTOGRAM";
   (void) RegisterMagickInfo(entry);
 }
 

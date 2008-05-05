@@ -293,8 +293,8 @@ ModuleExport void RegisterCLIPBOARDImage(void)
   entry->decoder=(DecoderHandler) ReadCLIPBOARDImage;
   entry->encoder=(EncoderHandler) WriteCLIPBOARDImage;
   entry->adjoin = False;
-  entry->description=AcquireString("the system clipboard");
-  entry->module=AcquireString("CLIPBOARD");
+  entry->description="Windows System Clipboard";
+  entry->module="CLIPBOARD";
   (void) RegisterMagickInfo(entry);
 #endif
 }
@@ -304,7 +304,7 @@ ModuleExport void RegisterCLIPBOARDImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r C L I P B O A R D I m a g e                                       %
+%   U n r e g i s t e r C L I P B O A R D I m a g e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %

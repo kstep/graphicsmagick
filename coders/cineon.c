@@ -798,8 +798,8 @@ ModuleExport void RegisterCINEONImage(void)
   entry->decoder=(DecoderHandler) ReadCINEONImage;
   entry->encoder=(EncoderHandler) WriteCINEONImage;
   entry->magick=(MagickHandler) IsCINEON;
-  entry->description=AcquireString("Cineon Image File");
-  entry->module=AcquireString("CINEON");
+  entry->description="Cineon Image File";
+  entry->module="CINEON";
   (void) RegisterMagickInfo(entry);
 }
 

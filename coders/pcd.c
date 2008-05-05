@@ -880,15 +880,16 @@ ModuleExport void RegisterPCDImage(void)
   entry->encoder=(EncoderHandler) WritePCDImage;
   entry->magick=(MagickHandler) IsPCD;
   entry->adjoin=False;
-  entry->description=AcquireString("Photo CD");
-  entry->module=AcquireString("PCD");
+  entry->description="Photo CD";
+  entry->module="PCD";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PCDS");
   entry->decoder=(DecoderHandler) ReadPCDImage;
   entry->encoder=(EncoderHandler) WritePCDImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Photo CD");
-  entry->module=AcquireString("PCD");
+  entry->description="Photo CD";
+  entry->module="PCD";
   (void) RegisterMagickInfo(entry);
 }
 

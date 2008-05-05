@@ -588,26 +588,29 @@ ModuleExport void RegisterTGAImage(void)
   entry=SetMagickInfo("ICB");
   entry->decoder=(DecoderHandler) ReadTGAImage;
   entry->encoder=(EncoderHandler) WriteTGAImage;
-  entry->description=AcquireString("Truevision Targa image");
-  entry->module=AcquireString("TGA");
+  entry->description="Truevision Targa image";
+  entry->module="TGA";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("TGA");
   entry->decoder=(DecoderHandler) ReadTGAImage;
   entry->encoder=(EncoderHandler) WriteTGAImage;
-  entry->description=AcquireString("Truevision Targa image");
-  entry->module=AcquireString("TGA");
+  entry->description="Truevision Targa image";
+  entry->module="TGA";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("VDA");
   entry->decoder=(DecoderHandler) ReadTGAImage;
   entry->encoder=(EncoderHandler) WriteTGAImage;
-  entry->description=AcquireString("Truevision Targa image");
-  entry->module=AcquireString("TGA");
+  entry->description="Truevision Targa image";
+  entry->module="TGA";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("VST");
   entry->decoder=(DecoderHandler) ReadTGAImage;
   entry->encoder=(EncoderHandler) WriteTGAImage;
-  entry->description=AcquireString("Truevision Targa image");
-  entry->module=AcquireString("TGA");
+  entry->description="Truevision Targa image";
+  entry->module="TGA";
   (void) RegisterMagickInfo(entry);
 }
 

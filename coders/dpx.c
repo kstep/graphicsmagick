@@ -2618,20 +2618,13 @@ ModuleExport void RegisterDPXImage(void)
   MagickInfo
     *entry;
 
-  static const char
-    *DPXNote =
-    {
-      "File Format for Digital Moving-Picture Exchange (DPX) Version 2.0.\n"
-      "The SMPTE 268M-2003 specification is available from http://www.smtpe.org/"
-    };
-
   entry=SetMagickInfo("DPX");
   entry->decoder=(DecoderHandler) ReadDPXImage;
   entry->encoder=(EncoderHandler) WriteDPXImage;
   entry->magick=(MagickHandler) IsDPX;
-  entry->description=AcquireString("SMPTE 268M-2003 (DPX 2.0)");
-  entry->note=AcquireString(DPXNote);
-  entry->module=AcquireString("DPX");
+  entry->description="SMPTE 268M-2003 (DPX 2.0)";
+  entry->note="See http://www.smtpe.org/ for information on DPX.";
+  entry->module="DPX";
   entry->adjoin=MagickFalse; /* Only one frame per file */
   entry->seekable_stream=MagickFalse; /* Does not reqire seek() */
   (void) RegisterMagickInfo(entry);

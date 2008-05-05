@@ -1529,7 +1529,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterMIFFImage(void)
 {
-  char
+  static char
     version[MaxTextExtent];
 
   MagickInfo
@@ -1550,10 +1550,10 @@ ModuleExport void RegisterMIFFImage(void)
   entry->decoder=(DecoderHandler) ReadMIFFImage;
   entry->encoder=(EncoderHandler) WriteMIFFImage;
   entry->magick=(MagickHandler) IsMIFF;
-  entry->description=AcquireString("Magick Image File Format");
+  entry->description="Magick Image File Format";
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("MIFF");
+    entry->version=version;
+  entry->module="MIFF";
   (void) RegisterMagickInfo(entry);
 }
 

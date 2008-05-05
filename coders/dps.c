@@ -557,8 +557,8 @@ ModuleExport void RegisterDPSImage(void)
   entry=SetMagickInfo("DPS");
   entry->decoder=(DecoderHandler) ReadDPSImage;
   entry->blob_support=False;
-  entry->description=AcquireString("Display Postscript Interpreter");
-  entry->module=AcquireString("DPS");
+  entry->description="Display Postscript Interpreter";
+  entry->module="DPS";
   (void) RegisterMagickInfo(entry);
 }
 

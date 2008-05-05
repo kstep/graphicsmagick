@@ -399,8 +399,8 @@ ModuleExport void RegisterRLAImage(void)
   entry=SetMagickInfo("RLA");
   entry->decoder=(DecoderHandler) ReadRLAImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Alias/Wavefront image");
-  entry->module=AcquireString("RLA");
+  entry->description="Alias/Wavefront image";
+  entry->module="RLA";
   (void) RegisterMagickInfo(entry);
 }
 

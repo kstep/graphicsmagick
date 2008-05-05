@@ -3482,25 +3482,14 @@ ModuleExport void RegisterDCMImage(void)
   MagickInfo
     *entry;
 
-  static const char
-    *DCMNote=
-    {
-      "DICOM is used by the medical community for images like X-rays.\n"
-      "The specification, \"Digital Imaging and Communications in\n"
-      "Medicine (DICOM)\", is available at http://medical.nema.org/\n"
-      "In particular, see part 5 which describes the image encoding (RLE,\n"
-      "JPEG, JPEG-LS), and supplement 61 which adds JPEG-2000 encoding."
-    };
-
   entry=SetMagickInfo("DCM");
   entry->decoder=(DecoderHandler) ReadDCMImage;
   entry->magick=(MagickHandler) IsDCM;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=
-    AcquireString("Digital Imaging and Communications in Medicine image");
-  entry->note=AcquireString(DCMNote);
-  entry->module=AcquireString("DCM");
+  entry->description="Digital Imaging and Communications in Medicine image";
+  entry->note="See http://medical.nema.org/ for information on DICOM.";
+  entry->module="DCM";
   (void) RegisterMagickInfo(entry);
 }
 

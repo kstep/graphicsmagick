@@ -251,9 +251,10 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJBIGImage(void)
 {
-#define JBIGDescription  "Joint Bi-level Image experts Group interchange format"
+  static const char
+    *description="Joint Bi-level Image experts Group interchange format";
 
-  char
+  static char
     version[MaxTextExtent];
 
   MagickInfo
@@ -269,30 +270,32 @@ ModuleExport void RegisterJBIGImage(void)
   entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
   entry->adjoin=False;
-  entry->description=AcquireString(JBIGDescription);
+  entry->description=description;
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("JBIG");
+    entry->version=version;
+  entry->module="JBIG";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("JBG");
 #if defined(HasJBIG)
   entry->decoder=(DecoderHandler) ReadJBIGImage;
   entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
-  entry->description=AcquireString(JBIGDescription);
+  entry->description=description;
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("JBIG");
+    entry->version=version;
+  entry->module="JBIG";
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("JBIG");
 #if defined(HasJBIG)
   entry->decoder=(DecoderHandler) ReadJBIGImage;
   entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
-  entry->description=AcquireString(JBIGDescription);
+  entry->description=description;
   if (*version != '\0')
-    entry->version=AcquireString(version);
-  entry->module=AcquireString("JBIG");
+    entry->version=version;
+  entry->module="JBIG";
   (void) RegisterMagickInfo(entry);
 }
 

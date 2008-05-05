@@ -639,8 +639,8 @@ ModuleExport void RegisterTOPOLImage(void)
   entry = SetMagickInfo("TOPOL");
   entry->decoder = (DecoderHandler) ReadTOPOLImage;
   entry->seekable_stream = True;
-  entry->description = AcquireString("TOPOL X Image");
-  entry->module = AcquireString("TOPOL");
+  entry->description = "TOPOL X Image";
+  entry->module = "TOPOL";
   (void) RegisterMagickInfo(entry);
 }
 
