@@ -1,3 +1,9 @@
+2008-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (GetMagickInfo): Simplify implementation.
+	(RegisterMagickInfo): Remove any existing entry since module
+	loading may result in duplicate entries.
+
 2008-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Update to libtool 1.2.4.
