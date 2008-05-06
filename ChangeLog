@@ -1,3 +1,9 @@
+2008-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.2.1 released.
+	* BENCHMARKS.txt: Added a section for execution overhead
+	measurements.
+
 2008-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (GetMagickInfo): Simplify implementation.
