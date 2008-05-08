@@ -149,7 +149,9 @@ static int isnan (double d) {
 /* Microsoft's C runtime names all non-ANSI functions with a leading
    underscore. Since functionality is still the same, they can be used. */
 #define snprintf _snprintf
+#if _MSC_VER < 1500
 #define vsnprintf _vsnprintf
+#endif
 #endif /* _MSC_VER */
 
 #ifndef LIBXML_DLL_IMPORT

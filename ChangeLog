@@ -1,3 +1,8 @@
+2008-05-08  Josue Andrade Gomes  <josuegomes@gmail.com>
+
+	* magick/nt_base.h, libxml/include/win32config.h (vsnprintf):
+	Fixed compilation issue noticed with Visual C++ 2008.
+
 2008-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2.1 released.
