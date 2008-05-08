@@ -345,9 +345,6 @@ static MagickInfo *GetMagickInfoEntryLocked(const char *name)
 MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *ARGUNUSED(exception))
 {
-  register MagickInfo
-    *p;
-
 #if !defined(BuildMagickModules)
   if ((magick_list == (MagickInfo *) NULL) &&
       (GetMagickInfoEntryLocked(NULL) == (MagickInfo *) NULL))
