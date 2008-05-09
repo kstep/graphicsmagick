@@ -1,3 +1,8 @@
+2008-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/{msl.c, svg.c, url.c}: Fix compilation with modern
+	libxml2 under MinGW.
+
 2008-05-08  Josue Andrade Gomes  <josuegomes@gmail.com>
 
 	* magick/nt_base.h, libxml/include/win32config.h (vsnprintf):

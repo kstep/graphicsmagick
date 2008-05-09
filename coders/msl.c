@@ -59,8 +59,9 @@
 #if defined(MSWINDOWS)
 #  if defined(__MINGW32__)
 #    define _MSC_VER
+#  else
+#    include <win32config.h>
 #  endif
-#  include <win32config.h>
 #endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
