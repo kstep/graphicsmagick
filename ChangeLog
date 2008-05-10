@@ -1,5 +1,6 @@
 2008-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac, magick/nt_base.h: Fix using libbz2 under MinGW.
 	* coders/{msl.c, svg.c, url.c}: Fix compilation with modern
 	libxml2 under MinGW.
 

@@ -28988,8 +28988,8 @@ then
 $as_echo_n "checking for UMEM support ... " >&6; }
   { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   if test "${ac_cv_header_umem_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for umem.h" >&5
 $as_echo_n "checking for umem.h... " >&6; }
@@ -29629,8 +29629,8 @@ then
 $as_echo_n "checking for ZLIB support ... " >&6; }
   { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   if test "${ac_cv_header_zconf_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for zconf.h" >&5
 $as_echo_n "checking for zconf.h... " >&6; }
@@ -30372,8 +30372,9 @@ then
 $as_echo_n "checking for BZLIB support ... " >&6; }
   { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
+  found_libbz=0
   if test "${ac_cv_header_bzlib_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for bzlib.h" >&5
 $as_echo_n "checking for bzlib.h... " >&6; }
@@ -30508,77 +30509,6 @@ else
 fi
 
 
-  { $as_echo "$as_me:$LINENO: checking for BZ2_bzCompress in -lbz2" >&5
-$as_echo_n "checking for BZ2_bzCompress in -lbz2... " >&6; }
-if test "${ac_cv_lib_bz2_BZ2_bzCompress+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbz2  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char BZ2_bzCompress ();
-int
-main ()
-{
-return BZ2_bzCompress ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_bz2_BZ2_bzCompress=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_bz2_BZ2_bzCompress=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_bz2_BZ2_bzCompress" >&5
-$as_echo "$ac_cv_lib_bz2_BZ2_bzCompress" >&6; }
-if test $ac_cv_lib_bz2_BZ2_bzCompress = yes; then
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
   { $as_echo "$as_me:$LINENO: checking for BZ2_bzDecompress in -lbz2" >&5
 $as_echo_n "checking for BZ2_bzDecompress in -lbz2... " >&6; }
 if test "${ac_cv_lib_bz2_BZ2_bzDecompress+set}" = set; then
@@ -30645,11 +30575,95 @@ fi
 { $as_echo "$as_me:$LINENO: result: $ac_cv_lib_bz2_BZ2_bzDecompress" >&5
 $as_echo "$ac_cv_lib_bz2_BZ2_bzDecompress" >&6; }
 if test $ac_cv_lib_bz2_BZ2_bzDecompress = yes; then
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
+  found_libbz=`expr $found_libbz + 1`
 fi
 
+  if test "$native_win32_build" = 'yes'
+  then
+    # Under MinGW, libbz2 obfuscates its functions by declaring them
+    # with DLL interfaces.  This would be all better if we could
+    # somehow include bzlib.h during the test but Autoconf does not
+    # make that possible.  We check for BZ2_decompress since that is
+    # one of the few functions exported from the DLL (very strange).
+    { $as_echo "$as_me:$LINENO: checking for _imp__BZ2_decompress in -lbz2" >&5
+$as_echo_n "checking for _imp__BZ2_decompress in -lbz2... " >&6; }
+if test "${ac_cv_lib_bz2__imp__BZ2_decompress+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbz2  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _imp__BZ2_decompress ();
+int
+main ()
+{
+return _imp__BZ2_decompress ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_bz2__imp__BZ2_decompress=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_bz2__imp__BZ2_decompress=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_bz2__imp__BZ2_decompress" >&5
+$as_echo "$ac_cv_lib_bz2__imp__BZ2_decompress" >&6; }
+if test $ac_cv_lib_bz2__imp__BZ2_decompress = yes; then
+  found_libbz=`expr $found_libbz + 1`
+fi
+
+  fi
+  if test $found_libbz -gt 0
+  then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  #AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,_imp__BZ2_decompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   { $as_echo "$as_me:$LINENO: checking if BZLIB package is complete" >&5
 $as_echo_n "checking if BZLIB package is complete... " >&6; }
   if test $passed -gt 0
@@ -32530,8 +32544,8 @@ then
 $as_echo_n "checking for Display Postscript support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     O_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
     if test "${ac_cv_header_DPS_dpsXclient_h+set}" = set; then
@@ -32952,8 +32966,8 @@ then
 $as_echo_n "checking for FlashPIX components ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -33220,8 +33234,8 @@ then
 $as_echo_n "checking for LCMS support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     have_lcms_header='no'
     if test "${ac_cv_header_lcms_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for lcms.h" >&5
@@ -33626,8 +33640,8 @@ then
 $as_echo_n "checking for PNG support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_png_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for png.h" >&5
 $as_echo_n "checking for png.h... " >&6; }
@@ -33880,8 +33894,8 @@ then
 $as_echo_n "checking for JPEG support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_jconfig_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for jconfig.h" >&5
 $as_echo_n "checking for jconfig.h... " >&6; }
@@ -34603,8 +34617,8 @@ then
 $as_echo_n "checking for JPEG version 2 support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_jasper_jasper_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for jasper/jasper.h" >&5
 $as_echo_n "checking for jasper/jasper.h... " >&6; }
@@ -34858,8 +34872,8 @@ then
 $as_echo_n "checking for Ghostscript library support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_ghostscript_iapi_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for ghostscript/iapi.h" >&5
 $as_echo_n "checking for ghostscript/iapi.h... " >&6; }
@@ -35110,8 +35124,8 @@ fi
 # then
 #     AC_MSG_CHECKING(for MPEG version 2 support )
 #     AC_MSG_RESULT()
-#     failed=0;
-#     passed=0;
+#     failed=0
+#     passed=0
 #     AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
 #     AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
 #     AC_MSG_CHECKING(if MPEG version 2 support package is complete)
@@ -35146,8 +35160,8 @@ then
 $as_echo_n "checking for FreeType 2.0 ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
@@ -35537,8 +35551,8 @@ then
 $as_echo_n "checking for TIFF support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_tiff_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for tiff.h" >&5
 $as_echo_n "checking for tiff.h... " >&6; }
@@ -36464,8 +36478,8 @@ then
 $as_echo_n "checking for JBIG support ... " >&6; }
     { $as_echo "$as_me:$LINENO: result: " >&5
 $as_echo "" >&6; }
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_jbig_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for jbig.h" >&5
 $as_echo_n "checking for jbig.h... " >&6; }
@@ -36774,8 +36788,8 @@ done
         fi
         LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
      fi
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     if test "${ac_cv_header_libxml_parser_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for libxml/parser.h" >&5
 $as_echo_n "checking for libxml/parser.h... " >&6; }

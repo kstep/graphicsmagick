@@ -54,10 +54,10 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #if defined(HasZLIB)
-#include "zlib.h"
+#  include "zlib.h"
 #endif
 #if defined(HasBZLIB)
-#include "bzlib.h"
+#  include "bzlib.h"
 #endif
 
 /*
