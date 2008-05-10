@@ -1292,8 +1292,8 @@ if test "$with_umem" != 'no'
 then
   AC_MSG_CHECKING(for UMEM support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   AC_CHECK_HEADER(umem.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_LIB(umem,umem_alloc,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_CHECK_LIB(umem,umem_free,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1394,8 +1394,8 @@ if test "$with_zlib" != 'no' || test "$with_png" != 'no'
 then
   AC_MSG_CHECKING(for ZLIB support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_HEADER(zlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1434,11 +1434,29 @@ then
   LIB_BZLIB=''
   AC_MSG_CHECKING(for BZLIB support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
+  found_libbz=0
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzDecompress,found_libbz=`expr $found_libbz + 1`,,)
+  if test "$native_win32_build" = 'yes'
+  then
+    # Under MinGW, libbz2 obfuscates its functions by declaring them
+    # with DLL interfaces.  This would be all better if we could
+    # somehow include bzlib.h during the test but Autoconf does not
+    # make that possible.  We check for BZ2_decompress since that is
+    # one of the few functions exported from the DLL (very strange).
+    AC_CHECK_LIB(bz2,_imp__BZ2_decompress,found_libbz=`expr $found_libbz + 1`,,)
+  fi
+  if test $found_libbz -gt 0
+  then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  #AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,_imp__BZ2_decompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if BZLIB package is complete)
   if test $passed -gt 0
   then
@@ -1528,8 +1546,8 @@ if test "$with_dps" != 'no' && test "$with_x" != 'no'
 then
     AC_MSG_CHECKING([for Display Postscript support ])
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     O_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
     AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1590,8 +1608,8 @@ if test "$with_fpx" != 'no'
 then
     AC_MSG_CHECKING(for FlashPIX components )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER(fpxlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1627,8 +1645,8 @@ if test "$with_lcms" != 'no'
 then
     AC_MSG_CHECKING(for LCMS support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     have_lcms_header='no'
     AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
     if test "$have_lcms_header" = 'yes'
@@ -1676,8 +1694,8 @@ if test "$with_png" != 'no'
 then
     AC_MSG_CHECKING(for PNG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if PNG package is complete)
@@ -1710,8 +1728,8 @@ if test "$with_jpeg" != 'no'
 then
     AC_MSG_CHECKING(for JPEG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1772,8 +1790,8 @@ if test "$with_jp2" != 'no'
 then
     AC_MSG_CHECKING(for JPEG version 2 support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jasper/jasper.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jasper,jas_stream_fopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if JPEG version 2 support package is complete)
@@ -1807,8 +1825,8 @@ if test "$with_gslib" != 'no'
 then
     AC_MSG_CHECKING(for Ghostscript library support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(ghostscript/iapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(gs,gsapi_new_instance,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if Ghostscript library package is complete)
@@ -1841,8 +1859,8 @@ AC_SUBST(LIB_GS)
 # then
 #     AC_MSG_CHECKING(for MPEG version 2 support )
 #     AC_MSG_RESULT()
-#     failed=0;
-#     passed=0;
+#     failed=0
+#     passed=0
 #     AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
 #     AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
 #     AC_MSG_CHECKING(if MPEG version 2 support package is complete)
@@ -1875,8 +1893,8 @@ if test "$with_ttf" != 'no'
 then
     AC_MSG_CHECKING(for FreeType 2.0 )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
@@ -1955,8 +1973,8 @@ if test "$with_tiff" != 'no'
 then
     AC_MSG_CHECKING(for TIFF support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -2001,8 +2019,8 @@ if test "$with_jbig" != 'no'
 then
     AC_MSG_CHECKING(for JBIG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if JBIG package is complete)
@@ -2051,8 +2069,8 @@ then
         fi
         LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
      fi
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(xml2,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)

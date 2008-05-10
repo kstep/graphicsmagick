@@ -146,6 +146,16 @@ typedef long ssize_t;
 
 #endif /* !defined(XS_VERSION) */
 
+/*
+  Bzlib is strange in that symbols from bzlib.h are DLL-exported by
+  default rather than imported.  This feels like a bug to me.
+*/
+#if defined(HasBZLIB)
+#  if defined(_WIN32)
+#    define BZ_IMPORT 1
+#  endif
+#endif /* defined(HasBZLIB) */
+
 
 /*
   NT utilities routines.
