@@ -1,5 +1,15 @@
 2008-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/operator.c (QuantumOperatorRegionImage): Add progress
+	monitor support.
+	* magick/pixel_iterator.c (PixelIterateMonoRead): Add a
+	'description' argument and progress monitor support.
+	(PixelIterateMonoModify): Add a
+	'description' argument and progress monitor support.
+	(PixelIterateDualRead): Add a
+	'description' argument and progress monitor support.
+	(PixelIterateDualModify): Add a
+	'description' argument and progress monitor support.
 	* magick/resize.c (HorizontalFilter, VerticalFilter): Switch back
 	to RoundSignedToQuantum() since some pixels were experiencing
 	underflow.  Localize some variables so that we don't have to

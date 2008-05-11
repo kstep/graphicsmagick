@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004 GraphicsMagick Group
+% Copyright (C) 2004, 2008 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -13,6 +13,7 @@
 */
 
 #include "magick/studio.h"
+#include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 
@@ -36,6 +37,7 @@
 %
 %      MagickPassFail PixelIterateMonoRead(
 %                                    PixelIteratorMonoReadCallback call_back,
+%                                    const char *description,
 %                                    void *user_data,
 %                                    const long x,
 %                                    const long y,
@@ -48,6 +50,8 @@
 %
 %    o call_back: A user-provided C callback function which is passed the
 %       address of a pixel from each image.
+%
+%    o description: textual description of operation being performed.
 %
 %    o user_data: User-provided context data.
 %
@@ -66,6 +70,7 @@
 */
 MagickExport MagickPassFail
 PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
+                     const char *description,
                      void *user_data,
                      const long x,
                      const long y,
@@ -103,6 +108,10 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
           pixels++;
         }
 
+      if (QuantumTick(row-y,rows))
+        if (!MagickMonitor(description,row-y,rows,exception))
+          status=MagickFail;
+
       if (status == MagickFail)
         break;
     }
@@ -129,6 +138,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 %
 %      MagickPassFail PixelIterateMonoModify(
 %                                    PixelIteratorMonoModifyCallback call_back,
+%                                    const char *description,
 %                                    void *user_data,
 %                                    const long x,
 %                                    const long y,
@@ -141,6 +151,8 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 %
 %    o call_back: A user-provided C callback function which is passed the
 %       address of a pixel from each image.
+%
+%    o description: textual description of operation being performed.
 %
 %    o user_data: User-provided context data.
 %
@@ -159,6 +171,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 */
 MagickExport MagickPassFail
 PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
+                       const char *description,
                        void *user_data,
                        const long x,
                        const long y,
@@ -206,6 +219,10 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
             }
         }
 
+      if (QuantumTick(row-y+1,rows))
+        if (!MagickMonitor(description,row-y+1,rows,exception))
+          status=MagickFail;
+
       if (status == MagickFail)
         break;
     }
@@ -232,6 +249,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 %
 %      MagickPassFail PixelIterateDualRead(
 %                                   PixelIteratorDualReadCallback call_back,
+%                                   const char *description,
 %                                   void *user_data,
 %                                   const unsigned long columns,
 %                                   const unsigned long rows,
@@ -247,6 +265,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 %
 %    o call_back: A user-provided C callback function which is passed the
 %       address of a pixel from each image.
+%
+%    o description: textual description of operation being performed.
 %
 %    o user_data: User-provided context data.
 %
@@ -271,6 +291,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 */
 MagickExport MagickPassFail
 PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
+                     const char *description,
                      void *user_data,
                      const unsigned long columns,
                      const unsigned long rows,
@@ -328,6 +349,10 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
           second_pixels++;
         }
 
+      if (QuantumTick(first_row-first_y,rows))
+        if (!MagickMonitor(description,first_row-first_y,rows,exception))
+          status=MagickFail;
+
       if (status == MagickFail)
         break;
     }
@@ -354,6 +379,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %
 %      MagickPassFail PixelIterateDualModify(
 %                                   PixelIteratorDualModifyCallback call_back,
+%                                   const char *description,
 %                                   void *user_data,
 %                                   const unsigned long columns,
 %                                   const unsigned long rows,
@@ -368,7 +394,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %  A description of each parameter follows:
 %
 %    o call_back: A user-provided C callback function which reads from
-%       a source pixel and updates a destination pixel.
+%      a source pixel and updates a destination pixel.
+%
+%    o description: textual description of operation being performed.
 %
 %    o user_data: User-provided context data.
 %
@@ -393,6 +421,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 */
 MagickExport MagickPassFail
 PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
+                       const char *description,
                        void *user_data,
                        const unsigned long columns,
                        const unsigned long rows,
@@ -462,6 +491,10 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
               CopyException(exception,&update_image->exception);
             }
         }
+
+      if (QuantumTick(source_row-source_y,rows))
+        if (!MagickMonitor(description,source_row-source_y,rows,exception))
+          status=MagickFail;
 
       if (status == MagickFail)
         break;

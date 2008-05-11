@@ -18,6 +18,50 @@
 #include "magick/utility.h"
 #include "magick/operator.h"
 
+static const char *ChannelTypeToString(const ChannelType channel)
+{
+  const char
+    *channel_type="undefined";
+
+  switch (channel)
+    {
+    case UndefinedChannel:
+      break;
+    case RedChannel:
+      channel_type="red";
+      break;
+    case CyanChannel: 
+      channel_type="cyan";
+      break;
+    case GreenChannel:
+      channel_type="green";
+      break;
+    case MagentaChannel:
+      channel_type="magenta";
+      break;
+    case BlueChannel:
+      channel_type="blue";
+      break;
+    case YellowChannel:
+      channel_type="yellow";
+      break;
+    case OpacityChannel:
+      channel_type="opacity";
+      break;
+    case BlackChannel:
+      channel_type="black";
+      break;
+    case MatteChannel:
+      channel_type="matte";
+      break;
+    case AllChannels:
+      channel_type="all";
+      break;
+    }
+
+  return channel_type;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -504,6 +548,12 @@ QuantumOperatorRegionImage(Image *image,
                            const double rvalue,
                            ExceptionInfo *exception)
 {
+  const char
+    *operator_text = "undefined";
+
+  char
+    description[MaxTextExtent];
+
   QuantumContext
     context;
 
@@ -525,35 +575,50 @@ QuantumOperatorRegionImage(Image *image,
       break;
     case AddQuantumOp:
       call_back=QuantumAdd;
+      operator_text="add";
       break;
     case AndQuantumOp:
       call_back=QuantumAnd;
+      operator_text="and";
       break;
     case DivideQuantumOp:
       call_back=QuantumDivide;
+      operator_text="divide";
       break;
     case LShiftQuantumOp:
       call_back=QuantumLShift;
+      operator_text="lshift";
       break;
     case MultiplyQuantumOp:
       call_back=QuantumMultiply;
+      operator_text="multiply";
       break;
     case OrQuantumOp:
       call_back=QuantumOr;
+      operator_text="or";
       break;
     case RShiftQuantumOp:
       call_back=QuantumRShift;
+      operator_text="rshift";
       break;
     case SubtractQuantumOp:
       call_back=QuantumSubtract;
+      operator_text="subtract";
       break;
     case XorQuantumOp:
       call_back=QuantumXor;
+      operator_text="xor";
       break;
     }
 
   if (call_back)
-    status=PixelIterateMonoModify(call_back,(void *) &context,x,y,columns,rows,
-                                  image,exception);
+    {
+      FormatString(description,"Apply operator '%s %g' to channel '%s' ...",
+                   operator_text,rvalue,ChannelTypeToString(channel));
+      status=PixelIterateMonoModify(call_back,
+                                    description,
+                                    (void *) &context,x,y,columns,rows,
+                                    image,exception);
+    }
   return (status);
 }

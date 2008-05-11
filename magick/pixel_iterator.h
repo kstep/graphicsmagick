@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2004 GraphicsMagick Group
+  Copyright (C) 2004, 2008 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -34,6 +34,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
+                       const char *description,
                        void *user_data,
                        const long x,
                        const long y,
@@ -55,6 +56,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
+                         const char *description,
                          void *user_data,
                          const long x,
                          const long y,
@@ -81,6 +83,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
+                       const char *description,
                        void *user_data,
                        const unsigned long columns,
                        const unsigned long rows,
@@ -112,6 +115,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
+                         const char *description,
                          void *user_data,
                          const unsigned long columns,
                          const unsigned long rows,

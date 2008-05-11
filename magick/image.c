@@ -3332,6 +3332,13 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
   double
     normalized;
 
+  MagickPassFail
+    status;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+
+  status=MagickPass;
   normalized=(double) pixel->red/MaxRGB;
   statistics->red.mean += normalized/context->samples;
   if (normalized > statistics->red.maximum)
@@ -3345,7 +3352,6 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
     statistics->green.maximum=normalized;
   if (normalized <  statistics->green.minimum)
     statistics->green.minimum=normalized;
-
 
   normalized=(double) pixel->blue/MaxRGB;
   statistics->blue.mean += normalized/context->samples;
@@ -3363,11 +3369,8 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
       if (normalized <  statistics->opacity.minimum)
         statistics->opacity.minimum=normalized;
     }
-  if ((x == 0) && QuantumTick(y,image->rows))
-    if (!MagickMonitor("Compute image mean ...",y,image->rows,exception))
-      return (MagickFail);
 
-  return MagickPass;
+  return status;
 }
 #define Square(x)  ((x)*(x))
 static MagickPassFail GetImageStatisticsVariance(void *user_context,
@@ -3386,6 +3389,13 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
   double
     normalized;
 
+  MagickPassFail
+    status;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+
+  status=MagickPass;
   normalized=(double) pixel->red/MaxRGB;
   statistics->red.variance +=
     Square(normalized-statistics->red.mean)/context->variance_divisor;
@@ -3404,11 +3414,8 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
       statistics->opacity.variance +=
         Square(normalized-statistics->opacity.mean)/context->variance_divisor;
     }
-  if ((x == 0) && QuantumTick(y,image->rows))
-    if (!MagickMonitor("Compute image variance ...",y,image->rows,exception))
-      return (MagickFail);
 
-  return MagickPass;
+  return status;
 }
 MagickExport MagickPassFail GetImageStatistics(const Image *image,
                                                ImageStatistics *statistics,
@@ -3438,29 +3445,29 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   /*
     Compute Mean, Max, and Min
   */
-  status &= PixelIterateMonoRead(GetImageStatisticsMean,
-                                 &context,0,0,image->columns,
-                                 image->rows,image,exception);
-  if (status != MagickPass)
-    return (status);
-
+  status = PixelIterateMonoRead(GetImageStatisticsMean,
+                                "Compute image mean ...",
+                                &context,0,0,image->columns,
+                                image->rows,image,exception);
   /*
     Compute Variance
   */
-  status &= PixelIterateMonoRead(GetImageStatisticsVariance,
-                                 &context,0,0,image->columns,
-                                 image->rows,image,exception);
-  if (status != MagickPass)
-    return (status);
-
+  if (status == MagickPass)
+    status = PixelIterateMonoRead(GetImageStatisticsVariance,
+                                  "Compute image variance ...",
+                                  &context,0,0,image->columns,
+                                  image->rows,image,exception);
   /*
     Compute Standard Deviation
   */
-  statistics->red.standard_deviation=sqrt(statistics->red.variance);
-  statistics->green.standard_deviation=sqrt(statistics->green.variance);
-  statistics->blue.standard_deviation=sqrt(statistics->blue.variance);
-  if (image->matte)
-    statistics->opacity.standard_deviation=sqrt(statistics->opacity.variance);
+  if (status == MagickPass)
+    {
+      statistics->red.standard_deviation=sqrt(statistics->red.variance);
+      statistics->green.standard_deviation=sqrt(statistics->green.variance);
+      statistics->blue.standard_deviation=sqrt(statistics->blue.variance);
+      if (image->matte)
+        statistics->opacity.standard_deviation=sqrt(statistics->opacity.variance);
+    }
 
   return status;
 }
@@ -3726,6 +3733,9 @@ ComputePixelError(void *user_data,
     distance,
     distance_squared;
 
+  ARG_NOT_USED(first_x);
+  ARG_NOT_USED(first_y);
+
   difference=(first_pixel->red-(double) second_pixel->red)/MaxRGB;
   distance_squared=(difference*difference);
   difference=(first_pixel->green-(double) second_pixel->green)/MaxRGB;
@@ -3741,9 +3751,6 @@ ComputePixelError(void *user_data,
   stats->total_error+=distance;
   if (distance > stats->maximum_error_per_pixel)
     stats->maximum_error_per_pixel=distance;
-  if ((first_x == 0) && QuantumTick(first_y,first_image->rows))
-    if (!MagickMonitor("Compute pixel error ...",first_y,first_image->rows,exception))
-      return (MagickFail);
   return (MagickPass);
 }
 
@@ -3784,7 +3791,9 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   stats.maximum_error_per_pixel=0.0;
   stats.total_error=0.0;
 
-  (void) PixelIterateDualRead(ComputePixelError,(void *) &stats,
+  (void) PixelIterateDualRead(ComputePixelError,
+                              "Compute pixel error ...",
+                              (void *) &stats,
                               image->columns,image->rows,
                               image,0,0,
                               reference,0,0,
