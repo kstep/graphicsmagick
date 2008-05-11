@@ -1,7 +1,7 @@
 2008-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/resize.c, PerlMagick/Makefile.PL.in: Added
-	OpenMP support for parallizing a task across multiple cores.
+	OpenMP support for parallelizing a task across multiple cores.
 
 2008-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
