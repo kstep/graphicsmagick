@@ -1,3 +1,8 @@
+2008-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac, magick/resize.c, PerlMagick/Makefile.PL.in: Added
+	OpenMP support for parallizing a task across multiple cores.
+
 2008-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/nt_base.h: Fix using libbz2 under MinGW.
@@ -18,7 +23,6 @@
 2008-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Update to libtool 1.2.4.
-
 	* magick/magick.h (MagickInfo): Store string attributes as 'const
 	char *' to statically allocated data rather than as heap allocated
 	strings.  THIS IS AN INTERFACE CHANGE.  Using a coder written to
