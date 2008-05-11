@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2008-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (HorizontalFilter, VerticalFilter): Switch back
+        to RoundSignedToQuantum() since some pixels were experiencing
+        underflow.  Localize some variables so that we don't have to
+        declare them as private for OpenMP.
+
+</UL>
+<p>
 2008-05-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
