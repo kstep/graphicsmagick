@@ -179,6 +179,9 @@ Optional Features:
   --disable-largefile
     disable support for large (64 bit) file offsets
 
+  --enable-openmp
+    enable use of OpenMP (automatic multi-threaded loops)
+
   --enable-symbol-prefix
     enable prefixing library symbols with "Gm"
 
@@ -510,6 +513,19 @@ Several configure options require special note:
   via --disable-largefile, dependent applications do not require
   special compilation options for large files in order to use the
   library.
+
+--enable-openmp
+
+  By default, GraphicsMagick 1.2.X does not include support for OpenMP.
+  OpenMP automatically parallizes loops across concurrent threads based
+  on instructions in pragmas. OpenMP is relatively new and was introduced
+  in GCC 4.2. OpenMP is a standard and was implemented in some other
+  compilers long before its appearance in GCC. OpenMP adds additional
+  build and linkage requirements. While OpenMP accelerated code may
+  complete faster on multi-core systems, the total CPU consumption is
+  often greater so it may not be the best choice for busy servers. Note
+  that enabling this option adds another library dependency and requires
+  that dependent applications pass an option via CFLAGS.
 
 --without-perl:
 

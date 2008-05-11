@@ -432,6 +432,10 @@ follows (execute 'configure --help' to see all options).</p>
 </tr>
 <tr><td>&nbsp;</td><td>disable support for large (64 bit) file offsets</td></tr>
 <tr><td class="option-group" colspan="2">
+<kbd><span class="option">--enable-openmp</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>enable use of OpenMP (automatic multi-threaded loops)</td></tr>
+<tr><td class="option-group" colspan="2">
 <kbd><span class="option">--enable-symbol-prefix</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td>enable prefixing library symbols with &quot;Gm&quot;</td></tr>
@@ -808,6 +812,25 @@ include support for large files. By disabling support for large files
 via --disable-largefile, dependent applications do not require
 special compilation options for large files in order to use the
 library.</blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--enable-openmp</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>By default, GraphicsMagick 1.2.X does not include support for OpenMP.
+OpenMP automatically parallizes loops across concurrent threads based
+on instructions in pragmas. OpenMP is relatively new and was introduced
+in GCC 4.2. OpenMP is a standard and was implemented in some other
+compilers long before its appearance in GCC. OpenMP adds additional
+build and linkage requirements. While OpenMP accelerated code may
+complete faster on multi-core systems, the total CPU consumption is
+often greater so it may not be the best choice for busy servers. Note
+that enabling this option adds another library dependency and requires
+that dependent applications pass an option via CFLAGS.</td></tr>
+</tbody>
+</table>
 <p>--without-perl:</p>
 <blockquote>
 By default, PerlMagick is conveniently compiled and installed as part
@@ -1060,7 +1083,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-04-29 16:07 UTC.
+Generated on: 2008-05-11 15:25 UTC.
 
 </div>
 </body>
