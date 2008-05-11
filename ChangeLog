@@ -1,3 +1,8 @@
+2008-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (ResizeImage): Optimize VerticalFilter and
+	HorizontalFilter a bit more and prepare for use of OpenMP.
+
 2008-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	
 	* configure.ac, magick/nt_base.h: Fix using libbz2 under MinGW.	

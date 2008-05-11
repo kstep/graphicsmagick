@@ -852,6 +852,9 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
     stop,
     y;
 
+  unsigned long
+    x;
+
   register const PixelPacket
     *p;
 
@@ -860,8 +863,7 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
     *source_indexes;
 
   register long
-    i,
-    x;
+    i;
 
   register PixelPacket
     *q;
@@ -884,7 +886,7 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (x=0; x < (long) destination->columns; x++)
+  for (x=0; x < destination->columns; x++)
   {
     center=(double) (x+0.5)/x_factor;
     start=(long) Max(center-support+0.5,0);
@@ -913,19 +915,47 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
       break;
     source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
+#pragma omp parallel for private(i, j, pixel, y)
     for (y=0; y < (long) destination->rows; y++)
     {
+      double
+        weight;
+
       pixel=zero;
-      for (i=0; i < n; i++)
-      {
-        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-          (contribution[i].pixel-contribution[0].pixel);
-        pixel.red+=contribution[i].weight*(p+j)->red;
-        pixel.green+=contribution[i].weight*(p+j)->green;
-        pixel.blue+=contribution[i].weight*(p+j)->blue;
-	if ((source->matte) || (source->colorspace == CMYKColorspace))
-          pixel.opacity+=contribution[i].weight*(p+j)->opacity;
-      }
+      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
+        {
+          for (i=0; i < n; i++)
+            {
+              j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                (contribution[i].pixel-contribution[0].pixel);
+              weight=contribution[i].weight;
+              pixel.red+=weight*p[j].red;
+              pixel.green+=weight*p[j].green;
+              pixel.blue+=weight*p[j].blue;
+              pixel.opacity+=weight*p[j].opacity;
+            }
+          q[y].red=RoundToQuantum(pixel.red);
+          q[y].green=RoundToQuantum(pixel.green);
+          q[y].blue=RoundToQuantum(pixel.blue);
+          q[y].opacity=RoundToQuantum(pixel.opacity);
+        }
+      else
+        {
+          for (i=0; i < n; i++)
+            {
+              j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                (contribution[i].pixel-contribution[0].pixel);
+              weight=contribution[i].weight;
+              pixel.red+=weight*p[j].red;
+              pixel.green+=weight*p[j].green;
+              pixel.blue+=weight*p[j].blue;
+            }
+          q[y].red=RoundToQuantum(pixel.red);
+          q[y].green=RoundToQuantum(pixel.green);
+          q[y].blue=RoundToQuantum(pixel.blue);
+          q[y].opacity=OpaqueOpacity;
+        }
+
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
         {
@@ -934,12 +964,6 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
             (contribution[i-start].pixel-contribution[0].pixel);
           indexes[y]=source_indexes[j];
         }
-      q->red=RoundSignedToQuantum(pixel.red);
-      q->green=RoundSignedToQuantum(pixel.green);
-      q->blue=RoundSignedToQuantum(pixel.blue);
-      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
-        q->opacity=RoundSignedToQuantum(pixel.opacity);
-      q++;
     }
     if (!SyncImagePixels(destination))
       break;
@@ -948,7 +972,7 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
         break;
     (*quantum)++;
   }
-  return(x == (long) destination->columns);
+  return(x == destination->columns);
 }
 
 static MagickPassFail VerticalFilter(const Image *source,Image *destination,
@@ -973,6 +997,9 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     stop,
     x;
 
+  unsigned long
+    y;
+
   register const PixelPacket
     *p;
 
@@ -981,8 +1008,7 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     *source_indexes;
 
   register long
-    i,
-    y;
+    i;
 
   register PixelPacket
     *q;
@@ -1005,7 +1031,7 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) destination->rows; y++)
+  for (y=0; y < destination->rows; y++)
   {
     center=(double) (y+0.5)/y_factor;
     start=(long) Max(center-support+0.5,0);
@@ -1034,19 +1060,48 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
       break;
     source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
+#pragma omp parallel for private(i, j, pixel,x)
     for (x=0; x < (long) destination->columns; x++)
     {
+      double
+        weight;
+
       pixel=zero;
-      for (i=0; i < n; i++)
-      {
-        j=(long) ((contribution[i].pixel-contribution[0].pixel)*
-          source->columns+x);
-        pixel.red+=contribution[i].weight*(p+j)->red;
-        pixel.green+=contribution[i].weight*(p+j)->green;
-        pixel.blue+=contribution[i].weight*(p+j)->blue;
-        if ((source->matte) || (source->colorspace == CMYKColorspace))
-          pixel.opacity+=contribution[i].weight*(p+j)->opacity;
-      }
+      
+      if ((source->matte) || (source->colorspace == CMYKColorspace))
+        {
+          for (i=0; i < n; i++)
+            {
+              j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                        source->columns+x);
+              weight=contribution[i].weight;
+              pixel.red+=weight*p[j].red;
+              pixel.green+=weight*p[j].green;
+              pixel.blue+=weight*p[j].blue;
+              pixel.opacity+=weight*p[j].opacity;
+            }
+          q[x].red=RoundToQuantum(pixel.red);
+          q[x].green=RoundToQuantum(pixel.green);
+          q[x].blue=RoundToQuantum(pixel.blue);
+          q[x].opacity=RoundToQuantum(pixel.opacity);
+        }
+      else
+        {
+          for (i=0; i < n; i++)
+            {
+              j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                        source->columns+x);
+              weight=contribution[i].weight;
+              pixel.red+=weight*p[j].red;
+              pixel.green+=weight*p[j].green;
+              pixel.blue+=weight*p[j].blue;
+            }
+          q[x].red=RoundToQuantum(pixel.red);
+          q[x].green=RoundToQuantum(pixel.green);
+          q[x].blue=RoundToQuantum(pixel.blue);
+          q[x].opacity=OpaqueOpacity;
+        }
+
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
         {
@@ -1055,13 +1110,6 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
             source->columns+x);
           indexes[x]=source_indexes[j];
         }
-
-      q->red=RoundSignedToQuantum(pixel.red);
-      q->green=RoundSignedToQuantum(pixel.green);
-      q->blue=RoundSignedToQuantum(pixel.blue);
-      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
-        q->opacity=RoundSignedToQuantum(pixel.opacity);
-      q++;
     }
     if (!SyncImagePixels(destination))
       break;
@@ -1070,7 +1118,7 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
         break;
     (*quantum)++;
   }
-  return(y == (long) destination->rows);
+  return(y == destination->rows);
 }
 
 MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
