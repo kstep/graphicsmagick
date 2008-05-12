@@ -1,3 +1,15 @@
+2008-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Install documentation according to the conventions
+	established by the configure script.  This installs the
+	documentation under /usr/local/share/doc/GraphicsMagick by
+	default.
+
+2008-05-08  Josue Andrade Gomes  <josuegomes@gmail.com>
+
+	* magick/nt_base.h, libxml/include/win32config.h (vsnprintf):
+	Fixed compilation issue noticed with Visual C++ 2008.
+
 2008-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/svg.c (RegisterSVGImage): Fix spelling of "Graphics" in

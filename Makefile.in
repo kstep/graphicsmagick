@@ -27,6 +27,7 @@
 #
 
 VPATH = @srcdir@
+pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
@@ -79,9 +80,9 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(pkgdatadir)"
-pkgdataDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(pkgdata_DATA)
+am__installdirs = "$(DESTDIR)$(docdir)"
+docDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(doc_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -97,9 +98,6 @@ DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 $(distdir).zip
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-
-# Architecture independent data files installed in the package's data directory
-pkgdatadir = @MagickSharePath@
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
@@ -395,7 +393,9 @@ DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_MODULES_FALSE@SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 @WITH_MODULES_TRUE@SUBDIRS = $(LTDL) config magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
-pkgdata_DATA = Copyright.txt
+
+# Files to install in the package's doc directory
+doc_DATA = Copyright.txt
 
 # Additional files to distribute
 EXTRA_DIST = ChangeLog Copyright.txt \
@@ -412,7 +412,6 @@ DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
 #
 
 # Install HTML files
-pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/Magick++
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
@@ -501,22 +500,22 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool
-install-pkgdataDATA: $(pkgdata_DATA)
+install-docDATA: $(doc_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(pkgdatadir)" || $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)"
-	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	test -z "$(docdir)" || $(MKDIR_P) "$(DESTDIR)$(docdir)"
+	@list='$(doc_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(pkgdataDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(pkgdatadir)/$$f'"; \
-	  $(pkgdataDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	  echo " $(docDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(docdir)/$$f'"; \
+	  $(docDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(docdir)/$$f"; \
 	done
 
-uninstall-pkgdataDATA:
+uninstall-docDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	@list='$(doc_DATA)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(pkgdatadir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(docdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(docdir)/$$f"; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -802,7 +801,7 @@ check: check-recursive
 all-am: Makefile $(DATA) all-local
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(pkgdatadir)"; do \
+	for dir in "$(DESTDIR)$(docdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -849,7 +848,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local install-pkgdataDATA
+install-data-am: install-data-local install-docDATA
 
 install-dvi: install-dvi-recursive
 
@@ -886,7 +885,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-local uninstall-pkgdataDATA
+uninstall-am: uninstall-docDATA uninstall-local
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) install-am \
 	install-strip
@@ -899,16 +898,16 @@ uninstall-am: uninstall-local uninstall-pkgdataDATA
 	distclean-generic distclean-libtool distclean-local \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-data-local install-dvi \
-	install-dvi-am install-exec install-exec-am install-exec-local \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-pkgdataDATA \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am uninstall-local \
-	uninstall-pkgdataDATA
+	install-data install-data-am install-data-local \
+	install-docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-local install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
+	uninstall uninstall-am uninstall-docDATA uninstall-local
 
 dist-hook:
 	( \
@@ -922,21 +921,21 @@ dist-hook:
 	  ) \
 	)
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
 	  done ; \
 	done
 
 # Uninstall HTML files
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
+	rm -f $(DESTDIR)$(htmldir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.

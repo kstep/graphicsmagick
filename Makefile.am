@@ -44,9 +44,8 @@ else
 SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
-# Architecture independent data files installed in the package's data directory
-pkgdatadir = @MagickSharePath@
-pkgdata_DATA = Copyright.txt
+# Files to install in the package's doc directory
+doc_DATA = Copyright.txt
 
 # Additional files to distribute
 EXTRA_DIST = ChangeLog Copyright.txt \
@@ -73,24 +72,23 @@ dist-hook:
 #
 
 # Install HTML files
-pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/Magick++
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
 	  done ; \
 	done
 
 # Uninstall HTML files
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
+	rm -f $(DESTDIR)$(htmldir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.

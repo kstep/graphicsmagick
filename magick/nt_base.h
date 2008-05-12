@@ -73,7 +73,11 @@ extern "C" {
 #if !defined(tempnam)
 # define tempnam _tempnam
 #endif
-#define vsnprintf _vsnprintf 
+
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
+#define vsnprintf _vsnprintf
+#endif
+
 #if defined(_MT) && defined(WIN32)
 #define SAFE_GLOBAL __declspec(thread)
 #else
