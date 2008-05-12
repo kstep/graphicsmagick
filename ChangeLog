@@ -1,5 +1,16 @@
 2008-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* scripts/format_c_api_docs: Add pixel_iterator.c and
+	pixel_row_iterator.c to API documentation formatter.
+	* magick/api.h: Include pixel_iterator.h and pixel_row_iterator.h.
+	* magick/Makefile.am (MAGICK_INCLUDE_HDRS): Formally install
+	pixel_iterator.h and pixel_row_iterator.h.
+	* magick/image.c (IsImagesEqual): Update to use
+	PixelRowIterateDualRead().
+	(GetImageStatistics): Update to use PixelRowIterateMonoRead().
+	* magick/pixel_row_iterator.h: New interfaces which are similar to
+	the already existing interfaces in pixel_iterator.h except that
+	they pass a row to the callback rather than one pixel.
 	* magick/operator.c (QuantumOperatorRegionImage): Add progress
 	monitor support.
 	* magick/pixel_iterator.c (PixelIterateMonoRead): Add a

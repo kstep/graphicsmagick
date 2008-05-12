@@ -21,6 +21,7 @@
 
 		<li><a href="#destroymagick">DestroyMagick</a></li>
 		<li><a href="#destroymagickinfo">DestroyMagickInfo</a></li>
+		<li><a href="#destroymagickinfolist">DestroyMagickInfoList</a></li>
 		<li><a href="#getimagemagick">GetImageMagick</a></li>
 		<li><a href="#getmagickinfo">GetMagickInfo</a></li>
 		<li><a href="#getmagickinfoarray">GetMagickInfoArray</a></li>
@@ -47,14 +48,15 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P><strong>DestroyMagick</strong>( void );</P>
-<P>void  <strong>DestroyMagickInfo</strong>( void );</P>
+<P>void  <strong>DestroyMagickInfo</strong>( MagickInfo ** magick_info );</P>
+<P>void  <strong>DestroyMagickInfoList</strong>( void );</P>
 <P>const char * <strong>GetImageMagick</strong>( const unsigned char *magick, const size_t length );</P>
 <P>const MagickInfo * <strong>GetMagickInfo</strong>( const char *name, ExceptionInfo *exception );</P>
 <P>MagickInfo **  <strong>GetMagickInfoArray</strong>( ExceptionInfo *exception );</P>
 <P><strong>InitializeMagick</strong>( const char *path );</P>
-<P>unsigned int  <strong>IsMagickConflict</strong>( const char *magick );</P>
-<P>unsigned int  <strong>ListMagickInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>ListModuleMap</strong>( FILE *file, ExceptionInfo *exception );</P>
+<P>MagickBool  <strong>IsMagickConflict</strong>( const char *magick );</P>
+<P>MagickPassFail  <strong>ListMagickInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>ListModuleMap</strong>( FILE *file, ExceptionInfo *exception );</P>
 <P>char * <strong>MagickToMime</strong>( const char *magick );</P>
 <P>MagickInfo * <strong>RegisterMagickInfo</strong>( MagickInfo *magick_info );</P>
 <P>MagickInfo * <strong>SetMagickInfo</strong>( const char *name );</P>
@@ -70,8 +72,13 @@
 <blockquote>DestroyMagick ( void ); </blockquote><P>
 </P>
 <h2><a name="destroymagickinfo">DestroyMagickInfo</a></h2>
-<blockquote>DestroyMagickInfo() deallocates memory associated <A HREF="types.html#MagickInfo">MagickInfo</A> list. </blockquote><P>The format of the DestroyMagickInfo method is:</P>
-<blockquote>void DestroyMagickInfo ( void ); </blockquote><P>
+<blockquote>DestroyMagickInfo() destroys a <A HREF="types.html#MagickInfo">MagickInfo</A> structure. </blockquote><P>The format of the DestroyMagickInfoList method is:</P>
+<blockquote>void DestroyMagickInfo ( <A HREF="types.html#MagickInfo">MagickInfo</A> **magick_info ); </blockquote><P>
+</P>
+<h2><a name="destroymagickinfolist">DestroyMagickInfoList</a></h2>
+<P><code>DestroyMagickInfo()</code> deallocates memory associated with the MagickInfo list.</P>
+<P>The format of the DestroyMagickInfoList method is:</P>
+<blockquote>void DestroyMagickInfoList ( void ); </blockquote><P>
 </P>
 <h2><a name="getimagemagick">GetImageMagick</a></h2>
 <blockquote>GetImageMagick() searches for an image format that matches the specified magick string. If one is found the name is returned otherwise NULL. </blockquote><P>The format of the GetImageMagick method is:</P>
@@ -140,7 +147,7 @@
 <h2><a name="ismagickconflict">IsMagickConflict</a></h2>
 <P>Method IsMagickConflict returns true if the image format conflicts with a logical drive (.e.g.  X:).</P>
 <P>The format of the IsMagickConflict method is:</P>
-<blockquote>unsigned int IsMagickConflict ( const char *magick ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickBool IsMagickConflict ( const char *magick ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_status_3a">status:</a></strong>
 
@@ -159,7 +166,7 @@
 </P>
 <h2><a name="listmagickinfo">ListMagickInfo</a></h2>
 <blockquote>ListMagickInfo() lists the image formats to a file. </blockquote><P>The format of the ListMagickInfo method is:</P>
-<blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
+<blockquote>MagickPassFail ListMagickInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
 <dt><strong><a name="item_o_file_3a">file:</a></strong>
 
@@ -179,7 +186,7 @@
 <h2><a name="listmodulemap">ListModuleMap</a></h2>
 <P>Method ListModuleMap lists the module alias info to a file in the XML format used by modules.mgk.  True is returned on success.</P>
 <P>The format of the ListModuleMap method is:</P>
-<blockquote>unsigned int ListModuleMap ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
+<blockquote>MagickPassFail ListModuleMap ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
 <dt><strong>file:</strong>
 
@@ -244,7 +251,7 @@
 <P>
 </P>
 <h2><a name="unregistermagickinfo">UnregisterMagickInfo</a></h2>
-<P>Method UnregisterMagickInfo removes a name from the magick info list.  It returns False if the name does not exist in the list otherwise True.</P>
+<P>Method UnregisterMagickInfo removes a name from the magick info list.  It returns MagickFail if the name does not exist in the list otherwise MagickPass.</P>
 <P>The format of the UnregisterMagickInfo method is:</P>
 <blockquote>unsigned int UnregisterMagickInfo ( const char *name ); </blockquote><P>A description of each parameter follows:</P>
 <dl>

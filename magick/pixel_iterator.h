@@ -6,7 +6,9 @@
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
   Interfaces to support simple iterative pixel read/update access
-  within an image or between two images.
+  within an image or between two images.   Also see the interfaces in
+  pixel_row_iterator.h which pass entire rows to the callback function
+  rather than one pixel.
 
   WARNING!  These interfaces are still subject to change. WARNING!
 

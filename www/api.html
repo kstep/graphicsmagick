@@ -3,13 +3,14 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>C API: GraphicsMagick - Image Processing and Display Package</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20030425;16380900">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050923;10321800">
+	<META NAME="CHANGED" CONTENT="20080511;21250500">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<STYLE TYPE="text/css">
 	<!--
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
@@ -20,162 +21,133 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<P><FONT FACE="Albany"><I>GraphicsMagick</I> has a number of
-functions that allow you to read, manipulate, write, or display an
-image. These functions are accessible through the various </FONT><A HREF="programming.html"><FONT FACE="Albany">tools</FONT></A>
-<FONT FACE="Albany">or the object-oriented Perl interface,
-</FONT><A HREF="perl.html"><FONT FACE="Albany">PerlMagick</FONT></A><FONT FACE="Albany">.
-However, you can also access the functions directly from your program
-through the Magick Application Programmer Interface. To invoke the
-functions, write your program in your favorite language while making
-calls to the Magick image functions and link with
-</FONT><TT><FONT FACE="Albany">libGraphicsMagick.a</FONT></TT><FONT FACE="Albany">,
-</FONT><TT><FONT FACE="Albany">libGraphicsMagick.so</FONT></TT><FONT FACE="Albany">,
-or </FONT><TT><FONT FACE="Albany">Magick.dll</FONT></TT> <FONT FACE="Albany">depending
-on your system. </FONT>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><I>GraphicsMagick</I></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">
+has a number of functions that allow you to read, manipulate, write,
+or display an image. These functions are accessible through the
+various <A HREF="programming.html">tools</A> or the object-oriented
+Perl interface, <A HREF="perl.html">PerlMagick</A>. However, you can
+also access the functions directly from your program through the
+Magick Application Programmer Interface. To invoke the functions,
+write your program in your favorite language while making calls to
+the Magick image functions and link with </FONT><TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">libGraphicsMagick.a</FONT></TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">,
+</FONT><TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">libGraphicsMagick.so</FONT></TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">,
+or </FONT><TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Magick.dll</FONT></TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">
+depending on your system. </FONT>
 </P>
-<P STYLE="margin-bottom: 0.1in"><FONT FACE="Albany"><FONT SIZE=3>The
+<P STYLE="margin-bottom: 0.1in"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
 API is divided into a number of categories: </FONT></FONT>
 </P>
-<DL>
-	<DD><IMG SRC="../images/ball.png" NAME="Graphic1" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/constitute.html"><FONT FACE="Albany">GraphicsMagick
-	Methods to Constitute an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic3" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/composite.html"><FONT FACE="Albany">GraphicsMagick
-	Methods to Composite an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic4" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/image.html"><FONT FACE="Albany">GraphicsMagick Image
-	Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic2" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/channel.html"><FONT FACE="Albany">GraphicsMagick Image
-	Channel Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/color.html"><FONT FACE="Albany">Methods to Count the
-	Colors in an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/quantize.html"><FONT FACE="Albany">Methods to Reduce
-	the Number of Unique Colors in an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/segment.html"><FONT FACE="Albany">Methods to Segment an
-	Image with Thresholding Fuzzy c-Means</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic8" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/resize.html"><FONT FACE="Albany">Methods to Resize an
-	Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic9" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/transform.html"><FONT FACE="Albany">Methods to
-	Transform an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic10" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/shear.html"><FONT FACE="Albany">Methods to Shear or
-	Rotate an Image by an Arbitrary Angle</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic11" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/enhance.html"><FONT FACE="Albany">Methods to Enhance an
-	Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic12" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/effect.html"><FONT FACE="Albany">GraphicsMagick Image
-	Effects Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/fx.html"><FONT FACE="Albany">GraphicsMagick Special
-	Effects Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/decorate.html"><FONT FACE="Albany">GraphicsMagick Image
-	Decoration Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/attribute.html"><FONT FACE="Albany">Image Text
-	Attributes Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/annotate.html"><FONT FACE="Albany">Methods to Annotate
-	an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/paint.html"><FONT FACE="Albany">Methods to Paint on an
-	Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/render.html"><FONT FACE="Albany">Methods to Draw on an
-	Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/draw.html"><FONT FACE="Albany">Image Vector Drawing
-	Methods </FONT></A>
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/montage.html"><FONT FACE="Albany">GraphicsMagick
-	Methods to Create Image Thumbnails</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic21" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/display.html"><FONT FACE="Albany">Methods to
-	Interactively Display and Edit an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/animate.html"><FONT FACE="Albany">Methods to
-	Interactively Animate an Image Sequence</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic23" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/pixel_cache.html"><FONT FACE="Albany">Methods to Get or
-	Set Image Pixels</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic24" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/list.html"><FONT FACE="Albany">Working with Image Lists</FONT></A>
-		</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic27" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/blob.html"><FONT FACE="Albany">Methods to Read or Write
-	Binary Large OBjects</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic28" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/magick.html"><FONT FACE="Albany">Methods to Read or
-	List GraphicsMagick Image formats</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic29" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/signature.html"><FONT FACE="Albany">Methods to Compute
-	a Message Digest for an Image</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic30" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/registry.html"><FONT FACE="Albany">GraphicsMagick
-	Registry Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic31" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/error.html"><FONT FACE="Albany">GraphicsMagick Error
-	Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic32" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/memory.html"><FONT FACE="Albany">GraphicsMagick Memory
-	Allocation Methods</FONT></A> 
-	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic35" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/operator.html"><FONT FACE="Albany">Methods to apply
-	mathematic or boolean operators to pixels</FONT></A></DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic33" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/resource.html"><FONT FACE="Albany">GraphicsMagick
-	Resource Consumption Methods</FONT></A> 
-	</DD><DD STYLE="margin-bottom: 0.2in">
-	<IMG SRC="../images/ball.png" NAME="Graphic34" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/monitor.html"><FONT FACE="Albany">GraphicsMagick
-	Progress Monitor Methods</FONT></A> 
-	</DD></DL>
-<P>
-<FONT FACE="Albany"><FONT SIZE=3>Here is a sample program to get you
-started. To find out about all the functions that are available, read
-the source code. Each function is delineated with a full rows of
-percent signs with comments describing the parameters required for
-the function and what it does. For ease in finding a function, they
-are sorted in alphabetical order.</FONT></FONT></P>
-<P><FONT FACE="Albany">Here is a full example of a program, </FONT><TT><FONT FACE="Albany">demo.c</FONT></TT><FONT FACE="Albany">,
+<UL>
+	<LI><DD><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/constitute.html">GraphicsMagick
+	Methods to Constitute an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/composite.html">GraphicsMagick
+	Methods to Composite an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/image.html">GraphicsMagick
+	Image Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/channel.html">GraphicsMagick
+	Image Channel Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/color.html">Methods
+	to Count the Colors in an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/quantize.html">Methods
+	to Reduce the Number of Unique Colors in an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/segment.html">Methods
+	to Segment an Image with Thresholding Fuzzy c-Means</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/resize.html">Methods
+	to Resize an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/transform.html">Methods
+	to Transform an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/shear.html">Methods
+	to Shear or Rotate an Image by an Arbitrary Angle</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/enhance.html">Methods
+	to Enhance an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/effect.html">GraphicsMagick
+	Image Effects Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/fx.html">GraphicsMagick
+	Special Effects Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/decorate.html">GraphicsMagick
+	Image Decoration Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/attribute.html">Image
+	Text Attributes Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/annotate.html">Methods
+	to Annotate an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/paint.html">Methods
+	to Paint on an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/render.html">Methods
+	to Draw on an Image</A> </FONT>
+	</DD><LI><DD>
+	<A HREF="api/draw.html"><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Image
+	Vector Drawing Methods </FONT></A>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/montage.html">GraphicsMagick
+	Methods to Create Image Thumbnails</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/display.html">Methods
+	to Interactively Display and Edit an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/animate.html">Methods
+	to Interactively Animate an Image Sequence</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/pixel_cache.html">Methods
+	to Get or Set Image Pixels</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/pixel_iterator.html">Methods
+	to support operations on a region of pixels (callback per pixel)</A></FONT></DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/pixel_row_iterator.html">Methods
+	to support operations on  a region of pixels (callback per row)</A></FONT></DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/list.html">Working
+	with Image Lists</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/blob.html">Methods
+	to Read or Write Binary Large OBjects</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/magick.html">Methods
+	to Read or List GraphicsMagick Image formats</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/signature.html">Methods
+	to Compute a Message Digest for an Image</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/registry.html">GraphicsMagick
+	Registry Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/error.html">GraphicsMagick
+	Error Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/memory.html">GraphicsMagick
+	Memory Allocation Methods</A> </FONT>
+	</DD><LI><DD>
+	<A HREF="api/operator.html"><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Methods
+	to apply mathematic or boolean operators to pixels</FONT></A></DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/resource.html">GraphicsMagick
+	Resource Consumption Methods</A> </FONT>
+	</DD><LI><DD>
+	<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><A HREF="api/monitor.html">GraphicsMagick
+	Progress Monitor Methods</A> </FONT>
+	</DD></UL>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Here
+is a sample program to get you started. To find out about all the
+functions that are available, read the source code. Each function is
+delineated with a full rows of percent signs with comments describing
+the parameters required for the function and what it does. For ease
+in finding a function, they are sorted in alphabetical order.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Here is a full
+example of a program, </FONT><TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">demo.c</FONT></TT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">,
 which reads multiple input files (possibly animation files) specified
 on the command line, resizes the image frames to 106x80, and writes
 the resulting animation to disk.</FONT></P>
@@ -261,29 +233,25 @@ int main(int argc,char **argv)
   DestroyExceptionInfo(&amp;exception);
   DestroyMagick();
   return(0);
-}</PRE><P STYLE="margin-bottom: 0.1in">
-<FONT FACE="Albany"><FONT SIZE=3>Now we need to compile. On Unix, the
-command would look something like this: </FONT></FONT>
+}</PRE><P>
+Now we need to compile. On Unix, the command would look something
+like this: 
 </P>
 <PRE STYLE="margin-bottom: 0.2in">   gcc -o demo demo.c -O `GraphicsMagick-config --cppflags --ldflags --libs`</PRE><P>
-<FONT FACE="Albany"><FONT SIZE=3>As a usage example, with the input
-files in1.gif, in2.png, and in3.jpg, create the animation file
-out.miff:</FONT></FONT></P>
+As a usage example, with the input files in1.gif, in2.png, and
+in3.jpg, create the animation file out.miff:</P>
 <PRE STYLE="margin-bottom: 0.2in">   demo in1.gif in2.png in3.jpg out.miff</PRE><P>
-<FONT FACE="Albany"><FONT SIZE=3>The resulting animation may be
-played on an X11 display using '<FONT FACE="Cumberland">gm animate
-out.miff</FONT>'.</FONT></FONT></P>
-<P><FONT FACE="Albany"><FONT SIZE=3>The GraphicsMagick-config script
-reproduces the options which were used to compile the GraphicsMagick
-utilities. Using compatible options ensures that your program will
-compile and run.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0.1in"><FONT FACE="Albany">Another example
-is </FONT><A HREF="smile.c"><FONT FACE="Albany">smile.c</FONT></A><FONT FACE="Albany">.
+The resulting animation may be played on an X11 display using '<FONT FACE="Cumberland">gm
+animate out.miff</FONT>'.</P>
+<P>The GraphicsMagick-config script reproduces the options which were
+used to compile the GraphicsMagick utilities. Using compatible
+options ensures that your program will compile and run.</P>
+<P><FONT FACE="Albany">Another example is <A HREF="smile.c">smile.c</A>.
 Compile and execute it to display a smiley face on your X server. </FONT>
 </P>
 <HR>
 <P ALIGN=CENTER><FONT FACE="Albany"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P>
+</FONT><FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT><FONT FACE="Albany">
+GraphicsMagick Group 2002, 2003, 2004, 2008</FONT></P>
 </BODY>
 </HTML>

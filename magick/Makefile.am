@@ -116,6 +116,8 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
+	magick/pixel_row_iterator.c \
+	magick/pixel_row_iterator.h \
 	magick/PreRvIcccm.c \
 	magick/PreRvIcccm.h \
 	magick/profile.c \
@@ -213,6 +215,8 @@ MAGICK_INCLUDE_HDRS = \
 	magick/operator.h \
 	magick/paint.h \
 	magick/pixel_cache.h \
+	magick/pixel_iterator.h \
+	magick/pixel_row_iterator.h \
 	magick/profile.h \
 	magick/quantize.h \
 	magick/registry.h \
@@ -238,7 +242,6 @@ MAGICK_NOINST_HDRS = \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
-	magick/pixel_iterator.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \
