@@ -1,5 +1,7 @@
 2008-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (VersionCommand): Report if OpenMP is supported
+	by the build.
 	* configure.ac, Makefile.am: Install documentation according to
 	the conventions established by the configure script.  This
 	installs the documentation under
