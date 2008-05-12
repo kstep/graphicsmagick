@@ -1,0 +1,330 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>pixel_row_iterator - Pixel row iterator pattern support functions</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+</head>
+
+<body style="background-color: white">
+
+<P><a name="__index__"></a></P>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
+
+		<li><a href="#pixelrowiteratemonoread">PixelRowIterateMonoRead</a></li>
+		<li><a href="#pixelrowiteratemonomodify">PixelRowIterateMonoModify</a></li>
+		<li><a href="#pixelrowiteratedualread">PixelRowIterateDualRead</a></li>
+		<li><a href="#pixelrowiteratedualmodify">PixelRowIterateDualModify</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<P>
+</P>
+<h1><a name="name">NAME</a></h1>
+<P>pixel_row_iterator - Pixel row iterator pattern support functions</P>
+<P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>MagickPassFail  <strong>PixelRowIterateDualModify</strong>( PixelRowIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelRowIterateDualRead</strong>( PixelRowIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
+<P>MagickPassFail  <strong>PixelRowIterateMonoModify</strong>( PixelRowIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelRowIterateMonoRead</strong>( PixelRowIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
+<P>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="pixelrowiteratemonoread">PixelRowIterateMonoRead</a></h2>
+<blockquote>PixelRowIterateMonoRead() iterates through a region of an image and invokes a user-provided callback function ( of type PxelRowIteratorMonoReadCallback ) for a row of pixels. This is useful to support simple operations such as statistics computation. </blockquote><P>The format of the PixelRowIterateMonoRead method is:</P>
+<blockquote>MagickPassFail PixelRowIterateMonoRead ( PixelRowIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_call_back_3a">call_back:</a></strong>
+
+<DD>
+<P>A user-provided C callback function which is passed the address of a pixel from each image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_description_3a">description:</a></strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_user_data_3a">user_data:</a></strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_x_3a">x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_y_3a">y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_columns_3a">columns:</a></strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_rows_3a">rows:</a></strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
+<DD>
+<P>The address of the Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixelrowiteratemonomodify">PixelRowIterateMonoModify</a></h2>
+<blockquote>PixelRowIterateMonoModify() iterates through a region of an image and invokes a user-provided callback function ( of type PixelRowIteratorMonoReadCallback ) for each row of pixels. This is useful to support simple operations such as level shifting, colorspace translation, or thresholding. </blockquote><P>The format of the PixelRowIterateMonoModify method is:</P>
+<blockquote>MagickPassFail PixelRowIterateMonoModify ( PixelRowIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which is passed the address of a row of pixels from each image.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the region.</P>
+</dd>
+</li>
+<dt><strong>y:</strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the region.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The address of the Image.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixelrowiteratedualread">PixelRowIterateDualRead</a></h2>
+<blockquote>PixelRowIterateDualRead() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelRowIteratorDualReadCallback ) for each row of pixels. This is useful to support operations such as image comparison. </blockquote><P>The format of the PixelRowIterateDualModify method is:</P>
+<blockquote>MagickPassFail PixelRowIterateDualRead ( PixelRowIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *first_image, const long first_x, const long first_y, const <A HREF="types.html#Image">Image</A> *second_image, const long second_x, const long second_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception );; </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which is passed the address of a row of pixels from each image.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_first_image_3a">first_image:</a></strong>
+
+<DD>
+<P>The address of the first Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_first_x_3a">first_x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the first region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_first_y_3a">first_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the first region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_second_image_3a">second_image:</a></strong>
+
+<DD>
+<P>The address of the second Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_second_x_3a">second_x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the second region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_second_y_3a">second_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the second region.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixelrowiteratedualmodify">PixelRowIterateDualModify</a></h2>
+<blockquote>PixelRowIterateDualModify() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelRowIteratorDualModifyCallback ) for each row of pixels. This is useful to support operations such as composition. </blockquote><P>The format of the PixelRowIterateDualModify method is:</P>
+<blockquote>MagickPassFail PixelRowIterateDualModify ( PixelRowIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which reads from a row of source pixels and updates a row of destination pixels.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_source_image_3a">source_image:</a></strong>
+
+<DD>
+<P>The address of the constant source Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_source_x_3a">source_x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the source region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_source_y_3a">source_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the source region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_update_image_3a">update_image:</a></strong>
+
+<DD>
+<P>The address of the update Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_update_x_3a">update_x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the update region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_update_y_3a">update_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the update region.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</dl>
+
+</body>
+
+</html>
