@@ -6,64 +6,9 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o Investigage iDefense issues reported against ImageMagick:
-    
-    "Multiple Vendor ImageMagick Multiple Integer Overflow Vulnerabilities"
-      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=594
-
-    "Multiple Vendor ImageMagick Off-By-One Vulnerability"
-      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=595
-     Does not apply.  Yay!
-
-    "Multiple Vendor ImageMagick Multiple Denial of Service Vulnerabilities"
-      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=596
-
-    "Multiple Vendor ImageMagick Sign Extension Vulnerability"
-      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=597
-
-    "Multiple Vendor ImageMagick DCM and XWD Buffer Overflow Vulnerabilities"
-      http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=496
-
-  o CineonLog patches from Kai-Uwe Behrmann
-
-  o FPX patches from Mikhail Teterin
-
-  o MPC format related issues:
-
-    - gm identify cores
-    - convert from MPC to MPC removes input file.
-
-  o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.  (still true?)
-
   o Fix Scitex RGB reader to handle files written by Photoshop.
 
-  o Fix PerlMagick BLOB reading (disable header magic checking if already
-    specified).
-
-  o Implement DrawableFillPattern and DrawableStrokePattern drawable objects
-    in order to allow setting the fill and stroke patterns.
-
-  o Update to libtool 2.0 (now using development libtool 2.0) if it
-    happens to be released.
-
   o Improve performance of Cineon coder.
-
-  o Re-write metadata handling to use accessor functions rather
-    than accessing Image members directly. (done)
-
-  o Update Windows libtiff to version 3.8.2. (done)
-
-  o Update Windows libpng to version 1.2.8. (done).
-
-  o Update Windows zlib to version 1.2.3 (done).
-
-  o Update Windows lcms to version 1.15 (done).
-
-  o Re-write pixel export/import functions (done).
-
-  o Convert to using safe string copy and append (done).
-
-  o Use non-recursive build for Unix (done).
 
 For later releases
 ==================

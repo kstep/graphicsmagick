@@ -75,11 +75,7 @@ TESTS = \
 XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS)
 
-TOP_EXTRA_DIST = \
-	AUTHORS.txt \
-	BENCHMARKS.txt \
-	BUGS.txt \
-	CONTRIBUTE.txt \
+CHANGELOGS = \
 	ChangeLog \
 	ChangeLog.2001 \
 	ChangeLog.2002 \
@@ -87,7 +83,14 @@ TOP_EXTRA_DIST = \
 	ChangeLog.2004 \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
-	ChangeLog.2007 \
+	ChangeLog.2007
+
+TOP_EXTRA_DIST = \
+	AUTHORS.txt \
+	BENCHMARKS.txt \
+	BUGS.txt \
+	CONTRIBUTE.txt \
+	$(CHANGELOGS) \
 	Copyright.txt \
 	FAQ.txt \
 	INSTALL-unix.txt \
@@ -154,11 +157,10 @@ man_MANS = \
 	$(UTILITIES_MANS) \
 	$(WAND_MANS)
 
-# Architecture independent data files installed in the package's data directory
-docdir = $(MagickSharePath)
+# Files to install in the package's doc directory
 doc_DATA = \
 	Copyright.txt \
-	ChangeLog \
+	$(CHANGELOGS) \
 	NEWS.txt
 
 if MAINTAINER_MODE
@@ -200,26 +202,25 @@ dist-hook:
 #
 
 # Install HTML files
-pkgdocdir = $(MagickSharePath)
 DOCDIRS = images www www/api www/Magick++
 HTML_INSTALL_DATA_TARGETS = install-data-html
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
 	  done ; \
 	done
 
 # Uninstall HTML files
 HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
+	rm -f $(DESTDIR)$(htmldir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.

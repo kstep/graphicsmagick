@@ -1,3 +1,10 @@
+2008-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac, Makefile.am: Install documentation according to
+	the conventions established by the configure script.  This
+	installs the documentation under
+	/usr/local/share/doc/GraphicsMagick by default.
+
 2008-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resize.c (HorizontalFilter, VerticalFilter): Switch back

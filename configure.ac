@@ -133,6 +133,10 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 AC_SUBST(LIBEXEC_DIR)
 eval "eval DATA_DIR=$datadir"
 AC_SUBST(DATA_DIR)
+eval "eval DOC_DIR=$docdir"
+AC_SUBST(DOC_DIR)
+eval "eval HTML_DIR=$htmldir"
+AC_SUBST(HTML_DIR)
 eval "eval SYSCONF_DIR=$sysconfdir"
 AC_SUBST(SYSCONF_DIR)
 eval "eval SHAREDSTATE_DIR=$sharedstatedir"
