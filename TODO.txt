@@ -6,12 +6,6 @@ See website for "wish list".
 For Future
 ==========
 
-* Documentation should be installed in ${PREFIX}/share/doc rather than
-  ${PREFIX}/share.  The configure promises, that the default doc-dir
-  would be under share/doc, but, apparently, the DOCDIR is ignored by
-  Makefile(s) and pkgdocdir is assigned to $(MagickSharePath) instead.
-  Reported by Mikhail Teterin.
-
 * Fix Scitex RGB reader to handle files written by Photoshop.
 
 * Fix PerlMagick BLOB reading (disable header magic checking if
