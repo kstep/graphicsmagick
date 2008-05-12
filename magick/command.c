@@ -14961,6 +14961,13 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined(SupportMagickModules) */
   PrintFeature("Loadable Modules", supported);
 
+  /* OpenMP */
+  supported=MagickFalse;
+#if defined(_OPENMP)
+  supported=MagickTrue;
+#endif /* defined(_OPENMP) */
+  PrintFeature("OpenMP", supported);
+
   /* PNG */
   supported=MagickFalse;
 #if defined(HasPNG)
