@@ -1,3 +1,14 @@
+2008-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+	MogrifyImage): Add command access to the new channel operators.
+	* magick/operator.c (QuantumOperatorRegionImage): Support the new
+	channel operators.  Update to use PixelRowIterateMonoModify() for
+	a bit more performance.
+	* magick/operator.h (enum QuantumOperator): Added new operators
+	AssignQuantumOp, ThresholdQuantumOp, ThresholdBlackQuantumOp, and
+	ThresholdWhiteQuantumOp.
+
 2008-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (VersionCommand): Report if OpenMP is supported

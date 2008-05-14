@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-05-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+        MogrifyImage): Add command access to the new channel operators.
+  <LI> magick/operator.c (QuantumOperatorRegionImage): Support the new
+        channel operators.  Update to use PixelRowIterateMonoModify() for
+        a bit more performance.<BR>
+  <LI> magick/operator.h (enum QuantumOperator): Added new operators
+        AssignQuantumOp, ThresholdQuantumOp, ThresholdBlackQuantumOp, and
+        ThresholdWhiteQuantumOp.
+
+</UL>
+<p>
 2008-05-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

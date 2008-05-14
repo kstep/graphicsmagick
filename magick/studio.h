@@ -263,6 +263,10 @@ extern "C" {
 # include <sys/poll.h>
 #endif
 
+#if defined(_OPENMP)
+# include <omp.h>
+#endif
+
 #undef index
 #undef pipe
 

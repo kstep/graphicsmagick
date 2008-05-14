@@ -14,7 +14,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/pixel_iterator.h"
+#include "magick/pixel_row_iterator.h"
 #include "magick/utility.h"
 #include "magick/operator.h"
 
@@ -74,7 +74,10 @@ static const char *ChannelTypeToString(const ChannelType channel)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  QuantumOperatorImage() performs the requested integer arithmetic
-%  operation on the selected channels of the image.
+%  operation on the selected channels of the entire image.
+%
+%  These operations are on the DirectClass pixels of the image and do not
+%  update pixel indexes or colormap.
 %
 %  The format of the QuantumOperatorImage method is:
 %
@@ -89,9 +92,10 @@ static const char *ChannelTypeToString(const ChannelType channel)
 %    o channel: Channel to operate on.
 %
 %    o quantum_operator: arithmetic or bitwise operator to use (AddQuantumOp,
-%                        AndQuantumOp, DivideQuantumOp, LShiftQuantumOp,
-%                        MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp,
-%                        SubtractQuantumOp, XorQuantumOp).
+%                        AndQuantumOp, AssignQuantumOp, DivideQuantumOp,
+%                        LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp,
+%                        RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
+%                        XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -117,8 +121,11 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QuantumOperatorRegionImage() performs the requested integer arithmetic
+%  QuantumOperatorRegionImage() performs the requested arithmetic or logical
 %  operation on the selected channels of the image over the specified region.
+%
+%  These operations are on the DirectClass pixels of the image and do not
+%  update pixel indexes or colormap.
 %
 %  The format of the QuantumOperatorRegionImage method is:
 %
@@ -131,7 +138,8 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %
 %    o image: The image.
 %
-%    o channel: Channel to operate on.
+%    o channel: Channel to operate on.  The AllChannels type only updates
+%        color channels.
 %
 %    o x: Ordinate of left row of region.
 %
@@ -153,7 +161,7 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 */
 
 #define ApplyArithmeticOperator(lvalue,op,rvalue)       \
-  {                                                     \
+{                                                       \
     double                                              \
       result;                                           \
                                                         \
@@ -170,41 +178,55 @@ typedef struct _QuantumContext
 
 static MagickPassFail
 QuantumAdd(void *user_data,
-           const long ARGUNUSED(x),
-           const long ARGUNUSED(y),
-           const Image *const_image,
-           PixelPacket *pixel,
-           ExceptionInfo *ARGUNUSED(exception))
+           const long x,
+           const long y,
+           Image *image,
+           PixelPacket *pixels,
+           const long npixels,
+           ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+  register long
+    i;
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,+,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].red,+,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,+,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].green,+,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,+,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].blue,+,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,+,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].opacity,+,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,+,context->double_value);
-      ApplyArithmeticOperator(pixel->green,+,context->double_value);
-      ApplyArithmeticOperator(pixel->blue,+,context->double_value);
-      if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,+,context->double_value);
+      for (i=0; i < npixels; i++)
+        {
+          ApplyArithmeticOperator(pixels[i].red,+,context->double_value);
+          ApplyArithmeticOperator(pixels[i].green,+,context->double_value);
+          ApplyArithmeticOperator(pixels[i].blue,+,context->double_value);
+        }
       break;
     }
 
@@ -212,41 +234,111 @@ QuantumAdd(void *user_data,
 }
 static MagickPassFail
 QuantumAnd(void *user_data,
-           const long ARGUNUSED(x),
-           const long ARGUNUSED(y),
-           const Image *const_image,
-           PixelPacket *pixel,
-           ExceptionInfo *ARGUNUSED(exception))
+           const long x,
+           const long y,
+           Image *image,
+           PixelPacket *pixels,
+           const long npixels,
+           ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red &= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].red &= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green &= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].green &= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue &= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].blue &= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity &= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity &= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red &= context->quantum_value;
-      pixel->green &= context->quantum_value;
-      pixel->blue &= context->quantum_value;
-      if (const_image->matte)
-        pixel->opacity &= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red &= context->quantum_value;
+          pixels[i].green &= context->quantum_value;
+          pixels[i].blue &= context->quantum_value;
+        }
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumAssign(void *user_data,
+              const long x,
+              const long y,
+              Image *image,
+              PixelPacket *pixels,
+              const long npixels,
+              ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = context->quantum_value;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = context->quantum_value;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = context->quantum_value;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = context->quantum_value;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red = context->quantum_value;
+          pixels[i].green = context->quantum_value;
+          pixels[i].blue = context->quantum_value;
+        }
       break;
     }
 
@@ -254,41 +346,55 @@ QuantumAnd(void *user_data,
 }
 static MagickPassFail
 QuantumDivide(void *user_data,
-              const long ARGUNUSED(x),
-              const long ARGUNUSED(y),
-              const Image *const_image,
-              PixelPacket *pixel,
-              ExceptionInfo *ARGUNUSED(exception))
+              const long x,
+              const long y,
+              Image *image,
+              PixelPacket *pixels,
+              const long npixels,
+              ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,/,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].red,/,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,/,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].green,/,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,/,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].blue,/,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,/,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].opacity,/,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,/,context->double_value);
-      ApplyArithmeticOperator(pixel->green,/,context->double_value);
-      ApplyArithmeticOperator(pixel->blue,/,context->double_value);
-      if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,/,context->double_value);
+      for (i=0; i < npixels; i++)
+        {
+          ApplyArithmeticOperator(pixels[i].red,/,context->double_value);
+          ApplyArithmeticOperator(pixels[i].green,/,context->double_value);
+          ApplyArithmeticOperator(pixels[i].blue,/,context->double_value);
+        }
       break;
     }
 
@@ -296,41 +402,55 @@ QuantumDivide(void *user_data,
 }
 static MagickPassFail
 QuantumLShift(void *user_data,
-              const long ARGUNUSED(x),
-              const long ARGUNUSED(y),
-              const Image *const_image,
-              PixelPacket *pixel,
-              ExceptionInfo *ARGUNUSED(exception))
+              const long x,
+              const long y,
+              Image *image,
+              PixelPacket *pixels,
+              const long npixels,
+              ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red <<= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].red <<= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green <<= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].green <<= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue <<= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].blue <<= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity <<= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity <<= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red <<= context->quantum_value;
-      pixel->green <<= context->quantum_value;
-      pixel->blue <<= context->quantum_value;
-      if (const_image->matte)
-        pixel->opacity <<= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red <<= context->quantum_value;
+          pixels[i].green <<= context->quantum_value;
+          pixels[i].blue <<= context->quantum_value;
+        }
       break;
     }
 
@@ -338,41 +458,55 @@ QuantumLShift(void *user_data,
 }
 static MagickPassFail
 QuantumMultiply(void *user_data,
-                const long ARGUNUSED(x),
-                const long ARGUNUSED(y),
-                const Image *const_image,
-                PixelPacket *pixel,
-                ExceptionInfo *ARGUNUSED(exception))
+                const long x,
+                const long y,
+                Image *image,
+                PixelPacket *pixels,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,*,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].red,*,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,*,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].green,*,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,*,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].blue,*,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,*,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].opacity,*,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,*,context->double_value);
-      ApplyArithmeticOperator(pixel->green,*,context->double_value);
-      ApplyArithmeticOperator(pixel->blue,*,context->double_value);
-      if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,*,context->double_value);
+      for (i=0; i < npixels; i++)
+        {
+          ApplyArithmeticOperator(pixels[i].red,*,context->double_value);
+          ApplyArithmeticOperator(pixels[i].green,*,context->double_value);
+          ApplyArithmeticOperator(pixels[i].blue,*,context->double_value);
+        }
       break;
     }
 
@@ -380,41 +514,55 @@ QuantumMultiply(void *user_data,
 }
 static MagickPassFail
 QuantumOr(void *user_data,
-          const long ARGUNUSED(x),
-          const long ARGUNUSED(y),
-          const Image *const_image,
-          PixelPacket *pixel,
-          ExceptionInfo *ARGUNUSED(exception))
+          const long x,
+          const long y,
+          Image *image,
+          PixelPacket *pixels,
+          const long npixels,
+          ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red |= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].red |= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green |= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].green |= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue |= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].blue |= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity |= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity |= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red |= context->quantum_value;
-      pixel->green |= context->quantum_value;
-      pixel->blue |= context->quantum_value;
-      if (const_image->matte)
-        pixel->opacity |= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red |= context->quantum_value;
+          pixels[i].green |= context->quantum_value;
+          pixels[i].blue |= context->quantum_value;
+        }
       break;
     }
 
@@ -422,118 +570,375 @@ QuantumOr(void *user_data,
 }
 static MagickPassFail
 QuantumRShift(void *user_data,
-              const long ARGUNUSED(x),
-              const long ARGUNUSED(y),
-              const Image *const_image,
-              PixelPacket *pixel,
-              ExceptionInfo *ARGUNUSED(exception))
+              const long x,
+              const long y,
+              Image *image,
+              PixelPacket *pixels,
+              const long npixels,
+              ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red >>= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].red >>= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green >>= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].green >>= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue >>= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].blue >>= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity >>= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity >>= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red >>= context->quantum_value;
-      pixel->green >>= context->quantum_value;
-      pixel->blue >>= context->quantum_value;
-      if (const_image->matte)
-        pixel->opacity >>= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red >>= context->quantum_value;
+          pixels[i].green >>= context->quantum_value;
+          pixels[i].blue >>= context->quantum_value;
+        }
       break;
     }
 
   return (MagickPass);
 }
 static MagickPassFail
-QuantumSubtract(void *user_data,const long ARGUNUSED(x),
-  const long ARGUNUSED(y),const Image *const_image,PixelPacket *pixel,
-  ExceptionInfo *ARGUNUSED(exception))
+QuantumSubtract(void *user_data,
+                const long x,
+                const long y,
+                Image *image,
+                PixelPacket *pixels,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,-,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].red,-,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,-,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].green,-,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,-,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].blue,-,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,-,context->double_value);
+      for (i=0; i < npixels; i++)
+        ApplyArithmeticOperator(pixels[i].opacity,-,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,-,context->double_value);
-      ApplyArithmeticOperator(pixel->green,-,context->double_value);
-      ApplyArithmeticOperator(pixel->blue,-,context->double_value);
-      if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,-,context->double_value);
+      for (i=0; i < npixels; i++)
+        {
+          ApplyArithmeticOperator(pixels[i].red,-,context->double_value);
+          ApplyArithmeticOperator(pixels[i].green,-,context->double_value);
+          ApplyArithmeticOperator(pixels[i].blue,-,context->double_value);
+        }
       break;
     }
 
   return (MagickPass);
 }
+
+static inline Quantum ApplyThresholdOperator(const Quantum quantum,
+                                             const Quantum threshold)
+{
+  Quantum
+    result;
+
+  if (quantum > threshold)
+    result=MaxRGB;
+  else
+    result=0U;
+
+  return result;
+}
 static MagickPassFail
-QuantumXor(void *user_data,const long ARGUNUSED(x),const long ARGUNUSED(y),
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *ARGUNUSED(exception))
+QuantumThreshold(void *user_data,
+                const long x,
+                const long y,
+                Image *image,
+                PixelPacket *pixels,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
 
   switch (context->channel)
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red ^= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].red = ApplyThresholdOperator(pixels[i].red,context->quantum_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green ^= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].green = ApplyThresholdOperator(pixels[i].green,context->quantum_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue ^= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = ApplyThresholdOperator(pixels[i].blue,context->quantum_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity ^= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = ApplyThresholdOperator(pixels[i].opacity,context->quantum_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red ^= context->quantum_value;
-      pixel->green ^= context->quantum_value;
-      pixel->blue ^= context->quantum_value;
-      if (const_image->matte)
-        pixel->opacity ^= context->quantum_value;
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red   = ApplyThresholdOperator(pixels[i].red,context->quantum_value);
+          pixels[i].green = ApplyThresholdOperator(pixels[i].green,context->quantum_value);
+          pixels[i].blue  = ApplyThresholdOperator(pixels[i].blue,context->quantum_value);
+        }
+      break;
+    }
+  return (MagickPass);
+}
+
+static inline Quantum ApplyThresholdBlackOperator(const Quantum quantum,
+                                                  const Quantum threshold)
+{
+  Quantum
+    result;
+
+  if (quantum < threshold)
+    result=0U;
+  else
+    result=quantum;
+
+  return result;
+}
+static MagickPassFail
+QuantumThresholdBlack(void *user_data,
+                      const long x,
+                      const long y,
+                      Image *image,
+                      PixelPacket *pixels,
+                      const long npixels,
+                      ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = ApplyThresholdBlackOperator(pixels[i].red,context->quantum_value);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = ApplyThresholdBlackOperator(pixels[i].green,context->quantum_value);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = ApplyThresholdBlackOperator(pixels[i].blue,context->quantum_value);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = ApplyThresholdBlackOperator(pixels[i].opacity,context->quantum_value);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red   = ApplyThresholdBlackOperator(pixels[i].red,context->quantum_value);
+          pixels[i].green = ApplyThresholdBlackOperator(pixels[i].green,context->quantum_value);
+          pixels[i].blue  = ApplyThresholdBlackOperator(pixels[i].blue,context->quantum_value);
+        }
+      break;
+    }
+  return (MagickPass);
+}
+
+static inline Quantum ApplyThresholdWhiteOperator(const Quantum quantum,
+                                                  const Quantum threshold)
+{
+  Quantum
+    result;
+
+  if (quantum > threshold)
+    result=MaxRGB;
+  else
+    result=quantum;
+
+  return result;
+}
+static MagickPassFail
+QuantumThresholdWhite(void *user_data,
+                      const long x,
+                      const long y,
+                      Image *image,
+                      PixelPacket *pixels,
+                      const long npixels,
+                      ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = ApplyThresholdWhiteOperator(pixels[i].red,context->quantum_value);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = ApplyThresholdWhiteOperator(pixels[i].green,context->quantum_value);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = ApplyThresholdWhiteOperator(pixels[i].blue,context->quantum_value);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = ApplyThresholdWhiteOperator(pixels[i].opacity,context->quantum_value);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red   = ApplyThresholdWhiteOperator(pixels[i].red,context->quantum_value);
+          pixels[i].green = ApplyThresholdWhiteOperator(pixels[i].green,context->quantum_value);
+          pixels[i].blue  = ApplyThresholdWhiteOperator(pixels[i].blue,context->quantum_value);
+        }
+      break;
+    }
+  return (MagickPass);
+}
+
+static MagickPassFail
+QuantumXor(void *user_data,
+           const long x,
+           const long y,
+           Image *image,
+           PixelPacket *pixels,
+           const long npixels,
+           ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red ^= context->quantum_value;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green ^= context->quantum_value;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue ^= context->quantum_value;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity ^= context->quantum_value;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red ^= context->quantum_value;
+          pixels[i].green ^= context->quantum_value;
+          pixels[i].blue ^= context->quantum_value;
+        }
       break;
     }
   return (MagickPass);
@@ -560,7 +965,7 @@ QuantumOperatorRegionImage(Image *image,
   MagickPassFail
     status = MagickFail;
 
-  PixelIteratorMonoModifyCallback
+  PixelRowIteratorMonoModifyCallback
     call_back = 0;
 
   image->storage_class=DirectClass;
@@ -580,6 +985,10 @@ QuantumOperatorRegionImage(Image *image,
     case AndQuantumOp:
       call_back=QuantumAnd;
       operator_text="and";
+      break;
+    case AssignQuantumOp:
+      call_back=QuantumAssign;
+      operator_text="assign";
       break;
     case DivideQuantumOp:
       call_back=QuantumDivide;
@@ -605,6 +1014,18 @@ QuantumOperatorRegionImage(Image *image,
       call_back=QuantumSubtract;
       operator_text="subtract";
       break;
+    case ThresholdQuantumOp:
+      call_back=QuantumThreshold;
+      operator_text="threshold";
+      break;
+    case ThresholdBlackQuantumOp:
+      call_back=QuantumThresholdBlack;
+      operator_text="threshold-black";
+      break;
+    case ThresholdWhiteQuantumOp:
+      call_back=QuantumThresholdWhite;
+      operator_text="threshold-white";
+      break;
     case XorQuantumOp:
       call_back=QuantumXor;
       operator_text="xor";
@@ -615,10 +1036,22 @@ QuantumOperatorRegionImage(Image *image,
     {
       FormatString(description,"Apply operator '%s %g' to channel '%s' ...",
                    operator_text,rvalue,ChannelTypeToString(channel));
-      status=PixelIterateMonoModify(call_back,
-                                    description,
-                                    (void *) &context,x,y,columns,rows,
-                                    image,exception);
+      status=PixelRowIterateMonoModify(call_back,
+                                       description,
+                                       (void *) &context,x,y,columns,rows,
+                                       image,exception);
+
+      /*
+        If we are assigning all the color channels in the entire image
+        then set monochrome and grayscale flags.
+      */
+      if ((quantum_operator == AssignQuantumOp) &&
+          (channel == AllChannels) && (x == 0) && (y == 0) &&
+          (columns == image->columns) && (rows == image->rows))
+        {
+          image->is_monochrome=MagickTrue;
+          image->is_grayscale=MagickTrue;
+        }
     }
   return (status);
 }

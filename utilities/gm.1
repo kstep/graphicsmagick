@@ -1,4 +1,4 @@
-.TH gm 1 "2008/04/15" "GraphicsMagick"
+.TH gm 1 "2008/05/13" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2327,22 +2327,27 @@ option.
 See \fB-fill\fP for more details.
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 
-Apply a low-level mathematical or bitwise operator to a selected image
-channel or all image channels. Operations which result in negative
-results are reset to zero, and operations which overflow the
-available range are reset to the maximum possible value.
+Apply a low-level mathematical, bitwise, or value operator to a selected
+image channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the available
+range are reset to the maximum possible value.
 
+Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP,
+\fBOpacity\fP, \fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, or \fBAll\fP. Note that \fBAll\fP only modifies the color
+channels and does not modify the \fBOpacity\fP channel. \fBAll\fP
+operates on each channel independently so that operations are on a
+per-channel basis and do not operate based on pixel intensity as
+\fB-threshold\fP does.
 
-Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
-\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
-or \fBAll\fP.
+Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
+\fBDivide\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP, \fBRShift\fP,
+\fBSubtract\fP, \fBThreshold\fP, \fBThreshold-White\fP,
+\fBThreshold-Black\fP,\fBXor\fP.
 
-Select an operator from \fBAdd\fP, \fBAnd\fP, \fBDivide\fP, \fBLShift\fP,
-\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP, \fBXor\fP.
-
-Rvalue may be any floating point value. Normally rvalue will
+Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest
 quantum value supported by the GraphicsMagick build (255,
 65535, or 4294967295) but values outside this range may be
@@ -2351,10 +2356,23 @@ bit-wise operations are rounded to a positive integral value
 prior to use. If a percent (\fB%\fP) symbol is appended to
 the argument, then the argument has a range of 0 to 100
 percent.
+
 As an example, the \fBxor\fP operator may be used to invert a
 monochrome image (interchange black and white):
 
   gm convert in.bmp -operator all xor "100%" out.bmp
+
+The \fBAssign\fP operator assigns a fixed value to a channel. For
+example, this command sets the red channel to the mid-range value:
+
+  gm convert in.bmp -operator red assign "50%" out.bmp
+
+
+The \fBThresholdOperator\fP thresholds values above the threshold to
+white, and otherwise to black. The \fBThreshold-Black\fP operator
+thresholds values below the specified value to black and the
+\fBThreshold-White\fP thresholds values above the specified value to
+white.
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -4854,7 +4872,7 @@ Options, above.
 \fRchange this color to the pen color within the image
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -7729,7 +7747,7 @@ Options, above.
 \fRchange this color to the pen color within the image
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image

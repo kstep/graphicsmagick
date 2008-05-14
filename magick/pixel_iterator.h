@@ -52,7 +52,7 @@ extern "C" {
     (void *user_data,
      const long x,
      const long y,
-     const Image *const_image,
+     Image *image,
      PixelPacket *pixel,
      ExceptionInfo *exception);
 

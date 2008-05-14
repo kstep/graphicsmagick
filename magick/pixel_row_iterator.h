@@ -54,7 +54,7 @@ extern "C" {
     (void *user_data,                   /* User provided mutable data */
      const long x,                      /* X-offset in base image */
      const long y,                      /* Y-offset in base image */
-     const Image *const_image,          /* Input image */
+     Image *image,                      /* Modify image */
      PixelPacket *pixels,               /* Pixel row */
      const long npixels,                /* Number of pixels in row */
      ExceptionInfo *exception           /* Exception report */

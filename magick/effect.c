@@ -2727,7 +2727,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
         /* All pixels thresholded to black */
         for (x=(long) image->columns; x > 0; x--)
           {
-            *indexes++=q->red=q->green=q->blue=0;
+            *indexes++=q->red=q->green=q->blue=0U;
             q++;
           }
       }

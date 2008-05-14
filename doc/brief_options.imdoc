@@ -427,7 +427,7 @@
 </utils>
 <utils apps=convert,mogrify>
 <lopt>-operator channel operator rvalue[%]</opt>
-<abs>apply a mathematical or bitwise operator to an image channel</abs>
+<abs>apply a mathematical, bitwise, or value operator to an image channel</abs>
 </utils>
 <utils apps=convert,mogrify>
 <lopt>-ordered-dither <channeltype> <NxN></opt>

@@ -4312,6 +4312,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   quantum_operator=AddQuantumOp;
                 else if (LocaleCompare("and",option) == 0)
                   quantum_operator=AndQuantumOp;
+                else if (LocaleCompare("assign",option) == 0)
+                  quantum_operator=AssignQuantumOp;
                 else if (LocaleCompare("divide",option) == 0)
                   quantum_operator=DivideQuantumOp;
                 else if (LocaleCompare("lshift",option) == 0)
@@ -4324,6 +4326,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   quantum_operator=RShiftQuantumOp;
                 else if (LocaleCompare("subtract",option) == 0)
                   quantum_operator=SubtractQuantumOp;
+                else if (LocaleCompare("threshold",option) == 0)
+                  quantum_operator=ThresholdQuantumOp;
+                else if (LocaleCompare("threshold-black",option) == 0)
+                  quantum_operator=ThresholdBlackQuantumOp;
+                else if (LocaleCompare("threshold-white",option) == 0)
+                  quantum_operator=ThresholdWhiteQuantumOp;
                 else if (LocaleCompare("xor",option) == 0)
                   quantum_operator=XorQuantumOp;
                 if (quantum_operator == UndefinedQuantumOp)
@@ -8961,6 +8969,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               quantum_operator=AddQuantumOp;
             else if (LocaleCompare("and",option) == 0)
               quantum_operator=AndQuantumOp;
+            else if (LocaleCompare("assign",option) == 0)
+              quantum_operator=AssignQuantumOp;
             else if (LocaleCompare("divide",option) == 0)
               quantum_operator=DivideQuantumOp;
             else if (LocaleCompare("lshift",option) == 0)
@@ -8973,6 +8983,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               quantum_operator=RShiftQuantumOp;
             else if (LocaleCompare("subtract",option) == 0)
               quantum_operator=SubtractQuantumOp;
+            else if (LocaleCompare("threshold",option) == 0)
+              quantum_operator=ThresholdQuantumOp;
+            else if (LocaleCompare("threshold-black",option) == 0)
+              quantum_operator=ThresholdBlackQuantumOp;
+            else if (LocaleCompare("threshold-white",option) == 0)
+              quantum_operator=ThresholdWhiteQuantumOp;
             else if (LocaleCompare("xor",option) == 0)
               quantum_operator=XorQuantumOp;
 
@@ -11606,6 +11622,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   quantum_operator=AddQuantumOp;
                 else if (LocaleCompare("and",option) == 0)
                   quantum_operator=AndQuantumOp;
+                else if (LocaleCompare("assign",option) == 0)
+                  quantum_operator=AssignQuantumOp;
                 else if (LocaleCompare("divide",option) == 0)
                   quantum_operator=DivideQuantumOp;
                 else if (LocaleCompare("lshift",option) == 0)
@@ -11618,6 +11636,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   quantum_operator=RShiftQuantumOp;
                 else if (LocaleCompare("subtract",option) == 0)
                   quantum_operator=SubtractQuantumOp;
+                else if (LocaleCompare("threshold",option) == 0)
+                  quantum_operator=ThresholdQuantumOp;
+                else if (LocaleCompare("threshold-black",option) == 0)
+                  quantum_operator=ThresholdBlackQuantumOp;
+                else if (LocaleCompare("threshold-white",option) == 0)
+                  quantum_operator=ThresholdWhiteQuantumOp;
                 else if (LocaleCompare("xor",option) == 0)
                   quantum_operator=XorQuantumOp;
                 if (quantum_operator == UndefinedQuantumOp)
