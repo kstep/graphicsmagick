@@ -183,6 +183,7 @@ QuantumAdd(void *user_data,
            const long y,
            Image *image,
            PixelPacket *pixels,
+           IndexPacket *indexes,
            const long npixels,
            ExceptionInfo *exception)
 {
@@ -192,6 +193,7 @@ QuantumAdd(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   register long
@@ -239,6 +241,7 @@ QuantumAnd(void *user_data,
            const long y,
            Image *image,
            PixelPacket *pixels,
+           IndexPacket *indexes,
            const long npixels,
            ExceptionInfo *exception)
 {
@@ -251,6 +254,7 @@ QuantumAnd(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -295,6 +299,7 @@ QuantumAssign(void *user_data,
               const long y,
               Image *image,
               PixelPacket *pixels,
+              IndexPacket *indexes,
               const long npixels,
               ExceptionInfo *exception)
 {
@@ -307,6 +312,7 @@ QuantumAssign(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -351,6 +357,7 @@ QuantumDivide(void *user_data,
               const long y,
               Image *image,
               PixelPacket *pixels,
+              IndexPacket *indexes,
               const long npixels,
               ExceptionInfo *exception)
 {
@@ -363,6 +370,7 @@ QuantumDivide(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -407,6 +415,7 @@ QuantumLShift(void *user_data,
               const long y,
               Image *image,
               PixelPacket *pixels,
+              IndexPacket *indexes,
               const long npixels,
               ExceptionInfo *exception)
 {
@@ -419,6 +428,7 @@ QuantumLShift(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -463,6 +473,7 @@ QuantumMultiply(void *user_data,
                 const long y,
                 Image *image,
                 PixelPacket *pixels,
+                IndexPacket *indexes,
                 const long npixels,
                 ExceptionInfo *exception)
 {
@@ -475,6 +486,7 @@ QuantumMultiply(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -519,6 +531,7 @@ QuantumOr(void *user_data,
           const long y,
           Image *image,
           PixelPacket *pixels,
+          IndexPacket *indexes,
           const long npixels,
           ExceptionInfo *exception)
 {
@@ -531,6 +544,7 @@ QuantumOr(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -575,6 +589,7 @@ QuantumRShift(void *user_data,
               const long y,
               Image *image,
               PixelPacket *pixels,
+              IndexPacket *indexes,
               const long npixels,
               ExceptionInfo *exception)
 {
@@ -587,6 +602,7 @@ QuantumRShift(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -631,6 +647,7 @@ QuantumSubtract(void *user_data,
                 const long y,
                 Image *image,
                 PixelPacket *pixels,
+                IndexPacket *indexes,
                 const long npixels,
                 ExceptionInfo *exception)
 {
@@ -643,6 +660,7 @@ QuantumSubtract(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -697,12 +715,13 @@ static inline Quantum ApplyThresholdOperator(const Quantum quantum,
 }
 static MagickPassFail
 QuantumThreshold(void *user_data,
-                const long x,
-                const long y,
-                Image *image,
-                PixelPacket *pixels,
-                const long npixels,
-                ExceptionInfo *exception)
+                 const long x,
+                 const long y,
+                 Image *image,
+                 PixelPacket *pixels,
+                 IndexPacket *indexes,
+                 const long npixels,
+                 ExceptionInfo *exception)
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -713,6 +732,7 @@ QuantumThreshold(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -770,6 +790,7 @@ QuantumThresholdBlack(void *user_data,
                       const long y,
                       Image *image,
                       PixelPacket *pixels,
+                      IndexPacket *indexes,
                       const long npixels,
                       ExceptionInfo *exception)
 {
@@ -782,6 +803,7 @@ QuantumThresholdBlack(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -839,6 +861,7 @@ QuantumThresholdWhite(void *user_data,
                       const long y,
                       Image *image,
                       PixelPacket *pixels,
+                      IndexPacket *indexes,
                       const long npixels,
                       ExceptionInfo *exception)
 {
@@ -851,6 +874,7 @@ QuantumThresholdWhite(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)
@@ -895,6 +919,7 @@ QuantumXor(void *user_data,
            const long y,
            Image *image,
            PixelPacket *pixels,
+           IndexPacket *indexes,
            const long npixels,
            ExceptionInfo *exception)
 {
@@ -907,6 +932,7 @@ QuantumXor(void *user_data,
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
   switch (context->channel)

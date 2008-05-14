@@ -90,6 +90,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       register const PixelPacket
         *pixels;
 
+      register const IndexPacket
+        *indexes;
+
       register long
         column;
       
@@ -99,13 +102,13 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
           status=MagickFail;
           break;
         }
+      indexes=GetIndexes(image);
 
       for (column=x; column < (long) (x+columns); column++)
         {
-          status=(call_back)(user_data,column,row,image,pixels,exception);
+          status=(call_back)(user_data,column,row,image,pixels++,indexes++,exception);
           if (status == MagickFail)
             break;
-          pixels++;
         }
 
       if (QuantumTick(row-y,rows))
@@ -191,6 +194,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
       register PixelPacket
         *pixels;
 
+      register IndexPacket
+        *indexes;
+
       register long
         column;
       
@@ -201,13 +207,13 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
           CopyException(exception,&image->exception);
           break;
         }
+      indexes=GetIndexes(image);
 
       for (column=x; column < (long) (x+columns); column++)
         {
-          status=(call_back)(user_data,column,row,image,pixels,exception);
+          status=(call_back)(user_data,column,row,image,pixels++,indexes++,exception);
           if (status == MagickFail)
             break;
-          pixels++;
         }
 
       if (!SyncImagePixels(image))
@@ -318,6 +324,10 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         *first_pixels,
         *second_pixels;
 
+      register const IndexPacket
+        *first_indexes,
+        *second_indexes;
+
       register long
         first_column,
         second_column;
@@ -328,25 +338,25 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
           status=MagickFail;
           break;
         }
+      first_indexes=GetIndexes(first_image);
       second_pixels=AcquireImagePixels(second_image, second_x, second_row, columns, 1, exception);
       if (!second_pixels)
         {
           status=MagickFail;
           break;
         }
+      second_indexes=GetIndexes(second_image);
 
       for (first_column=first_x, second_column=second_x;
            first_column < (long) (first_x+columns);
            first_column++, second_column++)
         {
           status=(call_back)(user_data,
-                             first_image,first_column,first_row,first_pixels,
-                             second_image,second_column,second_row,second_pixels,
+                             first_image,first_column,first_row,first_pixels++,first_indexes++,
+                             second_image,second_column,second_row,second_pixels++,second_indexes++,
                              exception);
           if (status == MagickFail)
             break;
-          first_pixels++;
-          second_pixels++;
         }
 
       if (QuantumTick(first_row-first_y,rows))
@@ -447,8 +457,14 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
       register const PixelPacket
         *source_pixels;
 
+      register const IndexPacket
+        *source_indexes;
+
       register PixelPacket
         *update_pixels;
+
+      register IndexPacket
+        *update_indexes;
 
       register long
         source_column,
@@ -461,6 +477,7 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
           status=MagickFail;
           break;
         }
+      source_indexes=GetIndexes(source_image);
       update_pixels=GetImagePixels(update_image, update_x, update_row, columns, 1);
       if (!update_pixels)
         {
@@ -468,19 +485,18 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
           status=MagickFail;
           break;
         }
+      update_indexes=GetIndexes(update_image);
 
       for (source_column=source_x, update_column=update_x;
            source_column < (long) (source_x+columns);
            source_column++, update_column++)
         {
           status=(call_back)(user_data,
-                             source_image,source_column,source_row,source_pixels,
-                             update_image,update_column,update_row,update_pixels,
+                             source_image,source_column,source_row,source_pixels++,source_indexes++,
+                             update_image,update_column,update_row,update_pixels++,update_indexes++,
                              exception);
           if (status == MagickFail)
             break;
-          source_pixels++;
-          update_pixels++;
         }
 
       if (!SyncImagePixels(update_image))

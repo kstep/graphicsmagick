@@ -3046,7 +3046,7 @@ per-channel basis and do not operate based on pixel intensity as
 Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
 <s>Divide</s>, <s>LShift</s>, <s>Multiply</s>, <s>Or</s>, <s>RShift</s>,
 <s>Subtract</s>, <s>Threshold</s>, <s>Threshold-White</s>,
-<s>Threshold-Black</s>,<s>Xor</s>.</pp>
+<s>Threshold-Black</s>, <s>Xor</s>.</pp>
 <pp>
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest

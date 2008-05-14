@@ -87,8 +87,11 @@ PixelRowIterateMonoRead(PixelRowIteratorMonoReadCallback call_back,
 
   for (row=y; row < (long) (y+rows); row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *pixels;
+
+      const IndexPacket
+        *indexes;
 
       pixels=AcquireImagePixels(image, x, row, columns, 1, exception);
       if (!pixels)
@@ -96,8 +99,9 @@ PixelRowIterateMonoRead(PixelRowIteratorMonoReadCallback call_back,
           status=MagickFail;
           break;
         }
+      indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,x,row,image,pixels,columns,exception);
+      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -182,8 +186,11 @@ PixelRowIterateMonoModify(PixelRowIteratorMonoModifyCallback call_back,
 
   for (row=y; row < (long) (y+rows); row++)
     {
-      register PixelPacket
+      PixelPacket
         *pixels;
+
+      IndexPacket
+        *indexes;
 
       pixels=GetImagePixels(image, x, row, columns, 1);
       if (!pixels)
@@ -192,8 +199,9 @@ PixelRowIterateMonoModify(PixelRowIteratorMonoModifyCallback call_back,
           CopyException(exception,&image->exception);
           break;
         }
+      indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,x,row,image,pixels,columns,exception);
+      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -301,9 +309,13 @@ PixelRowIterateDualRead(PixelRowIteratorDualReadCallback call_back,
        first_row < (long) (first_y+rows);
        first_row++, second_row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *first_pixels,
         *second_pixels;
+
+      const IndexPacket
+        *first_indexes,
+        *second_indexes;
 
       first_pixels=AcquireImagePixels(first_image, first_x, first_row, columns, 1, exception);
       if (!first_pixels)
@@ -311,16 +323,18 @@ PixelRowIterateDualRead(PixelRowIteratorDualReadCallback call_back,
           status=MagickFail;
           break;
         }
+      first_indexes=GetIndexes(first_image);
       second_pixels=AcquireImagePixels(second_image, second_x, second_row, columns, 1, exception);
       if (!second_pixels)
         {
           status=MagickFail;
           break;
         }
+      second_indexes=GetIndexes(second_image);
 
       status=(call_back)(user_data,
-                         first_image,first_x,first_row,first_pixels,
-                         second_image,second_x,second_row,second_pixels,
+                         first_image,first_x,first_row,first_pixels,first_indexes,
+                         second_image,second_x,second_row,second_pixels,second_indexes,
                          columns, exception);
       if (status == MagickFail)
         break;
@@ -420,11 +434,17 @@ PixelRowIterateDualModify(PixelRowIteratorDualModifyCallback call_back,
        source_row < (long) (source_y+rows);
        source_row++, update_row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *source_pixels;
 
-      register PixelPacket
+      const IndexPacket
+        *source_indexes;
+
+      PixelPacket
         *update_pixels;
+
+      IndexPacket
+        *update_indexes;
 
       source_pixels=AcquireImagePixels(source_image, source_x, source_row,
                                        columns, 1, exception);
@@ -433,6 +453,7 @@ PixelRowIterateDualModify(PixelRowIteratorDualModifyCallback call_back,
           status=MagickFail;
           break;
         }
+      source_indexes=GetIndexes(source_image);
       update_pixels=GetImagePixels(update_image, update_x, update_row, columns, 1);
       if (!update_pixels)
         {
@@ -440,10 +461,11 @@ PixelRowIterateDualModify(PixelRowIteratorDualModifyCallback call_back,
           status=MagickFail;
           break;
         }
+      update_indexes=GetIndexes(update_image);
 
       status=(call_back)(user_data,
-                         source_image,source_x,source_row,source_pixels,
-                         update_image,update_x,update_row,update_pixels,
+                         source_image,source_x,source_row,source_pixels,source_indexes,
+                         update_image,update_x,update_row,update_pixels,update_indexes,
                          columns,exception);
       if (status == MagickFail)
         break;

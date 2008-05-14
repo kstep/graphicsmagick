@@ -3321,8 +3321,9 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
                                              const long y,
                                              const Image *image,
                                              const PixelPacket *pixel,
+                                             const IndexPacket *indexes,
                                              const long npixels,
-                                             ExceptionInfo *ARGUNUSED(exception))
+                                             ExceptionInfo *exception)
 {
   StatisticsContext
     *context=(StatisticsContext *) user_context;
@@ -3338,6 +3339,8 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
 
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
     {
@@ -3381,8 +3384,9 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
                                                  const long y,
                                                  const Image *image,
                                                  const PixelPacket *pixel,
+                                                 const IndexPacket *indexes,
                                                  const long npixels,
-                                                 ExceptionInfo *ARGUNUSED(exception))
+                                                 ExceptionInfo *exception)
 {
   StatisticsContext
     *context=(StatisticsContext *) user_context;
@@ -3398,6 +3402,8 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
 
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
     {
@@ -3725,10 +3731,12 @@ ComputeRowPixelError(void *user_data,
                      const long first_x,
                      const long first_y,
                      const PixelPacket *first_pixels,
+                     const IndexPacket *first_indexes,
                      const Image *second_image,
                      const long second_x,
                      const long second_y,
                      const PixelPacket *second_pixels,
+                     const IndexPacket *second_indexes,
                      const long npixels,
                      ExceptionInfo *exception)
 {
@@ -3745,9 +3753,11 @@ ComputeRowPixelError(void *user_data,
 
   ARG_NOT_USED(first_x);
   ARG_NOT_USED(first_y);
+  ARG_NOT_USED(first_indexes);
   ARG_NOT_USED(second_image);
   ARG_NOT_USED(second_x);
   ARG_NOT_USED(second_y);
+  ARG_NOT_USED(second_indexes);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)

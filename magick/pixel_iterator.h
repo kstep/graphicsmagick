@@ -8,7 +8,7 @@
   Interfaces to support simple iterative pixel read/update access
   within an image or between two images.   Also see the interfaces in
   pixel_row_iterator.h which pass entire rows to the callback function
-  rather than one pixel.
+  rather than one pixel for better performance.
 
   WARNING!  These interfaces are still subject to change. WARNING!
 
@@ -32,6 +32,7 @@ extern "C" {
      const long y,
      const Image *const_image,
      const PixelPacket *pixel,
+     const IndexPacket *index,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
@@ -54,6 +55,7 @@ extern "C" {
      const long y,
      Image *image,
      PixelPacket *pixel,
+     const IndexPacket *index,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
@@ -77,10 +79,12 @@ extern "C" {
      const long first_x,
      const long first_y,
      const PixelPacket *first_pixel,
+     const IndexPacket *first_index,
      const Image *second_image,
      const long second_x,
      const long second_y,
      const PixelPacket *second_pixel,
+     const IndexPacket *second_index,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
@@ -109,10 +113,12 @@ extern "C" {
      const long source_x,
      const long source_y,
      const PixelPacket *source_pixel,
+     const IndexPacket *source_index,
      Image *update_image,
      const long update_x,
      const long update_y,
      PixelPacket *update_pixel,
+     IndexPacket *update_index,
      ExceptionInfo *exception);
 
   extern MagickExport MagickPassFail
