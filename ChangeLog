@@ -1,5 +1,8 @@
 2008-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colorspace.c (TransformRGBImage): Re-implement transform
+	loops using PixelRowIterateMonoModify() in order to simplify the
+	code.
 	* magick/{pixel_iterator.h, pixel_row_iterator.h}: Pass pixel
 	colormap index/indexes to callback functions.  Dependent code is
 	adjusted to match.

@@ -37,6 +37,7 @@
 #include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_row_iterator.h"
 #include "magick/utility.h"
 
 typedef float TransformQuantum;
@@ -1209,72 +1210,236 @@ MagickExport MagickPassFail TransformColorspace(Image *image,
 %    o colorspace: the colorspace to transform the image to.
 %
 */
+static MagickPassFail
+CMYKToRGBTransform(void *user_data,          /* User provided mutable data */
+                   const long x,             /* X-offset in base image */
+                   const long y,             /* Y-offset in base image */
+                   Image *image,             /* Modify image */
+                   PixelPacket *pixels,      /* Pixel row */
+                   IndexPacket *indexes,     /* Pixel row indexes */
+                   const long npixels,       /* Number of pixels in row */
+                   ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    Transform CMYK(A) pixels to RGB.
+  */
+  register long
+    i;  
+
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      pixels[i].red=(Quantum) (((double)(MaxRGB-pixels[i].red)*(MaxRGB-pixels[i].opacity))/MaxRGB+0.5);
+      pixels[i].green=(Quantum) (((double)(MaxRGB-pixels[i].green)*(MaxRGB-pixels[i].opacity))/MaxRGB+0.5);
+      pixels[i].blue=(Quantum) (((double)(MaxRGB-pixels[i].blue)*(MaxRGB-pixels[i].opacity))/MaxRGB+0.5);
+      pixels[i].opacity=image->matte ? indexes[i] : OpaqueOpacity;
+    }
+
+  return MagickPass;
+}
+
+static MagickPassFail
+CineonLogToRGBTransform(void *user_data,          /* User provided mutable data */
+                        const long x,             /* X-offset in base image */
+                        const long y,             /* Y-offset in base image */
+                        Image *image,             /* Modify image */
+                        PixelPacket *pixels,      /* Pixel row */
+                        IndexPacket *indexes,     /* Pixel row indexes */
+                        const long npixels,       /* Number of pixels in row */
+                        ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    Transform CineonLog pixels to RGB based on an existing lookup
+    table.
+  */
+  Quantum
+    *linearmap = (Quantum *) user_data;
+
+  register long
+    i;  
+  
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      pixels[i].red   = linearmap[ScaleQuantumToShort(pixels[i].red)/64U];
+      pixels[i].green = linearmap[ScaleQuantumToShort(pixels[i].green)/64U];
+      pixels[i].blue  = linearmap[ScaleQuantumToShort(pixels[i].blue)/64U];
+    }
+
+  return MagickPass;
+}
+
+static MagickPassFail
+HSLToRGBTransform(void *user_data,          /* User provided mutable data */
+                  const long x,             /* X-offset in base image */
+                  const long y,             /* Y-offset in base image */
+                  Image *image,             /* Modify image */
+                  PixelPacket *pixels,      /* Pixel row */
+                  IndexPacket *indexes,     /* Pixel row indexes */
+                  const long npixels,       /* Number of pixels in row */
+                  ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    Transform pixels from HSL space to RGB space.
+  */
+  register long
+    i;  
+
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      HSLTransform((double) pixels[i].red/MaxRGB,(double) pixels[i].green/MaxRGB,
+                   (double) pixels[i].blue/MaxRGB,&pixels[i].red,&pixels[i].green,&pixels[i].blue);
+    }
+
+  return MagickPass;
+}
+
+static MagickPassFail
+HWBToRGBTransform(void *user_data,          /* User provided mutable data */
+                  const long x,             /* X-offset in base image */
+                  const long y,             /* Y-offset in base image */
+                  Image *image,             /* Modify image */
+                  PixelPacket *pixels,      /* Pixel row */
+                  IndexPacket *indexes,     /* Pixel row indexes */
+                  const long npixels,       /* Number of pixels in row */
+                  ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    Transform pixels from HWB space to RGB space.
+  */
+  register long
+    i;  
+
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      HWBTransform((double) pixels[i].red/MaxRGB,(double) pixels[i].green/MaxRGB,
+                   (double) pixels[i].blue/MaxRGB,&pixels[i].red,&pixels[i].green,&pixels[i].blue);
+    }
+
+  return MagickPass;
+}
+
 typedef struct _RGBColorTransformPacket
 {
   TransformQuantum
-    red,
-    green,
-    blue;
+    r,
+    g,
+    b;
 } RGBColorTransformPacket;
 
-static void RGBTransformPacket(PixelPacket *pixel,
-  const RGBColorTransformPacket *red_map,
-  const RGBColorTransformPacket *green_map,
-  const RGBColorTransformPacket *blue_map,
-  const unsigned char *rgb_map,
-  const unsigned int rgb_map_max_index)
+typedef struct _RGBTransformInfo_t
 {
+  RGBColorTransformPacket *r;
+  RGBColorTransformPacket *g;
+  RGBColorTransformPacket *b;
+  unsigned int rgb_map_max_index;
+  const unsigned char *rgb_map;
+} RGBTransformInfo_t;
+
+static MagickPassFail
+RGBTransformPackets(void *user_data,          /* User provided mutable data */
+                    const long x,             /* X-offset in base image */
+                    const long y,             /* Y-offset in base image */
+                    Image *image,             /* Modify image */
+                    PixelPacket *pixels,      /* Pixel row */
+                    IndexPacket *indexes,     /* Pixel row indexes */
+                    const long npixels,       /* Number of pixels in row */
+                    ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    3D transform pixels to RGB.
+  */
   double
-    blue,
-    green,
-    red;
+    b,
+    g,
+    r;
 
-  register const RGBColorTransformPacket
-    *red_p,
-    *green_p,
-    *blue_p;
+  const RGBTransformInfo_t
+    *xform = (const RGBTransformInfo_t *) user_data;
 
-  red_p   = &red_map[ScaleQuantumToMap(pixel->red)];
-  green_p = &green_map[ScaleQuantumToMap(pixel->green)];
-  blue_p  = &blue_map[ScaleQuantumToMap(pixel->blue)];
-  
-  red   = (red_p->red+green_p->red+blue_p->red);
-  green = (red_p->green+green_p->green+blue_p->green);
-  blue  = (red_p->blue+green_p->blue+blue_p->blue);
-  
-  red   = red   < 0.0 ? 0.0 : red   > (double) MaxMap ? (double) MaxMap : (red + 0.5);
-  green = green < 0.0 ? 0.0 : green > (double) MaxMap ? (double) MaxMap : (green + 0.5);
-  blue  = blue  < 0.0 ? 0.0 : blue  > (double) MaxMap ? (double) MaxMap : (blue + 0.5);
+  register long
+    i;
 
+  unsigned int
+    r_index,
+    g_index,
+    b_index;
 
-  if ( rgb_map != 0 )
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
     {
-      unsigned int
-        red_index,
-        green_index,
-        blue_index;
+      r_index = ScaleQuantumToMap(pixels[i].red);
+      g_index = ScaleQuantumToMap(pixels[i].green);
+      b_index = ScaleQuantumToMap(pixels[i].blue);
+  
+      r = (xform->r[r_index].r + xform->g[g_index].r + xform->b[b_index].r);
+      g = (xform->r[r_index].g + xform->g[g_index].g + xform->b[b_index].g);
+      b = (xform->r[r_index].b + xform->g[g_index].b + xform->b[b_index].b);
+  
+      r = r < 0.0 ? 0.0 : r > (double) MaxMap ? (double) MaxMap : (r + 0.5);
+      g = g < 0.0 ? 0.0 : g > (double) MaxMap ? (double) MaxMap : (g + 0.5);
+      b = b < 0.0 ? 0.0 : b > (double) MaxMap ? (double) MaxMap : (b + 0.5);
 
-      red_index = ScaleMapToChar(red);
-      green_index = ScaleMapToChar(green);
-      blue_index = ScaleMapToChar(blue);
+      if ( xform->rgb_map != 0 )
+        {
+          unsigned int
+            r_index,
+            g_index,
+            b_index;
 
-      if (red_index > rgb_map_max_index) red_index = rgb_map_max_index;
-      if (green_index > rgb_map_max_index) green_index = rgb_map_max_index;
-      if (blue_index > rgb_map_max_index) blue_index = rgb_map_max_index;
+          r_index = ScaleMapToChar(r);
+          g_index = ScaleMapToChar(g);
+          b_index = ScaleMapToChar(b);
 
-      pixel->red=ScaleCharToQuantum(rgb_map[red_index]);
-      pixel->green=ScaleCharToQuantum(rgb_map[green_index]);
-      pixel->blue=ScaleCharToQuantum(rgb_map[blue_index]);
+          if (r_index > xform->rgb_map_max_index) r_index = xform->rgb_map_max_index;
+          if (g_index > xform->rgb_map_max_index) g_index = xform->rgb_map_max_index;
+          if (b_index > xform->rgb_map_max_index) b_index = xform->rgb_map_max_index;
+
+          pixels[i].red   = ScaleCharToQuantum(xform->rgb_map[r_index]);
+          pixels[i].green = ScaleCharToQuantum(xform->rgb_map[g_index]);
+          pixels[i].blue  = ScaleCharToQuantum(xform->rgb_map[b_index]);
+        }
+      else
+        {
+          pixels[i].red   = ScaleMapToQuantum(r);
+          pixels[i].green = ScaleMapToQuantum(g);
+          pixels[i].blue  = ScaleMapToQuantum(b);
+        }
     }
-  else
-    {
-      pixel->red=ScaleMapToQuantum(red);
-      pixel->green=ScaleMapToQuantum(green);
-      pixel->blue=ScaleMapToQuantum(blue);
-    }
+
+  return MagickPass;
 }
+
 MagickExport MagickPassFail TransformRGBImage(Image *image,
-  const ColorspaceType colorspace)
+                                              const ColorspaceType colorspace)
 {
 
   static const unsigned char
@@ -1306,7 +1471,9 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       252, 252, 252, 253, 253, 253, 253, 253, 253, 253, 253, 253, 254,
       254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 255, 255,
       255, 255, 255, 255, 255
-    },
+    };
+  
+  static const unsigned char
     YCCMap[351] =  /* Photo CD information beyond 100% white, Gamma 2.2 */
     {
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
@@ -1340,16 +1507,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   char
     progress_message[MaxTextExtent];
 
-  RGBColorTransformPacket
-    *blue_map,
-    *green_map,
-    *red_map;
-
-  long
-    y;
-
-  register long
-    x;
+  RGBTransformInfo_t
+    xform;
 
   register long
     i;
@@ -1357,18 +1516,18 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   unsigned int
     is_grayscale;
 
-  const unsigned char
-    *rgb_map=0;
-
-  unsigned int
-    rgb_map_max_index=0;
-
   MagickPassFail
     status=MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->colorspace != UndefinedColorspace);
+
+  xform.r = (RGBColorTransformPacket *) NULL;
+  xform.g = (RGBColorTransformPacket *) NULL;
+  xform.b = (RGBColorTransformPacket *) NULL;
+  xform.rgb_map = (const unsigned char *) NULL;
+  xform.rgb_map_max_index = 0;
 
   is_grayscale=((image->is_grayscale) || IsGrayColorspace(image->colorspace));
 
@@ -1387,44 +1546,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
 
   if (image->colorspace == CMYKColorspace)
     {
-      IndexPacket
-        *indexes;
-
-      register PixelPacket
-        *q;
-
-      /*
-        Transform image from CMYK to RGB.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if (SyncImage(image) == MagickFail)
-            return (MagickFail);
-          image->storage_class=DirectClass;
-        }
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          {
-            status=MagickFail;
-            break;
-          }
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=(Quantum) (((double)(MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB+0.5);
-          q->green=(Quantum) (((double)(MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB+0.5);
-          q->blue=(Quantum) (((double)(MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB+0.5);
-          q->opacity=image->matte ? indexes[x] : OpaqueOpacity;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          {
-            status=MagickFail;
-            break;
-          }
-      }
+      status=PixelRowIterateMonoModify(CMYKToRGBTransform,
+                                       progress_message,
+                                       NULL,
+                                       0,0,image->columns,image->rows,
+                                       image,
+                                       &image->exception);
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
@@ -1436,9 +1563,6 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       /*
         Transform from Cineon Log RGB to Linear RGB
       */
-      register PixelPacket
-        *q;
-
       double
         BreakPoint,
         DisplayGamma,
@@ -1480,11 +1604,11 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
 
       BreakPoint=ReferenceWhite-SoftClip;
       Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
-                                                    *0.002/NegativeFilmGamma)),
-                                            (DisplayGamma/1.7)));
+                                             *0.002/NegativeFilmGamma)),
+                                     (DisplayGamma/1.7)));
       Offset=Gain-MaxLinearValue;
       KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
-                            (DisplayGamma/1.7))*Gain-Offset;
+                     (DisplayGamma/1.7))*Gain-Offset;
       KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
 
 
@@ -1523,28 +1647,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         Transform pixels.
       */
       image->storage_class=DirectClass;
-      for (y=0; y < (long) image->rows; y++)
-        {
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            {
-              status=MagickFail;
-              break;
-            }
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              q->red=linearmap[ScaleQuantumToShort(q->red)/64U];
-              q->green=linearmap[ScaleQuantumToShort(q->green)/64U];
-              q->blue=linearmap[ScaleQuantumToShort(q->blue)/64U];
-              q++;
-            }
-          if (!SyncImagePixels(image))
-          {
-            status=MagickFail;
-            break;
-          }
-        }
-
+      status=PixelRowIterateMonoModify(CineonLogToRGBTransform,
+                                       progress_message,
+                                       linearmap,
+                                       0,0,image->columns,image->rows,
+                                       image,
+                                       &image->exception);
       MagickFreeMemory(linearmap);
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -1554,356 +1662,298 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       return(status);
     }
 
-  if ((image->colorspace == HSLColorspace) ||
-      (image->colorspace == HWBColorspace))
+  if (image->colorspace == HSLColorspace)
     {
-      void (*transform)(const double,const double,const double,
-        Quantum *,Quantum *,Quantum *);
-
-      switch (colorspace)
-        {
-        case HSLColorspace:
-        default:
-          {
-            transform=HSLTransform;
-            break;
-          }
-        case HWBColorspace:
-          {
-            transform=HWBTransform;
-            break;
-          }
-        }
-
-      switch (image->storage_class)
-        {
-        case DirectClass:
-        default:
-          {
-            ExceptionInfo
-              *exception;
-            
-            register PixelPacket
-              *q;
-            
-            /*
-              Convert DirectClass image.
-            */
-            exception=(&image->exception);
-            for (y=0; y < (long) image->rows; y++)
-              {
-                q=GetImagePixels(image,0,y,image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  {
-                    status=MagickFail;
-                    break;
-                  }
-                for (x=(long) image->columns; x > 0; x--)
-                  {
-                    (transform)((double)q->red/MaxRGB,(double)q->green/MaxRGB,
-                      (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
-                    q++;
-                  }
-                if (!SyncImagePixels(image))
-                  {
-                    status=MagickFail;
-                    break;
-                  }
-                if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(progress_message,y,image->rows,exception))
-                    {
-                      status=MagickFail;
-                      break;
-                    }
-              }
-            break;
-          }
-        case PseudoClass:
-          {
-            /*
-              Convert PseudoClass image.
-            */
-            register PixelPacket
-              *q;
-            
-            q=image->colormap;
-            for (i=(long) image->colors; i > 0; i--)
-              {
-                (transform)((double)q->red/MaxRGB,(double)q->green/MaxRGB,
-                  (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
-                q++;
-              }
-            status &= SyncImage(image);
-            break;
-          }
-        }
+      image->storage_class=DirectClass;
+      status=PixelRowIterateMonoModify(HSLToRGBTransform,
+                                       progress_message,
+                                       NULL,
+                                       0,0,image->columns,image->rows,
+                                       image,
+                                       &image->exception);
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
       return(status);
     }
 
+  if (image->colorspace == HWBColorspace)
+    {
+      image->storage_class=DirectClass;
+      status=PixelRowIterateMonoModify(HWBToRGBTransform,
+                                       progress_message,
+                                       NULL,
+                                       0,0,image->columns,image->rows,
+                                       image,
+                                       &image->exception);
+      image->colorspace=RGBColorspace;
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Colorspace transform completed"); 
+      return(status);
+    }
+
+
   /*
     Allocate the tables.
   */
-  red_map=MagickAllocateMemory(RGBColorTransformPacket *,
-    (MaxMap+1)*sizeof(RGBColorTransformPacket));
-  green_map=MagickAllocateMemory(RGBColorTransformPacket *,
-    (MaxMap+1)*sizeof(RGBColorTransformPacket));
-  blue_map=MagickAllocateMemory(RGBColorTransformPacket *,
-    (MaxMap+1)*sizeof(RGBColorTransformPacket));
-  if ((red_map == (RGBColorTransformPacket *) NULL) ||
-      (green_map == (RGBColorTransformPacket *) NULL) ||
-      (blue_map == (RGBColorTransformPacket *) NULL))
+  xform.r=MagickAllocateMemory(RGBColorTransformPacket *,
+                               (MaxMap+1)*sizeof(RGBColorTransformPacket));
+  xform.g=MagickAllocateMemory(RGBColorTransformPacket *,
+                               (MaxMap+1)*sizeof(RGBColorTransformPacket));
+  xform.b=MagickAllocateMemory(RGBColorTransformPacket *,
+                               (MaxMap+1)*sizeof(RGBColorTransformPacket));
+  if ((xform.r == (RGBColorTransformPacket *) NULL) ||
+      (xform.g == (RGBColorTransformPacket *) NULL) ||
+      (xform.b == (RGBColorTransformPacket *) NULL))
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToTransformColorspace);
+                          UnableToTransformColorspace);
   switch (image->colorspace)
-  {
-    case OHTAColorspace:
     {
-      /*
-        Initialize OHTA tables:
+    case OHTAColorspace:
+      {
+        /*
+          Initialize OHTA tables:
 
           R = I1+1.00000*I2-0.66668*I3
           G = I1+0.00000*I2+1.33333*I3
           B = I1-1.00000*I2-0.66668*I3
 
-        I and Q, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0.5*(2.0*i-MaxMap));
-        blue_map[i].red=TransformValue((-0.33334)*(2.0*i-MaxMap));
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue(0);
-        blue_map[i].green=TransformValue(0.666665*(2.0*i-MaxMap));
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue((-0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue((-0.33334)*(2.0*i-MaxMap));
+          I and Q, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0.5*(2.0*i-MaxMap));
+            xform.b[i].r=TransformValue((-0.33334)*(2.0*i-MaxMap));
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue(0);
+            xform.b[i].g=TransformValue(0.666665*(2.0*i-MaxMap));
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue((-0.5)*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue((-0.33334)*(2.0*i-MaxMap));
+          }
+        break;
       }
-      break;
-    }
     case sRGBColorspace:
-    {
-      /*
-        Initialize sRGB tables:
+      {
+        /*
+          Initialize sRGB tables:
 
           R = Y            +1.032096*C2
           G = Y-0.326904*C1-0.704445*C2
           B = Y+1.685070*C1
 
-        sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
-      */
-      rgb_map=sRGBMap;
-      rgb_map_max_index=350;
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(1.40200*i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue(1.88000*(i-ScaleCharToMap(137)));
-        red_map[i].green=TransformValue(1.40200*i);
-        green_map[i].green=TransformValue((-0.444066)*(i-ScaleCharToMap(156)));
-        blue_map[i].green=TransformValue((-0.95692)*(i-ScaleCharToMap(137)));
-        red_map[i].blue=TransformValue(1.40200*i);
-        green_map[i].blue=TransformValue(2.28900*(i-ScaleCharToMap(156)));
-        blue_map[i].blue=TransformValue(0);
+          sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
+        */
+        xform.rgb_map=sRGBMap;
+        xform.rgb_map_max_index=350;
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(1.40200*i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue(1.88000*(i-ScaleCharToMap(137)));
+            xform.r[i].g=TransformValue(1.40200*i);
+            xform.g[i].g=TransformValue((-0.444066)*(i-ScaleCharToMap(156)));
+            xform.b[i].g=TransformValue((-0.95692)*(i-ScaleCharToMap(137)));
+            xform.r[i].b=TransformValue(1.40200*i);
+            xform.g[i].b=TransformValue(2.28900*(i-ScaleCharToMap(156)));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
-    }
     case XYZColorspace:
-    {
-      /*
-        Initialize CIE XYZ tables (to ITU R-709 RGB):
+      {
+        /*
+          Initialize CIE XYZ tables (to ITU R-709 RGB):
 
           R =  3.240479*R-1.537150*G-0.498535*B
           G = -0.969256*R+1.875992*G+0.041556*B
           B =  0.055648*R-0.204043*G+1.057311*B
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(3.240479*i);
-        green_map[i].red=TransformValue((-1.537150)*i);
-        blue_map[i].red=TransformValue((-0.498535)*i);
-        red_map[i].green=TransformValue((-0.969256)*i);
-        green_map[i].green=TransformValue(1.875992*i);
-        blue_map[i].green=TransformValue(0.041556*i);
-        red_map[i].blue=TransformValue(0.055648*i);
-        green_map[i].blue=TransformValue((-0.204043)*i);
-        blue_map[i].blue=TransformValue(1.057311*i);
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(3.240479*i);
+            xform.g[i].r=TransformValue((-1.537150)*i);
+            xform.b[i].r=TransformValue((-0.498535)*i);
+            xform.r[i].g=TransformValue((-0.969256)*i);
+            xform.g[i].g=TransformValue(1.875992*i);
+            xform.b[i].g=TransformValue(0.041556*i);
+            xform.r[i].b=TransformValue(0.055648*i);
+            xform.g[i].b=TransformValue((-0.204043)*i);
+            xform.b[i].b=TransformValue(1.057311*i);
+          }
+        break;
       }
-      break;
-    }
     case Rec601YCbCrColorspace:
-    {
-      /*
-        Y'CbCr based on ITU-R 601 Luma
+      {
+        /*
+          Y'CbCr based on ITU-R 601 Luma
 
-        Initialize Y'CbCr tables:
+          Initialize Y'CbCr tables:
 
           R' = Y'            +1.402000*Cr
           G' = Y'-0.344136*Cb-0.714136*Cr
           B' = Y'+1.772000*Cb
 
-        Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        /* Y */
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue((1.402000*0.5)*(2.0*i-MaxMap));
-        /* Pb */
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue((-0.344136*0.5)*(2.0*i-MaxMap));
-        blue_map[i].green=TransformValue((-0.714136*0.5)*(2.0*i-MaxMap));
-        /* Pr */
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue((1.772000*0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue(0);
+          Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            /* Y */
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue((1.402000*0.5)*(2.0*i-MaxMap));
+            /* Pb */
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue((-0.344136*0.5)*(2.0*i-MaxMap));
+            xform.b[i].g=TransformValue((-0.714136*0.5)*(2.0*i-MaxMap));
+            /* Pr */
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue((1.772000*0.5)*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
-    }
     case Rec709YCbCrColorspace:
-    {
-      /*
-        Y'CbCr based on ITU-R 709 Luma.
+      {
+        /*
+          Y'CbCr based on ITU-R 709 Luma.
 
           R' = Y'            +1.574800*Cr
           G' = Y'-0.187324*Cb-0.468124*Cr
           B' = Y'+1.855600*Cb
 
-        Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        /* Y */
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue((1.5748*0.5)*(2.0*i-MaxMap));
-        /* Pb */
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue((-0.187324*0.5)*(2.0*i-MaxMap));
-        blue_map[i].green=TransformValue((-0.468124*0.5)*(2.0*i-MaxMap));
-        /* Pr */
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue((1.8556*0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue(0);
+          Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            /* Y */
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue((1.5748*0.5)*(2.0*i-MaxMap));
+            /* Pb */
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue((-0.187324*0.5)*(2.0*i-MaxMap));
+            xform.b[i].g=TransformValue((-0.468124*0.5)*(2.0*i-MaxMap));
+            /* Pr */
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue((1.8556*0.5)*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
-    }
     case YCCColorspace:
-    {
-      /*
-        Kodak PhotoYCC Color Space.
+      {
+        /*
+          Kodak PhotoYCC Color Space.
 
-        Initialize YCC tables:
+          Initialize YCC tables:
 
           R = Y            +1.340762*C2
           G = Y-0.317038*C1-0.682243*C2
           B = Y+1.632639*C1
 
-        YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
-      */
-      rgb_map=YCCMap;
-      rgb_map_max_index=350;
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(1.3584*i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue(1.8215*(i-ScaleCharToMap(137)));
-        red_map[i].green=TransformValue(1.3584*i);
-        green_map[i].green=TransformValue((-0.4302726)*(i-ScaleCharToMap(156)));
-        blue_map[i].green=TransformValue((-0.9271435)*(i-ScaleCharToMap(137)));
-        red_map[i].blue=TransformValue(1.3584*i);
-        green_map[i].blue=TransformValue(2.2179*(i-ScaleCharToMap(156)));
-        blue_map[i].blue=TransformValue(0);
+          YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
+        */
+        xform.rgb_map=YCCMap;
+        xform.rgb_map_max_index=350;
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(1.3584*i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue(1.8215*(i-ScaleCharToMap(137)));
+            xform.r[i].g=TransformValue(1.3584*i);
+            xform.g[i].g=TransformValue((-0.4302726)*(i-ScaleCharToMap(156)));
+            xform.b[i].g=TransformValue((-0.9271435)*(i-ScaleCharToMap(137)));
+            xform.r[i].b=TransformValue(1.3584*i);
+            xform.g[i].b=TransformValue(2.2179*(i-ScaleCharToMap(156)));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
-    }
     case YIQColorspace:
-    {
-      /*
-        Initialize YIQ tables:
+      {
+        /*
+          Initialize YIQ tables:
 
           R = Y+0.95620*I+0.62140*Q
           G = Y-0.27270*I-0.64680*Q
           B = Y-1.10370*I+1.70060*Q
 
-        I and Q, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0.4781*(2.0*i-MaxMap));
-        blue_map[i].red=TransformValue(0.3107*(2.0*i-MaxMap));
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue((-0.13635)*(2.0*i-MaxMap));
-        blue_map[i].green=TransformValue((-0.3234)*(2.0*i-MaxMap));
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue((-0.55185)*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue(0.8503*(2.0*i-MaxMap));
+          I and Q, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0.4781*(2.0*i-MaxMap));
+            xform.b[i].r=TransformValue(0.3107*(2.0*i-MaxMap));
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue((-0.13635)*(2.0*i-MaxMap));
+            xform.b[i].g=TransformValue((-0.3234)*(2.0*i-MaxMap));
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue((-0.55185)*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue(0.8503*(2.0*i-MaxMap));
+          }
+        break;
       }
-      break;
-    }
     case YPbPrColorspace:
-    {
-      /*
-        Initialize Y'PbPr tables using ITU-R 601 luma:
+      {
+        /*
+          Initialize Y'PbPr tables using ITU-R 601 luma:
 
           R = Y            +1.402000*C2
           G = Y-0.344136*C1+0.714136*C2
           B = Y+1.772000*C1
 
-        Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue(0.701*(2.0*i-MaxMap));
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue((-0.172068)*(2.0*i-MaxMap));
-        blue_map[i].green=TransformValue(0.357068*(2.0*i-MaxMap));
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue(0.886*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue(0);
+          Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue(0.701*(2.0*i-MaxMap));
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue((-0.172068)*(2.0*i-MaxMap));
+            xform.b[i].g=TransformValue(0.357068*(2.0*i-MaxMap));
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue(0.886*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
-    }
     case YUVColorspace:
     default:
-    {
-      /*
-        Initialize YUV tables:
+      {
+        /*
+          Initialize YUV tables:
 
           R = Y          +1.13980*V
           G = Y-0.39380*U-0.58050*V
           B = Y+2.02790*U
 
-        U and V, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxMap.
-      */
-      for (i=0; i <= (long) MaxMap; i++)
-      {
-        red_map[i].red=TransformValue(i);
-        green_map[i].red=TransformValue(0);
-        blue_map[i].red=TransformValue(0.5699*(2.0*i-MaxMap));
-        red_map[i].green=TransformValue(i);
-        green_map[i].green=TransformValue((-0.1969)*(2.0*i-MaxMap));
-        blue_map[i].green=TransformValue((-0.29025)*(2.0*i-MaxMap));
-        red_map[i].blue=TransformValue(i);
-        green_map[i].blue=TransformValue(1.01395*(2.0*i-MaxMap));
-        blue_map[i].blue=TransformValue(0);
+          U and V, normally -0.5 through 0.5, must be normalized to the range 0
+          through MaxMap.
+        */
+        for (i=0; i <= (long) MaxMap; i++)
+          {
+            xform.r[i].r=TransformValue(i);
+            xform.g[i].r=TransformValue(0);
+            xform.b[i].r=TransformValue(0.5699*(2.0*i-MaxMap));
+            xform.r[i].g=TransformValue(i);
+            xform.g[i].g=TransformValue((-0.1969)*(2.0*i-MaxMap));
+            xform.b[i].g=TransformValue((-0.29025)*(2.0*i-MaxMap));
+            xform.r[i].b=TransformValue(i);
+            xform.g[i].b=TransformValue(1.01395*(2.0*i-MaxMap));
+            xform.b[i].b=TransformValue(0);
+          }
+        break;
       }
-      break;
     }
-  }
 
 #if 0
   /*
@@ -1911,19 +1961,19 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   */
   for (i=0; i <= (long) MaxMap; i++)
     {
-      printf("%5ld: red_map(%g,%g,%g) green_map(%g,%g,%g) blue_map(%g,%g,%g)\n",
+      printf("%5ld: xform.r(%g,%g,%g) xform.g(%g,%g,%g) xform.b(%g,%g,%g)\n",
              i,
-             ((red_map[i].red)),
-             ((red_map[i].green)),
-             ((red_map[i].blue)),
+             ((xform.r[i].r)),
+             ((xform.r[i].g)),
+             ((xform.r[i].b)),
              
-             ((green_map[i].red)),
-             ((green_map[i].green)),
-             ((green_map[i].blue)),
+             ((xform.g[i].r)),
+             ((xform.g[i].g)),
+             ((xform.g[i].b)),
              
-             ((blue_map[i].red)),
-             ((blue_map[i].green)),
-             ((blue_map[i].blue)));
+             ((xform.b[i].r)),
+             ((xform.b[i].g)),
+             ((xform.b[i].b)));
     }
 #endif
 
@@ -1931,76 +1981,47 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     Convert to RGB.
   */
   switch (image->storage_class)
-  {
+    {
     case DirectClass:
     default:
-    {
-      ExceptionInfo
-        *exception;
-
-      register PixelPacket
-        *q;
-
-      /*
-        Convert DirectClass image.
-      */
-      exception=(&image->exception);
-      for (y=0; y < (long) image->rows; y++)
       {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          {
-            status=MagickFail;
-            break;
-          }
-        for (x=(long) image->columns; x > 0; x--)
-        {
-          RGBTransformPacket(q,red_map,green_map,blue_map,rgb_map,
-                             rgb_map_max_index);
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          {
-            status=MagickFail;
-            break;
-          }
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(progress_message,y,image->rows,exception))
-            {
-              status=MagickFail;
-              break;
-            }
+        /*
+          Convert DirectClass image.
+        */
+        status=PixelRowIterateMonoModify(RGBTransformPackets,
+                                         progress_message,
+                                         &xform,
+                                         0,0,image->columns,image->rows,
+                                         image,
+                                         &image->exception);
+        break;
       }
-      break;
-    }
     case PseudoClass:
-    {
-      /*
-        Convert PseudoClass image.
-      */
-      register PixelPacket
-        *q;
-
-      q=image->colormap;
-      for (i=(long) image->colors; i > 0; i--)
       {
-        RGBTransformPacket(q,red_map,green_map,blue_map,rgb_map,
-                           rgb_map_max_index);
-        q++;
+        /*
+          Convert PseudoClass image.
+        */
+        (void) RGBTransformPackets(&xform,
+                                   -1,
+                                   -1,
+                                   image,
+                                   image->colormap,
+                                   (IndexPacket *) NULL,
+                                   image->colors,
+                                   &image->exception);
+        status=SyncImagePixels(image);
+        break;
       }
-      (void) SyncImagePixels(image);
-      break;
     }
-  }
   image->is_grayscale=is_grayscale;
   image->colorspace=RGBColorspace;
 
   /*
     Free allocated memory.
   */
-  MagickFreeMemory(blue_map);
-  MagickFreeMemory(green_map);
-  MagickFreeMemory(red_map);
+  MagickFreeMemory(xform.b);
+  MagickFreeMemory(xform.g);
+  MagickFreeMemory(xform.r);
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                         "Colorspace transform completed"); 
   return(status);

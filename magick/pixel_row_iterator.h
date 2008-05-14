@@ -27,7 +27,8 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelRowIteratorMonoReadCallback)
-    (void *user_data,                   /* User provided mutable data */
+    (
+     void *user_data,                   /* User provided mutable data */
      const long x,                      /* X-offset in base image */
      const long y,                      /* Y-offset in base image */
      const Image *const_image,          /* Input image */
@@ -52,7 +53,8 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelRowIteratorMonoModifyCallback)
-    (void *user_data,                   /* User provided mutable data */
+    (
+     void *user_data,                   /* User provided mutable data */
      const long x,                      /* X-offset in base image */
      const long y,                      /* Y-offset in base image */
      Image *image,                      /* Modify image */
@@ -78,7 +80,8 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelRowIteratorDualReadCallback)
-    (void *user_data,                   /* User provided mutable data */
+    (
+     void *user_data,                   /* User provided mutable data */
      const Image *first_image,          /* First Input image */
      const long first_x,                /* X-offset in first image */
      const long first_y,                /* Y-offset in first image */
@@ -114,7 +117,8 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelRowIteratorDualModifyCallback)
-    (void *user_data,                   /* User provided mutable data */
+    (
+     void *user_data,                   /* User provided mutable data */
      const Image *source_image,         /* Source image */
      const long source_x,               /* X-offset in source image */
      const long source_y,               /* Y-offset in source image */
