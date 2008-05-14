@@ -44,7 +44,7 @@
 <P>
 </P>
 <h2><a name="quantumoperatorimage">QuantumOperatorImage</a></h2>
-<blockquote>QuantumOperatorImage() performs the requested integer arithmetic operation on the selected channels of the entire image. </blockquote><P>These operations are on the DirectClass pixels of the image and do not update pixel indexes or colormap.</P>
+<blockquote>QuantumOperatorImage() performs the requested arithmetic, bitwise-logical, or value operation on the selected channels of the entire image. </blockquote><P>These operations are on the DirectClass pixels of the image and do not update pixel indexes or colormap.</P>
 <P>The format of the QuantumOperatorImage method is:</P>
 <blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -63,7 +63,7 @@
 <dt><strong><a name="item_o_quantum_operator_3a">quantum_operator:</a></strong>
 
 <DD>
-<P>arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp, XorQuantumOp).</P>
+<P>Operator to use (AddQuantumOp, AndQuantumOp, AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp, ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).</P>
 </dd>
 </li>
 <dt><strong><a name="item_o_rvalue_3a">rvalue:</a></strong>
@@ -82,7 +82,7 @@
 <P>
 </P>
 <h2><a name="quantumoperatorregionimage">QuantumOperatorRegionImage</a></h2>
-<blockquote>QuantumOperatorRegionImage() performs the requested arithmetic or logical operation on the selected channels of the image over the specified region. </blockquote><P>These operations are on the DirectClass pixels of the image and do not update pixel indexes or colormap.</P>
+<blockquote>QuantumOperatorRegionImage() performs the requested arithmetic, bitwise-logical, or value operation on the selected channels of the image over the specified region. </blockquote><P>These operations are on the DirectClass pixels of the image and do not update pixel indexes or colormap.</P>
 <P>The format of the QuantumOperatorRegionImage method is:</P>
 <blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -125,7 +125,7 @@
 <dt><strong>quantum_operator:</strong>
 
 <DD>
-<P>arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).</P>
+<P>Operator to use (AddQuantumOp, AndQuantumOp, AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp, ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).</P>
 </dd>
 </li>
 <dt><strong>rvalue:</strong>

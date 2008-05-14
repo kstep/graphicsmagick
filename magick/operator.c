@@ -73,8 +73,9 @@ static const char *ChannelTypeToString(const ChannelType channel)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QuantumOperatorImage() performs the requested integer arithmetic
-%  operation on the selected channels of the entire image.
+%  QuantumOperatorImage() performs the requested arithmetic,
+%  bitwise-logical, or value operation on the selected channels of
+%  the entire image.
 %
 %  These operations are on the DirectClass pixels of the image and do not
 %  update pixel indexes or colormap.
@@ -91,11 +92,10 @@ static const char *ChannelTypeToString(const ChannelType channel)
 %
 %    o channel: Channel to operate on.
 %
-%    o quantum_operator: arithmetic or bitwise operator to use (AddQuantumOp,
-%                        AndQuantumOp, AssignQuantumOp, DivideQuantumOp,
-%                        LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp,
-%                        RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
-%                        XorQuantumOp).
+%    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
+%        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
+%        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
+%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -121,8 +121,9 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QuantumOperatorRegionImage() performs the requested arithmetic or logical
-%  operation on the selected channels of the image over the specified region.
+%  QuantumOperatorRegionImage() performs the requested arithmetic,
+%  bitwise-logical, or value operation on the selected channels of
+%  the image over the specified region.
 %
 %  These operations are on the DirectClass pixels of the image and do not
 %  update pixel indexes or colormap.
@@ -149,10 +150,10 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %
 %    o rows: Height of region.
 %
-%    o quantum_operator: arithmetic or bitwise operator to use (AddQuantumOp,
-%                        AndQuantumOp, DivideQuantumOp, LShiftQuantumOp,
-%                        MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp,
-%                        SubtractQuantumOp, XorQuantumOp).
+%    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
+%        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
+%        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
+%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
