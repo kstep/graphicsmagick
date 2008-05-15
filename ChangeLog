@@ -1,3 +1,9 @@
+2008-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/colorspace.c (RGBTransformImage): Re-implement transform
+	loops using PixelRowIterateMonoModify() in order to simplify the
+	code.
+
 2008-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/colorspace.c (TransformRGBImage): Re-implement transform
