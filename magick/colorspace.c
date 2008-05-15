@@ -521,12 +521,19 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       /*
         Transform RGB to CMYK(A) pixels.
       */
-      status=PixelRowIterateMonoModify(RGBToCMYKTransform,
-                                       progress_message,
-                                       NULL,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      if (image->storage_class == PseudoClass)
+        {
+          
+          status=SyncImage(image);
+          image->storage_class=DirectClass;
+        }
+      if (status != MagickFail)
+        status=PixelRowIterateMonoModify(RGBToCMYKTransform,
+                                         progress_message,
+                                         NULL,
+                                         0,0,image->columns,image->rows,
+                                         image,
+                                         &image->exception);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
       return(status);
@@ -1553,12 +1560,18 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
 
   if (image->colorspace == CMYKColorspace)
     {
-      status=PixelRowIterateMonoModify(CMYKToRGBTransform,
-                                       progress_message,
-                                       NULL,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      if (image->storage_class == PseudoClass)
+        {
+          status=SyncImage(image);
+          image->storage_class=DirectClass;
+        }
+      if (status != MagickFail)
+        status=PixelRowIterateMonoModify(CMYKToRGBTransform,
+                                         progress_message,
+                                         NULL,
+                                         0,0,image->columns,image->rows,
+                                         image,
+                                         &image->exception);
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
