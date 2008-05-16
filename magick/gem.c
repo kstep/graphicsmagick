@@ -503,13 +503,12 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == 0.0)
     {
-      *red=(Quantum) (MaxRGB*v+0.5);
-      *green=(Quantum) (MaxRGB*v+0.5);
-      *blue=(Quantum) (MaxRGB*v+0.5);
+      v *= MaxRGB;
+      *red=*green=*blue=RoundSignedToQuantum(v);
       return;
     }
-  i=(unsigned int) floor(hue);
-  f=hue-i;
+  i=(unsigned int) (6.0*hue);
+  f=6.0*hue-i;
   if (i & 0x01)
     f=1.0-f;
   n=whiteness+f*(v-whiteness);  /* linear interpolation */
@@ -524,9 +523,12 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=(Quantum) (MaxRGB*r+0.5);
-  *green=(Quantum) (MaxRGB*g+0.5);
-  *blue=(Quantum) (MaxRGB*b+0.5);
+  r *= MaxRGB;
+  g *= MaxRGB;
+  b *= MaxRGB;
+  *red=RoundSignedToQuantum(r);
+  *green=RoundSignedToQuantum(g);
+  *blue=RoundSignedToQuantum(b);
 }
 
 /*
@@ -928,45 +930,38 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 %
 */
-MagickExport void TransformHWB(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue_result,double *whiteness_result,double *blackness_result)
+MagickExport void TransformHWB(const Quantum red,const Quantum green, const Quantum blue,
+                               double *hue,double *whiteness,double *blackness)
 {
   double
-    blackness,
     f,
-    hue,
-    whiteness;
+    v,
+    w;
 
   register long
     i;
 
-  Quantum
-    v,
-    w;
-
   /*
     Convert RGB to HWB colorspace.
   */
-  assert(hue_result != (double *) NULL);
-  assert(whiteness_result != (double *) NULL);
-  assert(blackness_result != (double *) NULL);
-  w=Min(red,Min(green,blue));
-  v=Max(red,Max(green,blue));
-  blackness=(double) (MaxRGB-v)/MaxRGB;
+  assert(hue != (double *) NULL);
+  assert(whiteness != (double *) NULL);
+  assert(blackness != (double *) NULL);
+  w=(double) Min(red,Min(green,blue));
+  v=(double) Max(red,Max(green,blue));
+  *blackness=(double) (MaxRGB-v)/MaxRGB;
   if (v == w)
     {
-      hue=0.0;
-      whiteness=1.0-(blackness);
+      *hue=0.0;
+      *whiteness=1.0-(*blackness);
     }
   else
     {
-      f=(red == w) ? (double) green-blue : ((green == w) ? (double) blue-red :
-                                            (double) red-green);
+      f=(red == w) ? (double) green-blue :
+        ((green == w) ? (double) blue-red :
+         (double) red-green);
       i=(red == w) ? 3 : ((green == w) ? 5 : 1);
-      hue=i-f/(v-w);
-      whiteness=(double) w/MaxRGB;
+      *hue=((double) i-f/(v-w))/6.0;
+      *whiteness=((double) w/MaxRGB);
     }
-  *hue_result=ConstrainToRange(0.0,1.0,hue);
-  *whiteness_result=ConstrainToRange(0.0,1.0,whiteness);
-  *blackness_result=ConstrainToRange(0.0,1.0,blackness);
 }

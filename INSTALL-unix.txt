@@ -516,16 +516,25 @@ Several configure options require special note:
 
 --enable-openmp
 
-  By default, GraphicsMagick 1.2.X does not include support for OpenMP.
-  OpenMP automatically parallizes loops across concurrent threads based
-  on instructions in pragmas. OpenMP is relatively new and was introduced
-  in GCC 4.2. OpenMP is a standard and was implemented in some other
-  compilers long before its appearance in GCC. OpenMP adds additional
-  build and linkage requirements. While OpenMP accelerated code may
-  complete faster on multi-core systems, the total CPU consumption is
-  often greater so it may not be the best choice for busy servers. Note
-  that enabling this option adds another library dependency and requires
-  that dependent applications pass an option via CFLAGS.
+  By default, GraphicsMagick 1.2.X does not include support for OpenMP
+  (http://www.openmp.org/). OpenMP automatically parallizes loops across
+  concurrent threads based on instructions in pragmas. OpenMP is
+  relatively new and was introduced in GCC 4.2. OpenMP is a standard and
+  was implemented in some other compilers long before its appearance in
+  GCC. OpenMP adds additional build and linkage requirements. While
+  OpenMP accelerated code may complete faster on multi-core systems, the
+  total CPU consumption is often greater so it may not be the best choice
+  for busy servers. Note that enabling this option adds another library
+  dependency and requires that dependent applications pass an option via
+  CFLAGS.
+
+  The OpenMP support provided by GCC ("GOMP") automatically enables use
+  of OpenMP with the number of threads equal to the number of CPU cores
+  in the system. Other implementations of OpenMP do not enable
+  parallelization by default. According to the OpenMP standard, the
+  OMP_NUM_THREADS environment variable specifies how many threads should
+  be used. In order to obtain the best single-user performance, set
+  OMP_NUM_THREADS equal to the number of available CPU cores.
 
 --without-perl:
 
