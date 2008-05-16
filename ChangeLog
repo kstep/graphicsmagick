@@ -1,3 +1,10 @@
+2008-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (HWBTransform): Hue value range was scaled wrong,
+	leading to clipping.
+	(TransformHWB): Hue value range was scaled wrong, leading to
+	clipping.
+
 2008-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Install documentation according to the conventions
