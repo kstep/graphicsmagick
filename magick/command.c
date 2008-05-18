@@ -1605,7 +1605,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 composite_image,geometry.x,geometry.y);
               GetImageException(*image,exception);
             }
-      (*image)->matte=matte;
+      if (option_info->compose != CopyOpacityCompositeOp)
+        (*image)->matte=matte;
     }
   return(status);
 }

@@ -5109,30 +5109,35 @@ Mogrify(ref,...)
             compose=(CompositeOperator) argument_list[1].int_reference;
           opacity=OpaqueOpacity;
           if (attribute_flag[6])
-            opacity=argument_list[6].double_reference;
-          if (opacity != OpaqueOpacity)
-            SetImageOpacity(composite_image,(unsigned int) opacity);
-          if (compose == DissolveCompositeOp)
             {
-              register PixelPacket
-                *q;
-
-              if (!composite_image->matte)
-                SetImageOpacity(composite_image,OpaqueOpacity);
-              for (y=0; y < (long) composite_image->rows; y++)
-              {
-                q=GetImagePixels(composite_image,0,y,
-                  composite_image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                for (x=(long) composite_image->columns; x > 0; x--)
+              opacity=argument_list[6].double_reference;
+              if (compose == DissolveCompositeOp)
                 {
-                  q->opacity=(Quantum) ((opacity*(MaxRGB-q->opacity))/100.0);
-                  q++;
+                  register PixelPacket
+                    *q;
+                  
+                  if (!composite_image->matte)
+                    SetImageOpacity(composite_image,OpaqueOpacity);
+                  for (y=0; y < (long) composite_image->rows; y++)
+                    {
+                      q=GetImagePixels(composite_image,0,y,
+                                       composite_image->columns,1);
+                      if (q == (PixelPacket *) NULL)
+                        break;
+                      for (x=(long) composite_image->columns; x > 0; x--)
+                        {
+                          q->opacity=(Quantum) ((opacity*(MaxRGB-q->opacity))/100.0);
+                          q++;
+                        }
+                      if (!SyncImagePixels(composite_image))
+                        break;
+                    }
                 }
-                if (!SyncImagePixels(composite_image))
-                  break;
-              }
+              else
+                {
+                  if (opacity != OpaqueOpacity)
+                    SetImageOpacity(composite_image,(unsigned int) opacity);
+                }
             }
           if (attribute_flag[9])
             QueryColorDatabase(argument_list[9].string_reference,
