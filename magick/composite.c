@@ -139,6 +139,11 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   (void) SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
+    case CopyOpacityCompositeOp:
+    {
+      canvas_image->matte=MagickTrue;
+      break;
+    }
     case DisplaceCompositeOp:
     {
       double
