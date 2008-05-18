@@ -167,7 +167,7 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
       result;                                           \
                                                         \
     result=(double) lvalue op (double) rvalue;          \
-    lvalue=RoundSignedToQuantum(result);                \
+    lvalue=RoundDoubleToQuantum(result);                \
 }
 
 typedef struct _QuantumContext
@@ -999,7 +999,7 @@ QuantumOperatorRegionImage(Image *image,
 
   context.channel=channel;
   context.double_value=rvalue;
-  context.quantum_value=RoundSignedToQuantum(rvalue);
+  context.quantum_value=RoundDoubleToQuantum(rvalue);
 
   switch (quantum_operator)
     {

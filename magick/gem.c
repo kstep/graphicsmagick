@@ -253,7 +253,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       break;
     }
   }
-  return (RoundSignedToQuantum(value));
+  return (RoundDoubleToQuantum(value));
 }
 
 /*
@@ -398,7 +398,7 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   if (saturation == 0.0)
     {
       double l = MaxRGB*luminosity;
-      *red=*green=*blue= RoundToQuantum(l);
+      *red=*green=*blue= RoundDoubleToQuantum(l);
     }
   else
     {
@@ -440,11 +440,11 @@ MagickExport void HSLTransform(const double hue,const double saturation,
         default: r=v; g=x; b=y; break;
         }
       r *= MaxRGB;
-      *red=RoundToQuantum(r);
+      *red=RoundDoubleToQuantum(r);
       g *= MaxRGB;
-      *green=RoundToQuantum(g);
+      *green=RoundDoubleToQuantum(g);
       b *= MaxRGB;
-      *blue=RoundToQuantum(b);
+      *blue=RoundDoubleToQuantum(b);
     }
 }
 
@@ -504,7 +504,7 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   if (hue == 0.0)
     {
       v *= MaxRGB;
-      *red=*green=*blue=RoundSignedToQuantum(v);
+      *red=*green=*blue=RoundDoubleToQuantum(v);
       return;
     }
   i=(unsigned int) (6.0*hue);
@@ -526,9 +526,9 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   r *= MaxRGB;
   g *= MaxRGB;
   b *= MaxRGB;
-  *red=RoundSignedToQuantum(r);
-  *green=RoundSignedToQuantum(g);
-  *blue=RoundSignedToQuantum(b);
+  *red=RoundDoubleToQuantum(r);
+  *green=RoundDoubleToQuantum(g);
+  *blue=RoundDoubleToQuantum(b);
 }
 
 /*

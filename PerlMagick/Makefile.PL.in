@@ -70,7 +70,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as GraphicsMagick
-   'PERLMAINCC'	=> '@PERLMAINCC@ @OPENMP_CFLAGS@',
+   'PERLMAINCC'	=> '@PERLMAINCC@',
 
    # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '@prefix@',

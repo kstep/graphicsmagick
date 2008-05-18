@@ -139,6 +139,11 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   (void) SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
+    case CopyOpacityCompositeOp:
+    {
+      canvas_image->matte=MagickTrue;
+      break;
+    }
     case DisplaceCompositeOp:
     {
       double
@@ -394,21 +399,21 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
             destination.opacity)*source.red/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.red/MaxRGB)/pixel.opacity;
-          destination.red=RoundToQuantum(pixel.red);
+          destination.red=RoundDoubleToQuantum(pixel.red);
 
           pixel.green=((double) (MaxRGB-source.opacity)*(MaxRGB-
             destination.opacity)*source.green/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.green/MaxRGB)/pixel.opacity;
-          destination.green=RoundToQuantum(pixel.green);
+          destination.green=RoundDoubleToQuantum(pixel.green);
 
           pixel.blue=((double) (MaxRGB-source.opacity)*(MaxRGB-
             destination.opacity)*source.blue/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.blue/MaxRGB)/pixel.opacity;
-          destination.blue=RoundToQuantum(pixel.blue);
+          destination.blue=RoundDoubleToQuantum(pixel.blue);
 
-          destination.opacity=MaxRGB-RoundToQuantum(pixel.opacity);
+          destination.opacity=MaxRGB-RoundDoubleToQuantum(pixel.opacity);
           break;
         }
         case XorCompositeOp:
@@ -429,21 +434,21 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
             2.0*(1.0-source_alpha)*(1.0-dest_alpha);
           
           composite=MaxRGB*(1.0-gamma);
-          destination.opacity=RoundToQuantum(composite);
+          destination.opacity=RoundDoubleToQuantum(composite);
           
           gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
           
           composite=((1.0-source_alpha)*source.red*dest_alpha+
                      (1.0-dest_alpha)*destination.red*source_alpha)*gamma;
-          destination.red=RoundToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
           
           composite=((1.0-source_alpha)*source.green*dest_alpha+
                      (1.0-dest_alpha)*destination.green*source_alpha)*gamma;
-          destination.green=RoundToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
           
           composite=((1.0-source_alpha)*source.blue*dest_alpha+
                      (1.0-dest_alpha)*destination.blue*source_alpha)*gamma;
-          destination.blue=RoundToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
           break;
         }
         case PlusCompositeOp:
@@ -455,19 +460,19 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           */
           pixel.red=((double) (MaxRGB-source.opacity)*source.red+(double)
             (MaxRGB-destination.opacity)*destination.red)/MaxRGB;
-          destination.red=RoundSignedToQuantum(pixel.red);
+          destination.red=RoundDoubleToQuantum(pixel.red);
 
           pixel.green=((double) (MaxRGB-source.opacity)*source.green+(double)
             (MaxRGB-destination.opacity)*destination.green)/MaxRGB;
-          destination.green=RoundSignedToQuantum(pixel.green);
+          destination.green=RoundDoubleToQuantum(pixel.green);
 
           pixel.blue=((double) (MaxRGB-source.opacity)*source.blue+(double)
             (MaxRGB-destination.opacity)*destination.blue)/MaxRGB;
-          destination.blue=RoundSignedToQuantum(pixel.blue);
+          destination.blue=RoundDoubleToQuantum(pixel.blue);
 
           pixel.opacity=((double) (MaxRGB-source.opacity)+
             (double) (MaxRGB-destination.opacity))/MaxRGB;
-          destination.opacity=MaxRGB-RoundSignedToQuantum(pixel.opacity);
+          destination.opacity=MaxRGB-RoundDoubleToQuantum(pixel.opacity);
           break;
         }
         case MinusCompositeOp:
@@ -481,19 +486,19 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 
           composite=((double) (MaxRGB-destination.opacity)*destination.red-
             (double) (MaxRGB-source.opacity)*source.red)/MaxRGB;
-          destination.red=RoundSignedToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
 
           composite=((double) (MaxRGB-destination.opacity)*destination.green-
             (double) (MaxRGB-source.opacity)*source.green)/MaxRGB;
-          destination.green=RoundSignedToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
 
           composite=((double) (MaxRGB-destination.opacity)*destination.blue-
             (double) (MaxRGB-source.opacity)*source.blue)/MaxRGB;
-          destination.blue=RoundSignedToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
 
           composite=((double) (MaxRGB-destination.opacity)-
             (double) (MaxRGB-source.opacity))/MaxRGB;
-          destination.opacity=MaxRGB-RoundSignedToQuantum(composite);
+          destination.opacity=MaxRGB-RoundDoubleToQuantum(composite);
           break;
         }
         case AddCompositeOp:
@@ -506,15 +511,15 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 
           composite=(double) source.red+destination.red;
           if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
-          destination.red=RoundToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
 
           composite=(double) source.green+destination.green;
           if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
-          destination.green=RoundToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
 
           composite=(double) source.blue+destination.blue;
           if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
-          destination.blue=RoundToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
 
           destination.opacity=OpaqueOpacity;
           break;
@@ -531,15 +536,15 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 
           composite=(double) source.red-destination.red;
           if (composite < 0) composite += ((double) MaxRGB+1.0);
-          destination.red=RoundToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
 
           composite=(double) source.green-destination.green;
           if (composite < 0) composite += ((double) MaxRGB+1.0);
-          destination.green=RoundToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
 
           composite=(double) source.blue-destination.blue;
           if (composite < 0) composite += ((double) MaxRGB+1.0);
-          destination.blue=RoundToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
 
           destination.opacity=OpaqueOpacity;
           break;
@@ -553,16 +558,16 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           double composite;
 
           composite=((double) source.red*destination.red)/MaxRGB;
-          destination.red=RoundToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
 
           composite=((double) source.green*destination.green)/MaxRGB;
-          destination.green=RoundToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
 
           composite=((double) source.blue*destination.blue)/MaxRGB;
-          destination.blue=RoundToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
 
           composite=((double) source.opacity*destination.opacity)/MaxRGB;
-          destination.opacity=RoundToQuantum(composite);
+          destination.opacity=RoundDoubleToQuantum(composite);
           break;
         }
         case DifferenceCompositeOp:
@@ -597,16 +602,16 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           source_intensity=(double) PixelIntensity(&source)/MaxRGB;
 
           composite=source_intensity*destination.red;
-          destination.red=RoundToQuantum(composite);
+          destination.red=RoundDoubleToQuantum(composite);
 
           composite=source_intensity*destination.green;
-          destination.green=RoundToQuantum(composite);
+          destination.green=RoundDoubleToQuantum(composite);
 
           composite=source_intensity*destination.blue;
-          destination.blue=RoundToQuantum(composite);
+          destination.blue=RoundDoubleToQuantum(composite);
 
           composite=source_intensity*destination.opacity;
-          destination.opacity=RoundToQuantum(composite);
+          destination.opacity=RoundDoubleToQuantum(composite);
 
           break;
         }

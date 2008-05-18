@@ -1215,7 +1215,7 @@ STATIC inline Quantum ScaleFromVideo(const unsigned int sample,
 
   if (sample > ref_low)
     result = (sample - ref_low)*upscale;
-  return RoundToQuantum(result);
+  return RoundDoubleToQuantum(result);
   
 }
 
@@ -1559,10 +1559,10 @@ STATIC void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
         result;
 
       result=((double) pixels[column-1].green + pixels[column+1].green)/2;
-      pixels->green=RoundToQuantum(result);
+      pixels->green=RoundDoubleToQuantum(result);
 
       result=((double) pixels[column-1].blue + pixels[column+1].blue)/2;
-      pixels->blue=RoundToQuantum(result);
+      pixels->blue=RoundDoubleToQuantum(result);
 #endif
     }
 }

@@ -1,5 +1,8 @@
+.cvsignore
+.gdbinit
 Changelog
-MANIFEST			This list of files
+MANIFEST
+MANIFEST.SKIP
 Magick.pm
 Magick.pm.in
 Magick.xs
@@ -8,6 +11,7 @@ Makefile.PL.in
 Makefile.am
 Makefile.nt
 README.txt
+build_manifest.sh
 demo/Generic.ttf
 demo/Makefile
 demo/README
@@ -15,6 +19,7 @@ demo/Turtle.pm
 demo/annotate.pl
 demo/button.pl
 demo/composite.pl
+demo/demo.jpg
 demo/demo.pl
 demo/lsys.pl
 demo/model.gif
@@ -29,12 +34,15 @@ demo/steganography.pl
 demo/tile.gif
 demo/tree.pl
 demo/yellow_flower.gif
+t/.cvsignore
 t/MasterImage_70x46.ppm
 t/blob.t
+t/bzlib/.cvsignore
 t/bzlib/input.miff
 t/bzlib/input.miff.bz2
 t/bzlib/read.t
 t/bzlib/write.t
+t/cgm/.cvsignore
 t/cgm/input.cgm
 t/cgm/read.t
 t/composite.t
@@ -47,6 +55,7 @@ t/fpx/input_truecolor.fpx
 t/fpx/read.t
 t/fpx/write.t
 t/getattribute.t
+t/hdf/.cvsignore
 t/hdf/input_256.hdf
 t/hdf/input_truecolor.hdf
 t/hdf/read.t
@@ -86,7 +95,9 @@ t/input.xpm
 t/input.xwd
 t/input1_4.wpg
 t/input1_8_1.wpg
+t/input2_4.wpg
 t/input2_8.wpg
+t/input2_TC1.wpg
 t/input_1555.bmp
 t/input_16.miff
 t/input_16.pct
@@ -111,10 +122,12 @@ t/input_888flip.bmp
 t/input_gray.cin
 t/input_gray_lsb_08bit.mat
 t/input_gray_lsb_16bit.mat
+t/input_gray_lsb_32bit.mat
 t/input_gray_lsb_double.mat
 t/input_gray_lsb_float.mat
 t/input_gray_msb_08bit.mat
 t/input_logical_lsb_08bit.mat
+t/input_matte.miff
 t/input_p1.pbm
 t/input_p2.pgm
 t/input_p3.ppm
@@ -124,7 +137,7 @@ t/input_p6.ppm
 t/input_p7.p7
 t/input_rgb.cin
 t/input_rgb_lsb_08bit.mat
-t/input_rgb_lsb_08bit.mat
+t/jbig/.cvsignore
 t/jbig/input.jbig
 t/jbig/read.t
 t/jbig/write.t
@@ -146,14 +159,18 @@ t/jp2/input.jp2
 t/jp2/input.jpc
 t/jp2/input.pgx
 t/jp2/read.t
+t/jpeg/.cvsignore
 t/jpeg/input.jpg
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
 t/jpeg/write.t
 t/montage.t
+t/mpeg/.cvsignore
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/opacity.miff
+t/png/.cvsignore
 t/png/input.mng
 t/png/input_16.png
 t/png/input_256.png
@@ -164,11 +181,13 @@ t/png/read-16.t
 t/png/read.t
 t/png/write-16.t
 t/png/write.t
+t/ps/.cvsignore
 t/ps/input.eps
 t/ps/input.miff
 t/ps/input.ps
 t/ps/read.t
 t/ps/write.t
+t/rad/.cvsignore
 t/rad/input.rad
 t/rad/read.t
 t/rad/write.t
@@ -184,6 +203,7 @@ t/reference/composite/CopyGreen.miff
 t/reference/composite/CopyOpacity.miff
 t/reference/composite/CopyRed.miff
 t/reference/composite/Difference.miff
+t/reference/composite/Dissolve.miff
 t/reference/composite/In.miff
 t/reference/composite/Minus.miff
 t/reference/composite/Multiply.miff
@@ -271,6 +291,10 @@ t/reference/jpeg/write_non_interlaced.miff
 t/reference/jpeg/write_plane_interlaced.miff
 t/reference/read/gradient.miff
 t/reference/read/granite.miff
+t/reference/read/input1_4_wpg.miff
+t/reference/read/input1_8_1_wpg.miff
+t/reference/read/input2_8_wpg.miff
+t/reference/read/input2_TC1_wpg.miff
 t/reference/read/input_avs.miff
 t/reference/read/input_bmp.miff
 t/reference/read/input_bmp24.miff
@@ -282,7 +306,9 @@ t/reference/read/input_gif.miff
 t/reference/read/input_gif87.miff
 t/reference/read/input_gray.miff
 t/reference/read/input_gray_cin.miff
+t/reference/read/input_gray_lsb_08bit_mat.miff
 t/reference/read/input_gray_lsb_16bit_mat.miff
+t/reference/read/input_gray_lsb_32bit_mat.miff
 t/reference/read/input_gray_lsb_double_mat.miff
 t/reference/read/input_gray_lsb_float_mat.miff
 t/reference/read/input_gray_msb_08bit_mat.miff
@@ -309,7 +335,6 @@ t/reference/read/input_psd.miff
 t/reference/read/input_rgb.miff
 t/reference/read/input_rgb_cin.miff
 t/reference/read/input_rgb_lsb_08bit_mat.miff
-t/reference/read/input_rgb_lsb_08bit_mat.miff
 t/reference/read/input_rgba.miff
 t/reference/read/input_rle.miff
 t/reference/read/input_sgi.miff
@@ -330,8 +355,10 @@ t/reference/wmf/clock.miff
 t/reference/wmf/fjftest.miff
 t/reference/wmf/ski.miff
 t/reference/wmf/wizard.miff
+t/reference/write/output_p7.miff
 t/setattribute.t
 t/subroutines.pl
+t/tiff/.cvsignore
 t/tiff/input_gray_01bit_minwhite.tiff
 t/tiff/input_gray_04bit.tiff
 t/tiff/input_gray_04bit_matte.tiff
@@ -360,6 +387,7 @@ t/tiff/input_truecolor_16.tiff
 t/tiff/input_truecolor_32.tiff
 t/tiff/read.t
 t/tiff/write.t
+t/ttf/.cvsignore
 t/ttf/input.ttf
 t/ttf/read.t
 t/wmf/clock.wmf
@@ -368,6 +396,7 @@ t/wmf/read.t
 t/wmf/ski.wmf
 t/wmf/wizard.wmf
 t/write.t
+t/x/.cvsignore
 t/x/congrats.fig
 t/x/congrats.miff
 t/x/read.t

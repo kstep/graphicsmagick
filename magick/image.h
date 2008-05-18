@@ -39,7 +39,11 @@ extern "C" {
 #if (QuantumDepth == 8)
 #  define MaxColormapSize  256U
 #  define MaxMap  255U
+#  define MaxMapFloat 255.0f
+#  define MaxMapDouble 255.0
 #  define MaxRGB  255U
+#  define MaxRGBFloat 255.0f
+#  define MaxRGBDouble 255.0
 #  define ScaleCharToMap(value)        ((unsigned char) (value))
 #  define ScaleCharToQuantum(value)    ((Quantum) (value))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
@@ -57,7 +61,11 @@ extern "C" {
 #elif (QuantumDepth == 16)
 #  define MaxColormapSize  65536U
 #  define MaxMap 65535U
+#  define MaxMapFloat 65535.0f
+#  define MaxMapDouble 65535.0
 #  define MaxRGB  65535U
+#  define MaxRGBFloat 65535.0f
+#  define MaxRGBDouble 65535.0
 #  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
 #  define ScaleCharToQuantum(value)    ((Quantum) (257U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
@@ -75,6 +83,8 @@ extern "C" {
 #elif (QuantumDepth == 32)
 #  define MaxColormapSize  65536U
 #  define MaxRGB  4294967295U
+#  define MaxRGBFloat 4294967295.0f
+#  define MaxRGBDouble 4294967295.0
 #  define ScaleCharToQuantum(value)    ((Quantum) (16843009U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)))
 #  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
@@ -96,6 +106,8 @@ extern "C" {
   may take more time to compute the table than to process the image.
 */
 #define MaxMap 65535U
+#define MaxMapFloat 65535.0f
+#define MaxMapDouble 65535.0
 #if MaxMap == 65535U
 #  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
 #  define ScaleMapToChar(value)        ((unsigned int) ((value)/257U))
@@ -116,15 +128,15 @@ typedef unsigned int Quantum;
 
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
-#define RoundSignedToQuantum(value) ((Quantum) (value < 0.0 ? 0 : \
-  (value > MaxRGB) ? MaxRGB : value + 0.5))
-#define RoundToQuantum(value) ((Quantum) ((double) value > (double) MaxRGB ? \
-   MaxRGB : (double) value + 0.5))
+#define RoundDoubleToQuantum(value) ((Quantum) (value < 0.0 ? 0U : \
+  (value > MaxRGBDouble) ? MaxRGB : value + 0.5))
+#define RoundFloatToQuantum(value) ((Quantum) (value < 0.0f ? 0U : \
+  (value > MaxRGBFloat) ? MaxRGB : value + 0.5f))
 #define ConstrainToRange(min,max,value) (value < min ? min : \
   (value > max) ? max : value)
 #define ConstrainToQuantum(value) ConstrainToRange(0,MaxRGB,value)
 #define ScaleAnyToQuantum(x,max_value) \
-  ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
+  ((Quantum) (((double) MaxRGBDouble*x)/max_value+0.5))
 #define MagickBoolToString(value) (value != MagickFalse ? "True" : "False")
 
 /*

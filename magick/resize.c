@@ -938,10 +938,10 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
               pixel.blue+=weight*p[j].blue;
               pixel.opacity+=weight*p[j].opacity;
             }
-          q[y].red=RoundSignedToQuantum(pixel.red);
-          q[y].green=RoundSignedToQuantum(pixel.green);
-          q[y].blue=RoundSignedToQuantum(pixel.blue);
-          q[y].opacity=RoundSignedToQuantum(pixel.opacity);
+          q[y].red=RoundDoubleToQuantum(pixel.red);
+          q[y].green=RoundDoubleToQuantum(pixel.green);
+          q[y].blue=RoundDoubleToQuantum(pixel.blue);
+          q[y].opacity=RoundDoubleToQuantum(pixel.opacity);
         }
       else
         {
@@ -954,9 +954,9 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
               pixel.green+=weight*p[j].green;
               pixel.blue+=weight*p[j].blue;
             }
-          q[y].red=RoundSignedToQuantum(pixel.red);
-          q[y].green=RoundSignedToQuantum(pixel.green);
-          q[y].blue=RoundSignedToQuantum(pixel.blue);
+          q[y].red=RoundDoubleToQuantum(pixel.red);
+          q[y].green=RoundDoubleToQuantum(pixel.green);
+          q[y].blue=RoundDoubleToQuantum(pixel.blue);
           q[y].opacity=OpaqueOpacity;
         }
 
@@ -1087,10 +1087,10 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
               pixel.blue+=weight*p[j].blue;
               pixel.opacity+=weight*p[j].opacity;
             }
-          q[x].red=RoundSignedToQuantum(pixel.red);
-          q[x].green=RoundSignedToQuantum(pixel.green);
-          q[x].blue=RoundSignedToQuantum(pixel.blue);
-          q[x].opacity=RoundSignedToQuantum(pixel.opacity);
+          q[x].red=RoundDoubleToQuantum(pixel.red);
+          q[x].green=RoundDoubleToQuantum(pixel.green);
+          q[x].blue=RoundDoubleToQuantum(pixel.blue);
+          q[x].opacity=RoundDoubleToQuantum(pixel.opacity);
         }
       else
         {
@@ -1103,9 +1103,9 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
               pixel.green+=weight*p[j].green;
               pixel.blue+=weight*p[j].blue;
             }
-          q[x].red=RoundSignedToQuantum(pixel.red);
-          q[x].green=RoundSignedToQuantum(pixel.green);
-          q[x].blue=RoundSignedToQuantum(pixel.blue);
+          q[x].red=RoundDoubleToQuantum(pixel.red);
+          q[x].green=RoundDoubleToQuantum(pixel.green);
+          q[x].blue=RoundDoubleToQuantum(pixel.blue);
           q[x].opacity=OpaqueOpacity;
         }
 

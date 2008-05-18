@@ -1122,9 +1122,9 @@ static MagickPassFail Dither(CubeInfo *cube_info,Image *image,
         error.blue+=p->error[i].blue*p->weights[i];
       }
 
-      pixel.red=RoundSignedToQuantum(error.red);
-      pixel.green=RoundSignedToQuantum(error.green);
-      pixel.blue=RoundSignedToQuantum(error.blue);
+      pixel.red=RoundDoubleToQuantum(error.red);
+      pixel.green=RoundDoubleToQuantum(error.green);
+      pixel.blue=RoundDoubleToQuantum(error.blue);
 
       i=(pixel.blue >> CacheShift) << 12 | (pixel.green >> CacheShift) << 6 |
         (pixel.red >> CacheShift);

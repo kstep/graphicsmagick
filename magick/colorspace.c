@@ -40,12 +40,6 @@
 #include "magick/pixel_row_iterator.h"
 #include "magick/utility.h"
 
-typedef float TransformQuantum;
-#define TransformValue(value) ((TransformQuantum) (value))
-
-/* Round floating value to an integer */
-#define RndToInt(value) ((unsigned int)((double) value+0.5))
-
 /* Assign value of attribute to double if attribute exists for key */
 #define MagickAttributeToDouble(image,key,variable) \
 { \
@@ -246,19 +240,19 @@ RGBToCMYKTransform(void *user_data,          /* User provided mutable data */
   */
   register long
     i;  
-
+  
   Quantum
     black,
     cyan,
     magenta,
     yellow;
-
+  
   ARG_NOT_USED(user_data);
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
-
+  
   for (i=0; i < npixels; i++)
     {
       cyan=(Quantum) (MaxRGB-pixels[i].red);
@@ -271,7 +265,7 @@ RGBToCMYKTransform(void *user_data,          /* User provided mutable data */
       indexes[i]=pixels[i].opacity;
       pixels[i].opacity=black;
     }
-
+  
   return MagickPass;
 }
 
@@ -291,7 +285,7 @@ RGBToCineonLogTransform(void *user_data,          /* User provided mutable data 
   */
   const unsigned int
     *logmap = (const unsigned int *) user_data;
-
+  
   register long
     i;  
   
@@ -300,14 +294,14 @@ RGBToCineonLogTransform(void *user_data,          /* User provided mutable data 
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
-
+  
   for (i=0; i < npixels; i++)
     {
       pixels[i].red   = logmap[ScaleQuantumToMap(pixels[i].red)];
       pixels[i].green = logmap[ScaleQuantumToMap(pixels[i].green)];
       pixels[i].blue  = logmap[ScaleQuantumToMap(pixels[i].blue)];
     }
-
+  
   return MagickPass;
 }
 
@@ -328,26 +322,26 @@ RGBToHSLTransform(void *user_data,          /* User provided mutable data */
     h,
     s,
     l;
-
+  
   register long
     i;  
-
+  
   ARG_NOT_USED(user_data);
   ARG_NOT_USED(x);
   ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
-
+  
   for (i=0; i < npixels; i++)
     {
       TransformHSL(pixels[i].red,pixels[i].green,pixels[i].blue,&h,&s,&l);
       h *= MaxRGB;
       s *= MaxRGB;
       l *= MaxRGB;
-      pixels[i].red=RoundSignedToQuantum(h);
-      pixels[i].green=RoundSignedToQuantum(s);
-      pixels[i].blue=RoundSignedToQuantum(l);
+      pixels[i].red=RoundDoubleToQuantum(h);
+      pixels[i].green=RoundDoubleToQuantum(s);
+      pixels[i].blue=RoundDoubleToQuantum(l);
     }
 
   return MagickPass;
@@ -387,9 +381,9 @@ RGBToHWBTransform(void *user_data,          /* User provided mutable data */
       h *= MaxRGB;
       w *= MaxRGB;
       b *= MaxRGB;
-      pixels[i].red=RoundSignedToQuantum(h);
-      pixels[i].green=RoundSignedToQuantum(w);
-      pixels[i].blue=RoundSignedToQuantum(b);
+      pixels[i].red=RoundDoubleToQuantum(h);
+      pixels[i].green=RoundDoubleToQuantum(w);
+      pixels[i].blue=RoundDoubleToQuantum(b);
     }
 
   return MagickPass;
@@ -397,7 +391,7 @@ RGBToHWBTransform(void *user_data,          /* User provided mutable data */
 
 typedef struct _XYZColorTransformPacket
 {
-  TransformQuantum
+  float
     x,
     y,
     z;
@@ -428,7 +422,7 @@ XYZTransformPackets(void *user_data,          /* User provided mutable data */
   /*
     3D transform pixels from RGB to alternate colorspace.
   */
-  double
+  float
     b,
     g,
     r;
@@ -447,7 +441,6 @@ XYZTransformPackets(void *user_data,          /* User provided mutable data */
 
   for (i=0; i < npixels; i++)
     {
-
       register unsigned int
         x_index,
         y_index,
@@ -457,13 +450,13 @@ XYZTransformPackets(void *user_data,          /* User provided mutable data */
       y_index = ScaleQuantumToMap(pixels[i].green);
       z_index = ScaleQuantumToMap(pixels[i].blue);
 
-      r = ((double) xform->x[x_index].x + xform->y[y_index].x + xform->z[z_index].x + xform->primary_info.x);
-      g = ((double) xform->x[x_index].y + xform->y[y_index].y + xform->z[z_index].y + xform->primary_info.y);
-      b = ((double) xform->x[x_index].z + xform->y[y_index].z + xform->z[z_index].z + xform->primary_info.z);
+      r = (xform->x[x_index].x + xform->y[y_index].x + xform->z[z_index].x + xform->primary_info.x);
+      g = (xform->x[x_index].y + xform->y[y_index].y + xform->z[z_index].y + xform->primary_info.y);
+      b = (xform->x[x_index].z + xform->y[y_index].z + xform->z[z_index].z + xform->primary_info.z);
 
-      r = r < 0.0 ? 0.0 : r > (double) MaxMap ? (double) MaxMap : (r + 0.5);
-      g = g < 0.0 ? 0.0 : g > (double) MaxMap ? (double) MaxMap : (g + 0.5);
-      b = b < 0.0 ? 0.0 : b > (double) MaxMap ? (double) MaxMap : (b + 0.5);
+      r = r < 0.0f ? 0.0f : r > MaxMapFloat ? MaxMapFloat : (r + 0.5f);
+      g = g < 0.0f ? 0.0f : g > MaxMapFloat ? MaxMapFloat : (g + 0.5f);
+      b = b < 0.0f ? 0.0f : b > MaxMapFloat ? MaxMapFloat : (b + 0.5f);
 
       pixels[i].red   = ScaleMapToQuantum(r);
       pixels[i].green = ScaleMapToQuantum(g);
@@ -620,7 +613,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           /*                                (DisplayGamma/1.0)))/(0.002/NegativeFilmGamma); */
 
           logval *= scale_to_short;
-          logmap[i]=ScaleShortToQuantum(RndToInt(logval));
+          logmap[i]=ScaleShortToQuantum((unsigned int) (logval + 0.5));
           /* printf("logmap[%u]=%u\n",i,(unsigned int) logmap[i]); */
         }
       /*
@@ -760,11 +753,14 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
 
             G = 0.29900*R+0.58700*G+0.11400*B
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=xform.x[i].y=xform.x[i].z=TransformValue(0.299*i);
-              xform.y[i].x=xform.y[i].y=xform.y[i].z=TransformValue(0.587*i);
-              xform.z[i].x=xform.z[i].y=xform.z[i].z=TransformValue(0.114*i);
+              xform.x[i].x=xform.x[i].y=xform.x[i].z=(0.299f*(float) i);
+              xform.y[i].x=xform.y[i].y=xform.y[i].z=(0.587f*(float) i);
+              xform.z[i].x=xform.z[i].y=xform.z[i].z=(0.114f*(float) i);
             }
           break;
         }
@@ -775,11 +771,14 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
 
             G = 0.2126*R+0.7152*G+0.0722*B
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=xform.x[i].y=xform.x[i].z=TransformValue(0.2126*i);
-              xform.y[i].x=xform.y[i].y=xform.y[i].z=TransformValue(0.7152*i);
-              xform.z[i].x=xform.z[i].y=xform.z[i].z=TransformValue(0.0722*i);
+              xform.x[i].x=xform.x[i].y=xform.x[i].z=(0.2126f*(float) i);
+              xform.y[i].x=xform.y[i].y=xform.y[i].z=(0.7152f*(float) i);
+              xform.z[i].x=xform.z[i].y=xform.z[i].z=(0.0722f*(float) i);
             }
           break;
         }
@@ -795,19 +794,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             I and Q, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.33333*i);
-              xform.y[i].x=TransformValue(0.33334*i);
-              xform.z[i].x=TransformValue(0.33333*i);
-              xform.x[i].y=TransformValue(0.5*i);
-              xform.y[i].y=TransformValue(0.0);
-              xform.z[i].y=TransformValue((-0.5)*i);
-              xform.x[i].z=TransformValue((-0.25)*i);
-              xform.y[i].z=TransformValue(0.5*i);
-              xform.z[i].z=TransformValue((-0.25)*i);
+              xform.x[i].x=(0.33333f*(float) i);
+              xform.y[i].x=(0.33334f*(float) i);
+              xform.z[i].x=(0.33333f*(float) i);
+              xform.x[i].y=(0.5f*(float) i);
+              xform.y[i].y=(0.0f);
+              xform.z[i].y=((-0.5f)*(float) i);
+              xform.x[i].z=((-0.25f)*(float) i);
+              xform.y[i].z=(0.5f*(float) i);
+              xform.z[i].z=((-0.25f)*(float) i);
             }
           break;
         }
@@ -826,31 +828,31 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           */
           /* FIXME! The scaling factors for this transform look bizarre,
              and in fact, the results are not correct. */
-          xform.primary_info.y=TransformValue(ScaleCharToMap(156));
-          xform.primary_info.z=TransformValue(ScaleCharToMap(137));
+          xform.primary_info.y=(ScaleCharToMap(156));
+          xform.primary_info.z=(ScaleCharToMap(137));
           for (i=0; i <= (long) (0.018*MaxMap); i++)
             {
-              xform.x[i].x=TransformValue(0.003962014134275617*i);
-              xform.y[i].x=TransformValue(0.007778268551236748*i);
-              xform.z[i].x=TransformValue(0.001510600706713781*i);
-              xform.x[i].y=TransformValue((-0.002426619775463276)*i);
-              xform.y[i].y=TransformValue((-0.004763965913702149)*i);
-              xform.z[i].y=TransformValue(0.007190585689165425*i);
-              xform.x[i].z=TransformValue(0.006927257754597858*i);
-              xform.y[i].z=TransformValue((-0.005800713697502058)*i);
-              xform.z[i].z=TransformValue((-0.0011265440570958)*i);
+              xform.x[i].x=(0.003962014134275617*i);
+              xform.y[i].x=(0.007778268551236748*i);
+              xform.z[i].x=(0.001510600706713781*i);
+              xform.x[i].y=((-0.002426619775463276)*i);
+              xform.y[i].y=((-0.004763965913702149)*i);
+              xform.z[i].y=(0.007190585689165425*i);
+              xform.x[i].z=(0.006927257754597858*i);
+              xform.y[i].z=((-0.005800713697502058)*i);
+              xform.z[i].z=((-0.0011265440570958)*i);
             }
           for ( ; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.2201118963486454*(1.099*i-0.099));
-              xform.y[i].x=TransformValue(0.4321260306242638*(1.099*i-0.099));
-              xform.z[i].x=TransformValue(0.08392226148409894*(1.099*i-0.099));
-              xform.x[i].y=TransformValue((-0.1348122097479598)*(1.099*i-0.099));
-              xform.y[i].y=TransformValue((-0.2646647729834528)*(1.099*i-0.099));
-              xform.z[i].y=TransformValue(0.3994769827314126*(1.099*i-0.099));
-              xform.x[i].z=TransformValue(0.3848476530332144*(1.099*i-0.099));
-              xform.y[i].z=TransformValue((-0.3222618720834477)*(1.099*i-0.099));
-              xform.z[i].z=TransformValue((-0.06258578094976668)*(1.099*i-0.099));
+              xform.x[i].x=(0.2201118963486454*(1.099*i-0.099));
+              xform.y[i].x=(0.4321260306242638*(1.099*i-0.099));
+              xform.z[i].x=(0.08392226148409894*(1.099*i-0.099));
+              xform.x[i].y=((-0.1348122097479598)*(1.099*i-0.099));
+              xform.y[i].y=((-0.2646647729834528)*(1.099*i-0.099));
+              xform.z[i].y=(0.3994769827314126*(1.099*i-0.099));
+              xform.x[i].z=(0.3848476530332144*(1.099*i-0.099));
+              xform.y[i].z=((-0.3222618720834477)*(1.099*i-0.099));
+              xform.z[i].z=((-0.06258578094976668)*(1.099*i-0.099));
             }
           break;
         }
@@ -863,17 +865,20 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Y = 0.212671*X+0.715160*Y+0.072169*Z
             Z = 0.019334*X+0.119193*Y+0.950227*Z
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.412453*i);
-              xform.y[i].x=TransformValue(0.35758*i);
-              xform.z[i].x=TransformValue(0.180423*i);
-              xform.x[i].y=TransformValue(0.212671*i);
-              xform.y[i].y=TransformValue(0.71516*i);
-              xform.z[i].y=TransformValue(0.072169*i);
-              xform.x[i].z=TransformValue(0.019334*i);
-              xform.y[i].z=TransformValue(0.119193*i);
-              xform.z[i].z=TransformValue(0.950227*i);
+              xform.x[i].x=(0.412453f*(float) i);
+              xform.y[i].x=(0.35758f*(float) i);
+              xform.z[i].x=(0.180423f*(float) i);
+              xform.x[i].y=(0.212671f*(float) i);
+              xform.y[i].y=(0.71516f*(float) i);
+              xform.z[i].y=(0.072169f*(float) i);
+              xform.x[i].z=(0.019334f*(float) i);
+              xform.y[i].z=(0.119193f*(float) i);
+              xform.z[i].z=(0.950227f*(float) i);
             }
           break;
         }
@@ -889,22 +894,25 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
               /* Red */
-              xform.x[i].x=TransformValue(0.299*i);
-              xform.y[i].x=TransformValue(0.587*i);
-              xform.z[i].x=TransformValue(0.114*i);
+              xform.x[i].x=(0.299f*(float) i);
+              xform.y[i].x=(0.587f*(float) i);
+              xform.z[i].x=(0.114f*(float) i);
               /* Green */
-              xform.x[i].y=TransformValue((-0.16873)*i);
-              xform.y[i].y=TransformValue((-0.331264)*i);
-              xform.z[i].y=TransformValue(0.500000*i);
+              xform.x[i].y=((-0.16873f)*(float) i);
+              xform.y[i].y=((-0.331264f)*(float) i);
+              xform.z[i].y=(0.500000f*(float) i);
               /* Blue */
-              xform.x[i].z=TransformValue(0.500000*i);
-              xform.y[i].z=TransformValue((-0.418688)*i);
-              xform.z[i].z=TransformValue((-0.081312)*i);
+              xform.x[i].z=(0.500000f*(float) i);
+              xform.y[i].z=((-0.418688f)*(float) i);
+              xform.z[i].z=((-0.081312f)*(float) i);
             }
           break;
         }
@@ -920,22 +928,25 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
               /* Red */
-              xform.x[i].x=TransformValue(0.212600*i);
-              xform.y[i].x=TransformValue(0.715200*i);
-              xform.z[i].x=TransformValue(0.072200*i);
+              xform.x[i].x=(0.212600f*(float) i);
+              xform.y[i].x=(0.715200f*(float) i);
+              xform.z[i].x=(0.072200f*(float) i);
               /* Green */
-              xform.x[i].y=TransformValue((-0.114572)*i);
-              xform.y[i].y=TransformValue((-0.385428)*i);
-              xform.z[i].y=TransformValue(0.500000*i);
+              xform.x[i].y=((-0.114572f)*(float) i);
+              xform.y[i].y=((-0.385428f)*(float) i);
+              xform.z[i].y=(0.500000f*(float) i);
               /* Blue */
-              xform.x[i].z=TransformValue(0.500000*i);
-              xform.y[i].z=TransformValue((-0.454153)*i);
-              xform.z[i].z=TransformValue((-0.045847)*i);
+              xform.x[i].z=(0.500000f*(float) i);
+              xform.y[i].z=((-0.454153f)*(float) i);
+              xform.z[i].z=((-0.045847f)*(float) i);
             }
           break;
         }
@@ -954,31 +965,31 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           */
           /* FIXME! The scaling factors for this transform look bizarre,
              and in fact, the results are not correct. */
-          xform.primary_info.y=TransformValue(ScaleCharToMap(156));
-          xform.primary_info.z=TransformValue(ScaleCharToMap(137));
+          xform.primary_info.y=(ScaleCharToMap(156));
+          xform.primary_info.z=(ScaleCharToMap(137));
           for (i=0; i <= (long) (0.018*MaxMap); i++)
             {
-              xform.x[i].x=TransformValue(0.003962014134275617*i);
-              xform.y[i].x=TransformValue(0.007778268551236748*i);
-              xform.z[i].x=TransformValue(0.001510600706713781*i);
-              xform.x[i].y=TransformValue((-0.002426619775463276)*i);
-              xform.y[i].y=TransformValue((-0.004763965913702149)*i);
-              xform.z[i].y=TransformValue(0.007190585689165425*i);
-              xform.x[i].z=TransformValue(0.006927257754597858*i);
-              xform.y[i].z=TransformValue((-0.005800713697502058)*i);
-              xform.z[i].z=TransformValue((-0.0011265440570958)*i);
+              xform.x[i].x=(0.003962014134275617*i);
+              xform.y[i].x=(0.007778268551236748*i);
+              xform.z[i].x=(0.001510600706713781*i);
+              xform.x[i].y=((-0.002426619775463276)*i);
+              xform.y[i].y=((-0.004763965913702149)*i);
+              xform.z[i].y=(0.007190585689165425*i);
+              xform.x[i].z=(0.006927257754597858*i);
+              xform.y[i].z=((-0.005800713697502058)*i);
+              xform.z[i].z=((-0.0011265440570958)*i);
             }
           for ( ; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.2201118963486454*(1.099*i-0.099));
-              xform.y[i].x=TransformValue(0.4321260306242638*(1.099*i-0.099));
-              xform.z[i].x=TransformValue(0.08392226148409894*(1.099*i-0.099));
-              xform.x[i].y=TransformValue((-0.1348122097479598)*(1.099*i-0.099));
-              xform.y[i].y=TransformValue((-0.2646647729834528)*(1.099*i-0.099));
-              xform.z[i].y=TransformValue(0.3994769827314126*(1.099*i-0.099));
-              xform.x[i].z=TransformValue(0.3848476530332144*(1.099*i-0.099));
-              xform.y[i].z=TransformValue((-0.3222618720834477)*(1.099*i-0.099));
-              xform.z[i].z=TransformValue((-0.06258578094976668)*(1.099*i-0.099));
+              xform.x[i].x=(0.2201118963486454*(1.099*i-0.099));
+              xform.y[i].x=(0.4321260306242638*(1.099*i-0.099));
+              xform.z[i].x=(0.08392226148409894*(1.099*i-0.099));
+              xform.x[i].y=((-0.1348122097479598)*(1.099*i-0.099));
+              xform.y[i].y=((-0.2646647729834528)*(1.099*i-0.099));
+              xform.z[i].y=(0.3994769827314126*(1.099*i-0.099));
+              xform.x[i].z=(0.3848476530332144*(1.099*i-0.099));
+              xform.y[i].z=((-0.3222618720834477)*(1.099*i-0.099));
+              xform.z[i].z=((-0.06258578094976668)*(1.099*i-0.099));
             }
           break;
         }
@@ -994,19 +1005,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             I and Q, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.299*i);
-              xform.y[i].x=TransformValue(0.587*i);
-              xform.z[i].x=TransformValue(0.114*i);
-              xform.x[i].y=TransformValue(0.596*i);
-              xform.y[i].y=TransformValue((-0.274)*i);
-              xform.z[i].y=TransformValue((-0.322)*i);
-              xform.x[i].z=TransformValue(0.211*i);
-              xform.y[i].z=TransformValue((-0.523)*i);
-              xform.z[i].z=TransformValue(0.312*i);
+              xform.x[i].x=(0.299f*(float) i);
+              xform.y[i].x=(0.587f*(float) i);
+              xform.z[i].x=(0.114f*(float) i);
+              xform.x[i].y=(0.596f*(float) i);
+              xform.y[i].y=((-0.274f)*(float) i);
+              xform.z[i].y=((-0.322f)*(float) i);
+              xform.x[i].z=(0.211f*(float) i);
+              xform.y[i].z=((-0.523f)*(float) i);
+              xform.z[i].z=(0.312f*(float) i);
             }
           break;
         }
@@ -1022,19 +1036,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.299*i);
-              xform.y[i].x=TransformValue(0.587*i);
-              xform.z[i].x=TransformValue(0.114*i);
-              xform.x[i].y=TransformValue((-0.168736)*i);
-              xform.y[i].y=TransformValue((-0.331264)*i);
-              xform.z[i].y=TransformValue(0.5*i);
-              xform.x[i].z=TransformValue(0.5*i);
-              xform.y[i].z=TransformValue((-0.418688)*i);
-              xform.z[i].z=TransformValue((-0.081312)*i);
+              xform.x[i].x=(0.299f*(float) i);
+              xform.y[i].x=(0.587f*(float) i);
+              xform.z[i].x=(0.114f*(float) i);
+              xform.x[i].y=((-0.168736f)*(float) i);
+              xform.y[i].y=((-0.331264f)*(float) i);
+              xform.z[i].y=(0.5f*(float) i);
+              xform.x[i].z=(0.5f*(float) i);
+              xform.y[i].z=((-0.418688f)*(float) i);
+              xform.z[i].z=((-0.081312f)*(float) i);
             }
           break;
         }
@@ -1051,19 +1068,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             U and V, normally -0.5 through 0.5, are normalized to the range 0
             through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
           */
-          xform.primary_info.y=TransformValue((MaxMap+1)/2);
-          xform.primary_info.z=TransformValue((MaxMap+1)/2);
+          xform.primary_info.y=((MaxMap+1)/2);
+          xform.primary_info.z=((MaxMap+1)/2);
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.x[i].x=TransformValue(0.299*i);
-              xform.y[i].x=TransformValue(0.587*i);
-              xform.z[i].x=TransformValue(0.114*i);
-              xform.x[i].y=TransformValue((-0.1474)*i);
-              xform.y[i].y=TransformValue((-0.2895)*i);
-              xform.z[i].y=TransformValue(0.4369*i);
-              xform.x[i].z=TransformValue(0.615*i);
-              xform.y[i].z=TransformValue((-0.515)*i);
-              xform.z[i].z=TransformValue((-0.1)*i);
+              xform.x[i].x=(0.299f*(float) i);
+              xform.y[i].x=(0.587f*(float) i);
+              xform.z[i].x=(0.114f*(float) i);
+              xform.x[i].y=((-0.1474f)*(float) i);
+              xform.y[i].y=((-0.2895f)*(float) i);
+              xform.z[i].y=(0.4369f*(float) i);
+              xform.x[i].z=(0.615f*(float) i);
+              xform.y[i].z=((-0.515f)*(float) i);
+              xform.z[i].z=((-0.1f)*(float) i);
             }
           break;
         }
@@ -1368,7 +1388,7 @@ HWBToRGBTransform(void *user_data,          /* User provided mutable data */
 
 typedef struct _RGBColorTransformPacket
 {
-  TransformQuantum
+  float
     r,
     g,
     b;
@@ -1396,7 +1416,7 @@ RGBTransformPackets(void *user_data,          /* User provided mutable data */
   /*
     3D transform pixels to RGB.
   */
-  double
+  float
     b,
     g,
     r;
@@ -1428,9 +1448,9 @@ RGBTransformPackets(void *user_data,          /* User provided mutable data */
       g = (xform->r[r_index].g + xform->g[g_index].g + xform->b[b_index].g);
       b = (xform->r[r_index].b + xform->g[g_index].b + xform->b[b_index].b);
   
-      r = r < 0.0 ? 0.0 : r > (double) MaxMap ? (double) MaxMap : (r + 0.5);
-      g = g < 0.0 ? 0.0 : g > (double) MaxMap ? (double) MaxMap : (g + 0.5);
-      b = b < 0.0 ? 0.0 : b > (double) MaxMap ? (double) MaxMap : (b + 0.5);
+      r = r < 0.0f ? 0.0f : r > MaxMapFloat ? MaxMapFloat : (r + 0.5f);
+      g = g < 0.0f ? 0.0f : g > MaxMapFloat ? MaxMapFloat : (g + 0.5f);
+      b = b < 0.0f ? 0.0f : b > MaxMapFloat ? MaxMapFloat : (b + 0.5f);
 
       if ( xform->rgb_map != 0 )
         {
@@ -1661,7 +1681,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                             (DisplayGamma/1.7))*Gain-Offset;
             }
 
-          linearmap[i]=RndToInt(linearval);
+          linearmap[i]=(unsigned int) (linearval + 0.5);
         }
       /*
         Transform pixels.
@@ -1809,17 +1829,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             I and Q, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0.5*(2.0*i-MaxMap));
-              xform.b[i].r=TransformValue((-0.33334)*(2.0*i-MaxMap));
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue(0);
-              xform.b[i].g=TransformValue(0.666665*(2.0*i-MaxMap));
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue((-0.5)*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue((-0.33334)*(2.0*i-MaxMap));
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.5f*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].r=((-0.33334f)*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=(0.0f);
+              xform.b[i].g=(0.666665f*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].b=((float) i);
+              xform.g[i].b=((-0.5f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].b=((-0.33334f)*(2.0f*(float) i-MaxMapFloat));
             }
           break;
         }
@@ -1836,17 +1859,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
           xform.rgb_map=sRGBMap;
           xform.rgb_map_max_index=350;
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(1.40200*i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue(1.88000*(i-ScaleCharToMap(137)));
-              xform.r[i].g=TransformValue(1.40200*i);
-              xform.g[i].g=TransformValue((-0.444066)*(i-ScaleCharToMap(156)));
-              xform.b[i].g=TransformValue((-0.95692)*(i-ScaleCharToMap(137)));
-              xform.r[i].b=TransformValue(1.40200*i);
-              xform.g[i].b=TransformValue(2.28900*(i-ScaleCharToMap(156)));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].r=(1.40200f*(float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=(1.88000f*((float) i-ScaleCharToMap(137)));
+              xform.r[i].g=(1.40200f*(float) i);
+              xform.g[i].g=((-0.444066f)*((float) i-ScaleCharToMap(156)));
+              xform.b[i].g=((-0.95692f)*((float) i-ScaleCharToMap(137)));
+              xform.r[i].b=(1.40200f*(float) i);
+              xform.g[i].b=(2.28900f*((float) i-ScaleCharToMap(156)));
+              xform.b[i].b=(0.0f);
             }
           break;
         }
@@ -1859,17 +1885,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             G = -0.969256*R+1.875992*G+0.041556*B
             B =  0.055648*R-0.204043*G+1.057311*B
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(3.240479*i);
-              xform.g[i].r=TransformValue((-1.537150)*i);
-              xform.b[i].r=TransformValue((-0.498535)*i);
-              xform.r[i].g=TransformValue((-0.969256)*i);
-              xform.g[i].g=TransformValue(1.875992*i);
-              xform.b[i].g=TransformValue(0.041556*i);
-              xform.r[i].b=TransformValue(0.055648*i);
-              xform.g[i].b=TransformValue((-0.204043)*i);
-              xform.b[i].b=TransformValue(1.057311*i);
+              xform.r[i].r=(3.240479f*(float) i);
+              xform.g[i].r=((-1.537150f)*(float) i);
+              xform.b[i].r=((-0.498535f)*(float) i);
+              xform.r[i].g=((-0.969256f)*(float) i);
+              xform.g[i].g=(1.875992f*(float) i);
+              xform.b[i].g=(0.041556f*(float) i);
+              xform.r[i].b=(0.055648f*(float) i);
+              xform.g[i].b=((-0.204043f)*(float) i);
+              xform.b[i].b=(1.057311f*(float) i);
             }
           break;
         }
@@ -1887,20 +1916,23 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
               /* Y */
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue((1.402000*0.5)*(2.0*i-MaxMap));
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=((1.402000f*0.5f)*(2.0f*(float) i-MaxMapFloat));
               /* Pb */
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue((-0.344136*0.5)*(2.0*i-MaxMap));
-              xform.b[i].g=TransformValue((-0.714136*0.5)*(2.0*i-MaxMap));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=((-0.344136f*0.5f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].g=((-0.714136f*0.5f)*(2.0f*(float) i-MaxMapFloat));
               /* Pr */
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue((1.772000*0.5)*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].b=((float) i);
+              xform.g[i].b=((1.772000f*0.5f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].b=(0.0f);
             }
           break;
         }
@@ -1916,20 +1948,23 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
               /* Y */
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue((1.5748*0.5)*(2.0*i-MaxMap));
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=((1.5748f*0.5f)*(2.0f*(float) i-MaxMapFloat));
               /* Pb */
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue((-0.187324*0.5)*(2.0*i-MaxMap));
-              xform.b[i].g=TransformValue((-0.468124*0.5)*(2.0*i-MaxMap));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=((-0.187324f*0.5f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].g=((-0.468124f*0.5f)*(2.0f*(float) i-MaxMapFloat));
               /* Pr */
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue((1.8556*0.5)*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].b=((float) i);
+              xform.g[i].b=((1.8556f*0.5f)*(2.0f*(float) i- MaxMapFloat));
+              xform.b[i].b=(0.0f);
             }
           break;
         }
@@ -1948,17 +1983,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
           xform.rgb_map=YCCMap;
           xform.rgb_map_max_index=350;
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(1.3584*i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue(1.8215*(i-ScaleCharToMap(137)));
-              xform.r[i].g=TransformValue(1.3584*i);
-              xform.g[i].g=TransformValue((-0.4302726)*(i-ScaleCharToMap(156)));
-              xform.b[i].g=TransformValue((-0.9271435)*(i-ScaleCharToMap(137)));
-              xform.r[i].b=TransformValue(1.3584*i);
-              xform.g[i].b=TransformValue(2.2179*(i-ScaleCharToMap(156)));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].r=(1.3584f*(float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=(1.8215f*((float) i-ScaleCharToMap(137)));
+              xform.r[i].g=(1.3584f*(float) i);
+              xform.g[i].g=((-0.4302726f)*((float) i-ScaleCharToMap(156)));
+              xform.b[i].g=((-0.9271435f)*((float) i-ScaleCharToMap(137)));
+              xform.r[i].b=(1.3584f*i);
+              xform.g[i].b=(2.2179f*((float) i-ScaleCharToMap(156)));
+              xform.b[i].b=(0.0f);
             }
           break;
         }
@@ -1974,17 +2012,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             I and Q, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0.4781*(2.0*i-MaxMap));
-              xform.b[i].r=TransformValue(0.3107*(2.0*i-MaxMap));
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue((-0.13635)*(2.0*i-MaxMap));
-              xform.b[i].g=TransformValue((-0.3234)*(2.0*i-MaxMap));
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue((-0.55185)*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue(0.8503*(2.0*i-MaxMap));
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.4781f*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].r=(0.3107f*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=((-0.13635f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].g=((-0.3234f)*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].b=((float) i);
+              xform.g[i].b=((-0.55185f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].b=(0.8503f*(2.0f*(float) i-MaxMapFloat));
             }
           break;
         }
@@ -2000,17 +2041,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue(0.701*(2.0*i-MaxMap));
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue((-0.172068)*(2.0*i-MaxMap));
-              xform.b[i].g=TransformValue(0.357068*(2.0*i-MaxMap));
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue(0.886*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=(0.701f*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=((-0.172068f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].g=(0.357068f*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].b=((float) i);
+              xform.g[i].b=(0.886f*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].b=(0.0f);
             }
           break;
         }
@@ -2027,17 +2071,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             U and V, normally -0.5 through 0.5, must be normalized to the range 0
             through MaxMap.
           */
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
           for (i=0; i <= (long) MaxMap; i++)
             {
-              xform.r[i].r=TransformValue(i);
-              xform.g[i].r=TransformValue(0);
-              xform.b[i].r=TransformValue(0.5699*(2.0*i-MaxMap));
-              xform.r[i].g=TransformValue(i);
-              xform.g[i].g=TransformValue((-0.1969)*(2.0*i-MaxMap));
-              xform.b[i].g=TransformValue((-0.29025)*(2.0*i-MaxMap));
-              xform.r[i].b=TransformValue(i);
-              xform.g[i].b=TransformValue(1.01395*(2.0*i-MaxMap));
-              xform.b[i].b=TransformValue(0);
+              xform.r[i].r=((float) i);
+              xform.g[i].r=(0.0f);
+              xform.b[i].r=(0.5699f*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].g=((float) i);
+              xform.g[i].g=((-0.1969f)*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].g=((-0.29025f)*(2.0f*(float) i-MaxMapFloat));
+              xform.r[i].b=((float) i);
+              xform.g[i].b=(1.01395f*(2.0f*(float) i-MaxMapFloat));
+              xform.b[i].b=(0.0f);
             }
           break;
         }

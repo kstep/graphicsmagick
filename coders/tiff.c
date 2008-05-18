@@ -1119,11 +1119,11 @@ static void AssociateAlphaRegion(Image *image)
     {
       alpha=((double) MaxRGB-q->opacity)/MaxRGB;
       value=(double) q->red*alpha;
-      q->red=RoundToQuantum(value);
+      q->red=RoundDoubleToQuantum(value);
       value=(double) q->green*alpha;
-      q->green=RoundToQuantum(value);
+      q->green=RoundDoubleToQuantum(value);
       value=(double) q->blue*alpha;
-      q->blue=RoundToQuantum(value);
+      q->blue=RoundDoubleToQuantum(value);
       q++;
     }
 }
@@ -1156,11 +1156,11 @@ static void DisassociateAlphaRegion(Image *image)
         {
           alpha=((double) MaxRGB-q->opacity)/MaxRGB;
           value=(double) q->red/alpha;
-          q->red=RoundToQuantum(value);
+          q->red=RoundDoubleToQuantum(value);
           value=(double) q->green/alpha;
-          q->green=RoundToQuantum(value);
+          q->green=RoundDoubleToQuantum(value);
           value=(double) q->blue/alpha;
-          q->blue=RoundToQuantum(value);
+          q->blue=RoundDoubleToQuantum(value);
         }
       q++;
     }

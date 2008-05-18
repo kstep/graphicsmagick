@@ -44,13 +44,13 @@ static inline PixelPacket BlendComposite(const PixelPacket *p,
     composite;
 
   color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=RoundSignedToQuantum(color);
+  composite.red=RoundDoubleToQuantum(color);
 
   color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=RoundSignedToQuantum(color);
+  composite.green=RoundDoubleToQuantum(color);
 
   color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=RoundSignedToQuantum(color);
+  composite.blue=RoundDoubleToQuantum(color);
 
   composite.opacity=p->opacity;
   return(composite);
@@ -71,16 +71,16 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   MaxRGB_beta=MaxRGB-beta;
 
   color=(MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB;
-  composite.red=RoundSignedToQuantum(color);
+  composite.red=RoundDoubleToQuantum(color);
 
   color=(MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB;
-  composite.green=RoundSignedToQuantum(color);
+  composite.green=RoundDoubleToQuantum(color);
 
   color=(MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB;
-  composite.blue=RoundSignedToQuantum(color);
+  composite.blue=RoundDoubleToQuantum(color);
 
   color=MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB);
-  composite.opacity=RoundSignedToQuantum(color);
+  composite.opacity=RoundDoubleToQuantum(color);
 
   return(composite);
 }

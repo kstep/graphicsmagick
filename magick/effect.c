@@ -694,10 +694,10 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   if (count == 1)
     return ThresholdImage(image,red_threshold);
 
-  red_threshold_quantum=RoundSignedToQuantum(red_threshold);
-  green_threshold_quantum=RoundSignedToQuantum(green_threshold);
-  blue_threshold_quantum=RoundSignedToQuantum(blue_threshold);
-  opacity_threshold_quantum=RoundSignedToQuantum(opacity_threshold);
+  red_threshold_quantum=RoundDoubleToQuantum(red_threshold);
+  green_threshold_quantum=RoundDoubleToQuantum(green_threshold);
+  blue_threshold_quantum=RoundDoubleToQuantum(blue_threshold);
+  opacity_threshold_quantum=RoundDoubleToQuantum(opacity_threshold);
 
   (void) SetImageType(image,TrueColorType);
 
@@ -2714,7 +2714,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToThresholdImage);
 
-  quantum_threshold=RoundSignedToQuantum(threshold);
+  quantum_threshold=RoundDoubleToQuantum(threshold);
 
   for (y=0; y < (long) image->rows; y++)
   {

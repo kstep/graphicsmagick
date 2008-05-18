@@ -696,7 +696,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     double quantum_float;
                     register const float *p = (const float*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
-                    quantum=RoundSignedToQuantum(quantum_float);
+                    quantum=RoundDoubleToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
@@ -705,7 +705,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     double quantum_float;
                     register const double *p = (const double*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
-                    quantum=RoundSignedToQuantum(quantum_float);
+                    quantum=RoundDoubleToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
@@ -1151,7 +1151,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                     else
                       {
                         double intensity = PixelIntensity(p);
-                        quantum=RoundToQuantum(intensity);
+                        quantum=RoundDoubleToQuantum(intensity);
                       }
                     break;
                   }
@@ -4100,7 +4100,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4112,7 +4112,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4350,11 +4350,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4366,11 +4366,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4459,7 +4459,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4471,7 +4471,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4560,7 +4560,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4572,7 +4572,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4662,7 +4662,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4674,7 +4674,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4762,7 +4762,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           ImportFloatQuantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
-                          *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
                     }
                     break;
@@ -4773,7 +4773,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           ImportDoubleQuantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
-                          *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
                     }
                     break;
@@ -4862,7 +4862,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4874,7 +4874,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4962,7 +4962,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4974,7 +4974,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5085,15 +5085,15 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
@@ -5106,15 +5106,15 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
@@ -5224,19 +5224,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5248,19 +5248,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5371,19 +5371,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -5396,19 +5396,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -5525,23 +5525,23 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
                 }
@@ -5553,23 +5553,23 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
                 }

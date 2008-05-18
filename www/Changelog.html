@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2008-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformImage): Optimized lookup table
+        generation performance to the maximum extent possible.
+        (TransformRGBImage): Optimized lookup table
+        generation performance to the maximum extent possible.
+  <LI> magick/image.h (RoundDoubleToQuantum): New macro to explicitly
+        safely round a 'double' to a Quantum.
+        (RoundFloatToQuantum): New macro to explicitly safely round a
+        'float' to a Quantum.<BR>
+  <LI> configure.ac: Add OpenMP support library to LIBS so that
+        dependent applications will pick up this dependency without
+        themselves needing to enable OpenMP.
+  <LI> magick/command.c (CompositeImageList): Don't overwrite matte
+        flag for CopyOpacity composition.
+  <LI> magick/composite.c (CompositeImage): CopyOpacity composition
+        needs the opacity channel to be enabled.
+  <LI> PerlMagick/Magick.xs: Dissolve composition with Opacity was not
+        working right.  Now it does.
+
+</UL>
+<p>
 2008-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
