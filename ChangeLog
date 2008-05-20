@@ -1,3 +1,11 @@
+2008-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c: Re-wrote all enhancement functions in this
+	module to be based on the pixel iterator methods.
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+	DisplayImageCommand): Gamma multiple channel syntax was broken.
+	Now it is fixed.
+
 2008-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/colorspace.c (RGBTransformImage): Optimized lookup table

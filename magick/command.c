@@ -862,7 +862,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
@@ -3779,7 +3779,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
@@ -6303,7 +6303,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
@@ -11127,7 +11127,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }

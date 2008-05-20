@@ -36,7 +36,6 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
-#include "magick/pixel_cache.h"
 #include "magick/pixel_row_iterator.h"
 #include "magick/utility.h"
 
@@ -632,7 +631,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                                          (IndexPacket *) NULL,
                                          image->colors,
                                          &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -670,7 +669,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                             (IndexPacket *) NULL,
                             image->colors,
                             &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -704,7 +703,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                             (IndexPacket *) NULL,
                             image->colors,
                             &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -1127,7 +1126,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                                    (IndexPacket *) NULL,
                                    image->colors,
                                    &image->exception);
-        status=SyncImagePixels(image);
+        status=SyncImage(image);
       }
     else
       {
@@ -1699,7 +1698,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                                   (IndexPacket *) NULL,
                                   image->colors,
                                   &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -1736,7 +1735,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                             (IndexPacket *) NULL,
                             image->colors,
                             &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -1768,7 +1767,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                             (IndexPacket *) NULL,
                             image->colors,
                             &image->exception);
-          status=SyncImagePixels(image);
+          status=SyncImage(image);
         }
       else
         {
@@ -2128,7 +2127,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                                    (IndexPacket *) NULL,
                                    image->colors,
                                    &image->exception);
-        status=SyncImagePixels(image);
+        status=SyncImage(image);
       }
     else
       {

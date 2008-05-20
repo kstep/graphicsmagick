@@ -5635,7 +5635,7 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 %
 %  The format of the SyncImage method is:
 %
-%      void SyncImage(Image *image)
+%      MagickPassFail SyncImage(Image *image)
 %
 %  A description of each parameter follows:
 %
