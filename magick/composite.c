@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003 - 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -40,274 +40,100 @@
 #include "magick/composite.h"
 #include "magick/gem.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_row_iterator.h"
 #include "magick/utility.h"
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p o s i t e I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CompositeImage() returns the second image (composite_image) composited
-%  onto the first (canvas_image) at the specified offsets.
-%
-%  The format of the CompositeImage method is:
-%
-%      unsigned int CompositeImage(Image *canvas_image,
-%        const CompositeOperator compose,const Image *composite_image,
-%        const long x_offset,const long y_offset)
-%
-%  A description of each parameter follows:
-%
-%    o canvas_image: The image to be updated.
-%
-%    o compose: This operator affects how the composite is applied to
-%      the image.  The default is Over.  Choose from one of these
-%      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
-%      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
-%      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
-%      BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP,
-%      CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
-%
-%    o composite_image: The composite image.
-%
-%    o x_offset: The column offset of the composited image.
-%
-%    o y_offset: The row offset of the composited image.
-%
-%
-*/
 
-MagickExport MagickPassFail CompositeImage(Image *canvas_image,
-  const CompositeOperator compose,const Image *composite_image,
-  const long x_offset,const long y_offset)
+typedef struct _CompositePixelsOptions_t
 {
-  const PixelPacket
-    *pixels;
+  /* Composition operator */
+  CompositeOperator compose;
+
+  /* ModulateComposite */
+  double            percent_brightness;
+
+  /* ThresholdComposite */
+  double            amount;
+  double            threshold;
+} CompositePixelsOptions_t;
+
+static MagickPassFail
+CompositePixels(void *user_data,                   /* User provided mutable data */
+                const Image *source_image,         /* Source image */
+                const long source_x,               /* X-offset in source image */
+                const long source_y,               /* Y-offset in source image */
+                const PixelPacket *source_pixels,  /* Pixel row in source image */
+                const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                Image *update_image,               /* Update image */
+                const long update_x,               /* X-offset in update image */
+                const long update_y,               /* Y-offset in update image */
+                PixelPacket *update_pixels,        /* Pixel row in update image */
+                IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                const long npixels,                /* Number of pixels in row */
+                ExceptionInfo *exception           /* Exception report */
+                )
+{
+  const CompositePixelsOptions_t
+    *options = (const CompositePixelsOptions_t *) user_data;
+
+  const CompositeOperator
+    compose = options->compose;
+
+  const double
+    percent_brightness = options->percent_brightness;
+
+  const double
+    amount = options->amount,
+    threshold = options->threshold;
 
   double
-    amount,
     brightness,
     hue,
-    midpoint,
-    percent_brightness,
-    percent_saturation,
-    sans,
     saturation,
-    threshold;
-
-  DoublePixelPacket
-    pixel;
-
-  IndexPacket
-    *composite_indexes,
-    *indexes;
-
-  long
-    y;
+    sans;
 
   PixelPacket
     destination,
     source;
 
-  register const PixelPacket
-    *p;
+  double
+    midpoint;
+
+  DoublePixelPacket
+    pixel;
 
   register long
-    x;
+    i;
+  
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(source_x);
+  ARG_NOT_USED(source_y);
+  ARG_NOT_USED(update_x);
+  ARG_NOT_USED(update_y);
+  ARG_NOT_USED(exception);
 
-  register PixelPacket
-    *q;
-
-  MagickPassFail
-    status=MagickPass;
-
-  /*
-    Prepare composite image.
-  */
-  assert(canvas_image != (Image *) NULL);
-  assert(canvas_image->signature == MagickSignature);
-  assert(composite_image != (Image *) NULL);
-  assert(composite_image->signature == MagickSignature);
-  if (compose == NoCompositeOp)
-    return(MagickPass);
-  (void) SetImageType(canvas_image,TrueColorType);
-  switch (compose)
-  {
-    case CopyOpacityCompositeOp:
-    {
-      canvas_image->matte=MagickTrue;
-      break;
-    }
-    case DisplaceCompositeOp:
-    {
-      double
-        x_displace,
-        y_displace;
-
-      double
-        horizontal_scale,
-        vertical_scale;
-
-      Image
-        *displace_image;
-
-      register PixelPacket
-        *r;
-
-      /*
-        Allocate the displace image.
-      */
-      displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
-      if (displace_image == (Image *) NULL)
-        return(MagickFail);
-      horizontal_scale=20.0;
-      vertical_scale=20.0;
-      if (composite_image->geometry != (char *) NULL)
-        {
-          int
-            count;
-
-          /*
-            Determine the horizontal and vertical displacement scale.
-          */
-          count=GetMagickDimension(composite_image->geometry,
-            &horizontal_scale,&vertical_scale);
-          if (count == 1)
-            vertical_scale=horizontal_scale;
-        }
-      /*
-        Shift image pixels as defined by a displacement map.
-      */
-      for (y=0; y < (long) composite_image->rows; y++)
-      {
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) canvas_image->rows))
-          continue;
-        p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
-          &canvas_image->exception);
-        q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
-        r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
-            (r == (PixelPacket *) NULL))
-          {
-            status=MagickFail;
-            break;
-          }
-        q+=x_offset;
-        for (x=0; x < (long) composite_image->columns; x++)
-        {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) canvas_image->columns))
-            {
-              p++;
-              q++;
-              continue;
-            }
-          x_displace=(horizontal_scale*(PixelIntensityToQuantum(p)-
-            (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
-          y_displace=x_displace;
-          if (composite_image->matte)
-            y_displace=(vertical_scale*(p->opacity-
-              (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
-          *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
-            &canvas_image->exception);
-          p++;
-          q++;
-          r++;
-        }
-        if (!SyncImagePixels(displace_image))
-          {
-            status=MagickFail;
-            break;
-          }
-      }
-      composite_image=displace_image;
-      break;
-    }
-    case ModulateCompositeOp:
-    {
-      percent_saturation=50.0;
-      percent_brightness=50.0;
-      if (composite_image->geometry != (char *) NULL)
-        {
-          int
-            count;
-
-          /*
-            Determine the brightness and saturation scale.
-          */
-          count=GetMagickDimension(composite_image->geometry,
-            &percent_brightness,&percent_saturation);
-          if (count == 1)
-            percent_saturation=percent_brightness;
-        }
-      percent_brightness/=100.0;
-      percent_saturation/=100.0;
-      break;
-    }
-    case ThresholdCompositeOp:
-    {
-      /*
-        Determine the amount and threshold.
-      */
-      amount=0.5;
-      threshold=0.05;
-      if (composite_image->geometry != (char *) NULL)
-        (void) GetMagickDimension(composite_image->geometry,&amount,&threshold);
-      threshold*=MaxRGB;
-      break;
-    }
-    default:
-      break;
-  }
-  /*
-    Composite image.
-  */
   midpoint=((double) MaxRGB+1.0)/2;
-  for (y=0; y < (long) canvas_image->rows; y++)
-  {
-    if (y < y_offset)
-      continue;
-    if ((y-y_offset) >= (long) composite_image->rows)
-      break;
-    p=AcquireImagePixels(composite_image,0,y-y_offset,composite_image->columns,
-      1,&canvas_image->exception);
-    q=GetImagePixels(canvas_image,0,y,canvas_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      {
-        status=MagickFail;
-        break;
-      }
-    pixels=p;
-    if (x_offset < 0)
-      p-=x_offset;
-    indexes=GetIndexes(canvas_image);
-    composite_indexes=GetIndexes(composite_image);
-    for (x=0; x < (long) canvas_image->columns; x++)
+  for (i=0; i < npixels; i++)
     {
-      if (x < x_offset)
-        {
-          q++;
-          continue;
-        }
-      if ((x-x_offset) >= (long) composite_image->columns)
-        break;
-      source=(*p);
-      if (!composite_image->matte)
+      /*
+        Build source and destination working pixels.
+      */
+      source=source_pixels[i];
+      if (!source_image->matte)
         source.opacity=OpaqueOpacity;
       else
-        if (composite_image->colorspace == CMYKColorspace)
-          source.opacity=composite_indexes[x];
-      destination=(*q);
-      if (!canvas_image->matte)
+        if (source_image->colorspace == CMYKColorspace)
+          source.opacity=source_indexes[i];
+
+      destination=update_pixels[i];
+      if (!update_image->matte)
         destination.opacity=OpaqueOpacity;
       else
-        if (canvas_image->colorspace == CMYKColorspace)
-          destination.opacity=indexes[x];
+        if (update_image->colorspace == CMYKColorspace)
+          destination.opacity=update_indexes[i];
+
+      /*
+        Compose pixel.
+      */
       switch (compose)
       {
         case OverCompositeOp:
@@ -665,7 +491,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
             replaced with the opacity channel in change-image.  The
             other channels are copied untouched.
           */
-          if (!composite_image->matte)
+          if (!source_image->matte)
             {
               destination.opacity=(Quantum)
                 (MaxRGB-PixelIntensityToQuantum(&source));
@@ -679,9 +505,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           /*
             Copy the CMYK Black (K) channel into the image.
           */
-          if ((canvas_image->colorspace == CMYKColorspace) &&
-              (composite_image->colorspace == CMYKColorspace))
-            indexes[x]=(*composite_indexes++);
+          if ((update_image->colorspace == CMYKColorspace) &&
+              (source_image->colorspace == CMYKColorspace))
+            update_indexes[i]=(source_indexes[i]);
           break;
         }
         case ClearCompositeOp:
@@ -874,25 +700,302 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           break;
         }
       }
-      q->red=destination.red;
-      q->green=destination.green;
-      q->blue=destination.blue;
-      if (canvas_image->colorspace != CMYKColorspace)
-        q->opacity=destination.opacity;
+      /*
+        Update pixel.
+      */
+      update_pixels[i].red=destination.red;
+      update_pixels[i].green=destination.green;
+      update_pixels[i].blue=destination.blue;
+      if (update_image->colorspace != CMYKColorspace)
+        update_pixels[i].opacity=destination.opacity;
       else
         {
-          q->opacity=p->opacity;
-          indexes[x]=destination.opacity;
+          update_pixels[i].opacity=source_pixels[i].opacity; /* black */
+          update_indexes[i]=destination.opacity;
         }
-      p++;
-      if (p >= (pixels+composite_image->columns))
-        p=pixels;
-      q++;
     }
-    if (!SyncImagePixels(canvas_image))
+
+  return MagickPass;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p o s i t e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompositeImage() returns the second image (composite_image) composited
+%  onto the first (canvas_image) at the specified offsets.
+%
+%  The format of the CompositeImage method is:
+%
+%      unsigned int CompositeImage(Image *canvas_image,
+%        const CompositeOperator compose,const Image *composite_image,
+%        const long x_offset,const long y_offset)
+%
+%  A description of each parameter follows:
+%
+%    o canvas_image: The image to be updated.
+%
+%    o compose: This operator affects how the composite is applied to
+%      the image.  The default is Over.  Choose from one of these
+%      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
+%      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
+%      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
+%      BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP,
+%      CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
+%
+%    o composite_image: The composite image.
+%
+%    o x_offset: The column offset of the composited image.
+%
+%    o y_offset: The row offset of the composited image.
+%
+%
+*/
+
+MagickExport MagickPassFail CompositeImage(Image *canvas_image,
+  const CompositeOperator compose,const Image *composite_image,
+  const long x_offset,const long y_offset)
+{
+  CompositePixelsOptions_t
+    options;
+
+  double
+    amount,
+    percent_brightness,
+    percent_saturation,
+    threshold;
+
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
+  MagickPassFail
+    status=MagickPass;
+
+  /*
+    Prepare composite image.
+  */
+  assert(canvas_image != (Image *) NULL);
+  assert(canvas_image->signature == MagickSignature);
+  assert(composite_image != (Image *) NULL);
+  assert(composite_image->signature == MagickSignature);
+  if (compose == NoCompositeOp)
+    return(MagickPass);
+  (void) SetImageType(canvas_image,TrueColorType);
+  switch (compose)
+  {
+    case CopyOpacityCompositeOp:
+    {
+      canvas_image->matte=MagickTrue;
+      break;
+    }
+    case DisplaceCompositeOp:
+    {
+      double
+        x_displace,
+        y_displace;
+
+      double
+        horizontal_scale,
+        vertical_scale;
+
+      Image
+        *displace_image;
+
+      register PixelPacket
+        *r;
+
+      /*
+        Allocate the displace image.
+      */
+      displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
+      if (displace_image == (Image *) NULL)
+        return(MagickFail);
+      horizontal_scale=20.0;
+      vertical_scale=20.0;
+      if (composite_image->geometry != (char *) NULL)
+        {
+          int
+            count;
+
+          /*
+            Determine the horizontal and vertical displacement scale.
+          */
+          count=GetMagickDimension(composite_image->geometry,
+            &horizontal_scale,&vertical_scale);
+          if (count == 1)
+            vertical_scale=horizontal_scale;
+        }
+      /*
+        Shift image pixels as defined by a displacement map.
+      */
+      for (y=0; y < (long) composite_image->rows; y++)
       {
-        status=MagickFail;
-        break;
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) canvas_image->rows))
+          continue;
+        p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
+          &canvas_image->exception);
+        q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
+        r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
+            (r == (PixelPacket *) NULL))
+          {
+            status=MagickFail;
+            break;
+          }
+        q+=x_offset;
+        for (x=0; x < (long) composite_image->columns; x++)
+        {
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) canvas_image->columns))
+            {
+              p++;
+              q++;
+              continue;
+            }
+          x_displace=(horizontal_scale*(PixelIntensityToQuantum(p)-
+            (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
+          y_displace=x_displace;
+          if (composite_image->matte)
+            y_displace=(vertical_scale*(p->opacity-
+              (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
+          *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
+            &canvas_image->exception);
+          p++;
+          q++;
+          r++;
+        }
+        if (!SyncImagePixels(displace_image))
+          {
+            status=MagickFail;
+            break;
+          }
+      }
+      composite_image=displace_image;
+      break;
+    }
+    case ModulateCompositeOp:
+    {
+      percent_saturation=50.0;
+      percent_brightness=50.0;
+      if (composite_image->geometry != (char *) NULL)
+        {
+          int
+            count;
+
+          /*
+            Determine the brightness and saturation scale.
+          */
+          count=GetMagickDimension(composite_image->geometry,
+            &percent_brightness,&percent_saturation);
+          if (count == 1)
+            percent_saturation=percent_brightness;
+        }
+      percent_brightness/=100.0;
+      percent_saturation/=100.0;
+      break;
+    }
+    case ThresholdCompositeOp:
+    {
+      /*
+        Determine the amount and threshold.
+      */
+      amount=0.5;
+      threshold=0.05;
+      if (composite_image->geometry != (char *) NULL)
+        (void) GetMagickDimension(composite_image->geometry,&amount,&threshold);
+      threshold*=MaxRGB;
+      break;
+    }
+    default:
+      break;
+  }
+  /*
+    Composite image.
+  */
+  options.compose=compose;
+  options.percent_brightness=percent_brightness;
+  options.amount=amount;
+  options.threshold=threshold;
+
+  {
+    unsigned long
+      columns,
+      rows;
+
+    long
+      composite_x,
+      composite_y,
+      canvas_x,
+      canvas_y;
+
+    columns=composite_image->columns;
+    rows=composite_image->rows;
+
+    composite_x=0;
+    composite_y=0;
+    canvas_x=x_offset;
+    canvas_y=y_offset;
+
+    if (x_offset < 0)
+      composite_x += -x_offset;
+    if (y_offset < 0)
+      composite_y += -y_offset;
+
+    columns -= composite_x;
+    rows -= composite_y;
+
+    if (canvas_x < 0)
+      canvas_x=0;
+    if (canvas_y < 0)
+      canvas_y=0;
+
+#if 0
+    printf("canvas=%lux%lu composite=%lux%lu offset=%ldx%ld | canvas=%ldx%ld composite=%ldx%ld size=%ldx%ld\n",
+           canvas_image->columns,canvas_image->rows,
+           composite_image->columns,composite_image->rows,
+           x_offset,y_offset,
+           canvas_x,canvas_y,
+           composite_x,composite_y,
+           columns,rows);
+#endif
+
+    if (((unsigned long) canvas_x < canvas_image->columns) &&
+        ((unsigned long) canvas_y < canvas_image->rows) &&
+        ((unsigned long) composite_x < composite_image->columns) &&
+        ((unsigned long) composite_y < composite_image->rows))
+      {
+        if ((canvas_x + composite_image->columns) > canvas_image->columns)
+          columns -= ((canvas_x + composite_image->columns) - canvas_image->columns);
+        if ((canvas_y + composite_image->rows) > canvas_image->rows)
+          rows -= ((canvas_y + composite_image->rows) - canvas_image->rows);
+        status=PixelRowIterateDualModify(CompositePixels,        /* Callback */
+                                         "Composite image pixels ...", /* Description */
+                                         &options,               /* Options */
+                                         columns,                /* Number of columns */
+                                         rows,                   /* Number of rows */
+                                         composite_image,        /* Composite image */
+                                         composite_x,            /* Composite x offset */
+                                         composite_y,            /* Composite y offset */
+                                         canvas_image,           /* Canvas image */
+                                         canvas_x,               /* Canvas x offset */
+                                         canvas_y,               /* Canvas y offset */
+                                         &canvas_image->exception); /* Exception */
       }
   }
   return(status);

@@ -1,3 +1,8 @@
+2008-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImage): Update image composition to
+	use pixel iterator methods.
+
 2008-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c: Re-wrote all enhancement functions in this
