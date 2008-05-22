@@ -44,6 +44,7 @@
 #include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_row_iterator.h"
 #include "magick/render.h"
 #include "magick/utility.h"
 
@@ -211,25 +212,84 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %
 */
+static MagickPassFail
+AddNoiseImagePixels(void *user_data,                   /* User provided mutable data */
+                    const Image *source_image,         /* Source image */
+                    const long source_x,               /* X-offset in source image */
+                    const long source_y,               /* Y-offset in source image */
+                    const PixelPacket *source_pixels,  /* Pixel row in source image */
+                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                    Image *new_image,                  /* New image */
+                    const long new_x,                  /* X-offset in new image */
+                    const long new_y,                  /* Y-offset in new image */
+                    PixelPacket *new_pixels,           /* Pixel row in new image */
+                    IndexPacket *new_indexes,          /* Pixel row indexes in new image */
+                    const long npixels,                /* Number of pixels in row */
+                    ExceptionInfo *exception           /* Exception report */
+                    )
+{
+  /*
+    Add noise to image pixle.
+  */
+  const NoiseType
+    noise_type = *((const NoiseType *) user_data);
+
+  register long
+    i;
+  
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(source_x);
+  ARG_NOT_USED(source_y);
+  ARG_NOT_USED(source_indexes);
+  ARG_NOT_USED(new_image);
+  ARG_NOT_USED(new_x);
+  ARG_NOT_USED(new_y);
+  ARG_NOT_USED(new_indexes);
+  ARG_NOT_USED(exception);
+
+  if (source_image->is_grayscale)
+    {
+      /*
+        Intensity noise
+      */
+      for (i=0; i < npixels; i++)
+        {
+          new_pixels[i].red=new_pixels[i].green=new_pixels[i].blue=
+            GenerateNoise(PixelIntensityToQuantum(&source_pixels[i]),noise_type);
+          if (source_image->matte && new_image->matte)
+            new_pixels[i].opacity=source_pixels[i].opacity;
+          else
+            new_pixels[i].opacity=OpaqueOpacity;
+        }
+    }
+  else
+    {
+      /*
+        Noise across RGB channels
+      */
+      for (i=0; i < npixels; i++)
+        {
+          new_pixels[i].red=GenerateNoise(source_pixels[i].red,noise_type);
+          new_pixels[i].green=GenerateNoise(source_pixels[i].green,noise_type);
+          new_pixels[i].blue=GenerateNoise(source_pixels[i].blue,noise_type);
+          if (source_image->matte && new_image->matte)
+            new_pixels[i].opacity=source_pixels[i].opacity;
+          else
+            new_pixels[i].opacity=OpaqueOpacity;
+        }
+    }
+
+  return MagickPass;
+}
+
+#define AddNoiseImageText  "Add noise to the image...  "
 MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   ExceptionInfo *exception)
 {
-#define AddNoiseImageText  "  Add noise to the image...  "
+  NoiseType noise = noise_type;
 
   Image
     *noise_image;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   unsigned int
    is_grayscale;
@@ -249,45 +309,9 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    if (is_grayscale)
-      {
-        /*
-          Intensity noise
-        */
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            q->red=q->green=q->blue=
-              GenerateNoise(PixelIntensityToQuantum(p),noise_type);
-            p++;
-            q++;
-          }
-      }
-    else
-      {
-        /*
-          Noise across RGB channels
-        */
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            q->red=GenerateNoise(p->red,noise_type);
-            q->green=GenerateNoise(p->green,noise_type);
-            q->blue=GenerateNoise(p->blue,noise_type);
-            p++;
-            q++;
-          }
-      }
-    if (!SyncImagePixels(noise_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(AddNoiseImageText,y,image->rows,exception))
-        break;
-  }
+  (void) PixelRowIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,&noise,
+                                image->columns,image->rows,image,0,0,
+                                noise_image,0,0,&noise_image->exception);
   noise_image->is_grayscale=is_grayscale;
   return(noise_image);
 }
@@ -626,6 +650,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %  ChannelThresholdImage() changes the value of individual pixels based on
 %  the intensity of each pixel channel.  The result is a high-contrast image.
+%
+%  Invoked by the '-threshold' option.
 %
 %  The format of the ChannelThresholdImage method is:
 %

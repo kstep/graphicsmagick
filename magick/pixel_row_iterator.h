@@ -147,6 +147,43 @@ extern "C" {
                             const long update_y,
                             ExceptionInfo *exception);
 
+  /*
+    Read-write access across pixel regions of two images. The first
+    (source) image is accessed read-only while the second (new)
+    image is accessed for write (uninitialized pixels).
+  */
+
+  typedef MagickPassFail (*PixelRowIteratorDualNewCallback)
+    (
+     void *user_data,                   /* User provided mutable data */
+     const Image *source_image,         /* Source image */
+     const long source_x,               /* X-offset in source image */
+     const long source_y,               /* Y-offset in source image */
+     const PixelPacket *source_pixels,  /* Pixel row in source image */
+     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+     Image *update_image,               /* Update image */
+     const long new_x,                  /* X-offset in new image */
+     const long new_y,                  /* Y-offset in new image */
+     PixelPacket *new_pixels,           /* Pixel row in new image */
+     IndexPacket *new_indexes,          /* Pixel row indexes in new image */
+     const long npixels,                /* Number of pixels in row */
+     ExceptionInfo *exception           /* Exception report */
+     );
+
+  extern MagickExport MagickPassFail
+  PixelRowIterateDualNew(PixelRowIteratorDualNewCallback call_back,
+                         const char *description,
+                         void *user_data,
+                         const unsigned long columns,
+                         const unsigned long rows,
+                         const Image *source_image,
+                         const long source_x,
+                         const long source_y,
+                         Image *new_image,
+                         const long new_x,
+                         const long new_y,
+                         ExceptionInfo *exception);
+  
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

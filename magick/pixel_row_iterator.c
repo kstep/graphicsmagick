@@ -488,3 +488,147 @@ PixelRowIterateDualModify(PixelRowIteratorDualModifyCallback call_back,
     }
   return (status);
 }
+
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l R o w I t e r a t e D u a l N e w                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelRowIterateDualNew() iterates through pixel regions of two images
+%  and invokes a user-provided callback function (of type
+%  PixelRowIteratorDualNewCallback) for each row of pixels. This is used
+%  if a new output image is created based on an input image.  The
+%  difference from PixelRowIterateDualModify() is that the output pixels
+%  are not initialized so it is more efficient when outputting a new image.
+%
+%  The format of the PixelRowIterateDualNew method is:
+%
+%      MagickPassFail PixelRowIterateDualNew(
+%                                PixelRowIteratorDualNewCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *source_image,
+%                                const long source_x,
+%                                const long source_y,
+%                                Image *new_image,
+%                                const long new_x,
+%                                const long new_y,
+%                                ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o call_back: A user-provided C callback function which reads from
+%      a row of source pixels and initializes a row of destination pixels.
+%
+%    o description: textual description of operation being performed.
+%
+%    o user_data: User-provided context data.
+%
+%    o columns: Width of pixel region
+%
+%    o rows: Height of pixel region
+%
+%    o source_image: The address of the constant source Image.
+%
+%    o source_x: The horizontal ordinate of the top left corner of the source region.
+%
+%    o source_y: The vertical ordinate of the top left corner of the source region.
+%
+%    o new_image: The address of the new Image.
+%
+%    o new_x: The horizontal ordinate of the top left corner of the new region.
+%
+%    o new_y: The vertical ordinate of the top left corner of the new region.
+%
+%    o exception: If an error is reported, this argument is updated with the reason.
+%
+*/
+MagickExport MagickPassFail
+PixelRowIterateDualNew(PixelRowIteratorDualNewCallback call_back,
+                          const char *description,
+                          void *user_data,
+                          const unsigned long columns,
+                          const unsigned long rows,
+                          const Image *source_image,
+                          const long source_x,
+                          const long source_y,
+                          Image *new_image,
+                          const long new_x,
+                          const long new_y,
+                          ExceptionInfo *exception)
+{
+  MagickPassFail
+    status = MagickPass;
+
+  register long
+    source_row,
+    new_row;
+
+  for (source_row=source_y, new_row=new_y;
+       source_row < (long) (source_y+rows);
+       source_row++, new_row++)
+    {
+      const PixelPacket
+        *source_pixels;
+
+      const IndexPacket
+        *source_indexes;
+
+      PixelPacket
+        *new_pixels;
+
+      IndexPacket
+        *new_indexes;
+
+      source_pixels=AcquireImagePixels(source_image, source_x, source_row,
+                                       columns, 1, exception);
+      if (!source_pixels)
+        {
+          status=MagickFail;
+          break;
+        }
+      source_indexes=GetIndexes(source_image);
+      new_pixels=SetImagePixels(new_image, new_x, new_row, columns, 1);
+      if (!new_pixels)
+        {
+          CopyException(exception,&new_image->exception);
+          status=MagickFail;
+          break;
+        }
+      new_indexes=GetIndexes(new_image);
+
+      status=(call_back)(user_data,
+                         source_image,source_x,source_row,source_pixels,source_indexes,
+                         new_image,new_x,new_row,new_pixels,new_indexes,
+                         columns,exception);
+      if (status == MagickFail)
+        break;
+
+      if (!SyncImagePixels(new_image))
+        {
+          if (status != MagickFail)
+            {
+              status=MagickFail;
+              CopyException(exception,&new_image->exception);
+            }
+        }
+
+      if (QuantumTick(source_row-source_y,rows))
+        if (!MagickMonitor(description,source_row-source_y,rows,exception))
+          status=MagickFail;
+
+      if (status == MagickFail)
+        break;
+    }
+  return (status);
+}

@@ -1,3 +1,11 @@
+2008-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (AddNoiseImage): Implemented using pixel
+	iterators.
+	* magick/pixel_row_iterator.c (PixelRowIterateDualNew): New pixel
+	iterator.  Similar to existing PixelRowIterateDualModify except
+	that this one is for when initializing a new image.
+
 2008-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c (CompositeImage): Update image composition to
