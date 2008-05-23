@@ -3271,30 +3271,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         }
 
-
-      if (COMPRESSION_JPEG == compress_tag)
-        {
-          /*
-            JPEG compression can only use size specified by BITS_IN_JSAMPLE.
-            FIXME
-          */
-#if BITS_IN_JSAMPLE == 12
-          depth=12;
-          bits_per_sample=12;
-#else
-          depth=8;
-          bits_per_sample=8;
-#endif
-        }
-      else
-        {
-          /*
-            Support writing RGB bits per sample of 8, 16, & 32 by default.
-          */
-          for (bits_per_sample=8; bits_per_sample < depth; )
-            bits_per_sample*=2;
-        }
-
       /*
         Ensure that image is in desired output space
       */
@@ -3350,9 +3326,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
       /*
         Currently we only support JPEG compression with RGB.  FAX
-        compression types require PHOTOMETRIC_MINISWHITE.
+        compression types require PHOTOMETRIC_MINISWHITE.  CMYK takes
+        precedence over JPEG compression.
       */
-      if (compress_tag == COMPRESSION_JPEG)
+      if ((photometric != PHOTOMETRIC_SEPARATED) &&
+          (compress_tag == COMPRESSION_JPEG))
         {
           photometric=PHOTOMETRIC_RGB;
           if (logging)

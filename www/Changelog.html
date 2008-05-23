@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2008-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImage): CMYK copy composition
+        operators automatically set the image colorspace to CMYK.
+  <LI> coders/tiff.c (WriteTIFFImage): CMYK must take precedence over
+        JPEG compression.  We don't support JPEG compression in TIFF with
+<STRONG>CMYK.</STRONG>
+
+</UL>
+<p>
 2008-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
