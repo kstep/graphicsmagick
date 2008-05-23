@@ -21,6 +21,31 @@
 </tr>
 </table>
 <p>
+2008-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ChannelThresholdImage): Re-implement using
+        pixel iterators.  Support thresholding only the red channel by
+        eliminating the switch to intensity thresholding if only one
+        channel parameter is supplied.<BR>
+  <LI> coders/tiff.c (WriteTIFFImage): Don't accidentially convert CMYK
+        images to RGB.<BR>
+  <LI> magick/composite.c (CompositePixels): Handle CopyBlack properly
+        for CMYK images.<BR>
+  <LI> magick/command.c (CompositeImageCommand):  Support CopyCyan,
+        CopyMagenta, CopyYellow, and CopyBlack.
+  <LI> magick/composite.c (CompositeImage): Preserve the canvas image
+        colorspace.<BR>
+  <LI> doc/options.imdoc: Remove mention of thresholding at the channel
+        level since this never worked in a useful fashion and now only
+        simple intensity thresholding is available via -threshold.
+  <LI> magick/command.c (MogrifyImage): Revert to using ThresholdImage() rather
+        than ChannelThresholdImage().<BR>
+  <LI> PerlMagick/Magick.xs: Revert to using ThresholdImage() rather
+        than ChannelThresholdImage().
+
+</UL>
+<p>
 2008-05-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

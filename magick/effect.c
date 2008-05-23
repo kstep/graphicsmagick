@@ -83,12 +83,11 @@
 %
 %
 */
+#define AdaptiveThresholdImageText  "Adaptive threshold the image...  "
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
   const unsigned long width,const unsigned long height,
   const double offset,ExceptionInfo *exception)
 {
-#define ThresholdImageText  "  Threshold the image...  "
-
   DoublePixelPacket
     aggregate,
     mean,
@@ -168,7 +167,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     if (!SyncImagePixels(threshold_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,exception))
+      if (!MagickMonitor(AdaptiveThresholdImageText,y,image->rows,exception))
         break;
   }
   if (y < (long) image->rows)
@@ -649,126 +648,179 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ChannelThresholdImage() changes the value of individual pixels based on
-%  the intensity of each pixel channel.  The result is a high-contrast image.
+%  the level of each pixel channel.  The result sets the affected channels
+%  to the minimum or maximum channel value. A negative threshold value
+%  disables thresholding for that channel.  Append a percent symbol to
+%  have threshold values automatically scaled from a percentage to MaxRGB.
 %
 %  Invoked by the '-threshold' option.
 %
 %  The format of the ChannelThresholdImage method is:
 %
-%      unsigned int ChannelThresholdImage(Image *image,const char *threshold)
+%      MagickPassFail ChannelThresholdImage(Image *image,const char *threshold)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o threshold: define the threshold values.
+%    o threshold: define the threshold values, <red>{<green>,<blue>,<opacity>}{%}.
 %
 %
 */
-MagickExport unsigned int ChannelThresholdImage(Image *image,
-  const char *threshold)
+typedef struct _ChannelThresholdOptions_t
 {
-#define ThresholdImageText  "  Threshold the image...  "
+  PixelPacket
+    thresholds;
 
-  double
-    red_threshold,
-    green_threshold,
-    blue_threshold,
-    opacity_threshold;
+  MagickBool
+    red_enabled,
+    green_enabled,
+    blue_enabled,
+    opacity_enabled;
+} ChannelThresholdOptions_t;
 
-  register Quantum
-    red_threshold_quantum,
-    green_threshold_quantum,
-    blue_threshold_quantum,
-    opacity_threshold_quantum;
-
-  long
-    count,
-    y;
+static MagickPassFail
+ChannelThresholdPixels(void *user_data,          /* User provided mutable data */
+                       const long x,             /* X-offset in base image */
+                       const long y,             /* Y-offset in base image */
+                       Image *image,             /* Modify image */
+                       PixelPacket *pixels,      /* Pixel row */
+                       IndexPacket *indexes,     /* Pixel row indexes */
+                       const long npixels,       /* Number of pixels in row */
+                       ExceptionInfo *exception) /* Exception report */
+{
+  /*
+    Threshold channels
+  */
+  const ChannelThresholdOptions_t
+    *options = (const ChannelThresholdOptions_t *) user_data;
 
   register long
-    x;
+    i;
 
-  register PixelPacket
-    *q;
+  const PixelPacket
+    *thresholds=&options->thresholds;
+
+  const MagickBool
+    red_enabled=options->red_enabled,
+    green_enabled=options->green_enabled,
+    blue_enabled=options->blue_enabled,
+    opacity_enabled=options->opacity_enabled;
+  
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(x);
+  ARG_NOT_USED(y);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      if (red_enabled)
+        pixels[i].red=(pixels[i].red <= thresholds->red ? 0U : MaxRGB);
+      if (green_enabled)
+        pixels[i].green=(pixels[i].green <= thresholds->green ? 0U : MaxRGB);
+      if (blue_enabled)
+        pixels[i].blue=(pixels[i].blue <= thresholds->blue ? 0U : MaxRGB);
+      if (opacity_enabled)
+        pixels[i].opacity=(pixels[i].opacity <= thresholds->opacity ? 0U : MaxRGB);
+    }
+  return MagickPass;
+}
+
+#define ChannelThresholdImageText  "Channel threshold the image...  "
+MagickExport MagickPassFail ChannelThresholdImage(Image *image,
+  const char *threshold)
+{
+  DoublePixelPacket
+    double_threshold;
+
+  ChannelThresholdOptions_t
+    options;
+
+  long
+    count;
 
   unsigned int
     is_grayscale=image->is_grayscale;
+
+  MagickPassFail
+    status = MagickPass;
 
   /*
     Threshold image.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  
   if (threshold == (const char *) NULL)
-    return(True);
-  red_threshold=MaxRGB;
-  green_threshold=MaxRGB;
-  blue_threshold=MaxRGB;
-  opacity_threshold=MaxRGB;
-  count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
-    &red_threshold,&green_threshold,&blue_threshold,&opacity_threshold);
+    return(MagickFail);
 
+  options.thresholds.red     = 0U;
+  options.thresholds.green   = 0U;
+  options.thresholds.blue    = 0U;
+  options.thresholds.opacity = 0U;
+
+  options.red_enabled        = MagickFalse;
+  options.green_enabled      = MagickFalse;
+  options.blue_enabled       = MagickFalse;
+  options.opacity_enabled  = MagickFalse;
+
+  double_threshold.red     = -1.0;
+  double_threshold.green   = -1.0;
+  double_threshold.blue    = -1.0;
+  double_threshold.opacity = -1.0;
+  count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
+               &double_threshold.red,
+               &double_threshold.green,
+               &double_threshold.blue,
+               &double_threshold.opacity);
+  
+  if ((count > 3) && (double_threshold.opacity >= 0.0))
+    options.opacity_enabled = MagickTrue;
+  if ((count > 2) && (double_threshold.blue >= 0.0))
+    options.blue_enabled = MagickTrue;
+  if ((count > 1) && (double_threshold.green >= 0.0))
+    options.green_enabled = MagickTrue;
+  if ((count > 0) && (double_threshold.red >= 0.0))
+    options.red_enabled = MagickTrue;
+  
   if (strchr(threshold,'%') != (char *) NULL)
     {
-      red_threshold*=MaxRGB/100.0;
-      green_threshold*=MaxRGB/100.0;
-      blue_threshold*=MaxRGB/100.0;
-      opacity_threshold*=MaxRGB/100.0;
+      if (options.red_enabled)
+        double_threshold.red     *= MaxRGB/100.0;
+      if (options.green_enabled)
+        double_threshold.green   *= MaxRGB/100.0;
+      if (options.blue_enabled)
+        double_threshold.blue    *= MaxRGB/100.0;
+      if (options.opacity_enabled)
+        double_threshold.opacity *= MaxRGB/100.0;
     }
 
-  if (count == 1)
-    return ThresholdImage(image,red_threshold);
-
-  red_threshold_quantum=RoundDoubleToQuantum(red_threshold);
-  green_threshold_quantum=RoundDoubleToQuantum(green_threshold);
-  blue_threshold_quantum=RoundDoubleToQuantum(blue_threshold);
-  opacity_threshold_quantum=RoundDoubleToQuantum(opacity_threshold);
+  if (options.red_enabled)
+    options.thresholds.red     = RoundDoubleToQuantum(double_threshold.red);
+  if (options.green_enabled)
+    options.thresholds.green   = RoundDoubleToQuantum(double_threshold.green);
+  if (options.blue_enabled)
+    options.thresholds.blue    = RoundDoubleToQuantum(double_threshold.blue);
+  if (options.opacity_enabled)
+    options.thresholds.opacity = RoundDoubleToQuantum(double_threshold.opacity);
 
   (void) SetImageType(image,TrueColorType);
 
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    if (red_threshold < 0.0 || blue_threshold < 0.0 || green_threshold < 0.0 ||
-        opacity_threshold < 0.0)
-      for (x=(long) image->columns; x > 0; x--)
-        {
-          q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
-          q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
-          q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
-          q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
-          q++;
-        }
-    else
-      for (x=(long) image->columns; x > 0; x--)
-        {
-          if (red_threshold >= 0.0)
-            q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
-          if (green_threshold >= 0.0)
-            q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
-          if (blue_threshold >= 0.0)
-            q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
-          if (opacity_threshold >= 0.0)
-            q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
-          q++;
-        }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
-        break;
-  }
+  status=PixelRowIterateMonoModify(ChannelThresholdPixels,
+                                   ChannelThresholdImageText,
+                                   &options,
+                                   0,0,image->columns,image->rows,
+                                   image,
+                                   &image->exception);
 
-  if (is_grayscale && (red_threshold_quantum == green_threshold_quantum) &&
-      (green_threshold_quantum == blue_threshold_quantum))
+  if (is_grayscale && options.red_enabled && options.green_enabled && options.blue_enabled)
     {
       image->is_monochrome=True;
       image->is_grayscale=True;
     }
-  return(True);
+  return status;
 }
 
 /*
@@ -1925,7 +1977,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     *channel,const char *thresholds,ExceptionInfo *exception)
 {
-#define RandomChannelThresholdImageText  "  RandomChannelThreshold image...  "
+#define RandomChannelThresholdImageText  "Random-channel threshold image...  "
 
   double
     lower_threshold,
@@ -2710,7 +2762,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 */
 MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 {
-#define ThresholdImageText  "  Threshold the image...  "
+#define ThresholdImageText  "Threshold the image...  "
 
   register IndexPacket
     index;

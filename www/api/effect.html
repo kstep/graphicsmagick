@@ -54,7 +54,7 @@
 <P>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</P>
 <P>Image * <strong>AddNoiseImage</strong>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
 <P>Image * <strong>BlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</P>
+<P>MagickPassFail  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</P>
 <P>Image * <strong>DespeckleImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <strong>EdgeImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <strong>EmbossImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
@@ -163,19 +163,14 @@
 <P>
 </P>
 <h2><a name="channelthresholdimage">ChannelThresholdImage</a></h2>
-<blockquote>ChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel channel. The result is a high-contrast image. </blockquote><P>The format of the ChannelThresholdImage method is:</P>
-<blockquote>unsigned int ChannelThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const char *threshold ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>ChannelThresholdImage() changes the value of individual pixels based on the level of each pixel channel. The result sets the affected channels to the minimum or maximum channel value. A negative threshold value disables thresholding for that channel. Append a percent symbol to have threshold values automatically scaled from a percentage to MaxRGB. </blockquote><P>Invoked by the '-threshold' option.</P>
+<P>The format of the ChannelThresholdImage method is:</P>
+<blockquote>MagickPassFail ChannelThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const char *threshold ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
 
 <DD>
 <P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_threshold_3a">threshold:</a></strong>
-
-<DD>
-<P>define the threshold values.</P>
 </dd>
 </li>
 </dl>
@@ -524,7 +519,7 @@
 <P>The image.</P>
 </dd>
 </li>
-<dt><strong>threshold:</strong>
+<dt><strong><a name="item_o_threshold_3a">threshold:</a></strong>
 
 <DD>
 <P>Define the threshold value</P>

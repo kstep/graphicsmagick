@@ -982,6 +982,10 @@ composite operators are available:</font></td></tr></table>
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The behavior of each operator is described below.</font></td></tr></table>
@@ -1067,6 +1071,31 @@ with the opacity channel in <em>change-image</em>. The other channels are
 copied untouched.
 </dd>
 </dl>
+<dt>CopyCyan</dt>
+<dd>The resulting image is the cyan channel in <em>base-image</em> replaced
+with the cyan channel in <em>change-image</em>. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+</dd>
+<dt>CopyMagenta</dt>
+<dd>The resulting image is the magenta channel in <em>base-image</em>
+replaced with the magenta channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+<dt>CopyYellow</dt>
+<dd>The resulting image is the yellow channel in <em>base-image</em>
+replaced with the yellow channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+<dt>CopyBlack</dt>
+<dd>The resulting image is the black channel in <em>base-image</em>
+replaced with the black channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
+</dd>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -4232,27 +4261,24 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>{<i>&lt;green&gt;,&lt;blue&gt;,&lt;opacity&gt;</i>}<i></i>{<i>%</i>}<i></i>
+    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>threshold the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.</font></td></tr></table>
+the threshold, is assigned the maximum intensity (white) otherwise the
+minimum intensity (black) is assigned. If a percent prefix is applied,
+then the threshold is a percentage of the available range.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use</font></td></tr></table>
+To efficiently create a black and white image from a color image, use</font></td></tr></table>
 <pre>
-    gm convert -threshold 65535 in.png black.png
-    gm convert -threshold 0,0 in.png white.png
+    gm convert -threshold 50% in.png out.png
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The optimum threshold value depends on the nature of the image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">In order to threshold individual channels, use the <strong>-operator</strong>
+subcommand with it's <strong>Threshold</strong>, <strong>Threshold-White</strong>, or
+<strong>Threshold-Black</strong> options.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

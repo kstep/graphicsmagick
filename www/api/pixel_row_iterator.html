@@ -23,6 +23,7 @@
 		<li><a href="#pixelrowiteratemonomodify">PixelRowIterateMonoModify</a></li>
 		<li><a href="#pixelrowiteratedualread">PixelRowIterateDualRead</a></li>
 		<li><a href="#pixelrowiteratedualmodify">PixelRowIterateDualModify</a></li>
+		<li><a href="#pixelrowiteratedualnew">PixelRowIterateDualNew</a></li>
 	</ul>
 
 </ul>
@@ -38,6 +39,7 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>MagickPassFail  <strong>PixelRowIterateDualModify</strong>( PixelRowIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelRowIterateDualNew</strong>( PixelRowIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelRowIterateDualRead</strong>( PixelRowIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
 <P>MagickPassFail  <strong>PixelRowIterateMonoModify</strong>( PixelRowIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelRowIterateMonoRead</strong>( PixelRowIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
@@ -316,6 +318,85 @@
 
 <DD>
 <P>The vertical ordinate of the top left corner of the update region.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixelrowiteratedualnew">PixelRowIterateDualNew</a></h2>
+<blockquote>PixelRowIterateDualNew() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelRowIteratorDualNewCallback ) for each row of pixels. This is used if a new output image is created based on an input image. The difference from PixelRowIterateDualModify ( ) is that the output pixels are not initialized so it is more efficient when outputting a new image. </blockquote><P>The format of the PixelRowIterateDualNew method is:</P>
+<blockquote>MagickPassFail PixelRowIterateDualNew ( PixelRowIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *new_image, const long new_x, const long new_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which reads from a row of source pixels and initializes a row of destination pixels.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong>source_image:</strong>
+
+<DD>
+<P>The address of the constant source Image.</P>
+</dd>
+</li>
+<dt><strong>source_x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the source region.</P>
+</dd>
+</li>
+<dt><strong>source_y:</strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the source region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_new_image_3a">new_image:</a></strong>
+
+<DD>
+<P>The address of the new Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_new_x_3a">new_x:</a></strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the new region.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_new_y_3a">new_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the new region.</P>
 </dd>
 </li>
 <dt><strong>exception:</strong>

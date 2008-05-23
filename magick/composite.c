@@ -507,7 +507,9 @@ CompositePixels(void *user_data,                   /* User provided mutable data
           */
           if ((update_image->colorspace == CMYKColorspace) &&
               (source_image->colorspace == CMYKColorspace))
-            update_indexes[i]=(source_indexes[i]);
+            update_pixels[i].opacity=source_pixels[i].opacity;
+          else
+            update_pixels[i].opacity=PixelIntensityToQuantum(&source);
           break;
         }
         case ClearCompositeOp:
@@ -707,11 +709,18 @@ CompositePixels(void *user_data,                   /* User provided mutable data
       update_pixels[i].green=destination.green;
       update_pixels[i].blue=destination.blue;
       if (update_image->colorspace != CMYKColorspace)
-        update_pixels[i].opacity=destination.opacity;
+        {
+          /*
+            RGB stores opacity in 'opacity'.
+          */
+          update_pixels[i].opacity=destination.opacity;
+        }
       else
         {
-          update_pixels[i].opacity=source_pixels[i].opacity; /* black */
-          update_indexes[i]=destination.opacity;
+          /*
+            CMYK(A) stores K in 'opacity' and A in the indexes.
+          */
+          update_indexes[i]=destination.opacity; /* opacity */
         }
     }
 
@@ -797,7 +806,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(MagickPass);
-  (void) SetImageType(canvas_image,TrueColorType);
+  canvas_image->storage_class=DirectClass;
   switch (compose)
   {
     case CopyOpacityCompositeOp:

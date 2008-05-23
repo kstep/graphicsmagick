@@ -127,7 +127,7 @@
 <P>
 </P>
 <h2><a name="levelimagechannel">LevelImageChannel</a></h2>
-<blockquote>LevelImageChannel() adjusts the levels of a particular image channel by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid ( gamma ), and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
+<blockquote>LevelImageChannel() adjusts the levels of one or more channels by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid ( gamma ), and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
 <blockquote>unsigned int LevelImageChannel ( <A HREF="types.html#Image">Image</A> *image, const char *level, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double black_point, const double mid_point, const double white_point ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
@@ -139,7 +139,7 @@
 <dt><strong><a name="item_o_channel_3a">channel:</a></strong>
 
 <DD>
-<P>Identify which channel to level: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.</P>
+<P>Identify which channel to level: Red, Cyan, Green, Magenta, Blue, Yellow, Opacity, or All.</P>
 </dd>
 </li>
 <dt><strong><a name="item_o_black_point_2c_mid_point_2c_white_point_3a">black_point, mid_point, white_point:</a></strong>

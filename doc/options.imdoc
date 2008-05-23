@@ -610,6 +610,10 @@ composite operators are available:</pp>
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 </pre>
 
 <pp>
@@ -713,6 +717,35 @@ with the opacity channel in <i>change-image</i>. The other channels are
 copied untouched.
 </dd>
 </dl>
+
+<dt>CopyCyan</dt>
+<dd>The resulting image is the cyan channel in <i>base-image</i> replaced
+with the cyan channel in <i>change-image</i>. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+</dd>
+
+<dt>CopyMagenta</dt>
+<dd>The resulting image is the magenta channel in <i>base-image</i>
+replaced with the magenta channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+
+<dt>CopyYellow</dt>
+<dd>The resulting image is the yellow channel in <i>base-image</i>
+replaced with the yellow channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+
+<dt>CopyBlack</dt>
+<dd>The resulting image is the black channel in <i>base-image</i>
+replaced with the black channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
+</dd>
 
 </utils>
 
@@ -4305,30 +4338,28 @@ and <tt>x:fixed</tt> is OPTION1.</pp>
 <!-- ------------ -threshold ---------------------------------------- -->
 
 <utils apps=convert,mogrify>
-<dopt>-threshold <value>{<green>,<blue>,<opacity>}{%}</opt>
+<dopt>-threshold <value>{%}</opt>
 
 <abs>threshold the image</abs>
 
 <pp>
 Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.</pp>
+the threshold, is assigned the maximum intensity (white) otherwise the
+minimum intensity (black) is assigned. If a percent prefix is applied,
+then the threshold is a percentage of the available range.</pp>
 
 <pp>
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.</pp>
-
-<pp>
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use</pp>
+To efficiently create a black and white image from a color image, use</pp>
 <pre>
-    convert -threshold 65535 in.png black.png
-    convert -threshold 0,0 in.png white.png
+    gm convert -threshold 50% in.png out.png
 </pre>
+
+<pp>
+The optimum threshold value depends on the nature of the image.</pp>
+
+<pp>In order to threshold individual channels, use the <s>-operator</s>
+subcommand with it's <s>Threshold</s>, <s>Threshold-White</s>, or
+<s>Threshold-Black</s> options.</pp>
 
 </utils>
 

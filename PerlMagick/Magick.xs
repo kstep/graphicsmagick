@@ -5647,9 +5647,21 @@ Mogrify(ref,...)
         }
         case 57:  /* Threshold */
         {
+          double
+            threshold;
+
+          int
+            count;
+
           if (!attribute_flag[0])
             argument_list[0].string_reference="50%";
-          ChannelThresholdImage(image,argument_list[0].string_reference);
+          count=sscanf(argument_list[0].string_reference,"%lf",&threshold);
+          if (count > 0)
+            {
+              if (strchr(argument_list[0].string_reference,'%') != (char *) NULL)
+                  threshold *=  MaxRGB/100.0;
+                (void) ThresholdImage(image,threshold);
+            }
           break;
         }
         case 58:  /* Charcoal */
