@@ -3298,11 +3298,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Ensure that image is in desired output space
       */
-      if ((image_info->colorspace == CMYKColorspace) ||
-          (image_info->type == ColorSeparationType) ||
-          (image_info->type == ColorSeparationMatteType))
-        (void) TransformColorspace(image,CMYKColorspace);
-      else
+      if ((image_info->type != UndefinedType) &&
+          (image_info->type != OptimizeType))
+        (void) SetImageType(image,image_info->type);
+      else if (!IsCMYKColorspace(image->colorspace) &&
+               (!IsRGBColorspace(image->colorspace)))
         (void) TransformColorspace(image,RGBColorspace);
 
       /*
@@ -3315,6 +3315,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           status=MagickFail;
           break;
         }
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Image characteristics: cmyk=%c, gray=%c, mono=%c, opaque=%c, palette=%c",
+                            (characteristics.cmyk ? 'y' : 'n'),
+                            (characteristics.grayscale ? 'y' : 'n'),
+                            (characteristics.monochrome ? 'y' : 'n'),
+                            (characteristics.opaque ? 'y' : 'n'),
+                            (characteristics.palette ? 'y' : 'n'));
 
       /*
         Choose best photometric.

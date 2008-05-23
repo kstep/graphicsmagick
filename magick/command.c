@@ -862,7 +862,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
@@ -2006,41 +2006,49 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 option_info.compose=UndefinedCompositeOp;
                 if (LocaleCompare("Over",option) == 0)
                   option_info.compose=OverCompositeOp;
-                if (LocaleCompare("In",option) == 0)
+                else if (LocaleCompare("In",option) == 0)
                   option_info.compose=InCompositeOp;
-                if (LocaleCompare("Out",option) == 0)
+                else if (LocaleCompare("Out",option) == 0)
                   option_info.compose=OutCompositeOp;
-                if (LocaleCompare("Atop",option) == 0)
+                else if (LocaleCompare("Atop",option) == 0)
                   option_info.compose=AtopCompositeOp;
-                if (LocaleCompare("Xor",option) == 0)
+                else if (LocaleCompare("Xor",option) == 0)
                   option_info.compose=XorCompositeOp;
-                if (LocaleCompare("Plus",option) == 0)
+                else if (LocaleCompare("Plus",option) == 0)
                   option_info.compose=PlusCompositeOp;
-                if (LocaleCompare("Minus",option) == 0)
+                else if (LocaleCompare("Minus",option) == 0)
                   option_info.compose=MinusCompositeOp;
-                if (LocaleCompare("Add",option) == 0)
+                else if (LocaleCompare("Add",option) == 0)
                   option_info.compose=AddCompositeOp;
-                if (LocaleCompare("Subtract",option) == 0)
+                else if (LocaleCompare("Subtract",option) == 0)
                   option_info.compose=SubtractCompositeOp;
-                if (LocaleCompare("Difference",option) == 0)
+                else if (LocaleCompare("Difference",option) == 0)
                   option_info.compose=DifferenceCompositeOp;
-                if (LocaleCompare("Multiply",option) == 0)
+                else if (LocaleCompare("Multiply",option) == 0)
                   option_info.compose=MultiplyCompositeOp;
-                if (LocaleCompare("Bumpmap",option) == 0)
+                else if (LocaleCompare("Bumpmap",option) == 0)
                   option_info.compose=BumpmapCompositeOp;
-                if (LocaleCompare("Copy",option) == 0)
+                else if (LocaleCompare("Copy",option) == 0)
                   option_info.compose=CopyCompositeOp;
-                if (LocaleCompare("CopyRed",option) == 0)
+                else if (LocaleCompare("CopyRed",option) == 0)
                   option_info.compose=CopyRedCompositeOp;
-                if (LocaleCompare("CopyGreen",option) == 0)
+                else if (LocaleCompare("CopyGreen",option) == 0)
                   option_info.compose=CopyGreenCompositeOp;
-                if (LocaleCompare("CopyBlue",option) == 0)
+                else if (LocaleCompare("CopyBlue",option) == 0)
                   option_info.compose=CopyBlueCompositeOp;
-                if (LocaleCompare("CopyOpacity",option) == 0)
+                else if (LocaleCompare("CopyOpacity",option) == 0)
                   option_info.compose=CopyOpacityCompositeOp;
-                if (LocaleCompare("Clear",option) == 0)
+                else if (LocaleCompare("Clear",option) == 0)
                   option_info.compose=ClearCompositeOp;
-                if (option_info.compose == UndefinedCompositeOp)
+                else if (LocaleCompare("CopyCyan",option) == 0)
+                  option_info.compose=CopyCyanCompositeOp;
+                else if (LocaleCompare("CopyMagenta",option) == 0)
+                  option_info.compose=CopyMagentaCompositeOp;
+                else if (LocaleCompare("CopyYellow",option) == 0)
+                  option_info.compose=CopyYellowCompositeOp;
+                else if (LocaleCompare("CopyBlack",option) == 0)
+                  option_info.compose=CopyBlackCompositeOp;
+                else
                   ThrowCompositeException(OptionError,UnrecognizedComposeOperator,
                     option);
               }
@@ -3779,7 +3787,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
@@ -6295,7 +6303,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
@@ -11111,7 +11119,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !IsGeometry(argv[i]))
+            if (i == argc)
               ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }

@@ -638,7 +638,7 @@
 <abs>name of texture to tile onto the image background</abs>
 </utils>
 <utils apps=convert,mogrify>
-<lopt>-threshold <value>{<green>,<blue>,<opacity>}{%}</opt>
+<lopt>-threshold <value>{%}</opt>
 <abs>threshold the image</abs>
 </utils>
 <utils apps=convert,mogrify>

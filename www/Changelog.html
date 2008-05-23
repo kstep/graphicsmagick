@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2008-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Don't accidentially convert CMYK
+        images to RGB.<BR>
+  <LI> magick/composite.c (CompositeImage): Handle CopyBlack properly
+        for CMYK images.<BR>
+  <LI> magick/command.c (CompositeImageCommand): Support CopyCyan,
+        CopyMagenta, CopyYellow, and CopyBlack.
+  <LI> magick/composite.c (CompositeImage): Preserve canvas image
+        colorspace.
+
+</UL>
+<p>
+2008-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+        DisplayImageCommand): Gamma multiple channel syntax was broken.
+        Now it is fixed.
+
+</UL>
+<p>
 2008-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

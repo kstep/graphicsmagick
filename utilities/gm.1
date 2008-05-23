@@ -1,4 +1,4 @@
-.TH gm 1 "2008/04/15" "GraphicsMagick"
+.TH gm 1 "2008/05/22" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -669,6 +669,10 @@ composite operators are available:
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 
 The behavior of each operator is described below.
 .in 15
@@ -839,6 +843,51 @@ copied untouched.
 
 .in 15
 
+.in 15
+.B "CopyCyan"
+.in 20
+ \fR
+.in 20
+The resulting image is the cyan channel in \fIbase-image\fP replaced
+with the cyan channel in \fIchange-image\fP. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyMagenta"
+.in 20
+ \fR
+.in 20
+The resulting image is the magenta channel in \fIbase-image\fP
+replaced with the magenta channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyYellow"
+.in 20
+ \fR
+.in 20
+The resulting image is the yellow channel in \fIbase-image\fP
+replaced with the yellow channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyBlack"
+.in 20
+ \fR
+.in 20
+The resulting image is the black channel in \fIbase-image\fP
+replaced with the black channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
+
+.in 15
 .TP
 .B "-compress \fI<type>"\fP
 \fRthe type of image compression
@@ -3020,25 +3069,19 @@ and x:fixed is OPTION1.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 
 Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.
+the threshold, is assigned the maximum intensity (white) otherwise the
+minimum intensity (black) is assigned. If a percent prefix is applied,
+then the threshold is a percentage of the available range.
 
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.
+To efficiently create a black and white image from a color image, use
 
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use
+    gm convert -threshold 50% in.png out.png
 
-    gm convert -threshold 65535 in.png black.png
-    gm convert -threshold 0,0 in.png white.png
+The optimum threshold value depends on the nature of the image.
 .TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
@@ -4964,7 +5007,7 @@ Options, above.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 .TP
 .B "-tile \fI<filename>"\fP
@@ -7833,7 +7876,7 @@ Options, above.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 .TP
 .B "-tile \fI<filename>"\fP

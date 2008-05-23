@@ -136,7 +136,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(MagickPass);
-  (void) SetImageType(canvas_image,TrueColorType);
+  canvas_image->storage_class=DirectClass;
   switch (compose)
   {
     case CopyOpacityCompositeOp:
@@ -681,7 +681,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           */
           if ((canvas_image->colorspace == CMYKColorspace) &&
               (composite_image->colorspace == CMYKColorspace))
-            indexes[x]=(*composite_indexes++);
+            q->opacity=p->opacity;
+          else
+            q->opacity=PixelIntensityToQuantum(&source);
           break;
         }
         case ClearCompositeOp:
@@ -878,11 +880,18 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
       q->green=destination.green;
       q->blue=destination.blue;
       if (canvas_image->colorspace != CMYKColorspace)
-        q->opacity=destination.opacity;
+        {
+          /*
+            RGB stores opacity in 'opacity'.
+          */
+          q->opacity=destination.opacity;
+        }
       else
         {
-          q->opacity=p->opacity;
-          indexes[x]=destination.opacity;
+          /*
+            CMYK(A) stores K in 'opacity' and A in the indexes.
+          */
+          indexes[x]=destination.opacity; /* opacity */
         }
       p++;
       if (p >= (pixels+composite_image->columns))
