@@ -759,6 +759,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   CompositePixelsOptions_t
     options;
 
+  Image
+    *change_image;
+
   double
     amount,
     percent_brightness,
@@ -789,6 +792,14 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(MagickPass);
+
+  /*
+    Clone composite image so that we can modify it if need be.
+  */
+  change_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
+  if (change_image == (Image *) NULL)
+    return(MagickFail);
+
   canvas_image->storage_class=DirectClass;
   switch (compose)
   {
@@ -815,18 +826,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
         horizontal_scale,
         vertical_scale;
 
-      Image
-        *displace_image;
-
       register PixelPacket
         *r;
 
-      /*
-        Allocate the displace image.
-      */
-      displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
-      if (displace_image == (Image *) NULL)
-        return(MagickFail);
       horizontal_scale=20.0;
       vertical_scale=20.0;
       if (composite_image->geometry != (char *) NULL)
@@ -852,7 +854,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
         p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
           &canvas_image->exception);
         q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
-        r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
+        r=GetImagePixels(change_image,0,y,change_image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
           {
@@ -880,15 +882,12 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           q++;
           r++;
         }
-        if (!SyncImagePixels(displace_image))
+        if (!SyncImagePixels(change_image))
           {
             status=MagickFail;
             break;
           }
       }
-/* FIXME - Leak here! */
-/* Should probably always clone composite_image so that we can make sure that it is in a useful colorspace. */
-      composite_image=displace_image;
       break;
     }
     case ModulateCompositeOp:
@@ -927,6 +926,51 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
     default:
       break;
   }
+
+  /*
+    Make sure that the composite image is in a colorspace which is
+    compatible (as need be) with the canvas image.
+  */
+  switch (compose)
+    {
+    case CopyRedCompositeOp:
+    case CopyGreenCompositeOp:
+    case CopyBlueCompositeOp:
+    case CopyCyanCompositeOp:
+    case CopyMagentaCompositeOp:
+    case CopyYellowCompositeOp:
+    case CopyBlackCompositeOp:
+      {
+        /*
+          Assume that the user is right for channel copies.
+        */
+        break;
+      }
+    default:
+      {
+        if (IsRGBColorspace(canvas_image->colorspace))
+          {
+            if (!IsRGBColorspace(change_image->colorspace))
+              TransformColorspace(change_image,RGBColorspace);
+          }
+        else if (IsYCbCrColorspace(canvas_image->colorspace))
+          {
+            if (canvas_image->colorspace != change_image->colorspace)
+              TransformColorspace(change_image,canvas_image->colorspace);
+          }
+        else if (IsCMYKColorspace(canvas_image->colorspace))
+          {
+            if (!IsCMYKColorspace(change_image->colorspace))
+              TransformColorspace(change_image,canvas_image->colorspace);
+          }
+        else
+          {
+            TransformColorspace(change_image,canvas_image->colorspace);
+          }
+        break;
+      }
+    }
+
   /*
     Composite image.
   */
@@ -946,8 +990,8 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
       canvas_x,
       canvas_y;
 
-    columns=composite_image->columns;
-    rows=composite_image->rows;
+    columns=change_image->columns;
+    rows=change_image->rows;
 
     composite_x=0;
     composite_y=0;
@@ -970,7 +1014,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 #if 0
     printf("canvas=%lux%lu composite=%lux%lu offset=%ldx%ld | canvas=%ldx%ld composite=%ldx%ld size=%ldx%ld\n",
            canvas_image->columns,canvas_image->rows,
-           composite_image->columns,composite_image->rows,
+           change_image->columns,change_image->rows,
            x_offset,y_offset,
            canvas_x,canvas_y,
            composite_x,composite_y,
@@ -979,19 +1023,19 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 
     if (((unsigned long) canvas_x < canvas_image->columns) &&
         ((unsigned long) canvas_y < canvas_image->rows) &&
-        ((unsigned long) composite_x < composite_image->columns) &&
-        ((unsigned long) composite_y < composite_image->rows))
+        ((unsigned long) composite_x < change_image->columns) &&
+        ((unsigned long) composite_y < change_image->rows))
       {
-        if ((canvas_x + composite_image->columns) > canvas_image->columns)
-          columns -= ((canvas_x + composite_image->columns) - canvas_image->columns);
-        if ((canvas_y + composite_image->rows) > canvas_image->rows)
-          rows -= ((canvas_y + composite_image->rows) - canvas_image->rows);
+        if ((canvas_x + change_image->columns) > canvas_image->columns)
+          columns -= ((canvas_x + change_image->columns) - canvas_image->columns);
+        if ((canvas_y + change_image->rows) > canvas_image->rows)
+          rows -= ((canvas_y + change_image->rows) - canvas_image->rows);
         status=PixelRowIterateDualModify(CompositePixels,        /* Callback */
                                          "Composite image pixels ...", /* Description */
                                          &options,               /* Options */
                                          columns,                /* Number of columns */
                                          rows,                   /* Number of rows */
-                                         composite_image,        /* Composite image */
+                                         change_image,           /* Composite image */
                                          composite_x,            /* Composite x offset */
                                          composite_y,            /* Composite y offset */
                                          canvas_image,           /* Canvas image */
@@ -1000,5 +1044,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
                                          &canvas_image->exception); /* Exception */
       }
   }
+
+  DestroyImage(change_image);
+  change_image=(Image *) NULL;
+
   return(status);
 }
