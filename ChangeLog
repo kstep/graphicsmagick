@@ -1,5 +1,10 @@
 2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/pixel_iterator.c: Decided that the old per-pixel
+	iterations were not useful enough to keep since the region-based
+	ones are working fine.  Moved pixel_row_iterator.c to
+	pixel_iterator.c and renamed functions to remove the 'Row'
+	designation.
 	* magick/composite.c (CompositeImage): Automatically adjust
 	colorspace of composite image so that it is compatible with canvas
 	image.

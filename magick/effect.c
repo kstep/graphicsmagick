@@ -44,7 +44,7 @@
 #include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/render.h"
 #include "magick/utility.h"
 
@@ -308,9 +308,9 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  (void) PixelRowIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,&noise,
-                                image->columns,image->rows,image,0,0,
-                                noise_image,0,0,&noise_image->exception);
+  (void) PixelIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,&noise,
+                             image->columns,image->rows,image,0,0,
+                             noise_image,0,0,&noise_image->exception);
   noise_image->is_grayscale=is_grayscale;
   return(noise_image);
 }
@@ -808,12 +808,12 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 
   (void) SetImageType(image,TrueColorType);
 
-  status=PixelRowIterateMonoModify(ChannelThresholdPixels,
-                                   ChannelThresholdImageText,
-                                   &options,
-                                   0,0,image->columns,image->rows,
-                                   image,
-                                   &image->exception);
+  status=PixelIterateMonoModify(ChannelThresholdPixels,
+                                ChannelThresholdImageText,
+                                &options,
+                                0,0,image->columns,image->rows,
+                                image,
+                                &image->exception);
 
   if (is_grayscale && options.red_enabled && options.green_enabled && options.blue_enabled)
     {

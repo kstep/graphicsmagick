@@ -43,7 +43,7 @@
 #include "magick/color.h"
 #include "magick/enhance.h"
 #include "magick/gem.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
 
@@ -134,9 +134,9 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
     }
   else
     {
-      status=PixelRowIterateMonoModify(ContrastImagePixels,progress_message,
-                                       &sign,0,0,image->columns,image->rows,
-                                       image,&image->exception);
+      status=PixelIterateMonoModify(ContrastImagePixels,progress_message,
+                                    &sign,0,0,image->columns,image->rows,
+                                    image,&image->exception);
     }
   image->is_grayscale=is_grayscale;
   return(status);
@@ -301,11 +301,11 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     Build histogram.
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  status=PixelRowIterateMonoRead(BuildHistogram,
-                                 "Building image histogram ...",
-                                 histogram,
-                                 0,0,image->columns,image->rows,
-                                 image,&image->exception);
+  status=PixelIterateMonoRead(BuildHistogram,
+                              "Building image histogram ...",
+                              histogram,
+                              0,0,image->columns,image->rows,
+                              image,&image->exception);
   /*
     Integrate the histogram to get the equalization map.
   */
@@ -355,12 +355,12 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     }
   else
     {
-      status=PixelRowIterateMonoModify(ApplyLevels,
-                                       "Applying histogram equalization ...",
-                                       &levels,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      status=PixelIterateMonoModify(ApplyLevels,
+                                    "Applying histogram equalization ...",
+                                    &levels,
+                                    0,0,image->columns,image->rows,
+                                    image,
+                                    &image->exception);
     }
   MagickFreeMemory(levels.map);
   image->is_grayscale=is_grayscale;
@@ -472,12 +472,12 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
     }
   else
     {
-      status=PixelRowIterateMonoModify(ApplyLevels,
-                                       "Applying gamma correction ...",
-                                       &levels,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      status=PixelIterateMonoModify(ApplyLevels,
+                                    "Applying gamma correction ...",
+                                    &levels,
+                                    0,0,image->columns,image->rows,
+                                    image,
+                                    &image->exception);
     }
   if (image->gamma != 0.0)
     image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
@@ -730,12 +730,12 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
     }
   else
     {
-      status=PixelRowIterateMonoModify(ApplyLevels,
-                                       "Leveling image ...",
-                                       &levels,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      status=PixelIterateMonoModify(ApplyLevels,
+                                    "Leveling image ...",
+                                    &levels,
+                                    0,0,image->columns,image->rows,
+                                    image,
+                                    &image->exception);
     }
   MagickFreeMemory(levels.map);
 
@@ -852,9 +852,9 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
     }
   else
     {
-      status=PixelRowIterateMonoModify(ModulateImagePixels,ModulateImageText,
-                                       &param,0,0,image->columns,image->rows,
-                                       image,&image->exception);
+      status=PixelIterateMonoModify(ModulateImagePixels,ModulateImageText,
+                                    &param,0,0,image->columns,image->rows,
+                                    image,&image->exception);
     }
 
   image->is_grayscale=is_grayscale;
@@ -968,9 +968,9 @@ MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscal
     }
   else
     {
-      status=PixelRowIterateMonoModify(NegateImagePixels,NegateImageText,
-                                       &non_gray,0,0,image->columns,image->rows,
-                                       image,&image->exception);
+      status=PixelIterateMonoModify(NegateImagePixels,NegateImageText,
+                                    &non_gray,0,0,image->columns,image->rows,
+                                    image,&image->exception);
     }
 
   image->is_grayscale=is_grayscale;
@@ -1041,11 +1041,11 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     Form histogram.
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  status=PixelRowIterateMonoRead(BuildHistogram,
-                                 "Building image histogram ...",
-                                 histogram,
-                                 0,0,image->columns,image->rows,
-                                 image,&image->exception);
+  status=PixelIterateMonoRead(BuildHistogram,
+                              "Building image histogram ...",
+                              histogram,
+                              0,0,image->columns,image->rows,
+                              image,&image->exception);
   /*
     Find the histogram boundaries by locating the 0.1 percent levels.
   */
@@ -1258,12 +1258,12 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     }
   else
     {
-      status=PixelRowIterateMonoModify(ApplyLevels,
-                                       "Applying histogram normalization ...",
-                                       &levels,
-                                       0,0,image->columns,image->rows,
-                                       image,
-                                       &image->exception);
+      status=PixelIterateMonoModify(ApplyLevels,
+                                    "Applying histogram normalization ...",
+                                    &levels,
+                                    0,0,image->columns,image->rows,
+                                    image,
+                                    &image->exception);
     }
   MagickFreeMemory(levels.map);
   image->is_grayscale=is_grayscale;

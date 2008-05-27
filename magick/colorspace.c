@@ -36,7 +36,7 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/utility.h"
 
 /* Assign value of attribute to double if attribute exists for key */
@@ -520,12 +520,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           image->storage_class=DirectClass;
         }
       if (status != MagickFail)
-        status=PixelRowIterateMonoModify(RGBToCMYKTransform,
-                                         progress_message,
-                                         NULL,
-                                         0,0,image->columns,image->rows,
-                                         image,
-                                         &image->exception);
+        status=PixelIterateMonoModify(RGBToCMYKTransform,
+                                      progress_message,
+                                      NULL,
+                                      0,0,image->columns,image->rows,
+                                      image,
+                                      &image->exception);
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
       return(status);
@@ -638,12 +638,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           /*
             Convert DirectClass image.
           */
-          status=PixelRowIterateMonoModify(RGBToCineonLogTransform,
-                                           progress_message,
-                                           logmap,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(RGBToCineonLogTransform,
+                                        progress_message,
+                                        logmap,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
 
       MagickFreeMemory(logmap);
@@ -676,12 +676,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           /*
             Convert DirectClass image.
           */
-          status=PixelRowIterateMonoModify(RGBToHSLTransform,
-                                           progress_message,
-                                           NULL,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(RGBToHSLTransform,
+                                        progress_message,
+                                        NULL,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
@@ -707,12 +707,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         }
       else
         {
-          status=PixelRowIterateMonoModify(RGBToHWBTransform,
-                                           progress_message,
-                                           NULL,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(RGBToHWBTransform,
+                                        progress_message,
+                                        NULL,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
@@ -1133,12 +1133,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         /*
           Convert DirectClass image.
         */
-        status=PixelRowIterateMonoModify(XYZTransformPackets,
-                                         progress_message,
-                                         &xform,
-                                         0,0,image->columns,image->rows,
-                                         image,
-                                         &image->exception);
+        status=PixelIterateMonoModify(XYZTransformPackets,
+                                      progress_message,
+                                      &xform,
+                                      0,0,image->columns,image->rows,
+                                      image,
+                                      &image->exception);
       }
 
     /*
@@ -1585,12 +1585,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           image->storage_class=DirectClass;
         }
       if (status != MagickFail)
-        status=PixelRowIterateMonoModify(CMYKToRGBTransform,
-                                         progress_message,
-                                         NULL,
-                                         0,0,image->columns,image->rows,
-                                         image,
-                                         &image->exception);
+        status=PixelIterateMonoModify(CMYKToRGBTransform,
+                                      progress_message,
+                                      NULL,
+                                      0,0,image->columns,image->rows,
+                                      image,
+                                      &image->exception);
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
@@ -1705,12 +1705,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           /*
             Convert DirectClass image.
           */
-          status=PixelRowIterateMonoModify(CineonLogToRGBTransform,
-                                           progress_message,
-                                           linearmap,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(CineonLogToRGBTransform,
+                                        progress_message,
+                                        linearmap,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
       MagickFreeMemory(linearmap);
       image->colorspace=RGBColorspace;
@@ -1739,12 +1739,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         }
       else
         {
-          status=PixelRowIterateMonoModify(HSLToRGBTransform,
-                                           progress_message,
-                                           NULL,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(HSLToRGBTransform,
+                                        progress_message,
+                                        NULL,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -1771,12 +1771,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         }
       else
         {
-          status=PixelRowIterateMonoModify(HWBToRGBTransform,
-                                           progress_message,
-                                           NULL,
-                                           0,0,image->columns,image->rows,
-                                           image,
-                                           &image->exception);
+          status=PixelIterateMonoModify(HWBToRGBTransform,
+                                        progress_message,
+                                        NULL,
+                                        0,0,image->columns,image->rows,
+                                        image,
+                                        &image->exception);
         }
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -2134,12 +2134,12 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         /*
           Convert DirectClass image.
         */
-        status=PixelRowIterateMonoModify(RGBTransformPackets,
-                                         progress_message,
-                                         &xform,
-                                         0,0,image->columns,image->rows,
-                                         image,
-                                         &image->exception);
+        status=PixelIterateMonoModify(RGBTransformPackets,
+                                      progress_message,
+                                      &xform,
+                                      0,0,image->columns,image->rows,
+                                      image,
+                                      &image->exception);
       }
     
 

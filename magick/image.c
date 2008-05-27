@@ -55,7 +55,7 @@
 #include "magick/monitor.h"
 #include "magick/module.h"
 #include "magick/pixel_cache.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
 #include "magick/profile.h"
@@ -3457,18 +3457,18 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   /*
     Compute Mean, Max, and Min
   */
-  status = PixelRowIterateMonoRead(GetImageStatisticsMean,
-                                   "Compute image mean ...",
-                                   &context,0,0,image->columns,
-                                   image->rows,image,exception);
+  status = PixelIterateMonoRead(GetImageStatisticsMean,
+                                "Compute image mean ...",
+                                &context,0,0,image->columns,
+                                image->rows,image,exception);
   /*
     Compute Variance
   */
   if (status == MagickPass)
-    status = PixelRowIterateMonoRead(GetImageStatisticsVariance,
-                                     "Compute image variance ...",
-                                     &context,0,0,image->columns,
-                                     image->rows,image,exception);
+    status = PixelIterateMonoRead(GetImageStatisticsVariance,
+                                  "Compute image variance ...",
+                                  &context,0,0,image->columns,
+                                  image->rows,image,exception);
   /*
     Compute Standard Deviation
   */
@@ -3818,13 +3818,13 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   stats.maximum_error_per_pixel=0.0;
   stats.total_error=0.0;
 
-  (void) PixelRowIterateDualRead(ComputeRowPixelError,
-                                 "Compute pixel error ...",
-                                 (void *) &stats,
-                                 image->columns,image->rows,
-                                 image,0,0,
-                                 reference,0,0,
-                                 &image->exception);
+  (void) PixelIterateDualRead(ComputeRowPixelError,
+                              "Compute pixel error ...",
+                              (void *) &stats,
+                              image->columns,image->rows,
+                              image,0,0,
+                              reference,0,0,
+                              &image->exception);
 
   /*
     Compute final error statistics.

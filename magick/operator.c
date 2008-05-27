@@ -14,7 +14,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/utility.h"
 #include "magick/operator.h"
 
@@ -992,7 +992,7 @@ QuantumOperatorRegionImage(Image *image,
   MagickPassFail
     status = MagickFail;
 
-  PixelRowIteratorMonoModifyCallback
+  PixelIteratorMonoModifyCallback
     call_back = 0;
 
   image->storage_class=DirectClass;
@@ -1063,10 +1063,10 @@ QuantumOperatorRegionImage(Image *image,
     {
       FormatString(description,"Apply operator '%s %g' to channel '%s' ...",
                    operator_text,rvalue,ChannelTypeToString(channel));
-      status=PixelRowIterateMonoModify(call_back,
-                                       description,
-                                       (void *) &context,x,y,columns,rows,
-                                       image,exception);
+      status=PixelIterateMonoModify(call_back,
+                                    description,
+                                    (void *) &context,x,y,columns,rows,
+                                    image,exception);
 
       /*
         If we are assigning all the color channels in the entire image

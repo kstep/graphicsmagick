@@ -6,17 +6,15 @@
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
   Interfaces to support simple iterative pixel read/update access
-  within an image or between two images.   Also see the interfaces in
-  pixel_row_iterator.h which pass entire rows to the callback function
-  rather than one pixel for better performance.
+  within an image or between two images.
 
   WARNING!  These interfaces are still subject to change. WARNING!
 
-  Written by Bob Friesenhahn, March 2004
+  Written by Bob Friesenhahn, March 2004, Updated for regions 2008.
  
 */
-#ifndef _PIXEL_ITERATOR_H
-#define _PIXEL_ITERATOR_H
+#ifndef _PIXEL_ROW_ITERATOR_H
+#define _PIXEL_ROW_ITERATOR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -27,13 +25,16 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelIteratorMonoReadCallback)
-    (void *user_data,
-     const long x,
-     const long y,
-     const Image *const_image,
-     const PixelPacket *pixel,
-     const IndexPacket *index,
-     ExceptionInfo *exception);
+    (
+     void *user_data,                   /* User provided mutable data */
+     const long x,                      /* X-offset in base image */
+     const long y,                      /* Y-offset in base image */
+     const Image *const_image,          /* Input image */
+     const PixelPacket *pixels,         /* Pixel row */
+     const IndexPacket *indexes,        /* Pixel indexes */
+     const long npixels,                /* Number of pixels in row */
+     ExceptionInfo *exception           /* Exception report */
+     );
 
   extern MagickExport MagickPassFail
   PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
@@ -50,13 +51,16 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelIteratorMonoModifyCallback)
-    (void *user_data,
-     const long x,
-     const long y,
-     Image *image,
-     PixelPacket *pixel,
-     const IndexPacket *index,
-     ExceptionInfo *exception);
+    (
+     void *user_data,                   /* User provided mutable data */
+     const long x,                      /* X-offset in base image */
+     const long y,                      /* Y-offset in base image */
+     Image *image,                      /* Modify image */
+     PixelPacket *pixels,               /* Pixel row */
+     IndexPacket *indexes,              /* Pixel row indexes */
+     const long npixels,                /* Number of pixels in row */
+     ExceptionInfo *exception           /* Exception report */
+     );
 
   extern MagickExport MagickPassFail
   PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
@@ -74,18 +78,21 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelIteratorDualReadCallback)
-    (void *user_data,
-     const Image *first_image,
-     const long first_x,
-     const long first_y,
-     const PixelPacket *first_pixel,
-     const IndexPacket *first_index,
-     const Image *second_image,
-     const long second_x,
-     const long second_y,
-     const PixelPacket *second_pixel,
-     const IndexPacket *second_index,
-     ExceptionInfo *exception);
+    (
+     void *user_data,                   /* User provided mutable data */
+     const Image *first_image,          /* First Input image */
+     const long first_x,                /* X-offset in first image */
+     const long first_y,                /* Y-offset in first image */
+     const PixelPacket *first_pixels,   /* Pixel row in first image */
+     const IndexPacket *first_indexes,  /* Pixel row indexes in first image */
+     const Image *second_image,         /* Second Input image */
+     const long second_x,               /* X-offset in second image */
+     const long second_y,               /* Y-offset in second image */
+     const PixelPacket *second_pixels,  /* Pixel row in second image */
+     const IndexPacket *second_indexes, /* Pixel row indexes in second image */
+     const long npixels,                /* Number of pixels in row */
+     ExceptionInfo *exception           /* Exception report */
+     );
 
   extern MagickExport MagickPassFail
   PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
@@ -108,18 +115,21 @@ extern "C" {
   */
 
   typedef MagickPassFail (*PixelIteratorDualModifyCallback)
-    (void *user_data,
-     const Image *source_image,
-     const long source_x,
-     const long source_y,
-     const PixelPacket *source_pixel,
-     const IndexPacket *source_index,
-     Image *update_image,
-     const long update_x,
-     const long update_y,
-     PixelPacket *update_pixel,
-     IndexPacket *update_index,
-     ExceptionInfo *exception);
+    (
+     void *user_data,                   /* User provided mutable data */
+     const Image *source_image,         /* Source image */
+     const long source_x,               /* X-offset in source image */
+     const long source_y,               /* Y-offset in source image */
+     const PixelPacket *source_pixels,  /* Pixel row in source image */
+     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+     Image *update_image,               /* Update image */
+     const long update_x,               /* X-offset in update image */
+     const long update_y,               /* Y-offset in update image */
+     PixelPacket *update_pixels,        /* Pixel row in update image */
+     IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+     const long npixels,                /* Number of pixels in row */
+     ExceptionInfo *exception           /* Exception report */
+     );
 
   extern MagickExport MagickPassFail
   PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
@@ -135,8 +145,29 @@ extern "C" {
                          const long update_y,
                          ExceptionInfo *exception);
 
+  /*
+    Read-write access across pixel regions of two images. The first
+    (source) image is accessed read-only while the second (new)
+    image is accessed for write (uninitialized pixels).
+  */
+  typedef PixelIteratorDualModifyCallback PixelIteratorDualNewCallback;
+
+  extern MagickExport MagickPassFail
+  PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
+                      const char *description,
+                      void *user_data,
+                      const unsigned long columns,
+                      const unsigned long rows,
+                      const Image *source_image,
+                      const long source_x,
+                      const long source_y,
+                      Image *new_image,
+                      const long new_x,
+                      const long new_y,
+                      ExceptionInfo *exception);
+  
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-#endif /* _PIXEL_ITERATOR_H */
+#endif /* _PIXEL_ROW_ITERATOR_H */

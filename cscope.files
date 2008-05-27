@@ -177,8 +177,6 @@ magick/pixel_cache.c
 magick/pixel_cache.h
 magick/pixel_iterator.c
 magick/pixel_iterator.h
-magick/pixel_row_iterator.c
-magick/pixel_row_iterator.h
 magick/profile.c
 magick/profile.h
 magick/quantize.c

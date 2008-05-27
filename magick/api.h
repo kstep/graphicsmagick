@@ -144,7 +144,6 @@ extern "C" {
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
-#include "magick/pixel_row_iterator.h"
 #include "magick/profile.h"
 #include "magick/resource.h"
 #include "magick/version.h"

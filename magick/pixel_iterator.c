@@ -8,7 +8,7 @@
 % Interfaces to support simple iterative pixel read/update access within
 % an image or between two images.
 %
-% Written by Bob Friesenhahn, March 2004
+% Written by Bob Friesenhahn, March 2004, Updated for rows 2008.
 %
 */
 
@@ -28,28 +28,28 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelIterateMonoRead() iterates through a region of an image and invokes a
-%  user-provided callback function (of type PixelIteratorMonoReadCallback) for
-%  each pixel. This is useful to support simple operations such as statistics
-%  computation.
+% PixelIterateMonoRead() iterates through a region of an image and invokes a
+% user-provided callback function (of type PxelRowIteratorMonoReadCallback)
+% for a row of pixels. This is useful to support simple operations such as
+% statistics computation.
 %
 %  The format of the PixelIterateMonoRead method is:
 %
 %      MagickPassFail PixelIterateMonoRead(
-%                                    PixelIteratorMonoReadCallback call_back,
-%                                    const char *description,
-%                                    void *user_data,
-%                                    const long x,
-%                                    const long y,
-%                                    const unsigned long columns,
-%                                    const unsigned long rows,
-%                                    const Image *image,
-%                                    ExceptionInfo *exception)
+%                                 PixelIteratorMonoReadCallback call_back,
+%                                 const char *description,
+%                                 void *user_data,
+%                                 const long x,
+%                                 const long y,
+%                                 const unsigned long columns,
+%                                 const unsigned long rows,
+%                                 const Image *image,
+%                                 ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o call_back: A user-provided C callback function which is passed the
-%       address of a pixel from each image.
+%       address of pixels from each image.
 %
 %    o description: textual description of operation being performed.
 %
@@ -87,15 +87,12 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 
   for (row=y; row < (long) (y+rows); row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *pixels;
 
-      register const IndexPacket
+      const IndexPacket
         *indexes;
 
-      register long
-        column;
-      
       pixels=AcquireImagePixels(image, x, row, columns, 1, exception);
       if (!pixels)
         {
@@ -104,12 +101,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      for (column=x; column < (long) (x+columns); column++)
-        {
-          status=(call_back)(user_data,column,row,image,pixels++,indexes++,exception);
-          if (status == MagickFail)
-            break;
-        }
+      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
+      if (status == MagickFail)
+        break;
 
       if (QuantumTick(row-y,rows))
         if (!MagickMonitor(description,row-y,rows,exception))
@@ -132,28 +126,28 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelIterateMonoModify() iterates through a region of an image and invokes a
-%  user-provided callback function (of type PixelIteratorMonoReadCallback) for
-%  each pixel. This is useful to support simple operations such as level
-%  shifting, colorspace translation, or thresholding.
+%  PixelIterateMonoModify() iterates through a region of an image and invokes
+%  a user-provided callback function (of type PixelIteratorMonoReadCallback)
+%  for a region of pixels. This is useful to support simple operations such as
+%  level shifting, colorspace translation, or thresholding.
 %
 %  The format of the PixelIterateMonoModify method is:
 %
 %      MagickPassFail PixelIterateMonoModify(
-%                                    PixelIteratorMonoModifyCallback call_back,
-%                                    const char *description,
-%                                    void *user_data,
-%                                    const long x,
-%                                    const long y,
-%                                    const unsigned long columns,
-%                                    const unsigned long rows,
-%                                    Image *image,
-%                                    ExceptionInfo *exception)
+%                              PixelIteratorMonoModifyCallback call_back,
+%                              const char *description,
+%                              void *user_data,
+%                              const long x,
+%                              const long y,
+%                              const unsigned long columns,
+%                              const unsigned long rows,
+%                              Image *image,
+%                              ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o call_back: A user-provided C callback function which is passed the
-%       address of a pixel from each image.
+%       address of pixels from each image.
 %
 %    o description: textual description of operation being performed.
 %
@@ -191,15 +185,12 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 
   for (row=y; row < (long) (y+rows); row++)
     {
-      register PixelPacket
+      PixelPacket
         *pixels;
 
-      register IndexPacket
+      IndexPacket
         *indexes;
 
-      register long
-        column;
-      
       pixels=GetImagePixels(image, x, row, columns, 1);
       if (!pixels)
         {
@@ -209,12 +200,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      for (column=x; column < (long) (x+columns); column++)
-        {
-          status=(call_back)(user_data,column,row,image,pixels++,indexes++,exception);
-          if (status == MagickFail)
-            break;
-        }
+      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
+      if (status == MagickFail)
+        break;
 
       if (!SyncImagePixels(image))
         {
@@ -248,29 +236,29 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 %
 %  PixelIterateDualRead() iterates through pixel regions of two images and
 %  invokes a user-provided callback function (of type
-%  PixelIteratorDualReadCallback) for each pixel. This is useful to support
-%  operations such as image comparison.
+%  PixelIteratorDualReadCallback) for each row of pixels. This is useful to
+%  support operations such as image comparison.
 %
 %  The format of the PixelIterateDualModify method is:
 %
 %      MagickPassFail PixelIterateDualRead(
-%                                   PixelIteratorDualReadCallback call_back,
-%                                   const char *description,
-%                                   void *user_data,
-%                                   const unsigned long columns,
-%                                   const unsigned long rows,
-%                                   const Image *first_image,
-%                                   const long first_x,
-%                                   const long first_y,
-%                                   const Image *second_image,
-%                                   const long second_x,
-%                                   const long second_y,
-%                                   ExceptionInfo *exception);
+%                                PixelIteratorDualReadCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *first_image,
+%                                const long first_x,
+%                                const long first_y,
+%                                const Image *second_image,
+%                                const long second_x,
+%                                const long second_y,
+%                                ExceptionInfo *exception);
 %
 %  A description of each parameter follows:
 %
 %    o call_back: A user-provided C callback function which is passed the
-%       address of a pixel from each image.
+%       address of pixels from each image.
 %
 %    o description: textual description of operation being performed.
 %
@@ -320,18 +308,14 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
        first_row < (long) (first_y+rows);
        first_row++, second_row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *first_pixels,
         *second_pixels;
 
-      register const IndexPacket
+      const IndexPacket
         *first_indexes,
         *second_indexes;
 
-      register long
-        first_column,
-        second_column;
-      
       first_pixels=AcquireImagePixels(first_image, first_x, first_row, columns, 1, exception);
       if (!first_pixels)
         {
@@ -347,17 +331,12 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         }
       second_indexes=GetIndexes(second_image);
 
-      for (first_column=first_x, second_column=second_x;
-           first_column < (long) (first_x+columns);
-           first_column++, second_column++)
-        {
-          status=(call_back)(user_data,
-                             first_image,first_column,first_row,first_pixels++,first_indexes++,
-                             second_image,second_column,second_row,second_pixels++,second_indexes++,
-                             exception);
-          if (status == MagickFail)
-            break;
-        }
+      status=(call_back)(user_data,
+                         first_image,first_x,first_row,first_pixels,first_indexes,
+                         second_image,second_x,second_row,second_pixels,second_indexes,
+                         columns, exception);
+      if (status == MagickFail)
+        break;
 
       if (QuantumTick(first_row-first_y,rows))
         if (!MagickMonitor(description,first_row-first_y,rows,exception))
@@ -382,29 +361,29 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %
 %  PixelIterateDualModify() iterates through pixel regions of two images and
 %  invokes a user-provided callback function (of type
-%  PixelIteratorDualModifyCallback) for each pixel. This is useful to support
-%  operations such as composition.
+%  PixelIteratorDualModifyCallback) for each row of pixels. This is useful to
+%  support operations such as composition.
 %
 %  The format of the PixelIterateDualModify method is:
 %
 %      MagickPassFail PixelIterateDualModify(
-%                                   PixelIteratorDualModifyCallback call_back,
-%                                   const char *description,
-%                                   void *user_data,
-%                                   const unsigned long columns,
-%                                   const unsigned long rows,
-%                                   const Image *source_image,
-%                                   const long source_x,
-%                                   const long source_y,
-%                                   Image *update_image,
-%                                   const long update_x,
-%                                   const long update_y,
-%                                   ExceptionInfo *exception)
+%                                PixelIteratorDualModifyCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *source_image,
+%                                const long source_x,
+%                                const long source_y,
+%                                Image *update_image,
+%                                const long update_x,
+%                                const long update_y,
+%                                ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o call_back: A user-provided C callback function which reads from
-%      a source pixel and updates a destination pixel.
+%      a region of source pixels and updates a region of destination pixels.
 %
 %    o description: textual description of operation being performed.
 %
@@ -429,19 +408,20 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %    o exception: If an error is reported, this argument is updated with the reason.
 %
 */
-MagickExport MagickPassFail
-PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
-                       const char *description,
-                       void *user_data,
-                       const unsigned long columns,
-                       const unsigned long rows,
-                       const Image *source_image,
-                       const long source_x,
-                       const long source_y,
-                       Image *update_image,
-                       const long update_x,
-                       const long update_y,
-                       ExceptionInfo *exception)
+static MagickPassFail
+PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
+                               const char *description,
+                               void *user_data,
+                               const unsigned long columns,
+                               const unsigned long rows,
+                               const Image *source_image,
+                               const long source_x,
+                               const long source_y,
+                               Image *update_image,
+                               const long update_x,
+                               const long update_y,
+                               ExceptionInfo *exception,
+                               MagickBool set)
 {
   MagickPassFail
     status = MagickPass;
@@ -454,22 +434,18 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
        source_row < (long) (source_y+rows);
        source_row++, update_row++)
     {
-      register const PixelPacket
+      const PixelPacket
         *source_pixels;
 
-      register const IndexPacket
+      const IndexPacket
         *source_indexes;
 
-      register PixelPacket
+      PixelPacket
         *update_pixels;
 
-      register IndexPacket
+      IndexPacket
         *update_indexes;
 
-      register long
-        source_column,
-        update_column;
-      
       source_pixels=AcquireImagePixels(source_image, source_x, source_row,
                                        columns, 1, exception);
       if (!source_pixels)
@@ -478,7 +454,10 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
           break;
         }
       source_indexes=GetIndexes(source_image);
-      update_pixels=GetImagePixels(update_image, update_x, update_row, columns, 1);
+      if (set)
+        update_pixels=SetImagePixels(update_image, update_x, update_row, columns, 1);
+      else
+        update_pixels=GetImagePixels(update_image, update_x, update_row, columns, 1);
       if (!update_pixels)
         {
           CopyException(exception,&update_image->exception);
@@ -487,17 +466,12 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
         }
       update_indexes=GetIndexes(update_image);
 
-      for (source_column=source_x, update_column=update_x;
-           source_column < (long) (source_x+columns);
-           source_column++, update_column++)
-        {
-          status=(call_back)(user_data,
-                             source_image,source_column,source_row,source_pixels++,source_indexes++,
-                             update_image,update_column,update_row,update_pixels++,update_indexes++,
-                             exception);
-          if (status == MagickFail)
-            break;
-        }
+      status=(call_back)(user_data,
+                         source_image,source_x,source_row,source_pixels,source_indexes,
+                         update_image,update_x,update_row,update_pixels,update_indexes,
+                         columns,exception);
+      if (status == MagickFail)
+        break;
 
       if (!SyncImagePixels(update_image))
         {
@@ -516,4 +490,106 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
         break;
     }
   return (status);
+}
+
+MagickExport MagickPassFail
+PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
+                       const char *description,
+                       void *user_data,
+                       const unsigned long columns,
+                       const unsigned long rows,
+                       const Image *source_image,
+                       const long source_x,
+                       const long source_y,
+                       Image *update_image,
+                       const long update_x,
+                       const long update_y,
+                       ExceptionInfo *exception)
+{
+  return PixelIterateDualImplementation
+    (call_back,description,user_data,columns,rows,source_image,
+     source_x,source_y,update_image,update_x,update_y,exception,MagickFalse);
+}
+
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l I t e r a t e D u a l N e w                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelIterateDualNew() iterates through pixel regions of two images and
+%  invokes a user-provided callback function (of type
+%  PixelIteratorDualNewCallback) for each row of pixels. This is used if a
+%  new output image is created based on an input image.  The difference from
+%  PixelIterateDualModify() is that the output pixels are not initialized so
+%  it is more efficient when outputting a new image.
+%
+%  The format of the PixelIterateDualNew method is:
+%
+%      MagickPassFail PixelIterateDualNew(
+%                                PixelIteratorDualNewCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *source_image,
+%                                const long source_x,
+%                                const long source_y,
+%                                Image *new_image,
+%                                const long new_x,
+%                                const long new_y,
+%                                ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o call_back: A user-provided C callback function which reads from
+%      a region of source pixels and initializes a region of destination pixels.
+%
+%    o description: textual description of operation being performed.
+%
+%    o user_data: User-provided context data.
+%
+%    o columns: Width of pixel region
+%
+%    o rows: Height of pixel region
+%
+%    o source_image: The address of the constant source Image.
+%
+%    o source_x: The horizontal ordinate of the top left corner of the source region.
+%
+%    o source_y: The vertical ordinate of the top left corner of the source region.
+%
+%    o new_image: The address of the new Image.
+%
+%    o new_x: The horizontal ordinate of the top left corner of the new region.
+%
+%    o new_y: The vertical ordinate of the top left corner of the new region.
+%
+%    o exception: If an error is reported, this argument is updated with the reason.
+%
+*/
+MagickExport MagickPassFail
+PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
+                    const char *description,
+                    void *user_data,
+                    const unsigned long columns,
+                    const unsigned long rows,
+                    const Image *source_image,
+                    const long source_x,
+                    const long source_y,
+                    Image *new_image,
+                    const long new_x,
+                    const long new_y,
+                    ExceptionInfo *exception)
+{
+  return PixelIterateDualImplementation
+    (call_back,description,user_data,columns,rows,source_image,
+     source_x,source_y,new_image,new_x,new_y,exception,MagickTrue);
 }

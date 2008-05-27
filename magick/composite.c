@@ -40,7 +40,7 @@
 #include "magick/composite.h"
 #include "magick/gem.h"
 #include "magick/pixel_cache.h"
-#include "magick/pixel_row_iterator.h"
+#include "magick/pixel_iterator.h"
 #include "magick/utility.h"
 
 typedef struct _CompositePixelsOptions_t
@@ -1030,18 +1030,18 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           columns -= ((canvas_x + change_image->columns) - canvas_image->columns);
         if ((canvas_y + change_image->rows) > canvas_image->rows)
           rows -= ((canvas_y + change_image->rows) - canvas_image->rows);
-        status=PixelRowIterateDualModify(CompositePixels,        /* Callback */
-                                         "Composite image pixels ...", /* Description */
-                                         &options,               /* Options */
-                                         columns,                /* Number of columns */
-                                         rows,                   /* Number of rows */
-                                         change_image,           /* Composite image */
-                                         composite_x,            /* Composite x offset */
-                                         composite_y,            /* Composite y offset */
-                                         canvas_image,           /* Canvas image */
-                                         canvas_x,               /* Canvas x offset */
-                                         canvas_y,               /* Canvas y offset */
-                                         &canvas_image->exception); /* Exception */
+        status=PixelIterateDualModify(CompositePixels,        /* Callback */
+                                      "Composite image pixels ...", /* Description */
+                                      &options,               /* Options */
+                                      columns,                /* Number of columns */
+                                      rows,                   /* Number of rows */
+                                      change_image,           /* Composite image */
+                                      composite_x,            /* Composite x offset */
+                                      composite_y,            /* Composite y offset */
+                                      canvas_image,           /* Canvas image */
+                                      canvas_x,               /* Canvas x offset */
+                                      canvas_y,               /* Canvas y offset */
+                                      &canvas_image->exception); /* Exception */
       }
   }
 
