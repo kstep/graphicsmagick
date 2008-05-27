@@ -865,27 +865,39 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 %
 */
 
-static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
+#define  MagickAlphaCompositeQuantum(change,change_alpha,base,base_alpha) \
+   (1.0-(change_alpha/MaxRGB))*(double) change+(1.0-(base_alpha/MaxRGB))*(double) base*(change_alpha/MaxRGB)
+static inline PixelPacket AlphaComposite(const PixelPacket *change,
+  const double change_alpha,const PixelPacket *base,const double base_alpha)
 {
   PixelPacket
     composite;
 
   double
-    MaxRGB_alpha,
-    MaxRGB_beta;
+    gamma,
+    value;
 
-  MaxRGB_alpha=MaxRGB-alpha;
-  MaxRGB_beta=MaxRGB-beta;
-  composite.red=(Quantum)
-    ((MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB+0.5);
-  composite.green=(Quantum)
-    ((MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB+0.5);
-  composite.blue=(Quantum)
-    ((MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB+0.5);
-  composite.opacity=(Quantum)
-    (MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB)+0.5);
-  return(composite);
+  composite=*base;
+  if (change_alpha != TransparentOpacity)
+    {
+      gamma=1.0-(change_alpha/MaxRGB)*(base_alpha/MaxRGB);
+      
+      value=MaxRGB*(1.0-gamma);
+      composite.opacity=RoundSignedToQuantum(value);
+      
+      gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->red,change_alpha,composite.red,base_alpha);
+      composite.red=RoundSignedToQuantum(value);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->green,change_alpha,composite.green,base_alpha);
+      composite.green=RoundSignedToQuantum(value);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->blue,change_alpha,composite.blue,base_alpha);
+      composite.blue=RoundSignedToQuantum(value);
+    }
+
+  return composite;
 }
 
 #if defined(HasTTF)

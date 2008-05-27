@@ -1,3 +1,20 @@
+2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{annotate.c,composite.c,paint.c,render.c}
+	(AlphaComposite): Fix alpha composite when both pixels contain
+	transparency.
+
+2008-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImage): Preserve canvas image
+	colorspace.
+
+2008-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+	DisplayImageCommand): Gamma multiple channel syntax was broken.
+	Now it is fixed.
+
 2008-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (CompositeImageList): Don't overwrite matte
