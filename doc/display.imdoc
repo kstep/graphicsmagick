@@ -273,7 +273,7 @@ To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height and position the window at location (200,200), use:</p>
 
 <pre>
-    display -geometry 640x480+200+200! cockatoo.miff
+    gm display -geometry 640x480+200+200! cockatoo.miff
 </pre>
 
 <p>
@@ -281,21 +281,21 @@ To display an image of a cockatoo without a border centered on a backdrop,
 use:</p>
 
 <pre>
-    display +borderwidth -backdrop cockatoo.miff
+    gm display +borderwidth -backdrop cockatoo.miff
 </pre>
 
 <p>
 To tile a slate texture onto the root window, use:</p>
 
 <pre>
-    display -size 1280x1024 -window root slate.png
+    gm display -size 1280x1024 -window root slate.png
 </pre>
 
 <p>
 To display a visual image directory of all your JPEG images, use:</p>
 
 <pre>
-    display 'vid:*.jpg'
+    gm display 'vid:*.jpg'
 </pre>
 
 <p>
@@ -303,7 +303,7 @@ To display a MAP image that is 640 pixels in width and 480 pixels in height
 with 256 colors, use:</p>
 
 <pre>
-    display -size 640x480+256 cockatoo.map
+    gm display -size 640x480+256 cockatoo.map
 </pre>
 
 <p>
@@ -311,14 +311,14 @@ To display an image of a cockatoo specified with a <s>World Wide Web (WWW)</s>
 uniform resource locator <s>(URL)</s>, use:</p>
 
 <pre>
-    display ftp://wizards.dupont.com/images/cockatoo.jpg
+    gm display ftp://wizards.dupont.com/images/cockatoo.jpg
 </pre>
 
 <p>
 To display histogram of an image, use:</p>
 
 <pre>
-    convert file.jpg HISTOGRAM:- | display -
+    gm gm convert file.jpg HISTOGRAM:- | gm display -
 </pre>
 
 </sect>
@@ -335,11 +335,11 @@ and the third with only 16 colors, use:</p>
 
 <pre>
 <format type=man,tex>
-      display -colors 32 cockatoo.miff -noop duck.miff
-              -colors 16 macaw.miff
+      gm display -colors 32 cockatoo.miff -noop duck.miff
+                 -colors 16 macaw.miff
 </format>
 <format type=html>
-      display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
+      gm display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
 </format>
 </pre>
 

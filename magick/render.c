@@ -1084,6 +1084,8 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
       point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
       pixel=AcquireOnePixel(composite,(long) point.x,(long) point.y,
         &image->exception);
+      if (!composite->matte)
+        pixel.opacity=OpaqueOpacity;
       *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
       q++;
     }

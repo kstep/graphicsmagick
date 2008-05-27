@@ -143,6 +143,8 @@ typedef unsigned int Quantum;
   Deprecated defines.
 */
 #define RunlengthEncodedCompression RLECompression
+#define RoundSignedToQuantum(value) RoundDoubleToQuantum(value)
+#define RoundToQuantum(value) RoundDoubleToQuantum(value)
 
 /*
   Enum declarations.

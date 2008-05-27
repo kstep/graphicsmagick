@@ -1,3 +1,10 @@
+2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/alpha_composite.h (AlphaComposite): Fix alpha composite
+	when both pixels contain transparency.
+	* PerlMagick/demo/demo.pl: Use segmentation parameters which
+	are more suitable for our image.
+
 2008-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c (CompositeImage): CMYK copy composition

@@ -21,16 +21,252 @@
 </tr>
 </table>
 <p>
+2008-05-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/alpha_composite.h (AlphaComposite): Fix alpha composite
+        when both pixels contain transparency.
+  <LI> PerlMagick/demo/demo.pl: Use segmentation parameters which
+        are more suitable for our image.
+
+</UL>
+<p>
+2008-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImage): CMYK copy composition
+        operators automatically set the image colorspace to CMYK.
+  <LI> coders/tiff.c (WriteTIFFImage): CMYK must take precedence over
+        JPEG compression.  We don't support JPEG compression in TIFF with
+<STRONG>CMYK.</STRONG>
+
+</UL>
+<p>
+2008-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ChannelThresholdImage): Re-implement using
+        pixel iterators.  Support thresholding only the red channel by
+        eliminating the switch to intensity thresholding if only one
+        channel parameter is supplied.<BR>
+  <LI> coders/tiff.c (WriteTIFFImage): Don't accidentially convert CMYK
+        images to RGB.<BR>
+  <LI> magick/composite.c (CompositePixels): Handle CopyBlack properly
+        for CMYK images.<BR>
+  <LI> magick/command.c (CompositeImageCommand):  Support CopyCyan,
+        CopyMagenta, CopyYellow, and CopyBlack.
+  <LI> magick/composite.c (CompositeImage): Preserve the canvas image
+        colorspace.<BR>
+  <LI> doc/options.imdoc: Remove mention of thresholding at the channel
+        level since this never worked in a useful fashion and now only
+        simple intensity thresholding is available via -threshold.
+  <LI> magick/command.c (MogrifyImage): Revert to using ThresholdImage() rather
+        than ChannelThresholdImage().<BR>
+  <LI> PerlMagick/Magick.xs: Revert to using ThresholdImage() rather
+        than ChannelThresholdImage().
+
+</UL>
+<p>
+2008-05-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (AddNoiseImage): Implemented using pixel
+        iterators.<BR>
+  <LI> magick/pixel_row_iterator.c (PixelRowIterateDualNew): New pixel
+        iterator.  Similar to existing PixelRowIterateDualModify except
+        that this one is for when initializing a new image.
+
+</UL>
+<p>
+2008-05-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImage): Update image composition to
+        use pixel iterator methods.
+
+</UL>
+<p>
+2008-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/enhance.c: Re-wrote all enhancement functions in this
+        module to be based on the pixel iterator methods.
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+        DisplayImageCommand): Gamma multiple channel syntax was broken.
+        Now it is fixed.
+
+</UL>
+<p>
+2008-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformImage): Optimized lookup table
+        generation performance to the maximum extent possible.
+        (TransformRGBImage): Optimized lookup table
+        generation performance to the maximum extent possible.
+  <LI> magick/image.h (RoundDoubleToQuantum): New macro to explicitly
+        safely round a 'double' to a Quantum.
+        (RoundFloatToQuantum): New macro to explicitly safely round a
+        'float' to a Quantum.<BR>
+  <LI> configure.ac: Add OpenMP support library to LIBS so that
+        dependent applications will pick up this dependency without
+        themselves needing to enable OpenMP.
+  <LI> magick/command.c (CompositeImageList): Don't overwrite matte
+        flag for CopyOpacity composition.
+  <LI> magick/composite.c (CompositeImage): CopyOpacity composition
+        needs the opacity channel to be enabled.
+  <LI> PerlMagick/Magick.xs: Dissolve composition with Opacity was not
+        working right.  Now it does.
+
+</UL>
+<p>
+2008-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/gem.c (HWBTransform): Hue value range was scaled wrong,
+        leading to clipping.<BR>
+        (TransformHWB): Hue value range was scaled wrong, leading to
+        clipping.
+
+</UL>
+<p>
+2008-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (RGBTransformImage): Re-implement transform
+        loops using PixelRowIterateMonoModify() in order to simplify the
+        code.
+
+</UL>
+<p>
+2008-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (TransformRGBImage): Re-implement transform
+        loops using PixelRowIterateMonoModify() in order to simplify the
+        code.<BR>
+  <LI> magick/{pixel_iterator.h, pixel_row_iterator.h}: Pass pixel
+        colormap index/indexes to callback functions.  Dependent code is
+        adjusted to match.
+
+</UL>
+<p>
+2008-05-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand,
+        MogrifyImage): Add command access to the new channel operators.
+  <LI> magick/operator.c (QuantumOperatorRegionImage): Support the new
+        channel operators.  Update to use PixelRowIterateMonoModify() for
+        a bit more performance.<BR>
+  <LI> magick/operator.h (enum QuantumOperator): Added new operators
+        AssignQuantumOp, ThresholdQuantumOp, ThresholdBlackQuantumOp, and
+        ThresholdWhiteQuantumOp.
+
+</UL>
+<p>
+2008-05-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (VersionCommand): Report if OpenMP is supported
+        by the build.<BR>
+  <LI> configure.ac, Makefile.am: Install documentation according to
+        the conventions established by the configure script.  This
+        installs the documentation under
+        /usr/local/share/doc/GraphicsMagick by default.
+
+</UL>
+<p>
+2008-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> scripts/format_c_api_docs: Add pixel_iterator.c and
+        pixel_row_iterator.c to API documentation formatter.
+  <LI> magick/api.h: Include pixel_iterator.h and pixel_row_iterator.h.
+  <LI> magick/Makefile.am (MAGICK_INCLUDE_HDRS): Formally install
+        pixel_iterator.h and pixel_row_iterator.h.
+  <LI> magick/image.c (IsImagesEqual): Update to use
+        PixelRowIterateDualRead().<BR>
+        (GetImageStatistics): Update to use PixelRowIterateMonoRead().
+  <LI> magick/pixel_row_iterator.h: New interfaces which are similar to
+        the already existing interfaces in pixel_iterator.h except that
+        they pass a row to the callback rather than one pixel.
+  <LI> magick/operator.c (QuantumOperatorRegionImage): Add progress
+        monitor support.<BR>
+  <LI> magick/pixel_iterator.c (PixelIterateMonoRead): Add a
+        'description' argument and progress monitor support.
+        (PixelIterateMonoModify): Add a
+        'description' argument and progress monitor support.
+        (PixelIterateDualRead): Add a<BR>
+        'description' argument and progress monitor support.
+        (PixelIterateDualModify): Add a
+        'description' argument and progress monitor support.
+  <LI> magick/resize.c (HorizontalFilter, VerticalFilter): Switch back
+        to RoundSignedToQuantum() since some pixels were experiencing
+        underflow.  Localize some variables so that we don't have to
+        declare them as private for OpenMP.
+
+</UL>
+<p>
+2008-05-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac, magick/resize.c, PerlMagick/Makefile.PL.in: Added
+        OpenMP support for parallelizing a task across multiple cores.
+
+</UL>
+<p>
+2008-05-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac, magick/nt_base.h: Fix using libbz2 under MinGW.
+  <LI> coders/{msl.c, svg.c, url.c}: Fix compilation with modern
+        libxml2 under MinGW.
+
+</UL>
+<p>
+2008-05-08  Josue Andrade Gomes  &lt;josuegomes@gmail.com&gt;
+
+<UL>
+  <LI> magick/nt_base.h, libxml/include/win32config.h (vsnprintf):
+        Fixed compilation issue noticed with Visual C++ 2008.
+
+</UL>
+<p>
+2008-05-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (GetMagickInfo): Simplify implementation.
+        (RegisterMagickInfo): Remove any existing entry since module
+        loading may result in duplicate entries.
+
+</UL>
+<p>
 2008-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> libtool: Update to libtool 1.2.4.
+  <LI> magick/magick.h (MagickInfo): Store string attributes as 'const
+        char *' to statically allocated data rather than as heap allocated
+        strings.  THIS IS AN INTERFACE CHANGE.  Using a coder written to
+        the old interface is non-fatal but may resemble a small memory
+        leak.  The reason for the change is to avoid at least 880 needless
+        malloc()/strlen()/strlcpy() operations at initialization time, and
+        at least 880 free() calls at destruction time.  While these
+        operations did not take long, they are still an unnecessary
+        overhead, which is increased in thread-safe applications.
+  <LI> magick/module.c (OpenModule): Ignore requests to open modules
+        which have already been opened.
+  <LI> GraphicsMagick.spec.in: Add --with-included-ltdl to the default
+        options since this seems safest until the libltdl validation logic
+        is fully robust.  This should be made user-configurable in the
+        future.<BR>
   <LI> magick/Makefile.am (magick_libGraphicsMagick_la_LIBADD): Apply
         libltdl dependency argument as required for building.
   <LI> configure.ac: Intuit if the GraphicsMagick library will depend
         on -lltdl.<BR>
-  <LI> bin/GraphicsMagick++-config.in: Use substitutions rather than
-        invoking GraphicsMagick-config in order to determine
+  <LI> Magick++/bin/GraphicsMagick++-config.in: Use substitutions
+        rather than invoking GraphicsMagick-config in order to determine
         GraphicsMagick library usage requirements.  This avoids problems
         when GraphicsMagick-config is not in the executable search path.
 

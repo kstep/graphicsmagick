@@ -143,8 +143,7 @@ CompositePixels(void *user_data,                   /* User provided mutable data
               opaque areas of change-image obscuring base-image in the
               region of overlap.
             */
-            destination=AlphaComposite(&source,source.opacity,&destination,
-                                       destination.opacity);
+            destination=AlphaComposite(&source,source.opacity,&destination,destination.opacity);
             break;
           }
         case InCompositeOp:
@@ -163,22 +162,22 @@ CompositePixels(void *user_data,                   /* User provided mutable data
               break;
 
             pixel.opacity=(double)
-              (((double) MaxRGB-source.opacity)*
-               (MaxRGB-destination.opacity)/MaxRGB);
+              (((double) MaxRGBDouble-source.opacity)*
+               (MaxRGBDouble-destination.opacity)/MaxRGBDouble);
 
             destination.red=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               (MaxRGB-destination.opacity)*source.red/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               (MaxRGBDouble-destination.opacity)*source.red/MaxRGBDouble/pixel.opacity+0.5);
 
             destination.green=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               (MaxRGB-destination.opacity)*source.green/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               (MaxRGBDouble-destination.opacity)*source.green/MaxRGBDouble/pixel.opacity+0.5);
 
             destination.blue=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               (MaxRGB-destination.opacity)*source.blue/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               (MaxRGBDouble-destination.opacity)*source.blue/MaxRGBDouble/pixel.opacity+0.5);
 
-            destination.opacity=(Quantum) (MaxRGB-pixel.opacity+0.5);
+            destination.opacity=(Quantum) (MaxRGBDouble-pixel.opacity+0.5);
             break;
           }
         case OutCompositeOp:
@@ -198,21 +197,21 @@ CompositePixels(void *user_data,                   /* User provided mutable data
                 break;
               }
             pixel.opacity=(double)
-              (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
+              (MaxRGBDouble-source.opacity)*destination.opacity/MaxRGBDouble;
 
             destination.red=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               destination.opacity*source.red/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               destination.opacity*source.red/MaxRGBDouble/pixel.opacity+0.5);
 
             destination.green=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               destination.opacity*source.green/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               destination.opacity*source.green/MaxRGBDouble/pixel.opacity+0.5);
 
             destination.blue=(Quantum)
-              (((double) MaxRGB-source.opacity)*
-               destination.opacity*source.blue/MaxRGB/pixel.opacity+0.5);
+              (((double) MaxRGBDouble-source.opacity)*
+               destination.opacity*source.blue/MaxRGBDouble/pixel.opacity+0.5);
 
-            destination.opacity=(Quantum) (MaxRGB-pixel.opacity+0.5);
+            destination.opacity=(Quantum) (MaxRGBDouble-pixel.opacity+0.5);
             break;
           }
         case AtopCompositeOp:
@@ -224,29 +223,7 @@ CompositePixels(void *user_data,                   /* User provided mutable data
               of change-image outside base-image's shape does not appear
               in the result.
             */
-            pixel.opacity=((double)(MaxRGB-source.opacity)*
-                           (MaxRGB-destination.opacity)+(double) source.opacity*
-                           (MaxRGB-destination.opacity))/MaxRGB;
-
-            pixel.red=((double) (MaxRGB-source.opacity)*
-                       (MaxRGB-destination.opacity)*source.red/MaxRGB+(double)
-                       source.opacity*(MaxRGB-destination.opacity)*
-                       destination.red/MaxRGB)/pixel.opacity;
-            destination.red=RoundDoubleToQuantum(pixel.red);
-
-            pixel.green=((double) (MaxRGB-source.opacity)*
-                         (MaxRGB-destination.opacity)*source.green/MaxRGB+(double)
-                         source.opacity*(MaxRGB-destination.opacity)*
-                         destination.green/MaxRGB)/pixel.opacity;
-            destination.green=RoundDoubleToQuantum(pixel.green);
-
-            pixel.blue=((double) (MaxRGB-source.opacity)*
-                        (MaxRGB-destination.opacity)*source.blue/MaxRGB+(double)
-                        source.opacity*(MaxRGB-destination.opacity)*
-                        destination.blue/MaxRGB)/pixel.opacity;
-            destination.blue=RoundDoubleToQuantum(pixel.blue);
-
-            destination.opacity=MaxRGB-RoundDoubleToQuantum(pixel.opacity);
+            destination=AtopComposite(&destination,&source);
             break;
           }
         case XorCompositeOp:
@@ -260,13 +237,13 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             double source_alpha;
             double dest_alpha;
             double composite;
-            source_alpha=(double) source.opacity/MaxRGB;
-            dest_alpha=(double) destination.opacity/MaxRGB;
+            source_alpha=(double) source.opacity/MaxRGBDouble;
+            dest_alpha=(double) destination.opacity/MaxRGBDouble;
           
             gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
               2.0*(1.0-source_alpha)*(1.0-dest_alpha);
           
-            composite=MaxRGB*(1.0-gamma);
+            composite=MaxRGBDouble*(1.0-gamma);
             destination.opacity=RoundDoubleToQuantum(composite);
           
             gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
@@ -291,20 +268,20 @@ CompositePixels(void *user_data,                   /* User provided mutable data
               values are cropped to MaxRGB (no overflow). This operation
               is independent of the matte channels.
             */
-            pixel.red=((double) (MaxRGB-source.opacity)*source.red+(double)
-                       (MaxRGB-destination.opacity)*destination.red)/MaxRGB;
+            pixel.red=((double) (MaxRGBDouble-source.opacity)*source.red+(double)
+                       (MaxRGBDouble-destination.opacity)*destination.red)/MaxRGBDouble;
             destination.red=RoundDoubleToQuantum(pixel.red);
 
-            pixel.green=((double) (MaxRGB-source.opacity)*source.green+(double)
-                         (MaxRGB-destination.opacity)*destination.green)/MaxRGB;
+            pixel.green=((double) (MaxRGBDouble-source.opacity)*source.green+(double)
+                         (MaxRGBDouble-destination.opacity)*destination.green)/MaxRGBDouble;
             destination.green=RoundDoubleToQuantum(pixel.green);
 
-            pixel.blue=((double) (MaxRGB-source.opacity)*source.blue+(double)
-                        (MaxRGB-destination.opacity)*destination.blue)/MaxRGB;
+            pixel.blue=((double) (MaxRGBDouble-source.opacity)*source.blue+(double)
+                        (MaxRGBDouble-destination.opacity)*destination.blue)/MaxRGBDouble;
             destination.blue=RoundDoubleToQuantum(pixel.blue);
 
-            pixel.opacity=((double) (MaxRGB-source.opacity)+
-                           (double) (MaxRGB-destination.opacity))/MaxRGB;
+            pixel.opacity=((double) (MaxRGBDouble-source.opacity)+
+                           (double) (MaxRGBDouble-destination.opacity))/MaxRGBDouble;
             destination.opacity=MaxRGB-RoundDoubleToQuantum(pixel.opacity);
             break;
           }
@@ -317,20 +294,20 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             */
             double composite;
 
-            composite=((double) (MaxRGB-destination.opacity)*destination.red-
-                       (double) (MaxRGB-source.opacity)*source.red)/MaxRGB;
+            composite=((double) (MaxRGBDouble-destination.opacity)*destination.red-
+                       (double) (MaxRGBDouble-source.opacity)*source.red)/MaxRGBDouble;
             destination.red=RoundDoubleToQuantum(composite);
 
-            composite=((double) (MaxRGB-destination.opacity)*destination.green-
-                       (double) (MaxRGB-source.opacity)*source.green)/MaxRGB;
+            composite=((double) (MaxRGBDouble-destination.opacity)*destination.green-
+                       (double) (MaxRGBDouble-source.opacity)*source.green)/MaxRGBDouble;
             destination.green=RoundDoubleToQuantum(composite);
 
-            composite=((double) (MaxRGB-destination.opacity)*destination.blue-
-                       (double) (MaxRGB-source.opacity)*source.blue)/MaxRGB;
+            composite=((double) (MaxRGBDouble-destination.opacity)*destination.blue-
+                       (double) (MaxRGBDouble-source.opacity)*source.blue)/MaxRGBDouble;
             destination.blue=RoundDoubleToQuantum(composite);
 
-            composite=((double) (MaxRGB-destination.opacity)-
-                       (double) (MaxRGB-source.opacity))/MaxRGB;
+            composite=((double) (MaxRGBDouble-destination.opacity)-
+                       (double) (MaxRGBDouble-source.opacity))/MaxRGBDouble;
             destination.opacity=MaxRGB-RoundDoubleToQuantum(composite);
             break;
           }
@@ -343,15 +320,15 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             double composite;
 
             composite=(double) source.red+destination.red;
-            if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+            if (composite > MaxRGBDouble) composite -= ((double) MaxRGBDouble+1.0);
             destination.red=RoundDoubleToQuantum(composite);
 
             composite=(double) source.green+destination.green;
-            if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+            if (composite > MaxRGBDouble) composite -= ((double) MaxRGBDouble+1.0);
             destination.green=RoundDoubleToQuantum(composite);
 
             composite=(double) source.blue+destination.blue;
-            if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+            if (composite > MaxRGBDouble) composite -= ((double) MaxRGBDouble+1.0);
             destination.blue=RoundDoubleToQuantum(composite);
 
             destination.opacity=OpaqueOpacity;
@@ -368,15 +345,15 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             double composite;
 
             composite=(double) source.red-destination.red;
-            if (composite < 0) composite += ((double) MaxRGB+1.0);
+            if (composite < 0) composite += ((double) MaxRGBDouble+1.0);
             destination.red=RoundDoubleToQuantum(composite);
 
             composite=(double) source.green-destination.green;
-            if (composite < 0) composite += ((double) MaxRGB+1.0);
+            if (composite < 0) composite += ((double) MaxRGBDouble+1.0);
             destination.green=RoundDoubleToQuantum(composite);
 
             composite=(double) source.blue-destination.blue;
-            if (composite < 0) composite += ((double) MaxRGB+1.0);
+            if (composite < 0) composite += ((double) MaxRGBDouble+1.0);
             destination.blue=RoundDoubleToQuantum(composite);
 
             destination.opacity=OpaqueOpacity;
@@ -390,16 +367,16 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             */
             double composite;
 
-            composite=((double) source.red*destination.red)/MaxRGB;
+            composite=((double) source.red*destination.red)/MaxRGBDouble;
             destination.red=RoundDoubleToQuantum(composite);
 
-            composite=((double) source.green*destination.green)/MaxRGB;
+            composite=((double) source.green*destination.green)/MaxRGBDouble;
             destination.green=RoundDoubleToQuantum(composite);
 
-            composite=((double) source.blue*destination.blue)/MaxRGB;
+            composite=((double) source.blue*destination.blue)/MaxRGBDouble;
             destination.blue=RoundDoubleToQuantum(composite);
 
-            composite=((double) source.opacity*destination.opacity)/MaxRGB;
+            composite=((double) source.opacity*destination.opacity)/MaxRGBDouble;
             destination.opacity=RoundDoubleToQuantum(composite);
             break;
           }
@@ -432,7 +409,7 @@ CompositePixels(void *user_data,                   /* User provided mutable data
             double composite;
             double source_intensity;
 
-            source_intensity=(double) PixelIntensity(&source)/MaxRGB;
+            source_intensity=(double) PixelIntensity(&source)/MaxRGBDouble;
 
             composite=source_intensity*destination.red;
             destination.red=RoundDoubleToQuantum(composite);
@@ -531,13 +508,13 @@ CompositePixels(void *user_data,                   /* User provided mutable data
           {
             destination.red=(Quantum)
               (((double) source.opacity*source.red+
-                (MaxRGB-source.opacity)*destination.red)/MaxRGB+0.5);
+                (MaxRGBDouble-source.opacity)*destination.red)/MaxRGBDouble+0.5);
             destination.green=(Quantum)
               (((double) source.opacity*source.green+
-                (MaxRGB-source.opacity)*destination.green)/MaxRGB+0.5);
+                (MaxRGBDouble-source.opacity)*destination.green)/MaxRGBDouble+0.5);
             destination.blue=(Quantum)
               (((double) source.opacity*source.blue+
-                (MaxRGB-source.opacity)*destination.blue)/MaxRGB+0.5);
+                (MaxRGBDouble-source.opacity)*destination.blue)/MaxRGBDouble+0.5);
             destination.opacity=OpaqueOpacity;
             break;
           }
@@ -568,18 +545,10 @@ CompositePixels(void *user_data,                   /* User provided mutable data
               pixel.opacity=destination.opacity;
             else
               pixel.opacity=destination.opacity+(pixel.opacity*amount);
-            destination.red=(Quantum)
-              ((pixel.red < 0.0) ? 0 : (pixel.red > MaxRGB) ?
-               MaxRGB : pixel.red+0.5);
-            destination.green=(Quantum)
-              ((pixel.green < 0.0) ? 0 : (pixel.green > MaxRGB) ?
-               MaxRGB : pixel.green+0.5);
-            destination.blue=(Quantum)
-              ((pixel.blue < 0) ? 0 : (pixel.blue > MaxRGB) ?
-               MaxRGB : pixel.blue+0.5);
-            destination.opacity=(Quantum)
-              ((pixel.opacity < 0.0) ? 0 : (pixel.opacity > MaxRGB) ?
-               MaxRGB : pixel.opacity+0.5);
+            destination.red=RoundDoubleToQuantum(pixel.red);
+            destination.green=RoundDoubleToQuantum(pixel.green);
+            destination.blue=RoundDoubleToQuantum(pixel.blue);
+            destination.opacity=RoundDoubleToQuantum(pixel.opacity);
             break;
           }
         case ModulateCompositeOp:
@@ -917,6 +886,8 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
             break;
           }
       }
+/* FIXME - Leak here! */
+/* Should probably always clone composite_image so that we can make sure that it is in a useful colorspace. */
       composite_image=displace_image;
       break;
     }
@@ -933,7 +904,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
             Determine the brightness and saturation scale.
           */
           count=GetMagickDimension(composite_image->geometry,
-            &percent_brightness,&percent_saturation);
+                                   &percent_brightness,&percent_saturation);
           if (count == 1)
             percent_saturation=percent_brightness;
         }

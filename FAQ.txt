@@ -33,10 +33,25 @@ maintains a detailed ChangeLog, and maintains a stable source repository
 with complete version history so that changes are controlled, and changes
 between releases are accurately described. ImageMagick does not offer
 this. Since GraphicsMagick is more stable, more time has been spent
-optimizing and debugging its code. GraphicsMagick is often faster than
-ImageMagick. ImageMagick focuses on adding new functionality and features.
+optimizing and debugging its code. GraphicsMagick is usually faster than
+ImageMagick. ImageMagick focuses on adding new functionality and features
+and has dramatically mutated several times since the fork.
 
-2) I received the following message, "?????? delegation failed ...". What does it mean?
+2) How often does GraphicsMagick pick up new code from ImageMagick?
+-------------------------------------------------------------------
+
+GraphicsMagick never picks up new code from ImageMagick. Not long after
+the GraphicsMagick project was started in November 2002, ImageMagick
+abandoned the MIT X11 style license it had been using since 1992, and
+switched between several different licenses until it ended up with one
+based on the Apache license, which is intended to penalize projects which
+borrow some of its source code, or fork from it. Since that time,
+GraphicsMagick has not incorporated any ImageMagick source code. Authors
+of new features are encouraged to independently contribute their work to
+the GraphicsMagick project so that it can be released under
+GraphicsMagick's MIT X11 style license without additional encumberment.
+
+3) I received the following message, "?????? delegation failed ...". What does it mean?
 ---------------------------------------------------------------------------------------
 
 *GraphicsMagick* uses several freely available packages to perform the
@@ -47,35 +62,6 @@ TMPDIR environment variable to an area where space is available. Finally,
 for *PostScript*, verify that Ghostscript supports the *pnmraw* or
 *ppmraw* device (``gs -h``) and that the document contains valid
 *PostScript* statements (``gs image.ps``).
-
-3) How can I improve the appearance of 24-bit images displayed on my colormapped /X server/?
---------------------------------------------------------------------------------------------
-
-If you have a colormapped X server, the number of unique colors in an
-image must first be reduced to match the requirements of your server
-before it can be displayed. Display_ tries to make the color reduced
-image closely resemble the original. However, there are some options that
-may improve the appearance.
-
-You can use a private colormap. By default, your image must share colors
-with existing applications on your X server. The colors in your image may
-be very different than the shared colors and the results may be visually
-unsatisfactory. Try ::
-
-    gm display -colormap private image.miff
-
-The disadvantage is the annoying colormap loading and unloading as you
-move your pointer in and out of the image window.
-
-If you intend to view an image frequently, reduce the number of colors to
-match the resolution of your X server once and write to a new image. Then
-display this new image. For example, ::
-
-    gm convert -colors 256 -dither image.jpeg image.miff
-    gm display image.miff
-
-This forces the time-consuming process of color reducing the image to
-one-time, rather than each time the image is displayed.
 
 4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?
 ---------------------------------------------------------------------------------------------
@@ -126,7 +112,7 @@ single name that will not change, use *-title*::
     gm animate -title "My Image Sequence" images.
 
 6) The image grabbed by import(1) does not look like the image on my X server. What's wrong?
-----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
 
 Use the *-descend* option::
 
@@ -168,7 +154,7 @@ another default, change the page geometries (PSPageGeometry) in
 `magick/image.h` and recompile.
 
 10) When I display or convert an image, I get Memory allocation error. What can I do?
----------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
 
 Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best

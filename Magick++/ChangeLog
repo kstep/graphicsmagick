@@ -1,3 +1,8 @@
+2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/demo.cpp (main): Fix segmentation parameters so they are
+	more suitable for our image.
+
 2008-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (depth): Remove 8/16/32 restriction on depth value.
