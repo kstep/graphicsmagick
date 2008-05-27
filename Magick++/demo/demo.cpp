@@ -229,6 +229,18 @@ int main( int /*argc*/, char ** argv)
       example.implode( 0.5 );
       images.push_back( example );
 
+      cout << "  level ..." << endl;
+      example = model;
+      example.label( "Level" );
+      example.level( 0.20*MaxRGB, 0.90*MaxRGB, 1.20 );
+      images.push_back( example );
+
+      cout << "  level red channel ..." << endl;
+      example = model;
+      example.label( "Level Red" );
+      example.levelChannel( RedChannel, 0.20*MaxRGB, 0.90*MaxRGB, 1.20 );
+      images.push_back( example );
+
       cout << "  median filter ..." << endl;
       example = model;
       example.label( "Median Filter" );
@@ -321,7 +333,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  segment ..." << endl;
       example = model;
       example.label( "Segment" );
-      example.segment( );
+      example.segment( 0.5, 0.25 );
       images.push_back( example );
     
       cout << "  shade ..." << endl;
@@ -422,7 +434,7 @@ int main( int /*argc*/, char ** argv)
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
     montage_image.matte( false );
-    montage_image.compressType( RunlengthEncodedCompression );
+    montage_image.compressType( RLECompression );
     montage_image.write( "demo_out.miff" );
 
     // Uncomment following lines to display image to screen

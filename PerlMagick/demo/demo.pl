@@ -280,7 +280,7 @@ push(@$images,$example);
 print "Segment...\n";
 $example=$model->Clone();
 $example->Label('Segment');
-$example->Segment();
+$example->Segment(cluster=>'0.5', smooth=>'0.25');
 push(@$images,$example);
 
 print "Shade...\n";
