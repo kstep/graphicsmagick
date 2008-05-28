@@ -8415,7 +8415,7 @@ uniform resource locator <strong>(URL)</strong>, use:
 <p>
 To display histogram of an image, use:
 <pre>
-    gm convert file.jpg HISTOGRAM:- | display -
+    gm gm convert file.jpg HISTOGRAM:- | gm display -
 </pre>
 </td></tr></table>
      <p>
@@ -8439,7 +8439,7 @@ the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 <pre>
       gm display -colors 32 cockatoo.miff -noop duck.miff
-              -colors 16 macaw.miff
+                 -colors 16 macaw.miff
 </pre>
 <p>
 <strong>Display</strong> options can appear on the command line or in your X resources

@@ -9,12 +9,6 @@ The following bugs are known to exist in GraphicsMagick. Please report
 any additional bugs to the GraphicsMagick `bug tracker
 <http://sourceforge.net/tracker/?group_id=73485>`_ at SourceForge.
 
- * Affine transforms on a non-apaque image results in an image which
-   looks like it has pre-multiplied alpha applied to the colors (reported
-   by Timothy Hunter).
-
- * BMP reader is not working for some obscure low-color packed files.
-
  * DPX reader/writer does not properly handle subformats where row
    samples spill over the storage word boundary. This means that
    single-channel/grayscale 10-bit DPX files will only work for widths

@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2008-05-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImage): Don't leak displacement
+        image when Displacement composition is used.
+  <LI> PerlMagick/demo/demo.pl: Use segmentation parameters which are
+        more appropriate for the image used.
+  <LI> magick/image.h: Add MaxRGBDouble, MaxRGBFloat, MaxMapDouble, and
+        MaxMapFloat for use in cases where a floating point constant is
+        useful.<BR>
+        (RoundDoubleToQuantum): New macro to round a 'double' to a quantum.
+        (RoundFloatToQuantum): New macro to round a 'float' to a quantum.
+  <LI> magick/alpha_composite.h (AlphaComposite): Fix alpha composite
+        when both pixels contain transparency.
+
+</UL>
+<p>
 2008-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

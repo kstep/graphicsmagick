@@ -333,7 +333,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  segment ..." << endl;
       example = model;
       example.label( "Segment" );
-      example.segment( );
+      example.segment( 0.5, 0.25 );
       images.push_back( example );
     
       cout << "  shade ..." << endl;

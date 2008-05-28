@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on April 29, 2008
+This file was last updated on May 28, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,59 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.2 (May 28, 2008)
+===================
+
+Bug fixes:
+
+  * Documentation is now installed according to the conventions
+    established by the configure script. This results in documentation
+    being installed under /usr/local/share/doc/GraphicsMagick by default.
+
+  * HWB colorspace now works correctly.
+
+  * Composition with CopyOpacity now produces an image with transparency
+    (as expected).
+
+  * Composition now preserves the canvas colorspace.
+
+  * Composition with a displacement map (-displace) no longer leaks an
+    image.
+
+  * Composition now handles CopyBlack properly for CMYK images.
+
+  * Alpha composition now works as expected when both pixels involved
+    include transparency.
+
+  * -gamma multiple channel syntax now works as documented.
+
+  * PerlMagick: Dissolve composition with Opacity now works correctly.
+
+  * TIFF: Was accidentially converting CMYK images to RGB.
+
+  * TIFF: Reject JPEG compression when writing CMYK images.
+
+  * Should now compile with Visual C++ 2008.
+
+  * Detects libbz2 and libxml2 and builds properly with them in a MinGW
+    build.
+
+Performance improvments:
+
+  * Exploratory support for OpenMP in the image resize code.  Can result
+    in significant performance improvement when significantly reducing
+    the image size on multi-core systems, but little to no improvement
+    when the input and output images are close to the same size. Add
+    --enable-openmp to the configure options to enable using OpenMP.
+
+Feature improvements:
+
+  * Composition now supports CopyCyan, CopyMagenta, CopyYellow, and
+    CopyBlack in order to copy CMYK channels into an image. CMYK copy
+    composition operators automatically set the image colorspace to CMYK
+    so that everything just works.
+
 
 1.2.1 (May 5, 2008)
 ===================
