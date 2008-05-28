@@ -29,7 +29,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % PixelIterateMonoRead() iterates through a region of an image and invokes a
-% user-provided callback function (of type PxelRowIteratorMonoReadCallback)
+% user-provided callback function (of type PixelRowIteratorMonoReadCallback)
 % for a row of pixels. This is useful to support simple operations such as
 % statistics computation.
 %

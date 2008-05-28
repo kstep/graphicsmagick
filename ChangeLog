@@ -1,5 +1,9 @@
 2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/fx.c (ConvolveImage): Eliminate unnecessary "range check"
+	feature since range checking is not where the CPU time is going.
+	* magick/effect.c (UnsharpMaskImage): Re-write implementation to
+	use pixel iterators.
 	* magick/pixel_iterator.c: Decided that the old per-pixel
 	iterations were not useful enough to keep since the region-based
 	ones are working fine.  Moved pixel_row_iterator.c to

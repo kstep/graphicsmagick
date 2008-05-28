@@ -510,7 +510,7 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
 MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-#define BlurImageText  "  Blur image...  "
+#define BlurImageText  "Blur image...  "
 
   double
     *kernel;
@@ -764,12 +764,12 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
   options.red_enabled        = MagickFalse;
   options.green_enabled      = MagickFalse;
   options.blue_enabled       = MagickFalse;
-  options.opacity_enabled  = MagickFalse;
+  options.opacity_enabled    = MagickFalse;
 
-  double_threshold.red     = -1.0;
-  double_threshold.green   = -1.0;
-  double_threshold.blue    = -1.0;
-  double_threshold.opacity = -1.0;
+  double_threshold.red       = -1.0;
+  double_threshold.green     = -1.0;
+  double_threshold.blue      = -1.0;
+  double_threshold.opacity   = -1.0;
   count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
                &double_threshold.red,
                &double_threshold.green,
@@ -850,7 +850,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 */
 MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 {
-#define DespeckleImageText  "  Despeckle image...  "
+#define DespeckleImageText  "Despeckle image...  "
 
   Image
     *despeckle_image;
@@ -1979,11 +1979,13 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
 {
 #define RandomChannelThresholdImageText  "Random-channel threshold image...  "
 
-  double
-    lower_threshold,
+  const double
     o2[4]={.2,.6,.8,.4},
     o3[9]={.1,.6,.3,.7,.5,.8,.4,.9,.2},
-    o4[16]={.1,.7,1.1,.3,1.0,.5,1.5,.8,1.4,1.6,.6,1.2,.4,.9,1.3,.2},
+    o4[16]={.1,.7,1.1,.3,1.0,.5,1.5,.8,1.4,1.6,.6,1.2,.4,.9,1.3,.2};
+
+  double
+    lower_threshold,
     threshold=128,
     upper_threshold;
 
@@ -2261,7 +2263,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
 MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
-#define ReduceNoiseImageText  "  Reduce the image noise...  "
+#define ReduceNoiseImageText  "Reduce the image noise...  "
 
   Image
     *noise_image;
@@ -2390,7 +2392,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
   double azimuth,double elevation,ExceptionInfo *exception)
 {
-#define ShadeImageText  "  Shade image...  "
+#define ShadeImageText  "Shade image...  "
 
   double
     distance,
@@ -2623,7 +2625,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
-#define SpreadImageText  "  Spread image...  "
+#define SpreadImageText  "Spread image...  "
 #define OFFSETS_ENTRIES 5000
 
   Image
@@ -2814,7 +2816,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
         /* All pixels thresholded to white */
         for (x=(long) image->columns; x > 0; x--)
           {
-            *indexes++=1;
+            *indexes++=1U;
             q->red=q->green=q->blue=MaxRGB;
             q++;
           }
@@ -2824,7 +2826,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
         for (x=(long) image->columns; x > 0; x--)
           {
             /* Image is grayscale so q->red contains intensity */
-            index=q->red <= quantum_threshold ? 0 : 1;
+            index=q->red <= quantum_threshold ? 0U : 1U;
             *indexes++=index;
             q->red=q->green=q->blue=image->colormap[index].red;
             q++;
@@ -2835,7 +2837,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
         for (x=(long) image->columns; x > 0; x--)
           {
             /* Compute itensity value of RGB pixel */
-            index=PixelIntensityToQuantum(q) <= quantum_threshold ? 0 : 1;
+            index=PixelIntensityToQuantum(q) <= quantum_threshold ? 0U : 1U;
             *indexes++=index;
             q->red=q->green=q->blue=image->colormap[index].red;
             q++;
@@ -2891,29 +2893,84 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %
 */
+
+typedef struct _UnsharpMaskOptions_t
+{
+  double amount;    /* Difference multiplier */
+  double threshold; /* Scaled to MaxRGB/2 */
+} UnsharpMaskOptions_t;
+
+static inline Quantum UnsharpQuantum(const Quantum original, const Quantum sharpened,
+                                     const UnsharpMaskOptions_t* options)
+{
+  double
+    value;
+
+  Quantum
+    quantum;
+
+  quantum=original;
+  value=original-(double) sharpened;
+  if (AbsoluteValue(value) >= options->threshold)
+    {
+      value=original+(value*options->amount);
+      quantum=RoundDoubleToQuantum(value);
+    }
+
+  return quantum;
+}
+
+static MagickPassFail
+UnsharpMaskPixels(void *user_data,                   /* User provided mutable data */
+                  const Image *source_image,         /* Source image */
+                  const long source_x,               /* X-offset in source image */
+                  const long source_y,               /* Y-offset in source image */
+                  const PixelPacket *source_pixels,  /* Pixel row in source image */
+                  const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                  Image *update_image,               /* Update image */
+                  const long update_x,               /* X-offset in update image */
+                  const long update_y,               /* Y-offset in update image */
+                  PixelPacket *update_pixels,        /* Pixel row in update image */
+                  IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                  const long npixels,                /* Number of pixels in row */
+                  ExceptionInfo *exception           /* Exception report */
+                  )
+{
+  const UnsharpMaskOptions_t
+    *options = (const UnsharpMaskOptions_t *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(source_image);
+  ARG_NOT_USED(source_x);
+  ARG_NOT_USED(source_y);
+  ARG_NOT_USED(source_indexes);
+  ARG_NOT_USED(update_image);
+  ARG_NOT_USED(update_x);
+  ARG_NOT_USED(update_y);
+  ARG_NOT_USED(update_indexes);
+  ARG_NOT_USED(exception);
+  for (i=0; i < npixels; i++)
+    {
+      update_pixels[i].red=UnsharpQuantum(source_pixels[i].red,update_pixels[i].red,options);
+      update_pixels[i].green=UnsharpQuantum(source_pixels[i].green,update_pixels[i].green,options);
+      update_pixels[i].blue=UnsharpQuantum(source_pixels[i].blue,update_pixels[i].blue,options);
+      update_pixels[i].opacity=UnsharpQuantum(source_pixels[i].opacity,update_pixels[i].opacity,options);
+    }
+  return MagickPass;
+}
+
+#define SharpenImageText  "Sharpen image...  "
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
 {
-#define SharpenImageText  "  Sharpen image...  "
-
-  DoublePixelPacket
-    pixel;
+  UnsharpMaskOptions_t
+    options;
 
   Image
     *sharp_image;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2921,51 +2978,11 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   sharp_image=GaussianBlurImage(image,radius,sigma,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=GetImagePixels(sharp_image,0,y,sharp_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      pixel.red=p->red-(double) q->red;
-      if (AbsoluteValue(2.0*pixel.red) < (MaxRGB*threshold))
-        pixel.red=p->red;
-      else
-        pixel.red=p->red+(pixel.red*amount);
-      pixel.green=p->green-(double) q->green;
-      if (AbsoluteValue(2.0*pixel.green) < (MaxRGB*threshold))
-        pixel.green=p->green;
-      else
-        pixel.green=p->green+(pixel.green*amount);
-      pixel.blue=p->blue-(double) q->blue;
-      if (AbsoluteValue(2.0*pixel.blue) < (MaxRGB*threshold))
-        pixel.blue=p->blue;
-      else
-        pixel.blue=p->blue+(pixel.blue*amount);
-      pixel.opacity=p->opacity-(double) q->opacity;
-      if (AbsoluteValue(2.0*pixel.opacity) < (MaxRGB*threshold))
-        pixel.opacity=p->opacity;
-      else
-        pixel.opacity=p->opacity+(pixel.opacity*amount);
-      q->red=(Quantum) ((pixel.red < 0) ? 0 :
-        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
-      q->green=(Quantum) ((pixel.green < 0) ? 0 :
-        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
-      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
-        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
-      p++;
-      q++;
-    }
-    if (!SyncImagePixels(sharp_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SharpenImageText,y,image->rows,exception))
-        break;
-  }
+  options.amount=amount;
+  options.threshold=(MaxRGBFloat*threshold)/2.0;
+  (void) PixelIterateDualModify(UnsharpMaskPixels,SharpenImageText,&options,
+                                image->columns,image->rows,image,0,0,sharp_image,
+                                0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);
 }

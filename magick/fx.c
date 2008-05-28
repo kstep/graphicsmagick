@@ -303,8 +303,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     *q;
 
   unsigned int
-    logging,
-    range_check;
+    logging;
 
   /*
     Initialize convolve image attributes.
@@ -340,12 +339,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   if (AbsoluteValue(normalize) <= MagickEpsilon)
     normalize=1.0;
   normalize=1.0/normalize;
-  range_check=False;
   for (i=0; i < (width*width); i++)
   {
     normal_kernel[i]=normalize*kernel[i];
-    if (normal_kernel[i] <= 0.0)
-      range_check=True;
   }
 
   logging=LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -386,8 +382,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    if (!range_check)
-      for (x=0; x < (long) convolve_image->columns; x++)
+    for (x=0; x < (long) convolve_image->columns; x++)
       {
         register const PixelPacket
           *r=p;
@@ -396,59 +391,20 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         k=normal_kernel;
         for (v=width; v > 0; v--)
         {
-          register const PixelPacket
-            *ru=r;
-
-          for (u=width; u > 0; u--)
+          for (u=0; u < width; u++)
           {
-            pixel.red+=(*k)*ru->red;
-            pixel.green+=(*k)*ru->green;
-            pixel.blue+=(*k)*ru->blue;
-            pixel.opacity+=(*k)*ru->opacity;
+            pixel.red+=(*k)*r[u].red;
+            pixel.green+=(*k)*r[u].green;
+            pixel.blue+=(*k)*r[u].blue;
+            pixel.opacity+=(*k)*r[u].opacity;
             k++;
-            ru++;
           }
           r+=image->columns+width;
         }
-        q->red=(Quantum) (pixel.red+0.5);
-        q->green=(Quantum) (pixel.green+0.5);
-        q->blue=(Quantum) (pixel.blue+0.5);
-        q->opacity=(Quantum) (pixel.opacity+0.5);
-        p++;
-        q++;
-      }
-    else
-      for (x=0; x < (long) convolve_image->columns; x++)
-      {
-        register const PixelPacket
-          *r=p;
-
-        pixel=zero;
-        k=normal_kernel;
-        for (v=width; v > 0; v--)
-        {
-          register const PixelPacket
-            *ru=r;
-
-          for (u=width; u > 0; u--)
-          {
-            pixel.red+=(*k)*ru->red;
-            pixel.green+=(*k)*ru->green;
-            pixel.blue+=(*k)*ru->blue;
-            pixel.opacity+=(*k)*ru->opacity;
-            k++;
-            ru++;
-          }
-          r+=image->columns+width;
-        }
-        q->red=(Quantum) ((pixel.red < 0) ? 0 :
-          (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
-        q->green=(Quantum) ((pixel.green < 0) ? 0 :
-          (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
-        q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
-          (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-        q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-          (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
+        q->red=RoundDoubleToQuantum(pixel.red);
+        q->green=RoundDoubleToQuantum(pixel.green);
+        q->blue=RoundDoubleToQuantum(pixel.blue);
+        q->opacity=RoundDoubleToQuantum(pixel.opacity);
         p++;
         q++;
       }
