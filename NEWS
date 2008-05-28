@@ -1,5 +1,29 @@
-This file was last updated on April 28, 2008.
+This file was last updated on May 28, 2008.
 
+
+Significant changes associated with GraphicsMagick 1.1.13 (released May 28, 2008)
+
+  Bugs Fixed:
+
+    o Documentation is now installed according to the conventions established by
+      the configure script.  This results in documentation being installed under
+      /usr/local/share/doc/GraphicsMagick by default.
+
+    o HWB colorspace now works correctly.
+
+    o Composition with CopyOpacity now produces an image with
+      transparency (as expected).
+
+    o Composition now preserves the canvas colorspace.
+
+    o Composition with a displacement map (-displace) no longer leaks an image.
+
+    o Alpha composition now works as expected when both pixels involved
+      include transparency.
+
+    o -gamma multiple channel syntax now works as documented.
+
+    o Now compiles with Visual C++ 2008.
 
 Significant changes associated with GraphicsMagick 1.1.12 (released April 28, 2008)
 

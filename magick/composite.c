@@ -914,5 +914,20 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
     if (!SyncImagePixels(canvas_image))
       break;
   }
+
+  if (DisplaceCompositeOp == compose)
+    {
+      /*
+        Displace composition assigns composite_image with a new
+        allocated image so we need to free it here to avoid a leak.
+      */
+      Image
+        *displace_image;
+
+      displace_image = (Image *) composite_image;
+      DestroyImage(displace_image);
+      composite_image = (const Image *) NULL;
+    }
+
   return(True);
 }

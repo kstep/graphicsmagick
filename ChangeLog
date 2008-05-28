@@ -1,5 +1,11 @@
+2008-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.1.13 released.
+
 2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/composite.c (CompositeImage): Don't leak displacement
+	image when Displacement composition is used.
 	* magick/{annotate.c,composite.c,paint.c,render.c}
 	(AlphaComposite): Fix alpha composite when both pixels contain
 	transparency.

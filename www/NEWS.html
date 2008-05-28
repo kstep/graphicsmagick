@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.12 News</TITLE>
+<TITLE>GraphicsMagick 1.1.13 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,13 +17,41 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.12 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.13 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on April 28, 2008.
+This file was last updated on May 28, 2008.
 
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.13 (released May 28, 2008)
+
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> Documentation is now installed according to the conventions established by
+      the configure script.  This results in documentation being installed under
+      /usr/local/share/doc/GraphicsMagick by default.
+
+  <LI> HWB colorspace now works correctly.
+
+  <LI> Composition with CopyOpacity now produces an image with
+      transparency (as expected).
+
+  <LI> Composition now preserves the canvas colorspace.
+
+  <LI> Composition with a displacement map (-displace) no longer leaks an image.
+
+  <LI> Alpha composition now works as expected when both pixels involved
+      include transparency.
+
+  <LI> -gamma multiple channel syntax now works as documented.
+
+  <LI> Now compiles with Visual C++ 2008.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.12 (released April 28, 2008)
 
