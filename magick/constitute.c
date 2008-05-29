@@ -780,7 +780,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y C o n s t i t u t e                                         %
++   D e s t r o y C o n s t i t u t e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -575,6 +575,34 @@ Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.
 
+31) How can I extract and combine CMYK channels in a CMYK image?
+----------------------------------------------------------------
+
+GraphicsMagick 1.2.2 and later support combining multiple channels in of
+any image file format in order to create a CMYK image file.  For example,
+starting with a CMYK JPEG file, we can create a set of separate files
+with one file per channel::
+
+  gm convert cmyk.jpg -channel cyan cyan.tiff
+  gm convert cmyk.jpg -channel magenta magenta.tiff
+  gm convert cmyk.jpg -channel yellow yellow.tiff
+  gm convert cmyk.jpg -channel black black.tiff
+
+and then we can join them back together::
+
+  gm composite -compose CopyMagenta magenta.tiff cyan.tiff result.tiff
+  gm composite -compose CopyYellow yellow.tiff result.tiff result.tiff
+  gm composite -compose CopyBlack black.tiff result.tiff result.tiff
+
+Perhaps it is possible to accomplish this in one composite command. We
+will leave that as an exercise for later. Note that it is possible to
+extract just one channel, manipulate it, and then insert it back into the
+original image file.
+
+There is also built-in support for a *Partition* interlace format which
+can split to a set of files, and join a set of files, but the only
+supported format is a raw format which is not easy to deal with.
+
 ---------------------------------------------------------------------------
 
 | Copyright (C) 2002 - 2008 GraphicsMagick Group

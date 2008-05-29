@@ -280,6 +280,7 @@ A.leftcolnav:VISITED  {
 <li><a class="reference" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id28" name="id28">28) How can I draw with text using 'convert' under Windows NT?</a></li>
 <li><a class="reference" href="#why-are-my-jpeg-files-larger-than-expected" id="id29" name="id29">29) Why are my JPEG files larger than expected?</a></li>
 <li><a class="reference" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id30" name="id30">30) How do I extract a single image from a multi-image file?</a></li>
+<li><a class="reference" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id31" name="id31">31) How can I extract and combine CMYK channels in a CMYK image?</a></li>
 </ul>
 </div>
 <div class="section">
@@ -823,6 +824,32 @@ gm convert &quot;Image.gif[0]&quot; first.gif
 <p>Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id31" id="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" name="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image">31) How can I extract and combine CMYK channels in a CMYK image?</a></h1>
+<p>GraphicsMagick 1.2.2 and later support combining multiple channels in of
+any image file format in order to create a CMYK image file.  For example,
+starting with a CMYK JPEG file, we can create a set of separate files
+with one file per channel:</p>
+<pre class="literal-block">
+gm convert cmyk.jpg -channel cyan cyan.tiff
+gm convert cmyk.jpg -channel magenta magenta.tiff
+gm convert cmyk.jpg -channel yellow yellow.tiff
+gm convert cmyk.jpg -channel black black.tiff
+</pre>
+<p>and then we can join them back together:</p>
+<pre class="literal-block">
+gm composite -compose CopyMagenta magenta.tiff cyan.tiff result.tiff
+gm composite -compose CopyYellow yellow.tiff result.tiff result.tiff
+gm composite -compose CopyBlack black.tiff result.tiff result.tiff
+</pre>
+<p>Perhaps it is possible to accomplish this in one composite command. We
+will leave that as an exercise for later. Note that it is possible to
+extract just one channel, manipulate it, and then insert it back into the
+original image file.</p>
+<p>There is also built-in support for a <em>Partition</em> interlace format which
+can split to a set of files, and join a set of files, but the only
+supported format is a raw format which is not easy to deal with.</p>
 <hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
@@ -836,7 +863,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-05-25 17:32 UTC.
+Generated on: 2008-05-29 02:36 UTC.
 
 </div>
 </body>

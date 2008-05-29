@@ -20,7 +20,6 @@
 	<ul>
 
 		<li><a href="#constituteimage">ConstituteImage</a></li>
-		<li><a href="#destroyconstitute">DestroyConstitute</a></li>
 		<li><a href="#dispatchimage">DispatchImage</a></li>
 		<li><a href="#exportimagepixelarea">ExportImagePixelArea</a></li>
 		<li><a href="#exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></li>
@@ -46,7 +45,6 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>ConstituteImage</strong>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
-<P><strong>DestroyConstitute</strong>( void );</P>
 <P>unsigned int  <strong>DispatchImage</strong>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ExportImagePixelArea</strong>( const Image *image, const QuantumType quantum_type, unsigned int quantum_size, unsigned char *destination, const ExportPixelAreaOptions *options, ExportPixelAreaInfo *export_info );</P>
 <P>void  <strong>ExportPixelAreaOptionsInit</strong>( ExportPixelAreaOptions *options );</P>
@@ -107,10 +105,6 @@
 </li>
 </dl>
 <P>
-</P>
-<h2><a name="destroyconstitute">DestroyConstitute</a></h2>
-<blockquote>DestroyConstitute() destroys the constitute environment. </blockquote><P>The format of the DestroyConstitute method is:</P>
-<blockquote>DestroyConstitute ( void ); </blockquote><P>
 </P>
 <h2><a name="dispatchimage">DispatchImage</a></h2>
 <blockquote>DispatchImage() extracts pixel data from an <A HREF="types.html#Image">Image</A> into a raw memory array. The pixel data is written in scanline order top-to-bottom using an arbitrary quantum order specified by 'map', and with quantum size specified by 'type'. </blockquote><P>The output array data may be unsigned char, unsigned short int, unsigned int, unsigned long, float, or double.  Float and double require the pixels to be normalized to the range [0..1], otherwise the range is [0..MaxVal] where MaxVal is the maximum possible value for that type.</P>
