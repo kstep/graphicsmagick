@@ -1,5 +1,10 @@
 2008-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pict.c (ReadPICTImage): Ensure that row_bytes calculation
+	does not overflow.  Verify that RLE decode does not overflow
+	buffer.  Validate image frame dimensions.	
+	* coders/palm.c (ReadPALMImage): Validate PALM bits per pixel and
+	colormap indexes.
 	* coders/pdf.c (ReadPDFImage): Properly deal with reading rotated
 	PDFs.
 
