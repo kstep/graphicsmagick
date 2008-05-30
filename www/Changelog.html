@@ -24,6 +24,11 @@
 2008-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/pict.c (ReadPICTImage): Ensure that row_bytes calculation
+        does not overflow.  Verify that RLE decode does not overflow
+        buffer.  Validate image frame dimensions.
+  <LI> coders/palm.c (ReadPALMImage): Validate PALM bits per pixel and
+        colormap indexes.<BR>
   <LI> magick/resource.c (ListMagickResourceInfo): List controlling
         environment variable in '-list resource' output as a configuration
         usage reminder.<BR>
