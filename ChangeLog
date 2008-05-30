@@ -1,5 +1,8 @@
 2008-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/resource.c (ListMagickResourceInfo): List controlling
+	environment variable in '-list resource' output as a configuration
+	usage reminder.
 	* coders/pdf.c (ReadPDFImage): Properly deal with reading rotated
 	PDFs.
 

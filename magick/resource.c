@@ -653,6 +653,7 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
   ExceptionInfo *ARGUNUSED(exception))
 {
   unsigned int
+    i,
     index;
   
   AcquireSemaphoreInfo(&resource_semaphore);
@@ -664,6 +665,7 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
   for (index=1 ; index <= ResourceInfoMaxIndex; index++)
     {
       char
+        environment[MaxTextExtent],
         heading[MaxTextExtent],
         limit[MaxTextExtent];
 
@@ -679,7 +681,11 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
       FormatString(heading,"%c%s",toupper(resource_info[index].name[0]),
                    resource_info[index].name+1);
 
-      fprintf(file,"%8s: %10s\n", heading,limit);
+      for (i=0; resource_info[index].name[i] != 0; i++)
+        environment[i]=toupper(resource_info[index].name[i]);
+      environment[i]='\0';
+
+      fprintf(file,"%8s: %10s (MAGICK_LIMIT_%s)\n", heading, limit, environment);
     }
   (void) fflush(file);
 
