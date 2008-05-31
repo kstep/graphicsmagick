@@ -6,6 +6,11 @@ See website for "wish list".
 For Future
 ==========
 
+* Add an Invert channel operator.
+
+* Add noise channel operators (Uniform, Gaussian, Multiplicative,
+  Impulse, Laplacian , Poisson).
+
 * Fix Scitex RGB reader to handle files written by Photoshop.
 
 * Fix PerlMagick BLOB reading (disable header magic checking if

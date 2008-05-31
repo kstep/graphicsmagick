@@ -329,7 +329,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
      format PixelPacket on different platforms - not to mention
      different QuantumDepths!
   */
-  for( i=0; i<nmemb_read_successfully;i++ )
+  for( i=0; i < nmemb_read_successfully; i++ )
     {
       if ( inDocInfo->image_type == GIMP_GRAY )
         {
