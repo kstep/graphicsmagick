@@ -1857,23 +1857,35 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           unsigned char
             *user_data;
-
+          
+          const size_t
+            block_size = 65536UL;
+          
           size_t
+            read_size,
             user_data_length;
 
           DPXUserDefinedData
             *dpx_user_data;
+          
+          user_data_length=0UL;
+          user_data=(unsigned char *) NULL;
 
-          user_data_length=dpx_file_info.user_defined_length;
-          user_data=MagickAllocateMemory(unsigned char *,user_data_length);
-          if (user_data == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-          offset += ReadBlob(image,user_data_length,user_data);
-          if (offset != (2048U+user_data_length))
+          while (user_data_length < dpx_file_info.user_defined_length)
             {
-              MagickFreeMemory(user_data);
-              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+              read_size=Min(block_size,dpx_file_info.user_defined_length-user_data_length);
+              MagickReallocMemory(unsigned char *,user_data,user_data_length+read_size);
+              if (user_data == (unsigned char *) NULL)
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+              if (ReadBlob(image,read_size,user_data+user_data_length) != read_size)
+                {
+                  MagickFreeMemory(user_data);
+                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+                }
+              user_data_length += read_size;
+              offset += read_size;
             }
+
           dpx_user_data=(DPXUserDefinedData *) user_data;
           StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
           if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
@@ -2017,7 +2029,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read remainder of header.
   */
   for ( ; offset < pixels_offset ; offset++ )
-    (void) ReadBlobByte(image);
+    if (ReadBlobByte(image) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   /*
     Allocate row samples.
   */

@@ -1,3 +1,10 @@
+2008-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Incrementally read user data
+	part and check for EOF so that bogus files are rejected quickly.
+	* coders/cineon.c (ReadCINEONImage): Incrementally read user data
+	part and check for EOF so that bogus files are rejected quickly.
+
 2008-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pict.c (ReadPICTImage): Ensure that row_bytes calculation

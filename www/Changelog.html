@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2008-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+  <LI> coders/cineon.c (ReadCINEONImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+
+</UL>
+<p>
 2008-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
