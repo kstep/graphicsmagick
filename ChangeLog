@@ -1,3 +1,8 @@
+2008-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xcf.c (ReadXCFImage): Validate XCF file data so that
+	corrupted files don't crash GraphicsMagick.
+
 2008-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): Incrementally read user data
