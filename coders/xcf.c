@@ -1485,13 +1485,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                               layer_info[0].offset_x, layer_info[0].offset_y );
         DestroyImage( layer_info[0].image );
 
-        /* Bob says that if we do this, we'll get REAL gray images! */
-        if ( image_type == GIMP_GRAY ) {
-          QuantizeInfo  qi;
-          GetQuantizeInfo(&qi);
-          qi.colorspace = GRAYColorspace;
-          (void) QuantizeImage( &qi, image );
-        }
       } else {
 #if 0
         {
@@ -1504,14 +1497,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CompositeImage(image, OverCompositeOp, layer_info[j].image, 
                              layer_info[j].offset_x, layer_info[j].offset_y );
               DestroyImage( layer_info[j].image );
-
-              /* Bob says that if we do this, we'll get REAL gray images! */
-              if ( image_type == GIMP_GRAY ) {
-                QuantizeInfo  qi;
-                GetQuantizeInfo(&qi);
-                qi.colorspace = GRAYColorspace;
-                QuantizeImage( &qi, layer_info[j].image );
-              }
             }
           }
         }
@@ -1525,14 +1510,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                 layer_info[number_layers-1].offset_x, 
                                 layer_info[number_layers-1].offset_y );
           DestroyImage( layer_info[number_layers-1].image );
-
-          /* Bob says that if we do this, we'll get REAL gray images! */
-          if ( image_type == GIMP_GRAY ) {
-            QuantizeInfo  qi;
-            GetQuantizeInfo(&qi);
-            qi.colorspace = GRAYColorspace;
-            (void) QuantizeImage( &qi, image );
-          }
 
           /* now reverse the order of the layers as they are put
              into subimages
@@ -1549,14 +1526,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               layer_info[j].image->page.y = layer_info[j].offset_y;
               layer_info[j].image->page.width = layer_info[j].width;
               layer_info[j].image->page.height = layer_info[j].height;
-
-              /* Bob says that if we do this, we'll get REAL gray images! */
-              if ( image_type == GIMP_GRAY ) {
-                QuantizeInfo  qi;
-                GetQuantizeInfo(&qi);
-                qi.colorspace = GRAYColorspace;
-                (void) QuantizeImage( &qi, layer_info[j].image );
-              }
             }
         }
 #endif
@@ -1604,6 +1573,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   CloseBlob(image);
+  if ( image_type == GIMP_GRAY )
+    image->is_grayscale=MagickTrue;
   return(image);
 }
 
