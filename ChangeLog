@@ -1,3 +1,14 @@
+2008-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xcf.c (ReadXCFImage): Back-port more robust version
+	from GraphicsMagick 1.2.
+	* coders/pict.c (ReadPICTImage): Back-port more robust version
+	from GraphicsMagick 1.2.
+	* coders/cineon.c (ReadCINEONImage): Back-port more robust version
+	from GraphicsMagick 1.2.
+	* magick/gem.c (GenerateNoise): Poisson noise generation was
+	taking excessively long and producing wrong results.
+
 2008-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.1.13 released.
