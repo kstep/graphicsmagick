@@ -818,9 +818,6 @@ CopyCompositePixels(void *user_data,                   /* User provided mutable 
                     ExceptionInfo *exception           /* Exception report */
                     )
 {
-  register long
-    i;
-
   ARG_NOT_USED(user_data);
   ARG_NOT_USED(exception);
 
@@ -833,27 +830,18 @@ CopyCompositePixels(void *user_data,                   /* User provided mutable 
     {
       if (source_image->matte)
         {
-          for (i=0; i < npixels; i++)
-            {
-              update_pixels[i]  = source_pixels[i];
-              update_indexes[i] = source_indexes[i];
-            }
+          (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
+          (void) memcpy(update_indexes,source_indexes,npixels*sizeof(IndexPacket));
         }
       else
         {
-          for (i=0; i < npixels; i++)
-            {
-              update_pixels[i]  = source_pixels[i];
-              update_indexes[i] = OpaqueOpacity;
-            }
+          (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
+          (void) memset(update_indexes,OpaqueOpacity,npixels*sizeof(IndexPacket));
         }
     }
   else
     {
-      for (i=0; i < npixels; i++)
-        {
-          update_pixels[i] = source_pixels[i];
-        }
+      (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
     }
       
   return MagickPass;
