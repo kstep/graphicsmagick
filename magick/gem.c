@@ -241,15 +241,19 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
     }
     case PoissonNoise:
     {
+      double
+        limit;
+
       register long
         i;
 
-      for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
+      limit=exp(-SigmaPoisson*(double) ScaleQuantumToChar(pixel));
+      for (i=0; alpha > limit; i++)
       {
         beta=(double) rand()/RAND_MAX;
         alpha=alpha*beta;
       }
-      value=(i/SigmaPoisson)*NoiseScale;
+      value=(double) ScaleCharToQuantum((i/SigmaPoisson)*NoiseScale);
       break;
     }
   }

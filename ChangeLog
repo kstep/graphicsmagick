@@ -1,3 +1,8 @@
+2008-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (GenerateNoise): Poisson noise generation was
+	taking excessively long and producing wrong results.
+
 2008-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Deal with grayscale images the
