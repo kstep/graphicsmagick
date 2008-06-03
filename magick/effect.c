@@ -214,13 +214,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 static MagickPassFail
 AddNoiseImagePixels(void *user_data,                   /* User provided mutable data */
                     const Image *source_image,         /* Source image */
-                    const long source_x,               /* X-offset in source image */
-                    const long source_y,               /* Y-offset in source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
                     Image *new_image,                  /* New image */
-                    const long new_x,                  /* X-offset in new image */
-                    const long new_y,                  /* Y-offset in new image */
                     PixelPacket *new_pixels,           /* Pixel row in new image */
                     IndexPacket *new_indexes,          /* Pixel row indexes in new image */
                     const long npixels,                /* Number of pixels in row */
@@ -237,12 +233,8 @@ AddNoiseImagePixels(void *user_data,                   /* User provided mutable 
     i;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(source_x);
-  ARG_NOT_USED(source_y);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(new_image);
-  ARG_NOT_USED(new_x);
-  ARG_NOT_USED(new_y);
   ARG_NOT_USED(new_indexes);
   ARG_NOT_USED(exception);
 
@@ -681,8 +673,6 @@ typedef struct _ChannelThresholdOptions_t
 
 static MagickPassFail
 ChannelThresholdPixels(void *user_data,          /* User provided mutable data */
-                       const long x,             /* X-offset in base image */
-                       const long y,             /* Y-offset in base image */
                        Image *image,             /* Modify image */
                        PixelPacket *pixels,      /* Pixel row */
                        IndexPacket *indexes,     /* Pixel row indexes */
@@ -708,8 +698,6 @@ ChannelThresholdPixels(void *user_data,          /* User provided mutable data *
     opacity_enabled=options->opacity_enabled;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -2923,13 +2911,9 @@ static inline Quantum UnsharpQuantum(const Quantum original, const Quantum sharp
 static MagickPassFail
 UnsharpMaskPixels(void *user_data,                   /* User provided mutable data */
                   const Image *source_image,         /* Source image */
-                  const long source_x,               /* X-offset in source image */
-                  const long source_y,               /* Y-offset in source image */
                   const PixelPacket *source_pixels,  /* Pixel row in source image */
                   const IndexPacket *source_indexes, /* Pixel row indexes in source image */
                   Image *update_image,               /* Update image */
-                  const long update_x,               /* X-offset in update image */
-                  const long update_y,               /* Y-offset in update image */
                   PixelPacket *update_pixels,        /* Pixel row in update image */
                   IndexPacket *update_indexes,       /* Pixel row indexes in update image */
                   const long npixels,                /* Number of pixels in row */
@@ -2943,12 +2927,8 @@ UnsharpMaskPixels(void *user_data,                   /* User provided mutable da
     i;
 
   ARG_NOT_USED(source_image);
-  ARG_NOT_USED(source_x);
-  ARG_NOT_USED(source_y);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_image);
-  ARG_NOT_USED(update_x);
-  ARG_NOT_USED(update_y);
   ARG_NOT_USED(update_indexes);
   ARG_NOT_USED(exception);
   for (i=0; i < npixels; i++)

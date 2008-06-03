@@ -318,7 +318,9 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use CropImage() to extract a region of the image starting at the offset
-%  defined by geometry.
+%  defined by geometry.  As a special feature, if the geometry "0x0" is
+%  is passed, GetImageBoundingBox() is used to locate the edges of the
+%  image and the image is cropped ("trimmed") to that boundary.
 %
 %  The format of the CropImage method is:
 %

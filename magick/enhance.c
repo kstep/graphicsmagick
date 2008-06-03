@@ -75,8 +75,6 @@
 */
 static MagickPassFail
 ContrastImagePixels(void *user_data,          /* User provided mutable data */
-                    const long x,             /* X-offset in base image */
-                    const long y,             /* Y-offset in base image */
                     Image *image,             /* Modify image */
                     PixelPacket *pixels,      /* Pixel row */
                     IndexPacket *indexes,     /* Pixel row indexes */
@@ -93,8 +91,6 @@ ContrastImagePixels(void *user_data,          /* User provided mutable data */
     i;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -127,7 +123,7 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
   progress_message=sharpen ? SharpenContrastImageText : DullContrastImageText;
   if (image->storage_class == PseudoClass)
     {
-      (void) ContrastImagePixels(&sign,-1,-1,image,image->colormap,
+      (void) ContrastImagePixels(&sign,image,image->colormap,
                                  (IndexPacket *) NULL,image->colors,
                                  &image->exception);
       status=SyncImage(image);
@@ -177,8 +173,6 @@ typedef struct _ApplyLevelsOptions_t
 
 static MagickPassFail
 ApplyLevels(void *user_data,          /* User provided mutable data */
-            const long x,             /* X-offset in base image */
-            const long y,             /* Y-offset in base image */
             Image *image,             /* Modify image */
             PixelPacket *pixels,      /* Pixel row */
             IndexPacket *indexes,     /* Pixel row indexes */
@@ -204,8 +198,6 @@ ApplyLevels(void *user_data,          /* User provided mutable data */
     level_opacity=options->level_opacity;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -226,8 +218,6 @@ ApplyLevels(void *user_data,          /* User provided mutable data */
 
 static MagickPassFail
 BuildHistogram(void *user_data,                   /* User provided mutable data */
-               const long x,                      /* X-offset in base image */
-               const long y,                      /* Y-offset in base image */
                const Image *const_image,          /* Input image */
                const PixelPacket *pixels,         /* Pixel row */
                const IndexPacket *indexes,        /* Pixel indexes */
@@ -244,8 +234,6 @@ BuildHistogram(void *user_data,                   /* User provided mutable data 
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
@@ -348,7 +336,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,-1,-1,image,image->colormap,
+      (void) ApplyLevels(&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -465,7 +453,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,-1,-1,image,image->colormap,
+      (void) ApplyLevels(&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -723,7 +711,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,-1,-1,image,image->colormap,
+      (void) ApplyLevels(&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -781,8 +769,6 @@ typedef struct _ModulateImageParameters_t
 
 static MagickPassFail
 ModulateImagePixels(void *user_data,          /* User provided mutable data */
-                    const long x,             /* X-offset in base image */
-                    const long y,             /* Y-offset in base image */
                     Image *image,             /* Modify image */
                     PixelPacket *pixels,      /* Pixel row */
                     IndexPacket *indexes,     /* Pixel row indexes */
@@ -799,8 +785,6 @@ ModulateImagePixels(void *user_data,          /* User provided mutable data */
     i;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -845,7 +829,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 
   if (image->storage_class == PseudoClass)
     {
-      (void) ModulateImagePixels(&param,-1,-1,image,image->colormap,
+      (void) ModulateImagePixels(&param,image,image->colormap,
                                  (IndexPacket *) NULL,image->colors,
                                  &image->exception);
       status=SyncImage(image);
@@ -887,8 +871,6 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 */
 static MagickPassFail
 NegateImagePixels(void *user_data,          /* User provided mutable data */
-                    const long x,             /* X-offset in base image */
-                    const long y,             /* Y-offset in base image */
                     Image *image,             /* Modify image */
                     PixelPacket *pixels,      /* Pixel row */
                     IndexPacket *indexes,     /* Pixel row indexes */
@@ -905,8 +887,6 @@ NegateImagePixels(void *user_data,          /* User provided mutable data */
     i;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -961,7 +941,7 @@ MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscal
 
   if (image->storage_class == PseudoClass)
     {
-      (void) NegateImagePixels(&non_gray,-1,-1,image,image->colormap,
+      (void) NegateImagePixels(&non_gray,image,image->colormap,
                                (IndexPacket *) NULL,image->colors,
                                &image->exception);
       status=SyncImage(image);
@@ -1251,7 +1231,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   levels.level_opacity= (image->matte && (low.opacity != high.opacity));
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,-1,-1,image,image->colormap,
+      (void) ApplyLevels(&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);

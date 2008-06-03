@@ -27,8 +27,6 @@ extern "C" {
   typedef MagickPassFail (*PixelIteratorMonoReadCallback)
     (
      void *user_data,                   /* User provided mutable data */
-     const long x,                      /* X-offset in base image */
-     const long y,                      /* Y-offset in base image */
      const Image *const_image,          /* Input image */
      const PixelPacket *pixels,         /* Pixel row */
      const IndexPacket *indexes,        /* Pixel indexes */
@@ -53,8 +51,6 @@ extern "C" {
   typedef MagickPassFail (*PixelIteratorMonoModifyCallback)
     (
      void *user_data,                   /* User provided mutable data */
-     const long x,                      /* X-offset in base image */
-     const long y,                      /* Y-offset in base image */
      Image *image,                      /* Modify image */
      PixelPacket *pixels,               /* Pixel row */
      IndexPacket *indexes,              /* Pixel row indexes */
@@ -81,13 +77,9 @@ extern "C" {
     (
      void *user_data,                   /* User provided mutable data */
      const Image *first_image,          /* First Input image */
-     const long first_x,                /* X-offset in first image */
-     const long first_y,                /* Y-offset in first image */
      const PixelPacket *first_pixels,   /* Pixel row in first image */
      const IndexPacket *first_indexes,  /* Pixel row indexes in first image */
      const Image *second_image,         /* Second Input image */
-     const long second_x,               /* X-offset in second image */
-     const long second_y,               /* Y-offset in second image */
      const PixelPacket *second_pixels,  /* Pixel row in second image */
      const IndexPacket *second_indexes, /* Pixel row indexes in second image */
      const long npixels,                /* Number of pixels in row */
@@ -118,13 +110,9 @@ extern "C" {
     (
      void *user_data,                   /* User provided mutable data */
      const Image *source_image,         /* Source image */
-     const long source_x,               /* X-offset in source image */
-     const long source_y,               /* Y-offset in source image */
      const PixelPacket *source_pixels,  /* Pixel row in source image */
      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
      Image *update_image,               /* Update image */
-     const long update_x,               /* X-offset in update image */
-     const long update_y,               /* Y-offset in update image */
      PixelPacket *update_pixels,        /* Pixel row in update image */
      IndexPacket *update_indexes,       /* Pixel row indexes in update image */
      const long npixels,                /* Number of pixels in row */

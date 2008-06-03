@@ -179,8 +179,6 @@ typedef struct _QuantumContext
 
 static MagickPassFail
 QuantumAdd(void *user_data,
-           const long x,
-           const long y,
            Image *image,
            PixelPacket *pixels,
            IndexPacket *indexes,
@@ -190,8 +188,6 @@ QuantumAdd(void *user_data,
   QuantumContext
     *context=(QuantumContext *) user_data;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -237,8 +233,6 @@ QuantumAdd(void *user_data,
 }
 static MagickPassFail
 QuantumAnd(void *user_data,
-           const long x,
-           const long y,
            Image *image,
            PixelPacket *pixels,
            IndexPacket *indexes,
@@ -251,8 +245,6 @@ QuantumAnd(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -295,8 +287,6 @@ QuantumAnd(void *user_data,
 }
 static MagickPassFail
 QuantumAssign(void *user_data,
-              const long x,
-              const long y,
               Image *image,
               PixelPacket *pixels,
               IndexPacket *indexes,
@@ -309,8 +299,6 @@ QuantumAssign(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -353,8 +341,6 @@ QuantumAssign(void *user_data,
 }
 static MagickPassFail
 QuantumDivide(void *user_data,
-              const long x,
-              const long y,
               Image *image,
               PixelPacket *pixels,
               IndexPacket *indexes,
@@ -367,8 +353,6 @@ QuantumDivide(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -411,8 +395,6 @@ QuantumDivide(void *user_data,
 }
 static MagickPassFail
 QuantumLShift(void *user_data,
-              const long x,
-              const long y,
               Image *image,
               PixelPacket *pixels,
               IndexPacket *indexes,
@@ -425,8 +407,6 @@ QuantumLShift(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -469,8 +449,6 @@ QuantumLShift(void *user_data,
 }
 static MagickPassFail
 QuantumMultiply(void *user_data,
-                const long x,
-                const long y,
                 Image *image,
                 PixelPacket *pixels,
                 IndexPacket *indexes,
@@ -483,8 +461,6 @@ QuantumMultiply(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -527,8 +503,6 @@ QuantumMultiply(void *user_data,
 }
 static MagickPassFail
 QuantumOr(void *user_data,
-          const long x,
-          const long y,
           Image *image,
           PixelPacket *pixels,
           IndexPacket *indexes,
@@ -541,8 +515,6 @@ QuantumOr(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -585,8 +557,6 @@ QuantumOr(void *user_data,
 }
 static MagickPassFail
 QuantumRShift(void *user_data,
-              const long x,
-              const long y,
               Image *image,
               PixelPacket *pixels,
               IndexPacket *indexes,
@@ -599,8 +569,6 @@ QuantumRShift(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -643,8 +611,6 @@ QuantumRShift(void *user_data,
 }
 static MagickPassFail
 QuantumSubtract(void *user_data,
-                const long x,
-                const long y,
                 Image *image,
                 PixelPacket *pixels,
                 IndexPacket *indexes,
@@ -657,8 +623,6 @@ QuantumSubtract(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -715,8 +679,6 @@ static inline Quantum ApplyThresholdOperator(const Quantum quantum,
 }
 static MagickPassFail
 QuantumThreshold(void *user_data,
-                 const long x,
-                 const long y,
                  Image *image,
                  PixelPacket *pixels,
                  IndexPacket *indexes,
@@ -729,8 +691,6 @@ QuantumThreshold(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -786,8 +746,6 @@ static inline Quantum ApplyThresholdBlackOperator(const Quantum quantum,
 }
 static MagickPassFail
 QuantumThresholdBlack(void *user_data,
-                      const long x,
-                      const long y,
                       Image *image,
                       PixelPacket *pixels,
                       IndexPacket *indexes,
@@ -800,8 +758,6 @@ QuantumThresholdBlack(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -857,8 +813,6 @@ static inline Quantum ApplyThresholdWhiteOperator(const Quantum quantum,
 }
 static MagickPassFail
 QuantumThresholdWhite(void *user_data,
-                      const long x,
-                      const long y,
                       Image *image,
                       PixelPacket *pixels,
                       IndexPacket *indexes,
@@ -871,8 +825,6 @@ QuantumThresholdWhite(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -915,8 +867,6 @@ QuantumThresholdWhite(void *user_data,
 
 static MagickPassFail
 QuantumXor(void *user_data,
-           const long x,
-           const long y,
            Image *image,
            PixelPacket *pixels,
            IndexPacket *indexes,
@@ -929,8 +879,6 @@ QuantumXor(void *user_data,
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);

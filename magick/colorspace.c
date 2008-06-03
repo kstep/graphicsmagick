@@ -226,8 +226,6 @@ MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string
 
 static MagickPassFail
 RGBToCMYKTransform(void *user_data,          /* User provided mutable data */
-                   const long x,             /* X-offset in base image */
-                   const long y,             /* Y-offset in base image */
                    Image *image,             /* Modify image */
                    PixelPacket *pixels,      /* Pixel row */
                    IndexPacket *indexes,     /* Pixel row indexes */
@@ -247,8 +245,6 @@ RGBToCMYKTransform(void *user_data,          /* User provided mutable data */
     yellow;
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
   
@@ -270,8 +266,6 @@ RGBToCMYKTransform(void *user_data,          /* User provided mutable data */
 
 static MagickPassFail
 RGBToCineonLogTransform(void *user_data,          /* User provided mutable data */
-                        const long x,             /* X-offset in base image */
-                        const long y,             /* Y-offset in base image */
                         Image *image,             /* Modify image */
                         PixelPacket *pixels,      /* Pixel row */
                         IndexPacket *indexes,     /* Pixel row indexes */
@@ -288,8 +282,6 @@ RGBToCineonLogTransform(void *user_data,          /* User provided mutable data 
   register long
     i;  
   
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -306,8 +298,6 @@ RGBToCineonLogTransform(void *user_data,          /* User provided mutable data 
 
 static MagickPassFail
 RGBToHSLTransform(void *user_data,          /* User provided mutable data */
-                  const long x,             /* X-offset in base image */
-                  const long y,             /* Y-offset in base image */
                   Image *image,             /* Modify image */
                   PixelPacket *pixels,      /* Pixel row */
                   IndexPacket *indexes,     /* Pixel row indexes */
@@ -326,8 +316,6 @@ RGBToHSLTransform(void *user_data,          /* User provided mutable data */
     i;  
   
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -348,8 +336,6 @@ RGBToHSLTransform(void *user_data,          /* User provided mutable data */
 
 static MagickPassFail
 RGBToHWBTransform(void *user_data,          /* User provided mutable data */
-                  const long x,             /* X-offset in base image */
-                  const long y,             /* Y-offset in base image */
                   Image *image,             /* Modify image */
                   PixelPacket *pixels,      /* Pixel row */
                   IndexPacket *indexes,     /* Pixel row indexes */
@@ -368,8 +354,6 @@ RGBToHWBTransform(void *user_data,          /* User provided mutable data */
     i;  
 
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -410,8 +394,6 @@ static const size_t
 
 static MagickPassFail
 XYZTransformPackets(void *user_data,          /* User provided mutable data */
-                    const long x,             /* X-offset in base image */
-                    const long y,             /* Y-offset in base image */
                     Image *image,             /* Modify image */
                     PixelPacket *pixels,      /* Pixel row */
                     IndexPacket *indexes,     /* Pixel row indexes */
@@ -432,8 +414,6 @@ XYZTransformPackets(void *user_data,          /* User provided mutable data */
   register long
     i;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -624,8 +604,6 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Convert PseudoClass image colormap.
           */
           (void) RGBToCineonLogTransform(logmap,
-                                         -1,
-                                         -1,
                                          image,
                                          image->colormap,
                                          (IndexPacket *) NULL,
@@ -662,8 +640,6 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Convert PseudoClass image colormap.
           */
           RGBToHSLTransform(NULL,
-                            -1,
-                            -1,
                             image,
                             image->colormap,
                             (IndexPacket *) NULL,
@@ -696,8 +672,6 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Convert PseudoClass image colormap.
           */
           RGBToHWBTransform(NULL,
-                            -1,
-                            -1,
                             image,
                             image->colormap,
                             (IndexPacket *) NULL,
@@ -1119,8 +1093,6 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           Convert PseudoClass image colormap.
         */
         (void) XYZTransformPackets(&xform,
-                                   -1,
-                                   -1,
                                    image,
                                    image->colormap,
                                    (IndexPacket *) NULL,
@@ -1255,8 +1227,6 @@ MagickExport MagickPassFail TransformColorspace(Image *image,
 */
 static MagickPassFail
 CMYKToRGBTransform(void *user_data,          /* User provided mutable data */
-                   const long x,             /* X-offset in base image */
-                   const long y,             /* Y-offset in base image */
                    Image *image,             /* Modify image */
                    PixelPacket *pixels,      /* Pixel row */
                    IndexPacket *indexes,     /* Pixel row indexes */
@@ -1270,8 +1240,6 @@ CMYKToRGBTransform(void *user_data,          /* User provided mutable data */
     i;  
 
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1287,8 +1255,6 @@ CMYKToRGBTransform(void *user_data,          /* User provided mutable data */
 
 static MagickPassFail
 CineonLogToRGBTransform(void *user_data,          /* User provided mutable data */
-                        const long x,             /* X-offset in base image */
-                        const long y,             /* Y-offset in base image */
                         Image *image,             /* Modify image */
                         PixelPacket *pixels,      /* Pixel row */
                         IndexPacket *indexes,     /* Pixel row indexes */
@@ -1305,8 +1271,6 @@ CineonLogToRGBTransform(void *user_data,          /* User provided mutable data 
   register long
     i;  
   
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -1323,8 +1287,6 @@ CineonLogToRGBTransform(void *user_data,          /* User provided mutable data 
 
 static MagickPassFail
 HSLToRGBTransform(void *user_data,          /* User provided mutable data */
-                  const long x,             /* X-offset in base image */
-                  const long y,             /* Y-offset in base image */
                   Image *image,             /* Modify image */
                   PixelPacket *pixels,      /* Pixel row */
                   IndexPacket *indexes,     /* Pixel row indexes */
@@ -1338,8 +1300,6 @@ HSLToRGBTransform(void *user_data,          /* User provided mutable data */
     i;  
 
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -1355,8 +1315,6 @@ HSLToRGBTransform(void *user_data,          /* User provided mutable data */
 
 static MagickPassFail
 HWBToRGBTransform(void *user_data,          /* User provided mutable data */
-                  const long x,             /* X-offset in base image */
-                  const long y,             /* Y-offset in base image */
                   Image *image,             /* Modify image */
                   PixelPacket *pixels,      /* Pixel row */
                   IndexPacket *indexes,     /* Pixel row indexes */
@@ -1370,8 +1328,6 @@ HWBToRGBTransform(void *user_data,          /* User provided mutable data */
     i;  
 
   ARG_NOT_USED(user_data);
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -1404,8 +1360,6 @@ typedef struct _RGBTransformInfo_t
 
 static MagickPassFail
 RGBTransformPackets(void *user_data,          /* User provided mutable data */
-                    const long x,             /* X-offset in base image */
-                    const long y,             /* Y-offset in base image */
                     Image *image,             /* Modify image */
                     PixelPacket *pixels,      /* Pixel row */
                     IndexPacket *indexes,     /* Pixel row indexes */
@@ -1431,8 +1385,6 @@ RGBTransformPackets(void *user_data,          /* User provided mutable data */
     g_index,
     b_index;
 
-  ARG_NOT_USED(x);
-  ARG_NOT_USED(y);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -1691,8 +1643,6 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Convert PseudoClass image colormap.
           */
           CineonLogToRGBTransform(linearmap,
-                                  -1,
-                                  -1,
                                   image,
                                   image->colormap,
                                   (IndexPacket *) NULL,
@@ -1728,8 +1678,6 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Convert PseudoClass image colormap.
           */
           HSLToRGBTransform(NULL,
-                            -1,
-                            -1,
                             image,
                             image->colormap,
                             (IndexPacket *) NULL,
@@ -1760,8 +1708,6 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Convert PseudoClass image colormap.
           */
           HWBToRGBTransform(NULL,
-                            -1,
-                            -1,
                             image,
                             image->colormap,
                             (IndexPacket *) NULL,
@@ -2120,8 +2066,6 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           Convert PseudoClass image colormap.
         */
         (void) RGBTransformPackets(&xform,
-                                   -1,
-                                   -1,
                                    image,
                                    image->colormap,
                                    (IndexPacket *) NULL,

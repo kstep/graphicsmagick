@@ -220,8 +220,8 @@ typedef enum
   SaturateCompositeOp,
   ColorizeCompositeOp,
   LuminizeCompositeOp,
-  ScreenCompositeOp,
-  OverlayCompositeOp,
+  ScreenCompositeOp, /* Not implemented */
+  OverlayCompositeOp,  /* Not implemented */
   CopyCyanCompositeOp,
   CopyMagentaCompositeOp,
   CopyYellowCompositeOp,

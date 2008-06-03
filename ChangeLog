@@ -1,3 +1,13 @@
+2008-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.h: Removed x,y coordinate information from
+	all of the callback definitions since a use for this information
+	has yet to be found.
+	* magick/composite.c (CompositeImage): Use individual callback
+	functions for the composition operations.
+	* coders/xcf.c (ReadXCFImage): Deal with grayscale images the
+	GraphicsMagick-way.
+
 2008-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Validate XCF file data so that

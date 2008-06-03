@@ -101,7 +101,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
+      status=(call_back)(user_data,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -200,7 +200,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,x,row,image,pixels,indexes,columns,exception);
+      status=(call_back)(user_data,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -332,8 +332,8 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       second_indexes=GetIndexes(second_image);
 
       status=(call_back)(user_data,
-                         first_image,first_x,first_row,first_pixels,first_indexes,
-                         second_image,second_x,second_row,second_pixels,second_indexes,
+                         first_image,first_pixels,first_indexes,
+                         second_image,second_pixels,second_indexes,
                          columns, exception);
       if (status == MagickFail)
         break;
@@ -467,8 +467,8 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       update_indexes=GetIndexes(update_image);
 
       status=(call_back)(user_data,
-                         source_image,source_x,source_row,source_pixels,source_indexes,
-                         update_image,update_x,update_row,update_pixels,update_indexes,
+                         source_image,source_pixels,source_indexes,
+                         update_image,update_pixels,update_indexes,
                          columns,exception);
       if (status == MagickFail)
         break;
