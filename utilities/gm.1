@@ -1,4 +1,4 @@
-.TH gm 1 "2008/05/22" "GraphicsMagick"
+.TH gm 1 "2008/06/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2394,7 +2394,10 @@ per-channel basis and do not operate based on pixel intensity as
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
 \fBDivide\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP, \fBRShift\fP,
 \fBSubtract\fP, \fBThreshold\fP, \fBThreshold-White\fP,
-\fBThreshold-Black\fP, \fBXor\fP.
+\fBThreshold-Black\fP, \fBXor\fP, \fBNoise-Gaussian\fP,
+\fBNoise-Impulse\fP, \fBNoise-Laplacian\fP,
+\fBNoise-Multiplicative\fP, \fBNoise-Poisson\fP, and
+\fBNoise-Uniform\fP.
 
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest
@@ -5192,7 +5195,7 @@ uniform resource locator \fB(URL)\fP, use:
 
 To display histogram of an image, use:
 
-    gm convert file.jpg HISTOGRAM:- | display -
+    gm gm convert file.jpg HISTOGRAM:- | gm display -
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -5202,7 +5205,7 @@ the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 
       gm display -colors 32 cockatoo.miff -noop duck.miff
-              -colors 16 macaw.miff
+                 -colors 16 macaw.miff
 
 \fBDisplay\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified

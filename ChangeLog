@@ -1,3 +1,22 @@
+2008-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/operator.c: Added support for additional channel
+	operators (-operator) for applying noise to one or more channels.
+	The additional operators are Noise-Gaussian, Noise-Impulse,
+	Noise-Laplacian, Noise-Multiplicative, Noise-Poisson, and
+	Noise-Uniform.  The amount of noise applied is controlled via the
+	numeric argument, which can specify the percentage of noise to
+	apply.
+	* magick/enum_strings.c: New source module to contain the various
+	EnumToString() and StringToEnum() functions which seem to multiply
+	like bunny-rabbits.
+	* magick/gem.c (GenerateNoise): Poisson noise generation was
+	taking excessively long and producing wrong results.  Noise
+	generation was only producing the correct amount of noise in the
+	Q8 build.	
+	(GenerateDifferentialNoise): New function to return noise in a
+	floating-point differential format.
+
 2008-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_iterator.h: Removed x,y coordinate information from

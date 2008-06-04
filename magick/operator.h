@@ -34,7 +34,13 @@ typedef enum
   ThresholdQuantumOp,      /* Above threshold white, otherwise black */
   ThresholdBlackQuantumOp, /* Below threshold is black */
   ThresholdWhiteQuantumOp, /* Above threshold is white */
-  XorQuantumOp             /* Bitwise XOR value */
+  XorQuantumOp,            /* Bitwise XOR value */
+  NoiseGaussianOp,         /* Gaussian noise */
+  NoiseImpulseOp,          /* Impulse noise */
+  NoiseLaplacianOp,        /* Laplacian noise */
+  NoiseMultiplicativeOp,   /* Multiplicative gaussian noise */
+  NoisePoissonOp,          /* Poisson noise */
+  NoiseUniformOp           /* Uniform noise */
  } QuantumOperator;
 
 extern MagickExport MagickPassFail

@@ -14,53 +14,11 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/enum_strings.h"
+#include "magick/gem.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
 #include "magick/operator.h"
-
-static const char *ChannelTypeToString(const ChannelType channel)
-{
-  const char
-    *channel_type="undefined";
-
-  switch (channel)
-    {
-    case UndefinedChannel:
-      break;
-    case RedChannel:
-      channel_type="red";
-      break;
-    case CyanChannel: 
-      channel_type="cyan";
-      break;
-    case GreenChannel:
-      channel_type="green";
-      break;
-    case MagentaChannel:
-      channel_type="magenta";
-      break;
-    case BlueChannel:
-      channel_type="blue";
-      break;
-    case YellowChannel:
-      channel_type="yellow";
-      break;
-    case OpacityChannel:
-      channel_type="opacity";
-      break;
-    case BlackChannel:
-      channel_type="black";
-      break;
-    case MatteChannel:
-      channel_type="matte";
-      break;
-    case AllChannels:
-      channel_type="all";
-      break;
-    }
-
-  return channel_type;
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -501,6 +459,146 @@ QuantumMultiply(void *user_data,
 
   return (MagickPass);
 }
+
+static inline Quantum
+GenerateQuantumNoise(const Quantum quantum,const NoiseType noise_type,
+                     const double factor)
+{
+  double
+    value;
+
+  value = (double) quantum+
+    factor*GenerateDifferentialNoise((double) quantum,noise_type);
+  return RoundDoubleToQuantum(value);
+}
+
+static MagickPassFail
+QuantumNoise(void *user_data,
+             Image *image,
+             PixelPacket *pixels,
+             IndexPacket *indexes,
+             const long npixels,
+             ExceptionInfo *exception,
+             const NoiseType noise_type
+)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  double
+    factor;
+
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  factor=context->double_value/MaxRGBDouble;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = GenerateQuantumNoise(pixels[i].red,noise_type,factor);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = GenerateQuantumNoise(pixels[i].blue,noise_type,factor);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = GenerateQuantumNoise(pixels[i].opacity,noise_type,factor);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red   = GenerateQuantumNoise(pixels[i].red,noise_type,factor);
+          pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor);
+          pixels[i].blue  = GenerateQuantumNoise(pixels[i].blue,noise_type,factor);
+        }
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumNoiseGaussian(void *user_data,
+                     Image *image,
+                     PixelPacket *pixels,
+                     IndexPacket *indexes,
+                     const long npixels,
+                     ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,GaussianNoise);
+}
+static MagickPassFail
+QuantumNoiseImpulse(void *user_data,
+                    Image *image,
+                    PixelPacket *pixels,
+                    IndexPacket *indexes,
+                    const long npixels,
+                    ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,ImpulseNoise);
+}
+static MagickPassFail
+QuantumNoiseLaplacian(void *user_data,
+                      Image *image,
+                      PixelPacket *pixels,
+                      IndexPacket *indexes,
+                      const long npixels,
+                      ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,LaplacianNoise);
+}
+static MagickPassFail
+QuantumNoiseMultiplicative(void *user_data,
+                           Image *image,
+                           PixelPacket *pixels,
+                           IndexPacket *indexes,
+                           const long npixels,
+                           ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,MultiplicativeGaussianNoise);
+}
+static MagickPassFail
+QuantumNoisePoisson(void *user_data,
+                    Image *image,
+                    PixelPacket *pixels,
+                    IndexPacket *indexes,
+                    const long npixels,
+                    ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,PoissonNoise);
+}
+static MagickPassFail
+QuantumNoiseUniform(void *user_data,
+                    Image *image,
+                    PixelPacket *pixels,
+                    IndexPacket *indexes,
+                    const long npixels,
+                    ExceptionInfo *exception)
+{
+  return
+    QuantumNoise(user_data,image,pixels,indexes,npixels,exception,UniformNoise);
+}
 static MagickPassFail
 QuantumOr(void *user_data,
           Image *image,
@@ -928,9 +1026,6 @@ QuantumOperatorRegionImage(Image *image,
                            const double rvalue,
                            ExceptionInfo *exception)
 {
-  const char
-    *operator_text = "undefined";
-
   char
     description[MaxTextExtent];
 
@@ -955,62 +1050,68 @@ QuantumOperatorRegionImage(Image *image,
       break;
     case AddQuantumOp:
       call_back=QuantumAdd;
-      operator_text="add";
       break;
     case AndQuantumOp:
       call_back=QuantumAnd;
-      operator_text="and";
       break;
     case AssignQuantumOp:
       call_back=QuantumAssign;
-      operator_text="assign";
       break;
     case DivideQuantumOp:
       call_back=QuantumDivide;
-      operator_text="divide";
       break;
     case LShiftQuantumOp:
       call_back=QuantumLShift;
-      operator_text="lshift";
       break;
     case MultiplyQuantumOp:
       call_back=QuantumMultiply;
-      operator_text="multiply";
       break;
     case OrQuantumOp:
       call_back=QuantumOr;
-      operator_text="or";
       break;
     case RShiftQuantumOp:
       call_back=QuantumRShift;
-      operator_text="rshift";
       break;
     case SubtractQuantumOp:
       call_back=QuantumSubtract;
-      operator_text="subtract";
       break;
     case ThresholdQuantumOp:
       call_back=QuantumThreshold;
-      operator_text="threshold";
       break;
     case ThresholdBlackQuantumOp:
       call_back=QuantumThresholdBlack;
-      operator_text="threshold-black";
       break;
     case ThresholdWhiteQuantumOp:
       call_back=QuantumThresholdWhite;
-      operator_text="threshold-white";
       break;
     case XorQuantumOp:
       call_back=QuantumXor;
-      operator_text="xor";
+      break;
+    case NoiseGaussianOp:
+      call_back=QuantumNoiseGaussian;
+      break;
+    case NoiseImpulseOp:
+      call_back=QuantumNoiseImpulse;
+      break;
+    case NoiseLaplacianOp:
+      call_back=QuantumNoiseLaplacian;
+      break;
+    case NoiseMultiplicativeOp:
+      call_back=QuantumNoiseMultiplicative;
+      break;
+    case NoisePoissonOp:
+      call_back=QuantumNoisePoisson;
+      break;
+    case NoiseUniformOp:
+      call_back=QuantumNoiseUniform;
       break;
     }
 
   if (call_back)
     {
       FormatString(description,"Apply operator '%s %g' to channel '%s' ...",
-                   operator_text,rvalue,ChannelTypeToString(channel));
+                   QuantumOperatorToString(quantum_operator),rvalue,
+                   ChannelTypeToString(channel));
       status=PixelIterateMonoModify(call_back,
                                     description,
                                     (void *) &context,x,y,columns,rows,

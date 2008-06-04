@@ -137,6 +137,147 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e n e r a t e D i f f e r e n t i a l N o i s e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GenerateDifferentialNoise generates a differential floating-point
+%  noise value which will produce in the final result when added to the
+%  original pixel.  The floating point differential value is useful since
+%  it allows scaling without loss of precision and avoids clipping.
+%
+%  The format of the GenerateDifferentialNoise method is:
+%
+%      double GenerateDifferentialNoise(const Quantum pixel,
+%                                       const NoiseType noise_type)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: A structure of type Quantum.
+%
+%    o noise_type:  The type of noise: Uniform, gaussian,
+%      multiplicative Gaussian, impulse, laplacian, or Poisson.
+%
+%
+*/
+#define NoiseEpsilon   1.0e-5
+#define SigmaUniform   4.0
+#define SigmaGaussian  4.0
+#define SigmaImpulse   0.10
+#define SigmaLaplacian 10.0
+#define SigmaMultiplicativeGaussian  0.5
+#define SigmaPoisson   0.05
+#define TauGaussian    20.0
+
+MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
+                                              const NoiseType noise_type)
+{
+  double
+    alpha,
+    beta,
+    pixel,
+    sigma,
+    value;
+
+  pixel=(double) quantum_pixel;
+
+#if QuantumDepth > 8
+  pixel /= MaxRGBDouble/255.0;
+#endif
+
+  alpha=(double) rand()/RAND_MAX;
+  if (alpha == 0.0)
+    alpha=1.0;
+  switch (noise_type)
+  {
+    case UniformNoise:
+    default:
+    {
+      value=SigmaUniform*(alpha-0.5);
+      break;
+    }
+    case GaussianNoise:
+    {
+      double
+        tau;
+
+      beta=(double) rand()/RAND_MAX;
+      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
+      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
+      value=sqrt((double) pixel)*SigmaGaussian*sigma+TauGaussian*tau;
+      break;
+    }
+    case MultiplicativeGaussianNoise:
+    {
+      if (alpha <= NoiseEpsilon)
+        sigma=255.0;
+      else
+        sigma=sqrt(-2.0*log(alpha));
+      beta=(double) rand()/RAND_MAX;
+      value=pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*MagickPI*beta);
+      break;
+    }
+    case ImpulseNoise:
+    {
+      if (alpha < (SigmaImpulse/2.0))
+        value=-pixel;
+       else
+         if (alpha >= (1.0-(SigmaImpulse/2.0)))
+           value=255.0-pixel;
+         else
+           value=0.0;
+      break;
+    }
+    case LaplacianNoise:
+    {
+      if (alpha <= 0.5)
+        {
+          if (alpha <= NoiseEpsilon)
+            value=-255.0;
+          else
+            value=SigmaLaplacian*log(2.0*alpha);
+          break;
+        }
+      beta=1.0-alpha;
+      if (beta <= (0.5*NoiseEpsilon))
+        value=255.0;
+      else
+        value=-(SigmaLaplacian*log(2.0*beta));
+      break;
+    }
+    case PoissonNoise:
+    {
+      double
+        limit;
+
+      register long
+        i;
+
+      limit=exp(-SigmaPoisson*(double) pixel);
+      for (i=0; alpha > limit; i++)
+      {
+        beta=(double) rand()/RAND_MAX;
+        alpha=alpha*beta;
+      }
+      value=pixel-((double) i/SigmaPoisson);
+      break;
+    }
+  }
+
+#if QuantumDepth > 8
+  value *= (MaxRGBFloat/255.0);
+#endif
+
+  return value;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e n e r a t e N o i s e                                                 %
 %                                                                             %
 %                                                                             %
@@ -153,106 +294,18 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 %    o pixel: A structure of type Quantum.
 %
-%    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
-%      impulse, laplacian, or Poisson.
+%    o noise_type:  The type of noise: Uniform, gaussian,
+%      multiplicative Gaussian, impulse, laplacian, or Poisson.
 %
 %
 */
-#define NoiseScale     ((double) MaxRGB/255)
-#define NoiseEpsilon   1.0e-5
-#define SigmaUniform   4.0*NoiseScale
-#define SigmaGaussian  4.0*NoiseScale
-#define SigmaImpulse   0.10
-#define SigmaLaplacian 10.0*NoiseScale
-#define SigmaMultiplicativeGaussian  0.5*NoiseScale
-#define SigmaPoisson   0.05
-#define TauGaussian    20.0*NoiseScale
-
 MagickExport Quantum GenerateNoise(const Quantum pixel,
-  const NoiseType noise_type)
+                                   const NoiseType noise_type)
 {
   double
-    alpha,
-    beta,
-    sigma,
     value;
 
-  alpha=(double) rand()/RAND_MAX;
-  if (alpha == 0.0)
-    alpha=1.0;
-  switch (noise_type)
-  {
-    case UniformNoise:
-    default:
-    {
-      value=(double) pixel+SigmaUniform*(alpha-0.5);
-      break;
-    }
-    case GaussianNoise:
-    {
-      double
-        tau;
-
-      beta=(double) rand()/RAND_MAX;
-      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
-      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
-      value=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
-        TauGaussian*tau;
-      break;
-    }
-    case MultiplicativeGaussianNoise:
-    {
-      if (alpha <= NoiseEpsilon)
-        sigma=MaxRGB;
-      else
-        sigma=sqrt(-2.0*log(alpha));
-      beta=(double) rand()/RAND_MAX;
-      value=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma*
-        cos(2.0*MagickPI*beta);
-      break;
-    }
-    case ImpulseNoise:
-    {
-      if (alpha < (SigmaImpulse/2.0))
-        value=0;
-       else
-         if (alpha >= (1.0-(SigmaImpulse/2.0)))
-           value=MaxRGB;
-         else
-           value=pixel;
-      break;
-    }
-    case LaplacianNoise:
-    {
-      if (alpha <= 0.5)
-        {
-          if (alpha <= NoiseEpsilon)
-            value=(double) pixel-MaxRGB;
-          else
-            value=(double) pixel+SigmaLaplacian*log(2.0*alpha);
-          break;
-        }
-      beta=1.0-alpha;
-      if (beta <= (0.5*NoiseEpsilon))
-        value=(double) pixel+MaxRGB;
-      else
-        value=(double) pixel-SigmaLaplacian*log(2.0*beta);
-      break;
-    }
-    case PoissonNoise:
-    {
-      register long
-        i;
-
-      for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
-      {
-        beta=(double) rand()/RAND_MAX;
-        alpha=alpha*beta;
-      }
-      value=(i/SigmaPoisson)*NoiseScale;
-      break;
-    }
-  }
+  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type);
   return (RoundDoubleToQuantum(value));
 }
 

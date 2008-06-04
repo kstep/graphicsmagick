@@ -107,7 +107,7 @@
 <P>
 </P>
 <h2><a name="cropimage">CropImage</a></h2>
-<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by geometry. </blockquote><P>The format of the CropImage method is:</P>
+<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by geometry. As a special feature, if the geometry "0x0" is is passed, GetImageBoundingBox ( ) is used to locate the edges of the image and the image is cropped ( "trimmed" ) to that boundary. </blockquote><P>The format of the CropImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *CropImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#RectangleInfo">RectangleInfo</A> *geometry, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
