@@ -158,24 +158,30 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 %
 */
-#define NoiseScale     ((double) MaxRGB/255)
 #define NoiseEpsilon   1.0e-5
-#define SigmaUniform   4.0*NoiseScale
-#define SigmaGaussian  4.0*NoiseScale
+#define SigmaUniform   4.0
+#define SigmaGaussian  4.0
 #define SigmaImpulse   0.10
-#define SigmaLaplacian 10.0*NoiseScale
-#define SigmaMultiplicativeGaussian  0.5*NoiseScale
+#define SigmaLaplacian 10.0
+#define SigmaMultiplicativeGaussian  0.5
 #define SigmaPoisson   0.05
-#define TauGaussian    20.0*NoiseScale
+#define TauGaussian    20.0
 
-MagickExport Quantum GenerateNoise(const Quantum pixel,
-  const NoiseType noise_type)
+MagickExport Quantum GenerateNoise(const Quantum quantum_pixel,
+                                   const NoiseType noise_type)
 {
   double
     alpha,
     beta,
+    pixel,
     sigma,
     value;
+
+  pixel=(double) quantum_pixel;
+
+#if QuantumDepth > 8
+  pixel /= (double) MaxRGB/255.0;
+#endif
 
   alpha=(double) rand()/RAND_MAX;
   if (alpha == 0.0)
@@ -203,7 +209,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
     case MultiplicativeGaussianNoise:
     {
       if (alpha <= NoiseEpsilon)
-        sigma=MaxRGB;
+        sigma=255.0;
       else
         sigma=sqrt(-2.0*log(alpha));
       beta=(double) rand()/RAND_MAX;
@@ -217,7 +223,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         value=0;
        else
          if (alpha >= (1.0-(SigmaImpulse/2.0)))
-           value=MaxRGB;
+           value=255.0;
          else
            value=pixel;
       break;
@@ -227,14 +233,14 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       if (alpha <= 0.5)
         {
           if (alpha <= NoiseEpsilon)
-            value=(double) pixel-MaxRGB;
+            value=(double) pixel-255.0;
           else
             value=(double) pixel+SigmaLaplacian*log(2.0*alpha);
           break;
         }
       beta=1.0-alpha;
       if (beta <= (0.5*NoiseEpsilon))
-        value=(double) pixel+MaxRGB;
+        value=(double) pixel+255.0;
       else
         value=(double) pixel-SigmaLaplacian*log(2.0*beta);
       break;
@@ -247,16 +253,21 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       register long
         i;
 
-      limit=exp(-SigmaPoisson*(double) ScaleQuantumToChar(pixel));
+      limit=exp(-SigmaPoisson*(double) pixel);
       for (i=0; alpha > limit; i++)
       {
         beta=(double) rand()/RAND_MAX;
         alpha=alpha*beta;
       }
-      value=(double) ScaleCharToQuantum((i/SigmaPoisson)*NoiseScale);
+      value=(double) i/SigmaPoisson;
       break;
     }
   }
+
+#if QuantumDepth > 8
+  value *= ((double) MaxRGB/255.0);
+#endif
+
   return (RoundSignedToQuantum(value));
 }
 
