@@ -18,7 +18,9 @@ utilities_gm_SOURCES	= utilities/gm.c
 # Tests to run
 UTILITIES_TESTS = \
 	utilities/tests/addnoise.sh \
+	utilities/tests/affine.sh \
 	utilities/tests/annotate.sh \
+	utilities/tests/black-threshold.sh \
 	utilities/tests/blur.sh \
 	utilities/tests/border.sh \
 	utilities/tests/channel.sh \
@@ -68,8 +70,10 @@ UTILITIES_TESTS = \
 	utilities/tests/solarize.sh \
 	utilities/tests/spread.sh \
 	utilities/tests/swirl.sh \
+	utilities/tests/threshold.sh \
 	utilities/tests/unsharpmask.sh \
 	utilities/tests/wave.sh \
+	utilities/tests/white-threshold.sh \
 	utilities/tests/montage.sh
 
 UTILITIES_MANS = \
@@ -85,6 +89,6 @@ UTILITIES_EXTRA_DIST = \
 UTILITIES_CLEANFILES = \
 	utilities/tests/*_out.miff \
 	utilities/tests/*_out.txt \
-	utilities/tests/demo.miff \
+	utilities/tests/demo*.miff \
 	utilities/tests/gm.core \
 	utilities/tests/core

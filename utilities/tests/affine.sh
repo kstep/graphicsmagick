@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -level 10%,1.2,90% -label Level Level_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -affine 1,0,0.785,1,0,0 -transform -label Affine Affine_out.miff

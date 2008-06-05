@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/03" "GraphicsMagick"
+.TH gm 1 "2008/06/04" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -432,6 +432,19 @@ for details.
 The color is specified using the format described under the \fB-fill\fP
 option.
 .TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
+
+Use \fB-black-threshold\fP to set pixels with values below the specified
+threshold to minimum value (black). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.
+.TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
 .TP
@@ -469,10 +482,11 @@ details.
 \fRthe type of channel
 
 Choose from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
-\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, or \fBBlack\fP.
+\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
+or \fBGray\fP.
 
 Use this option to extract a particular \fIchannel\fP from the image.
-\fBMatte\fP,
+\fBOpacity\fP,
 for example, is useful for extracting the opacity values from an image.
 .TP
 .B "-charcoal \fI<factor>"\fP
@@ -2385,11 +2399,13 @@ range are reset to the maximum possible value.
 
 Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP,
 \fBOpacity\fP, \fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
-\fBBlack\fP, or \fBAll\fP. Note that \fBAll\fP only modifies the color
-channels and does not modify the \fBOpacity\fP channel. \fBAll\fP
-operates on each channel independently so that operations are on a
-per-channel basis and do not operate based on pixel intensity as
-\fB-threshold\fP does.
+\fBBlack\fP, \fBAll\fP, or \fBGray\fP. \fBAll\fP only modifies the
+color channels and does not modify the \fBOpacity\fP channel. Except for
+the threshold operators, \fBAll\fP operates on each channel
+independently so that operations are on a per-channel basis.
+\fBGray\fP treats the color channels as a grayscale intensity and
+performs the requested operation on the equivalent pixel intensity so the
+result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
 \fBDivide\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP, \fBRShift\fP,
@@ -2400,14 +2416,12 @@ Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
 \fBNoise-Uniform\fP.
 
 Rvalue may be any floating point or integer value. Normally rvalue will
-be in the range of 0 to MaxRGB, where MaxRGB is the largest
-quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295) but values outside this range may be
-useful for some arithmetic operations. Arguments to logical or
-bit-wise operations are rounded to a positive integral value
-prior to use. If a percent (\fB%\fP) symbol is appended to
-the argument, then the argument has a range of 0 to 100
-percent.
+be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
+supported by the GraphicsMagick build (255, 65535, or 4294967295) but
+values outside this range may be useful for some arithmetic operations.
+Arguments to logical or bit-wise operations are rounded to a positive
+integral value prior to use. If a percent (\fB%\fP) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
 
 As an example, the \fBxor\fP operator may be used to invert a
 monochrome image (interchange black and white):
@@ -2424,7 +2438,11 @@ The \fBThresholdOperator\fP thresholds values above the threshold to
 white, and otherwise to black. The \fBThreshold-Black\fP operator
 thresholds values below the specified value to black and the
 \fBThreshold-White\fP thresholds values above the specified value to
-white.
+white. For example, the following applies 50% thresholding to the
+image:
+
+  gm convert in.bmp -operator gray threshold "50%" out.bmp
+
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -3387,6 +3405,19 @@ of the wave.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
+
+Use \fB-white-threshold\fP to set pixels with values above the specified
+threshold to maximum value (white). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.
 .TP
 .B "-window \fI<id>"\fP
 \fRmake image the background of a window
@@ -4692,6 +4723,9 @@ Options, above.
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
+.TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
 .TP
@@ -5078,6 +5112,9 @@ Options, above.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite  an image sequence [\fIconvert, composite\fP]
@@ -7585,6 +7622,9 @@ Options, above.
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
+.TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
 .TP
@@ -7944,6 +7984,9 @@ Options, above.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
 
 For a more detailed description of each option, see
 Options, above.

@@ -1,3 +1,20 @@
+2008-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Add support for
+	-black-threshold and -white-threshold.
+	* magick/image.h (enum ChannelType): Added GrayChannel
+	enumeration.
+	* magick/operator.c (QuantumOperatorImageMultivalue): New
+	implementation function to make creating legacy functions like
+	black/white thresholding easier.
+	* wand/magick_wand.c (MagickBlackThresholdImage): Implemented.
+	(MagickWhiteThresholdImage): Implemented.
+	* magick/effect.c (BlackThresholdImage): Implemented a
+	BlackThresholdImage() which is similar to (but not identical to)
+	the one in ImageMagick.
+	(WhiteThresholdImage): Implemented a WhiteThresholdImage() which
+	is similar to (but not identical to) the one in ImageMagick.
+
 2008-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/operator.c: Added support for additional channel

@@ -577,6 +577,27 @@ option.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-black-threshold"></a>-black-threshold <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels below the threshold become black</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>-black-threshold</strong> to set pixels with values below the specified
+threshold to minimum value (black). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-blue-primary"></a>-blue-primary <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blue chromaticity primary point</td></tr></table>
@@ -663,10 +684,11 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of channel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choose from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>, <strong>Opacity</strong>,
-<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, or <strong>Black</strong>.</font></td></tr></table>
+<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, <strong>Black</strong>,
+or <strong>Gray</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to extract a particular <em>channel</em> from the image.
-<strong>Matte</strong>,
+<strong>Opacity</strong>,
 for example, is useful for extracting the opacity values from an image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3104,11 +3126,13 @@ range are reset to the maximum possible value.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select a channel from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>,
 <strong>Opacity</strong>, <strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
-<strong>Black</strong>, or <strong>All</strong>. Note that <strong>All</strong> only modifies the color
-channels and does not modify the <strong>Opacity</strong> channel. <strong>All</strong>
-operates on each channel independently so that operations are on a
-per-channel basis and do not operate based on pixel intensity as
-<strong>-threshold</strong> does.</font></td></tr></table>
+<strong>Black</strong>, <strong>All</strong>, or <strong>Gray</strong>. <strong>All</strong> only modifies the
+color channels and does not modify the <strong>Opacity</strong> channel. Except for
+the threshold operators, <strong>All</strong> operates on each channel
+independently so that operations are on a per-channel basis.</font></td></tr></table>
+<strong>Gray</strong> treats the color channels as a grayscale intensity and
+performs the requested operation on the equivalent pixel intensity so the
+result is a gray image.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
 <strong>Divide</strong>, <strong>LShift</strong>, <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>,
@@ -3119,14 +3143,12 @@ Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assi
 <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
-be in the range of 0 to MaxRGB, where MaxRGB is the largest
-quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295) but values outside this range may be
-useful for some arithmetic operations. Arguments to logical or
-bit-wise operations are rounded to a positive integral value
-prior to use. If a percent (<strong>%</strong>) symbol is appended to
-the argument, then the argument has a range of 0 to 100
-percent.</font></td></tr></table>
+be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
+supported by the GraphicsMagick build (255, 65535, or 4294967295) but
+values outside this range may be useful for some arithmetic operations.
+Arguments to logical or bit-wise operations are rounded to a positive
+integral value prior to use. If a percent (<strong>%</strong>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 As an example, the <strong>xor</strong> operator may be used to invert a
 monochrome image (interchange black and white):</font></td></tr></table>
@@ -3145,7 +3167,12 @@ The <strong>ThresholdOperator</strong> thresholds values above the threshold to
 white, and otherwise to black. The <strong>Threshold-Black</strong> operator
 thresholds values below the specified value to black and the
 <strong>Threshold-White</strong> thresholds values above the specified value to
-white.
+white. For example, the following applies 50% thresholding to the
+image:</font></td></tr></table>
+<pre>
+  gm convert in.bmp -operator gray threshold "50%" out.bmp
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -4649,6 +4676,27 @@ width=15><b><font face="Helvetica, Arial"
     <a name="details-white-point"></a>-white-point <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chromaticity white point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-white-threshold"></a>-white-threshold <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels above the threshold become white</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>-white-threshold</strong> to set pixels with values above the specified
+threshold to maximum value (white). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6876,6 +6924,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-black-threshold">-black-threshold</a> <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels below the threshold become black</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-blue-primary">-blue-primary</a> <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blue chromaticity primary point</td></tr></table>
@@ -8287,6 +8346,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-white-point">-white-point</a> <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chromaticity white point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-white-threshold">-white-threshold</a> <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels above the threshold become white</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -12740,6 +12810,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-black-threshold">-black-threshold</a> <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels below the threshold become black</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-blue-primary">-blue-primary</a> <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blue chromaticity primary point</td></tr></table>
@@ -14052,6 +14133,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-white-point">-white-point</a> <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chromaticity white point</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-white-threshold">-white-threshold</a> <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels above the threshold become white</td></tr></table>
 <p>
 For a more detailed description of each option, see
 Options, above.

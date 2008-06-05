@@ -3247,6 +3247,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("black-threshold",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("blue-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -4913,6 +4923,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("white-threshold",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("write",option+1) == 0)
           {
             i++;
@@ -5006,6 +5026,8 @@ static void ConvertUsage(void)
       "-authenticate value  decrypt image with this password",
       "-average             average an image sequence",
       "-background color    background color",
+      "-black-threshold value",
+      "                     pixels below the threshold become black",
       "-blue-primary point  chomaticity blue primary point",
       "-blur geometry       blur the image",
       "-border geometry     surround image with a border of color",
@@ -5137,6 +5159,8 @@ static void ConvertUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
       "-white-point point   chomaticity white point",
+      "-white-threshold value",
+      "                     pixels above the threshold become white",
       "-write filename      write images to this file",
       (char *) NULL
     };
@@ -7776,6 +7800,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               &(*image)->chromaticity.blue_primary.y);
             continue;
           }
+        if (LocaleCompare("black-threshold",option+1) == 0)
+          {
+            /*
+              Black threshold image.
+            */
+            ++i;
+            (void) BlackThresholdImage(*image,argv[i]);
+            continue;
+          }
         if (LocaleCompare("blur",option+1) == 0)
           {
             double
@@ -9730,6 +9763,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               &(*image)->chromaticity.white_point.y);
             continue;
           }
+        if (LocaleCompare("white-threshold",option+1) == 0)
+          {
+            /*
+              White threshold image.
+            */
+            ++i;
+            (void) WhiteThresholdImage(*image,argv[i]);
+            continue;
+          }
         break;
       }
       default:
@@ -10467,6 +10509,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
+              }
+            break;
+          }
+        if (LocaleCompare("black-threshold",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12034,6 +12086,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("white-threshold",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
       case '?':
@@ -12082,6 +12144,8 @@ static void MogrifyUsage(void)
       "-antialias           remove pixel-aliasing",
       "-authenticate value  decrypt image with this password",
       "-background color    background color",
+      "-black-threshold value",
+      "                     pixels below the threshold become black",
       "-blue-primary point  chomaticity blue primary point",
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",
@@ -12204,6 +12268,8 @@ static void MogrifyUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
       "-white-point point   chomaticity white point",
+      "-white-threshold value",
+      "                     pixels above the threshold become white",
       (char *) NULL
     };
 

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004 GraphicsMagick Group
+% Copyright (C) 2004 - 2008 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -33,7 +33,9 @@
 %
 %  QuantumOperatorImage() performs the requested arithmetic,
 %  bitwise-logical, or value operation on the selected channels of
-%  the entire image.
+%  the entire image.  The AllChannels channel option operates on all
+%  color channels whereas the GrayChannel channel option treats the
+%  color channels as a grayscale intensity.
 %
 %  These operations are on the DirectClass pixels of the image and do not
 %  update pixel indexes or colormap.
@@ -48,12 +50,19 @@
 %
 %    o image: The image.
 %
-%    o channel: Channel to operate on.
+%    o channel: Channel to operate on (RedChannel, CyanChannel,
+%        GreenChannel, MagentaChannel, BlueChannel, YellowChannel,
+%        OpacityChannel, BlackChannel, MatteChannel, AllChannels,
+%        GrayChannel).  The AllChannels type only updates color
+%        channels.  The GrayChannel type treats the color channels
+%        as if they represent an intensity.
 %
 %    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
 %        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
 %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
-%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
+%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
+%        NoiseGaussianOp, NoiseImpulseOp, NoiseLaplacianOp,
+%        NoiseMultiplicativeOp, NoisePoissonOp, NoiseUniformOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -73,6 +82,160 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   Q u a n t u m O p e r a t o r I m a g e M u l t i v a l u e               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  QuantumOperatorImageMultivalue() is a semi-private implementation
+%  fuction which accepts a comma delimited string of per-channel values
+%  and applies a specified operator to the channels of the image.  The
+%  main reason for this function to exist is to support
+%  ChannelThresholdPixels(), BlackThresholdImage(), WhiteThresholdImage(),
+%  or any other legacy style function which needs to be implemented.
+%
+%  The format of the QuantumOperatorImageMultivalue method is:
+%
+%      MagickPassFail QuantumOperatorImageMultivalue(
+%                                 Image *image,
+%                                 const QuantumOperator quantum_operator,
+%                                 const char *values)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o values: define the rvalues, <red>{<green>,<blue>,<opacity>}{%}.
+%
+*/
+typedef struct _ChannelOptions_t
+{
+  DoublePixelPacket
+    values;
+
+  MagickBool
+    red_enabled,
+    green_enabled,
+    blue_enabled,
+    opacity_enabled;
+} ChannelOptions_t;
+MagickExport MagickPassFail
+QuantumOperatorImageMultivalue(Image *image,
+                               const QuantumOperator quantum_operator,
+                               const char *values)
+{
+  ChannelOptions_t
+    options;
+
+  int
+    count;
+
+  MagickPassFail
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (values == (const char *) NULL)
+    return MagickFail;;
+
+  options.red_enabled        = MagickFalse;
+  options.green_enabled      = MagickFalse;
+  options.blue_enabled       = MagickFalse;
+  options.opacity_enabled    = MagickFalse;
+
+  options.values.red       = -1.0;
+  options.values.green     = -1.0;
+  options.values.blue      = -1.0;
+  options.values.opacity   = -1.0;
+  count=sscanf(values,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
+               &options.values.red,
+               &options.values.green,
+               &options.values.blue,
+               &options.values.opacity);
+  
+  if ((count > 3) && (options.values.opacity >= 0.0))
+    options.opacity_enabled = MagickTrue;
+  if ((count > 2) && (options.values.blue >= 0.0))
+    options.blue_enabled = MagickTrue;
+  if ((count > 1) && (options.values.green >= 0.0))
+    options.green_enabled = MagickTrue;
+  if ((count > 0) && (options.values.red >= 0.0))
+    options.red_enabled = MagickTrue;
+
+  if (strchr(values,'%') != (char *) NULL)
+    {
+      if (options.red_enabled)
+        options.values.red     *= MaxRGB/100.0;
+      if (options.green_enabled)
+        options.values.green   *= MaxRGB/100.0;
+      if (options.blue_enabled)
+        options.values.blue    *= MaxRGB/100.0;
+      if (options.opacity_enabled)
+        options.values.opacity *= MaxRGB/100.0;
+    }
+
+  status=MagickPass;
+
+  if ((IsRGBColorspace(image->colorspace)) &&
+      ((count == 1) ||
+       ((options.values.red == options.values.green) &&
+        (options.values.green == options.values.blue))))
+    {
+      /*
+        Apply operation to all channels in gray or RGB space.
+      */
+      if (IsGrayColorspace(image->colorspace))
+        status=QuantumOperatorImage(image,GrayChannel,quantum_operator,
+                                    options.values.red,&image->exception);
+      else
+        status=QuantumOperatorImage(image,AllChannels,quantum_operator,
+                                    options.values.red,&image->exception);
+    }
+  else
+    {
+      /*
+        Apply operator to individual RGB(A) channels.
+      */
+      if ((MagickPass == status) && (options.red_enabled))
+        {
+          status=QuantumOperatorImage(image,RedChannel,quantum_operator,
+                                      options.values.red,&image->exception);
+        }
+
+      if ((MagickPass == status) && (options.green_enabled))
+        {
+          status=QuantumOperatorImage(image,GreenChannel,quantum_operator,
+                                      options.values.green,&image->exception);
+        }
+
+      if ((MagickPass == status) && (options.blue_enabled))
+        {
+          status=QuantumOperatorImage(image,BlueChannel,quantum_operator,
+                                      options.values.blue,&image->exception);
+        }
+
+      if ((MagickPass == status) && (options.opacity_enabled))
+        {
+          status=QuantumOperatorImage(image,OpacityChannel,quantum_operator,
+                                      options.values.opacity,&image->exception);
+        }
+    }
+
+  if ((MagickPass == status) && (options.opacity_enabled))
+    {
+      status=QuantumOperatorImage(image,OpacityChannel,quantum_operator,
+                                  options.values.opacity,&image->exception);
+    }
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   Q u a n t u m O p e r a t o r R e g i o n I m a g e                       %
 %                                                                             %
 %                                                                             %
@@ -81,7 +244,9 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %
 %  QuantumOperatorRegionImage() performs the requested arithmetic,
 %  bitwise-logical, or value operation on the selected channels of
-%  the image over the specified region.
+%  the image over the specified region. The AllChannels channel option
+%  operates on all color channels whereas the GrayChannel channel option
+%  treats the color channels as a grayscale intensity.
 %
 %  These operations are on the DirectClass pixels of the image and do not
 %  update pixel indexes or colormap.
@@ -97,8 +262,12 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %
 %    o image: The image.
 %
-%    o channel: Channel to operate on.  The AllChannels type only updates
-%        color channels.
+%    o channel: Channel to operate on (RedChannel, CyanChannel,
+%        GreenChannel, MagentaChannel, BlueChannel, YellowChannel,
+%        OpacityChannel, BlackChannel, MatteChannel, AllChannels,
+%        GrayChannel).  The AllChannels type only updates color
+%        channels.  The GrayChannel type treats the color channels
+%        as if they represent an intensity.
 %
 %    o x: Ordinate of left row of region.
 %
@@ -111,7 +280,9 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
 %        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
 %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
-%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
+%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
+%        NoiseGaussianOp, NoiseImpulseOp, NoiseLaplacianOp,
+%        NoiseMultiplicativeOp, NoisePoissonOp, NoiseUniformOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -185,6 +356,17 @@ QuantumAdd(void *user_data,
           ApplyArithmeticOperator(pixels[i].blue,+,context->double_value);
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+          
+          intensity = PixelIntensity(&pixels[i]);
+          ApplyArithmeticOperator(intensity,+,context->double_value);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -237,6 +419,17 @@ QuantumAnd(void *user_data,
           pixels[i].red &= context->quantum_value;
           pixels[i].green &= context->quantum_value;
           pixels[i].blue &= context->quantum_value;
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity &= context->quantum_value;
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
         }
       break;
     }
@@ -293,6 +486,13 @@ QuantumAssign(void *user_data,
           pixels[i].blue = context->quantum_value;
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            context->quantum_value;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -307,14 +507,14 @@ QuantumDivide(void *user_data,
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
-
+  
   register long
     i;
-
+  
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
-
+  
   switch (context->channel)
     {
     case RedChannel:
@@ -345,6 +545,17 @@ QuantumDivide(void *user_data,
           ApplyArithmeticOperator(pixels[i].red,/,context->double_value);
           ApplyArithmeticOperator(pixels[i].green,/,context->double_value);
           ApplyArithmeticOperator(pixels[i].blue,/,context->double_value);
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          ApplyArithmeticOperator(intensity,/,context->double_value);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
         }
       break;
     }
@@ -401,6 +612,17 @@ QuantumLShift(void *user_data,
           pixels[i].blue <<= context->quantum_value;
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity <<= context->quantum_value;
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -455,6 +677,17 @@ QuantumMultiply(void *user_data,
           ApplyArithmeticOperator(pixels[i].blue,*,context->double_value);
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          ApplyArithmeticOperator(intensity,*,context->double_value);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -480,7 +713,7 @@ QuantumNoise(void *user_data,
              const long npixels,
              ExceptionInfo *exception,
              const NoiseType noise_type
-)
+             )
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -527,6 +760,17 @@ QuantumNoise(void *user_data,
           pixels[i].red   = GenerateQuantumNoise(pixels[i].red,noise_type,factor);
           pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor);
           pixels[i].blue  = GenerateQuantumNoise(pixels[i].blue,noise_type,factor);
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            GenerateQuantumNoise(intensity,noise_type,factor);
         }
       break;
     }
@@ -649,6 +893,17 @@ QuantumOr(void *user_data,
           pixels[i].blue |= context->quantum_value;
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity |= context->quantum_value;
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -703,6 +958,17 @@ QuantumRShift(void *user_data,
           pixels[i].blue >>= context->quantum_value;
         }
       break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity >>= context->quantum_value;
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
     }
 
   return (MagickPass);
@@ -755,6 +1021,17 @@ QuantumSubtract(void *user_data,
           ApplyArithmeticOperator(pixels[i].red,-,context->double_value);
           ApplyArithmeticOperator(pixels[i].green,-,context->double_value);
           ApplyArithmeticOperator(pixels[i].blue,-,context->double_value);
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          ApplyArithmeticOperator(intensity,-,context->double_value);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
         }
       break;
     }
@@ -818,11 +1095,15 @@ QuantumThreshold(void *user_data,
       break;
     case UndefinedChannel:
     case AllChannels:
+    case GrayChannel:
       for (i=0; i < npixels; i++)
         {
-          pixels[i].red   = ApplyThresholdOperator(pixels[i].red,context->quantum_value);
-          pixels[i].green = ApplyThresholdOperator(pixels[i].green,context->quantum_value);
-          pixels[i].blue  = ApplyThresholdOperator(pixels[i].blue,context->quantum_value);
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue = 
+            ApplyThresholdOperator(intensity,context->quantum_value);
         }
       break;
     }
@@ -885,11 +1166,34 @@ QuantumThresholdBlack(void *user_data,
       break;
     case UndefinedChannel:
     case AllChannels:
+      /*
+        For the all-channels case we bend the rules a bit and only
+        threshold to black if the computed intensity of the color
+        channels is less than the threshold.  This allows black
+        thresholding to work without causing a color shift.  If
+        individual channels need to be thresholded, then per-channel
+        thresholding will be required for each channel to be
+        thresholded.
+      */
       for (i=0; i < npixels; i++)
         {
-          pixels[i].red   = ApplyThresholdBlackOperator(pixels[i].red,context->quantum_value);
-          pixels[i].green = ApplyThresholdBlackOperator(pixels[i].green,context->quantum_value);
-          pixels[i].blue  = ApplyThresholdBlackOperator(pixels[i].blue,context->quantum_value);
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          if (0U == ApplyThresholdBlackOperator(intensity,context->quantum_value))
+            pixels[i].red=pixels[i].green=pixels[i].blue=0U;
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            ApplyThresholdBlackOperator(intensity,context->quantum_value);
         }
       break;
     }
@@ -952,11 +1256,34 @@ QuantumThresholdWhite(void *user_data,
       break;
     case UndefinedChannel:
     case AllChannels:
+      /*
+        For the all-channels case we bend the rules a bit and only
+        threshold to white if the computed intensity of the color
+        channels exceeds the threshold.  This allows white
+        thresholding to work without causing a color shift.  If
+        individual channels need to be thresholded, then per-channel
+        thresholding will be required for each channel to be
+        thresholded.
+      */
       for (i=0; i < npixels; i++)
         {
-          pixels[i].red   = ApplyThresholdWhiteOperator(pixels[i].red,context->quantum_value);
-          pixels[i].green = ApplyThresholdWhiteOperator(pixels[i].green,context->quantum_value);
-          pixels[i].blue  = ApplyThresholdWhiteOperator(pixels[i].blue,context->quantum_value);
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          if (MaxRGB == ApplyThresholdWhiteOperator(intensity,context->quantum_value))
+            pixels[i].red=pixels[i].green=pixels[i].blue=MaxRGB;
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            ApplyThresholdWhiteOperator(intensity,context->quantum_value);
         }
       break;
     }
@@ -1011,6 +1338,17 @@ QuantumXor(void *user_data,
           pixels[i].red ^= context->quantum_value;
           pixels[i].green ^= context->quantum_value;
           pixels[i].blue ^= context->quantum_value;
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity ^= context->quantum_value;
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
         }
       break;
     }
@@ -1109,8 +1447,9 @@ QuantumOperatorRegionImage(Image *image,
 
   if (call_back)
     {
-      FormatString(description,"Apply operator '%s %g' to channel '%s' ...",
+      FormatString(description,"Apply operator '%s %g (%g%%)' to channel '%s' ...",
                    QuantumOperatorToString(quantum_operator),rvalue,
+                   ((rvalue/MaxRGBFloat)*100),
                    ChannelTypeToString(channel));
       status=PixelIterateMonoModify(call_back,
                                     description,

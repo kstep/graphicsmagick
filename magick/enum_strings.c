@@ -54,6 +54,9 @@ MagickExport const char *ChannelTypeToString(const ChannelType channel)
     case AllChannels:
       channel_type="all";
       break;
+    case GrayChannel:
+      channel_type="gray";
+      break;
     }
 
   return channel_type;
@@ -85,6 +88,9 @@ MagickExport ChannelType StringToChannelType(const char *option)
     channel=MatteChannel;
   else if (LocaleCompare("All",option) == 0)
     channel=AllChannels;
+  else if ((LocaleCompare("Gray",option) == 0) ||
+           (LocaleCompare("Intensity",option) == 0))
+    channel=GrayChannel;
 
   return channel;
 }

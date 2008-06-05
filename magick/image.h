@@ -159,16 +159,17 @@ typedef enum
 typedef enum
 {
   UndefinedChannel,
-  RedChannel,
-  CyanChannel,
-  GreenChannel,
-  MagentaChannel,
-  BlueChannel,
-  YellowChannel,
-  OpacityChannel,
-  BlackChannel,
-  MatteChannel,
-  AllChannels
+  RedChannel,     /* RGB Red channel */
+  CyanChannel,    /* CMYK Cyan channel */
+  GreenChannel,   /* RGB Green channel */
+  MagentaChannel, /* CMYK Magenta channel */
+  BlueChannel,    /* RGB Blue channel */
+  YellowChannel,  /* CMYK Yellow channel */
+  OpacityChannel, /* Opacity channel */
+  BlackChannel,   /* CMYK Black (K) channel */
+  MatteChannel,   /* Same as Opacity channel */
+  AllChannels,    /* Color channels */
+  GrayChannel     /* Color channels represent an intensity. */
 } ChannelType;
 
 typedef enum

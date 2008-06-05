@@ -195,8 +195,18 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
           image->matte=False;
           break;
         }
-      default:
+      case UndefinedChannel:
+      case AllChannels:
+      case GrayChannel:
         {
+          for (x=image->columns; x != 0; x--)
+            {
+              q->red=q->green=q->blue=PixelIntensity(q);
+              q->opacity=OpaqueOpacity;
+              q++;
+            }
+          image->matte=False;
+          break;
         }
       }
     if (!SyncImagePixels(image))
@@ -212,8 +222,9 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
         }
   }
   image->matte=MagickFalse;
-  image->colorspace=RGBColorspace;
   image->is_grayscale=MagickTrue;
+  image->colorspace=RGBColorspace;
+
   return(status);
 }
 

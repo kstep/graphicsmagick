@@ -21,6 +21,7 @@
 
 		<li><a href="#adaptivethresholdimage">AdaptiveThresholdImage</a></li>
 		<li><a href="#addnoiseimage">AddNoiseImage</a></li>
+		<li><a href="#blackthresholdimage">BlackThresholdImage</a></li>
 		<li><a href="#blurimage">BlurImage</a></li>
 		<li><a href="#channelthresholdimage">ChannelThresholdImage</a></li>
 		<li><a href="#despeckleimage">DespeckleImage</a></li>
@@ -37,6 +38,7 @@
 		<li><a href="#spreadimage">SpreadImage</a></li>
 		<li><a href="#thresholdimage">ThresholdImage</a></li>
 		<li><a href="#unsharpmaskimage">UnsharpMaskImage</a></li>
+		<li><a href="#whitethresholdimage">WhiteThresholdImage</a></li>
 	</ul>
 
 </ul>
@@ -53,6 +55,7 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</P>
 <P>Image * <strong>AddNoiseImage</strong>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>BlackThresholdImage</strong>( Image *image, const char *thresholds );</P>
 <P>Image * <strong>BlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</P>
 <P>Image * <strong>DespeckleImage</strong>( const Image *image, ExceptionInfo *exception );</P>
@@ -69,6 +72,7 @@
 <P>Image * <strong>SpreadImage</strong>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>ThresholdImage</strong>( Image *image, const double threshold );</P>
 <P>Image * <strong>UnsharpMaskImage</strong>( const Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>WhiteThresholdImage</strong>( Image *image, const char *thresholds );</P>
 <P>
 </P>
 <hr />
@@ -132,6 +136,25 @@
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="blackthresholdimage">BlackThresholdImage</a></h2>
+<blockquote>BlackThresholdImage() adjusts the levels of image channels such that values below a specified threshold are set to the minimum value ( black ) while the remaining pixels are unchanged. </blockquote><P>The format of the BlackThresholdImage method is:</P>
+<blockquote>MagickPassFail BlackThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const char *thresholds ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_thresholds_3a">thresholds:</a></strong>
+
+<DD>
+<P>Channel thresholds which are specified as a comma delimited list containing the thresholds for red, green, blue, and opacity.  If a percentage of MaxRGB.</P>
 </dd>
 </li>
 </dl>
@@ -382,7 +405,7 @@
 <P>The channel or channels to be thresholded.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_thresholds_3a">thresholds:</a></strong>
+<dt><strong>thresholds:</strong>
 
 <DD>
 <P>a geometry string containing LOWxHIGH thresholds.  If the string contains 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be performed instead.</P>
@@ -566,6 +589,25 @@
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="whitethresholdimage">WhiteThresholdImage</a></h2>
+<blockquote>WhiteThresholdImage() adjusts the levels of image channels such that values above a specified threshold are set to the maximum value ( white ) while the remaining pixels are unchanged. </blockquote><P>The format of the WhiteThresholdImage method is:</P>
+<blockquote>MagickPassFail WhiteThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const char *thresholds ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong>thresholds:</strong>
+
+<DD>
+<P>Channel thresholds which are specified as a comma delimited list containing the thresholds for red, green, blue, and opacity.  If a percentage of MaxRGB.</P>
 </dd>
 </dl>
 

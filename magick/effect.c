@@ -43,6 +43,7 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
+#include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/render.h"
@@ -305,6 +306,39 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
                              noise_image,0,0,&noise_image->exception);
   noise_image->is_grayscale=is_grayscale;
   return(noise_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     B l a c k T h r e s h o l d I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BlackThresholdImage() adjusts the levels of image channels such that
+%  values below a specified threshold are set to the minimum value (black)
+%  while the remaining pixels are unchanged.
+%
+%  The format of the BlackThresholdImage method is:
+%
+%      MagickPassFail BlackThresholdImage(Image *image,const char *thresholds)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o thresholds: Channel thresholds which are specified as a comma delimited
+%      list containing the thresholds for red, green, blue, and opacity.  If
+%      the list contains a percent symbol (%) then all values are treated as
+%      a percentage of MaxRGB.
+%
+*/
+MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresholds)
+{
+  return QuantumOperatorImageMultivalue(image,ThresholdBlackQuantumOp,thresholds);
 }
 
 /*
@@ -726,7 +760,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
   ChannelThresholdOptions_t
     options;
 
-  long
+  int
     count;
 
   unsigned int
@@ -2965,4 +2999,37 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
                                 0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     W h i t e T h r e s h o l d I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WhiteThresholdImage() adjusts the levels of image channels such that
+%  values above a specified threshold are set to the maximum value (white)
+%  while the remaining pixels are unchanged.
+%
+%  The format of the WhiteThresholdImage method is:
+%
+%      MagickPassFail WhiteThresholdImage(Image *image,const char *thresholds)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o thresholds: Channel thresholds which are specified as a comma delimited
+%      list containing the thresholds for red, green, blue, and opacity.  If
+%      the list contains a percent symbol (%) then all values are treated as
+%      a percentage of MaxRGB.
+%
+*/
+MagickExport MagickPassFail WhiteThresholdImage(Image *image,const char *thresholds)
+{
+  return QuantumOperatorImageMultivalue(image,ThresholdWhiteQuantumOp,thresholds);
 }

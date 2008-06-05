@@ -34,6 +34,10 @@
 <lopt>-background <color></opt>
 <abs>the background color</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt>-black-threshold red[,green][,blue][,opacity]</opt>
+<abs>pixels below the threshold become black</abs>
+</utils>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-blue-primary <x>,<y></opt>
 <abs>blue chromaticity primary point</abs>
@@ -723,6 +727,10 @@ detect when image file is modified and redisplay.</abs>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-white-point <x>,<y></opt>
 <abs>chromaticity white point</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-white-threshold red[,green][,blue][,opacity]</opt>
+<abs>pixels above the threshold become white</abs>
 </utils>
 <utils apps=animate,display>
 <lopt>-window <id></opt>

@@ -35,11 +35,13 @@ extern MagickExport Image
   *UnsharpMaskImage(const Image *,const double,const double,const double,
      const double,ExceptionInfo *);
 
-extern MagickExport unsigned int
+extern MagickExport MagickPassFail
+  BlackThresholdImage(Image *image,const char *thresholds),
   ChannelThresholdImage(Image *,const char *),
   RandomChannelThresholdImage(Image *,const char *,const char *,
       ExceptionInfo *exception),
-  ThresholdImage(Image *,const double);
+  ThresholdImage(Image *,const double),
+  WhiteThresholdImage(Image *image,const char *thresholds);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -123,6 +123,7 @@ namespace Magick
   using MagickLib::BlackChannel;
   using MagickLib::MatteChannel;
   using MagickLib::AllChannels;
+  using MagickLib::GrayChannel;
   
   // Color-space types
   using MagickLib::ColorspaceType;

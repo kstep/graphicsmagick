@@ -180,7 +180,7 @@ static char
   *ChannelTypes[] =
   {
     "Undefined", "Red", "Cyan", "Green", "Magenta", "Blue", "Yellow",
-    "Opacity", "Black", "Matte", (char *) NULL
+    "Opacity", "Black", "Matte", "All", "Gray", (char *) NULL
   },
   *ClassTypes[] =
   {

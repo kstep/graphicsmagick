@@ -69,7 +69,6 @@
  * The following functions are not implemented at this time and always
  * return False:
  *
- *   MagickBlackThresholdImage
  *   MagickCompareImageChannels
  *   MagickCompareImages
  *   MagickFxImage
@@ -86,7 +85,6 @@
  *   MagickRadialBlurImage
  *   MagickThresholdImageChannel
  *   MagickTintImage
- *   MagickWhiteThresholdImage
  *
  */
 
@@ -699,7 +697,6 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
 WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
-#if defined(NOT_IMPLEMENTED)
   char
     thresholds[MaxTextExtent];
 
@@ -717,10 +714,6 @@ WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-#else
-  ARG_NOT_USED(threshold);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickBlackThresholdImage");
-#endif
 }
 
 /*
@@ -9165,7 +9158,6 @@ WandExport unsigned int MagickWaveImage(MagickWand *wand,const double amplitude,
 WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
-#if defined(NOT_IMPLEMENTED)
   char
     thresholds[MaxTextExtent];
 
@@ -9183,10 +9175,6 @@ WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-#else
-  ARG_NOT_USED(threshold);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickWhiteThresholdImage");
-#endif
 }
 
 /*

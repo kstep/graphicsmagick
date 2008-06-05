@@ -11,4 +11,5 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -level 10%,1.2,90% -label Level Level_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -black-threshold "20%" \
+                   -label "Black Threshold" ThresholdBlack_out.miff
