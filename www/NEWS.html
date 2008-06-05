@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.13 News</TITLE>
+<TITLE>GraphicsMagick 1.1.14 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,13 +17,46 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.13 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.14 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on May 28, 2008.
+This file was last updated on June 5, 2008.
 
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.14 (released June 5, 2008)
+
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> Noise generation was not working correctly for anything but a Q8 build.
+
+  <LI> Poisson noise generator was extremely slow.  Now it is reasonably fast.
+
+  <LI> PDF reader now computes bounding box for rotated PDFs correctly.
+
+</UL>
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Cineon reader: Fixed crash with broken file from Sami Liedes.
+
+  <LI> PICT reader: Fixed crash with broken files from Sami Liedes.
+
+  <LI> XCF reader: Fixed crash with broken files from Sami Liedes.
+
+</UL>
+<p>
+  Security Issue Not Fixed:
+
+<UL>
+  <LI> JP2/JPC reader: Several JPEG-2000 files from Sami Liedes broken collection
+      cause crashes in Jasper.  This is not GraphicsMagick's fault.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.13 (released May 28, 2008)
 

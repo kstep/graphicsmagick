@@ -43,6 +43,7 @@
 #include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/shear.h"
@@ -325,6 +326,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     count,
+    rotate,
     status;
 
   RectangleInfo
@@ -340,9 +342,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   SegmentInfo
     bounds;
-
-  unsigned int
-    portrait;
 
   unsigned long
     height,
@@ -393,9 +392,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine page geometry from the PDF media box.
   */
+  rotate=0;
   memset(&page,0,sizeof(RectangleInfo));
   memset(&box,0,sizeof(RectangleInfo));
-  portrait=True;
   for (p=command; ; )
   {
     c=ReadBlobByte(image);
@@ -410,8 +409,15 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Continue unless this is a MediaBox statement.
     */
-    if (LocaleNCompare(command,"/Rotate 90",10) == 0)
-      portrait=False;
+    if (LocaleNCompare(command,"/Rotate ",8) == 0)
+      {
+        count=sscanf(command,"/Rotate %d",&rotate);
+        if (count > 0)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Rotate by %d degrees",rotate);
+          }
+      }
     q=strstr(command,MediaBox);
     if (q == (char *) NULL)
       continue;
@@ -420,6 +426,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != 4)
       count=sscanf(q,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
         &bounds.x2,&bounds.y2);
+    if (count == 4)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Parsed: MediaBox %lf %lf %lf %lf",
+                              bounds.x1,bounds.y1,
+                              bounds.x2,bounds.y2);
+      }
     if (count != 4)
       continue;
     if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
@@ -435,6 +448,18 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page.height=height;
     box=page;
   }
+  /*
+    If page is rotated right or left, then swap width and height values.
+  */
+  if ((90 == AbsoluteValue(rotate)) || (270 == AbsoluteValue(rotate)))
+    {
+      double
+        value;
+
+      value=page.width;
+      page.width=page.height;
+      page.height=value;
+    }
   if ((page.width == 0) || (page.height == 0))
     {
       SetGeometry(image,&page);
@@ -444,6 +469,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
+  geometry[0]='\0';
   FormatString(geometry,"%lux%lu",
     (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
@@ -498,21 +524,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PDF");
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
-    if (!image_info->ping && !portrait)
-      {
-        Image
-          *rotate_image;
-
-        /*
-          Rotate image.
-        */
-        rotate_image=RotateImage(image,90,exception);
-        if (rotate_image != (Image *) NULL)
-          {
-            DestroyImage(image);
-            image=rotate_image;
-          }
-      }
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;

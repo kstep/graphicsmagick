@@ -1,5 +1,28 @@
-This file was last updated on May 28, 2008.
+This file was last updated on June 5, 2008.
 
+
+Significant changes associated with GraphicsMagick 1.1.14 (released June 5, 2008)
+
+  Bugs Fixed:
+
+    o Noise generation was not working correctly for anything but a Q8 build.
+
+    o Poisson noise generator was extremely slow.  Now it is reasonably fast.
+
+    o PDF reader now computes bounding box for rotated PDFs correctly.
+
+  Security Fixes:
+
+    o Cineon reader: Fixed crash with broken file from Sami Liedes.
+
+    o PICT reader: Fixed crash with broken files from Sami Liedes.
+
+    o XCF reader: Fixed crash with broken files from Sami Liedes.
+
+  Security Issue Not Fixed:
+
+    o JP2/JPC reader: Several JPEG-2000 files from Sami Liedes broken collection
+      cause crashes in Jasper.  This is not GraphicsMagick's fault.
 
 Significant changes associated with GraphicsMagick 1.1.13 (released May 28, 2008)
 
