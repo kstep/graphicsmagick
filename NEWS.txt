@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on May 28, 2008
+This file was last updated on June 5, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,8 +14,33 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
+1.2.3 (June 5, 2008)
+====================
+
+Security Fixes:
+
+  * Cineon reader: Fixed crash with broken file from Sami Liedes.
+
+  * Palm reader: Fixed crash with broken files from Sami Liedes.
+
+  * PICT reader: Fixed crash with broken files from Sami Liedes.
+
+  * DPX reader: Validate file data better to avoid improper operation with
+    intentionally (or accidentally) defective files.
+
+  * XCF reader: Fixed crash with broken files from Sami Liedes.
+
+Security Issue Not Fixed:
+
+  * JP2/JPC reader: Several JPEG-2000 files from Sami Liedes "broken"
+    collection cause crashes in Jasper. This is not GraphicsMagick's fault.
+
+Bug fixes:
+
+  * Noise generators were only working properly for Q8 build.  
+
 1.2.2 (May 28, 2008)
-===================
+====================
 
 Bug fixes:
 
