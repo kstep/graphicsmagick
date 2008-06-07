@@ -422,14 +422,6 @@ if test "$with_ltdl" != 'no' ; then
   fi
 fi
 
-# Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fpx jasper jbig jpeg lcms png tiff ttf wmf xml zlib)
-AC_ARG_ENABLE(delegate-build,
-	      [  --enable-delegate-build enable using delegate libs in subdirectories
-                          (default disabled)],
-	      [with_delegate_build=$enableval],
-	      [with_delegate_build='no'])
-
 # Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
 AC_ARG_ENABLE(installed,
@@ -1158,56 +1150,6 @@ then
 fi
 AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 
-# Only check for delegate libraries in subdirectories if requested.
-if test "$with_delegate_build" != 'no'
-then
-  # Check for delegate sub-directories and add -I & -L options as required.
-  # This presumes that delegates are installed as detailed in the GraphicsMagick
-  # README. If delegates are installed in a standard location where the
-  # compiler will automatically find them then these options should not be
-  # required.
-
-  #
-  # Most delegates have includes in the same directory as the library, but not all ...
-  #
-  # Includes
-  for dir in bzlib fpx jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-      fi
-    fi
-  done
-
-  # Libraries
-  for dir in bzlib fpx/obj jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/objs wmf/src xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
-      fi
-    fi
-    if test -d "$builddir/$dir/.libs"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
-    else
-      if test -d "$srcdirfull/$dir/.libs"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/.libs"
-      fi
-    fi
-  done
-fi
-
 # Assume that delegate headers and libraries may reside under same
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
@@ -1930,19 +1872,28 @@ then
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' && test -d "$builddir/ttf/include"
+    freetype_config=''
+    # Allow the user to specify the location of freetype.
+    if test "$with_ttf" != 'yes'
     then
-       :
-    else
-       freetype_config=''
-       AC_CHECK_PROGS(freetype_config,freetype-config,)dnl
-       if test -n "$freetype_config"
-       then
-          freetype_prefix=`freetype-config --prefix`
-          freetype_exec_prefix=`freetype-config --exec-prefix`
-          LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
-       fi
+      if test -x "${with_ttf}/bin/freetype-config"
+      then
+        freetype_config="${with_ttf}/bin/freetype-config"
+      elif test -x "${with_ttf}"
+      then
+        freetype_config=${with_ttf}
+      fi
+    fi
+    if test -z "$freetype_config"
+    then
+      AC_PATH_PROG(freetype_config,freetype-config,)dnl
+    fi
+    if test -n "$freetype_config"
+    then
+      freetype_prefix=`${freetype_config} --prefix`
+      freetype_exec_prefix=`${freetype_config} --exec-prefix`
+      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
+      CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
     fi
 
 dnl First see if there is a library

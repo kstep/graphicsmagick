@@ -1,3 +1,16 @@
+2008-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c (ReadDCMImage): Make DCM reader quit immediately on
+	EOF condition.
+	* coders/avi.c (ReadAVIImage): Make AVI reader more robust at
+	rejecting bad files.
+	* configure.ac: Eliminated --enable-delegate-build option that I
+	have not used or tested for almost ten years so it probably did
+	not work anyway.  Use --with-ttf=/prefix to specify the the
+	installation prefix for freetype.  Use
+	--with-ttf=/prefix/bin/freetype-config to specify the whole path
+	to freetype-config.
+
 2008-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Add support for

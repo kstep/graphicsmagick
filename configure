@@ -1187,7 +1187,6 @@ with_ltdl_include
 with_ltdl_lib
 enable_ltdl_install
 with_modules
-enable_delegate_build
 enable_installed
 enable_libtool_verbose
 enable_maintainer_mode
@@ -1883,8 +1882,6 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-ltdl-install   install libltdl
-  --enable-delegate-build enable using delegate libs in subdirectories
-                          (default disabled)
   --disable-installed      disable building an installed GraphicsMagick
                           (default enabled)
   --enable-libtool-verbose enable verbose libtool output (default disabled)
@@ -7056,13 +7053,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7059: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7056: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7062: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7059: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7065: output\"" >&5)
+  (eval echo "\"\$as_me:7062: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8161,7 +8158,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8164 "configure"' > conftest.$ac_ext
+  echo '#line 8161 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10107,11 +10104,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10110: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10107: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10114: \$? = $ac_status" >&5
+   echo "$as_me:10111: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10431,11 +10428,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10434: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10431: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10438: \$? = $ac_status" >&5
+   echo "$as_me:10435: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10536,11 +10533,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10539: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10536: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10543: \$? = $ac_status" >&5
+   echo "$as_me:10540: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10591,11 +10588,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10594: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10591: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10598: \$? = $ac_status" >&5
+   echo "$as_me:10595: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13383,7 +13380,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13386 "configure"
+#line 13383 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13483,7 +13480,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13486 "configure"
+#line 13483 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16235,11 +16232,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16238: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16235: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16242: \$? = $ac_status" >&5
+   echo "$as_me:16239: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16334,11 +16331,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16337: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16334: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16341: \$? = $ac_status" >&5
+   echo "$as_me:16338: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16386,11 +16383,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16389: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16386: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16393: \$? = $ac_status" >&5
+   echo "$as_me:16390: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18285,7 +18282,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18288 "configure"
+#line 18285 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19614,16 +19611,6 @@ _ACEOF
 
   fi
 fi
-
-# Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fpx jasper jbig jpeg lcms png tiff ttf wmf xml zlib)
-# Check whether --enable-delegate-build was given.
-if test "${enable_delegate_build+set}" = set; then
-  enableval=$enable_delegate_build; with_delegate_build=$enableval
-else
-  with_delegate_build='no'
-fi
-
 
 # Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
@@ -28783,56 +28770,6 @@ else
 fi
 
 
-# Only check for delegate libraries in subdirectories if requested.
-if test "$with_delegate_build" != 'no'
-then
-  # Check for delegate sub-directories and add -I & -L options as required.
-  # This presumes that delegates are installed as detailed in the GraphicsMagick
-  # README. If delegates are installed in a standard location where the
-  # compiler will automatically find them then these options should not be
-  # required.
-
-  #
-  # Most delegates have includes in the same directory as the library, but not all ...
-  #
-  # Includes
-  for dir in bzlib fpx jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-      fi
-    fi
-  done
-
-  # Libraries
-  for dir in bzlib fpx/obj jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/objs wmf/src xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
-      fi
-    fi
-    if test -d "$builddir/$dir/.libs"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
-    else
-      if test -d "$srcdirfull/$dir/.libs"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/.libs"
-      fi
-    fi
-  done
-fi
-
 # Assume that delegate headers and libraries may reside under same
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
@@ -35453,31 +35390,40 @@ $as_echo "" >&6; }
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' && test -d "$builddir/ttf/include"
+    freetype_config=''
+    # Allow the user to specify the location of freetype.
+    if test "$with_ttf" != 'yes'
     then
-       :
-    else
-       freetype_config=''
-       for ac_prog in freetype-config
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
+      if test -x "${with_ttf}/bin/freetype-config"
+      then
+        freetype_config="${with_ttf}/bin/freetype-config"
+      elif test -x "${with_ttf}"
+      then
+        freetype_config=${with_ttf}
+      fi
+    fi
+    if test -z "$freetype_config"
+    then
+      # Extract the first word of "freetype-config", so it can be a program name with args.
+set dummy freetype-config; ac_word=$2
 { $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_prog_freetype_config+set}" = set; then
+if test "${ac_cv_path_freetype_config+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
-  if test -n "$freetype_config"; then
-  ac_cv_prog_freetype_config="$freetype_config" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+  case $freetype_config in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_freetype_config="$freetype_config" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_freetype_config="$ac_prog"
+    ac_cv_path_freetype_config="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -35485,9 +35431,10 @@ done
 done
 IFS=$as_save_IFS
 
+  ;;
+esac
 fi
-fi
-freetype_config=$ac_cv_prog_freetype_config
+freetype_config=$ac_cv_path_freetype_config
 if test -n "$freetype_config"; then
   { $as_echo "$as_me:$LINENO: result: $freetype_config" >&5
 $as_echo "$freetype_config" >&6; }
@@ -35496,16 +35443,13 @@ else
 $as_echo "no" >&6; }
 fi
 
-
-  test -n "$freetype_config" && break
-done
-       if test -n "$freetype_config"
-       then
-          freetype_prefix=`freetype-config --prefix`
-          freetype_exec_prefix=`freetype-config --exec-prefix`
-          LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
-       fi
+    fi
+    if test -n "$freetype_config"
+    then
+      freetype_prefix=`${freetype_config} --prefix`
+      freetype_exec_prefix=`${freetype_config} --exec-prefix`
+      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
+      CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
     fi
 
     if test "$LIB_TTF" = ''
