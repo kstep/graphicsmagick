@@ -1,3 +1,9 @@
+2008-06-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Extend the list of extensions to
+	exclude to include all virtual delegates and coders for
+	pseudo-formats.  Synced up with implementation from 1.2 branch.
+
 2008-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.1.14 released.

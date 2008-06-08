@@ -6092,9 +6092,46 @@ static inline unsigned int IsFrame(const char *point)
   return(p != point);
 }
 
-MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
-  const unsigned int rectify,ExceptionInfo *exception)
+MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
+  const MagickBool rectify,ExceptionInfo *exception)
 {
+  static const char
+    *exclude_extensions[] =
+    {
+      "AUTOTRACE",
+      "BROWSE",
+      "CAPTION",
+      "CLIPBOARD",
+      "DCRAW",
+      "EDIT",
+      "FRACTAL",
+      "GRADIENT",
+      "GS-COLOR",
+      "GS-COLOR+ALPHA",
+      "GS-GRAY",
+      "GS-MONO",
+      "HISTOGRAM",
+      "LABEL",
+      "LAUNCH",
+      "MAP",
+      "MATTE",
+      "MPEG-ENCODE",
+      "NULL",
+      "PLASMA",
+      "PREVIEW",
+      "PRINT",
+      "SCAN",
+      "SHOW",
+      "STEGANO",
+      "TILE",
+      "TMP",
+      "VID",
+      "WIN",
+      "X",
+      "XC",
+      NULL
+    };
+
   char
     filename[MaxTextExtent],
     magic[MaxTextExtent],
@@ -6116,7 +6153,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     magick[2*MaxTextExtent];
 
   unsigned int
-    status;
+    status=MagickPass;
 
   /*
     Look for 'image.format' in filename.
@@ -6171,55 +6208,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       /* Restore p to end of modified filename */
       p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
     }
-  while ((*p != '.') && (p > (image_info->filename+1)))
-    p--;
-  if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
-      (LocaleCompare(p,".bz2") == 0))
-    do
-    {
-      p--;
-    } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (strlen(p) < (long) sizeof(magic)))
-    {
-      /*
-        User specified image format.
-      */
-      (void) strncpy(magic,p+1,MaxTextExtent-1);
-      for (q=magic; *q != '\0'; q++)
-        if (*q == '.')
-          {
-            *q='\0';
-            break;
-          }
-      LocaleUpper(magic);
 
-      /*
-        SGI and RGB are ambiguous; TMP must be set explicitly.  Don't
-        allow X11 to be accessed via file extension.  Block activation
-        of "virtual" delegates.
-      */
-      if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
-           (LocaleCompare(magic,"RGB") != 0)) &&
-          (LocaleCompare(magic,"AUTOTRACE") != 0) &&
-          (LocaleCompare(magic,"BROWSE") != 0) &&
-          (LocaleCompare(magic,"DCRAW") != 0) &&
-          (LocaleCompare(magic,"EDIT") != 0) &&
-          (LocaleCompare(magic,"GS-COLOR") != 0) &&
-          (LocaleCompare(magic,"GS-COLOR+ALPHA") != 0) &&
-          (LocaleCompare(magic,"GS-GRAY") != 0) &&
-          (LocaleCompare(magic,"GS-MONO") != 0) &&
-          (LocaleCompare(magic,"LAUNCH") != 0) &&
-          (LocaleCompare(magic,"MPEG-ENCODE") != 0) &&
-          (LocaleCompare(magic,"PRINT") != 0) &&
-          (LocaleCompare(magic,"SCAN") != 0) &&
-          (LocaleCompare(magic,"SHOW") != 0) &&
-          (LocaleCompare(magic,"TMP") != 0) &&
-          (LocaleCompare(magic,"WIN") != 0) &&
-          (LocaleCompare(magic,"XC") != 0) &&
-          (LocaleCompare(magic,"X") != 0)
-          )
-        (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
-    }
   /*
     Look for explicit 'format:image' in filename.
   */
@@ -6227,10 +6216,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   p=image_info->filename;
   while (isalnum((int) *p))
     p++;
-#if defined(vms)
-  if (*(p+1) == ':')
-    p+=2;  /* skip DECnet node spec */
-#endif
   if ((*p == ':') && ((p-image_info->filename) < (long) sizeof(magic)))
     {
       char
@@ -6259,10 +6244,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
           */
           char base_filename[MaxTextExtent];
           p++;
-          (void) strncpy(base_filename,p,MaxTextExtent-1);
+          (void) strlcpy(base_filename,p,MaxTextExtent);
           (void) strcpy(image_info->filename,base_filename);
-          (void) strncpy(magic,format,MaxTextExtent-1);
-          (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
+          (void) strlcpy(magic,format,MaxTextExtent);
+          (void) strlcpy(image_info->magick,magic,MaxTextExtent);
           if (LocaleCompare(magic,"TMP") != 0)
             image_info->affirm=True;
           else
@@ -6270,6 +6255,72 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
             image_info->temporary=True;
         }
     }
+
+  /*
+    If we have not set the magic yet then set magic based on file
+    extension.  Some extensions are intentionally not recognized
+    because they are confusing or dangerous.
+  */
+  if (*magic == '\0')
+    {
+      /* Restore p to end of modified filename */
+      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+
+      while ((*p != '.') && (p > (image_info->filename+1)))
+        p--;
+      if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
+          (LocaleCompare(p,".bz2") == 0))
+        do
+          {
+            p--;
+          } while ((*p != '.') && (p > (image_info->filename+1)));
+      if ((*p == '.') && (strlen(p) < (long) sizeof(magic)))
+        {
+          /*
+            User specified image format.
+          */
+          unsigned int
+            i;
+          
+          MagickBool
+            exclude;
+          
+          (void) strlcpy(magic,p+1,MaxTextExtent);
+          for (q=magic; *q != '\0'; q++)
+            if (*q == '.')
+              {
+                *q='\0';
+                break;
+              }
+          LocaleUpper(magic);
+
+          exclude=MagickFalse;
+
+          /*
+            SGI and RGB are ambiguous.
+          */
+          if ((LocaleNCompare(image_info->magick,"SGI",3) == 0) &&
+              (LocaleCompare(magic,"RGB") == 0))
+            exclude=MagickTrue;
+
+          /*
+            Ignore extensions which match virtual delegates.
+          */
+          i=0;
+          while ((!exclude) && (exclude_extensions[i] != NULL))
+            {
+              if ((magic[0] == (exclude_extensions[i])[0]) &&
+                  (LocaleCompare(magic,exclude_extensions[i]) == 0))
+                {
+                  exclude=MagickTrue;
+                }
+              i++;
+            }
+          if (!exclude)
+            (void) strlcpy(image_info->magick,magic,MaxTextExtent);
+        }
+    }
+
   if (rectify)
     {
       /*
@@ -6297,12 +6348,12 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return(False);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     {
       DestroyImage(image);
-      return(False);
+      return(MagickFail);
     }
   if (!BlobIsSeekable(image))
     {
@@ -6319,10 +6370,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       CloseBlob(image);
       (void) strcpy(image->filename,filename);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-      if (status == False)
+      if (status == MagickFail)
         {
           DestroyImage(image);
-          return(False);
+          return(MagickFail);
         }
       (void) strcpy(image_info->filename,filename);
       image_info->temporary=True;
@@ -6339,10 +6390,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (magic_info->name != (char *) NULL) &&
       (exception->severity == UndefinedException))
     {
-      (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
-      return(True);
+      (void) strlcpy(image_info->magick,magic_info->name,MaxTextExtent);
+      return(MagickPass);
     }
-  return(False);
+  return(MagickFail);
 }
 
 /*
