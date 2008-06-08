@@ -4822,6 +4822,43 @@ static inline unsigned int IsFrame(const char *point)
 MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   const MagickBool rectify,ExceptionInfo *exception)
 {
+  static const char
+    *exclude_extensions[] =
+    {
+      "AUTOTRACE",
+      "BROWSE",
+      "CAPTION",
+      "CLIPBOARD",
+      "DCRAW",
+      "EDIT",
+      "FRACTAL",
+      "GRADIENT",
+      "GS-COLOR",
+      "GS-COLOR+ALPHA",
+      "GS-GRAY",
+      "GS-MONO",
+      "HISTOGRAM",
+      "LABEL",
+      "LAUNCH",
+      "MAP",
+      "MATTE",
+      "MPEG-ENCODE",
+      "NULL",
+      "PLASMA",
+      "PREVIEW",
+      "PRINT",
+      "SCAN",
+      "SHOW",
+      "STEGANO",
+      "TILE",
+      "TMP",
+      "VID",
+      "WIN",
+      "X",
+      "XC",
+      NULL
+    };
+
   char
     filename[MaxTextExtent],
     magic[MaxTextExtent],
@@ -4969,6 +5006,12 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           /*
             User specified image format.
           */
+          unsigned int
+            i;
+          
+          MagickBool
+            exclude;
+          
           (void) strlcpy(magic,p+1,MaxTextExtent);
           for (q=magic; *q != '\0'; q++)
             if (*q == '.')
@@ -4977,31 +5020,30 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
                 break;
               }
           LocaleUpper(magic);
+
+          exclude=MagickFalse;
+
           /*
-            SGI and RGB are ambiguous;  TMP must be set explicitly.
-            Don't allow X11 to be accessed via file extension.
-            Block activation of "virtual" delegates.
+            SGI and RGB are ambiguous.
           */
-          if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
-               (LocaleCompare(magic,"RGB") != 0)) &&
-              (LocaleCompare(magic,"AUTOTRACE") != 0) &&
-              (LocaleCompare(magic,"BROWSE") != 0) &&
-              (LocaleCompare(magic,"DCRAW") != 0) &&
-              (LocaleCompare(magic,"EDIT") != 0) &&
-              (LocaleCompare(magic,"GS-COLOR") != 0) &&
-              (LocaleCompare(magic,"GS-COLOR+ALPHA") != 0) &&
-              (LocaleCompare(magic,"GS-GRAY") != 0) &&
-              (LocaleCompare(magic,"GS-MONO") != 0) &&
-              (LocaleCompare(magic,"LAUNCH") != 0) &&
-              (LocaleCompare(magic,"MPEG-ENCODE") != 0) &&
-              (LocaleCompare(magic,"PRINT") != 0) &&
-              (LocaleCompare(magic,"SCAN") != 0) &&
-              (LocaleCompare(magic,"SHOW") != 0) &&
-              (LocaleCompare(magic,"TMP") != 0) &&
-              (LocaleCompare(magic,"WIN") != 0) &&
-              (LocaleCompare(magic,"XC") != 0) &&
-              (LocaleCompare(magic,"X") != 0)
-              )
+          if ((LocaleNCompare(image_info->magick,"SGI",3) == 0) &&
+              (LocaleCompare(magic,"RGB") == 0))
+            exclude=MagickTrue;
+
+          /*
+            Ignore extensions which match virtual delegates.
+          */
+          i=0;
+          while ((!exclude) && (exclude_extensions[i] != NULL))
+            {
+              if ((magic[0] == (exclude_extensions[i])[0]) &&
+                  (LocaleCompare(magic,exclude_extensions[i]) == 0))
+                {
+                  exclude=MagickTrue;
+                }
+              i++;
+            }
+          if (!exclude)
             (void) strlcpy(image_info->magick,magic,MaxTextExtent);
         }
     }
