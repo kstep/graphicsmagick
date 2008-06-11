@@ -155,6 +155,7 @@ ModuleExport void RegisterTILEImage(void)
   entry->description="Tile image with a texture";
   entry->note=TILENote;
   entry->module="TILE";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

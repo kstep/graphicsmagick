@@ -716,6 +716,27 @@ configuration files in $HOME/.magick if the directory exists. See
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    MAGICK_CODER_STABILITY
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
+available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, and <strong>UNSTABLE</strong>.
+The default minimum level is <strong>UNSTABLE</strong>, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the <strong>PRIMARY</strong> level are commonly used
+formats with very well maintained implementations. Coders at the
+<strong>STABLE</strong> level are reasonably well maintained but represent less used
+formats. Coders at the <strong>UNSTABLE</strong> level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     MAGICK_CODER_MODULE_PATH
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for image format coder modules.

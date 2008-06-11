@@ -23,6 +23,16 @@ typedef unsigned int
   (*EncoderHandler)(const ImageInfo *,Image *),
   (*MagickHandler)(const unsigned char *,const size_t);
 
+/*
+  Stability and usefulness of the coder.
+*/
+typedef enum
+{
+  UnstableCoderClass,
+  StableCoderClass,
+  PrimaryCoderClass
+} CoderClass;
+
 typedef struct _MagickInfo
 {
   const char
@@ -56,6 +66,9 @@ typedef struct _MagickInfo
                          */
     blob_support,	/* coder uses BLOB APIs (default True) */
     thread_support;     /* coder is thread safe (default True) */
+
+  CoderClass
+    coder_class;        /* Coder usefulness/stability level */
 
   unsigned long
     signature;          /* private, structure validator */

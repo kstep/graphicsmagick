@@ -652,6 +652,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=(DecoderHandler) ReadJP2Image;
   entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPC");
@@ -665,6 +666,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=(DecoderHandler) ReadJP2Image;
   entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PGX");
@@ -678,6 +680,7 @@ ModuleExport void RegisterJP2Image(void)
   /* Don't set an encoder since PGX is not a standard format */
   entry->decoder=(DecoderHandler) ReadJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   /*

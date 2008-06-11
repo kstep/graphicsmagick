@@ -124,6 +124,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->stealth=MagickTrue;
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("HTML");
@@ -132,6 +133,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("SHTML");
@@ -140,6 +142,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

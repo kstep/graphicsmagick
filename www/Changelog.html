@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2008-06-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (ListMagickInfo): Replace "blob support"
+        indication with the coder stability classification.
+        (RegisterMagickInfo): Pay attention to coder classification.
+  <LI> magick/magick.h (MagickInfo): Added a coder stability
+        classification field as well as the MAGICK_CODER_STABILITY
+        environment variable to choose which coders are enabled.
+
+</UL>
+<p>
 2008-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

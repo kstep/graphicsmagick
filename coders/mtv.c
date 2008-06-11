@@ -244,6 +244,7 @@ ModuleExport void RegisterMTVImage(void)
   entry->encoder=(EncoderHandler) WriteMTVImage;
   entry->description="MTV Raytracing image format";
   entry->module="MTV";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

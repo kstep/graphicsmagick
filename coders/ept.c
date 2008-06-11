@@ -431,6 +431,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT2");
@@ -441,6 +442,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Level II Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT3");
@@ -451,6 +453,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Level III Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

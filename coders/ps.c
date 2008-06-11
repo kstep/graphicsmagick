@@ -414,6 +414,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description="Adobe Encapsulated PostScript Interchange format";
   entry->module="PS";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPS");
@@ -423,6 +424,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description="Adobe Encapsulated PostScript";
   entry->module="PS";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPSF");
@@ -432,6 +434,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description="Adobe Encapsulated PostScript";
   entry->module="PS";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPSI");
@@ -441,6 +444,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description="Adobe Encapsulated PostScript Interchange format";
   entry->module="PS";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PS");
@@ -449,6 +453,7 @@ ModuleExport void RegisterPSImage(void)
   entry->magick=(MagickHandler) IsPS;
   entry->description="Adobe PostScript";
   entry->module="PS";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

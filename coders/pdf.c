@@ -573,6 +573,7 @@ ModuleExport void RegisterPDFImage(void)
   entry->seekable_stream=True;
   entry->description="Encapsulated Portable Document Format";
   entry->module="PDF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PDF");
@@ -583,6 +584,7 @@ ModuleExport void RegisterPDFImage(void)
   entry->seekable_stream=True;
   entry->description="Portable Document Format";
   entry->module="PDF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

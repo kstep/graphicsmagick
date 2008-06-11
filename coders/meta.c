@@ -1336,6 +1336,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Photoshop resource format";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("8BIMTEXT");
@@ -1345,6 +1346,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Photoshop resource text format";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("8BIMWTEXT");
@@ -1354,6 +1356,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Photoshop resource wide text format";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1");
@@ -1363,6 +1366,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Raw application information";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1JPEG");
@@ -1372,6 +1376,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Raw JPEG binary data";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EXIF");
@@ -1381,6 +1386,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Exif digital camera binary data";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("XMP");
@@ -1390,6 +1396,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="Adobe XML metadata";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICM");
@@ -1399,6 +1406,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="ICC Color Profile";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICC");
@@ -1408,6 +1416,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="ICC Color Profile";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTC");
@@ -1417,6 +1426,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="IPTC Newsphoto";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTCTEXT");
@@ -1426,6 +1436,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="IPTC Newsphoto text format";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTCWTEXT");
@@ -1435,6 +1446,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->seekable_stream=True;
   entry->description="IPTC Newsphoto text format";
   entry->module="META";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

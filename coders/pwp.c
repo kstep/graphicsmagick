@@ -272,6 +272,7 @@ ModuleExport void RegisterPWPImage(void)
   entry->magick=(MagickHandler) IsPWP;
   entry->description="Seattle Film Works";
   entry->module="PWP";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

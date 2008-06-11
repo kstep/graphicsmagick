@@ -274,6 +274,7 @@ ModuleExport void RegisterAVSImage(void)
   entry->encoder=(EncoderHandler) WriteAVSImage;
   entry->description="AVS X image";
   entry->module="AVS";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

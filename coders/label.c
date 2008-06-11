@@ -188,6 +188,7 @@ ModuleExport void RegisterLABELImage(void)
   entry->adjoin=False;
   entry->description="Image label";
   entry->module="LABEL";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

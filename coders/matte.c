@@ -80,7 +80,7 @@ ModuleExport void RegisterMATTEImage(void)
   entry=SetMagickInfo("MATTE");
   entry->encoder=(EncoderHandler) WriteMATTEImage;
   entry->raw=True;
-  entry->description="MATTE format";
+  entry->description="MATTE raw opacity format";
   entry->module="MATTE";
   (void) RegisterMagickInfo(entry);
 }

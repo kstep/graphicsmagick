@@ -661,6 +661,7 @@ ModuleExport void RegisterRLAImage(void)
   entry->adjoin=False;
   entry->description="Alias/Wavefront image";
   entry->module="RLA";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -769,6 +769,7 @@ ModuleExport void RegisterPNMImage(void)
   entry->encoder=(EncoderHandler) WritePNMImage;
   entry->description="Portable bitmap format (black/white)";
   entry->module="PNM";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PGM");
@@ -776,6 +777,7 @@ ModuleExport void RegisterPNMImage(void)
   entry->encoder=(EncoderHandler) WritePNMImage;
   entry->description="Portable graymap format (gray scale)";
   entry->module="PNM";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNM");
@@ -784,6 +786,7 @@ ModuleExport void RegisterPNMImage(void)
   entry->magick=(MagickHandler) IsPNM;
   entry->description="Portable anymap";
   entry->module="PNM";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PPM");
@@ -791,6 +794,7 @@ ModuleExport void RegisterPNMImage(void)
   entry->encoder=(EncoderHandler) WritePNMImage;
   entry->description="Portable pixmap format (color)";
   entry->module="PNM";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

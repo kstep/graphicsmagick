@@ -205,6 +205,7 @@ ModuleExport void RegisterFAXImage(void)
   entry->magick=(MagickHandler) IsFAX;
   entry->description="Group 3 FAX (Not TIFF Group3 FAX!)";
   entry->module="FAX";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("G3");
@@ -215,6 +216,7 @@ ModuleExport void RegisterFAXImage(void)
   entry->description="Group 3 FAX (same as \"FAX\")";
   entry->stealth=MagickTrue;
   entry->module="FAX";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -211,6 +211,7 @@ ModuleExport void RegisterCAPTIONImage(void)
   entry->adjoin=False;
   entry->description="Image caption";
   entry->module="CAPTION";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -837,6 +837,7 @@ ModuleExport void RegisterMPCImage(void)
   entry=SetMagickInfo("CACHE");
   entry->description="Magick Persistent Cache image format";
   entry->module="CACHE";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("MPC");
@@ -845,6 +846,7 @@ ModuleExport void RegisterMPCImage(void)
   entry->magick=(MagickHandler) IsMPC;
   entry->description="Magick Persistent Cache image format";
   entry->module="MPC";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -46,6 +46,20 @@ configuration files in $HOME/.magick if the directory exists. See
 <s>MAGICK_CODER_MODULE_PATH</s>, <s>MAGICK_CONFIGURE_PATH</s>, and
 <s>MAGICK_FILTER_MODULE_PATH</s> if more flexibility is needed.</abs>
 
+<opt>MAGICK_CODER_STABILITY</opt>
+
+<abs>The minimum coder stability level before it will be used. The
+available levels are <s>PRIMARY</s>, <s>STABLE</s>, and <s>UNSTABLE</s>.
+The default minimum level is <s>UNSTABLE</s>, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the <s>PRIMARY</s> level are commonly used
+formats with very well maintained implementations. Coders at the
+<s>STABLE</s> level are reasonably well maintained but represent less used
+formats. Coders at the <s>UNSTABLE</s> level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.</abs>
+
 <opt>MAGICK_CODER_MODULE_PATH</opt>
 
 <abs>Search path to use when searching for image format coder modules.

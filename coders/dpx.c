@@ -2640,6 +2640,7 @@ ModuleExport void RegisterDPXImage(void)
   entry->module="DPX";
   entry->adjoin=MagickFalse; /* Only one frame per file */
   entry->seekable_stream=MagickFalse; /* Does not reqire seek() */
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

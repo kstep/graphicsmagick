@@ -1104,6 +1104,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->description="CompuServe graphics interchange format";
   entry->version="version 89a";
   entry->module="GIF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("GIF87");
@@ -1114,6 +1115,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->description="CompuServe graphics interchange format";
   entry->version="version 87a";
   entry->module="GIF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

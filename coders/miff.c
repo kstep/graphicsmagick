@@ -1554,6 +1554,7 @@ ModuleExport void RegisterMIFFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="MIFF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -2718,6 +2718,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->adjoin=False;
   entry->description=BIGTIFFDescription;
   entry->module="TIFF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasBigTIFF) */
 
@@ -2745,6 +2746,7 @@ ModuleExport void RegisterTIFFImage(void)
     entry->version=version;
   entry->stealth=MagickTrue; /* Don't list in '-list format' output */
   entry->module="TIFF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   /*
@@ -2759,6 +2761,7 @@ ModuleExport void RegisterTIFFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="TIFF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
 #if defined(EXTEND_TIFF_TAGS)

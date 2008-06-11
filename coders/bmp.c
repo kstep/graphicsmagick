@@ -1294,6 +1294,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->module="BMP";
   entry->adjoin=False;
   entry->seekable_stream=True;
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("BMP2");
@@ -1302,6 +1303,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->description="Microsoft Windows bitmap image v2";
   entry->module="BMP";
   entry->adjoin=False;
+  entry->coder_class=PrimaryCoderClass;
   entry->seekable_stream=True;
 
   (void) RegisterMagickInfo(entry);
@@ -1312,6 +1314,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->module="BMP";
   entry->adjoin=False;
   entry->seekable_stream=True;
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

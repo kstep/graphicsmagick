@@ -238,6 +238,7 @@ ModuleExport void RegisterPS2Image(void)
   entry->seekable_stream=True;
   entry->description="Adobe Level II Encapsulated PostScript";
   entry->module="PS2";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PS2");
@@ -245,6 +246,7 @@ ModuleExport void RegisterPS2Image(void)
   entry->seekable_stream=True;
   entry->description="Adobe Level II PostScript";
   entry->module="PS2";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

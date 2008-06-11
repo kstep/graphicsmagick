@@ -138,6 +138,7 @@ ModuleExport void RegisterMPRImage(void)
   entry->stealth=True;
   entry->description="Magick Persistent Registry";
   entry->module="MPR";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("MPRI");
@@ -148,6 +149,7 @@ ModuleExport void RegisterMPRImage(void)
   entry->stealth=True;
   entry->description="Magick Persistent Registry";
   entry->module="MPRI";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

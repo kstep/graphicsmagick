@@ -5652,6 +5652,7 @@ ModuleExport void RegisterPNGImage(void)
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       entry->note=MNGNote;
       (void) RegisterMagickInfo(entry);
 
@@ -5668,6 +5669,7 @@ ModuleExport void RegisterPNGImage(void)
         entry->version=version;
       entry->note=PNGNote;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG8");
@@ -5682,6 +5684,7 @@ ModuleExport void RegisterPNGImage(void)
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG24");
@@ -5696,6 +5699,7 @@ ModuleExport void RegisterPNGImage(void)
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("PNG32");
@@ -5710,6 +5714,7 @@ ModuleExport void RegisterPNGImage(void)
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
       entry=SetMagickInfo("JNG");
@@ -5727,6 +5732,7 @@ ModuleExport void RegisterPNGImage(void)
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)

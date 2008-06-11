@@ -701,6 +701,7 @@ ModuleExport void RegisterPALMImage(void)
   entry->seekable_stream=True;
   entry->description="Palm pixmap";
   entry->module="PALM";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

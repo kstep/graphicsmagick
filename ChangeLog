@@ -1,3 +1,12 @@
+2008-06-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (ListMagickInfo): Replace "blob support"
+	indication with the coder stability classification.
+	(RegisterMagickInfo): Pay attention to coder classification.
+	* magick/magick.h (MagickInfo): Added a coder stability
+	classification field as well as the MAGICK_CODER_STABILITY
+	environment variable to choose which coders are enabled.
+
 2008-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (GetImageCharacteristics): Don't access image

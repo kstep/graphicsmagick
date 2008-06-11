@@ -226,6 +226,7 @@ ModuleExport void RegisterSTEGANOImage(void)
   entry->decoder=(DecoderHandler) ReadSTEGANOImage;
   entry->description="Steganographic image";
   entry->module="STEGANO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

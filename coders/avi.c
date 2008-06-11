@@ -949,6 +949,7 @@ ModuleExport void RegisterAVIImage(void)
   entry->magick=(MagickHandler) IsAVI;
   entry->description="Microsoft Audio/Visual Interleaved";
   entry->module="AVI";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

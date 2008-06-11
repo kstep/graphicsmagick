@@ -85,6 +85,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
   entry->adjoin=False;
   entry->description="Histogram of the image";
   entry->module="HISTOGRAM";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

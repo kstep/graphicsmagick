@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/04" "GraphicsMagick"
+.TH gm 1 "2008/06/11" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -8374,6 +8374,19 @@ hostname:display.screen).
 configuration files in $HOME/.magick if the directory exists. See
 \fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
 \fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
+.TP
+.B "MAGICK_CODER_STABILITY"
+\fRThe minimum coder stability level before it will be used. The
+available levels are \fBPRIMARY\fP, \fBSTABLE\fP, and \fBUNSTABLE\fP.
+The default minimum level is \fBUNSTABLE\fP, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the \fBPRIMARY\fP level are commonly used
+formats with very well maintained implementations. Coders at the
+\fBSTABLE\fP level are reasonably well maintained but represent less used
+formats. Coders at the \fBUNSTABLE\fP level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.
 .TP
 .B "MAGICK_CODER_MODULE_PATH"
 \fRSearch path to use when searching for image format coder modules.
