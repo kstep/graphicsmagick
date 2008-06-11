@@ -190,7 +190,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     *p;
 
   size_t
-    count;
+    row_octets;
 
   unsigned char
     *fits_pixels,
@@ -230,12 +230,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Decode image header.
   */
-  c=ReadBlobByte(image);
-  if (c == EOF)
-    {
-      DestroyImage(image);
-      return((Image *) NULL);
-    }
+  if ((c=ReadBlobByte(image)) == EOF)
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   for ( ; ; )
   {
     if (!isalnum((int) c))
@@ -253,7 +249,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         } while (isalnum(c) || (c == '_'));
         *p='\0';
         if (LocaleCompare(keyword,"END") == 0)
@@ -263,7 +260,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if (c == '=')
             value_expected=True;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
         if (value_expected == False)
           continue;
@@ -272,7 +270,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
         *p='\0';
         /*
@@ -300,11 +299,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           fits_info.scale=atof(value);
       }
     while ((TellBlob(image) % 80) != 0)
-      c=ReadBlobByte(image);
-    c=ReadBlobByte(image);
+      if ((c=ReadBlobByte(image)) == EOF)
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if ((c=ReadBlobByte(image)) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   }
   while ((TellBlob(image) % 2880) != 0)
-    c=ReadBlobByte(image);
+    if ((c=ReadBlobByte(image)) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   /*
     Verify that required image information is defined.
   */
@@ -350,14 +352,16 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (packet_size < 0)
       packet_size=(-packet_size);
     number_pixels=image->columns*image->rows;
-    fits_pixels=MagickAllocateMemory(unsigned char *,packet_size*number_pixels);
+    if ((number_pixels / image->columns) != image->rows)
+      ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,image);
+    fits_pixels=MagickAllocateArray(unsigned char *,number_pixels,packet_size);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert FITS pixels to pixel packets.
     */
-    count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
-    if (count == 0)
+    row_octets=packet_size*number_pixels;
+    if (ReadBlob(image,row_octets,fits_pixels) != row_octets)
       ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,
         image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))

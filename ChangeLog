@@ -1,3 +1,10 @@
+2008-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageCharacteristics): Don't access image
+	pixels if they are not defined yet.
+	* coders/{avi.c,avs.c,dcm.c,ept.c,fits.c,mtv.c,palm.c,rla.c,tga.c}:
+	Readers are now much more robust when faced with reading random files.
+
 2008-06-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Exclude all virtual delegates and

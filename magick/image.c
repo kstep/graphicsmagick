@@ -2996,7 +2996,7 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
   characteristics->opaque = (image->matte ? MagickFalse : MagickTrue);
   characteristics->palette = (image->storage_class == PseudoClass ? MagickTrue : MagickFalse);
 
-  if ((optimize))
+  if ((optimize) && (GetPixelCachePresent(image)))
     {
       MagickBool
         grayscale,

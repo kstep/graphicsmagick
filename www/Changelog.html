@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2008-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageCharacteristics): Don't access image
+        pixels if they are not defined yet.
+  <LI> coders/{avi.c,avs.c,dcm.c,ept.c,fits.c,mtv.c,palm.c,rla.c,tga.c}:
+        Readers are now much more robust when faced with reading random files.
+
+</UL>
+<p>
 2008-06-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

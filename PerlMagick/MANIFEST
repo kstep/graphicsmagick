@@ -120,6 +120,8 @@ t/input_888.bmp
 t/input_8888.bmp
 t/input_888flip.bmp
 t/input_gray.cin
+t/input_gray.rla
+t/input_gray.rle
 t/input_gray_lsb_08bit.mat
 t/input_gray_lsb_16bit.mat
 t/input_gray_lsb_32bit.mat
@@ -136,6 +138,7 @@ t/input_p5.pgm
 t/input_p6.ppm
 t/input_p7.p7
 t/input_rgb.cin
+t/input_rgb.rla
 t/input_rgb_lsb_08bit.mat
 t/jbig/.cvsignore
 t/jbig/input.jbig
@@ -312,6 +315,8 @@ t/reference/read/input_gray_lsb_32bit_mat.miff
 t/reference/read/input_gray_lsb_double_mat.miff
 t/reference/read/input_gray_lsb_float_mat.miff
 t/reference/read/input_gray_msb_08bit_mat.miff
+t/reference/read/input_gray_rla.miff
+t/reference/read/input_gray_rle.miff
 t/reference/read/input_ico.miff
 t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff
@@ -335,6 +340,7 @@ t/reference/read/input_psd.miff
 t/reference/read/input_rgb.miff
 t/reference/read/input_rgb_cin.miff
 t/reference/read/input_rgb_lsb_08bit_mat.miff
+t/reference/read/input_rgb_rla.miff
 t/reference/read/input_rgba.miff
 t/reference/read/input_rle.miff
 t/reference/read/input_sgi.miff
