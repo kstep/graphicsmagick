@@ -125,11 +125,16 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read MTV image.
   */
   (void) ReadBlobString(image,buffer);
+  columns=0;
+  rows=0;
   count=sscanf(buffer,"%lu %lu\n",&columns,&rows);
-  if (count <= 0)
+  if (count != 2)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
+    size_t
+      row_size;
+    
     /*
       Initialize image structure.
     */
@@ -142,15 +147,14 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert MTV raster image to pixel packets.
     */
-    pixels=MagickAllocateMemory(unsigned char *,3*image->columns);
+    pixels=MagickAllocateArray(unsigned char *,image->columns,3);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    row_size=image->columns*3;
     for (y=0; y < (long) image->rows; y++)
     {
-      count=(long) ReadBlob(image,3*image->columns,pixels);
-      if (count == 0)
-        ThrowReaderException(CorruptImageError,UnableToReadImageData,
-          image);
+      if (ReadBlob(image,row_size,pixels) != row_size)
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       p=pixels;
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -185,7 +189,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *buffer='\0';
     (void) ReadBlobString(image,buffer);
     count=sscanf(buffer,"%lu %lu\n",&columns,&rows);
-    if (count > 0)
+    if (count == 2)
       {
         /*
           Allocate next image structure.
@@ -200,7 +204,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
-  } while (count > 0);
+  } while (count == 2);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

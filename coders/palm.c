@@ -466,6 +466,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   transparentIndex = ReadBlobByte(image);
   compressionType = ReadBlobByte(image);
   (void) ReadBlobMSBShort(image); /* pad */
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Size=%lux%lu, bytes_per_row=%lu, flags=%lu, bits_per_pixel=%lu",
@@ -494,6 +496,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         (void) ReadBlobMSBLong(image); /* size */
       else
         (void) ReadBlobMSBShort(image); /* size */
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
   else  /* is color */
     if(bits_per_pixel == 8)
@@ -510,6 +514,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 image->colormap[index].red = ScaleCharToQuantum(ReadBlobByte(image));
                 image->colormap[index].green = ScaleCharToQuantum(ReadBlobByte(image));
                 image->colormap[index].blue = ScaleCharToQuantum(ReadBlobByte(image));
+                if (EOFBlob(image))
+                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
               }
           }
         for(; i < (long) (1L << bits_per_pixel); i++)
@@ -530,6 +536,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             image->colormap[index].red = ScaleCharToQuantum(PalmPalette[i][0]);
             image->colormap[index].green = ScaleCharToQuantum(PalmPalette[i][1]);
             image->colormap[index].blue = ScaleCharToQuantum(PalmPalette[i][2]);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
           }
       }
 
@@ -638,6 +646,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           if (!SyncImagePixels(image))
             break;
         }
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
 
   if(flags & PALM_HAS_TRANSPARENCY_FLAG)
