@@ -1,3 +1,13 @@
+2008-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magic.c (InitializeMagicInfo): New function to initialize
+	file format detection.
+	(GetMagickFileFormat): New internal implementation function to
+	detect file format based on file header.
+	(GetMagicInfo): This internal implementation function is eliminated.
+	(MagicInfo): MagickInfo structure is now private to the
+	implementation.
+
 2008-06-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (ListMagickInfo): Replace "blob support"

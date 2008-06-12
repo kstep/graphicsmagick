@@ -4864,9 +4864,6 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
     magic[MaxTextExtent],
     *q;
 
-  const MagicInfo
-    *magic_info;
-
   Image
     *image;
 
@@ -5110,16 +5107,15 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   CloseBlob(image);
   DestroyImage(image);
   /*
-    Check magic.mgk configuration file.
+    Check format using magic.mgk configuration file.  Use of an
+    external config file is absolutely necessary when using loadable
+    modules since otherwise the code necessary to perform the test
+    might not be available yet.
   */
-  magic_info=GetMagicInfo(magick,magick_length,exception);
-  if ((magic_info != (const MagicInfo *) NULL) &&
-      (magic_info->name != (char *) NULL) &&
-      (exception->severity == UndefinedException))
-    {
-      (void) strlcpy(image_info->magick,magic_info->name,MaxTextExtent);
-      return(MagickPass);
-    }
+  if (GetMagickFileFormat(magick,magick_length,image_info->magick,
+                          MaxTextExtent,exception))
+    return(MagickPass);
+
   return(MagickFail);
 }
 

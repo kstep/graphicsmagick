@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2008-06-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magic.c (InitializeMagicInfo): New function to initialize
+        file format detection.<BR>
+        (GetMagickFileFormat): New internal implementation function to
+        detect file format based on file header.
+        (GetMagicInfo): This internal implementation function is eliminated.
+        (MagicInfo): MagickInfo structure is now private to the
+        implementation.
+
+</UL>
+<p>
 2008-06-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
