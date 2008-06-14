@@ -1,5 +1,7 @@
 2008-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/channel.c (ChannelImage): Convert to use pixel iterators.
+	(ExportImageChannel): Convert to use pixel iterators.
 	* coders/dpx.c (WriteDPXImage): As an experimental feature, when
 	the environment variable MAGICK_RESERVE_STORAGE is set to "TRUE",
 	then the DPX format writer will request the required storage from
