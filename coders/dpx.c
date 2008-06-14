@@ -3898,6 +3898,18 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) memset((void *) map_CbCr,0,(MaxMap+1)*sizeof(sample_t));
 
   /*
+    Reserve file/blob length if requested.
+  */
+  {
+    const char
+      *env;
+
+    if (((env=getenv("MAGICK_RESERVE_OUTPUT_SIZE")) != NULL) &&
+        (LocaleCompare(env,"TRUE") == 0))
+      (void) BlobReserveSize(image,dpx_file_info.file_size);
+  }
+
+  /*
     Write file headers.
   */
   if (swab)

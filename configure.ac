@@ -1030,9 +1030,9 @@ AC_SUBST(UINTPTR_T)
 GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([atoll _exit ftime getexecname getc_unlocked getpagesize \
   getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
-  _popen popen pread pwrite putc_unlocked raise rand_r readlink realpath \
-  select seekdir sigemptyset sigaction strerror strlcat strlcpy strtoll \
-  sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
+  _popen popen posix_fallocate pread pwrite putc_unlocked raise rand_r \
+  readlink realpath select seekdir sigemptyset sigaction strerror strlcat \
+  strlcpy strtoll sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
 
 ########
 #

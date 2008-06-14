@@ -413,6 +413,11 @@ extern MagickExport void *FileToBlob(const char *filename,
  */
 
 /*
+  Reserve space for a specified output size.
+*/
+extern MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size);
+
+/*
   Returns the stream handler associated with the image.
 */
 extern MagickExport StreamHandler GetBlobStreamHandler(const Image *image);
