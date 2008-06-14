@@ -491,9 +491,10 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
   status=MagickPass;
 
   if ((FileStream == image->blob->type) ||
-      (BlobStream == image->blob->type))
+      ((BlobStream == image->blob->type) &&
+       (image->blob->mapped) && (image->blob->file != (FILE *) NULL)))
     {
-#if HAVE_POSIX_FALLOCATE
+#if defined(HAVE_POSIX_FALLOCATE)
       int
         err_status;
 
