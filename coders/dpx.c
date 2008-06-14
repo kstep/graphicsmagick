@@ -3904,7 +3904,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     const char
       *env;
 
-    if (((env=getenv("MAGICK_RESERVE_OUTPUT_SIZE")) != NULL) &&
+    if (((env=getenv("MAGICK_RESERVE_STORAGE")) != NULL) &&
         (LocaleCompare(env,"TRUE") == 0))
       (void) BlobReserveSize(image,dpx_file_info.file_size);
   }
