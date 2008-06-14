@@ -316,13 +316,12 @@ QuantumAdd(void *user_data,
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+  register long
+    i;
 
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
-
-  register long
-    i;
 
   switch (context->channel)
     {
