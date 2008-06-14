@@ -316,6 +316,7 @@ QuantumAdd(void *user_data,
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
+
   register long
     i;
 
