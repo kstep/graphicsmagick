@@ -883,11 +883,12 @@ ExitLoop:
       image->colorspace=GRAYColorspace;
 
     if(image2!=NULL)
-    {
-      DeleteImageFromList(&image2);
-      // BUG !!! close temporary blob !!!
-      // BUG !!! delete temporary file !!!
-    }
+      if(image2!=image)
+      {
+        DeleteImageFromList(&image2);
+        // BUG !!! close temporary blob !!!
+        // BUG !!! delete temporary file !!!
+      }
     
 
       /*  Rotate image. */
