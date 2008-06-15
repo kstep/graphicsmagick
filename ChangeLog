@@ -1,3 +1,8 @@
+2008-06-15  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* mat.c, wpg.c: For empty images a message ImageFileDoesNotContainAnyImageData
+	is returned.
+
 2008-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (ChannelImage): Convert to use pixel iterators.

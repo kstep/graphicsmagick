@@ -1340,6 +1340,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   }
 
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");  
+  if(image==NULL)
+    ThrowReaderException(CorruptImageError,ImageFileDoesNotContainAnyImageData,image);
   return(image);   
 }
 
