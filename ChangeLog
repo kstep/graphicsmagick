@@ -1,3 +1,7 @@
+2008-06-16  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* mat.c Ability to read a new compressed MATLAB image format.
+
 2008-06-15  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* mat.c, wpg.c: For empty images a message ImageFileDoesNotContainAnyImageData
