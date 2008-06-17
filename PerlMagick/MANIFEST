@@ -411,5 +411,6 @@ t/xfig/input.fig
 t/xfig/read.t
 t/zlib/input.miff
 t/zlib/input.miff.gz
+t/zlib/input_gray_lsb_08bit_zip.mat
 t/zlib/read.t
 t/zlib/write.t
