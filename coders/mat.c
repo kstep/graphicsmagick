@@ -1179,6 +1179,7 @@ ModuleExport void RegisterMATImage(void)
   entry->seekable_stream = True;
   entry->description = "MATLAB image format";
   entry->module = "MAT";
+  entry->blob_support=False;
   (void) RegisterMagickInfo(entry);
 }
 
