@@ -411,7 +411,7 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
 %
 %
 */
-#define ComputeChannelDepthText "  Get image channel depth...  "
+#define ComputeChannelDepthText "Get image channel depth...  "
 #define COMPUTE_CHANNEL_DEPTH(depth,parameter)                          \
   {                                                                     \
     long                                                                \
