@@ -12208,8 +12208,8 @@ static void MogrifyUsage(void)
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
-      "-noop                do not apply options to image"
-      "-noise radius        add or reduce noise in an image.",
+      "-noop                do not apply options to image",
+      "-noise radius        add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
       "-operator channel operator rvalue",
