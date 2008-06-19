@@ -1235,14 +1235,13 @@ void Magick::Image::quantize ( const bool measureError_  )
 {
   modifyImage();
 
-  QuantizeImage( options()->quantizeInfo(),
-                 image() );
+  if (measureError_)
+    options()->quantizeInfo()->measure_error=MagickTrue;
+  else
+    options()->quantizeInfo()->measure_error=MagickFalse;
 
-  if ( measureError_ )
-    GetImageQuantizeError( image() );
+  QuantizeImage( options()->quantizeInfo(), image() );
 
-  // Udate DirectClass representation of pixels
-  SyncImage( image() );
   throwImageException();
 }
 

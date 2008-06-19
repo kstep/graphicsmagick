@@ -1,3 +1,8 @@
+2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantize): Error measurement support was being
+	performed incorrectly.  SyncImage() is not needed here.
+
 2008-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Geometry.cpp, lib/Image.cpp: Include <strings.h> since it is
