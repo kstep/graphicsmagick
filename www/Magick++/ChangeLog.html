@@ -21,9 +21,91 @@
 </tr>
 </table>
 <p>
+2008-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageCharacteristics): Don't access image
+        pixels if they are not defined yet.
+  <LI> coders/{avi.c,avs.c,dcm.c,ept.c,fits.c,mtv.c,palm.c,rla.c,tga.c}:
+        Readers are now much more robust when faced with reading random files.
+
+</UL>
+<p>
+2008-06-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Extend the list of extensions to
+        exclude to include all virtual delegates and coders for
+        pseudo-formats.
+
+</UL>
+<p>
+2008-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: GraphicsMagick 1.2.3 released.
+
+</UL>
+<p>
+2008-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/gem.c (GenerateNoise): Poisson noise generation was
+        taking excessively long and producing wrong results.
+
+</UL>
+<p>
+2008-06-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xcf.c (ReadXCFImage): Deal with grayscale images the
+        GraphicsMagick-way.
+
+</UL>
+<p>
+2008-06-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xcf.c (ReadXCFImage): Validate XCF file data so that
+        corrupted files don't crash GraphicsMagick.
+
+</UL>
+<p>
+2008-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+  <LI> coders/cineon.c (ReadCINEONImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+
+</UL>
+<p>
+2008-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pict.c (ReadPICTImage): Ensure that row_bytes calculation
+        does not overflow.  Verify that RLE decode does not overflow
+        buffer.  Validate image frame dimensions.
+  <LI> coders/palm.c (ReadPALMImage): Validate PALM bits per pixel and
+        colormap indexes.<BR>
+  <LI> coders/pdf.c (ReadPDFImage): Properly deal with reading rotated
+        PDFs.
+
+</UL>
+<p>
+2008-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: GraphicsMagick 1.2.2 released.
+
+</UL>
+<p>
 2008-05-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/composite.c (CompositeImage): Don't leak displacement
+        image when Displacement composition is used.
   <LI> PerlMagick/demo/demo.pl: Use segmentation parameters which are
         more appropriate for the image used.
   <LI> magick/image.h: Add MaxRGBDouble, MaxRGBFloat, MaxMapDouble, and

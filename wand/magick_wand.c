@@ -79,7 +79,6 @@
  *   MagickGetImageChannelExtrema
  *   MagickGetImageChannelMean
  *   MagickGetImageExtrema
- *   MagickGetImageProfile
  *   MagickNegateImageChannel
  *   MagickPreviewImages
  *   MagickQueryFonts

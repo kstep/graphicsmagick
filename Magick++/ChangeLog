@@ -1,3 +1,8 @@
+2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantize): Error measurement support was being
+	performed incorrectly.  SyncImage() is not needed here.
+
 2008-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* demo/demo.cpp: use segmentation parameters more suitable for the
