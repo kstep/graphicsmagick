@@ -2,6 +2,8 @@
 
 	* magick/channel.c (ImportImageChannel): Convert to use pixel
 	iterators.
+	(SetImageChannelDepth): Convert to use pixel
+	iterators.
 	* Magick++/lib/Image.cpp (quantize): Error measurement support was
 	being performed incorrectly.  SyncImage() is not needed here.
 
