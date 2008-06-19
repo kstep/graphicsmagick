@@ -239,7 +239,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 %
 %
 */
-#define EXPORT_CHANNEL(source_image,source_pixels,source_indexes,new_pixels,npixels,source) \
+#define EXPORT_CHANNEL(source) \
 do { \
   register long \
     i;  \
@@ -288,22 +288,19 @@ ExportImageChannelPixels(void *user_data,                   /* User provided mut
     case RedChannel:
     case CyanChannel:
       {
-        EXPORT_CHANNEL(source_image,source_pixels,source_indexes,new_pixels,
-                       npixels,red);
+        EXPORT_CHANNEL(red);
         break;
       }
     case GreenChannel:
     case MagentaChannel:
       {
-        EXPORT_CHANNEL(source_image,source_pixels,source_indexes,new_pixels,
-                       npixels,green);
+        EXPORT_CHANNEL(green);
         break;
       }
     case BlueChannel:
     case YellowChannel:
       {
-        EXPORT_CHANNEL(source_image,source_pixels,source_indexes,new_pixels,
-                       npixels,blue);
+        EXPORT_CHANNEL(blue);
         break;
       }
     case OpacityChannel:
@@ -322,16 +319,14 @@ ExportImageChannelPixels(void *user_data,                   /* User provided mut
           }
         else
           {
-            EXPORT_CHANNEL(source_image,source_pixels,source_indexes,
-                           new_pixels,npixels,opacity);
+            EXPORT_CHANNEL(opacity);
           }
         break;
       }
     case MatteChannel:
     case BlackChannel:
       {
-        EXPORT_CHANNEL(source_image,source_pixels,source_indexes,new_pixels,
-                       npixels,opacity);
+        EXPORT_CHANNEL(opacity);
         break;
       }
     default:
@@ -551,156 +546,132 @@ GetImageChannelDepth(const Image *image,
 %
 %  The format of the ImportImageChannel method is:
 %
-%      MagickPassFail ImportImageChannel(const Image *src_image,
-%                                        Image *dst_image,
+%      MagickPassFail ImportImageChannel(const Image *source_image,
+%                                        Image *update_image,
 %                                        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
-%    o src_image: The image to use as the replacement image channel.
+%    o source_image: The image to use as the replacement image channel.
 %
-%    o dst_image: The image to import the channel into.
+%    o update_image: The image to import the channel into.
 %
 %    o channel: The image channel to import
 %
 %
 */
-#define IMPORT_IMAGE_CHANNEL(src_image,dst_image,target)                \
-  do {                                                                  \
-    register IndexPacket                                                \
-      *dst_indexes;                                                     \
+#define IMPORT_CHANNEL(target)                                          \
+  do                                                                    \
+    {                                                                   \
+      register long                                                     \
+        i;                                                              \
                                                                         \
-    dst_indexes=GetIndexes(dst_image);                                  \
-    if (src_image->storage_class == PseudoClass)                        \
-      {                                                                 \
-        register const IndexPacket                                      \
-          *src_indexes;                                                 \
-                                                                        \
-        src_indexes=GetIndexes(src_image);                              \
-        if (src_image->is_grayscale)                                    \
-          for (x=(long) dst_image->columns; x > 0; x--)                 \
-            target=src_image->colormap[*src_indexes++].red;             \
-        else                                                            \
-          for (x=(long) dst_image->columns; x > 0; x--)                 \
-            {                                                           \
-              target=PixelIntensityToQuantum(&src_image->colormap[*src_indexes]); \
-              src_indexes++;                                            \
-            }                                                           \
-      }                                                                 \
-    else                                                                \
-      {                                                                 \
-        if (src_image->is_grayscale)                                    \
-          for (x=(long) dst_image->columns; x > 0; x--)                 \
-            target=p++->red;                                            \
-        else                                                            \
-          for (x=(long) dst_image->columns; x > 0; x--)                 \
-            {                                                           \
-              target=PixelIntensityToQuantum(p);                        \
-              p++;                                                      \
-            }                                                           \
-      }                                                                 \
-  } while (0);
+      if (source_image->storage_class == PseudoClass)                   \
+        {                                                               \
+          if (source_image->is_grayscale)                               \
+            for (i=0; i < npixels; i++)                                 \
+              target=source_image->colormap[source_indexes[i]].red;     \
+          else                                                          \
+            for (i=0; i < npixels; i++)                                 \
+              target=PixelIntensityToQuantum(&source_image->colormap[source_indexes[i]]); \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          if (source_image->is_grayscale)                               \
+            for (i=0; i < npixels; i++)                                 \
+              target=source_pixels[i].red;                              \
+          else                                                          \
+            for (i=0; i < npixels; i++)                                 \
+              target=PixelIntensityToQuantum(&source_pixels[i]);        \
+        }                                                               \
+    } while (0);
 
-#define ImportImageChannelText  "  Import a channel into the image...  "
-MagickPassFail ImportImageChannel(const Image *src_image,
-                                  Image *dst_image,
+static MagickPassFail
+ImportImageChannelPixels(void *user_data,                   /* User provided mutable data */
+                         const Image *source_image,         /* Source image */
+                         const PixelPacket *source_pixels,  /* Pixel row in source image */
+                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                         Image *update_image,               /* Update image */
+                         PixelPacket *update_pixels,        /* Pixel row in update image */
+                         IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                         const long npixels,                /* Number of pixels in row */
+                         ExceptionInfo *exception           /* Exception report */
+                         )
+{
+  ChannelType
+    channel = *((const ChannelType *) user_data);
+
+  ARG_NOT_USED(exception);
+
+  switch (channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      {
+        IMPORT_CHANNEL(update_pixels[i].red);
+        break;
+      }
+    case GreenChannel:
+    case MagentaChannel:
+      {
+        IMPORT_CHANNEL(update_pixels[i].green);
+        break;
+      }
+    case BlueChannel:
+    case YellowChannel:
+      {
+        IMPORT_CHANNEL(update_pixels[i].blue);
+        break;
+      }
+    case OpacityChannel:
+      {
+        if (update_image->colorspace == CMYKColorspace)
+          {
+            IMPORT_CHANNEL(update_indexes[i]);
+          }
+        else
+          {
+            IMPORT_CHANNEL(update_pixels[i].opacity);
+          }
+        break;
+      }
+    case MatteChannel:
+    case BlackChannel:
+      {
+        IMPORT_CHANNEL(update_pixels[i].opacity);
+        break;
+      }
+    default:
+      {
+      }
+    }
+
+  return MagickPass;
+}
+
+#define ImportImageChannelText  "Import a channel into the image...  "
+MagickPassFail ImportImageChannel(const Image *source_image,
+                                  Image *update_image,
                                   const ChannelType channel)
 {
-  long
-    y;
+  ChannelType
+    channel_type = channel;
 
   MagickPassFail
     status=MagickPass;
 
-  assert(dst_image != (Image *) NULL);
-  assert(dst_image->signature == MagickSignature);
-  assert(src_image != (Image *) NULL);
-  assert(src_image->signature == MagickSignature);
+  assert(update_image != (Image *) NULL);
+  assert(update_image->signature == MagickSignature);
+  assert(source_image != (Image *) NULL);
+  assert(source_image->signature == MagickSignature);
 
-  /*
-    Ensure that destination image is DirectClass
-  */
-  if (dst_image->storage_class == PseudoClass)
-    {
-      status &= SyncImage(dst_image);
-      dst_image->storage_class=DirectClass;
-    }
-
-  for (y=0; y < (long) dst_image->rows; y++)
-    {
-      register long
-        x;
-  
-      register const PixelPacket
-        *p;
-
-      register PixelPacket
-        *q;
-  
-      q=GetImagePixels(dst_image,0,y,dst_image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
-      p=AcquireImagePixels(src_image,0,y,src_image->columns,1,&dst_image->exception);
-      if (p == (PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
-
-      switch (channel)
-        {
-        case RedChannel:
-        case CyanChannel:
-          {
-            IMPORT_IMAGE_CHANNEL(src_image,dst_image,q++->red);
-            break;
-          }
-        case GreenChannel:
-        case MagentaChannel:
-          {
-            IMPORT_IMAGE_CHANNEL(src_image,dst_image,q++->green);
-            break;
-          }
-        case BlueChannel:
-        case YellowChannel:
-          {
-            IMPORT_IMAGE_CHANNEL(src_image,dst_image,q++->blue);
-            break;
-          }
-        case OpacityChannel:
-          {
-            if (dst_image->colorspace == CMYKColorspace)
-              {
-                IMPORT_IMAGE_CHANNEL(src_image,dst_image,*dst_indexes++);
-              }
-            else
-              {
-                IMPORT_IMAGE_CHANNEL(src_image,dst_image,q++->opacity);
-              }
-            break;
-          }
-        case MatteChannel:
-        case BlackChannel:
-          {
-            IMPORT_IMAGE_CHANNEL(src_image,dst_image,q++->opacity);
-            break;
-          }
-        default:
-          {
-          }
-        }
-      if (!SyncImagePixels(dst_image))
-        {
-          status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,dst_image->rows))
-        if (!MagickMonitor(ImportImageChannelText,y,dst_image->rows,&dst_image->exception))
-          break;
-    }
+  update_image->storage_class=DirectClass;
+  status=PixelIterateDualModify(ImportImageChannelPixels,ImportImageChannelText,
+                                &channel_type,
+                                source_image->columns,source_image->rows,
+                                source_image,0,0,
+                                update_image,0,0,
+                                &update_image->exception);
   return(status);
 }
 
