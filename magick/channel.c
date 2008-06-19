@@ -412,100 +412,92 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
 %
 */
 #define ComputeChannelDepthText "Get image channel depth...  "
-#define COMPUTE_CHANNEL_DEPTH(depth,parameter)                          \
-  {                                                                     \
-    long                                                                \
-      y;                                                                \
-                                                                        \
-    depth=1;                                                            \
-    for (y=0; y < (long) image->rows; y++)                              \
-      {                                                                 \
-        register const PixelPacket                                      \
-          *p;                                                           \
-                                                                        \
-        register long                                                   \
-          x;                                                            \
-                                                                        \
-        register IndexPacket                                            \
-          *indexes;                                                     \
-                                                                        \
-        register unsigned int                                           \
-          scale;                                                        \
-                                                                        \
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);     \
-        if (p == (const PixelPacket *) NULL)                            \
-          break;                                                        \
-        indexes=GetIndexes(image);                                      \
-        scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));                \
-        x=(long) image->columns;                                        \
-        while(x > 0)                                                    \
-          {                                                             \
-            if ((parameter) != scale*((parameter)/scale))               \
-              {                                                         \
-                depth++;                                                \
-                if (depth == QuantumDepth)                              \
-                  break;                                                \
-                scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));        \
-                continue;                                               \
-              }                                                         \
-            p++;                                                        \
-            indexes++;                                                  \
-            x--;                                                        \
-          }                                                             \
-        if (QuantumTick(y,image->rows))                                 \
-          if (!MagickMonitor(ComputeChannelDepthText,y,image->rows,exception)) \
-            break;                                                      \
-        if (depth == QuantumDepth)                                      \
-          break;                                                        \
-      }                                                                 \
-    (void) MagickMonitor(ComputeChannelDepthText,image->rows,image->rows,exception); \
+
+#define CHANNEL_DEPTH(parameter)                                \
+  {                                                             \
+    register long                                               \
+      i;                                                        \
+                                                                \
+    register unsigned int                                       \
+      scale;                                                    \
+                                                                \
+    if (depth < 1)                                              \
+      depth=1;                                                  \
+    scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));            \
+    i=0;                                                        \
+    while (i < npixels)                                         \
+      {                                                         \
+        if ((parameter) != scale*((parameter)/scale))           \
+          {                                                     \
+            depth++;                                            \
+            if (depth == QuantumDepth)                          \
+              break;                                            \
+            scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));    \
+            continue;                                           \
+          }                                                     \
+        i++;                                                    \
+      }                                                         \
   }
 
-MagickExport unsigned int GetImageChannelDepth(const Image *image,
-                                               const ChannelType channel, ExceptionInfo *exception)
+typedef struct _ChannelDepthInfo
 {
-  unsigned int
-    depth=0;
+  ChannelType   channel;
+  unsigned int  depth;
+} ChannelDepthInfo;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+static MagickPassFail
+GetImageChannelDepthPixels(void *user_data,             /* User provided mutable data */
+                           const Image *image,          /* Input image */
+                           const PixelPacket *pixels,   /* Pixel row */
+                           const IndexPacket *indexes,  /* Pixel indexes */
+                           const long npixels,          /* Number of pixels in row */
+                           ExceptionInfo *exception     /* Exception report */
+                           )
+{
+  ChannelDepthInfo
+    *channel_info = (ChannelDepthInfo *) user_data;
 
-  switch (channel)
+  register unsigned int
+    depth=channel_info->depth;
+
+  ARG_NOT_USED(exception);
+
+  switch (channel_info->channel)
     {
     case RedChannel:
     case CyanChannel:
       {
-        COMPUTE_CHANNEL_DEPTH(depth,p->red);
+        CHANNEL_DEPTH(pixels[i].red);
         break;
       }
     case GreenChannel:
     case MagentaChannel:
       {
-        COMPUTE_CHANNEL_DEPTH(depth,p->green);
+        CHANNEL_DEPTH(pixels[i].green);
         break;
       }
     case BlueChannel:
     case YellowChannel:
       {
-        COMPUTE_CHANNEL_DEPTH(depth,p->blue);
+        CHANNEL_DEPTH(pixels[i].blue);
         break;
       }
     case OpacityChannel:
       {
         if (image->colorspace == CMYKColorspace)
           {
-            COMPUTE_CHANNEL_DEPTH(depth,*indexes);
+            CHANNEL_DEPTH(indexes[i]);
           }
         else
           {
-            COMPUTE_CHANNEL_DEPTH(depth,p->opacity);
+            CHANNEL_DEPTH(pixels[i].opacity);
           }
         break;
       }
     case BlackChannel:
     case MatteChannel:
       {
-        COMPUTE_CHANNEL_DEPTH(depth,p->opacity);
+        CHANNEL_DEPTH(pixels[i].opacity);
         break;
       }
     default:
@@ -513,7 +505,35 @@ MagickExport unsigned int GetImageChannelDepth(const Image *image,
       }
     }
 
-  return depth;
+  if (depth > channel_info->depth)
+    channel_info->depth=depth;
+
+  if (depth >= QuantumDepth)
+    return MagickFail;
+
+  return MagickPass;
+}
+
+MagickExport unsigned int
+GetImageChannelDepth(const Image *image,
+                     const ChannelType channel,
+                     ExceptionInfo *exception)
+{
+  ChannelDepthInfo
+    depth_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  depth_info.channel=channel;
+  depth_info.depth=1;
+
+  (void) PixelIterateMonoRead(GetImageChannelDepthPixels,
+                              ComputeChannelDepthText,
+                              &depth_info,
+                              0,0,image->columns,image->rows,
+                              image,exception);
+  return depth_info.depth;
 }
 
 /*

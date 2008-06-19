@@ -21,9 +21,221 @@
 </tr>
 </table>
 <p>
+2008-06-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (GetImageChannelDepth): Convert to use pixel
+        iterators.
+
+</UL>
+<p>
+2008-06-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/mat.c (RegisterMATImage): Set blob support to false for
+        MAT coder until bug related to blobs is fixed.
+
+</UL>
+<p>
+2008-06-16  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c Ability to read a new compressed MATLAB image format.
+
+</UL>
+<p>
+2008-06-15  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c, wpg.c: For empty images a message ImageFileDoesNotContainAnyImageData
+        is returned.
+
+</UL>
+<p>
+2008-06-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (ChannelImage): Convert to use pixel iterators.
+        (ExportImageChannel): Convert to use pixel iterators.
+  <LI> coders/dpx.c (WriteDPXImage): As an experimental feature, when
+        the environment variable MAGICK_RESERVE_STORAGE is set to "TRUE",
+        then the DPX format writer will request the required storage from
+        the filesystem in advance (if supported by the OS) or the full
+        amount of memory required (when writing to an in-memory BLOB).
+
+</UL>
+<p>
+2008-06-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magic.c (InitializeMagicInfo): New function to initialize
+        file format detection.<BR>
+        (GetMagickFileFormat): New internal implementation function to
+        detect file format based on file header.
+        (GetMagicInfo): This internal implementation function is eliminated.
+        (MagicInfo): MagickInfo structure is now private to the
+        implementation.
+
+</UL>
+<p>
+2008-06-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (ListMagickInfo): Replace "blob support"
+        indication with the coder stability classification.
+        (RegisterMagickInfo): Pay attention to coder classification.
+  <LI> magick/magick.h (MagickInfo): Added a coder stability
+        classification field as well as the MAGICK_CODER_STABILITY
+        environment variable to choose which coders are enabled.
+
+</UL>
+<p>
+2008-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageCharacteristics): Don't access image
+        pixels if they are not defined yet.
+  <LI> coders/{avi.c,avs.c,dcm.c,ept.c,fits.c,mtv.c,palm.c,rla.c,tga.c}:
+        Readers are now much more robust when faced with reading random files.
+
+</UL>
+<p>
+2008-06-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Exclude all virtual delegates and
+        coders for pseudo-formats.
+
+</UL>
+<p>
+2008-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dcm.c (ReadDCMImage): Make DCM reader quit immediately on
+        EOF condition.<BR>
+  <LI> coders/avi.c (ReadAVIImage): Make AVI reader more robust at
+        rejecting bad files.<BR>
+  <LI> configure.ac: Eliminated --enable-delegate-build option that I
+        have not used or tested for almost ten years so it probably did
+        not work anyway.  Use --with-ttf=/prefix to specify the the
+        installation prefix for freetype.  Use
+        --with-ttf=/prefix/bin/freetype-config to specify the whole path
+        to freetype-config.
+
+</UL>
+<p>
+2008-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): Add support for
+        -black-threshold and -white-threshold.
+  <LI> magick/image.h (enum ChannelType): Added GrayChannel
+        enumeration.<BR>
+  <LI> magick/operator.c (QuantumOperatorImageMultivalue): New
+        implementation function to make creating legacy functions like
+        black/white thresholding easier.
+  <LI> wand/magick_wand.c (MagickBlackThresholdImage): Implemented.
+        (MagickWhiteThresholdImage): Implemented.
+  <LI> magick/effect.c (BlackThresholdImage): Implemented a
+        BlackThresholdImage() which is similar to (but not identical to)
+        the one in ImageMagick.<BR>
+        (WhiteThresholdImage): Implemented a WhiteThresholdImage() which
+        is similar to (but not identical to) the one in ImageMagick.
+
+</UL>
+<p>
+2008-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/operator.c: Added support for additional channel
+        operators (-operator) for applying noise to one or more channels.
+        The additional operators are Noise-Gaussian, Noise-Impulse,
+        Noise-Laplacian, Noise-Multiplicative, Noise-Poisson, and
+        Noise-Uniform.  The amount of noise applied is controlled via the
+        numeric argument, which can specify the percentage of noise to
+        apply.<BR>
+  <LI> magick/enum_strings.c: New source module to contain the various
+        EnumToString() and StringToEnum() functions which seem to multiply
+        like bunny-rabbits.<BR>
+  <LI> magick/gem.c (GenerateNoise): Poisson noise generation was
+        taking excessively long and producing wrong results.  Noise
+        generation was only producing the correct amount of noise in the
+        Q8 build.<BR>
+        (GenerateDifferentialNoise): New function to return noise in a
+        floating-point differential format.
+
+</UL>
+<p>
+2008-06-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_iterator.h: Removed x,y coordinate information from
+        all of the callback definitions since a use for this information
+        has yet to be found.<BR>
+  <LI> magick/composite.c (CompositeImage): Use individual callback
+        functions for the composition operations.
+  <LI> coders/xcf.c (ReadXCFImage): Deal with grayscale images the
+        GraphicsMagick-way.
+
+</UL>
+<p>
+2008-06-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xcf.c (ReadXCFImage): Validate XCF file data so that
+        corrupted files don't crash GraphicsMagick.
+
+</UL>
+<p>
+2008-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+  <LI> coders/cineon.c (ReadCINEONImage): Incrementally read user data
+        part and check for EOF so that bogus files are rejected quickly.
+
+</UL>
+<p>
+2008-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pict.c (ReadPICTImage): Ensure that row_bytes calculation
+        does not overflow.  Verify that RLE decode does not overflow
+        buffer.  Validate image frame dimensions.
+  <LI> coders/palm.c (ReadPALMImage): Validate PALM bits per pixel and
+        colormap indexes.<BR>
+  <LI> magick/resource.c (ListMagickResourceInfo): List controlling
+        environment variable in '-list resource' output as a configuration
+        usage reminder.<BR>
+  <LI> coders/pdf.c (ReadPDFImage): Properly deal with reading rotated
+        PDFs.
+
+</UL>
+<p>
+2008-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> FAQ.txt: Added a FAQ for how to extract and combine CMYK image
+        channels to individual files.
+
+</UL>
+<p>
 2008-05-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/fx.c (ConvolveImage): Eliminate unnecessary "range check"
+        feature since range checking is not where the CPU time is going.
+  <LI> magick/effect.c (UnsharpMaskImage): Re-write implementation to
+        use pixel iterators.<BR>
+  <LI> magick/pixel_iterator.c: Decided that the old per-pixel
+        iterations were not useful enough to keep since the region-based
+        ones are working fine.  Moved pixel_row_iterator.c to
+        pixel_iterator.c and renamed functions to remove the 'Row'
+        designation.<BR>
+  <LI> magick/composite.c (CompositeImage): Automatically adjust
+        colorspace of composite image so that it is compatible with canvas
+        image.<BR>
   <LI> magick/alpha_composite.h (AlphaComposite): Fix alpha composite
         when both pixels contain transparency.
   <LI> PerlMagick/demo/demo.pl: Use segmentation parameters which

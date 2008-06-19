@@ -1,3 +1,13 @@
+2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+        * Magick++/lib/Image.cpp (quantize): Error measurement support was
+	being performed incorrectly.  SyncImage() is not needed here.
+
+2008-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/channel.c (GetImageChannelDepth): Convert to use pixel
+	iterators.
+
 2008-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/mat.c (RegisterMATImage): Set blob support to false for
