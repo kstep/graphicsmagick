@@ -1,3 +1,7 @@
+2008-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c (ProfileImage): Convert to use pixel iterators.
+
 2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (ImportImageChannel): Convert to use pixel

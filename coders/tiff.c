@@ -963,6 +963,7 @@ static MagickPassFail QuantumTransferMode(const Image *image,
               }
             break;
           }
+        case PHOTOMETRIC_CIELAB:
         case PHOTOMETRIC_RGB:
           {
             if (planar_config == PLANARCONFIG_SEPARATE)
@@ -1390,10 +1391,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       ImportPixelAreaOptionsInit(&import_options);
       if (photometric == PHOTOMETRIC_CIELAB)
         {
+#if 0
+          image->colorspace=LABColorspace;
+#else
           TIFFClose(tiff);
           if (filename_is_temporary)
             (void) LiberateTemporaryFile(filename);
           ThrowReaderException(CoderError,UnableToReadCIELABImages,image);
+#endif
         }
       if (photometric == PHOTOMETRIC_SEPARATED)
         image->colorspace=CMYKColorspace;
