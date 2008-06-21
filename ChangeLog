@@ -1,3 +1,8 @@
+2008-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickSetImageFormat): Add method to support
+	setting the image format.
+
 2008-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/profile.c (ProfileImage): Convert to use pixel iterators.

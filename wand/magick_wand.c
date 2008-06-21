@@ -7351,6 +7351,49 @@ WandExport unsigned int MagickSetImageFilename(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t I m a g e F o r m a t                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageFormat() sets the format of a particular image in a
+%  sequence.  The format is designated by a magick string (e.g. "GIF").
+%
+%  The format of the MagickSetImageFormat method is:
+%
+%      unsigned int MagickSetImageFormat(MagickWand *wand,
+%        const char *format)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o magick: The image format.
+%
+*/
+WandExport unsigned int MagickSetImageFormat(MagickWand *wand,
+  const char *format)
+{
+  const char
+    *magick = "";
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  if (format != (const char *) NULL)
+    magick=format;
+  (void) CopyMagickString(wand->image->magick,magick,
+                          sizeof(wand->image->magick));
+  return MagickTrue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e G a m m a                                     %
 %                                                                             %
 %                                                                             %
