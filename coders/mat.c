@@ -894,7 +894,7 @@ ExitLoop:
     image->is_monochrome = image->depth==1;
     if(image->is_monochrome)
       image->colorspace=GRAYColorspace;
-    
+
 
       /*  Rotate image. */
     rotated_image = RotateImage(image, 90.0, exception);
