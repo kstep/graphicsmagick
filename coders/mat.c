@@ -917,7 +917,7 @@ done_reading:
     if(image2!=NULL)
       if(image2!=image)		/* Does shadow temporary decompressed image exist? */
       {
-	CloseBlob(image2);
+/*	CloseBlob(image2); */
         DeleteImageFromList(&image2);
 	if(clone_info)
 	{
