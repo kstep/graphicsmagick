@@ -622,7 +622,12 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       if(clone_info==NULL)
         if((clone_info=CloneImageInfo(image_info)) == NULL) continue;
       image2 = DecompressBlock(image,MATLAB_HDR.ObjectSize,clone_info,exception);
-      if(image2==NULL) continue;
+      if(image2==NULL) 
+      {
+        if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+                                   "Decompression failed");
+	continue;
+      }
       MATLAB_HDR.DataType = ReadBlobXXXLong(image2); /* replace compressed object type. */
     }
 #endif    
@@ -910,8 +915,9 @@ ExitLoop:
 done_reading:
 
     if(image2!=NULL)
-      if(image2!=image)
+      if(image2!=image)		/* Does shadow temporary decompressed image exist? */
       {
+	CloseBlob(image2);
         DeleteImageFromList(&image2);
 	if(clone_info)
 	{
