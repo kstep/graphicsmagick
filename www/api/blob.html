@@ -21,6 +21,7 @@
 
 		<li><a href="#attachblob">AttachBlob</a></li>
 		<li><a href="#blobisseekable">BlobIsSeekable</a></li>
+		<li><a href="#blobreservesize">BlobReserveSize</a></li>
 		<li><a href="#blobtofile">BlobToFile</a></li>
 		<li><a href="#blobtoimage">BlobToImage</a></li>
 		<li><a href="#cloneblobinfo">CloneBlobInfo</a></li>
@@ -57,6 +58,7 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>void  <strong>AttachBlob</strong>( BlobInfo *blob_info, const void *blob, const size_t length );</P>
 <P>MagickBool  <strong>BlobIsSeekable</strong>( const Image *image );</P>
+<P>MagickPassFail  <strong>BlobReserveSize</strong>( Image *image, magick_off_t size );</P>
 <P>MagickPassFail  <strong>BlobToFile</strong>( const char *filename, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>Image * <strong>BlobToImage</strong>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo * <strong>CloneBlobInfo</strong>( const BlobInfo *blob_info );</P>
@@ -116,6 +118,25 @@
 
 <DD>
 <P>Image to query</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="blobreservesize">BlobReserveSize</a></h2>
+<blockquote>BlobReserveSize() sets the output size of the blob or file. This is used as a means to minimize memory or filesystem fragmentation if the final output size is known in advance. While it is possible that file fragmentation is reduced, it is also possible that file write performance is reduced by changing a write operation to a read, modify, write operation. </blockquote><P>The format of the BlobReserveSize method is:</P>
+<blockquote>MagickPassFail BlobReserveSize ( <A HREF="types.html#Image">Image</A> *image, magick_off_t size ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>Image to update</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_size_3a">size:</a></strong>
+
+<DD>
+<P>New output size.</P>
 </dd>
 </li>
 </dl>

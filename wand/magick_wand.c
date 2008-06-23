@@ -69,8 +69,6 @@
  * The following functions are not implemented at this time and always
  * return False:
  *
- *   MagickCompareImageChannels
- *   MagickCompareImages
  *   MagickFxImage
  *   MagickFxImageChannel
  *   MagickGammaImageChannel
@@ -1264,26 +1262,18 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
   const MagickWand *reference,const ChannelType channel,const MetricType metric,
   double *distortion)
 {
-#if defined(NOT_IMPLEMENTED)
   Image
     *compare_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
-    ThrowWandException(WandError,WandContainsNoImageChannels,wand->id);
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
   compare_image=CompareImageChannels(wand->image,reference->image,channel,
     metric,distortion,&wand->image->exception);
   if (compare_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,compare_image));
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(distortion);
-  ARG_NOT_USED(metric);
-  ARG_NOT_USED(reference);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickCompareImageChannels");
-#endif /* NOT_IMPLEMENTED */
 }
 
 /*
@@ -1320,7 +1310,6 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
 WandExport MagickWand *MagickCompareImages(MagickWand *wand,
   const MagickWand *reference,const MetricType metric,double *distortion)
 {
-#if defined(NOT_IMPLEMENTED)
   Image
     *compare_image;
 
@@ -1334,12 +1323,6 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
   if (compare_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,compare_image));
-#else
-  ARG_NOT_USED(distortion);
-  ARG_NOT_USED(metric);
-  ARG_NOT_USED(reference);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickCompareImages");
-#endif /* NOT_IMPLEMENTED */
 }
 
 /*

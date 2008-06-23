@@ -1,0 +1,168 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>compare - Compare images</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+</head>
+
+<body style="background-color: white">
+
+<P><a name="__index__"></a></P>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
+
+		<li><a href="#compareimagechannels">CompareImageChannels</a></li>
+		<li><a href="#compareimages">CompareImages</a></li>
+		<li><a href="#isimagesequal">IsImagesEqual</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<P>
+</P>
+<h1><a name="name">NAME</a></h1>
+<P>compare - Compare images</P>
+<P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>Image * <strong>CompareImageChannels</strong>( const Image *reference_image, const Image *compare_image, const ChannelType channel, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>Image * <strong>CompareImages</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
+<P>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="compareimagechannels">CompareImageChannels</a></h2>
+<blockquote>CompareImageChannels() compares one or more image channels of an image with those in a second image and returns a difference image. </blockquote><P>The format of the CompareImageChannels method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *CompareImageChannels ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_reference_image_3a">reference_image:</a></strong>
+
+<DD>
+<P>the reference image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_compare_image_3a">compare_image:</a></strong>
+
+<DD>
+<P>the comparison image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_channel_3a">channel:</a></strong>
+
+<DD>
+<P>the <code>channel(s)</code> to compare.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_metric_3a">metric:</a></strong>
+
+<DD>
+<P>the comparison metric (UndefinedMetric, MeanAbsoluteErrorMetric, MeanSquaredErrorMetric, PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric, or RootMeanSquaredErrorMetric)</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_distortion_3a">distortion:</a></strong>
+
+<DD>
+<P>the computed distortion between the images based on the specified metric.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="compareimages">CompareImages</a></h2>
+<blockquote>CompareImages() compares an image to a second image and returns a difference image. </blockquote><P>The format of the CompareImages method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *CompareImages ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>reference_image:</strong>
+
+<DD>
+<P>the reference image.</P>
+</dd>
+</li>
+<dt><strong>compare_image:</strong>
+
+<DD>
+<P>the comparison image.</P>
+</dd>
+</li>
+<dt><strong>metric:</strong>
+
+<DD>
+<P>the comparison metric (UndefinedMetric, MeanAbsoluteErrorMetric, MeanSquaredErrorMetric, PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric, or RootMeanSquaredErrorMetric)</P>
+</dd>
+</li>
+<dt><strong>distortion:</strong>
+
+<DD>
+<P>the computed distortion between the images based on the specified metric.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="isimagesequal">IsImagesEqual</a></h2>
+<blockquote>IsImagesEqual() measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><dl>
+<dt><strong><a name="item_o_mean_error_per_pixel_3a">mean_error_per_pixel:</a></strong>
+
+<DD>
+<P>The mean error for any single pixel in the image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_normalized_mean_error_3a">normalized_mean_error:</a></strong>
+
+<DD>
+<P>The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_normalized_maximum_error_3a">normalized_maximum_error:</a></strong>
+
+<DD>
+<P>The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</P>
+</dd>
+</li>
+</dl>
+<P>A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
+<P>The format of the IsImagesEqual method is:</P>
+<blockquote>unsigned int IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>A description of each parameter follows.</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_reference_3a">reference:</a></strong>
+
+<DD>
+<P>The reference image.</P>
+</dd>
+</dl>
+
+</body>
+
+</html>

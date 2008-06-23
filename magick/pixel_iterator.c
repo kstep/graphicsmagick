@@ -593,3 +593,286 @@ PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
     (call_back,description,user_data,columns,rows,source_image,
      source_x,source_y,new_image,new_x,new_y,exception,MagickTrue);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l I t e r a t e T r i p l e M o d i f y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelIterateTripleModify() iterates through pixel regions of three images
+%  and invokes a user-provided callback function (of type
+%  PixelIteratorTripleModifyCallback) for each row of pixels.  The first two
+%  images are read-only, while the third image is read-write for update.
+%  Access of the first two images is done lock-step using the same coordinates.
+%  This is useful to support operations such as image differencing.
+%
+%  The format of the PixelIterateTripleModify method is:
+%
+%      MagickPassFail PixelIterateTripleModify(
+%                                PixelIteratorTripleModifyCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *source1_image,
+%                                const Image *source2_image,
+%                                const long source_x,
+%                                const long source_y,
+%                                Image *update_image,
+%                                const long update_x,
+%                                const long update_y,
+%                                ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o call_back: A user-provided C callback function which reads from
+%      a region of source pixels and updates a region of destination pixels.
+%
+%    o description: textual description of operation being performed.
+%
+%    o user_data: User-provided context data.
+%
+%    o columns: Width of pixel region
+%
+%    o rows: Height of pixel region
+%
+%    o source1_image: The address of the constant source 1 Image.
+%
+%    o source2_image: The address of the constant source 2 Image.
+%
+%    o source_x: The horizontal ordinate of the top left corner of the source regions.
+%
+%    o source_y: The vertical ordinate of the top left corner of the source regions.
+%
+%    o update_image: The address of the update Image.
+%
+%    o update_x: The horizontal ordinate of the top left corner of the update region.
+%
+%    o update_y: The vertical ordinate of the top left corner of the update region.
+%
+%    o exception: If an error is reported, this argument is updated with the reason.
+%
+*/
+static MagickPassFail
+PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
+                                 const char *description,
+                                 void *user_data,
+                                 const unsigned long columns,
+                                 const unsigned long rows,
+                                 const Image *source1_image,
+                                 const Image *source2_image,
+                                 const long source_x,
+                                 const long source_y,
+                                 Image *update_image,
+                                 const long update_x,
+                                 const long update_y,
+                                 ExceptionInfo *exception,
+                                 MagickBool set)
+{
+  MagickPassFail
+    status = MagickPass;
+
+  register long
+    source_row,
+    update_row;
+
+  for (source_row=source_y, update_row=update_y;
+       source_row < (long) (source_y+rows);
+       source_row++, update_row++)
+    {
+      const PixelPacket
+        *source1_pixels,
+        *source2_pixels;
+
+      const IndexPacket
+        *source1_indexes,
+        *source2_indexes;
+
+      PixelPacket
+        *update_pixels;
+
+      IndexPacket
+        *update_indexes;
+
+      /*
+        First image.
+      */
+      source1_pixels=AcquireImagePixels(source1_image, source_x, source_row,
+                                        columns, 1, exception);
+      if (!source1_pixels)
+        {
+          status=MagickFail;
+          break;
+        }
+      source1_indexes=GetIndexes(source1_image);
+
+      /*
+        Second image.
+      */
+      source2_pixels=AcquireImagePixels(source2_image, source_x, source_row,
+                                        columns, 1, exception);
+      if (!source2_pixels)
+        {
+          status=MagickFail;
+          break;
+        }
+      source2_indexes=GetIndexes(source2_image);
+
+      /*
+        Third image.
+      */
+      if (set)
+        update_pixels=SetImagePixels(update_image, update_x, update_row, columns, 1);
+      else
+        update_pixels=GetImagePixels(update_image, update_x, update_row, columns, 1);
+      if (!update_pixels)
+        {
+          CopyException(exception,&update_image->exception);
+          status=MagickFail;
+          break;
+        }
+      update_indexes=GetIndexes(update_image);
+
+      status=(call_back)(user_data,
+                         source1_image,source1_pixels,source1_indexes,
+                         source2_image,source2_pixels,source2_indexes,
+                         update_image,update_pixels,update_indexes,
+                         columns,exception);
+      if (status == MagickFail)
+        break;
+
+      if (!SyncImagePixels(update_image))
+        {
+          if (status != MagickFail)
+            {
+              status=MagickFail;
+              CopyException(exception,&update_image->exception);
+            }
+        }
+
+      if (QuantumTick(source_row-source_y,rows))
+        if (!MagickMonitor(description,source_row-source_y,rows,exception))
+          status=MagickFail;
+
+      if (status == MagickFail)
+        break;
+    }
+  return (status);
+}
+
+MagickExport MagickPassFail
+PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
+                       const char *description,
+                       void *user_data,
+                       const unsigned long columns,
+                       const unsigned long rows,
+                       const Image *source1_image,
+                       const Image *source2_image,
+                       const long source_x,
+                       const long source_y,
+                       Image *update_image,
+                       const long update_x,
+                       const long update_y,
+                       ExceptionInfo *exception)
+{
+  return PixelIterateTripleImplementation
+    (call_back,description,user_data,columns,rows,
+     source1_image,source2_image,source_x,source_y,
+     update_image,update_x,update_y,
+     exception,MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l I t e r a t e D u a l N e w                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelIterateTripleNew() iterates through pixel regions of three images
+%  and invokes a user-provided callback function (of type
+%  PixelIteratorTripleNewCallback) for each row of pixels. The first two
+%  images are read-only, while the third image is read-write for update.
+%  Access of the first two images is done lock-step using the same coordinates.
+%  This is used if a new output image is created based on two input images.
+%  The difference from PixelIterateTripleModify() is that the output pixels
+%  are not initialized so it is more efficient when outputting a new image.
+%
+%  The format of the PixelIterateTripleNew method is:
+%
+%      MagickPassFail PixelIterateTripleNew(
+%                                PixelIteratorTripleNewCallback call_back,
+%                                const char *description,
+%                                void *user_data,
+%                                const unsigned long columns,
+%                                const unsigned long rows,
+%                                const Image *source1_image,
+%                                const Image *source2_image,
+%                                const long source_x,
+%                                const long source_y,
+%                                Image *new_image,
+%                                const long new_x,
+%                                const long new_y,
+%                                ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o call_back: A user-provided C callback function which reads from
+%      a region of source pixels and initializes a region of destination pixels.
+%
+%    o description: textual description of operation being performed.
+%
+%    o user_data: User-provided context data.
+%
+%    o columns: Width of pixel region
+%
+%    o rows: Height of pixel region
+%
+%    o source1_image: The address of the constant source 1 Image.
+%
+%    o source2_image: The address of the constant source 2 Image.
+%
+%    o source_x: The horizontal ordinate of the top left corner of the source regions.
+%
+%    o source_y: The vertical ordinate of the top left corner of the source regions.
+%
+%    o new_image: The address of the new Image.
+%
+%    o new_x: The horizontal ordinate of the top left corner of the new region.
+%
+%    o new_y: The vertical ordinate of the top left corner of the new region.
+%
+%    o exception: If an error is reported, this argument is updated with the reason.
+%
+*/
+MagickExport MagickPassFail
+PixelIterateTripleNew(PixelIteratorTripleNewCallback call_back,
+                    const char *description,
+                    void *user_data,
+                    const unsigned long columns,
+                    const unsigned long rows,
+                    const Image *source1_image,
+                    const Image *source2_image,
+                    const long source_x,
+                    const long source_y,
+                    Image *new_image,
+                    const long new_x,
+                    const long new_y,
+                    ExceptionInfo *exception)
+{
+  return PixelIterateTripleImplementation
+    (call_back,description,user_data,columns,rows,
+     source1_image,source2_image,source_x,source_y,
+     new_image,new_x,new_y,
+     exception,MagickTrue);
+}

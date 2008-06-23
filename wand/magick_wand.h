@@ -46,16 +46,6 @@ extern WandExport int
 extern WandExport size_t
   CopyMagickString(char *,const char *,const size_t);
 
-typedef enum
-{
-  UndefinedMetric,
-  MeanAbsoluteErrorMetric,
-  MeanSquaredErrorMetric,
-  PeakAbsoluteErrorMetric,
-  PeakSignalToNoiseRatioMetric,
-  RootMeanSquaredErrorMetric
-} MetricType;
-
 typedef struct _MagickWand
   MagickWand;
 

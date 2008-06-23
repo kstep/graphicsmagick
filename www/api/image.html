@@ -44,7 +44,6 @@
 		<li><a href="#getimageinfo">GetImageInfo</a></li>
 		<li><a href="#getimagestatistics">GetImageStatistics</a></li>
 		<li><a href="#getimagetype">GetImageType</a></li>
-		<li><a href="#isimagesequal">IsImagesEqual</a></li>
 		<li><a href="#istaintimage">IsTaintImage</a></li>
 		<li><a href="#modifyimage">ModifyImage</a></li>
 		<li><a href="#plasmaimage">PlasmaImage</a></li>
@@ -96,7 +95,6 @@
 <P>void  <strong>GetImageInfo</strong>( ImageInfo *image_info );</P>
 <P>MagickPassFail  <strong>GetImageStatistics</strong>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
 <P>ImageType  <strong>GetImageType</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
 <P>unsigned int  <strong>IsTaintImage</strong>( const Image *image );</P>
 <P><strong>ModifyImage</strong>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>PlasmaImage</strong>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
@@ -638,46 +636,6 @@
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="isimagesequal">IsImagesEqual</a></h2>
-<blockquote>IsImagesEqual() measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><dl>
-<dt><strong><a name="item_o_mean_error_per_pixel_3a">mean_error_per_pixel:</a></strong>
-
-<DD>
-<P>The mean error for any single pixel in the image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_normalized_mean_error_3a">normalized_mean_error:</a></strong>
-
-<DD>
-<P>The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_normalized_maximum_error_3a">normalized_maximum_error:</a></strong>
-
-<DD>
-<P>The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.</P>
-</dd>
-</li>
-</dl>
-<P>A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
-<P>The format of the IsImagesEqual method is:</P>
-<blockquote>unsigned int IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_reference_3a">reference:</a></strong>
-
-<DD>
-<P>The reference image.</P>
 </dd>
 </li>
 </dl>

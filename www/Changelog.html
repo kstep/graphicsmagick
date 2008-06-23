@@ -21,6 +21,34 @@
 </tr>
 </table>
 <p>
+2008-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> scripts/format_c_api_docs: Scan compare.c for API definitions.
+  <LI> wand/magick_wand.c (MagickCompareImageChannels): Enable use of
+        this function.<BR>
+        (MagickCompareImages): Enable use of this function.
+  <LI> magick/compare.c: New source file.
+        (IsImagesEqual): Move here from magick/image.c.
+        (CompareImageChannels): Initial implementation of function roughly
+        similar to the one in ImageMagick.
+        (CompareImages): Initial implementation of function roughly
+        similar to the one in ImageMagick.
+  <LI> magick/pixel_iterator.c (PixelIterateTripleModify): New pixel
+        iterator function to access two images as read-only and one as
+        read-write for updating existing pixels.
+        (PixelIterateTripleNew): New pixel iterator function to access two
+        images as read-only and one as read-write for creating new pixels.
+
+</UL>
+<p>
+2008-06-22  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c Added CloseBlob().
+
+</UL>
+<p>
 2008-06-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -986,7 +986,8 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/alpha_composite.h magick/animate.c magick/animate.h \
 	magick/annotate.c magick/api.h magick/attribute.c \
 	magick/attribute.h magick/bit_stream.h magick/blob.c \
-	magick/blob.h magick/channel.c magick/channel.h magick/color.c \
+	magick/blob.h magick/channel.c magick/channel.h \
+	magick/compare.c magick/compare.h magick/color.c \
 	magick/color.h magick/colorspace.c magick/colorspace.h \
 	magick/command.c magick/command.h magick/composite.c \
 	magick/composite.h magick/compress.c magick/compress.h \
@@ -1053,6 +1054,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
+	magick/magick_libGraphicsMagick_la-compare.lo \
 	magick/magick_libGraphicsMagick_la-color.lo \
 	magick/magick_libGraphicsMagick_la-colorspace.lo \
 	magick/magick_libGraphicsMagick_la-command.lo \
@@ -2832,6 +2834,8 @@ MAGICK_BASE_SRCS = \
 	magick/blob.h \
 	magick/channel.c \
 	magick/channel.h \
+	magick/compare.c \
+	magick/compare.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -2965,6 +2969,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/colorspace.h \
 	magick/command.h \
 	magick/command.h \
+	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
 	magick/constitute.h \
@@ -5169,6 +5174,8 @@ magick/magick_libGraphicsMagick_la-blob.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-channel.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-compare.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colorspace.lo:  \
@@ -6209,6 +6216,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-colorspace.lo
 	-rm -f magick/magick_libGraphicsMagick_la-command.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-command.lo
+	-rm -f magick/magick_libGraphicsMagick_la-compare.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-compare.lo
 	-rm -f magick/magick_libGraphicsMagick_la-composite.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-composite.lo
 	-rm -f magick/magick_libGraphicsMagick_la-compress.$(OBJEXT)
@@ -6588,6 +6597,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colorspace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-composite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-constitute.Plo@am__quote@
@@ -7441,6 +7451,13 @@ magick/magick_libGraphicsMagick_la-channel.lo: magick/channel.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/channel.c' object='magick/magick_libGraphicsMagick_la-channel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-channel.lo `test -f 'magick/channel.c' || echo '$(srcdir)/'`magick/channel.c
+
+magick/magick_libGraphicsMagick_la-compare.lo: magick/compare.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-compare.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Tpo -c -o magick/magick_libGraphicsMagick_la-compare.lo `test -f 'magick/compare.c' || echo '$(srcdir)/'`magick/compare.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/compare.c' object='magick/magick_libGraphicsMagick_la-compare.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-compare.lo `test -f 'magick/compare.c' || echo '$(srcdir)/'`magick/compare.c
 
 magick/magick_libGraphicsMagick_la-color.lo: magick/color.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-color.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Tpo -c -o magick/magick_libGraphicsMagick_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c

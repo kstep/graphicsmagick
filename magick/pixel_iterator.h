@@ -153,7 +153,66 @@ extern "C" {
                       const long new_x,
                       const long new_y,
                       ExceptionInfo *exception);
-  
+
+  /*
+    Read-read-write access across pixel regions of three images. The
+    first two images are accessed read-only while the third is
+    accessed as read-write.
+  */
+
+  typedef MagickPassFail (*PixelIteratorTripleModifyCallback)
+    (
+     void *user_data,                   /* User provided mutable data */
+     const Image *source1_image,         /* Source 1 image */
+     const PixelPacket *source1_pixels,  /* Pixel row in source 1 image */
+     const IndexPacket *source1_indexes, /* Pixel row indexes in source 1 image */
+     const Image *source2_image,         /* Source 2 image */
+     const PixelPacket *source2_pixels,  /* Pixel row in source 2 image */
+     const IndexPacket *source2_indexes, /* Pixel row indexes in source 2 image */
+     Image *update_image,                /* Update image */
+     PixelPacket *update_pixels,         /* Pixel row in update image */
+     IndexPacket *update_indexes,        /* Pixel row indexes in update image */
+     const long npixels,                 /* Number of pixels in row */
+     ExceptionInfo *exception            /* Exception report */
+     );
+
+  extern MagickExport MagickPassFail
+  PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
+                         const char *description,
+                         void *user_data,
+                         const unsigned long columns,
+                         const unsigned long rows,
+                         const Image *source1_image,
+                         const Image *source2_image,
+                         const long source_x,
+                         const long source_y,
+                         Image *update_image,
+                         const long update_x,
+                         const long update_y,
+                         ExceptionInfo *exception);
+
+  /*
+    Read-write access across pixel regions of two images. The first
+    (source) image is accessed read-only while the second (new)
+    image is accessed for write (uninitialized pixels).
+  */
+  typedef PixelIteratorTripleModifyCallback PixelIteratorTripleNewCallback;
+
+  extern MagickExport MagickPassFail
+  PixelIterateTripleNew(PixelIteratorTripleNewCallback call_back,
+                      const char *description,
+                      void *user_data,
+                      const unsigned long columns,
+                      const unsigned long rows,
+                      const Image *source1_image,
+                      const Image *source2_image,
+                      const long source_x,
+                      const long source_y,
+                      Image *new_image,
+                      const long new_x,
+                      const long new_y,
+                      ExceptionInfo *exception);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

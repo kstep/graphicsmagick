@@ -41,7 +41,7 @@
 <P>unsigned int  <strong>ChannelImage</strong>( Image *image, const ChannelType channel );</P>
 <P>Image * <strong>ExportImageChannel</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
 <P>unsigned long  <strong>GetImageChannelDepth</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>ImportImageChannel</strong>( const Image *src_image, Image *dst_image, const ChannelType channel );</P>
+<P>MagickPassFail  <strong>ImportImageChannel</strong>( const Image *source_image, Image *update_image, const ChannelType channel );</P>
 <P>MagickPassFail  <strong>SetImageChannelDepth</strong>( Image *image, const ChannelType channel, const unsigned int depth );</P>
 <P>
 </P>
@@ -121,15 +121,15 @@
 </P>
 <h2><a name="importimagechannel">ImportImageChannel</a></h2>
 <blockquote>ImportImageChannel() imports an image into the specified image channel. </blockquote><P>The format of the ImportImageChannel method is:</P>
-<blockquote>MagickPassFail ImportImageChannel ( const <A HREF="types.html#Image">Image</A> *src_image, <A HREF="types.html#Image">Image</A> *dst_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail ImportImageChannel ( const <A HREF="types.html#Image">Image</A> *source_image, <A HREF="types.html#Image">Image</A> *update_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_src_image_3a">src_image:</a></strong>
+<dt><strong><a name="item_o_source_image_3a">source_image:</a></strong>
 
 <DD>
 <P>The image to use as the replacement image channel.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_dst_image_3a">dst_image:</a></strong>
+<dt><strong><a name="item_o_update_image_3a">update_image:</a></strong>
 
 <DD>
 <P>The image to import the channel into.</P>

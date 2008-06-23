@@ -126,6 +126,7 @@ ChannelImagePixels(void *user_data,          /* User provided mutable data */
           }
         break;
       }
+    case MatteChannel:
     case OpacityChannel:
       {
         if (image->colorspace == CMYKColorspace)
@@ -151,7 +152,6 @@ ChannelImagePixels(void *user_data,          /* User provided mutable data */
         image->matte=False;
         break;
       }
-    case MatteChannel:
     case BlackChannel:
       {
         for (i=0; i < npixels; i++)
@@ -301,6 +301,7 @@ ExportImageChannelPixels(void *user_data,                   /* User provided mut
         EXPORT_CHANNEL(blue);
         break;
       }
+    case MatteChannel:
     case OpacityChannel:
       {
         if (source_image->colorspace == CMYKColorspace)
@@ -321,7 +322,6 @@ ExportImageChannelPixels(void *user_data,                   /* User provided mut
           }
         break;
       }
-    case MatteChannel:
     case BlackChannel:
       {
         EXPORT_CHANNEL(opacity);
@@ -475,6 +475,7 @@ GetImageChannelDepthPixels(void *user_data,             /* User provided mutable
         CHANNEL_DEPTH(pixels[i].blue);
         break;
       }
+    case MatteChannel:
     case OpacityChannel:
       {
         if (image->colorspace == CMYKColorspace)
@@ -488,7 +489,6 @@ GetImageChannelDepthPixels(void *user_data,             /* User provided mutable
         break;
       }
     case BlackChannel:
-    case MatteChannel:
       {
         CHANNEL_DEPTH(pixels[i].opacity);
         break;
@@ -621,6 +621,7 @@ ImportImageChannelPixels(void *user_data,                   /* User provided mut
         IMPORT_CHANNEL(update_pixels[i].blue);
         break;
       }
+    case MatteChannel:
     case OpacityChannel:
       {
         if (update_image->colorspace == CMYKColorspace)
@@ -633,7 +634,6 @@ ImportImageChannelPixels(void *user_data,                   /* User provided mut
           }
         break;
       }
-    case MatteChannel:
     case BlackChannel:
       {
         IMPORT_CHANNEL(update_pixels[i].opacity);
@@ -757,6 +757,7 @@ SetImageChannelDepthPixels(void *user_data,          /* User provided mutable da
         SET_DEPTH(pixels[i].blue);
         break;
       }
+    case MatteChannel:
     case OpacityChannel:
       {
         if (image->colorspace == CMYKColorspace)
@@ -770,7 +771,6 @@ SetImageChannelDepthPixels(void *user_data,          /* User provided mutable da
         break;
       }
     case BlackChannel:
-    case MatteChannel:
       {
         SET_DEPTH(pixels[i].opacity);
         break;

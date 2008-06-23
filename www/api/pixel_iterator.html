@@ -24,6 +24,8 @@
 		<li><a href="#pixeliteratedualread">PixelIterateDualRead</a></li>
 		<li><a href="#pixeliteratedualmodify">PixelIterateDualModify</a></li>
 		<li><a href="#pixeliteratedualnew">PixelIterateDualNew</a></li>
+		<li><a href="#pixeliteratetriplemodify">PixelIterateTripleModify</a></li>
+		<li><a href="#pixeliteratedualnew">PixelIterateDualNew</a></li>
 	</ul>
 
 </ul>
@@ -40,9 +42,11 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>MagickPassFail  <strong>PixelIterateDualModify</strong>( PixelIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateDualRead</strong>( PixelIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
 <P>MagickPassFail  <strong>PixelIterateMonoModify</strong>( PixelIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateMonoRead</strong>( PixelIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateTripleModify</strong>( PixelIteratorTripleModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source1_image, const Image *source2_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
 <P>
 </P>
 <hr />
@@ -394,6 +398,192 @@
 </dd>
 </li>
 <dt><strong><a name="item_o_new_y_3a">new_y:</a></strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the new region.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixeliteratetriplemodify">PixelIterateTripleModify</a></h2>
+<blockquote>PixelIterateTripleModify() iterates through pixel regions of three images and invokes a user-provided callback function ( of type PixelIteratorTripleModifyCallback ) for each row of pixels. The first two images are read-only, while the third image is read-write for update. Access of the first two images is done lock-step using the same coordinates. This is useful to support operations such as image differencing. </blockquote><P>The format of the PixelIterateTripleModify method is:</P>
+<blockquote>MagickPassFail PixelIterateTripleModify ( PixelIteratorTripleModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source1_image, const <A HREF="types.html#Image">Image</A> *source2_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which reads from a region of source pixels and updates a region of destination pixels.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_source1_image_3a">source1_image:</a></strong>
+
+<DD>
+<P>The address of the constant source 1 Image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_source2_image_3a">source2_image:</a></strong>
+
+<DD>
+<P>The address of the constant source 2 Image.</P>
+</dd>
+</li>
+<dt><strong>source_x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the source regions.</P>
+</dd>
+</li>
+<dt><strong>source_y:</strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the source regions.</P>
+</dd>
+</li>
+<dt><strong>update_image:</strong>
+
+<DD>
+<P>The address of the update Image.</P>
+</dd>
+</li>
+<dt><strong>update_x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the update region.</P>
+</dd>
+</li>
+<dt><strong>update_y:</strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the update region.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>If an error is reported, this argument is updated with the reason.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="pixeliteratedualnew">PixelIterateDualNew</a></h2>
+<P><code>PixelIterateTripleNew()</code> iterates through pixel regions of three images and invokes a user-provided callback function (of type PixelIteratorTripleNewCallback) for each row of pixels.  The first two images are read-only, while the third image is read-write for update.  Access of the first two images is done lock-step using the same coordinates.  This is used if a new output image is created based on two input images.  The difference from <code>PixelIterateTripleModify()</code> is that the output pixels are not initialized so it is more efficient when outputting a new image.</P>
+<P>The format of the PixelIterateTripleNew method is:</P>
+<pre>
+    MagickPassFail PixelIterateTripleNew(
+                              PixelIteratorTripleNewCallback call_back,
+                              const char *description,
+                              void *user_data,
+                              const unsigned long columns,
+                              const unsigned long rows,
+                              const Image *source1_image,
+                              const Image *source2_image,
+                              const long source_x,
+                              const long source_y,
+                              Image *new_image,
+                              const long new_x,
+                              const long new_y,
+                              ExceptionInfo *exception)</pre>
+<P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>call_back:</strong>
+
+<DD>
+<P>A user-provided C callback function which reads from a region of source pixels and initializes a region of destination pixels.</P>
+</dd>
+</li>
+<dt><strong>description:</strong>
+
+<DD>
+<P>textual description of operation being performed.</P>
+</dd>
+</li>
+<dt><strong>user_data:</strong>
+
+<DD>
+<P>User-provided context data.</P>
+</dd>
+</li>
+<dt><strong>columns:</strong>
+
+<DD>
+<P>Width of pixel region</P>
+</dd>
+</li>
+<dt><strong>rows:</strong>
+
+<DD>
+<P>Height of pixel region</P>
+</dd>
+</li>
+<dt><strong>source1_image:</strong>
+
+<DD>
+<P>The address of the constant source 1 Image.</P>
+</dd>
+</li>
+<dt><strong>source2_image:</strong>
+
+<DD>
+<P>The address of the constant source 2 Image.</P>
+</dd>
+</li>
+<dt><strong>source_x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the source regions.</P>
+</dd>
+</li>
+<dt><strong>source_y:</strong>
+
+<DD>
+<P>The vertical ordinate of the top left corner of the source regions.</P>
+</dd>
+</li>
+<dt><strong>new_image:</strong>
+
+<DD>
+<P>The address of the new Image.</P>
+</dd>
+</li>
+<dt><strong>new_x:</strong>
+
+<DD>
+<P>The horizontal ordinate of the top left corner of the new region.</P>
+</dd>
+</li>
+<dt><strong>new_y:</strong>
 
 <DD>
 <P>The vertical ordinate of the top left corner of the new region.</P>

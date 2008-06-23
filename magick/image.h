@@ -140,6 +140,12 @@ typedef unsigned int Quantum;
 #define MagickBoolToString(value) (value != MagickFalse ? "True" : "False")
 
 /*
+  Return MagickTrue if channel is enabled in channels.  Allows using
+  code to adapt if ChannelType enumeration is changed to bit masks.
+*/
+#define MagickChannelEnabled(channels,channel) ((channels == channel) || (channels == AllChannels))
+
+/*
   Deprecated defines.
 */
 #define RunlengthEncodedCompression RLECompression
@@ -167,7 +173,7 @@ typedef enum
   YellowChannel,  /* CMYK Yellow channel */
   OpacityChannel, /* Opacity channel */
   BlackChannel,   /* CMYK Black (K) channel */
-  MatteChannel,   /* Same as Opacity channel */
+  MatteChannel,   /* Same as Opacity channel (deprecated) */
   AllChannels,    /* Color channels */
   GrayChannel     /* Color channels represent an intensity. */
 } ChannelType;
@@ -473,36 +479,36 @@ typedef struct _ChromaticityInfo
 /*
   Useful macros for accessing PixelPacket members in a generic way.
 */
-# define GetRedSample(p) (p->red)
-# define GetGreenSample(p) (p->green)
-# define GetBlueSample(p) (p->blue)
-# define GetOpacitySample(p) (p->opacity)
+# define GetRedSample(p) ((p)->red)
+# define GetGreenSample(p) ((p)->green)
+# define GetBlueSample(p) ((p)->blue)
+# define GetOpacitySample(p) ((p)->opacity)
 
-# define SetRedSample(q,value) (q->red=(value))
-# define SetGreenSample(q,value) (q->green=(value))
-# define SetBlueSample(q,value) (q->blue=(value))
-# define SetOpacitySample(q,value) (q->opacity=(value))
+# define SetRedSample(q,value) ((q)->red=(value))
+# define SetGreenSample(q,value) ((q)->green=(value))
+# define SetBlueSample(q,value) ((q)->blue=(value))
+# define SetOpacitySample(q,value) ((q)->opacity=(value))
 
-# define GetGraySample(p) (p->red)
-# define SetGraySample(q,value) (q->red=q->green=q->blue=(value))
+# define GetGraySample(p) ((p)->red)
+# define SetGraySample(q,value) ((q)->red=(q)->green=(q)->blue=(value))
 
-# define GetYSample(p) (p->red)
-# define GetCbSample(p) (p->green)
-# define GetCrSample(p) (p->blue)
+# define GetYSample(p) ((p)->red)
+# define GetCbSample(p) ((p)->green)
+# define GetCrSample(p) ((p)->blue)
 
-# define SetYSample(q,value) (q->red=(value))
-# define SetCbSample(q,value) (q->green=(value))
-# define SetCrSample(q,value) (q->blue=(value))
+# define SetYSample(q,value) ((q)->red=(value))
+# define SetCbSample(q,value) ((q)->green=(value))
+# define SetCrSample(q,value) ((q)->blue=(value))
 
-# define GetCyanSample(p) (p->red)
-# define GetMagentSample(p) (p->green)
-# define GetYellowSample(p) (p->blue)
-# define GetBlackSample(p) (p->opacity)
+# define GetCyanSample(p) ((p)->red)
+# define GetMagentSample(p) ((p)->green)
+# define GetYellowSample(p) ((p)->blue)
+# define GetBlackSample(p) ((p)->opacity)
 
-# define SetCyanSample(q,value) (q->red=(value))
-# define SetMagentaSample(q,value) (q->green=(value))
-# define SetYellowSample(q,value) (q->blue=(value))
-# define SetBlackSample(q,value) (q->opacity=(value))
+# define SetCyanSample(q,value) ((q)->red=(value))
+# define SetMagentaSample(q,value) ((q)->green=(value))
+# define SetYellowSample(q,value) ((q)->blue=(value))
+# define SetBlackSample(q,value) ((q)->opacity=(value))
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
@@ -1055,7 +1061,6 @@ extern MagickExport RectangleInfo
 
 /* Functions which return unsigned int as a True/False boolean value */
 extern MagickExport MagickBool
-  IsImagesEqual(Image *,const Image *),
   IsTaintImage(const Image *),
   IsSubimage(const char *,const unsigned int);
 

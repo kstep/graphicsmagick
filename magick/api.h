@@ -110,6 +110,7 @@ extern "C" {
 #include "magick/timer.h"
 #include "magick/image.h"
 #include "magick/channel.h"
+#include "magick/compare.h"
 #include "magick/list.h"
 #include "magick/paint.h"
 #include "magick/render.h"
