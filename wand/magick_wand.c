@@ -56,9 +56,6 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  This is the tentative public API for ImageMagick.  Use it with caution
-%  because it is subject to change until it is finished somewhere around
-%  4th quarter of 2004.
 %
 */
 
@@ -73,15 +70,9 @@
  *   MagickFxImageChannel
  *   MagickGammaImageChannel
  *   MagickGetConfigureInfo
- *   MagickGetImageChannelExtrema
- *   MagickGetImageChannelMean
- *   MagickGetImageExtrema
- *   MagickGetImageProfile
  *   MagickNegateImageChannel
  *   MagickPreviewImages
- *   MagickQueryFonts
  *   MagickRadialBlurImage
- *   MagickThresholdImageChannel
  *   MagickTintImage
  *
  */
@@ -2796,33 +2787,69 @@ WandExport unsigned long MagickGetImageChannelDepth(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      or BlackChannel.
 %
 %    o minima:  The minimum pixel value for the specified channel(s).
 %
 %    o maxima:  The maximum pixel value for the specified channel(s).
 %
 */
-WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
-  const ChannelType channel,unsigned long *minima,unsigned long *maxima)
+WandExport unsigned int
+MagickGetImageChannelExtrema(MagickWand *wand,
+                             const ChannelType channel,
+                             unsigned long *minima,
+                             unsigned long *maxima)
 {
-#if defined(NOT_IMPLEMENTED)
-  unsigned int
+  ImageStatistics
+    statistics;
+
+  double
+    minimum,
+    maximum;
+
+  MagickPassFail
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=GetImageChannelExtrema(wand->image,channel,minima,maxima,
-    &wand->exception);
-  return(status);
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(minima);
-  ARG_NOT_USED(maxima);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageChannelExtrema");
-#endif
+
+  status = GetImageStatistics(wand->image,&statistics,&wand->exception);
+  minimum = 1.0;
+  if (MagickChannelEnabled(channel,RedChannel) ||
+      MagickChannelEnabled(channel,CyanChannel))
+    minimum = Min(minimum,statistics.red.minimum);
+  if (MagickChannelEnabled(channel,GreenChannel) ||
+      MagickChannelEnabled(channel,MagentaChannel))
+    minimum = Min(minimum,statistics.green.minimum);
+  if (MagickChannelEnabled(channel,BlueChannel) ||
+      MagickChannelEnabled(channel,YellowChannel))
+    minimum = Min(minimum,statistics.blue.minimum);
+  /* CMYK opacity not handled correctly here */
+  if (MagickChannelEnabled(channel,OpacityChannel) ||
+      MagickChannelEnabled(channel,BlackChannel))
+    minimum = Min(minimum,statistics.opacity.minimum);
+  minimum *= MaxRGBDouble;
+  *minima = RoundDoubleToQuantum(minimum);
+
+  maximum = 0.0;
+  if (MagickChannelEnabled(channel,RedChannel) ||
+      MagickChannelEnabled(channel,CyanChannel))
+    maximum = Max(maximum,statistics.red.maximum);
+  if (MagickChannelEnabled(channel,GreenChannel) ||
+      MagickChannelEnabled(channel,MagentaChannel))
+    maximum = Max(maximum,statistics.green.maximum);
+  if (MagickChannelEnabled(channel,BlueChannel) ||
+      MagickChannelEnabled(channel,YellowChannel))
+    maximum = Max(maximum,statistics.blue.maximum);
+  /* CMYK opacity not handled correctly here */
+  if (MagickChannelEnabled(channel,OpacityChannel) ||
+      MagickChannelEnabled(channel,BlackChannel))
+    maximum = Max(maximum,statistics.opacity.maximum);
+  maximum *= MaxRGBDouble;
+  *maxima = RoundDoubleToQuantum(maximum);
+  return status;
 }
 
 /*
@@ -2850,7 +2877,7 @@ WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      or BlackChannel.
 %
 %    o mean:  The mean pixel value for the specified channel(s).
 %
@@ -2860,23 +2887,74 @@ WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
 WandExport unsigned int MagickGetImageChannelMean(MagickWand *wand,
   const ChannelType channel,double *mean,double *standard_deviation)
 {
-#if defined(NOT_IMPLEMENTED)
+  ImageStatistics
+    statistics;
+
   unsigned int
+    count;
+
+  double
+    deviation,
+    meanf;
+
+  MagickPassFail
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=GetImageChannelMean(wand->image,channel,mean,standard_deviation,
-    &wand->exception);
-  return(status);
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(mean);
-  ARG_NOT_USED(standard_deviation);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageChannelMean");
-#endif
+
+  status = GetImageStatistics(wand->image,&statistics,&wand->exception);
+  deviation = 0.0;
+  meanf =0.0;
+  count = 0;
+  if (MagickChannelEnabled(channel,RedChannel) ||
+      MagickChannelEnabled(channel,CyanChannel))
+    {
+      deviation += statistics.red.standard_deviation;
+      meanf += statistics.red.mean;
+      count++;
+    }
+  if (MagickChannelEnabled(channel,GreenChannel) ||
+      MagickChannelEnabled(channel,MagentaChannel))
+    {
+      deviation += statistics.green.standard_deviation;
+      meanf += statistics.green.mean;
+      count++;
+    }
+  if (MagickChannelEnabled(channel,BlueChannel) ||
+      MagickChannelEnabled(channel,YellowChannel))
+    {
+      deviation += statistics.blue.standard_deviation;
+      meanf += statistics.blue.mean;
+      count++;
+    }
+  /* CMYK opacity not handled correctly here */
+  if (MagickChannelEnabled(channel,OpacityChannel) ||
+      MagickChannelEnabled(channel,BlackChannel))
+    {
+      deviation += statistics.opacity.standard_deviation;
+      meanf += statistics.opacity.mean;
+      count++;
+    }
+  if (count > 1)
+    {
+      /*
+        If multiple channels are selected then deviation is not
+        technically correct but an average of the deviation is better
+        than nothing.
+      */
+      deviation /= (double) count;
+      meanf /= (double) count;
+    }
+  deviation *= MaxRGBDouble;
+  *standard_deviation = RoundDoubleToQuantum(deviation);
+  
+  meanf *= MaxRGBDouble;
+  *mean = RoundDoubleToQuantum(meanf);
+
+  return status;
 }
 
 /*
@@ -3146,21 +3224,36 @@ WandExport unsigned long MagickGetImageDepth(MagickWand *wand)
 WandExport unsigned int MagickGetImageExtrema(MagickWand *wand,
   unsigned long *min,unsigned long *max)
 {
-#if defined(NOT_IMPLEMENTED)
-  unsigned int
+  ImageStatistics
+    statistics;
+
+  double
+    minimum,
+    maximum;
+
+  MagickPassFail
     status;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=GetImageExtrema(wand->image,min,max,&wand->exception);
-  return(status);
-#else
-  ARG_NOT_USED(min);
-  ARG_NOT_USED(max);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageExtrema");
-#endif /* NOT_IMPLEMENTED */
+
+  status = GetImageStatistics(wand->image,&statistics,&wand->exception);
+  minimum = 1.0;
+  minimum = Min(minimum,statistics.red.minimum);
+  minimum = Min(minimum,statistics.green.minimum);
+  minimum = Min(minimum,statistics.blue.minimum);
+  minimum *= MaxRGBDouble;
+  *min = RoundDoubleToQuantum(minimum);
+
+  maximum = 0.0;
+  maximum = Max(maximum,statistics.red.maximum);
+  maximum = Max(maximum,statistics.green.maximum);
+  maximum = Max(maximum,statistics.blue.maximum);
+  maximum *= MaxRGBDouble;
+  *max = RoundDoubleToQuantum(maximum);
+  return status;
 }
 
 /*
@@ -5897,12 +5990,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
 WandExport char **MagickQueryFonts(const char *pattern,
   unsigned long *number_fonts)
 {
-#if NOT_SUPPORTED
   return(GetTypeList(pattern,number_fonts));
-#endif
-  ARG_NOT_USED(pattern);
-  ARG_NOT_USED(number_fonts);
-  return 0;
 }
 
 /*
@@ -8805,23 +8893,12 @@ WandExport unsigned int MagickThresholdImage(MagickWand *wand,
 WandExport unsigned int MagickThresholdImageChannel(MagickWand *wand,
   const ChannelType channel,const double threshold)
 {
-#if defined(NOT_IMPLEMENTED)
-  unsigned int
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=BilevelImageChannel(wand->image,channel,threshold);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  return(status);
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(threshold);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickThresholdImageChannel");
-#endif /* NOT_IMPLEMENTED */
+  return QuantumOperatorImage(wand->image,channel,ThresholdQuantumOp,
+                              threshold,&wand->exception);
 }
 
 /*

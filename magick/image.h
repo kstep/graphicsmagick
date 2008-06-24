@@ -143,7 +143,7 @@ typedef unsigned int Quantum;
   Return MagickTrue if channel is enabled in channels.  Allows using
   code to adapt if ChannelType enumeration is changed to bit masks.
 */
-#define MagickChannelEnabled(channels,channel) ((channels == channel) || (channels == AllChannels))
+#define MagickChannelEnabled(channels,channel) ((channels == AllChannels) || (channels == channel))
 
 /*
   Deprecated defines.

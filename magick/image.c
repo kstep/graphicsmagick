@@ -3450,7 +3450,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
     Compute Mean, Max, and Min
   */
   status = PixelIterateMonoRead(GetImageStatisticsMean,
-                                "Compute image mean ...",
+                                "Compute image mean, max, min ...",
                                 &context,0,0,image->columns,
                                 image->rows,image,exception);
   /*
