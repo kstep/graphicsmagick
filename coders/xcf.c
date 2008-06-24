@@ -40,6 +40,7 @@
 #include "magick/composite.h"
 #include "magick/log.h"
 #include "magick/magick.h"
+#include "magick/monitor.h"
 #include "magick/quantize.h"
 #include "magick/utility.h"
 
@@ -235,13 +236,13 @@ static CompositeOperator GIMPBlendModeToCompositeOperator( unsigned int blendMod
     case GIMP_HUE_MODE:      return( HueCompositeOp );
     case GIMP_SATURATION_MODE:  return( SaturateCompositeOp );
     case GIMP_COLOR_MODE:    return( ColorizeCompositeOp );
+    case GIMP_DIVIDE_MODE:    return( DivideCompositeOp );
       /* these are the ones we don't support...yet */
     case GIMP_DODGE_MODE:    return( OverCompositeOp );
     case GIMP_BURN_MODE:    return( OverCompositeOp );
     case GIMP_HARDLIGHT_MODE:  return( OverCompositeOp );
     case GIMP_BEHIND_MODE:    return( OverCompositeOp );
     case GIMP_VALUE_MODE:    return( OverCompositeOp );
-    case GIMP_DIVIDE_MODE:    return( OverCompositeOp );
     default:
       return( OverCompositeOp );
     }
@@ -614,6 +615,7 @@ static MagickPassFail load_tile_rle (Image* image,
   return MagickFail;
 }
 
+
 static MagickPassFail load_level (Image* image,
                                   XCFDocInfo* inDocInfo,
                                   XCFLayerInfo*
@@ -683,7 +685,7 @@ static MagickPassFail load_level (Image* image,
 
   /*
     Initialise the reference for the in-memory tile-compression
-   */
+  */
   ntile_rows = (inDocInfo->height + TILE_HEIGHT - 1) / TILE_HEIGHT;
   ntile_cols = (inDocInfo->width  + TILE_WIDTH  - 1) / TILE_WIDTH;
   ntiles = ntile_rows * ntile_cols;
@@ -701,14 +703,14 @@ static MagickPassFail load_level (Image* image,
         {
           if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Tile: offset %ld!", (long) offset);
+                                  "Tile: offset %ld!", (long) offset);
           ThrowBinaryException(CorruptImageError,NotEnoughTiles,image->filename);
         }
 
       /*
         save the current position as it is where the next tile offset
         is stored.
-       */
+      */
       saved_pos = TellBlob(image);
 
       /*
@@ -816,9 +818,19 @@ static MagickPassFail load_level (Image* image,
 
       if (MagickPass == status)
         {
-          /* composite the tile onto the layer's image, and then destroy it */
+          MonitorHandler
+            handler;
+
+          /*
+            Composite the tile onto the layer's image, and then
+            destroy it.  We temporarily disable the progress monitor
+            so that the user does not see composition of individual
+            tiles.
+          */
+          handler=SetMonitorHandler((MonitorHandler) NULL);
           (void) CompositeImage(inLayerInfo->image,CopyCompositeOp,tile_image,
                                 destLeft * TILE_WIDTH,destTop*TILE_HEIGHT);
+          (void) SetMonitorHandler(handler);
         }
       DestroyImage(tile_image);
 
@@ -840,11 +852,21 @@ static MagickPassFail load_level (Image* image,
 
       /* read in the offset of the next tile */
       offset = ReadBlobMSBLong(image);
+      if (offset != 0)
+        if (!MagickMonitor(LoadImageText,offset,inDocInfo->file_size,
+                           &image->exception))
+          break;
     }
 
-
   if (offset != 0)
-    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
+    {
+      ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
+    }
+  else
+    {
+      (void) MagickMonitor(LoadImageText,inDocInfo->file_size,
+                           inDocInfo->file_size+1,&image->exception);
+    }
 
   return MagickPass;
 }
@@ -1206,7 +1228,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
     }
-  (void) SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
+  /*
+    SetImage can be very expensive and it is not clear that this one is
+    actually needed so comment it out for now.
+   */
+  /* (void) SetImage(image,OpaqueOpacity); */  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
   /* read properties */

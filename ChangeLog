@@ -1,5 +1,8 @@
 2008-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xcf.c (GIMPBlendModeToCompositeOperator): For XCF format,
+	we do support GIMP_DIVIDE_MODE composition now. Disable progress
+	monitor during tile composition.
 	* magick/composite.c (DivideCompositePixels): New Divide composite
 	operator contributed by Michael Burian <michael.burian@sbg.at>.
 	* magick/image.h (enum CompositeOperator): Added DivideCompositeOp.

@@ -15,9 +15,10 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
-extern MagickExport unsigned int
-  CompositeImage(Image *,const CompositeOperator,const Image *,const long,
-    const long);
+extern MagickExport MagickPassFail
+  CompositeImage(Image *canvas_image,const CompositeOperator compose,
+                 const Image *composite_image,
+                 const long x_offset,const long y_offset);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
