@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
 #include "magick/composite.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
@@ -1627,6 +1628,69 @@ CopyBlackCompositePixels(void *user_data,                   /* User provided mut
 
   return MagickPass;
 }
+
+
+static MagickPassFail
+DivideCompositePixels(void *user_data,                   /* User provided mutable data */
+                      const Image *source_image,         /* Source image */
+                      const PixelPacket *source_pixels,  /* Pixel row in source image */
+                      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                      Image *update_image,               /* Update image */
+                      PixelPacket *update_pixels,        /* Pixel row in update image */
+                      IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                      const long npixels,                /* Number of pixels in row */
+                      ExceptionInfo *exception           /* Exception report */
+                      )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    The result of change-image / base-image. This is useful for 
+    improving the readability of text on unevenly illuminated photos.
+    (by using a gaussian blurred copy of change-image as base-image) 
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double
+        composite,
+        divisor;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      /* Avoid division by zero error, use value near zero instead */
+      divisor=((destination.red != 0.0) ? destination.red : 1.0/MaxRGBDouble);
+      composite=((double) (source.red*MaxRGBDouble)/divisor);
+      destination.red=RoundDoubleToQuantum(composite);
+
+      divisor=((destination.green != 0.0) ? destination.green : 1.0/MaxRGBDouble);
+      composite=((double) (source.green*MaxRGBDouble)/divisor);
+      destination.green=RoundDoubleToQuantum(composite);
+
+      divisor=((destination.blue != 0.0) ? destination.blue : 1.0/MaxRGBDouble);
+      composite=((double) (source.blue*MaxRGBDouble)/divisor);
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      divisor=((destination.opacity != 0.0) ? destination.opacity : 1.0/MaxRGBDouble);
+      composite=((double) (source.opacity*MaxRGBDouble)/divisor);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1654,11 +1718,18 @@ CopyBlackCompositePixels(void *user_data,                   /* User provided mut
 %
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The default is Over.  Choose from one of these
-%      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
-%      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
-%      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
-%      BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP,
-%      CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
+%      operators: AddCompositeOp, AtopCompositeOp, BumpmapCompositeOp,
+%      ClearCompositeOp, ColorizeCompositeOp, CopyBlackCompositeOp,
+%      CopyBlueCompositeOp, CopyCompositeOp, CopyCyanCompositeOp,
+%      CopyGreenCompositeOp, CopyMagentaCompositeOp, CopyOpacityCompositeOp,
+%      CopyRedCompositeOp, CopyYellowCompositeOp, DarkenCompositeOp,
+%      DifferenceCompositeOp, DisplaceCompositeOp, DissolveCompositeOp,
+%      DivideCompositeOp, HueCompositeOp, InCompositeOp, LightenCompositeOp,
+%      LuminizeCompositeOp, MinusCompositeOp, ModulateCompositeOp,
+%      MultiplyCompositeOp, NoCompositeOp, OutCompositeOp,
+%      OverlayCompositeOp, PlusCompositeOp, SaturateCompositeOp,
+%      ScreenCompositeOp, SubtractCompositeOp, ThresholdCompositeOp,
+%      XorCompositeOp.
 %
 %    o composite_image: The composite image.
 %
@@ -1670,7 +1741,8 @@ CopyBlackCompositePixels(void *user_data,                   /* User provided mut
 */
 
 MagickExport MagickPassFail CompositeImage(Image *canvas_image,
-                                           const CompositeOperator compose,const Image *composite_image,
+                                           const CompositeOperator compose,
+                                           const Image *composite_image,
                                            const long x_offset,const long y_offset)
 {
   CompositePixelsOptions_t
@@ -2060,6 +2132,9 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           case CopyBlackCompositeOp:
             call_back=CopyBlackCompositePixels;
             break;
+          case DivideCompositeOp:
+            call_back=DivideCompositePixels;
+            break;
           default:
             {
               break;
@@ -2067,8 +2142,14 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
           }
         if (call_back != (PixelIteratorDualModifyCallback) NULL)
           {
+            char
+              description[MaxTextExtent];
+
+            FormatString(description,"Composite %s image pixels ...",
+                         CompositeOperatorToString(compose));
+                         
             status=PixelIterateDualModify(call_back,              /* Callback */
-                                          "Composite image pixels ...", /* Description */
+                                          description,            /* Description */
                                           &options,               /* Options */
                                           columns,                /* Number of columns */
                                           rows,                   /* Number of rows */

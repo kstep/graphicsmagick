@@ -207,6 +207,7 @@ t/reference/composite/CopyOpacity.miff
 t/reference/composite/CopyRed.miff
 t/reference/composite/Difference.miff
 t/reference/composite/Dissolve.miff
+t/reference/composite/Divide.miff
 t/reference/composite/In.miff
 t/reference/composite/Minus.miff
 t/reference/composite/Multiply.miff

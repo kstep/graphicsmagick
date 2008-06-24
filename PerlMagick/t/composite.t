@@ -11,7 +11,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..19\n"; }
+BEGIN { $| = 1; $test=1; print "1..20\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -247,5 +247,15 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
                      'input_matte.miff', q//,
                      q/, gravity=>'Center', compose=>'Xor'/,
                      'reference/composite/Xor.miff',0.002,0.005);
+
+#
+# Divide
+#
+# The result of composite image / image.
+++$test;
+testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
+                     'input_matte.miff', q//,
+                     q/, gravity=>'Center', compose=>'Divide'/,
+                     'reference/composite/Divide.miff',0.0025,0.02);
 
 1;

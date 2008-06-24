@@ -402,7 +402,9 @@ endif # HAS_RPM
 #
 # Build a validated snapshot release and move to the snapshots directory.
 #
+SNAPSHOT_DIRECTORY=/ftp/pub/GraphicsMagick/snapshots/
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
 	$(MAKE) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)
+	cp -p $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)

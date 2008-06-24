@@ -47,6 +47,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
@@ -1989,97 +1990,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             primitive_type=ImagePrimitive;
             GetToken(q,&q,token);
-            if (LocaleCompare("Over",token) == 0)
-              {
-                graphic_context[n]->compose=OverCompositeOp;
-                break;
-              }
-            if (LocaleCompare("In",token) == 0)
-              {
-                graphic_context[n]->compose=InCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Out",token) == 0)
-              {
-                graphic_context[n]->compose=OutCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Atop",token) == 0)
-              {
-                graphic_context[n]->compose=AtopCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Xor",token) == 0)
-              {
-                graphic_context[n]->compose=XorCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Plus",token) == 0)
-              {
-                graphic_context[n]->compose=PlusCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Minus",token) == 0)
-              {
-                graphic_context[n]->compose=MinusCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Add",token) == 0)
-              {
-                graphic_context[n]->compose=AddCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Subtract",token) == 0)
-              {
-                graphic_context[n]->compose=SubtractCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Difference",token) == 0)
-              {
-                graphic_context[n]->compose=DifferenceCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Multiply",token) == 0)
-              {
-                graphic_context[n]->compose=MultiplyCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Bumpmap",token) == 0)
-              {
-                graphic_context[n]->compose=BumpmapCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Copy",token) == 0)
-              {
-                graphic_context[n]->compose=CopyCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyRed",token) == 0)
-              {
-                graphic_context[n]->compose=CopyRedCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyGreen",token) == 0)
-              {
-                graphic_context[n]->compose=CopyGreenCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyBlue",token) == 0)
-              {
-                graphic_context[n]->compose=CopyBlueCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyOpacity",token) == 0)
-              {
-                graphic_context[n]->compose=CopyOpacityCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Clear",token) == 0)
-              {
-                graphic_context[n]->compose=ClearCompositeOp;
-                break;
-              }
-            status=False;
+            graphic_context[n]->compose=StringToCompositeOperator(token);
+            if (UndefinedCompositeOp == graphic_context[n]->compose)
+              status=False;
             break;
           }
         status=False;

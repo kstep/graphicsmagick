@@ -960,6 +960,7 @@ composite operators are available:</font></td></tr></table>
      Add
      Subtract
      Difference
+     Divide
      Multiply
      Bumpmap
      Copy
@@ -1023,6 +1024,11 @@ operators can be used to perform reversible transformations.
 <dt>Difference</dt>
 <dd>The result of abs(<em>change-image</em> - <em>base-image</em>). This is
 useful for comparing two very similar images.
+</dd>
+<dt>Divide</dt>
+<dd>The result of <em>change-image</em> / <em>base-image</em>. This is useful
+for improving the readability of text on unevenly illuminated photos (by
+using a gaussian blurred copy of change-image as base-image).
 </dd>
 <dt>Multiply</dt>
 <dd>The result of <em>change-image</em> * <em>base-image</em>. This is useful for

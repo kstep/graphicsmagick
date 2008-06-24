@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/11" "GraphicsMagick"
+.TH gm 1 "2008/06/24" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -676,6 +676,7 @@ composite operators are available:
      Add
      Subtract
      Difference
+     Divide
      Multiply
      Bumpmap
      Copy
@@ -788,6 +789,16 @@ operators can be used to perform reversible transformations.
 .in 20
 The result of abs(\fIchange-image\fP - \fIbase-image\fP). This is
 useful for comparing two very similar images.
+
+.in 15
+.in 15
+.B "Divide"
+.in 20
+ \fR
+.in 20
+The result of \fIchange-image\fP / \fIbase-image\fP. This is useful
+for improving the readability of text on unevenly illuminated photos (by
+using a gaussian blurred copy of change-image as base-image).
 
 .in 15
 .in 15

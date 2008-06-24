@@ -186,6 +186,7 @@ namespace Magick
   using MagickLib::CopyMagentaCompositeOp;
   using MagickLib::CopyYellowCompositeOp;
   using MagickLib::CopyBlackCompositeOp;
+  using MagickLib::DivideCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;

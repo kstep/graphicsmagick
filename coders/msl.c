@@ -47,6 +47,7 @@
 #include "magick/decorate.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/fx.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -914,66 +915,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(keyword, "compose") == 0)
               {
-                if (LocaleCompare(value, "Over") == 0)
-                  compositeOp = OverCompositeOp;
-                else if (LocaleCompare(value, "In") == 0)
-                  compositeOp = InCompositeOp;
-                else if (LocaleCompare(value, "Out") == 0)
-                  compositeOp = OutCompositeOp;
-                else if (LocaleCompare(value, "Atop") == 0)
-                  compositeOp = AtopCompositeOp;
-                else if (LocaleCompare(value, "Xor") == 0)
-                  compositeOp = XorCompositeOp;
-                else if (LocaleCompare(value, "Plus") == 0)
-                  compositeOp = PlusCompositeOp;
-                else if (LocaleCompare(value, "Minus") == 0)
-                  compositeOp = MinusCompositeOp;
-                else if (LocaleCompare(value, "Add") == 0)
-                  compositeOp = AddCompositeOp;
-                else if (LocaleCompare(value, "Subtract") == 0)
-                  compositeOp = SubtractCompositeOp;
-                else if (LocaleCompare(value, "Difference") == 0)
-                  compositeOp = DifferenceCompositeOp;
-                else if (LocaleCompare(value, "Multiply") == 0)
-                  compositeOp = MultiplyCompositeOp;
-                else if (LocaleCompare(value, "Bumpmap") == 0)
-                  compositeOp = BumpmapCompositeOp;
-                else if (LocaleCompare(value, "Copy") == 0)
-                  compositeOp = CopyCompositeOp;
-                else if (LocaleCompare(value, "CopyRed") == 0)
-                  compositeOp = CopyRedCompositeOp;
-                else if (LocaleCompare(value, "CopyGreen") == 0)
-                  compositeOp = CopyGreenCompositeOp;
-                else if (LocaleCompare(value, "CopyBlue") == 0)
-                  compositeOp = CopyBlueCompositeOp;
-                else if (LocaleCompare(value, "CopyOpacity") == 0)
-                  compositeOp = CopyOpacityCompositeOp;
-                else if (LocaleCompare(value, "Dissolve") == 0)
-                  compositeOp = DissolveCompositeOp;
-                else if (LocaleCompare(value, "Clear") == 0)
-                  compositeOp = ClearCompositeOp;
-                else if (LocaleCompare(value, "Displace") == 0)
-                  compositeOp = DisplaceCompositeOp;
-                else if (LocaleCompare(value, "Modulate") == 0)
-                  compositeOp = ModulateCompositeOp;
-                else if (LocaleCompare(value, "Threshold") == 0)
-                  compositeOp = ThresholdCompositeOp;
-                else if (LocaleCompare(value, "Darken") == 0)
-                  compositeOp = DarkenCompositeOp;
-                else if (LocaleCompare(value, "Lighten") == 0)
-                  compositeOp = LightenCompositeOp;
-                else if (LocaleCompare(value, "Hue") == 0)
-                  compositeOp = HueCompositeOp;
-                else if (LocaleCompare(value, "Saturate") == 0)
-                  compositeOp = SaturateCompositeOp;
-                else if (LocaleCompare(value, "Colorize") == 0)
-                  compositeOp = ColorizeCompositeOp;
-                else if (LocaleCompare(value, "Luminize") == 0)
-                  compositeOp = LuminizeCompositeOp;
-                else if (LocaleCompare(value, "Screen") == 0)
-                  compositeOp = ScreenCompositeOp;
-                else if (LocaleCompare(value, "Overlay") == 0)
-                  compositeOp = OverlayCompositeOp;
+                compositeOp = StringToCompositeOperator(value);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);

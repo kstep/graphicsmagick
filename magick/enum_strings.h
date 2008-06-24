@@ -23,9 +23,13 @@ extern "C" {
 
   MagickExport const char *ChannelTypeToString(const ChannelType channel);
 
+  MagickExport const char *CompositeOperatorToString(const CompositeOperator composite_op);
+
   MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_operator);
 
   MagickExport ChannelType StringToChannelType(const char *option);
+
+  MagickExport CompositeOperator StringToCompositeOperator(const char *option);
 
   MagickExport QuantumOperator StringToQuantumOperator(const char *option);
 

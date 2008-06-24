@@ -2004,52 +2004,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
-                option_info.compose=UndefinedCompositeOp;
-                if (LocaleCompare("Over",option) == 0)
-                  option_info.compose=OverCompositeOp;
-                else if (LocaleCompare("In",option) == 0)
-                  option_info.compose=InCompositeOp;
-                else if (LocaleCompare("Out",option) == 0)
-                  option_info.compose=OutCompositeOp;
-                else if (LocaleCompare("Atop",option) == 0)
-                  option_info.compose=AtopCompositeOp;
-                else if (LocaleCompare("Xor",option) == 0)
-                  option_info.compose=XorCompositeOp;
-                else if (LocaleCompare("Plus",option) == 0)
-                  option_info.compose=PlusCompositeOp;
-                else if (LocaleCompare("Minus",option) == 0)
-                  option_info.compose=MinusCompositeOp;
-                else if (LocaleCompare("Add",option) == 0)
-                  option_info.compose=AddCompositeOp;
-                else if (LocaleCompare("Subtract",option) == 0)
-                  option_info.compose=SubtractCompositeOp;
-                else if (LocaleCompare("Difference",option) == 0)
-                  option_info.compose=DifferenceCompositeOp;
-                else if (LocaleCompare("Multiply",option) == 0)
-                  option_info.compose=MultiplyCompositeOp;
-                else if (LocaleCompare("Bumpmap",option) == 0)
-                  option_info.compose=BumpmapCompositeOp;
-                else if (LocaleCompare("Copy",option) == 0)
-                  option_info.compose=CopyCompositeOp;
-                else if (LocaleCompare("CopyRed",option) == 0)
-                  option_info.compose=CopyRedCompositeOp;
-                else if (LocaleCompare("CopyGreen",option) == 0)
-                  option_info.compose=CopyGreenCompositeOp;
-                else if (LocaleCompare("CopyBlue",option) == 0)
-                  option_info.compose=CopyBlueCompositeOp;
-                else if (LocaleCompare("CopyOpacity",option) == 0)
-                  option_info.compose=CopyOpacityCompositeOp;
-                else if (LocaleCompare("Clear",option) == 0)
-                  option_info.compose=ClearCompositeOp;
-                else if (LocaleCompare("CopyCyan",option) == 0)
-                  option_info.compose=CopyCyanCompositeOp;
-                else if (LocaleCompare("CopyMagenta",option) == 0)
-                  option_info.compose=CopyMagentaCompositeOp;
-                else if (LocaleCompare("CopyYellow",option) == 0)
-                  option_info.compose=CopyYellowCompositeOp;
-                else if (LocaleCompare("CopyBlack",option) == 0)
-                  option_info.compose=CopyBlackCompositeOp;
-                else
+                option_info.compose=StringToCompositeOperator(option);
+                if (option_info.compose == UndefinedCompositeOp)
                   ThrowCompositeException(OptionError,UnrecognizedComposeOperator,
                     option);
               }
@@ -7981,48 +7937,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("compose",option+1) == 0)
           {
-            CompositeOperator
-              compose;
-
             option=argv[++i];
-            compose=OverCompositeOp;
-            if (LocaleCompare("Over",option) == 0)
-              compose=OverCompositeOp;
-            if (LocaleCompare("In",option) == 0)
-              compose=InCompositeOp;
-            if (LocaleCompare("Out",option) == 0)
-              compose=OutCompositeOp;
-            if (LocaleCompare("Atop",option) == 0)
-              compose=AtopCompositeOp;
-            if (LocaleCompare("Xor",option) == 0)
-              compose=XorCompositeOp;
-            if (LocaleCompare("Plus",option) == 0)
-              compose=PlusCompositeOp;
-            if (LocaleCompare("Minus",option) == 0)
-              compose=MinusCompositeOp;
-            if (LocaleCompare("Add",option) == 0)
-              compose=AddCompositeOp;
-            if (LocaleCompare("Subtract",option) == 0)
-              compose=SubtractCompositeOp;
-            if (LocaleCompare("Difference",option) == 0)
-              compose=DifferenceCompositeOp;
-            if (LocaleCompare("Multiply",option) == 0)
-              compose=MultiplyCompositeOp;
-            if (LocaleCompare("Bumpmap",option) == 0)
-              compose=BumpmapCompositeOp;
-            if (LocaleCompare("Copy",option) == 0)
-              compose=CopyCompositeOp;
-            if (LocaleCompare("CopyRed",option) == 0)
-              compose=CopyRedCompositeOp;
-            if (LocaleCompare("CopyGreen",option) == 0)
-              compose=CopyGreenCompositeOp;
-            if (LocaleCompare("CopyBlue",option) == 0)
-              compose=CopyBlueCompositeOp;
-            if (LocaleCompare("CopyOpacity",option) == 0)
-              compose=CopyOpacityCompositeOp;
-            if (LocaleCompare("Clear",option) == 0)
-              compose=ClearCompositeOp;
-            (*image)->compose=compose;
+            (*image)->compose=StringToCompositeOperator(option);
             break;
           }
         if (LocaleCompare("compress",option+1) == 0)
@@ -12649,41 +12565,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
-                compose=UndefinedCompositeOp;
-                if (LocaleCompare("Over",option) == 0)
-                  compose=OverCompositeOp;
-                if (LocaleCompare("In",option) == 0)
-                  compose=InCompositeOp;
-                if (LocaleCompare("Out",option) == 0)
-                  compose=OutCompositeOp;
-                if (LocaleCompare("Atop",option) == 0)
-                  compose=AtopCompositeOp;
-                if (LocaleCompare("Xor",option) == 0)
-                  compose=XorCompositeOp;
-                if (LocaleCompare("Plus",option) == 0)
-                  compose=PlusCompositeOp;
-                if (LocaleCompare("Minus",option) == 0)
-                  compose=MinusCompositeOp;
-                if (LocaleCompare("Add",option) == 0)
-                  compose=AddCompositeOp;
-                if (LocaleCompare("Subtract",option) == 0)
-                  compose=SubtractCompositeOp;
-                if (LocaleCompare("Difference",option) == 0)
-                  compose=DifferenceCompositeOp;
-                if (LocaleCompare("Multiply",option) == 0)
-                  compose=MultiplyCompositeOp;
-                if (LocaleCompare("Bumpmap",option) == 0)
-                  compose=BumpmapCompositeOp;
-                if (LocaleCompare("Copy",option) == 0)
-                  compose=CopyCompositeOp;
-                if (LocaleCompare("CopyRed",option) == 0)
-                  compose=CopyRedCompositeOp;
-                if (LocaleCompare("CopyGreen",option) == 0)
-                  compose=CopyGreenCompositeOp;
-                if (LocaleCompare("CopyBlue",option) == 0)
-                  compose=CopyBlueCompositeOp;
-                if (LocaleCompare("CopyOpacity",option) == 0)
-                  compose=CopyOpacityCompositeOp;
+                compose=StringToCompositeOperator(option);
                 if (compose == UndefinedCompositeOp)
                   ThrowMontageException(OptionError,UnrecognizedComposeOperator,
                     option);

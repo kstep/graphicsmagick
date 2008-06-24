@@ -95,6 +95,213 @@ MagickExport ChannelType StringToChannelType(const char *option)
   return channel;
 }
 
+MagickExport const char *CompositeOperatorToString(const CompositeOperator composite_op)
+{
+  const char
+    *composite_op_text = "Undefined";
+
+  switch (composite_op)
+    {
+    case UndefinedCompositeOp:
+      composite_op_text = "Undefined";
+      break;
+    case OverCompositeOp:
+      composite_op_text = "Over";
+      break;
+    case InCompositeOp:
+      composite_op_text = "In";
+      break;
+    case OutCompositeOp:
+      composite_op_text = "Out";
+      break;
+    case AtopCompositeOp:
+      composite_op_text = "Atop";
+      break;
+    case XorCompositeOp:
+      composite_op_text = "Xor";
+      break;
+    case PlusCompositeOp:
+      composite_op_text = "Plus";
+      break;
+    case MinusCompositeOp:
+      composite_op_text = "Minus";
+      break;
+    case AddCompositeOp:
+      composite_op_text = "Add";
+      break;
+    case SubtractCompositeOp:
+      composite_op_text = "Subtract";
+      break;
+    case DifferenceCompositeOp:
+      composite_op_text = "Difference";
+      break;
+    case MultiplyCompositeOp:
+      composite_op_text = "Multiply";
+      break;
+    case BumpmapCompositeOp:
+      composite_op_text = "Bumpmap";
+      break;
+    case CopyCompositeOp:
+      composite_op_text = "Copy";
+      break;
+    case CopyRedCompositeOp:
+      composite_op_text = "CopyRed";
+      break;
+    case CopyGreenCompositeOp:
+      composite_op_text = "CopyGreen";
+      break;
+    case CopyBlueCompositeOp:
+      composite_op_text = "CopyBlue";
+      break;
+    case CopyOpacityCompositeOp:
+      composite_op_text = "CopyOpacity";
+      break;
+    case ClearCompositeOp:
+      composite_op_text = "Clear";
+      break;
+    case DissolveCompositeOp:
+      composite_op_text = "Dissolve";
+      break;
+    case DisplaceCompositeOp:
+      composite_op_text = "Displace";
+      break;
+    case ModulateCompositeOp:
+      composite_op_text = "Modulate";
+      break;
+    case ThresholdCompositeOp:
+      composite_op_text = "Threshold";
+      break;
+    case NoCompositeOp:
+      composite_op_text = "No";
+      break;
+    case DarkenCompositeOp:
+      composite_op_text = "Darken";
+      break;
+    case LightenCompositeOp:
+      composite_op_text = "Lighten";
+      break;
+    case HueCompositeOp:
+      composite_op_text = "Hue";
+      break;
+    case SaturateCompositeOp:
+      composite_op_text = "Saturate";
+      break;
+    case ColorizeCompositeOp:
+      composite_op_text = "Colorize";
+      break;
+    case LuminizeCompositeOp:
+      composite_op_text = "Luminize";
+      break;
+    case ScreenCompositeOp:
+      composite_op_text = "Screen";
+      break;
+    case OverlayCompositeOp:
+      composite_op_text = "Overlay";
+      break;
+    case CopyCyanCompositeOp:
+      composite_op_text = "CopyCyan";
+      break;
+    case CopyMagentaCompositeOp:
+      composite_op_text = "CopyMagenta";
+      break;
+    case CopyYellowCompositeOp:
+      composite_op_text = "CopyYellow";
+      break;
+    case CopyBlackCompositeOp:
+      composite_op_text = "CopyBlack";
+      break;
+    case DivideCompositeOp:
+      composite_op_text = "Divide";
+      break;
+    }
+
+  return composite_op_text;
+}
+
+MagickExport CompositeOperator StringToCompositeOperator(const char *option)
+{
+  CompositeOperator
+    composite_op;
+
+  composite_op=UndefinedCompositeOp;
+  if (LocaleCompare("Undefined",option) == 0)
+    composite_op=UndefinedCompositeOp;
+  else if (LocaleCompare("Over",option) == 0)
+    composite_op=OverCompositeOp;
+  else if (LocaleCompare("In",option) == 0)
+    composite_op=InCompositeOp;
+  else if (LocaleCompare("Out",option) == 0)
+    composite_op=OutCompositeOp;
+  else if (LocaleCompare("Atop",option) == 0)
+    composite_op=AtopCompositeOp;
+  else if (LocaleCompare("Xor",option) == 0)
+    composite_op=XorCompositeOp;
+  else if (LocaleCompare("Plus",option) == 0)
+    composite_op=PlusCompositeOp;
+  else if (LocaleCompare("Minus",option) == 0)
+    composite_op=MinusCompositeOp;
+  else if (LocaleCompare("Add",option) == 0)
+    composite_op=AddCompositeOp;
+  else if (LocaleCompare("Subtract",option) == 0)
+    composite_op=SubtractCompositeOp;
+  else if (LocaleCompare("Difference",option) == 0)
+    composite_op=DifferenceCompositeOp;
+  else if (LocaleCompare("Multiply",option) == 0)
+    composite_op=MultiplyCompositeOp;
+  else if (LocaleCompare("Bumpmap",option) == 0)
+    composite_op=BumpmapCompositeOp;
+  else if (LocaleCompare("Copy",option) == 0)
+    composite_op=CopyCompositeOp;
+  else if (LocaleCompare("CopyRed",option) == 0)
+    composite_op=CopyRedCompositeOp;
+  else if (LocaleCompare("CopyGreen",option) == 0)
+    composite_op=CopyGreenCompositeOp;
+  else if (LocaleCompare("CopyBlue",option) == 0)
+    composite_op=CopyBlueCompositeOp;
+  else if (LocaleCompare("CopyOpacity",option) == 0)
+    composite_op=CopyOpacityCompositeOp;
+  else if (LocaleCompare("Clear",option) == 0)
+    composite_op=ClearCompositeOp;
+  else if (LocaleCompare("Dissolve",option) == 0)
+    composite_op=DissolveCompositeOp;
+  else if (LocaleCompare("Displace",option) == 0)
+    composite_op=DisplaceCompositeOp;
+  else if (LocaleCompare("Modulate",option) == 0)
+    composite_op=ModulateCompositeOp;
+  else if (LocaleCompare("Threshold",option) == 0)
+    composite_op=ThresholdCompositeOp;
+  else if (LocaleCompare("No",option) == 0)
+    composite_op=NoCompositeOp;
+  else if (LocaleCompare("Darken",option) == 0)
+    composite_op=DarkenCompositeOp;
+  else if (LocaleCompare("Lighten",option) == 0)
+    composite_op=LightenCompositeOp;
+  else if (LocaleCompare("Hue",option) == 0)
+    composite_op=HueCompositeOp;
+  else if (LocaleCompare("Saturate",option) == 0)
+    composite_op=SaturateCompositeOp;
+  else if (LocaleCompare("Colorize",option) == 0)
+    composite_op=ColorizeCompositeOp;
+  else if (LocaleCompare("Luminize",option) == 0)
+    composite_op=LuminizeCompositeOp;
+  else if (LocaleCompare("Screen",option) == 0)
+    composite_op=ScreenCompositeOp;
+  else if (LocaleCompare("Overlay",option) == 0)
+    composite_op=OverlayCompositeOp;
+  else if (LocaleCompare("CopyCyan",option) == 0)
+    composite_op=CopyCyanCompositeOp;
+  else if (LocaleCompare("CopyMagenta",option) == 0)
+    composite_op=CopyMagentaCompositeOp;
+  else if (LocaleCompare("CopyYellow",option) == 0)
+    composite_op=CopyYellowCompositeOp;
+  else if (LocaleCompare("CopyBlack",option) == 0)
+    composite_op=CopyBlackCompositeOp;
+  else if (LocaleCompare("Divide",option) == 0)
+    composite_op=DivideCompositeOp;
+
+  return composite_op;
+}
+
 MagickExport QuantumOperator StringToQuantumOperator(const char *option)
 {
   QuantumOperator

@@ -1,3 +1,13 @@
+2008-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (DivideCompositePixels): New Divide composite
+	operator contributed by Michael Burian <michael.burian@sbg.at>.
+	* magick/image.h (enum CompositeOperator): Added DivideCompositeOp.
+	* magick/enum_strings.c (CompositeOperatorToString): New function
+	to convert a composite operator to a string.
+	(StringToCompositeOperator): New function to convert a string to a
+	composite operator.
+
 2008-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickThresholdImageChannel): Implement
