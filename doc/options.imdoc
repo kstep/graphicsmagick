@@ -3110,12 +3110,12 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 <pp>
 Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
-<s>Divide</s>, <s>Invert</s>, <s>LShift</s>, <s>Multiply</s>, <s>Or</s>,
-<s>RShift</s>, <s>Subtract</s>, <s>Threshold</s>, <s>Threshold-White</s>,
-<s>Threshold-Black</s>, <s>Xor</s>, <s>Noise-Gaussian</s>,
-<s>Noise-Impulse</s>, <s>Noise-Laplacian</s>,
-<s>Noise-Multiplicative</s>, <s>Noise-Poisson</s>, and
-<s>Noise-Uniform</s>.</pp>
+<s>Divide</s>, <s>Gamma</s>, <s>Invert</s>, <s>LShift</s>,
+<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>,
+<s>Threshold</s>, <s>Threshold-White</s>, <s>Threshold-Black</s>,
+<s>Xor</s>, <s>Noise-Gaussian</s>, <s>Noise-Impulse</s>,
+<s>Noise-Laplacian</s>, <s>Noise-Multiplicative</s>,
+<s>Noise-Poisson</s>, and <s>Noise-Uniform</s>.</pp>
 <pp>
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3125,31 +3125,148 @@ Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (<s>%</s>) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.</pp>
 <pp>
-As an example, the <s>xor</s> operator may be used to invert a
-monochrome image (interchange black and white):</pp>
-<pre>
-  gm convert in.bmp -operator all xor "100%" out.bmp
-</pre>
+The following is a description of the operators:</pp>
+
+<dl>
+<dt>Add</dt>
+<dd>Result is rvalue added to channel value.
+</dd>
+
+<dl>
+<dt>And</dt>
+<dd>Result is the logical AND of rvalue with channel value.
+</dd>
+
+<dl>
+<dt>Assign</dt>
+<dd>Result is rvalue.
+</dd>
+
+<dl>
+<dt>Divide</dt>
+<dd>Result is channel value divided by rvalue.
+</dd>
+
+<dl>
+<dt>Gamma</dt>
+<dd>Result is channel value gamma adjusted by rvalue.
+</dd>
+
+<dl>
+<dt>Invert</dt>
+<dd>Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+</dd>
+
+<dl>
+<dt>LShift</dt>
+<dd>Result is channel value bitwise left shifted by rvalue bits.
+</dd>
+
+<dl>
+<dt>Multiply</dt>
+<dd>Result is channel value multiplied by rvalue.
+</dd>
+
+<dl>
+<dt>Or</dt>
+<dd>Result is the logical OR of rvalue with channel value.
+</dd>
+
+<dl>
+<dt>RShift</dt>
+<dd>Result is channel value bitwise right shifted by rvalue bits.
+</dd>
+
+<dl>
+<dt>Subtract</dt>
+<dd>Result is channel value minus rvalue.
+</dd>
+
+<dl>
+<dt>Threshold</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If <s>all</s>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+
+<dl>
+<dt>Threshold-white</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If <s>all</s>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+
+<dl>
+<dt>Threshold-black</dt>
+<dd>Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+<s>all</s> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+
+<dl>
+<dt>Xor</dt>
+<dd>Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+</dd>
+
+<dl>
+<dt>Noise-Gaussian</dt>
+<dd>Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dl>
+<dt>Noise-Impulse</dt>
+<dd>Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dl>
+<dt>Noise-Laplacian</dt>
+<dd>Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dl>
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+</dd>
+
+<dl>
+<dt>Noise-Poisson</dt>
+<dd>Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dl>
+<dt>Noise-Uniform</dt>
+<dd>Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+</dd>
+
 <pp>
-The <s>Assign</s> operator assigns a fixed value to a channel. For
-example, this command sets the red channel to the mid-range value:</pp>
+As an example, the <s>Assign</s> operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:</pp>
 <pre>
   gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <pp>
 <pp>
-The <s>ThresholdOperator</s> thresholds values above the threshold to
-white, and otherwise to black. The <s>Threshold-Black</s> operator
-thresholds values below the specified value to black and the
-<s>Threshold-White</s> thresholds values above the specified value to
-white. For example, the following applies 50% thresholding to the
+The following applies 50% thresholding to the image and returns a gray
 image:</pp>
 <pre>
   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
-<pp>
-The <s>Invert</s> operator inverts channel values. The rvalue argument
-must be supplied, but is currently not used.</pp>
 <pp>
 
 </utils>

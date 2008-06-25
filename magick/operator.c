@@ -21,6 +21,29 @@
 #include "magick/operator.h"
 
 /*
+  Types.
+*/
+typedef struct _QuantumContext
+{
+  ChannelType channel;
+  Quantum quantum_value;
+  double double_value;
+  Quantum *channel_lut;
+} QuantumContext;
+
+typedef struct _ChannelOptions_t
+{
+  DoublePixelPacket
+    values;
+
+  MagickBool
+    red_enabled,
+    green_enabled,
+    blue_enabled,
+    opacity_enabled;
+} ChannelOptions_t;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -57,13 +80,14 @@
 %        channels.  The GrayChannel type treats the color channels
 %        as if they represent an intensity.
 %
-%    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
-%        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
-%        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
-%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
-%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
-%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
-%        NoisePoissonQuantumOp, NoiseUniformQuantumOp).
+%    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
+%        AssignQuantumOp, DivideQuantumOp, GammaQuantumOp, LShiftQuantumOp,
+%        MultiplyQuantumOp,  NegateQuantumOp, NoiseGaussianQuantumOp,
+%        NoiseImpulseQuantumOp, NoiseLaplacianQuantumOp,
+%        NoiseMultiplicativeQuantumOp, NoisePoissonQuantumOp,
+%        NoiseUniformQuantumOp, OrQuantumOp, RShiftQuantumOp,
+%        SubtractQuantumOp, ThresholdBlackQuantumOp, ThresholdQuantumOp,
+%        ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -110,17 +134,6 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %    o values: define the rvalues, <red>{<green>,<blue>,<opacity>}{%}.
 %
 */
-typedef struct _ChannelOptions_t
-{
-  DoublePixelPacket
-    values;
-
-  MagickBool
-    red_enabled,
-    green_enabled,
-    blue_enabled,
-    opacity_enabled;
-} ChannelOptions_t;
 MagickExport MagickPassFail
 QuantumOperatorImageMultivalue(Image *image,
                                const QuantumOperator quantum_operator,
@@ -278,13 +291,14 @@ QuantumOperatorImageMultivalue(Image *image,
 %
 %    o rows: Height of region.
 %
-%    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
-%        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
-%        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
-%        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
-%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
-%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
-%        NoisePoissonQuantumOp, NoiseUniformQuantumOp).
+%    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
+%        AssignQuantumOp, DivideQuantumOp, GammaQuantumOp, LShiftQuantumOp,
+%        MultiplyQuantumOp,  NegateQuantumOp, NoiseGaussianQuantumOp,
+%        NoiseImpulseQuantumOp, NoiseLaplacianQuantumOp,
+%        NoiseMultiplicativeQuantumOp, NoisePoissonQuantumOp,
+%        NoiseUniformQuantumOp, OrQuantumOp, RShiftQuantumOp,
+%        SubtractQuantumOp, ThresholdBlackQuantumOp, ThresholdQuantumOp,
+%        ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -300,13 +314,6 @@ QuantumOperatorImageMultivalue(Image *image,
     result=(double) lvalue op (double) rvalue;          \
     lvalue=RoundDoubleToQuantum(result);                \
 }
-
-typedef struct _QuantumContext
-{
-  ChannelType channel;
-  Quantum quantum_value;
-  double double_value;
-} QuantumContext;
 
 static MagickPassFail
 QuantumAdd(void *user_data,
@@ -564,8 +571,116 @@ QuantumDivide(void *user_data,
 
   return (MagickPass);
 }
+#if MaxRGB > MaxMap
+#  define GammaAdjustQuantum(quantum) (MaxRGBDouble*pow(quantum/MaxRGBDouble,1.0/context->double_value)+0.5)
+#else
+#  define GammaAdjustQuantum(quantum) (context->channel_lut[ScaleQuantumToMap(quantum)])
+#endif
 static MagickPassFail
-QuantumInvert(void *user_data,
+QuantumGamma(void *user_data,
+             Image *image,
+             PixelPacket *pixels,
+             IndexPacket *indexes,
+             const long npixels,
+             ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+  
+  register long
+    i;
+  
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  /*
+    Build LUT for Q8 and Q16 builds
+  */
+#if MaxRGB <= MaxMap
+  if (context->channel_lut == (Quantum *) NULL)
+    {
+      context->channel_lut=MagickAllocateMemory(Quantum *, MaxMap*sizeof(Quantum));
+      if (context->channel_lut == (Quantum *) NULL)
+        return MagickFail;
+
+#if MaxMap > 255
+#pragma omp parallel for
+#endif
+      for (i=0; i <= (long) MaxMap; i++)
+        context->channel_lut[i] =
+          ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,
+                                       1.0/context->double_value));
+    }
+#endif
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        pixels[i].red=GammaAdjustQuantum(pixels[i].red);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        pixels[i].green=GammaAdjustQuantum(pixels[i].green);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        pixels[i].blue=GammaAdjustQuantum(pixels[i].blue);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity=GammaAdjustQuantum(pixels[i].opacity);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red=GammaAdjustQuantum(pixels[i].red);
+          pixels[i].green=GammaAdjustQuantum(pixels[i].green);
+          pixels[i].blue=GammaAdjustQuantum(pixels[i].blue);
+        }
+      break;
+    case GrayChannel:
+#if QuantumDepth > 16
+#pragma omp parallel for
+#endif
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity = GammaAdjustQuantum(intensity);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumNegate(void *user_data,
               Image *image,
               PixelPacket *pixels,
               IndexPacket *indexes,
@@ -1448,6 +1563,7 @@ QuantumOperatorRegionImage(Image *image,
   context.channel=channel;
   context.double_value=rvalue;
   context.quantum_value=RoundDoubleToQuantum(rvalue);
+  context.channel_lut=(Quantum *) NULL;
 
   switch (quantum_operator)
     {
@@ -1510,8 +1626,11 @@ QuantumOperatorRegionImage(Image *image,
     case NoiseUniformQuantumOp:
       call_back=QuantumNoiseUniform;
       break;
-    case InvertQuantumOp:
-      call_back=QuantumInvert;
+    case NegateQuantumOp:
+      call_back=QuantumNegate;
+      break;
+    case GammaQuantumOp:
+      call_back=QuantumGamma;
       break;
     }
 
@@ -1525,6 +1644,11 @@ QuantumOperatorRegionImage(Image *image,
                                     description,
                                     (void *) &context,x,y,columns,rows,
                                     image,exception);
+
+      /*
+        Free any channel LUT.
+      */
+      MagickFreeMemory(context.channel_lut);
 
       /*
         If we are assigning all the color channels in the entire image

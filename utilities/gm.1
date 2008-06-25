@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/24" "GraphicsMagick"
+.TH gm 1 "2008/06/25" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2419,12 +2419,12 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
-\fBDivide\fP, \fBInvert\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP,
-\fBRShift\fP, \fBSubtract\fP, \fBThreshold\fP, \fBThreshold-White\fP,
-\fBThreshold-Black\fP, \fBXor\fP, \fBNoise-Gaussian\fP,
-\fBNoise-Impulse\fP, \fBNoise-Laplacian\fP,
-\fBNoise-Multiplicative\fP, \fBNoise-Poisson\fP, and
-\fBNoise-Uniform\fP.
+\fBDivide\fP, \fBGamma\fP, \fBInvert\fP, \fBLShift\fP,
+\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP,
+\fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
+\fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
+\fBNoise-Laplacian\fP, \fBNoise-Multiplicative\fP,
+\fBNoise-Poisson\fP, and \fBNoise-Uniform\fP.
 
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -2434,28 +2434,250 @@ Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (\fB%\fP) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.
 
-As an example, the \fBxor\fP operator may be used to invert a
-monochrome image (interchange black and white):
+The following is a description of the operators:
+.in 15
 
-  gm convert in.bmp -operator all xor "100%" out.bmp
+.in 15
+.B "Add"
+.in 20
+ \fR
+.in 20
+Result is rvalue added to channel value.
 
-The \fBAssign\fP operator assigns a fixed value to a channel. For
-example, this command sets the red channel to the mid-range value:
+.in 15
+.in 15
+
+.in 15
+.B "And"
+.in 20
+ \fR
+.in 20
+Result is the logical AND of rvalue with channel value.
+
+.in 15
+.in 15
+
+.in 15
+.B "Assign"
+.in 20
+ \fR
+.in 20
+Result is rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Divide"
+.in 20
+ \fR
+.in 20
+Result is channel value divided by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Gamma"
+.in 20
+ \fR
+.in 20
+Result is channel value gamma adjusted by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Invert"
+.in 20
+ \fR
+.in 20
+Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+
+.in 15
+.in 15
+
+.in 15
+.B "LShift"
+.in 20
+ \fR
+.in 20
+Result is channel value bitwise left shifted by rvalue bits.
+
+.in 15
+.in 15
+
+.in 15
+.B "Multiply"
+.in 20
+ \fR
+.in 20
+Result is channel value multiplied by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Or"
+.in 20
+ \fR
+.in 20
+Result is the logical OR of rvalue with channel value.
+
+.in 15
+.in 15
+
+.in 15
+.B "RShift"
+.in 20
+ \fR
+.in 20
+Result is channel value bitwise right shifted by rvalue bits.
+
+.in 15
+.in 15
+
+.in 15
+.B "Subtract"
+.in 20
+ \fR
+.in 20
+Result is channel value minus rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Threshold"
+.in 20
+ \fR
+.in 20
+Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If \fBall\fP
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+
+.in 15
+.in 15
+
+.in 15
+.B "Threshold-white"
+.in 20
+ \fR
+.in 20
+Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If \fBall\fP
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+
+.in 15
+.in 15
+
+.in 15
+.B "Threshold-black"
+.in 20
+ \fR
+.in 20
+Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+\fBall\fP channels are specified, then thresholding is done based on
+computed pixel intensity.
+
+.in 15
+.in 15
+
+.in 15
+.B "Xor"
+.in 20
+ \fR
+.in 20
+Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Gaussian"
+.in 20
+ \fR
+.in 20
+Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Impulse"
+.in 20
+ \fR
+.in 20
+Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Laplacian"
+.in 20
+ \fR
+.in 20
+Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Multiplicative"
+.in 20
+ \fR
+.in 20
+Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Poisson"
+.in 20
+ \fR
+.in 20
+Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+
+.in 15
+.B "Noise-Uniform"
+.in 20
+ \fR
+.in 20
+Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+
+As an example, the \fBAssign\fP operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:
 
   gm convert in.bmp -operator red assign "50%" out.bmp
 
 
-The \fBThresholdOperator\fP thresholds values above the threshold to
-white, and otherwise to black. The \fBThreshold-Black\fP operator
-thresholds values below the specified value to black and the
-\fBThreshold-White\fP thresholds values above the specified value to
-white. For example, the following applies 50% thresholding to the
+The following applies 50% thresholding to the image and returns a gray
 image:
 
   gm convert in.bmp -operator gray threshold "50%" out.bmp
-
-The \fBInvert\fP operator inverts channel values. The rvalue argument
-must be supplied, but is currently not used.
 
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP

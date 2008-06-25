@@ -40,6 +40,7 @@
 #include "magick/blob.h"
 #include "magick/color.h"
 #include "magick/draw.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/magick.h"

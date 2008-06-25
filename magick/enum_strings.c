@@ -346,8 +346,10 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
     quantum_operator=NoisePoissonQuantumOp;
   else if (LocaleCompare("noise-uniform",option) == 0)
     quantum_operator=NoiseUniformQuantumOp;
-  else if (LocaleCompare("invert",option) == 0)
-    quantum_operator=InvertQuantumOp;
+  else if (LocaleCompare("negate",option) == 0)
+    quantum_operator=NegateQuantumOp;
+  else if (LocaleCompare("gamma",option) == 0)
+    quantum_operator=GammaQuantumOp;
 
   return quantum_operator;
 }
@@ -418,8 +420,11 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
     case NoiseUniformQuantumOp:
       operator_text="noise-uniform";
       break;
-    case InvertQuantumOp:
-      operator_text="invert";
+    case NegateQuantumOp:
+      operator_text="negate";
+      break;
+    case GammaQuantumOp:
+      operator_text="gamma";
       break;
     }
 

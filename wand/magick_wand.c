@@ -68,9 +68,7 @@
  *
  *   MagickFxImage
  *   MagickFxImageChannel
- *   MagickGammaImageChannel
  *   MagickGetConfigureInfo
- *   MagickNegateImageChannel
  *   MagickPreviewImages
  *   MagickRadialBlurImage
  *   MagickTintImage
@@ -2272,7 +2270,7 @@ WandExport MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
 %
 %    o channel: Identify which channel to level: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 %    o expression: The expression.
 %
@@ -2386,23 +2384,12 @@ WandExport unsigned int MagickGammaImage(MagickWand *wand,const double gamma)
 WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
   const ChannelType channel,const double gamma)
 {
-#if defined(NOT_IMPLEMENTED)
-  unsigned int
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=GammaImageChannel(wand->image,channel,gamma);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  return(status);
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(gamma);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickGammaImageChannel");
-#endif
+  return QuantumOperatorImage(wand->image,channel,GammaQuantumOp,
+                              gamma,&wand->exception);
 }
 
 /*
@@ -2749,7 +2736,7 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 */
 WandExport unsigned long MagickGetImageChannelDepth(MagickWand *wand,
@@ -4679,7 +4666,7 @@ WandExport unsigned int MagickLevelImage(MagickWand *wand,
 %
 %    o channel: Identify which channel to level: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 %    o black_point: The black point.
 %
@@ -5299,7 +5286,8 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 %
 %  MagickNegateImage() negates the colors in the specified channel of the
 %  reference image.  The Grayscale option means that only grayscale values
-%  within the image are negated.
+%  within the image are negated.  Note that the Grayscale option has no
+%  effect for GraphicsMagick.
 %
 %  You can also reduce the influence of a particular channel with a gamma
 %  value of 0.
@@ -5315,7 +5303,7 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 %    o gray: If True, only negate grayscale pixels within the image.
 %
@@ -5323,23 +5311,12 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
   const ChannelType channel,const unsigned int gray)
 {
-#if defined(NOT_IMPLEMENTED)
-  unsigned int
-    status;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=NegateImageChannel(wand->image,channel,gray);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  return(status);
-#else
-  ARG_NOT_USED(channel);
-  ARG_NOT_USED(gray);
-  ThrowWandException(WandError,WandAPINotImplemented,"MagickNegateImageChannel");
-#endif
+  return QuantumOperatorImage(wand->image,channel,NegateQuantumOp,
+                              0,&wand->exception);
 }
 
 /*
@@ -6868,7 +6845,7 @@ WandExport unsigned int MagickScaleImage(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 */
 WandExport unsigned int MagickSeparateImageChannel(MagickWand *wand,
@@ -7292,7 +7269,7 @@ WandExport unsigned int MagickSetImageDelay(MagickWand *wand,
 %
 %    o channel: Identify which channel to extract: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
+%      BlackChannel.
 %
 %    o depth: The image depth in bits.
 %

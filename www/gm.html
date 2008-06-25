@@ -3141,12 +3141,12 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Divide</strong>, <strong>Invert</strong>, <strong>LShift</strong>, <strong>Multiply</strong>, <strong>Or</strong>,
-<strong>RShift</strong>, <strong>Subtract</strong>, <strong>Threshold</strong>, <strong>Threshold-White</strong>,
-<strong>Threshold-Black</strong>, <strong>Xor</strong>, <strong>Noise-Gaussian</strong>,
-<strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
-<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>, and
-<strong>Noise-Uniform</strong>.</font></td></tr></table>
+<strong>Divide</strong>, <strong>Gamma</strong>, <strong>Invert</strong>, <strong>LShift</strong>,
+<strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>,
+<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
+<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
+<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
+<strong>Noise-Poisson</strong>, and <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3156,31 +3156,126 @@ Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (<strong>%</strong>) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-As an example, the <strong>xor</strong> operator may be used to invert a
-monochrome image (interchange black and white):</font></td></tr></table>
-<pre>
-  gm convert in.bmp -operator all xor "100%" out.bmp
-</pre>
+The following is a description of the operators:</font></td></tr></table>
+<dl>
+<dt>Add</dt>
+<dd>Result is rvalue added to channel value.
+</dd>
+<dl>
+<dt>And</dt>
+<dd>Result is the logical AND of rvalue with channel value.
+</dd>
+<dl>
+<dt>Assign</dt>
+<dd>Result is rvalue.
+</dd>
+<dl>
+<dt>Divide</dt>
+<dd>Result is channel value divided by rvalue.
+</dd>
+<dl>
+<dt>Gamma</dt>
+<dd>Result is channel value gamma adjusted by rvalue.
+</dd>
+<dl>
+<dt>Invert</dt>
+<dd>Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+</dd>
+<dl>
+<dt>LShift</dt>
+<dd>Result is channel value bitwise left shifted by rvalue bits.
+</dd>
+<dl>
+<dt>Multiply</dt>
+<dd>Result is channel value multiplied by rvalue.
+</dd>
+<dl>
+<dt>Or</dt>
+<dd>Result is the logical OR of rvalue with channel value.
+</dd>
+<dl>
+<dt>RShift</dt>
+<dd>Result is channel value bitwise right shifted by rvalue bits.
+</dd>
+<dl>
+<dt>Subtract</dt>
+<dd>Result is channel value minus rvalue.
+</dd>
+<dl>
+<dt>Threshold</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If <strong>all</strong>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+<dl>
+<dt>Threshold-white</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If <strong>all</strong>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+<dl>
+<dt>Threshold-black</dt>
+<dd>Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+<dl>
+<dt>Xor</dt>
+<dd>Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+</dd>
+<dl>
+<dt>Noise-Gaussian</dt>
+<dd>Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dl>
+<dt>Noise-Impulse</dt>
+<dd>Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dl>
+<dt>Noise-Laplacian</dt>
+<dd>Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dl>
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+</dd>
+<dl>
+<dt>Noise-Poisson</dt>
+<dd>Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dl>
+<dt>Noise-Uniform</dt>
+<dd>Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+</dd>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <strong>Assign</strong> operator assigns a fixed value to a channel. For
-example, this command sets the red channel to the mid-range value:</font></td></tr></table>
+As an example, the <strong>Assign</strong> operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:</font></td></tr></table>
 <pre>
   gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <strong>ThresholdOperator</strong> thresholds values above the threshold to
-white, and otherwise to black. The <strong>Threshold-Black</strong> operator
-thresholds values below the specified value to black and the
-<strong>Threshold-White</strong> thresholds values above the specified value to
-white. For example, the following applies 50% thresholding to the
+The following applies 50% thresholding to the image and returns a gray
 image:</font></td></tr></table>
 <pre>
   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <strong>Invert</strong> operator inverts channel values. The rvalue argument
-must be supplied, but is currently not used.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table BORDER=0 WIDTH="94%">
 <tr>
