@@ -2,10 +2,10 @@
 
 	* wand/magick_wand.c (MagickNegateImage): Implemented previously
 	unimplemented Wand method.
-	(MagickGammaImage): Implemented previously unimplemented Wand
-	method.
-	* magick/operator.h (enumQuantumOperator): Added GammaQuantumOp
-	and "gamma" operator.  Renamed InvertQuantumOp to InvertQuantumOp.
+	(MagickGammaImageChannel): Implemented previously unimplemented
+	Wand method.
+	* magick/operator.h (enum QuantumOperator): Added GammaQuantumOp
+	and "gamma" operator.  Renamed InvertQuantumOp to NegateQuantumOp.
 
 2008-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
