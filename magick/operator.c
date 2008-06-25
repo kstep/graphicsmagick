@@ -61,8 +61,9 @@
 %        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
 %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
 %        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
-%        NoiseGaussianOp, NoiseImpulseOp, NoiseLaplacianOp,
-%        NoiseMultiplicativeOp, NoisePoissonOp, NoiseUniformOp).
+%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
+%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
+%        NoisePoissonQuantumOp, NoiseUniformQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -281,8 +282,9 @@ QuantumOperatorImageMultivalue(Image *image,
 %        AssignQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp,
 %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, ThresholdQuantumOp,
 %        ThresholdBlackQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp,
-%        NoiseGaussianOp, NoiseImpulseOp, NoiseLaplacianOp,
-%        NoiseMultiplicativeOp, NoisePoissonOp, NoiseUniformOp).
+%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
+%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
+%        NoisePoissonQuantumOp, NoiseUniformQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -555,6 +557,71 @@ QuantumDivide(void *user_data,
 
           intensity = PixelIntensity(&pixels[i]);
           ApplyArithmeticOperator(intensity,/,context->double_value);
+          pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+        }
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumInvert(void *user_data,
+              Image *image,
+              PixelPacket *pixels,
+              IndexPacket *indexes,
+              const long npixels,
+              ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+  
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red=MaxRGB-pixels[i].red;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green=MaxRGB-pixels[i].green;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue=MaxRGB-pixels[i].blue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity=MaxRGB-pixels[i].opacity;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      for (i=0; i < npixels; i++)
+        {
+          pixels[i].red=MaxRGB-pixels[i].red;
+          pixels[i].green=MaxRGB-pixels[i].green;
+          pixels[i].blue=MaxRGB-pixels[i].blue;
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          intensity = MaxRGB-intensity;
           pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
         }
       break;
@@ -1425,23 +1492,26 @@ QuantumOperatorRegionImage(Image *image,
     case XorQuantumOp:
       call_back=QuantumXor;
       break;
-    case NoiseGaussianOp:
+    case NoiseGaussianQuantumOp:
       call_back=QuantumNoiseGaussian;
       break;
-    case NoiseImpulseOp:
+    case NoiseImpulseQuantumOp:
       call_back=QuantumNoiseImpulse;
       break;
-    case NoiseLaplacianOp:
+    case NoiseLaplacianQuantumOp:
       call_back=QuantumNoiseLaplacian;
       break;
-    case NoiseMultiplicativeOp:
+    case NoiseMultiplicativeQuantumOp:
       call_back=QuantumNoiseMultiplicative;
       break;
-    case NoisePoissonOp:
+    case NoisePoissonQuantumOp:
       call_back=QuantumNoisePoisson;
       break;
-    case NoiseUniformOp:
+    case NoiseUniformQuantumOp:
       call_back=QuantumNoiseUniform;
+      break;
+    case InvertQuantumOp:
+      call_back=QuantumInvert;
       break;
     }
 

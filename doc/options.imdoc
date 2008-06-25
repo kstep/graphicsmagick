@@ -3110,8 +3110,8 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 <pp>
 Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
-<s>Divide</s>, <s>LShift</s>, <s>Multiply</s>, <s>Or</s>, <s>RShift</s>,
-<s>Subtract</s>, <s>Threshold</s>, <s>Threshold-White</s>,
+<s>Divide</s>, <s>Invert</s>, <s>LShift</s>, <s>Multiply</s>, <s>Or</s>,
+<s>RShift</s>, <s>Subtract</s>, <s>Threshold</s>, <s>Threshold-White</s>,
 <s>Threshold-Black</s>, <s>Xor</s>, <s>Noise-Gaussian</s>,
 <s>Noise-Impulse</s>, <s>Noise-Laplacian</s>,
 <s>Noise-Multiplicative</s>, <s>Noise-Poisson</s>, and
@@ -3147,6 +3147,9 @@ image:</pp>
 <pre>
   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
+<pp>
+The <s>Invert</s> operator inverts channel values. The rvalue argument
+must be supplied, but is currently not used.</pp>
 <pp>
 
 </utils>

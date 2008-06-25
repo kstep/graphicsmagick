@@ -335,17 +335,19 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
   else if (LocaleCompare("xor",option) == 0)
     quantum_operator=XorQuantumOp;
   else if (LocaleCompare("noise-gaussian",option) == 0)
-    quantum_operator=NoiseGaussianOp;
+    quantum_operator=NoiseGaussianQuantumOp;
   else if (LocaleCompare("noise-impulse",option) == 0)
-    quantum_operator=NoiseImpulseOp;
+    quantum_operator=NoiseImpulseQuantumOp;
   else if (LocaleCompare("noise-laplacian",option) == 0)
-    quantum_operator=NoiseLaplacianOp;
+    quantum_operator=NoiseLaplacianQuantumOp;
   else if (LocaleCompare("noise-multiplicative",option) == 0)
-    quantum_operator=NoiseMultiplicativeOp;
+    quantum_operator=NoiseMultiplicativeQuantumOp;
   else if (LocaleCompare("noise-poisson",option) == 0)
-    quantum_operator=NoisePoissonOp;
+    quantum_operator=NoisePoissonQuantumOp;
   else if (LocaleCompare("noise-uniform",option) == 0)
-    quantum_operator=NoiseUniformOp;
+    quantum_operator=NoiseUniformQuantumOp;
+  else if (LocaleCompare("invert",option) == 0)
+    quantum_operator=InvertQuantumOp;
 
   return quantum_operator;
 }
@@ -398,23 +400,26 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
     case XorQuantumOp:
       operator_text="xor";
       break;
-    case NoiseGaussianOp:
+    case NoiseGaussianQuantumOp:
       operator_text="noise-gaussian";
       break;
-    case NoiseImpulseOp:
+    case NoiseImpulseQuantumOp:
       operator_text="noise-impulse";
       break;
-    case NoiseLaplacianOp:
+    case NoiseLaplacianQuantumOp:
       operator_text="noise-laplacian";
       break;
-    case NoiseMultiplicativeOp:
+    case NoiseMultiplicativeQuantumOp:
       operator_text="noise-multiplicative";
       break;
-    case NoisePoissonOp:
+    case NoisePoissonQuantumOp:
       operator_text="noise-poisson";
       break;
-    case NoiseUniformOp:
+    case NoiseUniformQuantumOp:
       operator_text="noise-uniform";
+      break;
+    case InvertQuantumOp:
+      operator_text="invert";
       break;
     }
 

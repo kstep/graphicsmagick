@@ -22,25 +22,26 @@ extern "C" {
 typedef enum
 {
   UndefinedQuantumOp = 0,
-  AddQuantumOp,            /* Add value */
-  AndQuantumOp,            /* Bitwise AND value */
-  AssignQuantumOp,         /* Direct value assignment */
-  DivideQuantumOp,         /* Divide by value */
-  LShiftQuantumOp,         /* Bitwise left-shift value N bits */
-  MultiplyQuantumOp,       /* Multiply by value */
-  OrQuantumOp,             /* Bitwise OR value */
-  RShiftQuantumOp,         /* Bitwise right shift value */
-  SubtractQuantumOp,       /* Subtract value */
-  ThresholdQuantumOp,      /* Above threshold white, otherwise black */
-  ThresholdBlackQuantumOp, /* Below threshold is black */
-  ThresholdWhiteQuantumOp, /* Above threshold is white */
-  XorQuantumOp,            /* Bitwise XOR value */
-  NoiseGaussianOp,         /* Gaussian noise */
-  NoiseImpulseOp,          /* Impulse noise */
-  NoiseLaplacianOp,        /* Laplacian noise */
-  NoiseMultiplicativeOp,   /* Multiplicative gaussian noise */
-  NoisePoissonOp,          /* Poisson noise */
-  NoiseUniformOp           /* Uniform noise */
+  AddQuantumOp,                   /* Add value */
+  AndQuantumOp,                   /* Bitwise AND value */
+  AssignQuantumOp,                /* Direct value assignment */
+  DivideQuantumOp,                /* Divide by value */
+  LShiftQuantumOp,                /* Bitwise left-shift value N bits */
+  MultiplyQuantumOp,              /* Multiply by value */
+  OrQuantumOp,                    /* Bitwise OR value */
+  RShiftQuantumOp,                /* Bitwise right shift value */
+  SubtractQuantumOp,              /* Subtract value */
+  ThresholdQuantumOp,             /* Above threshold white, otherwise black */
+  ThresholdBlackQuantumOp,        /* Below threshold is black */
+  ThresholdWhiteQuantumOp,        /* Above threshold is white */
+  XorQuantumOp,                   /* Bitwise XOR value */
+  NoiseGaussianQuantumOp,         /* Gaussian noise */
+  NoiseImpulseQuantumOp,          /* Impulse noise */
+  NoiseLaplacianQuantumOp,        /* Laplacian noise */
+  NoiseMultiplicativeQuantumOp,   /* Multiplicative gaussian noise */
+  NoisePoissonQuantumOp,          /* Poisson noise */
+  NoiseUniformQuantumOp,          /* Uniform noise */
+  InvertQuantumOp                 /* Invert channel, ignore value */
  } QuantumOperator;
 
 extern MagickExport MagickPassFail

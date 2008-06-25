@@ -3178,8 +3178,8 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Divide</strong>, <strong>LShift</strong>, <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>,
-<strong>Subtract</strong>, <strong>Threshold</strong>, <strong>Threshold-White</strong>,
+<strong>Divide</strong>, <strong>Invert</strong>, <strong>LShift</strong>, <strong>Multiply</strong>, <strong>Or</strong>,
+<strong>RShift</strong>, <strong>Subtract</strong>, <strong>Threshold</strong>, <strong>Threshold-White</strong>,
 <strong>Threshold-Black</strong>, <strong>Xor</strong>, <strong>Noise-Gaussian</strong>,
 <strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
 <strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>, and
@@ -3215,6 +3215,9 @@ image:</font></td></tr></table>
 <pre>
   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>Invert</strong> operator inverts channel values. The rvalue argument
+must be supplied, but is currently not used.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table BORDER=0 WIDTH="94%">
 <tr>

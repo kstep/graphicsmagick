@@ -1,5 +1,7 @@
 2008-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/operator.h (enum QuantumOperator): Added InvertQuantumOp
+	and "invert" operator.
 	* coders/xcf.c (GIMPBlendModeToCompositeOperator): For XCF format,
 	we do support GIMP_DIVIDE_MODE composition now. Disable progress
 	monitor during tile composition.

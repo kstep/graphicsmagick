@@ -2419,8 +2419,8 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
-\fBDivide\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP, \fBRShift\fP,
-\fBSubtract\fP, \fBThreshold\fP, \fBThreshold-White\fP,
+\fBDivide\fP, \fBInvert\fP, \fBLShift\fP, \fBMultiply\fP, \fBOr\fP,
+\fBRShift\fP, \fBSubtract\fP, \fBThreshold\fP, \fBThreshold-White\fP,
 \fBThreshold-Black\fP, \fBXor\fP, \fBNoise-Gaussian\fP,
 \fBNoise-Impulse\fP, \fBNoise-Laplacian\fP,
 \fBNoise-Multiplicative\fP, \fBNoise-Poisson\fP, and
@@ -2453,6 +2453,9 @@ white. For example, the following applies 50% thresholding to the
 image:
 
   gm convert in.bmp -operator gray threshold "50%" out.bmp
+
+The \fBInvert\fP operator inverts channel values. The rvalue argument
+must be supplied, but is currently not used.
 
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
