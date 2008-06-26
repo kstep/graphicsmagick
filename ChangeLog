@@ -1,5 +1,7 @@
 2008-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/configure/configure.cpp: The MAT coder now depends
+	on zlib so add explicit dependencies for it.
 	* wand/magick_wand.c (MagickNegateImage): Implemented previously
 	unimplemented Wand method.
 	(MagickGammaImageChannel): Implemented previously unimplemented

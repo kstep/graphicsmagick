@@ -1152,6 +1152,11 @@ void CConfigureApp::process_module( const char *root,
       extra = "..\\tiff\\libtiff";
       add_includes(includes_list, extra, levels-2);
     }
+  if (name.compare("mat") == 0)
+    {
+      extra = "..\\zlib";
+      add_includes(includes_list, extra, levels-2);
+    }
   if (name.compare("miff") == 0)
     {
       extra = "..\\zlib";
@@ -1307,6 +1312,10 @@ void CConfigureApp::process_module( const char *root,
           {
             if (useX11Stubs)
               workspace->write_project_dependency(project,"CORE_xlib");
+          }
+        if (name.compare("mat") == 0)
+          {
+            workspace->write_project_dependency(project,"CORE_zlib");
           }
         if (name.compare("miff") == 0)
           {
