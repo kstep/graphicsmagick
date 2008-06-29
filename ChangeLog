@@ -1,6 +1,13 @@
+2008-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (install-exec-local-utilities): Add back
+	in support for --enable-magick-compat which was accidentally
+	dropped in the new makefiles for GraphicsMagick 1.2.  Resolves
+	SourceForge bug 2005883.
+
 2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-        * Magick++/lib/Image.cpp (quantize): Error measurement support was
+	* Magick++/lib/Image.cpp (quantize): Error measurement support was
 	being performed incorrectly.  SyncImage() is not needed here.
 
 2008-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

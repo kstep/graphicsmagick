@@ -88,3 +88,28 @@ UTILITIES_CLEANFILES = \
 	utilities/tests/demo.miff \
 	utilities/tests/gm.core \
 	utilities/tests/core
+
+# Install/Uninstall ImageMagick compatibility links
+if MAGICK_COMPAT
+MAGICKPROGRAMS=animate composite conjure convert display identify import mogrify montage
+UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
+install-exec-local-utilities:
+	$(mkdir_p) $(DESTDIR)$(bindir)
+	cd $(DESTDIR)$(bindir) ; \
+	gm=`echo "gm" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	  $(LN_S) $$gm $$target ; \
+	done
+
+UTILITIES_UNINSTALL_LOCAL_TARGETS=uninstall-local-utilities
+uninstall-local-utilities:
+	cd $(DESTDIR)$(bindir) ; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	done
+endif # MAGICK_COMPAT
