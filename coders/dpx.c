@@ -127,6 +127,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
+#include "magick/enum_strings.h"
 #include "magick/magick_endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"

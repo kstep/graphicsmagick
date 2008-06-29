@@ -28,14 +28,26 @@ ImageMagick differ from ImageMagick?*" since ImageMagick continues to
 alter and evolve its interfaces so they are no longer completely
 compatible with earlier versions. While GraphicsMagick also adds new
 features, it does so in a way which assures that existing features work
-as they did before. GraphicsMagick maintains a stable release branch,
-maintains a detailed ChangeLog, and maintains a stable source repository
-with complete version history so that changes are controlled, and changes
-between releases are accurately described. ImageMagick does not offer
-this. Since GraphicsMagick is more stable, more time has been spent
-optimizing and debugging its code. GraphicsMagick is usually faster than
-ImageMagick. ImageMagick focuses on adding new functionality and features
-and has dramatically mutated several times since the fork.
+as they did before. ImageMagick focuses on adding new functionality and
+features and has dramatically mutated several times since the fork.
+
+GraphicsMagick maintains a stable release branch, maintains a detailed
+ChangeLog, and maintains a stable source repository with complete version
+history so that changes are controlled, and changes between releases are
+accurately described. GraphicsMagick provides continued support for a
+release branch. ImageMagick does not offer any of these things.
+
+Since GraphicsMagick is more stable, more time has been spent optimizing
+and debugging its code.
+
+GraphicsMagick is much smaller than ImageMagick and has dramatically
+fewer dependencies on external libraries. For example, on the FreeBSD
+operating system, a fully-featured install of GraphicsMagick depends on
+36 libraries whereas ImageMagick requires 64.
+
+GraphicsMagick is usually faster than ImageMagick. The baseline execution
+overhead for simple commands is much lower, and GraphicsMagick is also
+more efficient at dealing with large images.
 
 2) How often does GraphicsMagick pick up new code from ImageMagick?
 -------------------------------------------------------------------
@@ -58,10 +70,10 @@ GraphicsMagick's MIT X11 style license without additional encumberment.
 translation of certain image formats (*PostScript*, *MPEG*, etc.). Make
 sure these packages are available as described in the README_ file. Also
 verify that you have plenty of temporary disk space. If not, set the
-TMPDIR environment variable to an area where space is available. Finally,
-for *PostScript*, verify that Ghostscript supports the *pnmraw* or
-*ppmraw* device (``gs -h``) and that the document contains valid
-*PostScript* statements (``gs image.ps``).
+MAGICK_TMPDIR (or TMPDIR) environment variable to an area where
+sufficient space is available. Finally, for *PostScript*, verify that
+Ghostscript supports the *pnmraw* or *ppmraw* device (``gs -h``) and that
+the document contains valid *PostScript* statements (``gs image.ps``).
 
 4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?
 ---------------------------------------------------------------------------------------------
@@ -602,6 +614,35 @@ original image file.
 There is also built-in support for a *Partition* interlace format which
 can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.
+
+32) How can I create a solid or patterned canvas image?
+-------------------------------------------------------
+
+Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
+formats. XC produces solid color images based on an color you specify
+while TILE produces a tiled image based on an an image you specify. Both
+of these require that the desired size be specified, and the desired
+image type may be specified as well.
+
+To create a solid red canvas image::
+
+  gm convert -size 640x480 xc:red canvas.tiff
+
+or using hex syntax to specify the color::
+
+  gm convert -size 640x480 "xc:#f00" canvas.tiff
+
+To create a solid red canvas image using truecolor pixels::
+
+  gm convert -size 640x480 -type TrueColor xc:red canvas.tiff
+
+To create a patterned canvas image using a built-in crosshatch pattern::
+
+  gm convert -size 640x480 tile:image:CROSSHATCH45 canvas.tiff
+
+To create a patterned canvas image using a user-supplied image::
+
+  gm convert -size 640x480 tile:myimage.tiff canvas.tiff
 
 ---------------------------------------------------------------------------
 

@@ -33,6 +33,7 @@
 #include "magick/attribute.h"
 #include "magick/color.h"
 #include "magick/colorspace.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
@@ -49,149 +50,6 @@
   { \
     variable=strtod(attribute->value,(char **) NULL); \
   } \
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  C o l o r s p a c e T y p e T o S t r i n g                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ColorspaceTypeToString returns a string describing the specified
-%  colorspace type.
-%
-%  The format of the ColorspaceTypeToString method is:
-%
-%     const char *ColorspaceTypeToString(const ColorspaceType colorspace)
-%
-%  A description of each parameter follows:
-%
-%    o colorspace:  Colorspace type
-%
-*/
-MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
-{
-  const char
-    *log_colorspace = "Unknown";
-  
-  switch (colorspace)
-    {
-    case UndefinedColorspace:
-      log_colorspace="Undefined";
-      break;
-    case CineonLogRGBColorspace:
-      log_colorspace="CineonLogRGB";
-      break;
-    case RGBColorspace:
-      log_colorspace="RGB";
-      break;
-    case GRAYColorspace:
-      log_colorspace="Gray";
-      break;
-    case Rec601LumaColorspace:
-      log_colorspace="Rec601Luma";
-      break;
-    case Rec709LumaColorspace:
-      log_colorspace="Rec709Luma";
-      break;
-    case TransparentColorspace:
-      log_colorspace="Transparent";
-      break;
-    case OHTAColorspace:
-      log_colorspace="OHTA";
-      break;
-    case XYZColorspace:
-      log_colorspace="XYZ";
-      break;
-    case Rec601YCbCrColorspace:
-      log_colorspace="Rec601YCbCr";
-      break;
-    case Rec709YCbCrColorspace:
-      log_colorspace="Rec709YCbCr";
-      break;
-    case YCCColorspace:
-      log_colorspace="PhotoCD YCC";
-      break;
-    case YIQColorspace:
-      log_colorspace="YIQ";
-      break;
-    case YPbPrColorspace:
-      log_colorspace="YPbPr";
-      break;
-    case YUVColorspace:
-      log_colorspace="YUV";
-      break;
-    case CMYKColorspace:
-      log_colorspace="CMYK";
-      break;
-    case sRGBColorspace:
-      log_colorspace="PhotoCD sRGB";
-      break;
-    case HSLColorspace:
-      log_colorspace="HSL";
-      break;
-    case HWBColorspace:
-      log_colorspace="HWB";
-      break;
-    case LABColorspace:
-      log_colorspace="LAB";
-      break;
-    }
-  return log_colorspace;
-}
-
-MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string)
-{
-  ColorspaceType
-    colorspace;
-
-  colorspace=UndefinedColorspace;
-
-  if (LocaleCompare("cineonlog",colorspace_string) == 0)
-    colorspace=CineonLogRGBColorspace;
-  else if (LocaleCompare("cmyk",colorspace_string) == 0)
-    colorspace=CMYKColorspace;
-  else if (LocaleCompare("gray",colorspace_string) == 0)
-    colorspace=GRAYColorspace;
-  else if (LocaleCompare("hsl",colorspace_string) == 0)
-    colorspace=HSLColorspace;
-  else if (LocaleCompare("hwb",colorspace_string) == 0)
-    colorspace=HWBColorspace;
-  else if (LocaleCompare("ohta",colorspace_string) == 0)
-    colorspace=OHTAColorspace;
-  else if (LocaleCompare("rec601luma",colorspace_string) == 0)
-    colorspace=Rec601LumaColorspace;
-  else if (LocaleCompare("rec709luma",colorspace_string) == 0)
-    colorspace=Rec709LumaColorspace;
-  else if (LocaleCompare("rgb",colorspace_string) == 0)
-    colorspace=RGBColorspace;
-  else if (LocaleCompare("srgb",colorspace_string) == 0)
-    colorspace=sRGBColorspace;
-  else if (LocaleCompare("transparent",colorspace_string) == 0)
-    colorspace=TransparentColorspace;
-  else if (LocaleCompare("xyz",colorspace_string) == 0)
-    colorspace=XYZColorspace;
-  else if (LocaleCompare("ycbcr",colorspace_string) == 0)
-    colorspace=YCbCrColorspace;
-  else if (LocaleCompare("rec601ycbcr",colorspace_string) == 0)
-    colorspace=Rec601YCbCrColorspace;
-  else if (LocaleCompare("rec709ycbcr",colorspace_string) == 0)
-    colorspace=Rec709YCbCrColorspace;
-  else if (LocaleCompare("ycc",colorspace_string) == 0)
-    colorspace=YCCColorspace;
-  else if (LocaleCompare("yiq",colorspace_string) == 0)
-    colorspace=YIQColorspace;
-  else if (LocaleCompare("ypbpr",colorspace_string) == 0)
-    colorspace=YPbPrColorspace;
-  else if (LocaleCompare("yuv",colorspace_string) == 0)
-    colorspace=YUVColorspace;
-
-  return colorspace;
 }
 
 /*

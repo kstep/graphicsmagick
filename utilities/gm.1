@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/25" "GraphicsMagick"
+.TH gm 1 "2008/06/28" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1258,6 +1258,26 @@ of the image (e.g. colormapped, grayscale, RGB, CMYK).
 If the tiff:samples-per-pixel key is defined to a value, the TIFF coder
 will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
+
+.in 15
+.in 15
+.B "tiff:rows-per-strip=<value>"
+.in 20
+ \fR
+.in 20
+Allows the user to specify the number of rows per TIFF strip. Ignored
+if using tiles or JPEG compression.
+
+.in 15
+.in 15
+.B "tiff:strip-per-page=true"
+.in 20
+ \fR
+.in 20
+Requests that the image is written in a single TIFF strip. This is
+normally the default when group3 or group4 compression is requested
+within reasonable limits. Requesting a single strip for large images may
+result in failure due to resource consumption in the writer or reader.
 
 .in 15
 .in 15
@@ -3347,10 +3367,10 @@ and x:fixed is OPTION1.
 .B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 
-Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is assigned the maximum intensity (white) otherwise the
-minimum intensity (black) is assigned. If a percent prefix is applied,
-then the threshold is a percentage of the available range.
+Modify the image such that any pixel sample with an intensity value
+greater than the threshold is assigned the maximum intensity (white), or
+otherwise is assigned the minimum intensity (black). If a percent prefix
+is applied, then the threshold is a percentage of the available range.
 
 To efficiently create a black and white image from a color image, use
 

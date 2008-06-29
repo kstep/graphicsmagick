@@ -3076,7 +3076,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   MagickBool
     filename_is_temporary=MagickFalse,
-    logging;
+    logging=MagickFalse;
 
   MagickPassFail
     status;
@@ -3219,11 +3219,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
         if (CompressionSupported(compression,compression_name) != MagickTrue)
           {
-             compression=NoCompression;
-             if (logging)
-               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                     "%s compression not supported.  Compression request removed",
-                                     compression_name);
+            compression=NoCompression;
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "%s compression not supported.  Compression request removed",
+                                    compression_name);
           }
       }
 
@@ -3783,18 +3783,28 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
             /*
               It is recommended (but not required) to output FAX as
-              one strip.
+              one strip. We will limit strip size to 16 megapixels by
+              default.
             */
-            rows_per_strip=(uint32) image->rows;
+            rows_per_strip=16000000UL/image->columns;
+            if (rows_per_strip < 1)
+              rows_per_strip=1;
+            if (rows_per_strip > image->rows)
+              rows_per_strip=(uint32) image->rows;
             break;
           }
         case COMPRESSION_CCITTFAX4:
           {
             /*
               It is recommended (but not required) to output FAX as
-              one strip.
+              one strip. We will limit strip size to 16 megapixels by
+              default.
             */
-            rows_per_strip=(uint32) image->rows;
+            rows_per_strip=16000000UL/image->columns;
+            if (rows_per_strip < 1)
+              rows_per_strip=1;
+            if (rows_per_strip > image->rows)
+              rows_per_strip=(uint32) image->rows;
             break;
           }
         case COMPRESSION_LZW:
@@ -3814,6 +3824,41 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             break;
           }
+        }
+
+      /*
+        Allow the user to override rows-per-strip settings.
+      */
+      if ((method != TiledMethod) && (compress_tag != COMPRESSION_JPEG))
+        {
+          const char *
+            value;
+
+          value=AccessDefinition(image_info,"tiff","rows-per-strip");
+          if (value)
+            {
+              unsigned int
+                old_value;
+              
+              old_value=rows_per_strip;
+              rows_per_strip=atoi(value);
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "User override (rows_per_strip): %u rows per strip (was %u)",
+                                      (unsigned int) rows_per_strip, old_value);
+            }
+          value=AccessDefinition(image_info,"tiff","strip-per-page");
+          if (value)
+            {
+              if (LocaleCompare("TRUE",value) == 0)
+                {
+                  rows_per_strip=(uint32) image->rows;
+                  
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "User requested a single strip per page (strip-per-page)");
+                }
+            }
         }
 
       if (logging)
@@ -3952,10 +3997,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         pages=GetImageListLength(image);
 
         if (image_info->adjoin && pages > 1)
-        {
-          /* SubFileType = 2. LONG. The value 2 identifies a single page of a multi-page image. */
-          (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        }
+          {
+            /* SubFileType = 2. LONG. The value 2 identifies a single page of a multi-page image. */
+            (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+          }
 
         (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
       }
@@ -4179,9 +4224,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
-                        if((status &= MagickMonitor(SaveImageText,y,image->rows,
-                                                    &image->exception))
-                           == MagickFail)
+                        if ((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                                     &image->exception))
+                            == MagickFail)
                           break;
                   }
                 if (status == MagickFail)
@@ -4410,9 +4455,27 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     if (status == MagickFail)
                       break;
                   } /* for x */
+
+
+                /*
+                  Progress indicator.
+                */
+                if (image->previous == (Image *) NULL)
+                  if (MagickMonitor(SaveImageText,y,image->rows,
+                                    &image->exception) == MagickFail)
+                    status=MagickFail;
+                
                 if (status == MagickFail)
                   break;
               } /* for y */
+
+            /*
+              Ensure 100% progress indication when done.
+            */
+            if (image->previous == (Image *) NULL)
+              (void) MagickMonitor(SaveImageText,image->rows-1,image->rows,
+                                   &image->exception);
+
             MagickFreeMemory(tile);
             break;
           }

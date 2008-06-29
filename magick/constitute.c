@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
@@ -811,6 +812,142 @@ MagickExport void DestroyConstitute(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     C o n s t i t u t e T e x t u r e I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteTextureImage() returns a new image canvas based on repeatedly
+%  tiling the texture image across and down the new image canvas.  The
+%  returned image properties are similar to the texture image properties.
+%
+%  The format of the TextureImage method is:
+%
+%      Image *ConstituteTextureImage(unsigned long columns,unsigned long rows,
+%                              const Image *texture, ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o columns: The number of columns in the new image.
+%
+%    o rows: The number of rows in the new image.
+%
+%    o texture: The texture image to layer on the background.
+%
+%    o exceptions: Any errors are reported here.
+%
+*/
+#define ConstituteTextureImageText  "Generate image texture...  "
+MagickExport Image *ConstituteTextureImage(const unsigned long columns,
+                                           const unsigned long rows,
+                                           const Image *texture_image,
+                                           ExceptionInfo *exception)
+{
+  const PixelPacket
+    *texture_pixels;
+
+  const IndexPacket
+    *texture_indexes;
+
+  PixelPacket
+    *canvas_pixels;
+
+  IndexPacket
+    *canvas_indexes;
+
+  Image
+    *canvas_image;
+
+  unsigned long
+    x,
+    y;
+
+  unsigned long
+    texture_width;
+
+  MagickPassFail
+    status=MagickPass;
+
+  assert(texture_image != (Image *) NULL);
+  assert(texture_image->signature == MagickSignature);
+
+  canvas_image=CloneImage(texture_image,columns,rows,MagickTrue,exception);
+  if (canvas_image == (Image *) NULL)
+    return canvas_image;
+
+  canvas_indexes=(IndexPacket *) NULL;
+  texture_indexes=(const IndexPacket *) NULL;
+  for (y=0; y < canvas_image->rows; y++)
+    {
+      texture_pixels=AcquireImagePixels(texture_image,0,
+                                        y % texture_image->rows,
+                                        texture_image->columns,1,
+                                        exception);
+      if (texture_pixels == (const PixelPacket *) NULL)
+        {
+          status=MagickFail;
+          break;
+        }
+      if (texture_image->storage_class == PseudoClass)
+        texture_indexes=(const IndexPacket *) GetIndexes(texture_image);
+
+      canvas_pixels=SetImagePixels(canvas_image,0,y,canvas_image->columns,1);
+      if (canvas_pixels == (PixelPacket *) NULL)
+        {
+          CopyException(exception,&canvas_image->exception);
+          status=MagickFail;
+          break;
+        }
+      if (canvas_image->storage_class == PseudoClass)
+        canvas_indexes=GetIndexes(canvas_image);
+      
+      for (x=0; x < canvas_image->columns; x+=texture_image->columns)
+        {
+          texture_width=texture_image->columns;
+          if ((x+texture_width) > canvas_image->columns)
+            texture_width=canvas_image->columns-x;
+
+          if (texture_indexes != (const IndexPacket *) NULL)
+            {
+              (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
+              canvas_indexes += texture_width;
+            }
+          (void) memcpy(canvas_pixels,texture_pixels,texture_width*sizeof(PixelPacket));
+          canvas_pixels += texture_width;
+        }
+      if (!SyncImagePixels(canvas_image))
+        {
+          CopyException(exception,&canvas_image->exception);
+          status=MagickFail;
+          break;
+        }
+      if (QuantumTick(y,canvas_image->rows))
+        if (!MagickMonitor(ConstituteTextureImageText,y,canvas_image->rows,exception))
+          {
+            status=MagickFail;
+            break;
+          }
+    }
+  if (status == MagickFail)
+    {
+      DestroyImage(canvas_image);
+      canvas_image=(Image *) NULL;
+    }
+
+  if (canvas_image != (Image *) NULL)
+    {
+      canvas_image->is_monochrome=texture_image->is_monochrome;
+      canvas_image->is_grayscale=texture_image->is_grayscale;
+    }
+
+  return canvas_image;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %   D i s p a t c h I m a g e                                                 %
 %                                                                             %
@@ -1288,123 +1425,6 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %        exported (may be NULL)
 %
 */
-MagickExport const char *StorageTypeToString(const StorageType storage_type)
-{
-    const char
-    *p = "Unknown";
-
-    switch (storage_type)
-      {
-      case CharPixel:
-        p="CharPixel";
-        break;
-      case ShortPixel:
-        p="ShortPixel";
-        break;
-      case IntegerPixel:
-        p="IntegerPixel";
-        break;
-      case LongPixel:
-        p="LongPixel";
-        break;
-      case FloatPixel:
-        p="FloatPixel";
-        break;
-      case DoublePixel:
-        p="DoublePixel";
-        break;
-      }
-
-    return p;
-}
-MagickExport const char *QuantumSampleTypeToString(const QuantumSampleType sample_type)
-{
-    const char
-    *p = "Unknown";
-
-    switch (sample_type)
-      {
-      case UndefinedQuantumSampleType:
-        p="UndefinedQuantumSampleType";
-        break;
-      case UnsignedQuantumSampleType:
-        p="UnsignedQuantumSampleType";
-        break;
-      case FloatQuantumSampleType:
-        p="FloatQuantumSampleType";
-        break;
-      }
-
-    return p;
-}
-MagickExport const char *QuantumTypeToString(const QuantumType quantum_type)
-{
-  const char
-    *p = "Unknown";
-
-  switch (quantum_type)
-    {
-    case UndefinedQuantum:
-      p="UndefinedQuantum";
-      break;
-    case IndexQuantum:
-      p="IndexQuantum";
-      break;
-    case GrayQuantum:
-      p="GrayQuantum";
-      break;
-    case IndexAlphaQuantum:
-      p="IndexAlphaQuantum";
-      break;
-    case GrayAlphaQuantum:
-      p="GrayAlphaQuantum";
-      break;
-    case RedQuantum:
-      p="RedQuantum";
-      break;
-    case CyanQuantum:
-      p="CyanQuantum";
-      break;
-    case GreenQuantum:
-      p="GreenQuantum";
-      break;
-    case YellowQuantum:
-      p="YellowQuantum";
-      break;
-    case BlueQuantum:
-      p="BlueQuantum";
-      break;
-    case MagentaQuantum:
-      p="MagentaQuantum";
-      break;
-    case AlphaQuantum:
-      p="AlphaQuantum";
-      break;
-    case BlackQuantum:
-      p="BlackQuantum";
-      break;
-    case RGBQuantum:
-      p="RGBQuantum";
-      break;
-    case RGBAQuantum:
-      p="RGBAQuantum";
-      break;
-    case CMYKQuantum:
-      p="CMYKQuantum";
-      break;
-    case CMYKAQuantum:
-      p="CMYKAQuantum";
-      break;
-    case CIEYQuantum:
-      p="CIEYQuantum";
-      break;
-    case CIEXYZQuantum:
-      p="CIEXYZQuantum";
-      break;
-    }
-
-  return p;
-}
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   unsigned char *destination,const ExportPixelAreaOptions *options,

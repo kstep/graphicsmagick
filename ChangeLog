@@ -1,3 +1,37 @@
+2008-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (install-exec-local-utilities): Add back
+	in support for --enable-magick-compat which was accidentally
+	dropped in the new makefiles for GraphicsMagick 1.2.  Resolves
+	SourceForge bug 2005883.
+	* magick/color.h (NotColorMatch): New macro for testing that two
+	colors are not the same.  Opposite from existing ColorMatch().
+	* magick/command.c: Replaced the many duplicate enum conversion
+	code fragments with calls to functions in enum_strings.c.
+	* magick/enum_strings.c: Absorbed the many "ToString" and
+	"StringTo" functions from other source modules.
+	* magick/effect.c (ThresholdImage): Optimize for larger images.
+	* magick/constitute.c (ConstituteTextureImage): New function to
+	return a texture canvas image based on a tile image.  Similar to
+	existing TextureImage() except better optimized for creating new
+	images and inherits tile image properties.
+	* magick/color.h (IsBlackPixel): New macro to test if a pixel is
+	black.
+	(IsWhitePixel): New macro to test if a pixel is white.
+	* coders/tile.c (ReadTILEImage): Use new ConstituteTextureImage()
+	function rather than TextureImage().  Also allow the user to
+	request a particular image type.
+	* coders/pdf.c (Huffman2DEncodeImage): Explicitly request a strip
+	per page when writing Group4 TIFF.
+	* coders/tiff.c (WriteTIFFImage): Place a generous default limit
+	on rows-per-strip when using Group3 or Group4 FAX compression.
+	The default limit is added since it is observed that the Group4
+	compressor fails with extremely huge strips.  Added a define
+	"tiff:rows-per-strip" to allow the user to explicitly set the rows
+	per strip.  Added a define "tiff:strip-per-page=true" to allow the
+	user to force one strip per page no matter what.  Added progress
+	monitor support to tile writer.
+
 2008-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/configure/configure.cpp: The MAT coder now depends

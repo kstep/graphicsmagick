@@ -42,6 +42,7 @@
 #include "magick/blob.h"
 #include "magick/bit_stream.h"
 #include "magick/colorspace.h"
+#include "magick/enum_strings.h"
 #include "magick/pixel_cache.h"
 #include "magick/magick_endian.h"
 #include "magick/error.h"

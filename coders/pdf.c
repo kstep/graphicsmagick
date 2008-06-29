@@ -43,6 +43,7 @@
 #include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
@@ -155,6 +156,8 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
 
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
+                        &image->exception);
 
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);

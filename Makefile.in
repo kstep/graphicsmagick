@@ -4381,6 +4381,11 @@ UTILITIES_CLEANFILES = \
 	utilities/tests/gm.core \
 	utilities/tests/core
 
+
+# Install/Uninstall ImageMagick compatibility links
+@MAGICK_COMPAT_TRUE@MAGICKPROGRAMS = animate composite conjure convert display identify import mogrify montage
+@MAGICK_COMPAT_TRUE@UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
+@MAGICK_COMPAT_TRUE@UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
@@ -9549,6 +9554,23 @@ generate-tests-scripts:
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+@MAGICK_COMPAT_TRUE@install-exec-local-utilities:
+@MAGICK_COMPAT_TRUE@	$(mkdir_p) $(DESTDIR)$(bindir)
+@MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
+@MAGICK_COMPAT_TRUE@	gm=`echo "gm" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	for name in $(MAGICKPROGRAMS) ; \
+@MAGICK_COMPAT_TRUE@	do \
+@MAGICK_COMPAT_TRUE@	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	  rm -f $$target ; \
+@MAGICK_COMPAT_TRUE@	  $(LN_S) $$gm $$target ; \
+@MAGICK_COMPAT_TRUE@	done
+@MAGICK_COMPAT_TRUE@uninstall-local-utilities:
+@MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
+@MAGICK_COMPAT_TRUE@	for name in $(MAGICKPROGRAMS) ; \
+@MAGICK_COMPAT_TRUE@	do \
+@MAGICK_COMPAT_TRUE@	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	  rm -f $$target ; \
+@MAGICK_COMPAT_TRUE@	done
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
@@ -9622,13 +9644,20 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
+all-local: $(MAGICKPP_LOCAL_TARGETS) \
+	$(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
 
-install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS)
+install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS) \
+	$(UTILITIES_INSTALL_EXEC_LOCAL_TARGETS)
 
-install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) $(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) $(HTML_INSTALL_DATA_TARGETS)
+install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(HTML_INSTALL_DATA_TARGETS)
 
-uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) $(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) $(HTML_UNINSTALL_DATA_TARGETS)
+uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(HTML_UNINSTALL_DATA_TARGETS) \
+	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 

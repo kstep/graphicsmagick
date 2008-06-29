@@ -281,6 +281,7 @@ A.leftcolnav:VISITED  {
 <li><a class="reference" href="#why-are-my-jpeg-files-larger-than-expected" id="id29" name="id29">29) Why are my JPEG files larger than expected?</a></li>
 <li><a class="reference" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id30" name="id30">30) How do I extract a single image from a multi-image file?</a></li>
 <li><a class="reference" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id31" name="id31">31) How can I extract and combine CMYK channels in a CMYK image?</a></li>
+<li><a class="reference" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id32" name="id32">32) How can I create a solid or patterned canvas image?</a></li>
 </ul>
 </div>
 <div class="section">
@@ -293,14 +294,22 @@ ImageMagick differ from ImageMagick?</em>&quot; since ImageMagick continues to
 alter and evolve its interfaces so they are no longer completely
 compatible with earlier versions. While GraphicsMagick also adds new
 features, it does so in a way which assures that existing features work
-as they did before. GraphicsMagick maintains a stable release branch,
-maintains a detailed ChangeLog, and maintains a stable source repository
-with complete version history so that changes are controlled, and changes
-between releases are accurately described. ImageMagick does not offer
-this. Since GraphicsMagick is more stable, more time has been spent
-optimizing and debugging its code. GraphicsMagick is usually faster than
-ImageMagick. ImageMagick focuses on adding new functionality and features
-and has dramatically mutated several times since the fork.</p>
+as they did before. ImageMagick focuses on adding new functionality and
+features and has dramatically mutated several times since the fork.</p>
+<p>GraphicsMagick maintains a stable release branch, maintains a detailed
+ChangeLog, and maintains a stable source repository with complete version
+history so that changes are controlled, and changes between releases are
+accurately described. GraphicsMagick provides continued support for a
+release branch. ImageMagick does not offer any of these things.</p>
+<p>Since GraphicsMagick is more stable, more time has been spent optimizing
+and debugging its code.</p>
+<p>GraphicsMagick is much smaller than ImageMagick and has dramatically
+fewer dependencies on external libraries. For example, on the FreeBSD
+operating system, a fully-featured install of GraphicsMagick depends on
+36 libraries whereas ImageMagick requires 64.</p>
+<p>GraphicsMagick is usually faster than ImageMagick. The baseline execution
+overhead for simple commands is much lower, and GraphicsMagick is also
+more efficient at dealing with large images.</p>
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id2" id="how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick" name="how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick">2) How often does GraphicsMagick pick up new code from ImageMagick?</a></h1>
@@ -321,10 +330,10 @@ GraphicsMagick's MIT X11 style license without additional encumberment.</p>
 translation of certain image formats (<em>PostScript</em>, <em>MPEG</em>, etc.). Make
 sure these packages are available as described in the <a class="reference" href="README.html">README</a> file. Also
 verify that you have plenty of temporary disk space. If not, set the
-TMPDIR environment variable to an area where space is available. Finally,
-for <em>PostScript</em>, verify that Ghostscript supports the <em>pnmraw</em> or
-<em>ppmraw</em> device (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">-h</span></tt>) and that the document contains valid
-<em>PostScript</em> statements (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">image.ps</span></tt>).</p>
+MAGICK_TMPDIR (or TMPDIR) environment variable to an area where
+sufficient space is available. Finally, for <em>PostScript</em>, verify that
+Ghostscript supports the <em>pnmraw</em> or <em>ppmraw</em> device (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">-h</span></tt>) and that
+the document contains valid <em>PostScript</em> statements (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">image.ps</span></tt>).</p>
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id4" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" name="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
@@ -850,6 +859,34 @@ original image file.</p>
 <p>There is also built-in support for a <em>Partition</em> interlace format which
 can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id32" id="how-can-i-create-a-solid-or-patterned-canvas-image" name="how-can-i-create-a-solid-or-patterned-canvas-image">32) How can I create a solid or patterned canvas image?</a></h1>
+<p>Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
+formats. XC produces solid color images based on an color you specify
+while TILE produces a tiled image based on an an image you specify. Both
+of these require that the desired size be specified, and the desired
+image type may be specified as well.</p>
+<p>To create a solid red canvas image:</p>
+<pre class="literal-block">
+gm convert -size 640x480 xc:red canvas.tiff
+</pre>
+<p>or using hex syntax to specify the color:</p>
+<pre class="literal-block">
+gm convert -size 640x480 &quot;xc:#f00&quot; canvas.tiff
+</pre>
+<p>To create a solid red canvas image using truecolor pixels:</p>
+<pre class="literal-block">
+gm convert -size 640x480 -type TrueColor xc:red canvas.tiff
+</pre>
+<p>To create a patterned canvas image using a built-in crosshatch pattern:</p>
+<pre class="literal-block">
+gm convert -size 640x480 tile:image:CROSSHATCH45 canvas.tiff
+</pre>
+<p>To create a patterned canvas image using a user-supplied image:</p>
+<pre class="literal-block">
+gm convert -size 640x480 tile:myimage.tiff canvas.tiff
+</pre>
 <hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
@@ -863,7 +900,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-05-29 02:36 UTC.
+Generated on: 2008-06-27 19:57 UTC.
 
 </div>
 </body>

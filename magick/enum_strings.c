@@ -14,7 +14,39 @@
 #include "magick/studio.h"
 #include "magick/enum_strings.h"
 #include "magick/utility.h"
-
+
+/*
+  BlobMode
+*/
+MagickExport const char *BlobModeToString(BlobMode blob_mode)
+{
+  const char
+    *mode_string="Undefined";
+
+  switch (blob_mode)
+  {
+  case UndefinedBlobMode:
+    mode_string="Undefined";
+    break;
+  case ReadBlobMode:
+    mode_string="Read";
+    break;
+  case ReadBinaryBlobMode:
+    mode_string="ReadBinary";
+    break;
+  case WriteBlobMode:
+    mode_string="Write";
+    break;
+  case WriteBinaryBlobMode:
+    mode_string="WriteBinary";
+    break;
+  }
+  return mode_string;
+}
+
+/*
+  ChannelType
+*/
 MagickExport const char *ChannelTypeToString(const ChannelType channel)
 {
   const char
@@ -61,7 +93,6 @@ MagickExport const char *ChannelTypeToString(const ChannelType channel)
 
   return channel_type;
 }
-
 MagickExport ChannelType StringToChannelType(const char *option)
 {
   ChannelType
@@ -95,6 +126,154 @@ MagickExport ChannelType StringToChannelType(const char *option)
   return channel;
 }
 
+/*
+  ClassType
+*/
+MagickExport const char* ClassTypeToString(const ClassType class_type)
+{
+  const char
+    *log_class_type="Unknown";
+
+  switch (class_type)
+    {
+    case UndefinedClass:
+      log_class_type="Undefined";
+      break;
+    case DirectClass:
+      log_class_type="DirectClass";
+      break;
+    case PseudoClass:
+      log_class_type="PseudoClass";
+      break;
+    }
+  return log_class_type;
+}
+
+/*
+  ColorspaceType
+*/
+MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
+{
+  const char
+    *colorspace_type = "Unknown";
+  
+  switch (colorspace)
+    {
+    case UndefinedColorspace:
+      colorspace_type="Undefined";
+      break;
+    case CineonLogRGBColorspace:
+      colorspace_type="CineonLogRGB";
+      break;
+    case RGBColorspace:
+      colorspace_type="RGB";
+      break;
+    case GRAYColorspace:
+      colorspace_type="Gray";
+      break;
+    case Rec601LumaColorspace:
+      colorspace_type="Rec601Luma";
+      break;
+    case Rec709LumaColorspace:
+      colorspace_type="Rec709Luma";
+      break;
+    case TransparentColorspace:
+      colorspace_type="Transparent";
+      break;
+    case OHTAColorspace:
+      colorspace_type="OHTA";
+      break;
+    case XYZColorspace:
+      colorspace_type="XYZ";
+      break;
+    case Rec601YCbCrColorspace:
+      colorspace_type="Rec601YCbCr";
+      break;
+    case Rec709YCbCrColorspace:
+      colorspace_type="Rec709YCbCr";
+      break;
+    case YCCColorspace:
+      colorspace_type="PhotoCD YCC";
+      break;
+    case YIQColorspace:
+      colorspace_type="YIQ";
+      break;
+    case YPbPrColorspace:
+      colorspace_type="YPbPr";
+      break;
+    case YUVColorspace:
+      colorspace_type="YUV";
+      break;
+    case CMYKColorspace:
+      colorspace_type="CMYK";
+      break;
+    case sRGBColorspace:
+      colorspace_type="PhotoCD sRGB";
+      break;
+    case HSLColorspace:
+      colorspace_type="HSL";
+      break;
+    case HWBColorspace:
+      colorspace_type="HWB";
+      break;
+    case LABColorspace:
+      colorspace_type="LAB";
+      break;
+    }
+  return colorspace_type;
+}
+MagickExport ColorspaceType StringToColorspaceType(const char *option)
+{
+  ColorspaceType
+    colorspace;
+
+  colorspace=UndefinedColorspace;
+
+  if (LocaleCompare("cineonlog",option) == 0)
+    colorspace=CineonLogRGBColorspace;
+  else if (LocaleCompare("cmyk",option) == 0)
+    colorspace=CMYKColorspace;
+  else if (LocaleCompare("gray",option) == 0)
+    colorspace=GRAYColorspace;
+  else if (LocaleCompare("hsl",option) == 0)
+    colorspace=HSLColorspace;
+  else if (LocaleCompare("hwb",option) == 0)
+    colorspace=HWBColorspace;
+  else if (LocaleCompare("ohta",option) == 0)
+    colorspace=OHTAColorspace;
+  else if (LocaleCompare("rec601luma",option) == 0)
+    colorspace=Rec601LumaColorspace;
+  else if (LocaleCompare("rec709luma",option) == 0)
+    colorspace=Rec709LumaColorspace;
+  else if (LocaleCompare("rgb",option) == 0)
+    colorspace=RGBColorspace;
+  else if (LocaleCompare("srgb",option) == 0)
+    colorspace=sRGBColorspace;
+  else if (LocaleCompare("transparent",option) == 0)
+    colorspace=TransparentColorspace;
+  else if (LocaleCompare("xyz",option) == 0)
+    colorspace=XYZColorspace;
+  else if (LocaleCompare("ycbcr",option) == 0)
+    colorspace=YCbCrColorspace;
+  else if (LocaleCompare("rec601ycbcr",option) == 0)
+    colorspace=Rec601YCbCrColorspace;
+  else if (LocaleCompare("rec709ycbcr",option) == 0)
+    colorspace=Rec709YCbCrColorspace;
+  else if (LocaleCompare("ycc",option) == 0)
+    colorspace=YCCColorspace;
+  else if (LocaleCompare("yiq",option) == 0)
+    colorspace=YIQColorspace;
+  else if (LocaleCompare("ypbpr",option) == 0)
+    colorspace=YPbPrColorspace;
+  else if (LocaleCompare("yuv",option) == 0)
+    colorspace=YUVColorspace;
+
+  return colorspace;
+}
+
+/*
+  CompositeOperator
+*/
 MagickExport const char *CompositeOperatorToString(const CompositeOperator composite_op)
 {
   const char
@@ -217,7 +396,6 @@ MagickExport const char *CompositeOperatorToString(const CompositeOperator compo
 
   return composite_op_text;
 }
-
 MagickExport CompositeOperator StringToCompositeOperator(const char *option)
 {
   CompositeOperator
@@ -302,6 +480,367 @@ MagickExport CompositeOperator StringToCompositeOperator(const char *option)
   return composite_op;
 }
 
+/*
+  CompressionType
+*/
+MagickExport const char* CompressionTypeToString(const CompressionType compression_type)
+{
+  const char
+    *compression_string="Unknown";
+
+  switch (compression_type)
+    {
+    case UndefinedCompression:
+      compression_string="Undefined";
+      break;
+    case NoCompression:
+      compression_string="No";
+      break;
+    case BZipCompression:
+      compression_string="BZip";
+      break;
+    case FaxCompression:
+      compression_string="Fax";
+      break;
+    case Group4Compression:
+      compression_string="Group4";
+      break;
+    case JPEGCompression:
+      compression_string="JPEG";
+      break;
+    case LosslessJPEGCompression:
+      compression_string="Lossless JPEG";
+      break;
+    case LZWCompression:
+      compression_string="LZW";
+      break;
+    case RLECompression:
+      compression_string="RLE";
+      break;
+    case ZipCompression:
+      compression_string="Zip";
+      break;
+    }
+  return compression_string;
+}
+MagickExport CompressionType StringToCompressionType(const char *option)
+{
+  CompressionType
+    compression_type = UndefinedCompression;
+
+  if (LocaleCompare("None",option) == 0)
+    compression_type=NoCompression;
+  else if (LocaleCompare("BZip",option) == 0)
+    compression_type=BZipCompression;
+  else if (LocaleCompare("Fax",option) == 0)
+    compression_type=FaxCompression;
+  else if (LocaleCompare("Group4",option) == 0)
+    compression_type=Group4Compression;
+  else if (LocaleCompare("JPEG",option) == 0)
+    compression_type=JPEGCompression;
+  else if (LocaleCompare("Lossless",option) == 0)
+    compression_type=LosslessJPEGCompression;
+  else if (LocaleCompare("LZW",option) == 0)
+    compression_type=LZWCompression;
+  else if (LocaleCompare("RLE",option) == 0)
+    compression_type=RLECompression;
+  else if (LocaleCompare("Zip",option) == 0)
+    compression_type=ZipCompression;
+
+  return compression_type;
+}
+
+/*
+  EndianType
+*/
+MagickExport EndianType StringToEndianType(const char *option)
+{
+  EndianType
+    endian_type = UndefinedEndian;
+
+  if (LocaleCompare("LSB",option) == 0)
+    endian_type=LSBEndian;
+  else if (LocaleCompare("MSB",option) == 0)
+    endian_type=MSBEndian;
+  else if (LocaleCompare("NATIVE",option) == 0)
+    {
+#if defined(WORDS_BIGENDIAN)
+      endian_type=MSBEndian;
+#else
+      endian_type=LSBEndian;
+#endif
+    }
+
+  return endian_type;
+}
+
+/*
+  FilterTypes
+*/
+MagickExport FilterTypes StringToFilterTypes(const char *option)
+{
+  FilterTypes
+    filter = UndefinedFilter;
+
+  if (LocaleCompare("Point",option) == 0)
+    filter=PointFilter;
+  else if (LocaleCompare("Box",option) == 0)
+    filter=BoxFilter;
+  else if (LocaleCompare("Triangle",option) == 0)
+    filter=TriangleFilter;
+  else if (LocaleCompare("Hermite",option) == 0)
+    filter=HermiteFilter;
+  else if (LocaleCompare("Hanning",option) == 0)
+    filter=HanningFilter;
+  else if (LocaleCompare("Hamming",option) == 0)
+    filter=HammingFilter;
+  else if (LocaleCompare("Blackman",option) == 0)
+    filter=BlackmanFilter;
+  else if (LocaleCompare("Gaussian",option) == 0)
+    filter=GaussianFilter;
+  else if (LocaleCompare("Quadratic",option) == 0)
+    filter=QuadraticFilter;
+  else if (LocaleCompare("Cubic",option) == 0)
+    filter=CubicFilter;
+  else if (LocaleCompare("Catrom",option) == 0)
+    filter=CatromFilter;
+  else if (LocaleCompare("Mitchell",option) == 0)
+    filter=MitchellFilter;
+  else if (LocaleCompare("Lanczos",option) == 0)
+    filter=LanczosFilter;
+  else if (LocaleCompare("Bessel",option) == 0)
+    filter=BesselFilter;
+  else if (LocaleCompare("Sinc",option) == 0)
+    filter=SincFilter;
+
+  return filter;
+}
+
+/*
+  GravityType
+*/
+MagickExport GravityType StringToGravityType(const char *option)
+{
+  GravityType
+    gravity_type=ForgetGravity;
+
+  if (LocaleCompare("Forget",option) == 0)
+    gravity_type=ForgetGravity;
+  else if (LocaleCompare("NorthWest",option) == 0)
+    gravity_type=NorthWestGravity;
+  else if (LocaleCompare("North",option) == 0)
+    gravity_type=NorthGravity;
+  else if (LocaleCompare("NorthEast",option) == 0)
+    gravity_type=NorthEastGravity;
+  else if (LocaleCompare("West",option) == 0)
+    gravity_type=WestGravity;
+  else if (LocaleCompare("Center",option) == 0)
+    gravity_type=CenterGravity;
+  else if (LocaleCompare("East",option) == 0)
+    gravity_type=EastGravity;
+  else if (LocaleCompare("SouthWest",option) == 0)
+    gravity_type=SouthWestGravity;
+  else if (LocaleCompare("South",option) == 0)
+    gravity_type=SouthGravity;
+  else if (LocaleCompare("SouthEast",option) == 0)
+    gravity_type=SouthEastGravity;
+  else if (LocaleCompare("Static",option) == 0)
+    gravity_type=StaticGravity;
+
+  return gravity_type;
+}
+
+/*
+  ImageType
+*/
+MagickExport ImageType StringToImageType(const char *option)
+{
+  ImageType
+    image_type = UndefinedType;
+
+  if (LocaleCompare("Bilevel",option) == 0)
+    image_type=BilevelType;
+  else if (LocaleCompare("Grayscale",option) == 0)
+    image_type=GrayscaleType;
+  else if (LocaleCompare("GrayscaleMatte",option) == 0)
+    image_type=GrayscaleMatteType;
+  else if (LocaleCompare("Palette",option) == 0)
+    image_type=PaletteType;
+  else if (LocaleCompare("PaletteMatte",option) == 0)
+    image_type=PaletteMatteType;
+  else if (LocaleCompare("TrueColor",option) == 0)
+    image_type=TrueColorType;
+  else if (LocaleCompare("TrueColorMatte",option) == 0)
+    image_type=TrueColorMatteType;
+  else if (LocaleCompare("ColorSeparation",option) == 0)
+    image_type=ColorSeparationType;
+  else if (LocaleCompare("ColorSeparationMatte",option) == 0)
+    image_type=ColorSeparationMatteType;
+  else if (LocaleCompare("Optimize",option) == 0)
+    image_type=OptimizeType;
+
+  return image_type;
+}
+
+/*
+  InterlaceType
+*/
+MagickExport InterlaceType StringToInterlaceType(const char *option)
+{
+  InterlaceType
+    interlace_type = UndefinedInterlace;
+
+  if (LocaleCompare("None",option) == 0)
+    interlace_type=NoInterlace;
+  else if (LocaleCompare("Line",option) == 0)
+    interlace_type=LineInterlace;
+  else if (LocaleCompare("Plane",option) == 0)
+    interlace_type=PlaneInterlace;
+  else if (LocaleCompare("Partition",option) == 0)
+    interlace_type=PartitionInterlace;
+
+  return interlace_type;
+}
+
+/*
+  MapMode
+*/
+MagickExport const char *MapModeToString(MapMode map_mode)
+{
+  char
+    *mode_string="Undefined";
+
+  switch (map_mode)
+  {
+  case ReadMode:
+    mode_string="Read";
+    break;
+  case WriteMode:
+    mode_string="Write";
+    break;
+  case IOMode:
+    mode_string="IO";
+    break;
+  }
+  return mode_string;
+}
+
+/*
+  OrientationType
+*/
+MagickExport const char *OrientationTypeToString(const OrientationType orientation_type)
+{
+  const char *
+    orientation = "Unknown";
+
+  switch (orientation_type)
+    {
+    case UndefinedOrientation:
+      orientation = "Unknown";
+      break;
+    case TopLeftOrientation:
+      orientation = "TopLeft";
+      break;
+    case TopRightOrientation:
+      orientation = "TopRight";
+      break;
+    case BottomRightOrientation:
+      orientation = "BottomRight";
+      break;
+    case BottomLeftOrientation:
+      orientation = "BottomLeft";
+      break;
+    case LeftTopOrientation:
+      orientation = "LeftTop";
+      break;
+    case RightTopOrientation:
+      orientation = "RightTop";
+      break;
+    case RightBottomOrientation:
+      orientation = "RightBottom";
+      break;
+    case LeftBottomOrientation:
+      orientation = "LeftBottom";
+      break;
+    }
+
+  return orientation;
+}
+
+/*
+  PreviewType
+*/
+MagickExport PreviewType StringToPreviewType(const char *option)
+{
+  PreviewType
+    preview_type = UndefinedPreview;
+
+  if (LocaleCompare("Rotate",option) == 0)
+    preview_type=RotatePreview;
+  else if (LocaleCompare("Shear",option) == 0)
+    preview_type=ShearPreview;
+  else if (LocaleCompare("Roll",option) == 0)
+    preview_type=RollPreview;
+  else if (LocaleCompare("Hue",option) == 0)
+    preview_type=HuePreview;
+  else if (LocaleCompare("Saturation",option) == 0)
+    preview_type=SaturationPreview;
+  else if (LocaleCompare("Brightness",option) == 0)
+    preview_type=BrightnessPreview;
+  else if (LocaleCompare("Gamma",option) == 0)
+    preview_type=GammaPreview;
+  else if (LocaleCompare("Spiff",option) == 0)
+    preview_type=SpiffPreview;
+  else if (LocaleCompare("Dull",option) == 0)
+    preview_type=DullPreview;
+  else if (LocaleCompare("Grayscale",option) == 0)
+    preview_type=GrayscalePreview;
+  else if (LocaleCompare("Quantize",option) == 0)
+    preview_type=QuantizePreview;
+  else if (LocaleCompare("Despeckle",option) == 0)
+    preview_type=DespecklePreview;
+  else if (LocaleCompare("ReduceNoise",option) == 0)
+    preview_type=ReduceNoisePreview;
+  else if (LocaleCompare("AddNoise",option) == 0)
+    preview_type=AddNoisePreview;
+  else if (LocaleCompare("Sharpen",option) == 0)
+    preview_type=SharpenPreview;
+  else if (LocaleCompare("Blur",option) == 0)
+    preview_type=BlurPreview;
+  else if (LocaleCompare("Threshold",option) == 0)
+    preview_type=ThresholdPreview;
+  else if (LocaleCompare("EdgeDetect",option) == 0)
+    preview_type=EdgeDetectPreview;
+  else if (LocaleCompare("Spread",option) == 0)
+    preview_type=SpreadPreview;
+  else if (LocaleCompare("Shade",option) == 0)
+    preview_type=ShadePreview;
+  else if (LocaleCompare("Raise",option) == 0)
+    preview_type=RaisePreview;
+  else if (LocaleCompare("Segment",option) == 0)
+    preview_type=SegmentPreview;
+  else if (LocaleCompare("Solarize",option) == 0)
+    preview_type=SolarizePreview;
+  else if (LocaleCompare("Swirl",option) == 0)
+    preview_type=SwirlPreview;
+  else if (LocaleCompare("Implode",option) == 0)
+    preview_type=ImplodePreview;
+  else if (LocaleCompare("Wave",option) == 0)
+    preview_type=WavePreview;
+  else if (LocaleCompare("OilPaint",option) == 0)
+    preview_type=OilPaintPreview;
+  else if (LocaleCompare("CharcoalDrawing",option) == 0)
+    preview_type=CharcoalDrawingPreview;
+  else if (LocaleCompare("JPEG",option) == 0)
+    preview_type=JPEGPreview;
+
+  return preview_type;
+};
+
+
+/*
+  QuantumOperator
+*/
 MagickExport QuantumOperator StringToQuantumOperator(const char *option)
 {
   QuantumOperator
@@ -353,7 +892,6 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
 
   return quantum_operator;
 }
-
 MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_operator)
 {
   const char
@@ -431,3 +969,273 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
   return operator_text;
 }
 
+/*
+  FilterTypes
+*/
+MagickExport const char *ResizeFilterToString(const FilterTypes filter)
+{
+  const char *
+    filter_string = "Unknown";
+
+  switch (filter)
+    {
+    case UndefinedFilter:
+      filter_string="Undefined";
+      break;
+    case PointFilter:
+      filter_string="Point";
+      break;
+    case BoxFilter:
+      filter_string="Box";
+      break;
+    case TriangleFilter:
+      filter_string="Triangle";
+      break;
+    case HermiteFilter:
+      filter_string="Hermite";
+      break;
+    case HanningFilter:
+      filter_string="Hanning";
+      break;
+    case HammingFilter:
+      filter_string="Hamming";
+      break;
+    case BlackmanFilter:
+      filter_string="Blackman";
+      break;
+    case GaussianFilter:
+      filter_string="Gaussian";
+      break;
+    case QuadraticFilter:
+      filter_string="Quadratic";
+      break;
+    case CubicFilter:
+      filter_string="Cubi";
+      break;
+    case CatromFilter:
+      filter_string="Catrom";
+      break;
+    case MitchellFilter:
+      filter_string="Mitchell";
+      break;
+    case LanczosFilter:
+      filter_string="Lanczos";
+      break;
+    case BesselFilter:
+      filter_string="Bessel";
+      break;
+    case SincFilter:
+      filter_string="Sinc";
+      break;
+    }
+
+  return filter_string;
+}
+
+/*
+  ResourceType
+*/
+MagickExport ResourceType StringToResourceType(const char *option)
+{
+  ResourceType
+    resource_type = UndefinedResource;
+
+  if (LocaleCompare("Disk",option) == 0)
+    resource_type=DiskResource;
+  else if (LocaleCompare("File",option) == 0)
+    resource_type=FileResource;
+  else if (LocaleCompare("Map",option) == 0)
+    resource_type=MapResource;
+  else if (LocaleCompare("Memory",option) == 0)
+    resource_type=MemoryResource;
+  else if (LocaleCompare("Pixels",option) == 0)
+    resource_type=PixelsResource;
+  return resource_type;
+}
+
+/*
+  StorageType
+*/
+MagickExport const char *StorageTypeToString(const StorageType storage_type)
+{
+    const char
+    *p = "Unknown";
+
+    switch (storage_type)
+      {
+      case CharPixel:
+        p="CharPixel";
+        break;
+      case ShortPixel:
+        p="ShortPixel";
+        break;
+      case IntegerPixel:
+        p="IntegerPixel";
+        break;
+      case LongPixel:
+        p="LongPixel";
+        break;
+      case FloatPixel:
+        p="FloatPixel";
+        break;
+      case DoublePixel:
+        p="DoublePixel";
+        break;
+      }
+
+    return p;
+}
+
+/*
+  QuantumSampleType
+*/
+MagickExport const char *QuantumSampleTypeToString(const QuantumSampleType sample_type)
+{
+    const char
+    *p = "Unknown";
+
+    switch (sample_type)
+      {
+      case UndefinedQuantumSampleType:
+        p="UndefinedQuantumSampleType";
+        break;
+      case UnsignedQuantumSampleType:
+        p="UnsignedQuantumSampleType";
+        break;
+      case FloatQuantumSampleType:
+        p="FloatQuantumSampleType";
+        break;
+      }
+
+    return p;
+}
+
+/*
+  StretchType
+*/
+MagickExport const char *StretchTypeToString(StretchType stretch)
+{
+  switch(stretch)
+  {
+    case NormalStretch: return("normal");
+    case UltraCondensedStretch: return("ultra-condensed");
+    case ExtraCondensedStretch: return("extra-condensed");
+    case CondensedStretch: return("condensed");
+    case SemiCondensedStretch: return("semi-condensed");
+    case SemiExpandedStretch: return("semi-expanded");
+    case ExpandedStretch: return("expanded");
+    case ExtraExpandedStretch: return("extra-expanded");
+    case UltraExpandedStretch: return("ultra-expanded");
+    case AnyStretch: return("any");
+    default: break;
+  }
+  return("unknown");
+}
+
+/*
+  StyleType
+*/
+MagickExport const char *StyleTypeToString(StyleType style)
+{
+  switch(style)
+  {
+    case NormalStyle: return("normal");
+    case ItalicStyle: return("italic");
+    case ObliqueStyle: return("oblique");
+    case AnyStyle: return("any");
+    default:  break;
+  }
+  return("unknown");
+}
+
+/*
+  QuantumType
+*/
+MagickExport const char *QuantumTypeToString(const QuantumType quantum_type)
+{
+  const char
+    *p = "Unknown";
+
+  switch (quantum_type)
+    {
+    case UndefinedQuantum:
+      p="UndefinedQuantum";
+      break;
+    case IndexQuantum:
+      p="IndexQuantum";
+      break;
+    case GrayQuantum:
+      p="GrayQuantum";
+      break;
+    case IndexAlphaQuantum:
+      p="IndexAlphaQuantum";
+      break;
+    case GrayAlphaQuantum:
+      p="GrayAlphaQuantum";
+      break;
+    case RedQuantum:
+      p="RedQuantum";
+      break;
+    case CyanQuantum:
+      p="CyanQuantum";
+      break;
+    case GreenQuantum:
+      p="GreenQuantum";
+      break;
+    case YellowQuantum:
+      p="YellowQuantum";
+      break;
+    case BlueQuantum:
+      p="BlueQuantum";
+      break;
+    case MagentaQuantum:
+      p="MagentaQuantum";
+      break;
+    case AlphaQuantum:
+      p="AlphaQuantum";
+      break;
+    case BlackQuantum:
+      p="BlackQuantum";
+      break;
+    case RGBQuantum:
+      p="RGBQuantum";
+      break;
+    case RGBAQuantum:
+      p="RGBAQuantum";
+      break;
+    case CMYKQuantum:
+      p="CMYKQuantum";
+      break;
+    case CMYKAQuantum:
+      p="CMYKAQuantum";
+      break;
+    case CIEYQuantum:
+      p="CIEYQuantum";
+      break;
+    case CIEXYZQuantum:
+      p="CIEXYZQuantum";
+      break;
+    }
+
+  return p;
+}
+
+/*
+  VirtualPixelMethod
+*/
+MagickExport VirtualPixelMethod StringToVirtualPixelMethod(const char *option)
+{
+  VirtualPixelMethod
+    virtual_pixel_method = UndefinedVirtualPixelMethod;
+  
+  if (LocaleCompare("Constant",option) == 0)
+    virtual_pixel_method=ConstantVirtualPixelMethod;
+  else if (LocaleCompare("Edge",option) == 0)
+    virtual_pixel_method=EdgeVirtualPixelMethod;
+  else if (LocaleCompare("Mirror",option) == 0)
+    virtual_pixel_method=MirrorVirtualPixelMethod;
+  else if (LocaleCompare("Tile",option) == 0)
+    virtual_pixel_method=TileVirtualPixelMethod;
+
+  return virtual_pixel_method;
+}

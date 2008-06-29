@@ -5311,6 +5311,7 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
   const ChannelType channel,const unsigned int gray)
 {
+  ARG_NOT_USED(gray);
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)

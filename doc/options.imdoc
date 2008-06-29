@@ -1162,6 +1162,18 @@ will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
 </dd>
 
+<dt>tiff:rows-per-strip=<value></dt>
+<dd>Allows the user to specify the number of rows per TIFF strip. Ignored
+if using tiles or JPEG compression.
+</dd>
+
+<dt>tiff:strip-per-page=true</dt>
+<dd>Requests that the image is written in a single TIFF strip. This is
+normally the default when group3 or group4 compression is requested
+within reasonable limits. Requesting a single strip for large images may
+result in failure due to resource consumption in the writer or reader.
+</dd>
+
 <dt>tiff:tile</dt>
 <dd>Enable writing tiled TIFF (rather than stripped) using the default tile
 size. Tiled TIFF organizes the image as an array of smaller images
@@ -4502,10 +4514,10 @@ and <tt>x:fixed</tt> is OPTION1.</pp>
 <abs>threshold the image</abs>
 
 <pp>
-Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is assigned the maximum intensity (white) otherwise the
-minimum intensity (black) is assigned. If a percent prefix is applied,
-then the threshold is a percentage of the available range.</pp>
+Modify the image such that any pixel sample with an intensity value
+greater than the threshold is assigned the maximum intensity (white), or
+otherwise is assigned the minimum intensity (black). If a percent prefix
+is applied, then the threshold is a percentage of the available range.</pp>
 
 <pp>
 To efficiently create a black and white image from a color image, use</pp>

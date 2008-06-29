@@ -47,6 +47,7 @@
 #include "magick/compress.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/magic.h"
@@ -282,6 +283,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   GetCacheInfo(&allocate_image->cache);
   allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   allocate_image->logging=IsEventLogging();
+  allocate_image->is_monochrome=MagickTrue;
+  allocate_image->is_grayscale=MagickTrue;
   allocate_image->reference_count=1;
   allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
@@ -856,49 +859,6 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  C l a s s T y p e T o S t r i n g                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ClassTypeToString returns a string describing the specified
-%  image storage class
-%
-%  The format of the ClassTypeToString method is:
-%
-%     const char* ClassTypeToString(const ClassType class_type)
-%
-%  A description of each parameter follows:
-%
-%    o class_type:  Storage class type
-%
-*/
-MagickExport const char* ClassTypeToString(const ClassType class_type)
-{
-  const char
-    *log_class_type="Unknown";
-
-  switch (class_type)
-    {
-    case UndefinedClass:
-      log_class_type="Undefined";
-      break;
-    case DirectClass:
-      log_class_type="DirectClass";
-      break;
-    case PseudoClass:
-      log_class_type="PseudoClass";
-      break;
-    }
-  return log_class_type;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l i p P a t h I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1424,44 +1384,6 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
 %
 %
 */
-static const char *OrientationTypeToString(const OrientationType orientation_type)
-{
-  const char *
-    orientation = "Unknown";
-
-  switch (orientation_type)
-    {
-    case UndefinedOrientation:
-      orientation = "Unknown";
-      break;
-    case TopLeftOrientation:
-      orientation = "TopLeft";
-      break;
-    case TopRightOrientation:
-      orientation = "TopRight";
-      break;
-    case BottomRightOrientation:
-      orientation = "BottomRight";
-      break;
-    case BottomLeftOrientation:
-      orientation = "BottomLeft";
-      break;
-    case LeftTopOrientation:
-      orientation = "LeftTop";
-      break;
-    case RightTopOrientation:
-      orientation = "RightTop";
-      break;
-    case RightBottomOrientation:
-      orientation = "RightBottom";
-      break;
-    case LeftBottomOrientation:
-      orientation = "LeftBottom";
-      break;
-    }
-
-  return orientation;
-}
 MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   const unsigned int verbose)
 {
@@ -5621,7 +5543,7 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %
 */
 
-#define TextureImageText  "  Apply image texture...  "
+#define TextureImageText  "Apply image texture...  "
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
 
@@ -5645,6 +5567,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
     status=MagickPass;
 
   MagickBool
+    get_pixels,
     is_grayscale;
 
   unsigned long
@@ -5657,6 +5580,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return MagickFail;
+  get_pixels=GetPixelCachePresent(image);
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
   for (y=0; y < (long) image->rows; y++)
@@ -5670,7 +5594,10 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
         }
       pixels=p;
 
-      q=GetImagePixels(image,0,y,image->columns,1);
+      if (get_pixels)
+        q=GetImagePixels(image,0,y,image->columns,1);
+      else
+        q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         {
           status=MagickFail;

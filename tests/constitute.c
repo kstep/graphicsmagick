@@ -12,6 +12,7 @@
  */
 
 #include <magick/api.h>
+#include <magick/enum_strings.h>
 
 #include <stdio.h>
 #include <stdlib.h>

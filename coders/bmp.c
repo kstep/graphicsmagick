@@ -1305,8 +1305,8 @@ ModuleExport void RegisterBMPImage(void)
   entry->adjoin=False;
   entry->coder_class=PrimaryCoderClass;
   entry->seekable_stream=True;
-
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("BMP3");
   entry->encoder=(EncoderHandler) WriteBMPImage;
   entry->magick=(MagickHandler) IsBMP;

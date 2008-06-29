@@ -43,6 +43,7 @@
 #include "magick/blob.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/map.h"
 #include "magick/magick.h"
@@ -152,53 +153,6 @@ static int SyncBlob(Image *image);
 #  endif
 #endif
 
-#if defined(HAVE_MMAP_FILEIO)
-static const char *BlobMapModeToString(MapMode map_mode)
-{
-  char
-    *mode_string="Undefined";
-
-  switch (map_mode)
-  {
-  case ReadMode:
-    mode_string="Read";
-    break;
-  case WriteMode:
-    mode_string="Write";
-    break;
-  case IOMode:
-    mode_string="IO";
-    break;
-  }
-  return mode_string;
-}
-#endif /* defined(HAVE_MMAP_FILEIO) */
-
-static const char *BlobModeToString(BlobMode blob_mode)
-{
-  const char
-    *mode_string="Undefined";
-
-  switch (blob_mode)
-  {
-  case UndefinedBlobMode:
-    mode_string="Undefined";
-    break;
-  case ReadBlobMode:
-    mode_string="Read";
-    break;
-  case ReadBinaryBlobMode:
-    mode_string="ReadBinary";
-    break;
-  case WriteBlobMode:
-    mode_string="Write";
-    break;
-  case WriteBinaryBlobMode:
-    mode_string="WriteBinary";
-    break;
-  }
-  return mode_string;
-}
 static const char *BlobStreamTypeToString(StreamType stream_type)
 {
   const char
@@ -2230,13 +2184,13 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     {
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Failed to mmap fd %d using %s mode at offset %lu and length %lu (%d=\"%s\").",
-           file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
+           file,MapModeToString(mode),(unsigned long)offset,(unsigned long)length,
              errno,strerror(errno));
       return((void *) NULL);
     }
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Mmapped fd %d using %s mode at offset %lu and length %lu to address 0x%p",
-    file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
+    file,MapModeToString(mode),(unsigned long)offset,(unsigned long)length,
     map);
   return((void *) map);
 #else

@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
+#include "magick/enum_strings.h"
 #include "magick/pixel_cache.h"
 #include "magick/log.h"
 #include "magick/magick.h"

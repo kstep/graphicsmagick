@@ -147,6 +147,8 @@ extern MagickExport Image
   *ConstituteImage(const unsigned long width,const unsigned long height,
      const char *map,const StorageType type,const void *pixels,
      ExceptionInfo *exception),
+  *ConstituteTextureImage(const unsigned long columns,const unsigned long rows,
+     const Image *texture,ExceptionInfo *exception),
   *PingImage(const ImageInfo *image_info,ExceptionInfo *exception),
   *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception),
   *ReadInlineImage(const ImageInfo *image_info,const char *content,
