@@ -414,7 +414,7 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
           Identify the deepest node containing the pixel's color.
         */
         for (count=1; (x+count) < (long) image->columns; count++)
-          if (!ColorMatch(q,q+count))
+          if (NotColorMatch(q,q+count))
             break;
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
@@ -610,7 +610,7 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
         Start at the root and descend the color cube tree.
       */
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
+        if (NotColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
       bisect=((double) MaxRGB+1.0)/2.0;
@@ -693,7 +693,7 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
         Start at the root and descend the color cube tree.
       */
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
+        if (NotColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
       bisect=((double) MaxRGB+1.0)/2.0;
@@ -1796,7 +1796,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
         new_colormap[j]=image->colormap[0];
         for (i=0; i < image->colors; i++)
           {
-            if (!ColorMatch(&new_colormap[j],&image->colormap[i]))
+            if (NotColorMatch(&new_colormap[j],&image->colormap[i]))
               {
                 j++;
                 new_colormap[j]=image->colormap[i];

@@ -1,5 +1,7 @@
 2008-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/{animate.c,quantize.c}: Replace !ColorMatch() with
+	NotColorMatch().
 	* utilities/Makefile.am (install-exec-local-utilities): Add back
 	in support for --enable-magick-compat which was accidentally
 	dropped in the new makefiles for GraphicsMagick 1.2.  Resolves
