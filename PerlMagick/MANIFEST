@@ -1,5 +1,3 @@
-.cvsignore
-.gdbinit
 Changelog
 MANIFEST
 MANIFEST.SKIP
@@ -33,15 +31,12 @@ demo/steganography.pl
 demo/tile.gif
 demo/tree.pl
 demo/yellow_flower.gif
-t/.cvsignore
 t/MasterImage_70x46.ppm
 t/blob.t
-t/bzlib/.cvsignore
 t/bzlib/input.miff
 t/bzlib/input.miff.bz2
 t/bzlib/read.t
 t/bzlib/write.t
-t/cgm/.cvsignore
 t/cgm/input.cgm
 t/cgm/read.t
 t/composite.t
@@ -54,7 +49,6 @@ t/fpx/input_truecolor.fpx
 t/fpx/read.t
 t/fpx/write.t
 t/getattribute.t
-t/hdf/.cvsignore
 t/hdf/input_256.hdf
 t/hdf/input_truecolor.hdf
 t/hdf/read.t
@@ -136,7 +130,6 @@ t/input_p6.ppm
 t/input_p7.p7
 t/input_rgb.cin
 t/input_rgb_lsb_08bit.mat
-t/jbig/.cvsignore
 t/jbig/input.jbig
 t/jbig/read.t
 t/jbig/write.t
@@ -158,17 +151,14 @@ t/jp2/input.jp2
 t/jp2/input.jpc
 t/jp2/input.pgx
 t/jp2/read.t
-t/jpeg/.cvsignore
 t/jpeg/input.jpg
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
 t/jpeg/write.t
 t/montage.t
-t/mpeg/.cvsignore
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
-t/png/.cvsignore
 t/png/input.mng
 t/png/input_16.png
 t/png/input_256.png
@@ -179,13 +169,11 @@ t/png/read-16.t
 t/png/read.t
 t/png/write-16.t
 t/png/write.t
-t/ps/.cvsignore
 t/ps/input.eps
 t/ps/input.miff
 t/ps/input.ps
 t/ps/read.t
 t/ps/write.t
-t/rad/.cvsignore
 t/rad/input.rad
 t/rad/read.t
 t/rad/write.t
@@ -356,7 +344,6 @@ t/reference/wmf/wizard.miff
 t/reference/write/output_p7.miff
 t/setattribute.t
 t/subroutines.pl
-t/tiff/.cvsignore
 t/tiff/input_gray_01bit_minwhite.tiff
 t/tiff/input_gray_04bit.tiff
 t/tiff/input_gray_04bit_matte.tiff
@@ -385,7 +372,6 @@ t/tiff/input_truecolor_16.tiff
 t/tiff/input_truecolor_32.tiff
 t/tiff/read.t
 t/tiff/write.t
-t/ttf/.cvsignore
 t/ttf/input.ttf
 t/ttf/read.t
 t/wmf/clock.wmf
@@ -394,7 +380,6 @@ t/wmf/read.t
 t/wmf/ski.wmf
 t/wmf/wizard.wmf
 t/write.t
-t/x/.cvsignore
 t/x/congrats.fig
 t/x/congrats.miff
 t/x/read.t
