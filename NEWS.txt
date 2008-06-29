@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on June 5, 2008
+This file was last updated on June 29, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,40 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.4 (June 29, 2008)
+====================
+
+Security Fixes:
+
+  * AVI reader: Re-worked to be more robust against crash or DOS.
+
+  * AVS reader: Re-worked to be more robust against crash or DOS.
+
+  * DCM reader: Re-worked to be more robust against crash or DOS.
+
+  * EPT reader: Re-worked to be more robust against crash or DOS.
+
+  * FITS reader: Re-worked to be more robust against crash or DOS.
+
+  * MTV reader: Re-worked to be more robust against crash or DOS.
+
+  * PALM reader: Re-worked to be more robust against crash or DOS.
+
+  * RLA reader: Re-worked to be more robust against crash or DOS.
+
+  * TGA reader: Re-worked to be more robust against crash or DOS.
+
+  * Avoid possible crash in GetImageCharacteristics() when substituting
+    text in comment read from file.
+
+Bug fixes:
+
+  * Magick++ Image Quantize was not supporting error measurement properly
+    and was waisting time with redundant SyncImage().
+
+  * The --enable-magick-compat configure option was not being respected
+    by the Makefiles (SourceForge bug 2005883).
 
 1.2.3 (June 5, 2008)
 ====================

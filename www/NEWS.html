@@ -246,22 +246,59 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on June 5, 2008</p>
+<p>This file was last updated on June 29, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#june-5-2008" id="id1" name="id1">1.2.3 (June 5, 2008)</a></li>
-<li><a class="reference" href="#may-28-2008" id="id2" name="id2">1.2.2 (May 28, 2008)</a></li>
-<li><a class="reference" href="#may-5-2008" id="id3" name="id3">1.2.1 (May 5, 2008)</a></li>
-<li><a class="reference" href="#april-29-2008" id="id4" name="id4">1.2 (April 29, 2008)</a></li>
-<li><a class="reference" href="#released-april-4-2004" id="id5" name="id5">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference" href="#released-in-may-2003" id="id6" name="id6">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference" href="#june-29-2008" id="id1" name="id1">1.2.4 (June 29, 2008)</a></li>
+<li><a class="reference" href="#june-5-2008" id="id2" name="id2">1.2.3 (June 5, 2008)</a></li>
+<li><a class="reference" href="#may-28-2008" id="id3" name="id3">1.2.2 (May 28, 2008)</a></li>
+<li><a class="reference" href="#may-5-2008" id="id4" name="id4">1.2.1 (May 5, 2008)</a></li>
+<li><a class="reference" href="#april-29-2008" id="id5" name="id5">1.2 (April 29, 2008)</a></li>
+<li><a class="reference" href="#released-april-4-2004" id="id6" name="id6">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference" href="#released-in-may-2003" id="id7" name="id7">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="june-5-2008" name="june-5-2008">1.2.3 (June 5, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id1" id="june-29-2008" name="june-29-2008">1.2.4 (June 29, 2008)</a></h1>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-1.2/NEWS.txt</tt>, line 18)</p>
+<p>Title underline too short.</p>
+<pre class="literal-block">
+1.2.4 (June 29, 2008)
+====================
+</pre>
+</div>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>AVI reader: Re-worked to be more robust against crash or DOS.</li>
+<li>AVS reader: Re-worked to be more robust against crash or DOS.</li>
+<li>DCM reader: Re-worked to be more robust against crash or DOS.</li>
+<li>EPT reader: Re-worked to be more robust against crash or DOS.</li>
+<li>FITS reader: Re-worked to be more robust against crash or DOS.</li>
+<li>MTV reader: Re-worked to be more robust against crash or DOS.</li>
+<li>PALM reader: Re-worked to be more robust against crash or DOS.</li>
+<li>RLA reader: Re-worked to be more robust against crash or DOS.</li>
+<li>TGA reader: Re-worked to be more robust against crash or DOS.</li>
+<li>Avoid possible crash in GetImageCharacteristics() when substituting
+text in comment read from file.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Magick++ Image Quantize was not supporting error measurement properly
+and was waisting time with redundant SyncImage().</li>
+<li>The --enable-magick-compat configure option was not being respected
+by the Makefiles (SourceForge bug 2005883).</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="june-5-2008" name="june-5-2008">1.2.3 (June 5, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -288,7 +325,7 @@ collection cause crashes in Jasper. This is not GraphicsMagick's fault.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id2" id="may-28-2008" name="may-28-2008">1.2.2 (May 28, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id3" id="may-28-2008" name="may-28-2008">1.2.2 (May 28, 2008)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -334,7 +371,7 @@ so that everything just works.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="may-5-2008" name="may-5-2008">1.2.1 (May 5, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id4" id="may-5-2008" name="may-5-2008">1.2.1 (May 5, 2008)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -365,7 +402,7 @@ considerably faster than the static or shared builds.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id4" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id5" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -621,7 +658,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id5" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id6" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -861,7 +898,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section">
-<h1><a class="toc-backref" href="#id6" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id7" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1017,7 +1054,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-06-05 21:05 UTC.
+Generated on: 2008-06-29 19:55 UTC.
 
 </div>
 </body>
