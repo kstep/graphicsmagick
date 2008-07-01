@@ -164,6 +164,7 @@ ModuleExport void RegisterTILEImage(void)
   entry->note=TILENote;
   entry->module="TILE";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

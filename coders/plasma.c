@@ -210,6 +210,7 @@ ModuleExport void RegisterPLASMAImage(void)
   entry->description="Plasma fractal image";
   entry->module="PLASMA";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("FRACTAL");
@@ -218,6 +219,7 @@ ModuleExport void RegisterPLASMAImage(void)
   entry->description="Plasma fractal image";
   entry->module="PLASMA";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

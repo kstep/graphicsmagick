@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2008-07-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Make use of the new
+        'extension_treatment' field.<BR>
+  <LI> coders/dcraw.c (ReadDCRAWImage): Added a coder module to proxy
+        from various common RAW camera format extensions to the 'dcraw'
+        delegate.<BR>
+  <LI> magick/magick.h (MagickInfo): Add an extension_treatment member
+        to indicate how file extensions should be treated for this coder.
+
+</UL>
+<p>
 2008-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

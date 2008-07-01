@@ -140,6 +140,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterCMYKImage();
   RegisterCUTImage();
   RegisterDCMImage();
+  RegisterDCRAWImage();
   RegisterDIBImage();
   RegisterDPSImage();
   RegisterDPXImage();
@@ -284,6 +285,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterCMYKImage();
   UnregisterCUTImage();
   UnregisterDCMImage();
+  UnregisterDCRAWImage();
   UnregisterDIBImage();
   UnregisterDPSImage();
   UnregisterDPXImage();

@@ -161,6 +161,7 @@ ModuleExport void RegisterXCImage(void)
   entry->description="Constant image uniform color";
   entry->module="XC";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

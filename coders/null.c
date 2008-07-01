@@ -158,6 +158,7 @@ ModuleExport void RegisterNULLImage(void)
   entry->description="Constant image of uniform color";
   entry->module="NULL";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

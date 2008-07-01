@@ -237,6 +237,8 @@ ModuleExport void RegisterMAPImage(void)
   entry->raw=True;
   entry->description="Colormap intensities and indices";
   entry->module="MAP";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=ObeyExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

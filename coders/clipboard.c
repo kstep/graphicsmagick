@@ -295,6 +295,7 @@ ModuleExport void RegisterCLIPBOARDImage(void)
   entry->adjoin = False;
   entry->description="Windows System Clipboard";
   entry->module="CLIPBOARD";
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 #endif
 }

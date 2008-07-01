@@ -227,6 +227,7 @@ ModuleExport void RegisterSTEGANOImage(void)
   entry->description="Steganographic image";
   entry->module="STEGANO";
   entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -1287,9 +1287,13 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   (void) memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=name;
   magick_info->adjoin=MagickTrue;
+  magick_info->raw=MagickFalse;
+  magick_info->stealth=MagickFalse;
+  magick_info->seekable_stream=MagickFalse;
   magick_info->blob_support=MagickTrue;
   magick_info->thread_support=MagickTrue;
   magick_info->coder_class=StableCoderClass;
+  magick_info->extension_treatment=HintExtensionTreatment;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

@@ -4585,39 +4585,22 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   const MagickBool rectify,ExceptionInfo *exception)
 {
   static const char
-    *exclude_extensions[] =
+    *virtual_delegates[] =
     {
       "AUTOTRACE",
       "BROWSE",
-      "CAPTION",
-      "CLIPBOARD",
-      "DCRAW",
       "EDIT",
-      "FRACTAL",
-      "GRADIENT",
       "GS-COLOR",
       "GS-COLOR+ALPHA",
       "GS-GRAY",
       "GS-MONO",
-      "HISTOGRAM",
-      "LABEL",
       "LAUNCH",
-      "MAP",
-      "MATTE",
       "MPEG-ENCODE",
-      "NULL",
-      "PLASMA",
-      "PREVIEW",
       "PRINT",
       "SCAN",
       "SHOW",
-      "STEGANO",
-      "TILE",
       "TMP",
-      "VID",
       "WIN",
-      "X",
-      "XC",
       NULL
     };
 
@@ -4631,6 +4614,9 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 
   register char
     *p;
+
+  const MagickInfo
+    *magick_info;
 
   size_t
     magick_length;
@@ -4735,10 +4721,10 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           (void) strlcpy(magic,format,MaxTextExtent);
           (void) strlcpy(image_info->magick,magic,MaxTextExtent);
           if (LocaleCompare(magic,"TMP") != 0)
-            image_info->affirm=True;
+            image_info->affirm=MagickTrue;
           else
             /* input file will be automatically removed */
-            image_info->temporary=True;
+            image_info->temporary=MagickTrue;
         }
     }
 
@@ -4793,16 +4779,31 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
             Ignore extensions which match virtual delegates.
           */
           i=0;
-          while ((!exclude) && (exclude_extensions[i] != NULL))
+          while ((!exclude) && (virtual_delegates[i] != NULL))
             {
-              if ((magic[0] == (exclude_extensions[i])[0]) &&
-                  (LocaleCompare(magic,exclude_extensions[i]) == 0))
+              if ((magic[0] == (virtual_delegates[i])[0]) &&
+                  (LocaleCompare(magic,virtual_delegates[i]) == 0))
                 {
                   exclude=MagickTrue;
                 }
               i++;
             }
-          if (!exclude)
+
+          /*
+            Check to see if there is a coder definition for this
+            format and if the extension should be ignored, or is the
+            sole authority for this format.
+          */
+          magick_info=GetMagickInfo(magic,exception);
+          if (magick_info != (const MagickInfo *) NULL)
+            {
+              if (magick_info->extension_treatment == IgnoreExtensionTreatment)
+                exclude=MagickTrue;
+              else if (magick_info->extension_treatment == ObeyExtensionTreatment)
+                image_info->affirm=MagickTrue;
+            }
+
+          if ((!exclude) || (image_info->affirm))
             (void) strlcpy(image_info->magick,magic,MaxTextExtent);
         }
     }
@@ -4815,19 +4816,16 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
         containing some variation of %d (e.g. "image%02d.miff");
       */
 
-      const MagickInfo
-        *magick_info;
-
       if (MagickSceneFileName(filename,image_info->filename,".%lu",MagickFalse,0))
         image_info->adjoin=False;
 
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
-      return(True);
+      return(MagickTrue);
     }
   if (image_info->affirm)
-    return(True);
+    return(MagickTrue);
   /*
     Determine the image format from the first few bytes of the file.
   */
@@ -4862,7 +4860,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           return(MagickFail);
         }
       (void) strcpy(image_info->filename,filename);
-      image_info->temporary=True;
+      image_info->temporary=MagickTrue;
     }
   magick[0]='\0';
   magick_length = ReadBlob(image,2*MaxTextExtent,magick);

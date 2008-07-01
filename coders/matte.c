@@ -82,6 +82,7 @@ ModuleExport void RegisterMATTEImage(void)
   entry->raw=True;
   entry->description="MATTE raw opacity format";
   entry->module="MATTE";
+  entry->extension_treatment=ObeyExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

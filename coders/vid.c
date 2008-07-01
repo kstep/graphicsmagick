@@ -253,6 +253,7 @@ ModuleExport void RegisterVIDImage(void)
   entry->encoder=(EncoderHandler) WriteVIDImage;
   entry->description="Visual Image Directory";
   entry->module="VID";
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

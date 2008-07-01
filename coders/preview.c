@@ -99,6 +99,7 @@ ModuleExport void RegisterPREVIEWImage(void)
   entry->adjoin=False;
   entry->description="Show a preview an image enhancement, effect, or f/x";
   entry->module="PREVIEW";
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 
