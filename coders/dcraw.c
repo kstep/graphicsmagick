@@ -120,21 +120,23 @@ static const struct
   const char *description;
 } dcraw_formats[] =
   {
+    { "3FR", "Hasselblad Photo RAW" }, /* Hasselblad CFV/H3D39II */
     { "ARW", "Sony Alpha DSLR RAW" }, /* Sony DSLR-A100 */
-    { "DNG", "Adobe Digital Negative" }, /* http://www.adobe.com/products/dng/ */
     { "CR2", "Canon Photo RAW" }, /* Canon EOS 400D, etc. */
     { "CRW", "Canon Photo RAW" }, /* Canon EOS-10, etc. */
     { "DCR", "Kodak Photo RAW" }, /* Kodak DSC Pro *, DSC 660C */
-    { "KDC", "Kodak Photo RAW" }, /* Kodak DC40/50/120, P850 */
+    { "DNG", "Adobe Digital Negative" }, /* http://www.adobe.com/products/dng/ */
+    { "ERF", "Epson RAW Format" }, /* Epson RD1 */
     { "K25", "Kodak Photo RAW" }, /* Kodak DC25 */
+    { "KDC", "Kodak Photo RAW" }, /* Kodak DC40/50/120, P850 */
     { "MRW", "Minolta Photo Raw" }, /* Minolta DiMAGE*, Dynax *, Maxxum * */
     { "NEF", "Nikon Electronic Format" }, /* Nikon D1, etc. */
     { "ORF", "Olympus Photo RAW" }, /* Olympus C5050Z, etc. */
     { "PEF", "Pentax Electronic File" }, /* Pentax istDS, etc. */
     { "RAF", "Fuji Photo RAW" }, /* Fuji FinePix * */
-    { "SRF", "Sony Photo RAW" }, /* Sony DSC-F828, Sony DSC-R1 */
     { "SR2", "Sony Photo RAW" }, /* Sony R1 */
-    { "X3F", "Sigma Foveon Photo RAW" }, /* Sigma SD10 */
+    { "SRF", "Sony Photo RAW" }, /* Sony DSC-F828, Sony DSC-R1 */
+    { "X3F", "Foveon X3 (Sigma/Polaroid) RAW" }, /* Sigma SD9/SD10/SD14 / Polaroid X530 */
     { NULL, NULL }
   };
 ModuleExport void RegisterDCRAWImage(void)
