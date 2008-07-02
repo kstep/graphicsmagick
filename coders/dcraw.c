@@ -14,6 +14,9 @@
 %                                                                             %
 %                          Read DCRAW Image Formats                           %
 %                                                                             %
+%                              Bob Friesenhahn                                %
+%                                July, 2008                                   %
+%                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -151,8 +154,7 @@ ModuleExport void RegisterDCRAWImage(void)
     {
       entry=SetMagickInfo(dcraw_formats[i].id);
       entry->decoder=(DecoderHandler) ReadDCRAWImage;
-      entry->description=dcraw_formats[i].description;
-      entry->extension_treatment=ObeyExtensionTreatment;
+      entry->description=AllocateString(dcraw_formats[i].description);
       (void) RegisterMagickInfo(entry);
     }
 }

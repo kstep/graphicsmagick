@@ -15,7 +15,7 @@ ChangeLog file for full details.
   :local:
 
 1.2.4 (June 29, 2008)
-====================
+=====================
 
 Security Fixes:
 
@@ -43,7 +43,7 @@ Security Fixes:
 Bug fixes:
 
   * Magick++ Image Quantize was not supporting error measurement properly
-    and was waisting time with redundant SyncImage().
+    and was wasting time with redundant SyncImage().
 
   * The --enable-magick-compat configure option was not being respected
     by the Makefiles (SourceForge bug 2005883).

@@ -4815,7 +4815,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   const MagickBool rectify,ExceptionInfo *exception)
 {
   static const char
-    *exclude_extensions[] =
+    *virtual_delegates[] =
     {
       "AUTOTRACE",
       "BROWSE",
@@ -4832,8 +4832,6 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       "HISTOGRAM",
       "LABEL",
       "LAUNCH",
-      "MAP",
-      "MATTE",
       "MPEG-ENCODE",
       "NULL",
       "PLASMA",
@@ -4848,6 +4846,29 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       "WIN",
       "X",
       "XC",
+      NULL
+    };
+
+  static const char
+    *affirm_extension[] =
+    {
+      "3FR",
+      "ARW",
+      "CR2",
+      "CRW",
+      "DCR",
+      "DNG",
+      "ERF",
+      "K25",
+      "KDC",
+      "MRW",
+      "NEF",
+      "ORF",
+      "PEF",
+      "RAF",
+      "SR2",
+      "SRF",
+      "X3F",
       NULL
     };
 
@@ -5026,16 +5047,32 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
             Ignore extensions which match virtual delegates.
           */
           i=0;
-          while ((!exclude) && (exclude_extensions[i] != NULL))
+          while ((!exclude) && (virtual_delegates[i] != NULL))
             {
-              if ((magic[0] == (exclude_extensions[i])[0]) &&
-                  (LocaleCompare(magic,exclude_extensions[i]) == 0))
+              if ((magic[0] == (virtual_delegates[i])[0]) &&
+                  (LocaleCompare(magic,virtual_delegates[i]) == 0))
                 {
                   exclude=MagickTrue;
                 }
               i++;
             }
-          if (!exclude)
+
+          /*
+            Check to see if this extension is one we should blindly
+            trust.
+          */
+          i=0;
+          while ((!image_info->affirm) && (affirm_extension[i] != NULL))
+            {
+              if ((magic[0] == (affirm_extension[i])[0]) &&
+                  (LocaleCompare(magic,affirm_extension[i]) == 0))
+                {
+                  image_info->affirm=MagickTrue;
+                }
+              i++;
+            }
+
+          if ((!exclude) || (image_info->affirm))
             (void) strlcpy(image_info->magick,magic,MaxTextExtent);
         }
     }
