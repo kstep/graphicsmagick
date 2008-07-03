@@ -2583,7 +2583,7 @@ total disk space consumed; <s>File</s>, maximum number of file
 descriptors allowed to be open at once; <s>Map</s>, maximum total number
 of file bytes which may be memory mapped; <s>Memory</s>, maximum total
 number of bytes of heap memory used for image storage; and <s>Pixels</s>,
-maximum absolute image size (per image).</p>
+maximum absolute image size (per image).</pp>
 
 <pp>
 These resource limits are used to decide if (for a given image) the
@@ -2593,7 +2593,7 @@ The number of total pixels in one image may also be limited in order to
 force the reading, or creation of images larger than the limit (in
 pixels) to intentionally fail. The disk limit establishes an overall
 limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.</p>
+limit has been reached, no more images may be read.</pp>
 
 <pp>
 The value argument is an absolute value, but may have standard binary
@@ -2602,7 +2602,7 @@ scaling to the value (based on a multiplier of 1024). Any additional
 characters are ignored. For example, <tt>'-limit Pixels 10MP'</tt> limits
 the maximum image size to 10 megapixels and <tt>'-limit memory 32MB
 -limit map 64MB'</tt> limits memory and memory mapped files to 32
-megabytes and 64 megabytes respectively.</p>
+megabytes and 64 megabytes respectively.</pp>
 
 <pp>
 Resource limits may also be set using environment variables. The
@@ -3117,9 +3117,10 @@ Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>,
 color channels and does not modify the <s>Opacity</s> channel. Except for
 the threshold operators, <s>All</s> operates on each channel
 independently so that operations are on a per-channel basis.</pp>
+<pp>
 <s>Gray</s> treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
-result is a gray image.
+result is a gray image.</pp>
 <pp>
 Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
 <s>Divide</s>, <s>Gamma</s>, <s>Invert</s>, <s>LShift</s>,
@@ -3138,7 +3139,6 @@ integral value prior to use. If a percent (<s>%</s>) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.</pp>
 <pp>
 The following is a description of the operators:</pp>
-
 <dl>
 <dt>Add</dt>
 <dd>Result is rvalue added to channel value.
@@ -3273,13 +3273,11 @@ value:</pp>
   gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <pp>
-<pp>
 The following applies 50% thresholding to the image and returns a gray
 image:</pp>
 <pre>
   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
-<pp>
 
 </utils>
 
@@ -4144,7 +4142,8 @@ popups that are independent windows but appear over the specified window.</pp>
 
 <pp>
 Set a named image attribute.  The attribute is set on the current
-(previously specified on command line) image.
+(previously specified on command line) image.</pp>
+
 </utils>
 
 
