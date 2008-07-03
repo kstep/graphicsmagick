@@ -141,7 +141,7 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">BMP3     </td><td>*-w-</td><td>Microsoft Windows bitmap image v3</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CACHE    </td><td>*---</td><td>Magick Persistent Cache image format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CAPTION  </td><td>*r--</td><td>Caption (requires separate size info)</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">CIN      </td><td>*rw+</td><td>Kodak Cineon Format</td></tr>
+<tr><td><dd><img SRC="../images/ball.png" ALT="*">CIN      </td><td>*rw-</td><td>Kodak Cineon Format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CMYK     </td><td>*rw-</td><td>Raw cyan, magenta, yellow, and black</td></tr>
 <tr><td>          </td><td>    </td><td>samples (8 or 16 bits, depending on</td></tr>
 <tr><td>          </td><td>    </td><td>the image depth)</td></tr>
@@ -154,7 +154,7 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td>          </td><td>    </td><td> Medicine image</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">DCX      </td><td>*rw+</td><td>ZSoft IBM PC multi-page Paintbrush</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">DPS      </td><td>*r--</td><td>Display PostScript</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">DPX      </td><td>*r--</td><td>Digital Moving Picture Exchange</td></tr>
+<tr><td><dd><img SRC="../images/ball.png" ALT="*">DPX      </td><td>*rw-</td><td>Digital Moving Picture Exchange</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">EPDF     </td><td>*rw-</td><td>Encapsulated Portable Document Format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">EPI      </td><td>*rw-</td><td>Adobe Encapsulated PostScript</td></tr>
 <tr><td>          </td><td>    </td><td>Interchange format</td></tr>
@@ -1061,7 +1061,6 @@ copied untouched.
 with the opacity channel in <em>change-image</em>. The other channels are
 copied untouched.
 </dd>
-</dl>
 <dt>CopyCyan</dt>
 <dd>The resulting image is the cyan channel in <em>base-image</em> replaced
 with the cyan channel in <em>change-image</em>. The other channels are
@@ -1087,6 +1086,7 @@ channels are copied untouched. Use of this operator requires that
 base-image be in CMYK(A) colorspace. If change-image is not in CMYK
 space, then the change-image pixel intensities are used.
 </dd>
+</dl>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3172,56 +3172,44 @@ The following is a description of the operators:</font></td></tr></table>
 <dt>Add</dt>
 <dd>Result is rvalue added to channel value.
 </dd>
-<dl>
 <dt>And</dt>
 <dd>Result is the logical AND of rvalue with channel value.
 </dd>
-<dl>
 <dt>Assign</dt>
 <dd>Result is rvalue.
 </dd>
-<dl>
 <dt>Divide</dt>
 <dd>Result is channel value divided by rvalue.
 </dd>
-<dl>
 <dt>Gamma</dt>
 <dd>Result is channel value gamma adjusted by rvalue.
 </dd>
-<dl>
 <dt>Invert</dt>
 <dd>Result is inverse of channel value (like a film negative). An rvalue
 must be supplied but is currently not used. Inverting the image twice
 results in the original image.
 </dd>
-<dl>
 <dt>LShift</dt>
 <dd>Result is channel value bitwise left shifted by rvalue bits.
 </dd>
-<dl>
 <dt>Multiply</dt>
 <dd>Result is channel value multiplied by rvalue.
 </dd>
-<dl>
 <dt>Or</dt>
 <dd>Result is the logical OR of rvalue with channel value.
 </dd>
-<dl>
 <dt>RShift</dt>
 <dd>Result is channel value bitwise right shifted by rvalue bits.
 </dd>
-<dl>
 <dt>Subtract</dt>
 <dd>Result is channel value minus rvalue.
 </dd>
-<dl>
 <dt>Threshold</dt>
 <dd>Result is maximum (white) if channel value is greater than rvalue,
 or minimum (black) if it is less than or equal to rvalue. If <strong>all</strong>
 channels are specified, then thresholding is done based on computed pixel
 intensity.
 </dd>
-<dl>
 <dt>Threshold-white</dt>
 <dd>Result is maximum (white) if channel value is greater than rvalue and
 is unchanged if it is less than or equal to rvalue. This can be used to
@@ -3229,7 +3217,6 @@ remove apparent noise from the bright parts of an image. If <strong>all</strong>
 channels are specified, then thresholding is done based on computed pixel
 intensity.
 </dd>
-<dl>
 <dt>Threshold-black</dt>
 <dd>Result is minimum (black) if channel value is less than than rvalue
 and is unchanged if it is greater than or equal to rvalue. This can be
@@ -3237,42 +3224,36 @@ used to remove apparent noise from the dark parts of an image. If
 <strong>all</strong> channels are specified, then thresholding is done based on
 computed pixel intensity.
 </dd>
-<dl>
 <dt>Xor</dt>
 <dd>Result is the logical XOR of rvalue with channel value. An
 interesting property of XOR is that performing the same operation twice
 results in the original value.
 </dd>
-<dl>
 <dt>Noise-Gaussian</dt>
 <dd>Result is the channel value with gaussian noise applied according to
 the intensity specified by rvalue.
 </dd>
-<dl>
 <dt>Noise-Impulse</dt>
 <dd>Result is the channel value with impulse noise applied according to
 the intensity specified by rvalue.
 </dd>
-<dl>
 <dt>Noise-Laplacian</dt>
 <dd>Result is the channel value with laplacian noise applied according to
 the intensity specified by rvalue.
 </dd>
-<dl>
 <dt>Noise-Multiplicative</dt>
 <dd>Result is the channel value with multiplicative noise applied
 according to the intensity specified by rvalue.
 </dd>
-<dl>
 <dt>Noise-Poisson</dt>
 <dd>Result is the channel value with poisson noise applied according to
 the intensity specified by rvalue.
 </dd>
-<dl>
 <dt>Noise-Uniform</dt>
 <dd>Result is the channel value with uniform noise applied according to
 the intensity specified by rvalue.
 </dd>
+</dl>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 As an example, the <strong>Assign</strong> operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
