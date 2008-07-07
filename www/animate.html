@@ -1152,6 +1152,23 @@ one.</td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    MAGICK_IO_FSYNC
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_IO_FSYNC</strong> is set to <strong>TRUE</strong>, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     MAGICK_IOBUF_SIZE
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and

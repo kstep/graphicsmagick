@@ -21,18 +21,17 @@ extern "C" {
 typedef struct _DelegateInfo
 {
   char
-    *path,
-    *decode,
-    *encode;
+    *path,    /* Path to delegate configuation file */
+    *decode,  /* Decode from format */
+    *encode;  /* Transcode to format */
 
   char
-    *commands;
+    *commands; /* Commands to execute */
 
-  int
-    mode;
+  int mode;    /* <0 = encoder, >0 = decoder */
 
-  unsigned int
-    stealth;
+  MagickBool
+    stealth;   /* Don't list this delegate */
 
   unsigned long
     signature;

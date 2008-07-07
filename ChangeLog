@@ -1,3 +1,19 @@
+2008-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c (ReadDCMImage): Report actual image depth.
+	* magick/resource.c (InitializeMagickResources): Set default
+	maximum memory limit to physical memory rather than 2X physical
+	memory.  This decision is made since the system paging device is
+	often slower than files in the filesystem, and so memory mapping
+	is likely faster.
+	* magick/blob.c (OpenBlob): The MAGICK_IO_FSYNC environment
+	variable causes output files to be synchronized to disk when set
+	to TRUE.
+
+2008-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/GraphicsMagick.html: Improved formatting of documentation.
+
 2008-07-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Make use of the new

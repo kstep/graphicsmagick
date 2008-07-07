@@ -3115,7 +3115,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (significant_bits > 8)
               bytes_per_pixel=2;
             mask=(1 << significant_bits)-1;
-            /* image->depth=Min(significant_bits,QuantumDepth); */
+            image->depth=Min(significant_bits,QuantumDepth);
             break;
           }
           case 0x0102:

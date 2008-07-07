@@ -117,6 +117,16 @@ experimental feature (which is currently broken). Write performance is
 usually somewhat worse when using this approach rather than the default
 one.</abs>
 
+<opt>MAGICK_IO_FSYNC</opt>
+
+<abs>If <s>MAGICK_IO_FSYNC</s> is set to <s>TRUE</s>, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.</abs>
+
 <opt>MAGICK_IOBUF_SIZE</opt>
 
 <abs>The amount of I/O buffering (in bytes) to use when reading and

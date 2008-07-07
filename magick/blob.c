@@ -121,6 +121,9 @@ struct _BlobInfo
   unsigned char
     *data;              /* Blob or memory mapped data. */
 
+  MagickBool
+    fsync;              /* Fsync on close if true */
+
   SemaphoreInfo
     *semaphore;         /* Lock for reference_count access */
 
@@ -904,6 +907,11 @@ MagickExport void CloseBlob(Image *image)
     case FileStream:
     case StandardStream:
     {
+      if (image->blob->fsync)
+        {
+          (void) fflush(image->blob->file);
+          (void) fsync(fileno(image->blob->file));
+        }
       status=fclose(image->blob->file);
       break;
     }
@@ -940,6 +948,8 @@ MagickExport void CloseBlob(Image *image)
               Truncate memory-mapped output file to size.
             */
             (void) ftruncate(fileno(image->blob->file),image->blob->length);
+            if (image->blob->fsync)
+              (void) fsync(fileno(image->blob->file));
             status=fclose(image->blob->file);
           }
         break;
@@ -1315,6 +1325,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   assert(blob_info != (BlobInfo *) NULL);
   (void) memset(blob_info,0,sizeof(BlobInfo));
   blob_info->quantum=DefaultBlobQuantum;
+  blob_info->fsync=MagickFalse;
   blob_info->reference_count=1;
   blob_info->signature=MagickSignature;
 }
@@ -2544,7 +2555,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                 if (image->blob->file != (FILE *) NULL)
                   {
                     char
-                      *vbuf_size_env = NULL;
+                      *env = NULL;
 
                     unsigned char
                       magick[MaxTextExtent];
@@ -2555,9 +2566,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                     size_t
                       vbuf_size = 16384;
 
-                    if ((vbuf_size_env = getenv("MAGICK_IOBUF_SIZE")))
+                    if ((env = getenv("MAGICK_IOBUF_SIZE")))
                       {
-                        vbuf_size = (size_t) atol(vbuf_size_env);
+                        vbuf_size = (size_t) atol(env);
                       }
 
                     if (setvbuf(image->blob->file,NULL,_IOFBF,vbuf_size) != 0)
@@ -2573,6 +2584,20 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                                 "  I/O buffer set to %lu bytes",
                                                 (unsigned long) vbuf_size);
+                      }
+                    /*
+                      Enable fsync-on-close mode if requested.
+                    */
+                    if (((WriteBlobMode == mode) || (WriteBinaryBlobMode == mode)) &&
+                        (env = getenv("MAGICK_IO_FSYNC")))
+                      {
+                        if (LocaleCompare(env,"TRUE") == 0)
+                          {
+                            image->blob->fsync=MagickTrue;
+                            if (image->logging)
+                              (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                                    "  fsync() on close requested");
+                          }
                       }
                     image->blob->type=FileStream;
                     if (image->logging)

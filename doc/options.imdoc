@@ -30,9 +30,10 @@
 
 <utils apps=all>
 <p>
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (<i>animate, composite, convert, display, identify,
-import, mogrify</i> and <i>montage</i>).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (<i>animate</i>, <i>composite</i>,
+<i>convert</i>, <i>display</i>, <i>identify</i>, <i>import</i>,
+<i>mogrify</i> and <i>montage</i>).
 </p>
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
@@ -1204,7 +1205,8 @@ Enables tiled TIFF if it has not already been enabled.
 <dd>Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
-Enables tiled TIFF if it has not already been enabled.</dd>
+Enables tiled TIFF if it has not already been enabled.
+</dd>
 </dl>
 
 <pp>

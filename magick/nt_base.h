@@ -130,6 +130,11 @@ extern "C" {
 #define mkdir(path,mode) _mkdir(path)
 
 /*
+  Windows provides _commit() as a substitute for fsync()
+*/
+#define fsync(fd) _commit(fd)
+
+/*
   Typedef declarations.
 */
 typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);

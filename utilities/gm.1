@@ -1,4 +1,4 @@
-.TH gm 1 "2008/06/28" "GraphicsMagick"
+.TH gm 1 "2008/07/07" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -95,7 +95,7 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
  o  BMP3      *-w- Microsoft Windows bitmap image v3
  o  CACHE     *--- Magick Persistent Cache image format
  o  CAPTION   *r-- Caption (requires separate size info)
- o  CIN       *rw+ Kodak Cineon Format
+ o  CIN       *rw- Kodak Cineon Format
  o  CMYK      *rw- Raw cyan, magenta, yellow, and black
                    samples (8 or 16 bits, depending on
                    the image depth)
@@ -108,7 +108,7 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
                     Medicine image
  o  DCX       *rw+ ZSoft IBM PC multi-page Paintbrush
  o  DPS       *r-- Display PostScript
- o  DPX       *r-- Digital Moving Picture Exchange
+ o  DPX       *rw- Digital Moving Picture Exchange
  o  EPDF      *rw- Encapsulated Portable Document Format
  o  EPI       *rw- Adobe Encapsulated PostScript
                    Interchange format
@@ -356,9 +356,10 @@ until the set is terminated by the appearance of any option or \fB-noop\fP.
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (\fIanimate, composite, convert, display, identify,
-import, mogrify\fP and \fImontage\fP).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (\fIanimate\fP, \fIcomposite\fP,
+\fIconvert\fP, \fIdisplay\fP, \fIidentify\fP, \fIimport\fP,
+\fImogrify\fP and \fImontage\fP).
 
 
 In this document, angle brackets ("<>") enclose variables and curly
@@ -867,7 +868,6 @@ with the opacity channel in \fIchange-image\fP. The other channels are
 copied untouched.
 
 .in 15
-
 .in 15
 .B "CopyCyan"
 .in 20
@@ -913,6 +913,7 @@ base-image be in CMYK(A) colorspace. If change-image is not in CMYK
 space, then the change-image pixel intensities are used.
 
 .in 15
+
 .TP
 .B "-compress \fI<type>"\fP
 \fRthe type of image compression
@@ -1327,6 +1328,7 @@ Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
+
 .in 15
 
 
@@ -2434,6 +2436,7 @@ Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP,
 color channels and does not modify the \fBOpacity\fP channel. Except for
 the threshold operators, \fBAll\fP operates on each channel
 independently so that operations are on a per-channel basis.
+
 \fBGray\fP treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
@@ -2466,8 +2469,6 @@ Result is rvalue added to channel value.
 
 .in 15
 .in 15
-
-.in 15
 .B "And"
 .in 20
  \fR
@@ -2475,8 +2476,6 @@ Result is rvalue added to channel value.
 Result is the logical AND of rvalue with channel value.
 
 .in 15
-.in 15
-
 .in 15
 .B "Assign"
 .in 20
@@ -2486,8 +2485,6 @@ Result is rvalue.
 
 .in 15
 .in 15
-
-.in 15
 .B "Divide"
 .in 20
  \fR
@@ -2496,8 +2493,6 @@ Result is channel value divided by rvalue.
 
 .in 15
 .in 15
-
-.in 15
 .B "Gamma"
 .in 20
  \fR
@@ -2505,8 +2500,6 @@ Result is channel value divided by rvalue.
 Result is channel value gamma adjusted by rvalue.
 
 .in 15
-.in 15
-
 .in 15
 .B "Invert"
 .in 20
@@ -2518,8 +2511,6 @@ results in the original image.
 
 .in 15
 .in 15
-
-.in 15
 .B "LShift"
 .in 20
  \fR
@@ -2527,8 +2518,6 @@ results in the original image.
 Result is channel value bitwise left shifted by rvalue bits.
 
 .in 15
-.in 15
-
 .in 15
 .B "Multiply"
 .in 20
@@ -2538,8 +2527,6 @@ Result is channel value multiplied by rvalue.
 
 .in 15
 .in 15
-
-.in 15
 .B "Or"
 .in 20
  \fR
@@ -2547,8 +2534,6 @@ Result is channel value multiplied by rvalue.
 Result is the logical OR of rvalue with channel value.
 
 .in 15
-.in 15
-
 .in 15
 .B "RShift"
 .in 20
@@ -2558,8 +2543,6 @@ Result is channel value bitwise right shifted by rvalue bits.
 
 .in 15
 .in 15
-
-.in 15
 .B "Subtract"
 .in 20
  \fR
@@ -2567,8 +2550,6 @@ Result is channel value bitwise right shifted by rvalue bits.
 Result is channel value minus rvalue.
 
 .in 15
-.in 15
-
 .in 15
 .B "Threshold"
 .in 20
@@ -2580,8 +2561,6 @@ channels are specified, then thresholding is done based on computed pixel
 intensity.
 
 .in 15
-.in 15
-
 .in 15
 .B "Threshold-white"
 .in 20
@@ -2595,8 +2574,6 @@ intensity.
 
 .in 15
 .in 15
-
-.in 15
 .B "Threshold-black"
 .in 20
  \fR
@@ -2609,8 +2586,6 @@ computed pixel intensity.
 
 .in 15
 .in 15
-
-.in 15
 .B "Xor"
 .in 20
  \fR
@@ -2621,8 +2596,6 @@ results in the original value.
 
 .in 15
 .in 15
-
-.in 15
 .B "Noise-Gaussian"
 .in 20
  \fR
@@ -2631,8 +2604,6 @@ Result is the channel value with gaussian noise applied according to
 the intensity specified by rvalue.
 
 .in 15
-.in 15
-
 .in 15
 .B "Noise-Impulse"
 .in 20
@@ -2643,8 +2614,6 @@ the intensity specified by rvalue.
 
 .in 15
 .in 15
-
-.in 15
 .B "Noise-Laplacian"
 .in 20
  \fR
@@ -2653,8 +2622,6 @@ Result is the channel value with laplacian noise applied according to
 the intensity specified by rvalue.
 
 .in 15
-.in 15
-
 .in 15
 .B "Noise-Multiplicative"
 .in 20
@@ -2665,8 +2632,6 @@ according to the intensity specified by rvalue.
 
 .in 15
 .in 15
-
-.in 15
 .B "Noise-Poisson"
 .in 20
  \fR
@@ -2675,8 +2640,6 @@ Result is the channel value with poisson noise applied according to
 the intensity specified by rvalue.
 
 .in 15
-.in 15
-
 .in 15
 .B "Noise-Uniform"
 .in 20
@@ -2687,18 +2650,17 @@ the intensity specified by rvalue.
 
 .in 15
 
+
 As an example, the \fBAssign\fP operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:
 
   gm convert in.bmp -operator red assign "50%" out.bmp
 
-
 The following applies 50% thresholding to the image and returns a gray
 image:
 
   gm convert in.bmp -operator gray threshold "50%" out.bmp
-
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -8694,6 +8656,15 @@ experimental feature (which is currently broken). Write performance is
 usually somewhat worse when using this approach rather than the default
 one.
 .TP
+.B "MAGICK_IO_FSYNC"
+\fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.
+.TP
 .B "MAGICK_IOBUF_SIZE"
 \fRThe amount of I/O buffering (in bytes) to use when reading and
 writing encoded files. The default is 16384, which is observed to work
@@ -8823,7 +8794,7 @@ based on his Zoom program.
 spatial subdivision color reduction algorithm is based on his Img software.
 .SH COPYRIGHT
 
-\fBCopyright (C) 2002, 2003 GraphicsMagick Group, an organization
+\fBCopyright (C) 2002 - 2008 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.\fP
 
 \fBPermission is hereby granted, free of charge, to any person obtaining a

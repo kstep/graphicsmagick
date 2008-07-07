@@ -405,7 +405,7 @@ MagickExport void InitializeMagickResources(void)
           size_t_max = (size_t) ~0UL;
 
         size_t_max /= (1024U*1024U);
-        max_memory = Min(size_t_max/2-100,2*total_memory);
+        max_memory = Min(size_t_max/2-100,total_memory);
         max_map = Min(size_t_max/2-100,2*total_memory);
       }
   }

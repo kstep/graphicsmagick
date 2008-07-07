@@ -430,9 +430,10 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (<em>animate, composite, convert, display, identify,
-import, mogrify</em> and <em>montage</em>).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (<em>animate</em>, <em>composite</em>,
+<em>convert</em>, <em>display</em>, <em>identify</em>, <em>import</em>,
+<em>mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
 <p>
 In this document, angle brackets ("&lt;&gt;") enclose variables and curly
@@ -1464,7 +1465,8 @@ Enables tiled TIFF if it has not already been enabled.
 <dd>Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
-Enables tiled TIFF if it has not already been enabled.</dd>
+Enables tiled TIFF if it has not already been enabled.
+</dd>
 </dl>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, to create a postscript file that will render only the black
@@ -15448,6 +15450,23 @@ will attempt to memory-map the output file for writing. This is an
 experimental feature (which is currently broken). Write performance is
 usually somewhat worse when using this approach rather than the default
 one.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_IO_FSYNC
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_IO_FSYNC</strong> is set to <strong>TRUE</strong>, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
