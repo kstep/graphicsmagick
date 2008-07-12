@@ -895,6 +895,8 @@ ExitLoop:
     if(image->is_monochrome)
       image->colorspace=GRAYColorspace;
 
+    if(image2==image) 
+        image2 = NULL;		/* Remove shadow copy to an image before rotation. */
 
       /*  Rotate image. */
     rotated_image = RotateImage(image, 90.0, exception);
@@ -907,8 +909,8 @@ ExitLoop:
       blob = rotated_image->blob;
       rotated_image->blob = image->blob;
       rotated_image->colors = image->colors;
-      image->blob = blob;
-      AppendImageToList(&image,rotated_image);      
+      image->blob = blob;      
+      AppendImageToList(&image,rotated_image);
       DeleteImageFromList(&image);      
     }
 

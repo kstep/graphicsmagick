@@ -1,3 +1,9 @@
+2008-12-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Fixed problem: "In this case, the referenced 
+	images had previously been deallocated but are still being used.
+	Since they are overwritten, their signatures are invalid."
+
 2008-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dcm.c (ReadDCMImage): Report actual image depth.
