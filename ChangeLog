@@ -1,3 +1,12 @@
+2008-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Remove over-write of
+	image->client_data.  Resolves SourceForge issue [ 2018974 ]
+	client_data is not passed to streamhandler.
+	* coders/png.c (WriteOnePNGImage): Fix crash when writing PNG
+	images with transparency and either type Optimize is requested, or
+	the image is colormapped.
+
 2008-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dcraw.c: Added 'dcraw' delegate proxy support so that

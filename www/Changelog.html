@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2008-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (ReadJPEGImage): Remove over-write of
+        image-&gt;client_data.  Resolves SourceForge issue [ 2018974 ]
+        client_data is not passed to streamhandler.
+  <LI> coders/png.c (WriteOnePNGImage): Fix crash when writing PNG
+        images with transparency and either type Optimize is requested, or
+        the image is colormapped.
+
+</UL>
+<p>
 2008-07-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

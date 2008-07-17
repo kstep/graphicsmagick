@@ -6368,8 +6368,8 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         ping_info->color_type=PNG_COLOR_TYPE_GRAY;
       if (image_info->type == GrayscaleMatteType)
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
-/*       if (!mng_info->optimize && matte) */
-/*         ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA; */
+      /*       if (!mng_info->optimize && matte) */
+      /*         ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA; */
 
       if (logging)
         {
@@ -6391,7 +6391,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           register const PixelPacket
             *p=NULL;
 
-            if (characteristics.opaque)
+          if (characteristics.opaque)
             {
               /*
                 No transparent pixels are present.  Change 4 or 6 to 0 or 2,
@@ -6414,14 +6414,36 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 mask=0x0003;
               if (ping_info->bit_depth == 1)
                 mask=0x0001;
-              ping_info->valid|=PNG_INFO_tRNS;
-              ping_info->trans_values.red=ScaleQuantumToShort(p->red)&mask;
-              ping_info->trans_values.green=ScaleQuantumToShort(p->green)&mask;
-              ping_info->trans_values.blue=ScaleQuantumToShort(p->blue)&mask;
-              ping_info->trans_values.gray=
-                (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
-              ping_info->trans_values.index=(unsigned char)
-                (ScaleQuantumToChar(MaxRGB-p->opacity));
+
+              /*
+                Find a transparent color.
+              */
+              for (y=0; y < (long) image->rows; y++)
+                {
+                  p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                  if (p == (const PixelPacket *) NULL)
+                    break;
+                  for (x=(long) image->columns; x > 0; x--)
+                    {
+                      if (p->opacity != OpaqueOpacity)
+                        break;
+                      p++;
+                    }
+                  if (p->opacity != OpaqueOpacity)
+                    break;
+                }
+              if ((p != (const PixelPacket *) NULL) &&
+                  (p->opacity != OpaqueOpacity))
+                {
+                  ping_info->valid|=PNG_INFO_tRNS;
+                  ping_info->trans_values.red=ScaleQuantumToShort(p->red)&mask;
+                  ping_info->trans_values.green=ScaleQuantumToShort(p->green)&mask;
+                  ping_info->trans_values.blue=ScaleQuantumToShort(p->blue)&mask;
+                  ping_info->trans_values.gray=
+                    (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
+                  ping_info->trans_values.index=(unsigned char)
+                    (ScaleQuantumToChar(MaxRGB-p->opacity));
+                }
             }
           if (ping_info->valid & PNG_INFO_tRNS)
             {
