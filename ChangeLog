@@ -1,4 +1,13 @@
-2008-12-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+2008-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Remove over-write of
+	image->client_data.  Resolves SourceForge issue [ 2018974 ]
+	client_data is not passed to streamhandler.
+	* coders/png.c (WriteOnePNGImage): Fix crash when writing PNG
+	images with transparency and either type Optimize is requested, or
+	the image is colormapped.
+
+2008-07-12  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c Fixed problem: "In this case, the referenced 
 	images had previously been deallocated but are still being used.
