@@ -836,7 +836,6 @@ MagickExport void CloseBlob(Image *image)
   DetachBlob(image->blob);
   image->blob->status=status < 0;
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -848,7 +847,9 @@ MagickExport void CloseBlob(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyBlob() deallocates memory associated with a blob.
+%  DestroyBlob() deallocates memory associated with a blob.  The blob is
+%  a reference counted object so the object is only destroyed once its
+%  reference count decreases to zero.
 %
 %  The format of the DestroyBlob method is:
 %
@@ -863,26 +864,37 @@ MagickExport void CloseBlob(Image *image)
 MagickExport void DestroyBlob(Image *image)
 {
   assert(image != (Image *) NULL);
-  assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->signature == MagickSignature);
-  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Destroy blob, image=%p, filename=\"%s\"",image,image->filename);
-  AcquireSemaphoreInfo(&image->blob->semaphore);
-  image->blob->reference_count--;
-  if (image->blob->reference_count > 0)
+  if (image->blob != (BlobInfo *) NULL)
     {
+      MagickBool
+        destroy;
+
+      assert(image->blob->signature == MagickSignature);
+      if (image->logging)
+        (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                              "Destroy blob, image=%p, filename=\"%s\"",
+                              image,image->filename);
+      AcquireSemaphoreInfo(&image->blob->semaphore);
+      image->blob->reference_count--;
+      assert(image->blob->reference_count >= 0);
+      destroy=(image->blob->reference_count > 0 ? MagickFalse : MagickTrue);
       LiberateSemaphoreInfo(&image->blob->semaphore);
-      return;
+      if (destroy)
+        {
+          /*
+            Destroy blob object.
+          */
+          if (image->blob->type != UndefinedStream)
+            CloseBlob(image);
+          if (image->blob->mapped)
+            (void) UnmapBlob(image->blob->data,image->blob->length);
+          if (image->blob->semaphore != (SemaphoreInfo *) NULL)
+            DestroySemaphoreInfo(&image->blob->semaphore);
+          (void) memset((void *) image->blob,0xbf,sizeof(BlobInfo));
+          MagickFreeMemory(image->blob);
+        }
+      image->blob=(BlobInfo *) NULL;
     }
-  LiberateSemaphoreInfo(&image->blob->semaphore);
-  if (image->blob->type != UndefinedStream)
-    CloseBlob(image);
-  if (image->blob->mapped)
-    (void) UnmapBlob(image->blob->data,image->blob->length);
-  if (image->blob->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&image->blob->semaphore);
-  (void) memset((void *) image->blob,0xbf,sizeof(BlobInfo));
-  MagickFreeMemory(image->blob);
 }
 
 /*
@@ -897,7 +909,11 @@ MagickExport void DestroyBlob(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DestroyBlobInfo() deallocates memory associated with an BlobInfo structure.
-%  Use of DestroyBlob is preferred over this function.
+%  The blob is a reference counted object so the object is only destroyed once
+%  its reference count decreases to zero. Use of DestroyBlob is preferred over
+%  this function since it assures that the blob is closed prior to destruction.
+%
+%  This function is no longer used within GraphicsMagick.
 %
 %  The format of the DestroyBlobInfo method is:
 %
@@ -911,22 +927,27 @@ MagickExport void DestroyBlob(Image *image)
 */
 MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
-  assert(blob != (BlobInfo *) NULL);
-  assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
-  blob->reference_count--;
-  if (blob->reference_count > 0)
+  if (blob != (BlobInfo *) NULL)
     {
+      MagickBool
+        destroy;
+
+      assert(blob->signature == MagickSignature);
+      AcquireSemaphoreInfo(&blob->semaphore);
+      blob->reference_count--;
+      assert(blob->reference_count >= 0);
+      destroy=(blob->reference_count > 0 ? MagickFalse : MagickTrue);
       LiberateSemaphoreInfo(&blob->semaphore);
-      return;
+      if (destroy)
+        {
+          if (blob->mapped)
+            (void) UnmapBlob(blob->data,blob->length);
+          if (blob->semaphore != (SemaphoreInfo *) NULL)
+            DestroySemaphoreInfo(&blob->semaphore);
+          (void) memset((void *)blob,0xbf,sizeof(BlobInfo));
+          MagickFreeMemory(blob);
+        }
     }
-  LiberateSemaphoreInfo(&blob->semaphore);
-  if (blob->mapped)
-    (void) UnmapBlob(blob->data,blob->length);
-  if (blob->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&blob->semaphore);
-  (void) memset((void *)blob,0xbf,sizeof(BlobInfo));
-  MagickFreeMemory(blob);
 }
 
 /*
