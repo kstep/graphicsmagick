@@ -2454,8 +2454,8 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE=TclMagick
- VERSION=0.45
+ PACKAGE='tclmagick'
+ VERSION='0.45'
 
 
 cat >>confdefs.h <<_ACEOF

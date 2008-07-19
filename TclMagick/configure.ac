@@ -11,7 +11,7 @@ AC_CONFIG_MACRO_DIR([unix/m4])
 # Directory where autotools helper scripts lives.
 AC_CONFIG_AUX_DIR([unix/config])
 
-AM_INIT_AUTOMAKE(TclMagick, 0.45)
+AM_INIT_AUTOMAKE
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an

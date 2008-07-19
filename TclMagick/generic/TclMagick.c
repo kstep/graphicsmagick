@@ -6,8 +6,6 @@
  * For a list of changes see "ChangeLog"
  **********************************************************************/
 
-/* $Id$ */
-
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
