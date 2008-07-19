@@ -110,17 +110,21 @@ static void magickObjDeleteCmd(ClientData clientData)
         switch(mPtr->type) {
         case TM_TYPE_WAND:
             DestroyMagickWand(mPtr->wandPtr);
+            mPtr->wandPtr=(MagickWand *) NULL;;
             break;
         case TM_TYPE_DRAWING:
             DestroyDrawingWand(mPtr->wandPtr);
+            mPtr->wandPtr=(DrawingWand *) NULL;
             break;
         case TM_TYPE_PIXEL:
             DestroyPixelWand(mPtr->wandPtr);
+            mPtr->wandPtr=(PixelWand *) NULL;
             break;
         }
     }
     if( mPtr->hashPtr != NULL ) {
         Tcl_DeleteHashEntry(mPtr->hashPtr);
+        mPtr->hashPtr=(Tcl_HashEntry *) NULL;
     }
     ckfree((char *)mPtr);
 }
