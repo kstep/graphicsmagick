@@ -1,15 +1,12 @@
 #!/bin/sh
+#
+# Execute this script to update the build environment if the version of
+# Automake or Autoconf is changed.
+#
 
-# Be sure to use a recent autotools set.  1.8 works for me.
-
-VERSION="1.8"
-
-if [ "$VERSION" != "" ]
-    then
-    # Add the dash
-    VERSION="-$VERSION"
-fi
-
-aclocal${VERSION}
+libtoolize --verbose --copy --force
+aclocal -I unix/m4
+#autoheader
 autoconf
-automake${VERSION} --add-missing
+automake --verbose --add-missing --copy --force-missing
+

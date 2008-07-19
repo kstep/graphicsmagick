@@ -3,10 +3,20 @@ dnl	This file is an input file used by the GNU "autoconf" program to
 dnl	generate the file "configure", which is run during Tcl installation
 dnl	to configure the system for the local environment.
 #
-# RCS: @(#) $Id$
-
 AC_INIT(TclMagick, 0.45)
+
+# Specify directory where m4 macros may be found.
+AC_CONFIG_MACRO_DIR([unix/m4])
+
+# Directory where autotools helper scripts lives.
+AC_CONFIG_AUX_DIR([unix/config])
+
 AM_INIT_AUTOMAKE(TclMagick, 0.45)
+
+# Add configure option --enable-maintainer-mode which enables dependency
+# checking and generation useful to package maintainers.  This is made an
+# option to avoid confusing end users.
+AM_MAINTAINER_MODE
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
