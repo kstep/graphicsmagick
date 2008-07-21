@@ -685,7 +685,7 @@ uninstall-am:
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)@libdir@/TclMagick@VERSION@
-	$(INSTALL_DATA) pkgIndex.tcl $(DESTDIR)@libdir@/TclMagick@VERSION@
+	$(INSTALL_DATA) $(top_srcdir)/pkgIndex.tcl $(DESTDIR)@libdir@/TclMagick@VERSION@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

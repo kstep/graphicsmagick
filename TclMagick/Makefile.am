@@ -7,4 +7,4 @@ SUBDIRS = generic
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)@libdir@/TclMagick@VERSION@
-	$(INSTALL_DATA) pkgIndex.tcl $(DESTDIR)@libdir@/TclMagick@VERSION@
+	$(INSTALL_DATA) $(top_srcdir)/pkgIndex.tcl $(DESTDIR)@libdir@/TclMagick@VERSION@
