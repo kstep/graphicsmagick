@@ -1,3 +1,8 @@
+2008-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (RegisterPSDImage): Fix module registration memory leak.
+	* coders/jpeg.c (RegisterJPEGImage): Fix module registration memory leak.
+
 2008-07-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (DestroyBlob, DestroyBlobInfo): Implementation is

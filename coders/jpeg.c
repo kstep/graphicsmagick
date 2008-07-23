@@ -1179,7 +1179,7 @@ ModuleExport void RegisterJPEGImage(void)
   entry->adjoin=False;
   entry->description="Joint Photographic Experts Group JFIF format";
   if (version[0] != '\0')
-    entry->module=AcquireString("JPEG");
+    entry->module="JPEG";
   entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
