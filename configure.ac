@@ -2028,7 +2028,7 @@ then
 	    AC_MSG_RESULT(yes)
 	    have_tiff='yes'
 	    AC_CHECK_HEADERS(tiffconf.h)
-            AC_CHECK_FUNCS([TIFFGetConfiguredCODECs \
+            AC_CHECK_FUNCS([TIFFIsCODECConfigured \
                             TIFFMergeFieldInfo \
                             TIFFSetErrorHandlerExt \
                             TIFFSetTagExtender \

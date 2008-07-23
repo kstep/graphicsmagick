@@ -24,6 +24,8 @@
 2008-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/tiff.c (CompressionSupported): Use
+        TIFFIsCODECConfigured() to test if a codec is supported.
   <LI> tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than
         DestroyImage().
 

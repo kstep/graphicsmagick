@@ -63,7 +63,7 @@ RUNENV = $(SHELL) `pwd`/rungm.sh
 TESTS_ENVIRONMENT = \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
-	GM="$(RUNENV) `pwd`/utilities/gm"
+	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
 
 # Tests to run
 TESTS = \
@@ -189,6 +189,9 @@ distclean-local: $(PERLMAGICK_DISTCLEAN_LOCAL_TARGETS)
 maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
+
+memcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick

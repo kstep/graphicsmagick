@@ -332,8 +332,8 @@
 /* Define to 1 if you have the <tiffconf.h> header file. */
 #undef HAVE_TIFFCONF_H
 
-/* Define to 1 if you have the `TIFFGetConfiguredCODECs' function. */
-#undef HAVE_TIFFGETCONFIGUREDCODECS
+/* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
+#undef HAVE_TIFFISCODECCONFIGURED
 
 /* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
 #undef HAVE_TIFFMERGEFIELDINFO
