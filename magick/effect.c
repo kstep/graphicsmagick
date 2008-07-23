@@ -2811,6 +2811,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 
   MagickBool
     grayscale,
+    initialize_indexes,
     modified;
 
   /*
@@ -2819,6 +2820,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
+  initialize_indexes=(image->storage_class == PseudoClass ? MagickFalse : MagickTrue);
   grayscale=image->is_grayscale;
   quantum_threshold=RoundDoubleToQuantum(threshold);
 
@@ -2855,7 +2857,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
           else
             intensity=PixelIntensityToQuantum(&q[x]);
           index=(intensity <= quantum_threshold ? 0U : 1U);
-          if (index != indexes[x])
+          if ((initialize_indexes) || (index != indexes[x]))
             {
               modified=MagickTrue;
               indexes[x]=index;

@@ -36580,7 +36580,7 @@ done
 
 
 
-for ac_func in TIFFGetConfiguredCODECs \
+for ac_func in TIFFIsCODECConfigured \
                             TIFFMergeFieldInfo \
                             TIFFSetErrorHandlerExt \
                             TIFFSetTagExtender \

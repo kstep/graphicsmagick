@@ -348,23 +348,11 @@ static MagickBool CompressionSupported(const CompressionType compression,
 
   if (MagickTrue == status)
     {
-#if defined(HAVE_TIFFGETCONFIGUREDCODECS) || (TIFFLIB_VERSION > 20040919)
+#if defined(HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
       if (compress_tag != COMPRESSION_NONE)
         {
-          TIFFCodec
-            *codec,
-            *codecs;
-          
-          status = MagickFalse;
-          codecs = TIFFGetConfiguredCODECs();
-          for( codec = codecs; codec->name; codec++ )
-            {
-              if (codec->scheme == compress_tag)
-                {
-                  status = MagickTrue;
-                  break;
-                }
-            }
+          if (TIFFIsCODECConfigured(compress_tag))
+            status = MagickTrue;
         }
 #else
       switch (compress_tag)

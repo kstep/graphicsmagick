@@ -4099,7 +4099,7 @@ MagickExport size_t WriteBlobByte(Image *image,const magick_uint8_t value)
     case StandardStream:
     case PipeStream:
       {
-        if(putc((int)value,image->blob->file) != EOF)
+        if(putc(value,image->blob->file) != EOF)
           return 1;
         return 0;
       }
