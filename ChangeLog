@@ -1,5 +1,7 @@
 2008-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than
+	DestroyImage().
 	* coders/psd.c (RegisterPSDImage): Fix module registration memory leak.
 	* coders/jpeg.c (RegisterJPEGImage): Fix module registration memory leak.
 
