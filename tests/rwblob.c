@@ -227,7 +227,7 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
   imageInfo->depth=original->depth;
-  DestroyImage( original );
+  DestroyImageList( original );
   original = (Image*)NULL;
 
   /*
@@ -340,10 +340,10 @@ int main ( int argc, char **argv )
 
  program_exit:
   if (original)
-    DestroyImage( original );
+    DestroyImageList( original );
   original = (Image*)NULL;
   if (final)
-    DestroyImage( final );
+    DestroyImageList( final );
   final = (Image*)NULL;
 
   DestroyImageInfo( imageInfo );

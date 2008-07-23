@@ -1,3 +1,8 @@
+2008-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than
+	DestroyImage().
+
 2008-07-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (DestroyBlob, DestroyBlobInfo): Implementation is
