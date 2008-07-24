@@ -86,7 +86,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   const unsigned long width,const unsigned long height,
   const double offset,ExceptionInfo *exception)
 {
-#define ThresholdImageText  "  Threshold the image...  "
+#define AdaptiveThresholdImageText  "  Threshold the image...  "
 
   DoublePixelPacket
     aggregate,
@@ -167,7 +167,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     if (!SyncImagePixels(threshold_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,exception))
+      if (!MagickMonitor(AdaptiveThresholdImageText,y,image->rows,exception))
         break;
   }
   if (y < (long) image->rows)
@@ -642,7 +642,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 MagickExport unsigned int ChannelThresholdImage(Image *image,
   const char *threshold)
 {
-#define ThresholdImageText  "  Threshold the image...  "
+#define ChannelThresholdImageText  "  Threshold the image...  "
 
   double
     red_threshold,
@@ -732,7 +732,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+      if (!MagickMonitor(ChannelThresholdImageText,y,image->rows,&image->exception))
         break;
   }
 
@@ -2667,12 +2667,14 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ThresholdImage() changes the value of individual pixels based on
-%  the intensity of each pixel compared to threshold.  The result is a
-%  high-contrast, two color image.
+%  the intensity of each pixel compared to a specified threshold.  Values
+%  greater than the threshold are set to the maximum quantum value, and
+%  values equal to or below the threshold are set to the minimum quantum
+%  value.  The result is a high-contrast, two color image.
 %
 %  The format of the ThresholdImage method is:
 %
-%      unsigned int ThresholdImage(Image *image,const double threshold)
+%      MagickPassFail ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -2682,27 +2684,33 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %
 */
-MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
+MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 {
-#define ThresholdImageText  "  Threshold the image...  "
+#define ThresholdImageText  "Threshold the image...  "
 
   register IndexPacket
     index;
 
-  long
+  unsigned long
     y;
 
   register IndexPacket
     *indexes;
 
-  register unsigned long
+  Quantum
+    intensity,
     quantum_threshold;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
     *q;
+
+  MagickBool
+    grayscale,
+    initialize_indexes,
+    modified;
 
   /*
     Threshold image.
@@ -2710,68 +2718,64 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
+  initialize_indexes=(image->storage_class == PseudoClass ? MagickFalse : MagickTrue);
+  grayscale=image->is_grayscale;
+  quantum_threshold=RoundDoubleToQuantum(threshold);
+
+  /*
+    Check if image is already in desired state.
+  */
+  if ((quantum_threshold != MaxRGB) && (image->storage_class == PseudoClass)
+      && (image->colors == 2))
+    {
+      if (IsBlackPixel(image->colormap[0]) && (IsWhitePixel(image->colormap[1])))
+        {
+          image->is_monochrome=MagickTrue;
+          image->is_grayscale=MagickTrue;
+          return MagickPass;
+        }
+    }
+
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToThresholdImage);
+                          UnableToThresholdImage);
 
-  quantum_threshold=RoundSignedToQuantum(threshold);
-
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if (quantum_threshold == MaxRGB)
-      {
-        /* All pixels thresholded to black */
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            *indexes++=q->red=q->green=q->blue=0;
-            q++;
-          }
-      }
-    else if (quantum_threshold == 0)
-      {
-        /* All pixels thresholded to white */
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            *indexes++=1;
-            q->red=q->green=q->blue=MaxRGB;
-            q++;
-          }
-      }
-    else if (image->is_grayscale)
-      {
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            /* Image is grayscale so q->red contains intensity */
-            index=q->red <= quantum_threshold ? 0 : 1;
-            *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[index].red;
-            q++;
-          }
-      }
-    else
-      {
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            /* Compute itensity value of RGB pixel */
-            index=PixelIntensityToQuantum(q) <= quantum_threshold ? 0 : 1;
-            *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[index].red;
-            q++;
-          }
-      }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+  for (y=0; y < image->rows; y++)
+    {
+      q=GetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
         break;
-  }
-  image->is_monochrome=True;
-  image->is_grayscale=True;
-  return(True);
+      indexes=GetIndexes(image);
+      modified=MagickFalse;
+
+      for (x=0; x < image->columns; x++)
+        {
+          if (grayscale)
+            intensity=q[x].red;
+          else
+            intensity=PixelIntensityToQuantum(&q[x]);
+          index=(intensity <= quantum_threshold ? 0U : 1U);
+          if ((initialize_indexes) || (index != indexes[x]))
+            {
+              modified=MagickTrue;
+              indexes[x]=index;
+            }
+          if (NotColorMatch(&image->colormap[index],&q[x]))
+            {
+              modified=MagickTrue;
+              q[x].red=q[x].green=q[x].blue=image->colormap[index].red;
+            }
+        }
+      if (modified)
+        if (!SyncImagePixels(image))
+          break;
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+          break;
+    }
+  image->is_monochrome=MagickTrue;
+  image->is_grayscale=MagickTrue;
+  return(MagickPass);
 }
 
 /*
