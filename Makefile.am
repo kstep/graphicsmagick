@@ -69,6 +69,7 @@ TESTS_ENVIRONMENT = \
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
+	$(WAND_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail

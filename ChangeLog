@@ -1,3 +1,8 @@
+2008-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/Makefile.am (WAND_TESTS): Added Wand drawtest and wandtest
+	to automated test suite.
+
 2008-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ThresholdImage): Backport implementation from
