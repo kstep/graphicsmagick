@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on June 29, 2008
+This file was last updated on July 26, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,34 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.5 (July 26, 2008)
+=====================
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * TIFF: Eliminated a memory leak in the codec support detection code.
+
+  * JPEG: Removed over-write of image->client_data.
+
+  * PNG: Fixed crash when writing PNG images with transparency and either
+    optimize is requested, or the image is colormapped.
+
+
+Feature improvements:
+
+  * A file extension proxy module is used to automatically map from
+    common camera raw format extensions to dcraw so that camera RAW
+    images are loaded automatically using 'dcraw' or similar program
+    as defined via the 'dcraw' entry in delegates.mgk.
+
+  * ThresholdImage() uses a new implementation backported from the
+    development version which attempts to avoid unnecessary image
+    updates.
 
 1.2.4 (June 29, 2008)
 =====================
