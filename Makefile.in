@@ -4299,7 +4299,9 @@ WAND_EXTRA_DIST = \
 	wand/input_bilevel.miff \
 	wand/input_gray.miff \
 	wand/input_truecolor.miff \
-	wand/sequence.miff
+	wand/sequence.miff \
+	wand/common.sh \
+	$(WAND_TESTS)
 
 wand_drawtest_LDADD = $(LIBWAND)
 wand_drawtest_LDFLAGS = $(LDFLAGS)
