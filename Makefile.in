@@ -1977,6 +1977,7 @@ TESTS_ENVIRONMENT = \
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
+	$(WAND_TESTS) \
 	$(UTILITIES_TESTS)
 
 
@@ -4310,9 +4311,12 @@ WAND_CHECK_PGRMS = \
 	wand/drawtest \
 	wand/wandtest
 
+WAND_TESTS = \
+	wand/drawtest.sh \
+	wand/wandtest.sh
+
 WAND_CLEANFILES = \
-        wand/*_out.* \
-        wand/image.miff
+        wand/*_out.*
 
 UTILITIES_PGMS = \
 	utilities/gm

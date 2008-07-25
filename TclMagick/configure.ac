@@ -24,31 +24,44 @@ AC_ISC_POSIX
 AC_HEADER_STDC([])
 
 
-dnl This is required, because we need this information!
-AC_ARG_WITH(magick, [  --with-magick              location of Graphics/ImageMagickWand-config script], with_magick=${withval})
-AC_MSG_CHECKING([for Graphics/ImageMagick configuration script])
+dnl Allow the user to specify the GraphicsMagick or ImageMagick config
+dnl script to use.
+AC_ARG_WITH(magick, [  --with-magick              location of Graphics/MagickWand-config script], with_magick=${withval})
 
 dnl First check to see if --with-magick-config was specified.
 GM_CPPFLAGS=''
 GM_LDFLAGS=''
 GM_LIBS=''
-if test x"${with_magick}" != x ; then
-    if test -x "${with_magick}" ; then
-	dnl It actually calls another script, so the PATH needs to be set.
-	export PATH=$PATH:`dirname ${with_magick}`
-	AC_MSG_RESULT("Using ${with_magick}")
-	GM_CPPFLAGS=`${with_magick} --cppflags`
-	AC_SUBST(GM_CPPFLAGS)
-	GM_LDFLAGS=`${with_magick} --ldflags`
-	AC_SUBST(GM_LDFLAGS)
-	GM_LIBS=`${with_magick} --libs`
-	AC_SUBST(GM_LIBS)
-    else
-	AC_MSG_ERROR([${with_magick} is not an executable file])
-    fi
-else
-    AC_MSG_ERROR([You must specify the Graphics/ImageMagick-config script with --with-magick!])
+wand_config=''
+if test x"${with_magick}" != x
+then
+  if test -x "${with_magick}"
+  then
+    wand_config=${with_magick}
+  else
+    AC_MSG_ERROR([${with_magick} is not an executable file])
+  fi
 fi
+if test x"${wand_config}" = x
+then
+  AC_PATH_PROGS(wand_config,[GraphicsMagickWand-config MagickWand-config],,)
+fi
+if test x"${wand_config}" = x
+then
+  AC_MSG_ERROR([Please specify the Graphics/ImageMagick-config script with --with-magick!])
+fi
+
+dnl It actually calls another script, so the PATH needs to be set.
+PATH=$PATH:`dirname ${wand_config}`
+export PATH
+AC_MSG_CHECKING([for Graphics/ImageMagick Wand configuration script])
+AC_MSG_RESULT(${wand_config})
+GM_CPPFLAGS=`${wand_config} --cppflags`
+AC_SUBST(GM_CPPFLAGS)
+GM_LDFLAGS=`${wand_config} --ldflags`
+AC_SUBST(GM_LDFLAGS)
+GM_LIBS=`${wand_config} --libs`
+AC_SUBST(GM_LIBS)
 
 CPPFLAGS_SAVE=$CPPFLAGS
 LDFLAGS_SAVE=$LDFLAGS

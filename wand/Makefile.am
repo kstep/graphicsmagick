@@ -66,6 +66,9 @@ WAND_CHECK_PGRMS = \
 	wand/drawtest \
 	wand/wandtest
 
+WAND_TESTS = \
+	wand/drawtest.sh \
+	wand/wandtest.sh
+
 WAND_CLEANFILES = \
-        wand/*_out.* \
-        wand/image.miff
+        wand/*_out.*

@@ -78,8 +78,6 @@
 #define False  0
 #define True  1
 
-int main(int argc,char **argv)
-{
 #define ThrowAPIException(wand) \
 { \
   description=MagickGetException(wand,&severity); \
@@ -88,6 +86,8 @@ int main(int argc,char **argv)
   exit(-1); \
 }
 
+int main(int argc,char **argv)
+{
   char
     *description;
 
@@ -135,7 +135,11 @@ int main(int argc,char **argv)
     path[0]=0;
     p=getenv("SRCDIR");
     if (p)
-      strcpy(path,p);
+      {
+        strcpy(path,p);
+        if (path[strlen(path)-1] != '/')
+          strcat(path,"/");
+      }
     strcat(path,"sequence.miff");
     
     status=MagickReadImage(magick_wand,path);
@@ -244,8 +248,8 @@ int main(int argc,char **argv)
   status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
   if (status == False)
     ThrowAPIException(magick_wand);
-  (void) fprintf(stdout,"Write to image.miff...\n");
-  status=MagickWriteImages(magick_wand,"image.miff",True);
+  (void) fprintf(stdout,"Write to wandtest_out.miff...\n");
+  status=MagickWriteImages(magick_wand,"wandtest_out.miff",True);
   if (status == False)
     ThrowAPIException(magick_wand);
   DestroyMagickWand(magick_wand);

@@ -1,3 +1,8 @@
+2008-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Search for GraphicsMagickWand-config and
+	MagickWand-config in the PATH by default.
+
 2008-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Apply useful Automake
