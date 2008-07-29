@@ -1,6 +1,6 @@
 /*
 % Copyright (C) 2003 - 2008 GraphicsMagick Group
-% Copyright (C) 2003 ImageMagick Studio
+% Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
 % This program is covered by multiple licenses, which are described in
@@ -42,20 +42,54 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p a r e I m a g e C h a n n e l s                                   %
+%   D i f f e r e n c e I m a g e O p t i o n s D e f a u l t s               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImageChannels() compares one or more image channels of an image
-%  with those in a second image and returns a difference image.
+%  DifferenceImageOptionsDefaults() assigns default options to a user-provided
+%  DifferenceImageOptions structure.  This function should always be used
+%  to initialize the DifferenceImageOptions structure prior to making any
+%  changes to it.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the DifferenceImageOptionsDefaults method is:
 %
-%      Image *CompareImageChannels(const Image *reference_image,
-%        const Image *compare_image,const ChannelType channel,
-%        const MetricType metric,double *distortion,ExceptionInfo *exception)
+%      void DifferenceImageOptionsDefaults(DifferenceImageOptions *options)
+%
+%  A description of each parameter follows:
+%
+%    o options: pointer to DifferenceImageOptions structure to initialize.
+%
+*/
+MagickExport void
+DifferenceImageOptionsDefaults(DifferenceImageOptions *options)
+{
+  assert(options != (DifferenceImageOptions *) NULL);
+  options->algorithm=AnnotateDifferenceAlgorithm;
+  options->channel=AllChannels;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D i f f e r e n c e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DifferenceImage() returns an annotated difference image based on the
+%  the difference between a reference image and a compare image.
+%
+%  The format of the DifferenceImage method is:
+%
+%      Image *DifferenceImage(const Image *reference_image,
+%                             const Image *compare_image,
+%                             const DifferenceImageOptions *difference_options,
+%                             ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -63,43 +97,33 @@
 %
 %    o compare_image: the comparison image.
 %
+%    o difference_options: options to use when comparing.
+%
 %    o channel: the channel(s) to compare.
-%
-%    o metric: the comparison metric (UndefinedMetric,
-%        MeanAbsoluteErrorMetric, MeanSquaredErrorMetric,
-%        PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric,
-%        or RootMeanSquaredErrorMetric)
-%
-%    o distortion: the computed distortion between the images based on the
-%        specified metric.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-typedef struct _CompareImageOptions
-{
-  ChannelType channel;
-} CompareImageOptions;
 static MagickPassFail
-CompareImageChannelsPixels(void *user_data,                   /* User provided mutable data */
-                           const Image *source1_image,         /* Source 1 image */
-                           const PixelPacket *source1_pixels,  /* Pixel row in source 1 image */
-                           const IndexPacket *source1_indexes, /* Pixel row indexes in source 1 image */
-                           const Image *source2_image,         /* Source 2 image */
-                           const PixelPacket *source2_pixels,  /* Pixel row in source 2 image */
-                           const IndexPacket *source2_indexes, /* Pixel row indexes in source 2 image */
-                           Image *update_image,                   /* Update image */
-                           PixelPacket *update_pixels,            /* Pixel row in update image */
-                           IndexPacket *update_indexes,           /* Pixel row indexes in update image */
-                           const long npixels,                 /* Number of pixels in row */
-                           ExceptionInfo *exception            /* Exception report */
-                           )
+DifferenceImagePixels(void *user_data,                    /* User provided mutable data */
+                      const Image *source1_image,         /* Source 1 image */
+                      const PixelPacket *source1_pixels,  /* Pixel row in source 1 image */
+                      const IndexPacket *source1_indexes, /* Pixel row indexes in source 1 image */
+                      const Image *source2_image,         /* Source 2 image */
+                      const PixelPacket *source2_pixels,  /* Pixel row in source 2 image */
+                      const IndexPacket *source2_indexes, /* Pixel row indexes in source 2 image */
+                      Image *update_image,                /* Update image */
+                      PixelPacket *update_pixels,         /* Pixel row in update image */
+                      IndexPacket *update_indexes,        /* Pixel row indexes in update image */
+                      const long npixels,                 /* Number of pixels in row */
+                      ExceptionInfo *exception            /* Exception report */
+                   )
 {
-  const CompareImageOptions
-    *compare_options = (const CompareImageOptions *) user_data;
+  const DifferenceImageOptions
+    *difference_options = (const DifferenceImageOptions *) user_data;
 
   register ChannelType
-    channels = compare_options->channel;
+    channels = difference_options->channel;
 
   register long
     i;
@@ -164,14 +188,10 @@ CompareImageChannelsPixels(void *user_data,                   /* User provided m
 }
 
 MagickExport Image *
-CompareImageChannels(const Image *reference_image,
-                     const Image *compare_image,const ChannelType channel,
-                     const MetricType metric,double *distortion,
-                     ExceptionInfo *exception)
+DifferenceImage(const Image *reference_image,const Image *compare_image,
+                const DifferenceImageOptions *difference_options,
+                ExceptionInfo *exception)
 {
-  CompareImageOptions
-    compare_options;
-
   Image
     *difference_image;
 
@@ -179,10 +199,7 @@ CompareImageChannels(const Image *reference_image,
   assert(reference_image->signature == MagickSignature);
   assert(compare_image != (const Image *) NULL);
   assert(compare_image->signature == MagickSignature);
-  assert(distortion != (double *) NULL);
 
-  compare_options.channel=channel;
-  *distortion=0.0;
   difference_image=CloneImage(reference_image,reference_image->columns,
                               reference_image->rows,MagickTrue,exception);
   if (difference_image == (Image *) NULL)
@@ -191,64 +208,14 @@ CompareImageChannels(const Image *reference_image,
   /*
     Update "difference" image to mark changes.
   */
-  (void) PixelIterateTripleModify(CompareImageChannelsPixels,
-                                  "Compare image pixels ...",
-                                  &compare_options,
+  (void) PixelIterateTripleModify(DifferenceImagePixels,
+                                  "Difference image pixels ...",
+                                  (DifferenceImageOptions *) difference_options,
                                   reference_image->columns,reference_image->rows,
                                   reference_image, compare_image,0, 0,
                                   difference_image, 0, 0,
                                   exception);
-  /*
-    Compute image error based on metric.
-    FIXME: TBD
-  */
-
   return difference_image;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p a r e I m a g e s                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CompareImages() compares an image to a second image and returns a
-%  difference image.
-%
-%  The format of the CompareImages method is:
-%
-%      Image *CompareImages(const Image *reference_image,
-%        const Image *compare_image,
-%        const MetricType metric,double *distortion,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o reference_image: the reference image.
-%
-%    o compare_image: the comparison image.
-%
-%    o metric: the comparison metric (UndefinedMetric,
-%        MeanAbsoluteErrorMetric, MeanSquaredErrorMetric,
-%        PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric,
-%        or RootMeanSquaredErrorMetric)
-%
-%    o distortion: the computed distortion between the images based on the
-%        specified metric.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *
-CompareImages(const Image *reference_image,const Image *compare_image,
-              const MetricType metric,double *distortion,ExceptionInfo *exception)
-{
-  return CompareImageChannels(reference_image,compare_image,AllChannels,
-                              metric,distortion,exception);
 }
 
 /*
@@ -304,15 +271,15 @@ typedef struct _PixelErrorStats {
 } PixelErrorStats;
 
 static MagickPassFail
-ComputeRowPixelError(void *user_data,
-                     const Image *first_image,
-                     const PixelPacket *first_pixels,
-                     const IndexPacket *first_indexes,
-                     const Image *second_image,
-                     const PixelPacket *second_pixels,
-                     const IndexPacket *second_indexes,
-                     const long npixels,
-                     ExceptionInfo *exception)
+ComputePixelError(void *user_data,
+                  const Image *first_image,
+                  const PixelPacket *first_pixels,
+                  const IndexPacket *first_indexes,
+                  const Image *second_image,
+                  const PixelPacket *second_pixels,
+                  const IndexPacket *second_indexes,
+                  const long npixels,
+                  ExceptionInfo *exception)
 {
   PixelErrorStats
     *stats = (PixelErrorStats *) user_data;
@@ -332,15 +299,15 @@ ComputeRowPixelError(void *user_data,
 
   for (i=0; i < npixels; i++)
     {
-      difference=(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGB;
+      difference=(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGBDouble;
       distance_squared=(difference*difference);
-      difference=(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGB;
+      difference=(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGBDouble;
       distance_squared+=(difference*difference);
-      difference=(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGB;
+      difference=(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGBDouble;
       distance_squared+=(difference*difference);
       if (first_image->matte)
         {
-          difference=(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGB;
+          difference=(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
           distance_squared+=(difference*difference);
         }
       distance=sqrt(distance_squared);
@@ -389,7 +356,7 @@ IsImagesEqual(Image *image,const Image *reference)
   stats.maximum_error_per_pixel=0.0;
   stats.total_error=0.0;
 
-  (void) PixelIterateDualRead(ComputeRowPixelError,
+  (void) PixelIterateDualRead(ComputePixelError,
                               "Compute pixel error ...",
                               (void *) &stats,
                               image->columns,image->rows,
@@ -406,7 +373,7 @@ IsImagesEqual(Image *image,const Image *reference)
   else
     normalize = sqrt(3.0); /* sqrt(1.0*1.0+1.0*1.0+1.0*1.0) */
   mean_error_per_pixel=stats.total_error/number_pixels;
-  image->error.mean_error_per_pixel=mean_error_per_pixel*MaxRGB;
+  image->error.mean_error_per_pixel=mean_error_per_pixel*MaxRGBDouble;
   image->error.normalized_mean_error=mean_error_per_pixel/normalize;
   image->error.normalized_maximum_error=stats.maximum_error_per_pixel/normalize;
   return(image->error.normalized_mean_error == 0.0);

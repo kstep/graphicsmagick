@@ -19,8 +19,8 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#compareimagechannels">CompareImageChannels</a></li>
-		<li><a href="#compareimages">CompareImages</a></li>
+		<li><a href="#differenceimageoptionsdefaults">DifferenceImageOptionsDefaults</a></li>
+		<li><a href="#differenceimage">DifferenceImage</a></li>
 		<li><a href="#isimagesequal">IsImagesEqual</a></li>
 	</ul>
 
@@ -36,8 +36,8 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>Image * <strong>CompareImageChannels</strong>( const Image *reference_image, const Image *compare_image, const ChannelType channel, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
-<P>Image * <strong>CompareImages</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>Image * <strong>DifferenceImage</strong>( const Image *reference_image, const Image *compare_image, const DifferenceImageOptions *difference_options, ExceptionInfo *exception );</P>
+<P>void  <strong>DifferenceImageOptionsDefaults</strong>( DifferenceImageOptions *options );</P>
 <P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
 <P>
 </P>
@@ -45,9 +45,22 @@
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
 </P>
-<h2><a name="compareimagechannels">CompareImageChannels</a></h2>
-<blockquote>CompareImageChannels() compares one or more image channels of an image with those in a second image and returns a difference image. </blockquote><P>The format of the CompareImageChannels method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *CompareImageChannels ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<h2><a name="differenceimageoptionsdefaults">DifferenceImageOptionsDefaults</a></h2>
+<blockquote>DifferenceImageOptionsDefaults() assigns default options to a user-provided DifferenceImageOptions structure. This function should always be used to initialize the DifferenceImageOptions structure prior to making any changes to it. </blockquote><P>The format of the DifferenceImageOptionsDefaults method is:</P>
+<blockquote>void DifferenceImageOptionsDefaults ( DifferenceImageOptions *options ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_options_3a">options:</a></strong>
+
+<DD>
+<P>pointer to DifferenceImageOptions structure to initialize.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="differenceimage">DifferenceImage</a></h2>
+<blockquote>DifferenceImage() returns an annotated difference image based on the the difference between a reference image and a compare image. </blockquote><P>The format of the DifferenceImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *DifferenceImage ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const DifferenceImageOptions *difference_options, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_reference_image_3a">reference_image:</a></strong>
 
@@ -61,62 +74,19 @@
 <P>the comparison image.</P>
 </dd>
 </li>
+<dt><strong><a name="item_o_difference_options_3a">difference_options:</a></strong>
+
+<DD>
+<P>options to use when comparing.</P>
+</dd>
+</li>
 <dt><strong><a name="item_o_channel_3a">channel:</a></strong>
 
 <DD>
 <P>the <code>channel(s)</code> to compare.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_metric_3a">metric:</a></strong>
-
-<DD>
-<P>the comparison metric (UndefinedMetric, MeanAbsoluteErrorMetric, MeanSquaredErrorMetric, PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric, or RootMeanSquaredErrorMetric)</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_distortion_3a">distortion:</a></strong>
-
-<DD>
-<P>the computed distortion between the images based on the specified metric.</P>
-</dd>
-</li>
 <dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
-<P>
-</P>
-<h2><a name="compareimages">CompareImages</a></h2>
-<blockquote>CompareImages() compares an image to a second image and returns a difference image. </blockquote><P>The format of the CompareImages method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *CompareImages ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>reference_image:</strong>
-
-<DD>
-<P>the reference image.</P>
-</dd>
-</li>
-<dt><strong>compare_image:</strong>
-
-<DD>
-<P>the comparison image.</P>
-</dd>
-</li>
-<dt><strong>metric:</strong>
-
-<DD>
-<P>the comparison metric (UndefinedMetric, MeanAbsoluteErrorMetric, MeanSquaredErrorMetric, PeakAbsoluteErrorMetric, PeakSignalToNoiseRatioMetric, or RootMeanSquaredErrorMetric)</P>
-</dd>
-</li>
-<dt><strong>distortion:</strong>
-
-<DD>
-<P>the computed distortion between the images based on the specified metric.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>

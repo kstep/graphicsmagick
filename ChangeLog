@@ -1,3 +1,15 @@
+2008-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickCompareImageChannels): Use
+	DifferenceImage().
+	(MagickCompareImages): Implement by calling
+	MagickCompareImageChannels().
+	* magick/compare.c (DifferenceImage): The ImageMagick-compatible
+	CompareImages() function signature was clearly an example of bad
+	design so rename CompareImages() to DifferenceImage() with a
+	signature which does not unnecessarily mix functionality and
+	allows for ease of future expansion.
+
 2008-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/Makefile.am (WAND_TESTS): Added Wand drawtest and wandtest

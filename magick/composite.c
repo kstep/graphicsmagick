@@ -23,6 +23,9 @@
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                                 July 1992                                   %
+%                            Re-design/Re-write                               %
+%                              Bob Friesenhahn                                %
+%                                  2008                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1708,7 +1711,7 @@ DivideCompositePixels(void *user_data,                   /* User provided mutabl
 %
 %  The format of the CompositeImage method is:
 %
-%      unsigned int CompositeImage(Image *canvas_image,
+%      MagickPassFail CompositeImage(Image *canvas_image,
 %        const CompositeOperator compose,const Image *composite_image,
 %        const long x_offset,const long y_offset)
 %
@@ -1740,10 +1743,11 @@ DivideCompositePixels(void *user_data,                   /* User provided mutabl
 %
 */
 
-MagickExport MagickPassFail CompositeImage(Image *canvas_image,
-                                           const CompositeOperator compose,
-                                           const Image *composite_image,
-                                           const long x_offset,const long y_offset)
+MagickExport MagickPassFail
+CompositeImage(Image *canvas_image,
+               const CompositeOperator compose,
+               const Image *composite_image,
+               const long x_offset,const long y_offset)
 {
   CompositePixelsOptions_t
     options;
@@ -2173,3 +2177,4 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
 
   return(status);
 }
+

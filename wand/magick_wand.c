@@ -1247,10 +1247,16 @@ WandExport unsigned int MagickCommentImage(MagickWand *wand,const char *comment)
 %    o distortion: The computed distortion between the images.
 %
 */
-WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
-  const MagickWand *reference,const ChannelType channel,const MetricType metric,
-  double *distortion)
+WandExport MagickWand *
+MagickCompareImageChannels(MagickWand *wand,
+                           const MagickWand *reference,
+                           const ChannelType channel,
+                           const MetricType metric,
+                           double *distortion)
 {
+  DifferenceImageOptions
+    difference_options;
+
   Image
     *compare_image;
 
@@ -1258,10 +1264,22 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  compare_image=CompareImageChannels(wand->image,reference->image,channel,
-    metric,distortion,&wand->image->exception);
+  if (distortion != (double *) NULL)
+    *distortion=0.0;
+  DifferenceImageOptionsDefaults(&difference_options);
+  difference_options.channel=channel;
+  compare_image=DifferenceImage(wand->image,reference->image,
+                                &difference_options,
+                                &wand->image->exception);
   if (compare_image == (Image *) NULL)
     return((MagickWand *) NULL);
+
+  /*
+    Perform statistical comparison of images using a metric.
+
+    FIXME: TBD
+  */
+
   return(CloneMagickWandWithImages(wand,compare_image));
 }
 
@@ -1297,21 +1315,12 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
 %
 */
 WandExport MagickWand *MagickCompareImages(MagickWand *wand,
-  const MagickWand *reference,const MetricType metric,double *distortion)
+                                           const MagickWand *reference,
+                                           const MetricType metric,
+                                           double *distortion)
 {
-  Image
-    *compare_image;
-
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  compare_image=CompareImages(wand->image,reference->image,metric,distortion,
-    &wand->image->exception);
-  if (compare_image == (Image *) NULL)
-    return((MagickWand *) NULL);
-  return(CloneMagickWandWithImages(wand,compare_image));
+  return MagickCompareImageChannels(wand,reference,AllChannels,
+                                    metric,distortion);
 }
 
 /*

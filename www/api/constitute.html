@@ -20,6 +20,7 @@
 	<ul>
 
 		<li><a href="#constituteimage">ConstituteImage</a></li>
+		<li><a href="#constitutetextureimage">ConstituteTextureImage</a></li>
 		<li><a href="#dispatchimage">DispatchImage</a></li>
 		<li><a href="#exportimagepixelarea">ExportImagePixelArea</a></li>
 		<li><a href="#exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></li>
@@ -45,6 +46,7 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>ConstituteImage</strong>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
+<P>Image * <strong>ConstituteTextureImage</strong>( unsigned long columns, unsigned long rows, const Image *texture, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>DispatchImage</strong>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ExportImagePixelArea</strong>( const Image *image, const QuantumType quantum_type, unsigned int quantum_size, unsigned char *destination, const ExportPixelAreaOptions *options, ExportPixelAreaInfo *export_info );</P>
 <P>void  <strong>ExportPixelAreaOptionsInit</strong>( ExportPixelAreaOptions *options );</P>
@@ -101,6 +103,37 @@
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="constitutetextureimage">ConstituteTextureImage</a></h2>
+<blockquote>ConstituteTextureImage() returns a new image canvas based on repeatedly tiling the texture image across and down the new image canvas. The returned image properties are similar to the texture image properties. </blockquote><P>The format of the TextureImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ConstituteTextureImage ( unsigned long columns, unsigned long rows, const <A HREF="types.html#Image">Image</A> *texture, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_columns_3a">columns:</a></strong>
+
+<DD>
+<P>The number of columns in the new image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_rows_3a">rows:</a></strong>
+
+<DD>
+<P>The number of rows in the new image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_texture_3a">texture:</a></strong>
+
+<DD>
+<P>The texture image to layer on the background.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_exceptions_3a">exceptions:</a></strong>
+
+<DD>
+<P>Any errors are reported here.</P>
 </dd>
 </li>
 </dl>

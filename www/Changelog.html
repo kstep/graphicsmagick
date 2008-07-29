@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2008-07-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c (MagickCompareImageChannels): Use
+        DifferenceImage().<BR>
+        (MagickCompareImages): Implement by calling
+        MagickCompareImageChannels().<BR>
+  <LI> magick/compare.c (DifferenceImage): The ImageMagick-compatible
+        CompareImages() function signature was clearly an example of bad
+        design so rename CompareImages() to DifferenceImage() with a
+        signature which does not unnecessarily mix functionality and
+        allows for ease of future expansion.
+
+</UL>
+<p>
 2008-07-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -230,7 +230,7 @@
 <P>
 </P>
 <h2><a name="destroyblob">DestroyBlob</a></h2>
-<blockquote>DestroyBlob() deallocates memory associated with a blob. </blockquote><P>The format of the DestroyBlob method is:</P>
+<blockquote>DestroyBlob() deallocates memory associated with a blob. The blob is a reference counted object so the object is only destroyed once its reference count decreases to zero. </blockquote><P>The format of the DestroyBlob method is:</P>
 <blockquote>void DestroyBlob ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
@@ -243,7 +243,8 @@
 <P>
 </P>
 <h2><a name="destroyblobinfo">DestroyBlobInfo</a></h2>
-<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types.html#BlobInfo">BlobInfo</A> structure. Use of DestroyBlob is preferred over this function. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
+<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types.html#BlobInfo">BlobInfo</A> structure. The blob is a reference counted object so the object is only destroyed once its reference count decreases to zero. Use of DestroyBlob is preferred over this function since it assures that the blob is closed prior to destruction. </blockquote><P>This function is no longer used within GraphicsMagick.</P>
+<P>The format of the DestroyBlobInfo method is:</P>
 <blockquote>void DestroyBlobInfo ( <A HREF="types.html#BlobInfo">BlobInfo</A> *blob ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>blob:</strong>

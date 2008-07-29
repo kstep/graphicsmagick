@@ -16,22 +16,25 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedMetric,
-  MeanAbsoluteErrorMetric,
-  MeanSquaredErrorMetric,
-  PeakAbsoluteErrorMetric,
-  PeakSignalToNoiseRatioMetric,
-  RootMeanSquaredErrorMetric
-} MetricType;
+  UndefinedDifferenceAlgorithm,
+  AnnotateDifferenceAlgorithm,
+  SubtractDifferenceAlgorithm,
+  OpacityDifferenceAlgorithm
+} DifferenceImageAlgorithm;
 
+typedef struct _DifferenceImageOptions
+{
+  DifferenceImageAlgorithm algorithm;
+  ChannelType              channel;
+} DifferenceImageOptions;
+
+extern MagickExport void
+  DifferenceImageOptionsDefaults(DifferenceImageOptions *options);
 
 extern MagickExport Image
-  *CompareImageChannels(const Image *image,const Image *reconstruct_image,
-                        const ChannelType channel,const MetricType metric,
-                        double *distortion,ExceptionInfo *exception),
-  *CompareImages(const Image *image,const Image *reconstruct_image,
-                 const MetricType metric,double *distortion,
-                 ExceptionInfo *exception);
+  *DifferenceImage(const Image *reference_image,const Image *compare_image,
+                   const DifferenceImageOptions *difference_options,
+                   ExceptionInfo *exception);
 
 extern MagickExport MagickBool
   IsImagesEqual(Image *,const Image *);

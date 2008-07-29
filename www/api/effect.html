@@ -70,7 +70,7 @@
 <P>Image * <strong>ShadeImage</strong>( const Image *image, const unsigned int gray, double azimuth, double elevation, ExceptionInfo *exception );</P>
 <P>Image * <strong>SharpenImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <strong>SpreadImage</strong>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>ThresholdImage</strong>( Image *image, const double threshold );</P>
+<P>MagickPassFail  <strong>ThresholdImage</strong>( Image *image, const double threshold );</P>
 <P>Image * <strong>UnsharpMaskImage</strong>( const Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>WhiteThresholdImage</strong>( Image *image, const char *thresholds );</P>
 <P>
@@ -533,8 +533,8 @@
 <P>
 </P>
 <h2><a name="thresholdimage">ThresholdImage</a></h2>
-<blockquote>ThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to threshold. The result is a high-contrast, two color image. </blockquote><P>The format of the ThresholdImage method is:</P>
-<blockquote>unsigned int ThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const double threshold ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>ThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to a specified threshold. Values greater than the threshold are set to the maximum quantum value, and values equal to or below the threshold are set to the minimum quantum value. The result is a high-contrast, two color image. </blockquote><P>The format of the ThresholdImage method is:</P>
+<blockquote>MagickPassFail ThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const double threshold ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong>
 
