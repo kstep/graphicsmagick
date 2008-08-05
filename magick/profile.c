@@ -379,15 +379,16 @@ typedef struct _TransformInfo
 } TransformInfo;
 
 static MagickPassFail
-ProfileImagePixels(void *user_data,          /* User provided mutable data */
-                   Image *image,             /* Modify image */
-                   PixelPacket *pixels,      /* Pixel row */
-                   IndexPacket *indexes,     /* Pixel row indexes */
-                   const long npixels,       /* Number of pixels in row */
-                   ExceptionInfo *exception) /* Exception report */
+ProfileImagePixels(void *mutable_data,         /* User provided mutable data */
+                   const void *immutable_data, /* User provided immutable data */
+                   Image *image,               /* Modify image */
+                   PixelPacket *pixels,        /* Pixel row */
+                   IndexPacket *indexes,       /* Pixel row indexes */
+                   const long npixels,         /* Number of pixels in row */
+                   ExceptionInfo *exception)   /* Exception report */
 {
   const TransformInfo
-    *tranform_info = (const TransformInfo *) user_data;
+    *tranform_info = (const TransformInfo *) immutable_data;
 
   register long
     i;
@@ -405,6 +406,7 @@ ProfileImagePixels(void *user_data,          /* User provided mutable data */
     alpha,
     beta;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
 
@@ -816,7 +818,8 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
               (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                                     "Performing pseudo class color conversion");
 
-              (void) ProfileImagePixels(&transform_info,
+              (void) ProfileImagePixels(NULL,
+                                        &transform_info,
                                         image,
                                         image->colormap,
                                         (IndexPacket *) NULL,
@@ -841,7 +844,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
 
               status=PixelIterateMonoModify(ProfileImagePixels,
                                             ProfileImageText,
-                                            &transform_info,0,0,image->columns,image->rows,
+                                            NULL,&transform_info,0,0,image->columns,image->rows,
                                             image,&image->exception);
 
               (void) LogMagickEvent(TransformEvent,GetMagickModule(),

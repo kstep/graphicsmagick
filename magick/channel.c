@@ -73,22 +73,24 @@
 %
 */
 static MagickPassFail
-ChannelImagePixels(void *user_data,          /* User provided mutable data */
-                   Image *image,             /* Modify image */
-                   PixelPacket *pixels,      /* Pixel row */
-                   IndexPacket *indexes,     /* Pixel row indexes */
-                   const long npixels,       /* Number of pixels in row */
-                   ExceptionInfo *exception) /* Exception report */
+ChannelImagePixels(void *mutable_data,         /* User provided mutable data */
+                   const void *immutable_data, /* User provided immutable data */
+                   Image *image,               /* Modify image */
+                   PixelPacket *pixels,        /* Pixel row */
+                   IndexPacket *indexes,       /* Pixel row indexes */
+                   const long npixels,         /* Number of pixels in row */
+                   ExceptionInfo *exception)   /* Exception report */
 {
   /*
     Transform image so that it only represents the specified channel.
   */
   ChannelType
-    channel = *((const ChannelType *) user_data);
+    channel = *((const ChannelType *) immutable_data);
 
   register long
     i;  
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
   switch (channel)
@@ -198,7 +200,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 
   status=PixelIterateMonoModify(ChannelImagePixels,
                                 ChannelImageText,
-                                &channel_type,0,0,image->columns,image->rows,
+                                NULL,&channel_type,0,0,image->columns,image->rows,
                                 image,&image->exception);
 
   image->matte=MagickFalse;
@@ -263,7 +265,8 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
   } while (0);
 
 static MagickPassFail
-ExportImageChannelPixels(void *user_data,                   /* User provided mutable data */
+ExportImageChannelPixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
                          const PixelPacket *source_pixels,  /* Pixel row in source image */
                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -275,8 +278,9 @@ ExportImageChannelPixels(void *user_data,                   /* User provided mut
                          )
 {
   ChannelType
-    channel = *((const ChannelType *) user_data);
+    channel = *((const ChannelType *) immutable_data);
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(new_image);
   ARG_NOT_USED(new_indexes);
   ARG_NOT_USED(exception);
@@ -358,7 +362,7 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
   new_image->storage_class=DirectClass;
 
   (void) PixelIterateDualNew(ExportImageChannelPixels,ExportImageChannelText,
-                             &channel_type,
+                             NULL,&channel_type,
                              source_image->columns,source_image->rows,
                              source_image,0,0,
                              new_image,0,0,
@@ -432,14 +436,9 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
       }                                                         \
   }
 
-typedef struct _ChannelDepthInfo
-{
-  ChannelType   channel;
-  unsigned int  depth;
-} ChannelDepthInfo;
-
 static MagickPassFail
-GetImageChannelDepthPixels(void *user_data,             /* User provided mutable data */
+GetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable data */
+                           const void *immutable_data,  /* User provided immutable data */
                            const Image *image,          /* Input image */
                            const PixelPacket *pixels,   /* Pixel row */
                            const IndexPacket *indexes,  /* Pixel indexes */
@@ -447,15 +446,20 @@ GetImageChannelDepthPixels(void *user_data,             /* User provided mutable
                            ExceptionInfo *exception     /* Exception report */
                            )
 {
-  ChannelDepthInfo
-    *channel_info = (ChannelDepthInfo *) user_data;
+  unsigned int
+    *channel_depth=(unsigned int *) mutable_data;
+
+  ChannelType
+    channel = *((const ChannelType *) immutable_data);
 
   register unsigned int
-    depth=channel_info->depth;
+    depth;
 
   ARG_NOT_USED(exception);
 
-  switch (channel_info->channel)
+  depth=*channel_depth;
+
+  switch (channel)
     {
     case RedChannel:
     case CyanChannel:
@@ -498,8 +502,8 @@ GetImageChannelDepthPixels(void *user_data,             /* User provided mutable
       }
     }
 
-  if (depth > channel_info->depth)
-    channel_info->depth=depth;
+  if (depth > *channel_depth)
+    *channel_depth=depth;
 
   if (depth >= QuantumDepth)
     return MagickFail;
@@ -512,21 +516,21 @@ GetImageChannelDepth(const Image *image,
                      const ChannelType channel,
                      ExceptionInfo *exception)
 {
-  ChannelDepthInfo
-    depth_info;
+  unsigned int
+    depth;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  depth_info.channel=channel;
-  depth_info.depth=1;
+  depth=1;
 
   (void) PixelIterateMonoRead(GetImageChannelDepthPixels,
                               ComputeChannelDepthText,
-                              &depth_info,
+                              &depth,
+                              &channel,
                               0,0,image->columns,image->rows,
                               image,exception);
-  return depth_info.depth;
+  return depth;
 }
 
 /*
@@ -585,7 +589,8 @@ GetImageChannelDepth(const Image *image,
     } while (0);
 
 static MagickPassFail
-ImportImageChannelPixels(void *user_data,                   /* User provided mutable data */
+ImportImageChannelPixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
                          const PixelPacket *source_pixels,  /* Pixel row in source image */
                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -597,8 +602,9 @@ ImportImageChannelPixels(void *user_data,                   /* User provided mut
                          )
 {
   ChannelType
-    channel = *((const ChannelType *) user_data);
+    channel = *((const ChannelType *) immutable_data);
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
   switch (channel)
@@ -665,7 +671,7 @@ MagickPassFail ImportImageChannel(const Image *source_image,
 
   update_image->storage_class=DirectClass;
   status=PixelIterateDualModify(ImportImageChannelPixels,ImportImageChannelText,
-                                &channel_type,
+                                NULL,&channel_type,
                                 source_image->columns,source_image->rows,
                                 source_image,0,0,
                                 update_image,0,0,
@@ -716,16 +722,23 @@ MagickPassFail ImportImageChannel(const Image *source_image,
       parameter=scale*((parameter)/scale);                              \
   }
 
+typedef struct _ChannelDepthInfo
+{
+  ChannelType   channel;
+  unsigned int  depth;
+} ChannelDepthInfo;
+
 static MagickPassFail
-SetImageChannelDepthPixels(void *user_data,          /* User provided mutable data */
-                           Image *image,             /* Modify image */
-                           PixelPacket *pixels,      /* Pixel row */
-                           IndexPacket *indexes,     /* Pixel row indexes */
-                           const long npixels,       /* Number of pixels in row */
-                           ExceptionInfo *exception) /* Exception report */
+SetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable data */
+                           const void *immutable_data,  /* User provided immutable data */
+                           Image *image,                /* Modify image */
+                           PixelPacket *pixels,         /* Pixel row */
+                           IndexPacket *indexes,        /* Pixel row indexes */
+                           const long npixels,          /* Number of pixels in row */
+                           ExceptionInfo *exception)    /* Exception report */
 {
   const ChannelDepthInfo
-    *depth_info = (const ChannelDepthInfo *) user_data;
+    *depth_info = (const ChannelDepthInfo *) immutable_data;
 
   register unsigned int
     scale;
@@ -733,6 +746,7 @@ SetImageChannelDepthPixels(void *user_data,          /* User provided mutable da
   register long
     i;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
   scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth_info->depth));
@@ -808,7 +822,7 @@ MagickExport MagickPassFail SetImageChannelDepth(Image *image,
       image->storage_class=DirectClass;
       status=PixelIterateMonoModify(SetImageChannelDepthPixels,
                                     SetChannelDepthText,
-                                    &depth_info,0,0,image->columns,image->rows,
+                                    NULL,&depth_info,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
   return status;

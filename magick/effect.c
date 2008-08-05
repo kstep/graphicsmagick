@@ -213,7 +213,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 */
 static MagickPassFail
-AddNoiseImagePixels(void *user_data,                   /* User provided mutable data */
+AddNoiseImagePixels(void *mutable_data,                /* User provided mutable data */
+                    const void *immutable_data,        /* User provided immutable data */
                     const Image *source_image,         /* Source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -228,12 +229,12 @@ AddNoiseImagePixels(void *user_data,                   /* User provided mutable 
     Add noise to image pixle.
   */
   const NoiseType
-    noise_type = *((const NoiseType *) user_data);
+    noise_type = *((const NoiseType *) immutable_data);
 
   register long
     i;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(new_image);
   ARG_NOT_USED(new_indexes);
@@ -301,7 +302,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  (void) PixelIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,&noise,
+  (void) PixelIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,NULL,&noise,
                              image->columns,image->rows,image,0,0,
                              noise_image,0,0,&noise_image->exception);
   noise_image->is_grayscale=is_grayscale;
@@ -706,18 +707,19 @@ typedef struct _ChannelThresholdOptions_t
 } ChannelThresholdOptions_t;
 
 static MagickPassFail
-ChannelThresholdPixels(void *user_data,          /* User provided mutable data */
-                       Image *image,             /* Modify image */
-                       PixelPacket *pixels,      /* Pixel row */
-                       IndexPacket *indexes,     /* Pixel row indexes */
-                       const long npixels,       /* Number of pixels in row */
-                       ExceptionInfo *exception) /* Exception report */
+ChannelThresholdPixels(void *mutable_data,         /* User provided mutable data */
+                       const void *immutable_data, /* User provided immutable data */
+                       Image *image,               /* Modify image */
+                       PixelPacket *pixels,        /* Pixel row */
+                       IndexPacket *indexes,       /* Pixel row indexes */
+                       const long npixels,         /* Number of pixels in row */
+                       ExceptionInfo *exception)   /* Exception report */
 {
   /*
     Threshold channels
   */
   const ChannelThresholdOptions_t
-    *options = (const ChannelThresholdOptions_t *) user_data;
+    *options = (const ChannelThresholdOptions_t *) immutable_data;
 
   register long
     i;
@@ -731,7 +733,7 @@ ChannelThresholdPixels(void *user_data,          /* User provided mutable data *
     blue_enabled=options->blue_enabled,
     opacity_enabled=options->opacity_enabled;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -832,7 +834,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 
   status=PixelIterateMonoModify(ChannelThresholdPixels,
                                 ChannelThresholdImageText,
-                                &options,
+                                NULL,&options,
                                 0,0,image->columns,image->rows,
                                 image,
                                 &image->exception);
@@ -2947,7 +2949,8 @@ static inline Quantum UnsharpQuantum(const Quantum original, const Quantum sharp
 }
 
 static MagickPassFail
-UnsharpMaskPixels(void *user_data,                   /* User provided mutable data */
+UnsharpMaskPixels(void *mutable_data,                /* User provided mutable data */
+                  const void *immutable_data,        /* User provided immutable data */
                   const Image *source_image,         /* Source image */
                   const PixelPacket *source_pixels,  /* Pixel row in source image */
                   const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -2959,11 +2962,12 @@ UnsharpMaskPixels(void *user_data,                   /* User provided mutable da
                   )
 {
   const UnsharpMaskOptions_t
-    *options = (const UnsharpMaskOptions_t *) user_data;
+    *options = (const UnsharpMaskOptions_t *) immutable_data;
 
   register long
     i;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(source_image);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_image);
@@ -2998,7 +3002,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     return((Image *) NULL);
   options.amount=amount;
   options.threshold=(MaxRGBFloat*threshold)/2.0;
-  (void) PixelIterateDualModify(UnsharpMaskPixels,SharpenImageText,&options,
+  (void) PixelIterateDualModify(UnsharpMaskPixels,SharpenImageText,NULL,&options,
                                 image->columns,image->rows,image,0,0,sharp_image,
                                 0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;

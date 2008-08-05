@@ -38,7 +38,8 @@
 %      MagickPassFail PixelIterateMonoRead(
 %                                 PixelIteratorMonoReadCallback call_back,
 %                                 const char *description,
-%                                 void *user_data,
+%                                 void *mutable_data,
+%                                 const void *immutable_data,
 %                                 const long x,
 %                                 const long y,
 %                                 const unsigned long columns,
@@ -53,7 +54,9 @@
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o x: The horizontal ordinate of the top left corner of the region.
 %
@@ -71,7 +74,8 @@
 MagickExport MagickPassFail
 PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
                      const char *description,
-                     void *user_data,
+                     void *mutable_data,
+                     const void *immutable_data,
                      const long x,
                      const long y,
                      const unsigned long columns,
@@ -101,7 +105,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,image,pixels,indexes,columns,exception);
+      status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -136,7 +140,8 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 %      MagickPassFail PixelIterateMonoModify(
 %                              PixelIteratorMonoModifyCallback call_back,
 %                              const char *description,
-%                              void *user_data,
+%                              void *mutable_data,
+%                              const void *immutable_data,
 %                              const long x,
 %                              const long y,
 %                              const unsigned long columns,
@@ -151,7 +156,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o x: The horizontal ordinate of the top left corner of the region.
 %
@@ -169,7 +176,8 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 MagickExport MagickPassFail
 PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
                        const char *description,
-                       void *user_data,
+                       void *mutable_data,
+                       const void *immutable_data,
                        const long x,
                        const long y,
                        const unsigned long columns,
@@ -200,7 +208,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         }
       indexes=GetIndexes(image);
 
-      status=(call_back)(user_data,image,pixels,indexes,columns,exception);
+      status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
       if (status == MagickFail)
         break;
 
@@ -244,7 +252,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 %      MagickPassFail PixelIterateDualRead(
 %                                PixelIteratorDualReadCallback call_back,
 %                                const char *description,
-%                                void *user_data,
+%                                void *mutable_data,
+%                                const void *immutable_data,
 %                                const unsigned long columns,
 %                                const unsigned long rows,
 %                                const Image *first_image,
@@ -262,7 +271,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o columns: Width of pixel region
 %
@@ -286,7 +297,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 MagickExport MagickPassFail
 PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                      const char *description,
-                     void *user_data,
+                     void *mutable_data,
+                     const void *immutable_data,
                      const unsigned long columns,
                      const unsigned long rows,
                      const Image *first_image,
@@ -331,7 +343,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         }
       second_indexes=GetIndexes(second_image);
 
-      status=(call_back)(user_data,
+      status=(call_back)(mutable_data,immutable_data,
                          first_image,first_pixels,first_indexes,
                          second_image,second_pixels,second_indexes,
                          columns, exception);
@@ -369,7 +381,8 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %      MagickPassFail PixelIterateDualModify(
 %                                PixelIteratorDualModifyCallback call_back,
 %                                const char *description,
-%                                void *user_data,
+%                                void *mutable_data,
+%                                const void *immutable_data,
 %                                const unsigned long columns,
 %                                const unsigned long rows,
 %                                const Image *source_image,
@@ -387,7 +400,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o columns: Width of pixel region
 %
@@ -411,7 +426,8 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 static MagickPassFail
 PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
                                const char *description,
-                               void *user_data,
+                               void *mutable_data,
+                               const void *immutable_data,
                                const unsigned long columns,
                                const unsigned long rows,
                                const Image *source_image,
@@ -466,7 +482,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
         }
       update_indexes=GetIndexes(update_image);
 
-      status=(call_back)(user_data,
+      status=(call_back)(mutable_data,immutable_data,
                          source_image,source_pixels,source_indexes,
                          update_image,update_pixels,update_indexes,
                          columns,exception);
@@ -495,7 +511,8 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
 MagickExport MagickPassFail
 PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
                        const char *description,
-                       void *user_data,
+                       void *mutable_data,
+                       const void *immutable_data,
                        const unsigned long columns,
                        const unsigned long rows,
                        const Image *source_image,
@@ -507,7 +524,7 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
                        ExceptionInfo *exception)
 {
   return PixelIterateDualImplementation
-    (call_back,description,user_data,columns,rows,source_image,
+    (call_back,description,mutable_data,immutable_data,columns,rows,source_image,
      source_x,source_y,update_image,update_x,update_y,exception,MagickFalse);
 }
 
@@ -536,7 +553,8 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
 %      MagickPassFail PixelIterateDualNew(
 %                                PixelIteratorDualNewCallback call_back,
 %                                const char *description,
-%                                void *user_data,
+%                                void *mutable_data,
+%                                const void *immutable_data,
 %                                const unsigned long columns,
 %                                const unsigned long rows,
 %                                const Image *source_image,
@@ -554,7 +572,9 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o columns: Width of pixel region
 %
@@ -578,7 +598,8 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
 MagickExport MagickPassFail
 PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
                     const char *description,
-                    void *user_data,
+                    void *mutable_data,
+                    const void *immutable_data,
                     const unsigned long columns,
                     const unsigned long rows,
                     const Image *source_image,
@@ -590,7 +611,7 @@ PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
                     ExceptionInfo *exception)
 {
   return PixelIterateDualImplementation
-    (call_back,description,user_data,columns,rows,source_image,
+    (call_back,description,mutable_data,immutable_data,columns,rows,source_image,
      source_x,source_y,new_image,new_x,new_y,exception,MagickTrue);
 }
 
@@ -617,7 +638,8 @@ PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
 %      MagickPassFail PixelIterateTripleModify(
 %                                PixelIteratorTripleModifyCallback call_back,
 %                                const char *description,
-%                                void *user_data,
+%                                void *mutable_data,
+%                                const void *immutable_data,
 %                                const unsigned long columns,
 %                                const unsigned long rows,
 %                                const Image *source1_image,
@@ -636,7 +658,9 @@ PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o columns: Width of pixel region
 %
@@ -662,7 +686,8 @@ PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
 static MagickPassFail
 PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
                                  const char *description,
-                                 void *user_data,
+                                 void *mutable_data,
+                                 const void *immutable_data,
                                  const unsigned long columns,
                                  const unsigned long rows,
                                  const Image *source1_image,
@@ -739,7 +764,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
         }
       update_indexes=GetIndexes(update_image);
 
-      status=(call_back)(user_data,
+      status=(call_back)(mutable_data,immutable_data,
                          source1_image,source1_pixels,source1_indexes,
                          source2_image,source2_pixels,source2_indexes,
                          update_image,update_pixels,update_indexes,
@@ -769,7 +794,8 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
 MagickExport MagickPassFail
 PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
                        const char *description,
-                       void *user_data,
+                       void *mutable_data,
+                       const void *immutable_data,
                        const unsigned long columns,
                        const unsigned long rows,
                        const Image *source1_image,
@@ -782,7 +808,7 @@ PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
                        ExceptionInfo *exception)
 {
   return PixelIterateTripleImplementation
-    (call_back,description,user_data,columns,rows,
+    (call_back,description,mutable_data,immutable_data,columns,rows,
      source1_image,source2_image,source_x,source_y,
      update_image,update_x,update_y,
      exception,MagickFalse);
@@ -813,7 +839,8 @@ PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
 %      MagickPassFail PixelIterateTripleNew(
 %                                PixelIteratorTripleNewCallback call_back,
 %                                const char *description,
-%                                void *user_data,
+%                                void *mutable_data,
+%                                const void *immutable_data,
 %                                const unsigned long columns,
 %                                const unsigned long rows,
 %                                const Image *source1_image,
@@ -832,7 +859,9 @@ PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
 %
 %    o description: textual description of operation being performed.
 %
-%    o user_data: User-provided context data.
+%    o mutable_data: User-provided mutable context data.
+%
+%    o immutable_data: User-provided immutable context data.
 %
 %    o columns: Width of pixel region
 %
@@ -857,21 +886,22 @@ PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
 */
 MagickExport MagickPassFail
 PixelIterateTripleNew(PixelIteratorTripleNewCallback call_back,
-                    const char *description,
-                    void *user_data,
-                    const unsigned long columns,
-                    const unsigned long rows,
-                    const Image *source1_image,
-                    const Image *source2_image,
-                    const long source_x,
-                    const long source_y,
-                    Image *new_image,
-                    const long new_x,
-                    const long new_y,
-                    ExceptionInfo *exception)
+                      const char *description,
+                      void *mutable_data,
+                      const void *immutable_data,
+                      const unsigned long columns,
+                      const unsigned long rows,
+                      const Image *source1_image,
+                      const Image *source2_image,
+                      const long source_x,
+                      const long source_y,
+                      Image *new_image,
+                      const long new_x,
+                      const long new_y,
+                      ExceptionInfo *exception)
 {
   return PixelIterateTripleImplementation
-    (call_back,description,user_data,columns,rows,
+    (call_back,description,mutable_data,immutable_data,columns,rows,
      source1_image,source2_image,source_x,source_y,
      new_image,new_x,new_y,
      exception,MagickTrue);

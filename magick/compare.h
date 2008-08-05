@@ -19,6 +19,7 @@ typedef enum
   UndefinedDifferenceAlgorithm,
   AnnotateDifferenceAlgorithm,
   SubtractDifferenceAlgorithm,
+  ThresholdDifferenceAlgorithm,
   OpacityDifferenceAlgorithm
 } DifferenceImageAlgorithm;
 

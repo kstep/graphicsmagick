@@ -105,7 +105,8 @@ DifferenceImageOptionsDefaults(DifferenceImageOptions *options)
 %
 */
 static MagickPassFail
-DifferenceImagePixels(void *user_data,                    /* User provided mutable data */
+DifferenceImagePixels(void *mutable_data,                 /* User provided mutable data */
+                      const void *immutable_data,         /* User provided immutable data */
                       const Image *source1_image,         /* Source 1 image */
                       const PixelPacket *source1_pixels,  /* Pixel row in source 1 image */
                       const IndexPacket *source1_indexes, /* Pixel row indexes in source 1 image */
@@ -120,7 +121,7 @@ DifferenceImagePixels(void *user_data,                    /* User provided mutab
                    )
 {
   const DifferenceImageOptions
-    *difference_options = (const DifferenceImageOptions *) user_data;
+    *difference_options = (const DifferenceImageOptions *) immutable_data;
 
   register ChannelType
     channels = difference_options->channel;
@@ -131,6 +132,7 @@ DifferenceImagePixels(void *user_data,                    /* User provided mutab
   register MagickBool
     change;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(source2_image);
   ARG_NOT_USED(update_image);
   ARG_NOT_USED(update_indexes);
@@ -210,7 +212,7 @@ DifferenceImage(const Image *reference_image,const Image *compare_image,
   */
   (void) PixelIterateTripleModify(DifferenceImagePixels,
                                   "Difference image pixels ...",
-                                  (DifferenceImageOptions *) difference_options,
+                                  NULL,difference_options,
                                   reference_image->columns,reference_image->rows,
                                   reference_image, compare_image,0, 0,
                                   difference_image, 0, 0,
@@ -271,7 +273,8 @@ typedef struct _PixelErrorStats {
 } PixelErrorStats;
 
 static MagickPassFail
-ComputePixelError(void *user_data,
+ComputePixelError(void *mutable_data,
+                  const void *immutable_data,
                   const Image *first_image,
                   const PixelPacket *first_pixels,
                   const IndexPacket *first_indexes,
@@ -282,7 +285,7 @@ ComputePixelError(void *user_data,
                   ExceptionInfo *exception)
 {
   PixelErrorStats
-    *stats = (PixelErrorStats *) user_data;
+    *stats = (PixelErrorStats *) mutable_data;
 
   double
     difference,
@@ -292,6 +295,7 @@ ComputePixelError(void *user_data,
   register long
     i;
 
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(first_indexes);
   ARG_NOT_USED(second_image);
   ARG_NOT_USED(second_indexes);
@@ -358,7 +362,7 @@ IsImagesEqual(Image *image,const Image *reference)
 
   (void) PixelIterateDualRead(ComputePixelError,
                               "Compute pixel error ...",
-                              (void *) &stats,
+                              &stats, NULL,
                               image->columns,image->rows,
                               image,0,0,
                               reference,0,0,

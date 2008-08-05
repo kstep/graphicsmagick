@@ -1,3 +1,10 @@
+2008-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c: Split user context in all pixel
+	iterator APIs into a mutable data part, and an immutable data
+	part.  This required modification to all modules using the pixel
+	iterator methods.
+
 2008-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickCompareImageChannels): Use

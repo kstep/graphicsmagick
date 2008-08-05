@@ -40,13 +40,13 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>MagickPassFail  <strong>PixelIterateDualModify</strong>( PixelIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateDualRead</strong>( PixelIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
-<P>MagickPassFail  <strong>PixelIterateMonoModify</strong>( PixelIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateMonoRead</strong>( PixelIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateTripleModify</strong>( PixelIteratorTripleModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const Image *source1_image, const Image *source2_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateDualModify</strong>( PixelIteratorDualModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateDualRead</strong>( PixelIteratorDualReadCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
+<P>MagickPassFail  <strong>PixelIterateMonoModify</strong>( PixelIteratorMonoModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateMonoRead</strong>( PixelIteratorMonoReadCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateTripleModify</strong>( PixelIteratorTripleModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source1_image, const Image *source2_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
 <P>
 </P>
 <hr />
@@ -55,7 +55,7 @@
 </P>
 <h2><a name="pixeliteratemonoread">PixelIterateMonoRead</a></h2>
 <blockquote>PixelIterateMonoRead() iterates through a region of an image and invokes a user-provided callback function ( of type PixelRowIteratorMonoReadCallback ) for a row of pixels. This is useful to support simple operations such as statistics computation. </blockquote><P>The format of the PixelIterateMonoRead method is:</P>
-<blockquote>MagickPassFail PixelIterateMonoRead ( PixelIteratorMonoReadCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateMonoRead ( PixelIteratorMonoReadCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_call_back_3a">call_back:</a></strong>
 
@@ -69,10 +69,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_user_data_3a">user_data:</a></strong>
+<dt><strong><a name="item_o_mutable_data_3a">mutable_data:</a></strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_immutable_data_3a">immutable_data:</a></strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong><a name="item_o_x_3a">x:</a></strong>
@@ -116,7 +122,7 @@
 </P>
 <h2><a name="pixeliteratemonomodify">PixelIterateMonoModify</a></h2>
 <blockquote>PixelIterateMonoModify() iterates through a region of an image and invokes a user-provided callback function ( of type PixelIteratorMonoReadCallback ) for a region of pixels. This is useful to support simple operations such as level shifting, colorspace translation, or thresholding. </blockquote><P>The format of the PixelIterateMonoModify method is:</P>
-<blockquote>MagickPassFail PixelIterateMonoModify ( PixelIteratorMonoModifyCallback call_back, const char *description, void *user_data, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateMonoModify ( PixelIteratorMonoModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 
@@ -130,10 +136,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>x:</strong>
@@ -177,7 +189,7 @@
 </P>
 <h2><a name="pixeliteratedualread">PixelIterateDualRead</a></h2>
 <blockquote>PixelIterateDualRead() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelIteratorDualReadCallback ) for each row of pixels. This is useful to support operations such as image comparison. </blockquote><P>The format of the PixelIterateDualModify method is:</P>
-<blockquote>MagickPassFail PixelIterateDualRead ( PixelIteratorDualReadCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *first_image, const long first_x, const long first_y, const <A HREF="types.html#Image">Image</A> *second_image, const long second_x, const long second_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception );; </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateDualRead ( PixelIteratorDualReadCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *first_image, const long first_x, const long first_y, const <A HREF="types.html#Image">Image</A> *second_image, const long second_x, const long second_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception );; </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 
@@ -191,10 +203,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>columns:</strong>
@@ -256,7 +274,7 @@
 </P>
 <h2><a name="pixeliteratedualmodify">PixelIterateDualModify</a></h2>
 <blockquote>PixelIterateDualModify() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelIteratorDualModifyCallback ) for each row of pixels. This is useful to support operations such as composition. </blockquote><P>The format of the PixelIterateDualModify method is:</P>
-<blockquote>MagickPassFail PixelIterateDualModify ( PixelIteratorDualModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateDualModify ( PixelIteratorDualModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 
@@ -270,10 +288,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>columns:</strong>
@@ -335,7 +359,7 @@
 </P>
 <h2><a name="pixeliteratedualnew">PixelIterateDualNew</a></h2>
 <blockquote>PixelIterateDualNew() iterates through pixel regions of two images and invokes a user-provided callback function ( of type PixelIteratorDualNewCallback ) for each row of pixels. This is used if a new output image is created based on an input image. The difference from PixelIterateDualModify ( ) is that the output pixels are not initialized so it is more efficient when outputting a new image. </blockquote><P>The format of the PixelIterateDualNew method is:</P>
-<blockquote>MagickPassFail PixelIterateDualNew ( PixelIteratorDualNewCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *new_image, const long new_x, const long new_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateDualNew ( PixelIteratorDualNewCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *new_image, const long new_x, const long new_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 
@@ -349,10 +373,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>columns:</strong>
@@ -414,7 +444,7 @@
 </P>
 <h2><a name="pixeliteratetriplemodify">PixelIterateTripleModify</a></h2>
 <blockquote>PixelIterateTripleModify() iterates through pixel regions of three images and invokes a user-provided callback function ( of type PixelIteratorTripleModifyCallback ) for each row of pixels. The first two images are read-only, while the third image is read-write for update. Access of the first two images is done lock-step using the same coordinates. This is useful to support operations such as image differencing. </blockquote><P>The format of the PixelIterateTripleModify method is:</P>
-<blockquote>MagickPassFail PixelIterateTripleModify ( PixelIteratorTripleModifyCallback call_back, const char *description, void *user_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source1_image, const <A HREF="types.html#Image">Image</A> *source2_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickPassFail PixelIterateTripleModify ( PixelIteratorTripleModifyCallback call_back, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source1_image, const <A HREF="types.html#Image">Image</A> *source2_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *update_image, const long update_x, const long update_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 
@@ -428,10 +458,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>columns:</strong>
@@ -504,7 +540,8 @@
     MagickPassFail PixelIterateTripleNew(
                               PixelIteratorTripleNewCallback call_back,
                               const char *description,
-                              void *user_data,
+                              void *mutable_data,
+                              const void *immutable_data,
                               const unsigned long columns,
                               const unsigned long rows,
                               const Image *source1_image,
@@ -529,10 +566,16 @@
 <P>textual description of operation being performed.</P>
 </dd>
 </li>
-<dt><strong>user_data:</strong>
+<dt><strong>mutable_data:</strong>
 
 <DD>
-<P>User-provided context data.</P>
+<P>User-provided mutable context data.</P>
+</dd>
+</li>
+<dt><strong>immutable_data:</strong>
+
+<DD>
+<P>User-provided immutable context data.</P>
 </dd>
 </li>
 <dt><strong>columns:</strong>

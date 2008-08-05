@@ -3236,20 +3236,20 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 typedef struct _StatisticsContext {
   double samples;
   double variance_divisor;
-  ImageStatistics *statistics;
 } StatisticsContext;
-static MagickPassFail GetImageStatisticsMean(void *user_context,
+static MagickPassFail GetImageStatisticsMean(void *mutable_data,
+                                             const void *immutable_data,
                                              const Image *image,
                                              const PixelPacket *pixel,
                                              const IndexPacket *indexes,
                                              const long npixels,
                                              ExceptionInfo *exception)
 {
-  StatisticsContext
-    *context=(StatisticsContext *) user_context;
-
   ImageStatistics
-    *statistics=context->statistics;
+    *statistics=(ImageStatistics *) mutable_data;
+
+  const StatisticsContext
+    *context=(const StatisticsContext *) immutable_data;
 
   double
     normalized;
@@ -3297,18 +3297,19 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
   return MagickPass;
 }
 #define Square(x)  ((x)*(x))
-static MagickPassFail GetImageStatisticsVariance(void *user_context,
+static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
+                                                 const void *immutable_data,
                                                  const Image *image,
                                                  const PixelPacket *pixel,
                                                  const IndexPacket *indexes,
                                                  const long npixels,
                                                  ExceptionInfo *exception)
 {
-  StatisticsContext
-    *context=(StatisticsContext *) user_context;
-
   ImageStatistics
-    *statistics=context->statistics;
+    *statistics=(ImageStatistics *) mutable_data;
+
+  const StatisticsContext
+    *context=(const StatisticsContext *) immutable_data;
 
   double
     normalized;
@@ -3364,7 +3365,6 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
     statistics->opacity.minimum=1.0;
 
   samples=(double) image->rows*image->columns;
-  context.statistics=statistics;
   context.samples=samples;
   context.variance_divisor=samples-1;
   
@@ -3373,7 +3373,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   */
   status = PixelIterateMonoRead(GetImageStatisticsMean,
                                 "Compute image mean, max, min ...",
-                                &context,0,0,image->columns,
+                                statistics,&context,0,0,image->columns,
                                 image->rows,image,exception);
   /*
     Compute Variance
@@ -3381,7 +3381,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   if (status == MagickPass)
     status = PixelIterateMonoRead(GetImageStatisticsVariance,
                                   "Compute image variance ...",
-                                  &context,0,0,image->columns,
+                                  statistics,&context,0,0,image->columns,
                                   image->rows,image,exception);
   /*
     Compute Standard Deviation

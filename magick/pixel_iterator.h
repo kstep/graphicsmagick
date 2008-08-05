@@ -26,7 +26,8 @@ extern "C" {
 
   typedef MagickPassFail (*PixelIteratorMonoReadCallback)
     (
-     void *user_data,                   /* User provided mutable data */
+     void *mutable_data,                   /* User provided mutable data */
+     const void *immutable_data,       /* User provided immutable data */
      const Image *const_image,          /* Input image */
      const PixelPacket *pixels,         /* Pixel row */
      const IndexPacket *indexes,        /* Pixel indexes */
@@ -37,7 +38,8 @@ extern "C" {
   extern MagickExport MagickPassFail
   PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
                        const char *description,
-                       void *user_data,
+                       void *mutable_data,
+                       const void *immutable_data,
                        const long x,
                        const long y,
                        const unsigned long columns,
@@ -50,7 +52,8 @@ extern "C" {
 
   typedef MagickPassFail (*PixelIteratorMonoModifyCallback)
     (
-     void *user_data,                   /* User provided mutable data */
+     void *mutable_data,                   /* User provided mutable data */
+     const void *immutable_data,       /* User provided immutable data */
      Image *image,                      /* Modify image */
      PixelPacket *pixels,               /* Pixel row */
      IndexPacket *indexes,              /* Pixel row indexes */
@@ -61,7 +64,8 @@ extern "C" {
   extern MagickExport MagickPassFail
   PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
                          const char *description,
-                         void *user_data,
+                         void *mutable_data,
+                         const void *immutable_data,
                          const long x,
                          const long y,
                          const unsigned long columns,
@@ -75,7 +79,8 @@ extern "C" {
 
   typedef MagickPassFail (*PixelIteratorDualReadCallback)
     (
-     void *user_data,                   /* User provided mutable data */
+     void *mutable_data,                /* User provided mutable data */
+     const void *immutable_data,        /* User provided immutable data */
      const Image *first_image,          /* First Input image */
      const PixelPacket *first_pixels,   /* Pixel row in first image */
      const IndexPacket *first_indexes,  /* Pixel row indexes in first image */
@@ -89,7 +94,8 @@ extern "C" {
   extern MagickExport MagickPassFail
   PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                        const char *description,
-                       void *user_data,
+                       void *mutable_data,
+                       const void *immutable_data,
                        const unsigned long columns,
                        const unsigned long rows,
                        const Image *first_image,
@@ -108,7 +114,8 @@ extern "C" {
 
   typedef MagickPassFail (*PixelIteratorDualModifyCallback)
     (
-     void *user_data,                   /* User provided mutable data */
+     void *mutable_data,                /* User provided mutable data */
+     const void *immutable_data,        /* User provided immutable data */
      const Image *source_image,         /* Source image */
      const PixelPacket *source_pixels,  /* Pixel row in source image */
      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -122,7 +129,8 @@ extern "C" {
   extern MagickExport MagickPassFail
   PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
                          const char *description,
-                         void *user_data,
+                         void *mutable_data,
+                         const void *immutable_data,
                          const unsigned long columns,
                          const unsigned long rows,
                          const Image *source_image,
@@ -143,7 +151,8 @@ extern "C" {
   extern MagickExport MagickPassFail
   PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
                       const char *description,
-                      void *user_data,
+                      void *mutable_data,
+                      const void *immutable_data,
                       const unsigned long columns,
                       const unsigned long rows,
                       const Image *source_image,
@@ -162,7 +171,8 @@ extern "C" {
 
   typedef MagickPassFail (*PixelIteratorTripleModifyCallback)
     (
-     void *user_data,                   /* User provided mutable data */
+     void *mutable_data,                 /* User provided mutable data */
+     const void *immutable_data,         /* User provided immutable data */
      const Image *source1_image,         /* Source 1 image */
      const PixelPacket *source1_pixels,  /* Pixel row in source 1 image */
      const IndexPacket *source1_indexes, /* Pixel row indexes in source 1 image */
@@ -178,18 +188,19 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
-                         const char *description,
-                         void *user_data,
-                         const unsigned long columns,
-                         const unsigned long rows,
-                         const Image *source1_image,
-                         const Image *source2_image,
-                         const long source_x,
-                         const long source_y,
-                         Image *update_image,
-                         const long update_x,
-                         const long update_y,
-                         ExceptionInfo *exception);
+                           const char *description,
+                           void *mutable_data,
+                           const void *immutable_data,
+                           const unsigned long columns,
+                           const unsigned long rows,
+                           const Image *source1_image,
+                           const Image *source2_image,
+                           const long source_x,
+                           const long source_y,
+                           Image *update_image,
+                           const long update_x,
+                           const long update_y,
+                           ExceptionInfo *exception);
 
   /*
     Read-write access across pixel regions of two images. The first
@@ -200,18 +211,19 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateTripleNew(PixelIteratorTripleNewCallback call_back,
-                      const char *description,
-                      void *user_data,
-                      const unsigned long columns,
-                      const unsigned long rows,
-                      const Image *source1_image,
-                      const Image *source2_image,
-                      const long source_x,
-                      const long source_y,
-                      Image *new_image,
-                      const long new_x,
-                      const long new_y,
-                      ExceptionInfo *exception);
+                        const char *description,
+                        void *mutable_data,
+                        const void *immutable_data,
+                        const unsigned long columns,
+                        const unsigned long rows,
+                        const Image *source1_image,
+                        const Image *source2_image,
+                        const long source_x,
+                        const long source_y,
+                        Image *new_image,
+                        const long new_x,
+                        const long new_y,
+                        ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

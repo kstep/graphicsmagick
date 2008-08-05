@@ -135,7 +135,8 @@ ApplyPacketUpdates(PixelPacket *update_pixels,
 
 
 static MagickPassFail
-OverCompositePixels(void *user_data,                   /* User provided mutable data */
+OverCompositePixels(void *mutable_data,                /* User provided mutable data */
+                    const void *immutable_data,        /* User provided immutable data */
                     const Image *source_image,         /* Source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -153,7 +154,8 @@ OverCompositePixels(void *user_data,                   /* User provided mutable 
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -176,7 +178,8 @@ OverCompositePixels(void *user_data,                   /* User provided mutable 
 
 
 static MagickPassFail
-InCompositePixels(void *user_data,                   /* User provided mutable data */
+InCompositePixels(void *mutable_data,                /* User provided mutable data */
+                  const void *immutable_data,        /* User provided immutable data */
                   const Image *source_image,         /* Source image */
                   const PixelPacket *source_pixels,  /* Pixel row in source image */
                   const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -194,7 +197,8 @@ InCompositePixels(void *user_data,                   /* User provided mutable da
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -246,7 +250,8 @@ InCompositePixels(void *user_data,                   /* User provided mutable da
 
 
 static MagickPassFail
-OutCompositePixels(void *user_data,                   /* User provided mutable data */
+OutCompositePixels(void *mutable_data,                /* User provided mutable data */
+                   const void *immutable_data,        /* User provided immutable data */
                    const Image *source_image,         /* Source image */
                    const PixelPacket *source_pixels,  /* Pixel row in source image */
                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -264,7 +269,8 @@ OutCompositePixels(void *user_data,                   /* User provided mutable d
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -314,7 +320,8 @@ OutCompositePixels(void *user_data,                   /* User provided mutable d
 }
 
 static MagickPassFail
-AtopCompositePixels(void *user_data,                   /* User provided mutable data */
+AtopCompositePixels(void *mutable_data,                /* User provided mutable data */
+                    const void *immutable_data,        /* User provided immutable data */
                     const Image *source_image,         /* Source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -332,7 +339,8 @@ AtopCompositePixels(void *user_data,                   /* User provided mutable 
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -357,7 +365,8 @@ AtopCompositePixels(void *user_data,                   /* User provided mutable 
 
 
 static MagickPassFail
-XorCompositePixels(void *user_data,                   /* User provided mutable data */
+XorCompositePixels(void *mutable_data,                /* User provided mutable data */
+                   const void *immutable_data,        /* User provided immutable data */
                    const Image *source_image,         /* Source image */
                    const PixelPacket *source_pixels,  /* Pixel row in source image */
                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -375,7 +384,8 @@ XorCompositePixels(void *user_data,                   /* User provided mutable d
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -424,7 +434,8 @@ XorCompositePixels(void *user_data,                   /* User provided mutable d
 
 
 static MagickPassFail
-PlusCompositePixels(void *user_data,                   /* User provided mutable data */
+PlusCompositePixels(void *mutable_data,                /* User provided mutable data */
+                    const void *immutable_data,        /* User provided immutable data */
                     const Image *source_image,         /* Source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -442,7 +453,8 @@ PlusCompositePixels(void *user_data,                   /* User provided mutable 
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -482,7 +494,8 @@ PlusCompositePixels(void *user_data,                   /* User provided mutable 
 
 
 static MagickPassFail
-MinusCompositePixels(void *user_data,                   /* User provided mutable data */
+MinusCompositePixels(void *mutable_data,                /* User provided mutable data */
+                     const void *immutable_data,        /* User provided immutable data */
                      const Image *source_image,         /* Source image */
                      const PixelPacket *source_pixels,  /* Pixel row in source image */
                      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -500,7 +513,8 @@ MinusCompositePixels(void *user_data,                   /* User provided mutable
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -539,7 +553,8 @@ MinusCompositePixels(void *user_data,                   /* User provided mutable
 
 
 static MagickPassFail
-AddCompositePixels(void *user_data,                   /* User provided mutable data */
+AddCompositePixels(void *mutable_data,                /* User provided mutable data */
+                   const void *immutable_data,        /* User provided immutable data */
                    const Image *source_image,         /* Source image */
                    const PixelPacket *source_pixels,  /* Pixel row in source image */
                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -557,7 +572,8 @@ AddCompositePixels(void *user_data,                   /* User provided mutable d
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -593,7 +609,8 @@ AddCompositePixels(void *user_data,                   /* User provided mutable d
 
 
 static MagickPassFail
-SubtractCompositePixels(void *user_data,                   /* User provided mutable data */
+SubtractCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -611,7 +628,8 @@ SubtractCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -649,7 +667,8 @@ SubtractCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-DifferenceCompositePixels(void *user_data,                   /* User provided mutable data */
+DifferenceCompositePixels(void *mutable_data,                /* User provided mutable data */
+                          const void *immutable_data,        /* User provided immutable data */
                           const Image *source_image,         /* Source image */
                           const PixelPacket *source_pixels,  /* Pixel row in source image */
                           const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -667,7 +686,8 @@ DifferenceCompositePixels(void *user_data,                   /* User provided mu
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -702,7 +722,8 @@ DifferenceCompositePixels(void *user_data,                   /* User provided mu
 
 
 static MagickPassFail
-MultiplyCompositePixels(void *user_data,                   /* User provided mutable data */
+MultiplyCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -720,7 +741,8 @@ MultiplyCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -755,7 +777,8 @@ MultiplyCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-BumpmapCompositePixels(void *user_data,                   /* User provided mutable data */
+BumpmapCompositePixels(void *mutable_data,                /* User provided mutable data */
+                       const void *immutable_data,        /* User provided immutable data */
                        const Image *source_image,         /* Source image */
                        const PixelPacket *source_pixels,  /* Pixel row in source image */
                        const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -773,7 +796,8 @@ BumpmapCompositePixels(void *user_data,                   /* User provided mutab
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -811,7 +835,8 @@ BumpmapCompositePixels(void *user_data,                   /* User provided mutab
 
 
 static MagickPassFail
-CopyCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyCompositePixels(void *mutable_data,                /* User provided mutable data */
+                    const void *immutable_data,        /* User provided immutable data */
                     const Image *source_image,         /* Source image */
                     const PixelPacket *source_pixels,  /* Pixel row in source image */
                     const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -822,7 +847,8 @@ CopyCompositePixels(void *user_data,                   /* User provided mutable 
                     ExceptionInfo *exception           /* Exception report */
                     )
 {
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -852,7 +878,8 @@ CopyCompositePixels(void *user_data,                   /* User provided mutable 
 }
 
 static MagickPassFail
-CopyRedCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyRedCompositePixels(void *mutable_data,                /* User provided mutable data */
+                       const void *immutable_data,        /* User provided immutable data */
                        const Image *source_image,         /* Source image */
                        const PixelPacket *source_pixels,  /* Pixel row in source image */
                        const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -866,7 +893,8 @@ CopyRedCompositePixels(void *user_data,                   /* User provided mutab
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(source_image);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_image);
@@ -887,7 +915,8 @@ CopyRedCompositePixels(void *user_data,                   /* User provided mutab
 }
 
 static MagickPassFail
-CopyGreenCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyGreenCompositePixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
                          const PixelPacket *source_pixels,  /* Pixel row in source image */
                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -901,7 +930,8 @@ CopyGreenCompositePixels(void *user_data,                   /* User provided mut
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(source_image);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_image);
@@ -923,7 +953,8 @@ CopyGreenCompositePixels(void *user_data,                   /* User provided mut
 
 
 static MagickPassFail
-CopyBlueCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyBlueCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -937,7 +968,8 @@ CopyBlueCompositePixels(void *user_data,                   /* User provided muta
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(source_image);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_image);
@@ -958,7 +990,8 @@ CopyBlueCompositePixels(void *user_data,                   /* User provided muta
 }
 
 static MagickPassFail
-CopyOpacityCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyOpacityCompositePixels(void *mutable_data,                /* User provided mutable data */
+                           const void *immutable_data,        /* User provided immutable data */
                            const Image *source_image,         /* Source image */
                            const PixelPacket *source_pixels,  /* Pixel row in source image */
                            const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -972,7 +1005,8 @@ CopyOpacityCompositePixels(void *user_data,                   /* User provided m
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -1021,7 +1055,8 @@ CopyOpacityCompositePixels(void *user_data,                   /* User provided m
 }
 
 static MagickPassFail
-ClearCompositePixels(void *user_data,                   /* User provided mutable data */
+ClearCompositePixels(void *mutable_data,                /* User provided mutable data */
+                     const void *immutable_data,        /* User provided immutable data */
                      const Image *source_image,         /* Source image */
                      const PixelPacket *source_pixels,  /* Pixel row in source image */
                      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1035,7 +1070,8 @@ ClearCompositePixels(void *user_data,                   /* User provided mutable
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(source_image);
   ARG_NOT_USED(source_pixels);
   ARG_NOT_USED(source_indexes);
@@ -1066,7 +1102,8 @@ ClearCompositePixels(void *user_data,                   /* User provided mutable
 
 
 static MagickPassFail
-DissolveCompositePixels(void *user_data,                   /* User provided mutable data */
+DissolveCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1084,7 +1121,8 @@ DissolveCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1111,7 +1149,8 @@ DissolveCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-ModulateCompositePixels(void *user_data,                   /* User provided mutable data */
+ModulateCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1123,7 +1162,7 @@ ModulateCompositePixels(void *user_data,                   /* User provided muta
                         )
 {
   const CompositePixelsOptions_t
-    *options = (const CompositePixelsOptions_t *) user_data;
+    *options = (const CompositePixelsOptions_t *) immutable_data;
 
   const double
     percent_brightness = options->percent_brightness;
@@ -1139,6 +1178,7 @@ ModulateCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
   midpoint=((double) MaxRGB+1.0)/2;
@@ -1177,7 +1217,8 @@ ModulateCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-ThresholdCompositePixels(void *user_data,                   /* User provided mutable data */
+ThresholdCompositePixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
                          const PixelPacket *source_pixels,  /* Pixel row in source image */
                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1189,7 +1230,7 @@ ThresholdCompositePixels(void *user_data,                   /* User provided mut
                          )
 {
   const CompositePixelsOptions_t
-    *options = (const CompositePixelsOptions_t *) user_data;
+    *options = (const CompositePixelsOptions_t *) immutable_data;
 
   const double
     amount = options->amount,
@@ -1202,6 +1243,7 @@ ThresholdCompositePixels(void *user_data,                   /* User provided mut
     destination,
     source;
 
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1248,7 +1290,8 @@ ThresholdCompositePixels(void *user_data,                   /* User provided mut
 
 
 static MagickPassFail
-DarkenCompositePixels(void *user_data,                   /* User provided mutable data */
+DarkenCompositePixels(void *mutable_data,                /* User provided mutable data */
+                      const void *immutable_data,        /* User provided immutable data */
                       const Image *source_image,         /* Source image */
                       const PixelPacket *source_pixels,  /* Pixel row in source image */
                       const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1266,7 +1309,8 @@ DarkenCompositePixels(void *user_data,                   /* User provided mutabl
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1302,7 +1346,8 @@ DarkenCompositePixels(void *user_data,                   /* User provided mutabl
 
 
 static MagickPassFail
-LightenCompositePixels(void *user_data,                   /* User provided mutable data */
+LightenCompositePixels(void *mutable_data,                /* User provided mutable data */
+                       const void *immutable_data,        /* User provided immutable data */
                        const Image *source_image,         /* Source image */
                        const PixelPacket *source_pixels,  /* Pixel row in source image */
                        const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1320,7 +1365,8 @@ LightenCompositePixels(void *user_data,                   /* User provided mutab
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1356,7 +1402,8 @@ LightenCompositePixels(void *user_data,                   /* User provided mutab
 
 
 static MagickPassFail
-HueCompositePixels(void *user_data,                   /* User provided mutable data */
+HueCompositePixels(void *mutable_data,                /* User provided mutable data */
+                   const void *immutable_data,        /* User provided immutable data */
                    const Image *source_image,         /* Source image */
                    const PixelPacket *source_pixels,  /* Pixel row in source image */
                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1374,7 +1421,8 @@ HueCompositePixels(void *user_data,                   /* User provided mutable d
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1414,7 +1462,8 @@ HueCompositePixels(void *user_data,                   /* User provided mutable d
 
 
 static MagickPassFail
-SaturateCompositePixels(void *user_data,                   /* User provided mutable data */
+SaturateCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1432,7 +1481,8 @@ SaturateCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1473,7 +1523,8 @@ SaturateCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-ColorizeCompositePixels(void *user_data,                   /* User provided mutable data */
+ColorizeCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1491,7 +1542,8 @@ ColorizeCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1532,7 +1584,8 @@ ColorizeCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-LuminizeCompositePixels(void *user_data,                   /* User provided mutable data */
+LuminizeCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
                         const Image *source_image,         /* Source image */
                         const PixelPacket *source_pixels,  /* Pixel row in source image */
                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1550,7 +1603,8 @@ LuminizeCompositePixels(void *user_data,                   /* User provided muta
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
@@ -1591,7 +1645,8 @@ LuminizeCompositePixels(void *user_data,                   /* User provided muta
 
 
 static MagickPassFail
-CopyBlackCompositePixels(void *user_data,                   /* User provided mutable data */
+CopyBlackCompositePixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
                          const PixelPacket *source_pixels,  /* Pixel row in source image */
                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1605,7 +1660,8 @@ CopyBlackCompositePixels(void *user_data,                   /* User provided mut
   register long
     i;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(source_indexes);
   ARG_NOT_USED(update_indexes);
   ARG_NOT_USED(exception);
@@ -1634,7 +1690,8 @@ CopyBlackCompositePixels(void *user_data,                   /* User provided mut
 
 
 static MagickPassFail
-DivideCompositePixels(void *user_data,                   /* User provided mutable data */
+DivideCompositePixels(void *mutable_data,                /* User provided mutable data */
+                      const void *immutable_data,        /* User provided immutable data */
                       const Image *source_image,         /* Source image */
                       const PixelPacket *source_pixels,  /* Pixel row in source image */
                       const IndexPacket *source_indexes, /* Pixel row indexes in source image */
@@ -1652,7 +1709,8 @@ DivideCompositePixels(void *user_data,                   /* User provided mutabl
     destination,
     source;
 
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(exception);
 
   /*
@@ -2154,6 +2212,7 @@ CompositeImage(Image *canvas_image,
                          
             status=PixelIterateDualModify(call_back,              /* Callback */
                                           description,            /* Description */
+                                          NULL,
                                           &options,               /* Options */
                                           columns,                /* Number of columns */
                                           rows,                   /* Number of rows */

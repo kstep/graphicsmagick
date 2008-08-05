@@ -74,23 +74,24 @@
 %
 */
 static MagickPassFail
-ContrastImagePixels(void *user_data,          /* User provided mutable data */
-                    Image *image,             /* Modify image */
-                    PixelPacket *pixels,      /* Pixel row */
-                    IndexPacket *indexes,     /* Pixel row indexes */
-                    const long npixels,       /* Number of pixels in row */
-                    ExceptionInfo *exception) /* Exception report */
+ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
+                    const void *immutable_data, /* User provided immutable data */
+                    Image *image,               /* Modify image */
+                    PixelPacket *pixels,        /* Pixel row */
+                    IndexPacket *indexes,       /* Pixel row indexes */
+                    const long npixels,         /* Number of pixels in row */
+                    ExceptionInfo *exception)   /* Exception report */
 {
   /*
     Modulate pixels contrast.
   */
   int
-    sign = *((const int *) user_data);
+    sign = *((const int *) immutable_data);
 
   register long
     i;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -123,7 +124,7 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
   progress_message=sharpen ? SharpenContrastImageText : DullContrastImageText;
   if (image->storage_class == PseudoClass)
     {
-      (void) ContrastImagePixels(&sign,image,image->colormap,
+      (void) ContrastImagePixels(NULL,&sign,image,image->colormap,
                                  (IndexPacket *) NULL,image->colors,
                                  &image->exception);
       status=SyncImage(image);
@@ -131,7 +132,7 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
   else
     {
       status=PixelIterateMonoModify(ContrastImagePixels,progress_message,
-                                    &sign,0,0,image->columns,image->rows,
+                                    NULL,&sign,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
   image->is_grayscale=is_grayscale;
@@ -172,18 +173,19 @@ typedef struct _ApplyLevelsOptions_t
 } ApplyLevels_t;
 
 static MagickPassFail
-ApplyLevels(void *user_data,          /* User provided mutable data */
-            Image *image,             /* Modify image */
-            PixelPacket *pixels,      /* Pixel row */
-            IndexPacket *indexes,     /* Pixel row indexes */
-            const long npixels,       /* Number of pixels in row */
-            ExceptionInfo *exception) /* Exception report */
+ApplyLevels(void *mutable_data,          /* User provided mutable data */
+            const void *immutable_data,  /* User provided immutable data */
+            Image *image,                /* Modify image */
+            PixelPacket *pixels,         /* Pixel row */
+            IndexPacket *indexes,        /* Pixel row indexes */
+            const long npixels,          /* Number of pixels in row */
+            ExceptionInfo *exception)    /* Exception report */
 {
   /*
     Apply a levels transformation based on a supplied look-up table.
   */
   const ApplyLevels_t
-    *options = (const ApplyLevels_t *) user_data;
+    *options = (const ApplyLevels_t *) immutable_data;
 
   register long
     i;
@@ -197,7 +199,7 @@ ApplyLevels(void *user_data,          /* User provided mutable data */
     level_blue=options->level_blue,
     level_opacity=options->level_opacity;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -217,23 +219,25 @@ ApplyLevels(void *user_data,          /* User provided mutable data */
 }
 
 static MagickPassFail
-BuildHistogram(void *user_data,                   /* User provided mutable data */
-               const Image *const_image,          /* Input image */
-               const PixelPacket *pixels,         /* Pixel row */
-               const IndexPacket *indexes,        /* Pixel indexes */
-               const long npixels,                /* Number of pixels in row */
-               ExceptionInfo *exception           /* Exception report */
+BuildHistogram(void *mutable_data,          /* User provided mutable data */
+               const void *immutable_data,  /* User provided immutable data */
+               const Image *const_image,    /* Input image */
+               const PixelPacket *pixels,   /* Pixel row */
+               const IndexPacket *indexes,  /* Pixel indexes */
+               const long npixels,          /* Number of pixels in row */
+               ExceptionInfo *exception     /* Exception report */
                )
 {
   /*
     Built an image histogram in the supplied table.
   */
   DoublePixelPacket
-    *histogram = (DoublePixelPacket *) user_data;
+    *histogram = (DoublePixelPacket *) mutable_data;
 
   register long
     i;
 
+  ARG_NOT_USED(immutable_data);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
@@ -291,7 +295,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   status=PixelIterateMonoRead(BuildHistogram,
                               "Building image histogram ...",
-                              histogram,
+                              histogram,NULL,
                               0,0,image->columns,image->rows,
                               image,&image->exception);
   /*
@@ -336,7 +340,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,image,image->colormap,
+      (void) ApplyLevels(NULL,&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -345,7 +349,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     "Applying histogram equalization ...",
-                                    &levels,
+                                    NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
                                     &image->exception);
@@ -453,7 +457,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,image,image->colormap,
+      (void) ApplyLevels(NULL,&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -462,7 +466,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     "Applying gamma correction ...",
-                                    &levels,
+                                    NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
                                     &image->exception);
@@ -711,7 +715,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
   */
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,image,image->colormap,
+      (void) ApplyLevels(NULL,&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -720,7 +724,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     "Leveling image ...",
-                                    &levels,
+                                    NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
                                     &image->exception);
@@ -768,23 +772,24 @@ typedef struct _ModulateImageParameters_t
 } ModulateImageParameters_t;
 
 static MagickPassFail
-ModulateImagePixels(void *user_data,          /* User provided mutable data */
-                    Image *image,             /* Modify image */
-                    PixelPacket *pixels,      /* Pixel row */
-                    IndexPacket *indexes,     /* Pixel row indexes */
-                    const long npixels,       /* Number of pixels in row */
-                    ExceptionInfo *exception) /* Exception report */
+ModulateImagePixels(void *mutable_data,         /* User provided mutable data */
+                    const void *immutable_data, /* User provided immutable data */
+                    Image *image,               /* Modify image */
+                    PixelPacket *pixels,        /* Pixel row */
+                    IndexPacket *indexes,       /* Pixel row indexes */
+                    const long npixels,         /* Number of pixels in row */
+                    ExceptionInfo *exception)   /* Exception report */
 {
   /*
     Modulate image pixels according to options.
   */
   const ModulateImageParameters_t
-    *param = (const ModulateImageParameters_t *) user_data;
+    *param = (const ModulateImageParameters_t *) immutable_data;
 
   register long
     i;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -829,7 +834,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 
   if (image->storage_class == PseudoClass)
     {
-      (void) ModulateImagePixels(&param,image,image->colormap,
+      (void) ModulateImagePixels(NULL,&param,image,image->colormap,
                                  (IndexPacket *) NULL,image->colors,
                                  &image->exception);
       status=SyncImage(image);
@@ -837,7 +842,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
   else
     {
       status=PixelIterateMonoModify(ModulateImagePixels,ModulateImageText,
-                                    &param,0,0,image->columns,image->rows,
+                                    NULL,&param,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
 
@@ -870,23 +875,24 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 %
 */
 static MagickPassFail
-NegateImagePixels(void *user_data,          /* User provided mutable data */
-                    Image *image,             /* Modify image */
-                    PixelPacket *pixels,      /* Pixel row */
-                    IndexPacket *indexes,     /* Pixel row indexes */
-                    const long npixels,       /* Number of pixels in row */
-                    ExceptionInfo *exception) /* Exception report */
+NegateImagePixels(void *mutable_data,         /* User provided mutable data */
+                  const void *immutable_data, /* User provided immutable data */
+                  Image *image,               /* Modify image */
+                  PixelPacket *pixels,        /* Pixel row */
+                  IndexPacket *indexes,       /* Pixel row indexes */
+                  const long npixels,         /* Number of pixels in row */
+                  ExceptionInfo *exception)   /* Exception report */
 {
   /*
     Negate the pixels.
   */
   const unsigned int
-    grayscale = *((const unsigned int *) user_data);
+    grayscale = *((const unsigned int *) immutable_data);
 
   register long
     i;
   
-  ARG_NOT_USED(user_data);
+  ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
@@ -941,7 +947,7 @@ MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscal
 
   if (image->storage_class == PseudoClass)
     {
-      (void) NegateImagePixels(&non_gray,image,image->colormap,
+      (void) NegateImagePixels(NULL,&non_gray,image,image->colormap,
                                (IndexPacket *) NULL,image->colors,
                                &image->exception);
       status=SyncImage(image);
@@ -949,7 +955,7 @@ MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscal
   else
     {
       status=PixelIterateMonoModify(NegateImagePixels,NegateImageText,
-                                    &non_gray,0,0,image->columns,image->rows,
+                                    NULL,&non_gray,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
 
@@ -1023,7 +1029,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   status=PixelIterateMonoRead(BuildHistogram,
                               "Building image histogram ...",
-                              histogram,
+                              histogram,NULL,
                               0,0,image->columns,image->rows,
                               image,&image->exception);
   /*
@@ -1231,7 +1237,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   levels.level_opacity= (image->matte && (low.opacity != high.opacity));
   if (image->storage_class == PseudoClass)
     {
-      (void) ApplyLevels(&levels,image,image->colormap,
+      (void) ApplyLevels(NULL,&levels,image,image->colormap,
                          (IndexPacket *) NULL,image->colors,
                          &image->exception);
       status=SyncImage(image);
@@ -1240,7 +1246,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     "Applying histogram normalization ...",
-                                    &levels,
+                                    NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
                                     &image->exception);
