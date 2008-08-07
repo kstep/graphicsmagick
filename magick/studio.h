@@ -450,6 +450,7 @@ extern MagickExport const char
   *DefaultTileGeometry,
   *DefaultTileLabel,
   *ForegroundColor,
+  *HighlightColor,
   *LoadImageText,
   *LoadImagesText,
   *MatteColor,

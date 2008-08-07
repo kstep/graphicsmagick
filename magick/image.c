@@ -76,6 +76,7 @@ const char
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
   *ForegroundColor = "#000000000000",  /* black */
+  *HighlightColor = "#f1f100001e1e", /* light red */
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
   *MatteColor = "#bdbdbdbdbdbd",  /* gray */

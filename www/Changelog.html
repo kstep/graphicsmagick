@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2008-08-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/compare.c (DifferenceImagePixels): Fixed 'Annotate'
+        difference annotation algorithm.  Added 'Threshold' and 'Xor'
+        difference annotation algorithms.
+        (GetImageChannelDifference): New function for computing
+        statistical image error using various metrics.  Inspired by
+        'imgcmp' from Jasper.<BR>
+        (GetImageChannelDistortion): New function for obtaining
+        statistical image error using various metrics for a specified
+        image channel.  Signature is compatible with similar ImageMagick
+        function.<BR>
+        (GetImageDistortion): New function for obtaining statistical image
+        error using various metrics for all the active channels in the
+        image.  Signature is compatible with similar ImageMagick function.
+  <LI> magick/command.c (CompareImageCommand): Added a 'compare'
+        subcommand which compares two images using various metrics, and/or
+        generates a difference image using various difference annotation
+        algorithms.  Documentation not yet updated.
+
+</UL>
+<p>
 2008-08-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -584,7 +584,7 @@ QuantumDivide(void *mutable_data,
   return (MagickPass);
 }
 #if MaxRGB > MaxMap
-#  define GammaAdjustQuantum(quantum) (MaxRGBDouble*pow(quantum/MaxRGBDouble,1.0/context->double_value)+0.5)
+#  define GammaAdjustQuantum(quantum) (MaxRGBDouble*pow(quantum/MaxRGBDouble,1.0/immutable_context->double_value)+0.5)
 #else
 #  define GammaAdjustQuantum(quantum) (mutable_context->channel_lut[ScaleQuantumToMap(quantum)])
 #endif

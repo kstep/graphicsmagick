@@ -1266,7 +1266,8 @@ MagickCompareImageChannels(MagickWand *wand,
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   if (distortion != (double *) NULL)
     *distortion=0.0;
-  DifferenceImageOptionsDefaults(&difference_options);
+  DifferenceImageOptionsDefaults(&difference_options,
+                                 &wand->image->exception);
   difference_options.channel=channel;
   compare_image=DifferenceImage(wand->image,reference->image,
                                 &difference_options,
@@ -1276,9 +1277,13 @@ MagickCompareImageChannels(MagickWand *wand,
 
   /*
     Perform statistical comparison of images using a metric.
-
-    FIXME: TBD
   */
+  if (distortion != (double *) NULL)
+    {
+      GetImageChannelDistortion(wand->image,reference->image,
+                                channel,metric,distortion,
+                                &wand->image->exception);
+    }
 
   return(CloneMagickWandWithImages(wand,compare_image));
 }

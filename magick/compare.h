@@ -14,28 +14,76 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+/*
+  Pixel differencing algorithms.
+*/
 typedef enum
 {
   UndefinedDifferenceAlgorithm,
   AnnotateDifferenceAlgorithm,
-  SubtractDifferenceAlgorithm,
   ThresholdDifferenceAlgorithm,
-  OpacityDifferenceAlgorithm
-} DifferenceImageAlgorithm;
+  XorDifferenceAlgorithm
+} DifferenceAlgorithm;
 
 typedef struct _DifferenceImageOptions
 {
-  DifferenceImageAlgorithm algorithm;
-  ChannelType              channel;
+  DifferenceAlgorithm      algorithm; /* Pixel differencing algorithm */
+  ChannelType              channel; /* Channel(s) to difference */
+  PixelPacket              highlight_color; /* Changed pixel highlight color */
 } DifferenceImageOptions;
 
 extern MagickExport void
-  DifferenceImageOptionsDefaults(DifferenceImageOptions *options);
+  DifferenceImageOptionsDefaults(DifferenceImageOptions *options,
+                                 ExceptionInfo *exception);
 
 extern MagickExport Image
   *DifferenceImage(const Image *reference_image,const Image *compare_image,
                    const DifferenceImageOptions *difference_options,
                    ExceptionInfo *exception);
+
+/*
+  Pixel error metrics.
+*/
+typedef enum
+{
+  UndefinedMetric,
+  MeanAbsoluteErrorMetric,
+  MeanSquaredErrorMetric,
+  PeakAbsoluteErrorMetric,
+  PeakSignalToNoiseRatioMetric,
+  RootMeanSquaredErrorMetric
+} MetricType;
+
+/*
+  Pixel difference statistics.
+*/
+typedef struct _DifferenceStatistics
+{
+  double
+    red,
+    green,
+    blue,
+    opacity,
+    combined;
+} DifferenceStatistics;
+
+extern MagickExport MagickPassFail
+  GetImageChannelDifference(const Image *reference_image,
+                            const Image *compare_image,
+                            const MetricType metric,
+                            DifferenceStatistics *statistics,
+                            ExceptionInfo *exception),
+  GetImageChannelDistortion(const Image *reference_image,
+                            const Image *compare_image,
+                            const ChannelType channel,
+                            const MetricType metric,
+                            double *distortion,
+                            ExceptionInfo *exception),
+  GetImageDistortion(const Image *reference_image,
+                     const Image *compare_image,
+                     const MetricType metric,
+                     double *distortion,
+                     ExceptionInfo *exception);
 
 extern MagickExport MagickBool
   IsImagesEqual(Image *,const Image *);

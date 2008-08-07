@@ -551,6 +551,47 @@ MagickExport CompressionType StringToCompressionType(const char *option)
 }
 
 /*
+  DifferenceImageAlgorithm
+*/
+MagickExport const char *
+DifferenceAlgorithmToString(const DifferenceAlgorithm difference_algorithm)
+{
+  const char
+    *algorithm="Undefined";;
+
+  switch(difference_algorithm)
+    {
+    case UndefinedDifferenceAlgorithm:
+      break;
+    case AnnotateDifferenceAlgorithm:
+      algorithm="Annotate";
+      break;
+    case ThresholdDifferenceAlgorithm:
+      algorithm="Threshold";
+      break;
+    case XorDifferenceAlgorithm:
+      algorithm="XOR";
+    }
+
+  return algorithm;
+}
+MagickExport DifferenceAlgorithm
+StringToDifferenceAlgorithm(const char *option)
+{
+  DifferenceAlgorithm
+    algorithm=UndefinedDifferenceAlgorithm;
+
+  if (LocaleCompare("Annotate",option) == 0)
+    algorithm=AnnotateDifferenceAlgorithm;
+  else if (LocaleCompare("Threshold",option) == 0)
+    algorithm=ThresholdDifferenceAlgorithm;
+  else if (LocaleCompare("XOR",option) == 0)
+    algorithm=XorDifferenceAlgorithm;
+
+  return algorithm;
+}
+
+/*
   EndianType
 */
 MagickExport EndianType StringToEndianType(const char *option)
@@ -723,6 +764,62 @@ MagickExport const char *MapModeToString(MapMode map_mode)
     break;
   }
   return mode_string;
+}
+
+/*
+  MetricType
+*/
+MagickExport const char *MetricTypeToString(MetricType metric)
+{
+  char
+    *metric_string="Undefined";
+
+  switch (metric)
+    {
+    case UndefinedMetric:
+      metric_string="Undefined";
+      break;
+    case MeanAbsoluteErrorMetric:
+      metric_string="MeanAbsoluteError";
+      break;
+    case MeanSquaredErrorMetric:
+      metric_string="MeanSquaredError";
+      break;
+    case PeakAbsoluteErrorMetric:
+      metric_string="PeakAbsoluteError";
+      break;
+    case PeakSignalToNoiseRatioMetric:
+      metric_string="PeakSignalToNoiseRatio";
+      break;
+    case RootMeanSquaredErrorMetric:
+      metric_string="RootMeanSquaredError";
+      break;
+    }
+
+  return metric_string;
+}
+MagickExport MetricType StringToMetricType(const char *option)
+{
+  MetricType
+    metric_type=UndefinedMetric;
+
+  if ((LocaleCompare("MAE",option) == 0) ||
+      (LocaleCompare("MeanAbsoluteError",option) == 0))
+    metric_type=MeanAbsoluteErrorMetric;
+  else if ((LocaleCompare("MSE",option) == 0) ||
+           (LocaleCompare("MeanSquaredError",option) == 0))
+    metric_type=MeanSquaredErrorMetric;
+  else if ((LocaleCompare("PAE",option) == 0) ||
+           (LocaleCompare("PeakAbsoluteError",option) == 0))
+    metric_type=PeakAbsoluteErrorMetric;
+  else if ((LocaleCompare("PSNR",option) == 0) ||
+           (LocaleCompare("PeakSignalToNoiseRatio",option) == 0))
+    metric_type=PeakSignalToNoiseRatioMetric;
+  else if ((LocaleCompare("RMSE",option) == 0) ||
+           (LocaleCompare("RootMeanSquaredError",option) == 0))
+    metric_type=RootMeanSquaredErrorMetric;
+
+  return metric_type;
 }
 
 /*

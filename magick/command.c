@@ -43,6 +43,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/command.h"
+#include "magick/compare.h"
 #include "magick/composite.h"
 #include "magick/decorate.h"
 #include "magick/delegate.h"
@@ -120,6 +121,7 @@ static void
 #endif /* HasX11 */
   BenchmarkUsage(void),
   CompositeUsage(void),
+  CompareUsage(void),
   ConjureUsage(void),
   ConvertUsage(void),
 #if defined(HasX11)
@@ -152,6 +154,8 @@ static const CommandInfo commands[] =
 #endif
     { "benchmark", "benchmark one of the other commands",
       BenchmarkImageCommand, BenchmarkUsage, 1 },
+    { "compare", "compare two images",
+      CompareImageCommand, CompareUsage, 0 },
     { "composite", "composite images together",
       CompositeImageCommand, CompositeUsage, 0 },
     { "conjure", "execute a Magick Scripting Language (MSL) XML script",
@@ -1526,6 +1530,637 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
   }
 
   return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  C o m p a r e I m a g e C o m m a n d                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompareImageCommand() reads two images, compares them via a specified
+%  comparison metric, and prints the results.
+%
+%  The format of the CompareImageCommand method is:
+%
+%      unsigned int CompareImageCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+#define ThrowCompareException(code,reason,description) \
+{ \
+  DestroyImageList(compare_image); \
+  DestroyImageList(difference_image); \
+  DestroyImageList(reference_image); \
+  ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
+  return(False); \
+}
+#define ThrowCompareException3(code,reason,description) \
+{ \
+  DestroyImageList(compare_image); \
+  DestroyImageList(difference_image); \
+  DestroyImageList(reference_image); \
+  ThrowException3(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
+  return(False); \
+}
+MagickExport unsigned int 
+CompareImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  const char
+    *difference_filename;
+
+  char
+    *filename,
+    *option;
+
+  Image
+    *compare_image,
+    *difference_image,
+    *reference_image;
+
+  MetricType
+    metric=UndefinedMetric;
+
+  DifferenceImageOptions
+    difference_options;
+
+  long
+    x;
+
+  register long
+    i;
+
+  unsigned int
+    status;
+
+  /*
+    Set default.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  status=True;
+
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      CompareUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
+    (char *) NULL);
+
+  DifferenceImageOptionsDefaults(&difference_options,exception);
+  difference_image=NewImageList();
+  reference_image=NewImageList();
+  difference_filename=(const char *) NULL;
+  filename=(char *) NULL;
+  compare_image=NewImageList();
+  (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
+  (void) SetImageInfo(image_info,True,exception);
+
+  status=True;
+  /*
+    Check command syntax.
+  */
+  for (i=1; i < argc; i++)
+  {
+    option=argv[i];
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      {
+        /*
+          Read input images.
+        */
+        filename=argv[i];
+        (void) strlcpy(image_info->filename,filename,MaxTextExtent);
+        if (reference_image == (Image *) NULL)
+          {
+            reference_image=ReadImage(image_info,exception);
+            continue;
+          }
+        if (compare_image == (Image *) NULL)
+          {
+            compare_image=ReadImage(image_info,exception);
+            continue;
+          }
+        continue;
+      }
+    switch(*(option+1))
+    {
+      case 'a':
+      {
+        if (LocaleCompare("algorithm",option+1) == 0)
+          {
+            difference_options.algorithm=UndefinedDifferenceAlgorithm;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                difference_options.algorithm=StringToDifferenceAlgorithm(option);
+                if (difference_options.algorithm == UndefinedDifferenceAlgorithm)
+                  ThrowCompareException(OptionError,UnrecognizedDifferenceAlgorithm,
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'c':
+      {
+        if (LocaleCompare("colorspace",option+1) == 0)
+          {
+            image_info->colorspace=RGBColorspace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                image_info->colorspace=StringToColorspaceType(option);
+                if (image_info->colorspace == UndefinedColorspace)
+                  ThrowCompareException(OptionError,UnrecognizedColorspace,
+                    option);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            (void) SetLogEventMask("None");
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowCompareException(OptionError,MissingArgument,
+                option);
+            if (*option == '+')
+              (void) RemoveDefinitions(image_info,argv[i]);
+            else
+              (void) AddDefinitions(image_info,argv[i],exception);
+            break;
+          }
+        if (LocaleCompare("density",option+1) == 0)
+          {
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                (void) CloneString(&image_info->density,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("depth",option+1) == 0)
+          {
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                image_info->depth=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("display",option+1) == 0)
+          {
+            (void) CloneString(&image_info->server_name,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                (void) CloneString(&image_info->server_name,argv[i]);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'e':
+      {
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                image_info->endian=StringToEndianType(option);
+                if (image_info->endian == UndefinedEndian)
+                  ThrowCompareException(OptionError,UnrecognizedEndianType,
+                    option);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+    case 'f':
+      {
+        if (LocaleCompare("file",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                difference_filename=argv[i];
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
+          {
+            CompareUsage();
+            ThrowCompareException(OptionError,UsageError,NULL);
+          }
+        if (LocaleCompare("highlight-color",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                (void) QueryColorDatabase(argv[i],&difference_options.highlight_color,
+                  exception);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'i':
+      {
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            image_info->interlace=NoInterlace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                image_info->interlace=StringToInterlaceType(option);
+                if (image_info->interlace == UndefinedInterlace)
+                  ThrowCompareException(OptionError,UnrecognizedInterlaceType,
+                    option);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'l':
+      {
+        if (LocaleCompare("limit",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                ResourceType
+                  resource_type;
+
+                char
+                  *type;
+
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                type=argv[i];
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                resource_type=StringToResourceType(type);
+                if (resource_type == UndefinedResource)
+                  ThrowCompareException(OptionError,UnrecognizedResourceType,type);
+                (void) SetMagickResourceLimit(resource_type,MagickSizeStrToInt64(argv[i],1024));
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                    option);
+                (void) SetLogFormat(argv[i]);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 'm':
+      {
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
+        if (LocaleCompare("metric",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,
+                                        option);
+                metric=StringToMetricType(argv[i]);
+                if (metric == UndefinedMetric)
+                  ThrowCompareException(OptionError,UnrecognizedMetric,
+                                        option);
+              }
+            break;
+          }
+        if (LocaleCompare("monitor",option+1) == 0)
+          {
+            if (*option == '+')
+              (void) SetMonitorHandler((MonitorHandler) NULL);
+            else
+              (void) SetMonitorHandler(CommandProgressMonitor);
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 's':
+      {
+        if (LocaleCompare("sampling-factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
+              }
+            break;
+          }
+        if (LocaleCompare("size",option+1) == 0)
+          {
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case 't':
+      {
+        if (LocaleCompare("type",option+1) == 0)
+          {
+            image_info->type=UndefinedType;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                image_info->type=StringToImageType(option);
+                if (image_info->type == UndefinedType)
+                  ThrowCompareException(OptionError,UnrecognizedImageType,
+                    option);
+              }
+            break;
+          }
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+    case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose+=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("verbose",option+1) == 0)
+          break;
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+      }
+      case '?':
+        break;
+      default:
+        ThrowCompareException(OptionError,UnrecognizedOption,option)
+    }
+  }
+  if (compare_image == (Image *) NULL)
+    {
+      if (exception->severity == UndefinedException)
+        ThrowCompareException(OptionError,RequestDidNotReturnAnImage,
+          (char *) NULL);
+      return(False);
+    }
+  if ((reference_image == (Image *) NULL) ||
+      (compare_image == (Image *) NULL))
+    ThrowCompareException(OptionError,MissingAnImageFilename,(char *) NULL);
+
+  /*
+    Apply any user settings to images prior to compare.
+  */
+  if (image_info->type != UndefinedType)
+    {
+      (void) SetImageType(reference_image,image_info->type);
+      (void) SetImageType(compare_image,image_info->type);
+    }
+
+  if (image_info->colorspace != UndefinedColorspace)
+    {
+      (void) TransformColorspace(reference_image,image_info->colorspace);
+      (void) TransformColorspace(compare_image,image_info->colorspace);
+    }
+
+  if (metric != UndefinedMetric)
+  {
+    /*
+      Compute and print statistical differences based on metric.
+    */
+    DifferenceStatistics
+      statistics;
+
+    status&=GetImageChannelDifference(reference_image,compare_image,metric,
+                                      &statistics,exception);
+    fprintf(stdout,"Image Difference (%s):\n",MetricTypeToString(metric));
+    if (metric == PeakSignalToNoiseRatioMetric)
+      {
+        fprintf(stdout, "           PSNR\n");
+        fprintf(stdout, "          ======\n");
+        fprintf(stdout,"     Red: %#-6.2f\n",statistics.red);
+        fprintf(stdout,"   Green: %#-6.2f\n",statistics.green);
+        fprintf(stdout,"    Blue: %#-6.2f\n",statistics.blue);
+        if (reference_image->matte)
+          fprintf(stdout," Opacity: %#-6.2f\n",statistics.opacity);
+        fprintf(stdout,"   Total: %#-6.2f\n",statistics.combined);
+      }
+    else
+      {
+        fprintf(stdout, "           Normalized    Absolute\n");
+        fprintf(stdout, "          ============  ==========\n");
+        fprintf(stdout,"     Red: %#-12.10f % 10.1f\n",statistics.red,statistics.red*MaxRGBDouble);
+        fprintf(stdout,"   Green: %#-12.10f % 10.1f\n",statistics.green,statistics.green*MaxRGBDouble);
+        fprintf(stdout,"    Blue: %#-12.10f % 10.1f\n",statistics.blue,statistics.blue*MaxRGBDouble);
+        if (reference_image->matte)
+          fprintf(stdout," Opacity: %#-12.10f % 10.1f\n",statistics.opacity,statistics.opacity*MaxRGBDouble);
+        fprintf(stdout,"   Total: %#-12.10f % 10.1f\n",statistics.combined,statistics.combined*MaxRGBDouble);
+        
+      }
+  }
+
+  if ((difference_filename != (const char *) NULL) &&
+      (difference_options.algorithm != UndefinedDifferenceAlgorithm))
+    {
+      /*
+        Generate an annotated difference image and write file.
+      */
+
+      difference_image=DifferenceImage(reference_image,compare_image,
+                                       &difference_options,exception);
+      if (difference_image != (Image *) NULL)
+        {
+          (void) strlcpy(difference_image->filename,difference_filename,
+                         MaxTextExtent);
+          status&=WriteImage(image_info,difference_image);
+        }
+    }
+
+  DestroyImageList(difference_image);
+  DestroyImageList(reference_image);
+  DestroyImageList(compare_image);
+  LiberateArgumentList(argc,argv);
+  return(status);
+}
+#undef ThrowCompareException
+#undef ThrowCompareException3
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p a r e U s a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompareUsage() displays the program command syntax.
+%
+%  The format of the CompareUsage method is:
+%
+%      void CompareUsage()
+%
+%
+*/
+static void CompareUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-algorithm algorithm differencing algorithm (Annotate, Threshold)",
+      "-authenticate value  decrypt image with this password",
+      "-colorspace type     alternate image colorspace",
+      "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
+      "-algorithm algorithm differencing algorithm (Annotate, Threshold)",
+      "-display server      get image or font from this X server",
+      "-endian type         LSB, MSB, or Native",
+      "-file filename       write difference image to this file",
+      "-help                print program options",
+      "-highlight-color color",
+      "                     color to use when annotating difference pixels",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
+      "-log format          format of debugging information",
+      "-matte               store matte channel if the image has one",
+      "-metric              comparison metric (MAE, MSE, PAE, PSNR, RMSE)",
+      "-monitor             show progress indication",
+      "-sampling-factor HxV[,...]",
+      "                     horizontal and vertical sampling factors",
+      "-size geometry       width and height of image",
+      "-type type           image type",
+      "-verbose             print detailed information about the image",
+      "-version             print version information",
+      (char *) NULL
+    };
+
+  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s [options ...] reference [options ...] compare"
+    " [options ...]\n",GetClientName());
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
 }
 
 /*

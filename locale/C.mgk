@@ -918,6 +918,9 @@
       <Message name="UnrecognizedComposeOperator">
         Unrecognized compose operator
       </Message>
+      <Message name="UnrecognizedDifferenceAlgorithm">
+        Unrecognized differencing algorithm
+      </Message>
       <Message name="UnrecognizedDisposeMethod">
         Unrecognized dispose method
       </Message>
@@ -953,6 +956,9 @@
       </Message>
       <Message name="UnrecognizedListType">
         Unrecognized list type
+      </Message>
+      <Message name="UnrecognizedMetric">
+        Unrecognized error metric
       </Message>
       <Message name="UnrecognizedModeType">
         Unrecognized mode type

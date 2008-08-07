@@ -21,6 +21,9 @@
 
 		<li><a href="#differenceimageoptionsdefaults">DifferenceImageOptionsDefaults</a></li>
 		<li><a href="#differenceimage">DifferenceImage</a></li>
+		<li><a href="#getimagechanneldifference">GetImageChannelDifference</a></li>
+		<li><a href="#getimagechanneldistortion">GetImageChannelDistortion</a></li>
+		<li><a href="#getimagedistortion">GetImageDistortion</a></li>
 		<li><a href="#isimagesequal">IsImagesEqual</a></li>
 	</ul>
 
@@ -38,7 +41,10 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>DifferenceImage</strong>( const Image *reference_image, const Image *compare_image, const DifferenceImageOptions *difference_options, ExceptionInfo *exception );</P>
 <P>void  <strong>DifferenceImageOptionsDefaults</strong>( DifferenceImageOptions *options );</P>
-<P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
+<P>MagickPassFail  <strong>GetImageChannelDifference</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, DifferenceStatistics *statistics, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>GetImageChannelDistortion</strong>( const Image *reference_image, const Image *compare_image, const ChannelType channel, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>GetImageDistortion</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>MagickBool  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
 <P>
 </P>
 <hr />
@@ -53,6 +59,12 @@
 
 <DD>
 <P>pointer to DifferenceImageOptions structure to initialize.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
 </dd>
 </li>
 </dl>
@@ -86,7 +98,130 @@
 <P>the <code>channel(s)</code> to compare.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="getimagechanneldifference">GetImageChannelDifference</a></h2>
+<blockquote>GetImageChannelDifference() updates a user provided statistics structure with per-channel, and totalized, difference statistics corresponding to a specified comparison metric. </blockquote><P>The format of the GetImageChannelDifference method is:</P>
+<blockquote>MagickPassFail GetImageChannelDifference ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const MetricType metric, DifferenceStatistics *statistics, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>reference_image:</strong>
+
+<DD>
+<P>the reference image.</P>
+</dd>
+</li>
+<dt><strong>compare_image:</strong>
+
+<DD>
+<P>the comparison image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_metric_3a">metric:</a></strong>
+
+<DD>
+<P>metric to use when differencing.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_statistics_3a">statistics:</a></strong>
+
+<DD>
+<P>the statistics structure to populate.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="getimagechanneldistortion">GetImageChannelDistortion</a></h2>
+<blockquote>GetImageChannelDistortion() updates a distortion parameter with the distortion ( error ) computed according to the specified comparison metric. The value returned is only for the channel specified. </blockquote><P>The format of the GetImageChannelDistortion method is:</P>
+<blockquote>MagickPassFail GetImageChannelDistortion ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>reference_image:</strong>
+
+<DD>
+<P>the reference image.</P>
+</dd>
+</li>
+<dt><strong>compare_image:</strong>
+
+<DD>
+<P>the comparison image.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>the channel to obtain error data for.</P>
+</dd>
+</li>
+<dt><strong>metric:</strong>
+
+<DD>
+<P>metric to use when differencing.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_distortion_3a">distortion:</a></strong>
+
+<DD>
+<P>updated with the computed distortion.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="getimagedistortion">GetImageDistortion</a></h2>
+<blockquote>GetImageDistortion() updates a distortion parameter with the distortion ( error ) computed according to the specified comparison metric. The value returned reflects all enabled channels. </blockquote><P>The format of the GetImageDistortion method is:</P>
+<blockquote>MagickPassFail GetImageDistortion ( const <A HREF="types.html#Image">Image</A> *reference_image, const <A HREF="types.html#Image">Image</A> *compare_image, const MetricType metric, double *distortion, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>reference_image:</strong>
+
+<DD>
+<P>the reference image.</P>
+</dd>
+</li>
+<dt><strong>compare_image:</strong>
+
+<DD>
+<P>the comparison image.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>the channel to obtain error data for.</P>
+</dd>
+</li>
+<dt><strong>metric:</strong>
+
+<DD>
+<P>metric to use when differencing.</P>
+</dd>
+</li>
+<dt><strong>distortion:</strong>
+
+<DD>
+<P>updated with the computed distortion.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
@@ -118,7 +253,7 @@
 </dl>
 <P>A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
 <P>The format of the IsImagesEqual method is:</P>
-<blockquote>unsigned int IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>A description of each parameter follows.</P>
+<blockquote>MagickBool IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>A description of each parameter follows.</P>
 <dl>
 <dt><strong><a name="item_o_image_3a">image:</a></strong>
 
