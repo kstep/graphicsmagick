@@ -918,9 +918,6 @@
       <Message name="UnrecognizedComposeOperator">
         Unrecognized compose operator
       </Message>
-      <Message name="UnrecognizedDifferenceAlgorithm">
-        Unrecognized differencing algorithm
-      </Message>
       <Message name="UnrecognizedDisposeMethod">
         Unrecognized dispose method
       </Message>
@@ -932,6 +929,9 @@
       </Message>
       <Message name="UnrecognizedGravityType">
         Unrecognized gravity type
+      </Message>
+      <Message name="UnrecognizedHighlightStyle">
+        Unrecognized highlight style
       </Message>
       <Message name="UnrecognizedImageCompression">
         Unrecognized image compression

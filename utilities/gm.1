@@ -1,4 +1,4 @@
-.TH gm 1 "2008/07/07" "GraphicsMagick"
+.TH gm 1 "2008/08/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -11,6 +11,10 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 \fBgm animate\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP
+
+\fBcompare\fP \fB[\fP \fIoptions\fP \fB... ]\fP \fIreference-image\fP
+\fB[\fP \fIoptions\fP \fB... ]\fP \fIcompare-image\fP
+\fB[\fP \fIoptions\fP \fB... ]\fP
 
 \fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIchange-image base-image\fP
 \fB[\fP \fImask-image\fP \fB]\fP \fIoutput-image\fP
@@ -357,9 +361,9 @@ Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 
 This is a combined list of the commandline options used by the
-GraphicsMagick utilities (\fIanimate\fP, \fIcomposite\fP,
-\fIconvert\fP, \fIdisplay\fP, \fIidentify\fP, \fIimport\fP,
-\fImogrify\fP and \fImontage\fP).
+GraphicsMagick utilities (\fIanimate\fP, \fIcompare\fP,
+\fIcomposite\fP, \fIconvert\fP, \fIdisplay\fP, \fIidentify\fP,
+\fIimport\fP, \fImogrify\fP and \fImontage\fP).
 
 
 In this document, angle brackets ("<>") enclose variables and curly
@@ -1655,6 +1659,17 @@ Use \fB+endian\fP to revert to unspecified endianness.
 .B "-equalize"
 \fRperform histogram equalization to the image
 .TP
+.B "-file \fI<filename>"\fP
+\fRwrite annotated difference image to file
+
+If \fB-file\fP is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the \fBreference\fP and \fBcompare\fP images are modified from those in
+the \fBcompare\fP image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+\fB-highlight-style\fP) or highlight color (see \fB-highlight-color\fP)
+before the changes are obvious.
+.TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
 
@@ -2057,6 +2072,22 @@ for this purpose.
 .TP
 .B "-help"
 \fRprint usage instructions
+.TP
+.B "-highlight-color \fI<color>"\fP
+\fRpixel annotation color
+
+Specifies the color to use when annotating difference pixels.
+.TP
+.B "-highlight-style \fI<style>"\fP
+\fRpixel annotation style
+
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of \fBAssign\fP, \fBThreshold\fP,
+\fBTint\fP, or \fBXOR\fP; where \fBAssign\fP replaces the pixel with
+the highlight color (see \fB-highlight-color\fP), \fBThreshold\fP
+replaces the pixel with black or white based on the difference in
+intensity, \fBTint\fP alpha tints the pixel with the highlight color,
+and \fBXOR\fP does an XOR between the pixel and the highlight color.
 .TP
 .B "-iconGeometry \fI<geometry>"\fP
 \fRspecify the icon geometry
@@ -4146,6 +4177,105 @@ information is sometimes used by a window manager to provide some sort
 of header identifying the window. The default is the image file name.
 .in 15
 
+.SH GM COMPARE
+
+\fBcompare\fP compares two similar images using a specified statistical
+method (see \fB-metric\fP) and/or by writing a difference image
+(\fB-file\fP), with the altered pixels annotated using a specified
+method (see \fB-highlight-style\fP) and color (see
+\fB-highlight-color\fP). \fIReference-image\fP is the original
+image and \fIcompare-image\fP is the (possibly) altered version, which
+should have the same dimensions as \fIreference-image\fP.
+.SH EXAMPLES
+
+To compare two images using Mean Square Error (MSE) statistical analysis
+use:
+
+    gm compare -metric mse original.miff compare.miff
+
+To create an annotated difference image use:
+
+    gm compare -algorithm annotate -highlight-color purple
+            -file diff.miff original.miff compare.miff
+.SH OPTIONS
+
+Options are processed in command line order. Any option you specify on
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
+
+For a more detailed description of each option, see
+Options, above.
+
+.TP
+.B "-authenticate \fI<string>"\fP
+\fRdecrypt image with this password
+.TP
+.B "-colorspace \fI<value>"\fP
+\fRthe type of colorspace
+.TP
+.B "-debug \fI<events>"\fP
+\fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
+.B "-density \fI<width>x<height>"\fP
+\fRhorizontal and vertical resolution in pixels of the image
+.TP
+.B "-depth \fI<value>"\fP
+\fRdepth of the image
+.TP
+.B "-display \fI<host:display[.screen]>"\fP
+\fRspecifies the X server to contact
+.TP
+.B "-endian \fI<type>"\fP
+\fRspecify endianness (MSB or LSB) of output image
+.TP
+.B "-file \fI<filename>"\fP
+\fRwrite annotated difference image to file
+.TP
+.B "-help"
+\fRprint usage instructions
+.TP
+.B "-highlight-color \fI<color>"\fP
+\fRpixel annotation color
+.TP
+.B "-highlight-style \fI<style>"\fP
+\fRpixel annotation style
+.TP
+.B "-interlace \fI<type>"\fP
+\fRthe type of interlacing scheme
+.TP
+.B "-limit \fI<type> <value>"\fP
+\fRDisk, File, Map, Memory, or Pixels resource limit
+.TP
+.B "-log \fI<string>"\fP
+\fRSpecify format for debug log
+.TP
+.B "-matte"
+\fRstore matte channel if the image has one
+.TP
+.B "-monitor"
+\fRshow progress indication
+.TP
+.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
+\fRchroma subsampling factors
+.TP
+.B "-size \fI<width>x<height>{+offset}"\fP
+\fRwidth and height of the image
+.TP
+.B "-type \fI<type>"\fP
+\fRthe image type
+.TP
+.B "-verbose"
+\fRprint detailed information about the image
+.TP
+.B "-version"
+\fRprint GraphicsMagick version string
+
+For a more detailed description of each option, see
+Options, above.
+
 .SH GM COMPOSITE
 
 \fBcomposite\fP composites (combines) images to create new images.
@@ -4400,15 +4530,6 @@ invoked with
 
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-
-\fBConjure\fP is in the early stages of development as of
-April 2002.
-
-This early announcement is to allow GraphicsMagick users to contribute
-ideas early in the process so when the scripting language is released it
-will be useful/stable from the get-go! If you want to contribute
-suggestions about the Magick scripting language (MSL), post them to the
-GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on

@@ -1649,12 +1649,6 @@ Unrecognized compose operator
 .
 
 MessageId       = +1
-SymbolicName    = OptionErrorUnrecognizedDifferenceAlgorithm
-Language        = English
-Unrecognized differencing algorithm
-.
-
-MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedDisposeMethod
 Language        = English
 Unrecognized dispose method
@@ -1676,6 +1670,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedGravityType
 Language        = English
 Unrecognized gravity type
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedHighlightStyle
+Language        = English
+Unrecognized highlight style
 .
 
 MessageId       = +1

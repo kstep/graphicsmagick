@@ -25,11 +25,11 @@ identify - describe an image or image sequence.
 </dt>
 
 <dt>
-<a href="#ident-auth">Authors</a>
+<a href="#auth">Authors</a>
 </dt>
 
 <dt>
-<a href="#ident-copy">Copyright</a>
+<a href="#copy">Copyright</a>
 </dt>
 </dl>
 </sect>
@@ -132,8 +132,16 @@ Options, above.
 <im>
 <sect NAME="ident-also">SEE ALSO
 <p>
-display(1), animate(1), montage(1), mogrify(1),  convert(1), GraphicsMagick(1),
-composite(1)
+GraphicsMagick(1),
+animate(1),
+compare(1),
+composite(1),
+conjure(1),
+convert(1),
+display(1),
+import(1),
+mogrify(1),
+montage(1)
 </p>
 </sect>
 </format>

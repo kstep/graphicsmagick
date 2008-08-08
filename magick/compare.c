@@ -72,8 +72,8 @@ DifferenceImageOptionsDefaults(DifferenceImageOptions *options,
 {
   assert(options != (DifferenceImageOptions *) NULL);
   memset(options,0,sizeof(DifferenceImageOptions));
-  options->algorithm=AnnotateDifferenceAlgorithm;
   options->channel=AllChannels;
+  options->highlight_style=TintHighlightStyle;
   (void) QueryColorDatabase(HighlightColor,&options->highlight_color,exception);
 }
 
@@ -104,7 +104,7 @@ DifferenceImageOptionsDefaults(DifferenceImageOptions *options,
 %
 %    o compare_image: the comparison image.
 %
-%    o difference_options: options to use when comparing.
+%    o difference_options: options to use when differencing.
 %
 %    o channel: the channel(s) to compare.
 %
@@ -185,24 +185,22 @@ DifferenceImagePixels(void *mutable_data,                  /* User provided muta
       /*
         Modify result image to reflect change.
       */
-      switch (difference_options->algorithm)
+      switch (difference_options->highlight_style)
         {
-        case UndefinedDifferenceAlgorithm:
+        case UndefinedHighlightStyle:
           break;
-        case AnnotateDifferenceAlgorithm:
+        case AssignHighlightStyle:
           {
             /*
-              Alpha composite highlight color on top of change pixels.
+              Changed pixels are assigned the highlight color.
             */
             if (change)
-              result_pixels[i]=
-                AlphaComposite(&difference_options->highlight_color,0.75*MaxRGBDouble,
-                               &compare_pixels[i],compare_pixels[i].opacity);
+              result_pixels[i]=difference_options->highlight_color;
             else
               result_pixels[i]=compare_pixels[i];
             break;
           }
-        case ThresholdDifferenceAlgorithm:
+        case ThresholdHighlightStyle:
           {
             /*
               For changed pixels, compare the pixel intensity.  If the
@@ -232,7 +230,20 @@ DifferenceImagePixels(void *mutable_data,                  /* User provided muta
               }
             break;
           }
-        case XorDifferenceAlgorithm:
+        case TintHighlightStyle:
+          {
+            /*
+              Alpha composite highlight color on top of change pixels.
+            */
+            if (change)
+              result_pixels[i]=
+                AlphaComposite(&difference_options->highlight_color,0.75*MaxRGBDouble,
+                               &compare_pixels[i],compare_pixels[i].opacity);
+            else
+              result_pixels[i]=compare_pixels[i];
+            break;
+          }
+        case XorHighlightStyle:
           {
             if (change)
               {

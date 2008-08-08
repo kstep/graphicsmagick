@@ -31,12 +31,12 @@
 <utils apps=all>
 <p>
 This is a combined list of the commandline options used by the
-GraphicsMagick utilities (<i>animate</i>, <i>composite</i>,
-<i>convert</i>, <i>display</i>, <i>identify</i>, <i>import</i>,
-<i>mogrify</i> and <i>montage</i>).
+GraphicsMagick utilities (<i>animate</i>, <i>compare</i>,
+<i>composite</i>, <i>convert</i>, <i>display</i>, <i>identify</i>,
+<i>import</i>, <i>mogrify</i> and <i>montage</i>).
 </p>
 </utils>
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <p>
 In this document, angle brackets ("<>") enclose variables and curly
 brackets ("{}") enclose optional parameters. For example,
@@ -121,7 +121,7 @@ option appears after all of the input images, all images are appended.</pp>
 
 <!-- ------------ -authenticate ------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <dopt>-authenticate <string></opt>
 
 <abs>decrypt image with this password</abs>
@@ -493,7 +493,7 @@ affect the color reduction algorithm.</pp>
 
 <!-- ------------ -colorspace --------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <dopt>-colorspace <value></opt>
 
 <abs>the type of colorspace</abs>
@@ -937,7 +937,7 @@ specified geometry extends beyond the dimensions of the input image.</pp>
 
 <!-- ------------ -debug -------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <opt>-debug <events></opt>
 
 <abs>enable debug printout</abs>
@@ -1003,7 +1003,7 @@ option appears after all of the input images, all images are deconstructed.</pp>
 
 <!-- ------------ -define ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-define <key>{=<value>},...</opt>
 
 <abs>add coder/decoder specific options</abs>
@@ -1245,7 +1245,7 @@ minimum and maximum delay.</pp>
 
 <!-- ------------ -density ------------------------------------------ -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-density <width>x<height></opt>
 
 <abs>horizontal and vertical resolution in pixels of the image</abs>
@@ -1286,7 +1286,7 @@ use the <s>-resample</s> option.</pp>
 
 <!-- ------------ -depth -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-depth <value></opt>
 
 <abs>depth of the image</abs>
@@ -1354,7 +1354,7 @@ in both the horizontal and vertical directions.  However, if you specify
 
 <!-- ------------ -display ------------------------------------------ -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <dopt>-display <host:display[.screen]></opt>
 
 <abs>specifies the X server to contact</abs>
@@ -1700,7 +1700,7 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i></pp>
 
 <!-- ------------ -endian ------------------------------------------- -->
 
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=compare,composite,convert,display,import,mogrify,montage>
 <dopt>-endian <type></opt>
 
 <abs>specify endianness (MSB or LSB) of output image</abs>
@@ -1740,6 +1740,25 @@ Use <s>+endian</s> to revert to unspecified endianness.</pp>
 
 </utils>
 
+
+
+<!-- ------------ -file ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-file <filename></opt>
+
+<abs>write annotated difference image to file</abs>
+
+<pp>
+If <s>-file</s> is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the <s>reference</s> and <s>compare</s> images are modified from those in
+the <s>compare</s> image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+<s>-highlight-style</s>) or highlight color (see <s>-highlight-color</s>)
+before the changes are obvious.</pp>
+
+</utils>
 
 
 
@@ -2360,13 +2379,46 @@ for this purpose.</pp>
 
 <!-- ------------ -help --------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <opt>-help</opt>
 
 <abs>print usage instructions</abs>
 
 </utils>
 
+
+
+<!-- ------------ -highlight-color ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-highlight-color <color></opt>
+
+<abs>pixel annotation color</abs>
+
+<pp>
+Specifies the color to use when annotating difference pixels.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -highlight-style ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-highlight-style <style></opt>
+
+<abs>pixel annotation style</abs>
+
+<pp>
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of <s>Assign</s>, <s>Threshold</s>,
+<s>Tint</s>, or <s>XOR</s>; where <s>Assign</s> replaces the pixel with
+the highlight color (see <s>-highlight-color</s>), <s>Threshold</s>
+replaces the pixel with black or white based on the difference in
+intensity, <s>Tint</s> alpha tints the pixel with the highlight color,
+and <s>XOR</s> does an XOR between the pixel and the highlight color.</pp>
+
+</utils>
 
 
 
@@ -2447,7 +2499,7 @@ The default intent is undefined.</pp>
 
 <!-- ------------ -interlace ---------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-interlace <type></opt>
 
 <abs>the type of interlacing scheme</abs>
@@ -2573,7 +2625,7 @@ interface works similar to Photoshop's "Image->Adjustments->Levels..."
 
 <!-- ------------ -limit -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-limit <type> <value></opt>
 
 <abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
@@ -2656,7 +2708,7 @@ This option lists information about the GraphicsMagick configuration.</pp>
 
 <!-- ------------ -log  --------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-log <string></opt>
 
 <abs>Specify format for debug log</abs>
@@ -2822,7 +2874,7 @@ is implied by <s>-mask</s>.</pp>
 
 <!-- ------------ -matte -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,mogrify,montage>
 <dopt>-matte</opt>
 
 
@@ -2908,7 +2960,7 @@ degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
 
 <!-- ------------ -monitor --------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <opt>-monitor</opt>
 
 <abs>show progress indication</abs>
@@ -4009,7 +4061,7 @@ the <s>-gravity</s> option has no effect.</pp>
 
 <!-- ------------ -sampling-factor ---------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
 
 <abs>chroma subsampling factors</abs>
@@ -4291,7 +4343,7 @@ The color is specified using the format described under the
 
 <!-- ------------ -size --------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <dopt>-size <width>x<height>{+offset}</opt>
 
 <abs>width and height of the image</abs>
@@ -4657,7 +4709,7 @@ are nearly the same color as the corner pixels.</pp>
 
 <!-- ------------ -type --------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,mogrify,montage>
 <dopt>-type <type></opt>
 
 <abs>the image type</abs>
@@ -4813,7 +4865,7 @@ amount (default 0.05).
 
 <!-- ------------ -verbose ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-verbose</opt>
 
 <abs>print detailed information about the image</abs>
@@ -4843,7 +4895,7 @@ for a description of these values.</pp>
 
 <!-- ------------ -version ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-version</opt>
 
 <abs>print GraphicsMagick version string</abs>

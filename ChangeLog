@@ -1,3 +1,13 @@
+2008-08-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/{compare.imdoc, options.imdoc}: Added documentation for
+	'compare'.
+	* magick/compare.h (enum HighlightStyle): Added
+	AssignHighlightStyle for simple color assignment.  'Annotate' is
+	now 'Tint'.
+	* magick/command.c (CompareImageCommand): Useful options are now
+	-metric, -highlight-color, and -hightlight-style.
+
 2008-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/compare.c (DifferenceImagePixels): Fixed 'Annotate'

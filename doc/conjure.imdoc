@@ -7,10 +7,6 @@
 <im>
 <sect NAME="conj-top">NAME
 conjure - process a Magick Scripting Language (MSL) script
-<p>
-<s>WARNING: Conjure and MSL are in very early development and the
-syntax is subject to change!</s>
-</p>
 </sect>
 <format type=html>
 <sect NAME="conj-contents">Contents
@@ -28,10 +24,10 @@ syntax is subject to change!</s>
 <a href="#conj-msl">Magick Scripting Language</a>
 </dt>
 <dt>
-<a href="#conj-auth">Authors</a>
+<a href="#auth">Authors</a>
 </dt>
 <dt>
-<a href="#conj-copy">Copyright</a>
+<a href="#copy">Copyright</a>
 </dt>
 </dl>
 </sect>
@@ -73,15 +69,6 @@ invoked with</p>
 <p>
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.</p>
-<p>
-<s>Conjure</s> is in the early stages of development as of
-April 2002.</p>
-<p>
-This early announcement is to allow GraphicsMagick users to contribute
-ideas early in the process so when the scripting language is released it
-will be useful/stable from the get-go! If you want to contribute
-suggestions about the Magick scripting language (MSL), post them to the
-GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.</p>
 </sect>
 <back>
 <sect NAME="conj-opti">Options
@@ -317,11 +304,20 @@ PerlMagick's GetAttribute().</dd>
 <format type=man>
 <sect NAME="conj-also">SEE ALSO
 <p>
-animate(1), display(1), composite(1), convert(1), identify(1),
-import(1), mogrify(1), montage(1)</p>
+GraphicsMagick(1),
+animate(1),
+compare(1),
+composite(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
+</p>
 </sect>
 </format>
-<include file=conjure_copyright.imdoc>
+<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

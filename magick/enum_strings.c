@@ -551,47 +551,6 @@ MagickExport CompressionType StringToCompressionType(const char *option)
 }
 
 /*
-  DifferenceImageAlgorithm
-*/
-MagickExport const char *
-DifferenceAlgorithmToString(const DifferenceAlgorithm difference_algorithm)
-{
-  const char
-    *algorithm="Undefined";;
-
-  switch(difference_algorithm)
-    {
-    case UndefinedDifferenceAlgorithm:
-      break;
-    case AnnotateDifferenceAlgorithm:
-      algorithm="Annotate";
-      break;
-    case ThresholdDifferenceAlgorithm:
-      algorithm="Threshold";
-      break;
-    case XorDifferenceAlgorithm:
-      algorithm="XOR";
-    }
-
-  return algorithm;
-}
-MagickExport DifferenceAlgorithm
-StringToDifferenceAlgorithm(const char *option)
-{
-  DifferenceAlgorithm
-    algorithm=UndefinedDifferenceAlgorithm;
-
-  if (LocaleCompare("Annotate",option) == 0)
-    algorithm=AnnotateDifferenceAlgorithm;
-  else if (LocaleCompare("Threshold",option) == 0)
-    algorithm=ThresholdDifferenceAlgorithm;
-  else if (LocaleCompare("XOR",option) == 0)
-    algorithm=XorDifferenceAlgorithm;
-
-  return algorithm;
-}
-
-/*
   EndianType
 */
 MagickExport EndianType StringToEndianType(const char *option)
@@ -689,6 +648,52 @@ MagickExport GravityType StringToGravityType(const char *option)
     gravity_type=StaticGravity;
 
   return gravity_type;
+}
+
+/*
+  HighlightStyle
+*/
+MagickExport const char *
+HighlightStyleToString(const HighlightStyle difference_style)
+{
+  const char
+    *style="Undefined";;
+
+  switch(difference_style)
+    {
+    case UndefinedHighlightStyle:
+      break;
+    case AssignHighlightStyle:
+      style="Assign";
+      break;
+    case ThresholdHighlightStyle:
+      style="Threshold";
+      break;
+    case TintHighlightStyle:
+      style="Tint";
+      break;
+    case XorHighlightStyle:
+      style="XOR";
+    }
+
+  return style;
+}
+MagickExport HighlightStyle
+StringToHighlightStyle(const char *option)
+{
+  HighlightStyle
+    style=UndefinedHighlightStyle;
+
+  if (LocaleCompare("Assign",option) == 0)
+    style=AssignHighlightStyle;
+  else if (LocaleCompare("Threshold",option) == 0)
+    style=ThresholdHighlightStyle;
+  else if (LocaleCompare("Tint",option) == 0)
+    style=TintHighlightStyle;
+  else if (LocaleCompare("XOR",option) == 0)
+    style=XorHighlightStyle;
+
+  return style;
 }
 
 /*

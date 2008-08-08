@@ -1,6 +1,6 @@
 <imdoc>
 <format man,html>
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 </format>
 <format html>
 <sect NAME="auth">Authors

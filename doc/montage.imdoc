@@ -43,15 +43,11 @@ montage - create a composite image by combining several separate images
 </dt>
 
 <dt>
-<a href="#mont-ackn">Acknowledgement</a>
+<a href="#auth">Authors</a>
 </dt>
 
 <dt>
-<a href="#mont-auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#mont-copy">Copyright</a>
+<a href="#copy">Copyright</a>
 </dt>
 </dl>
 </sect>
@@ -394,8 +390,16 @@ spatial subdivision color reduction algorithm is based on his Img software.</p>
 <format type=man>
 <sect NAME=mont-also">See also
 <p>
-display(1), animate(1), import(1), mogrify(1), convert(1), composite(1),
-GraphicsMagick(1)
+GraphicsMagick(1),
+animate(1),
+compare(1),
+composite(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1)
 </p>
 </sect>
 </format>

@@ -27,28 +27,28 @@
 extern "C" {
 #endif
 
+ 
   extern MagickExport ChannelType StringToChannelType(const char *option);
   extern MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string);
   extern MagickExport CompositeOperator StringToCompositeOperator(const char *option);
   extern MagickExport CompressionType StringToCompressionType(const char *option);
-  extern MagickExport DifferenceAlgorithm StringToDifferenceAlgorithm(const char *option);
   extern MagickExport EndianType StringToEndianType(const char *option);
   extern MagickExport FilterTypes StringToFilterTypes(const char *option);
   extern MagickExport GravityType StringToGravityType(const char *option);
+  extern MagickExport HighlightStyle StringToHighlightStyle(const char *option);
   extern MagickExport ImageType StringToImageType(const char *option);
   extern MagickExport InterlaceType StringToInterlaceType(const char *option);
   extern MagickExport MetricType StringToMetricType(const char *option);
   extern MagickExport PreviewType StringToPreviewType(const char *option);
   extern MagickExport QuantumOperator StringToQuantumOperator(const char *option);
   extern MagickExport ResourceType StringToResourceType(const char *option);
-  extern MagickExport VirtualPixelMethod StringToVirtualPixelMethod(const char *option);
-  extern MagickExport const char *BlobModeToString(BlobMode blob_mode);
+  extern MagickExport VirtualPixelMethod StringToVirtualPixelMethod(const char *option); extern MagickExport const char *BlobModeToString(BlobMode blob_mode);
   extern MagickExport const char *ChannelTypeToString(const ChannelType channel);
   extern MagickExport const char *ClassTypeToString(const ClassType class_type);
   extern MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace);
   extern MagickExport const char *CompositeOperatorToString(const CompositeOperator composite_op);
   extern MagickExport const char *CompressionTypeToString(const CompressionType compression_type);
-  extern MagickExport const char *DifferenceAlgorithmToString(const DifferenceAlgorithm difference_algorithm);
+  extern MagickExport const char *HighlightStyleToString(const HighlightStyle difference_algorithm);
   extern MagickExport const char *MapModeToString(MapMode map_mode);
   extern MagickExport const char *MetricTypeToString(MetricType metric);
   extern MagickExport const char *OrientationTypeToString(const OrientationType orientation_type);

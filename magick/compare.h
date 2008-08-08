@@ -19,16 +19,17 @@ extern "C" {
 */
 typedef enum
 {
-  UndefinedDifferenceAlgorithm,
-  AnnotateDifferenceAlgorithm,
-  ThresholdDifferenceAlgorithm,
-  XorDifferenceAlgorithm
-} DifferenceAlgorithm;
+  UndefinedHighlightStyle,
+  AssignHighlightStyle,
+  ThresholdHighlightStyle,
+  TintHighlightStyle,
+  XorHighlightStyle
+} HighlightStyle;
 
 typedef struct _DifferenceImageOptions
 {
-  DifferenceAlgorithm      algorithm; /* Pixel differencing algorithm */
   ChannelType              channel; /* Channel(s) to difference */
+  HighlightStyle           highlight_style; /* Pixel annotation style */
   PixelPacket              highlight_color; /* Changed pixel highlight color */
 } DifferenceImageOptions;
 

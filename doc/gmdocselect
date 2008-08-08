@@ -11,6 +11,7 @@
 /usr/bin/sed "
        /<gm>/d
        /<\/gm>/d
+       s/    compare/    gm compare/
        s/    composite/    gm composite/
        s/    convert/    gm convert/
        s/    animate/    gm animate/

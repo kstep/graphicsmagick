@@ -7,8 +7,8 @@
 	<style type=text/css>
 	<!--
 		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -46,6 +46,10 @@ color="#FFFFFF"><font size="+1">
 <p>
 <strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
+<p>
+<strong>compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong> <em>compare-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong>
 <p>
 <strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>change-image base-image</em>
 <strong>[</strong> <em>mask-image</em> <strong>]</strong> <em>output-image</em>
@@ -431,9 +435,9 @@ Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
 This is a combined list of the commandline options used by the
-GraphicsMagick utilities (<em>animate</em>, <em>composite</em>,
-<em>convert</em>, <em>display</em>, <em>identify</em>, <em>import</em>,
-<em>mogrify</em> and <em>montage</em>).
+GraphicsMagick utilities (<em>animate</em>, <em>compare</em>,
+<em>composite</em>, <em>convert</em>, <em>display</em>, <em>identify</em>,
+<em>import</em>, <em>mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
 <p>
 In this document, angle brackets ("&lt;&gt;") enclose variables and curly
@@ -1946,6 +1950,25 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-file"></a>-file <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write annotated difference image to file</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If <strong>-file</strong> is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the <strong>reference</strong> and <strong>compare</strong> images are modified from those in
+the <strong>compare</strong> image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+<strong>-highlight-style</strong>) or highlight color (see <strong>-highlight-color</strong>)
+before the changes are obvious.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-fill"></a>-fill <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when filling a graphic primitive</td></tr></table>
@@ -2492,6 +2515,38 @@ width=15><b><font face="Helvetica, Arial"
     -help
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-highlight-color"></a>-highlight-color <i>&lt;color&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation color</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the color to use when annotating difference pixels.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-highlight-style"></a>-highlight-style <i>&lt;style&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation style</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of <strong>Assign</strong>, <strong>Threshold</strong>,
+<strong>Tint</strong>, or <strong>XOR</strong>; where <strong>Assign</strong> replaces the pixel with
+the highlight color (see <strong>-highlight-color</strong>), <strong>Threshold</strong>
+replaces the pixel with black or white based on the difference in
+intensity, <strong>Tint</strong> alpha tints the pixel with the highlight color,
+and <strong>XOR</strong> does an XOR between the pixel and the highlight color.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5746,6 +5801,317 @@ of header identifying the window. The default is the image file name.</dd>
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
+<a NAME="compare"></a>gm compare
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+<strong>compare</strong> compares two similar images using a specified statistical
+method (see <strong>-metric</strong>) and/or by writing a difference image
+(<strong>-file</strong>), with the altered pixels annotated using a specified
+method (see <strong>-highlight-style</strong>) and color (see
+<strong>-highlight-color</strong>). <p><em>Reference-image</em> is the original
+image and <em>compare-image</em> is the (possibly) altered version, which
+should have the same dimensions as <em>reference-image</em>.
+</td></tr></table>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
+<a NAME="comp-exam"></a>Examples
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+To compare two images using Mean Square Error (MSE) statistical analysis
+use:
+<pre>
+    gm compare -metric mse original.miff compare.miff
+</pre>
+<p>
+To create an annotated difference image use:
+<pre>
+    gm compare -algorithm annotate -highlight-color purple
+            -file diff.miff original.miff compare.miff
+</pre>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
+<a NAME="comp-opti"></a>Options
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
+<p>
+For a more detailed description of each option, see
+Options, above.
+<br>&nbsp;<br>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-authenticate">-authenticate</a> <i>&lt;string&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>decrypt image with this password</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-colorspace">-colorspace</a> <i>&lt;value&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of colorspace</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    -debug <i>&lt;events&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-define">-define</a> <i>&lt;key&gt;</i>{<i>=&lt;value&gt;</i>}<i>,...</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add coder/decoder specific options</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>horizontal and vertical resolution in pixels of the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-depth">-depth</a> <i>&lt;value&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-display">-display</a> <i>&lt;host:display[.screen]&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the X server to contact</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-endian">-endian</a> <i>&lt;type&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify endianness (MSB or LSB) of output image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-file">-file</a> <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write annotated difference image to file</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    -help
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-highlight-color">-highlight-color</a> <i>&lt;color&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation color</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-highlight-style">-highlight-style</a> <i>&lt;style&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation style</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-interlace">-interlace</a> <i>&lt;type&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of interlacing scheme</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-log">-log</a> <i>&lt;string&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-matte">-matte</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>store matte channel if the image has one</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    -monitor
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+offset</i>}<i></i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-type">-type</a> <i>&lt;type&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the image type</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-verbose">-verbose</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-version">-version</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
+<p>
+For a more detailed description of each option, see
+Options, above.
+<br>&nbsp;<br>
+</td></tr></table>
+<br>&nbsp;<br>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
 <a NAME="composite"></a>gm composite
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -6500,15 +6866,6 @@ invoked with
 <p>
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-<p>
-<strong>Conjure</strong> is in the early stages of development as of
-April 2002.
-<p>
-This early announcement is to allow GraphicsMagick users to contribute
-ideas early in the process so when the scripting language is released it
-will be useful/stable from the get-go! If you want to contribute
-suggestions about the Magick scripting language (MSL), post them to the
-GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -15789,6 +16146,6 @@ otherwise see http://www.graphicsmagick.org/www/Copyright.html.</strong>
 
 [<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002, 2003, 2004</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2008</a></p></td>
 </tr></table>
 </body></html>

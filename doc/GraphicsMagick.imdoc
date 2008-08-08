@@ -76,6 +76,11 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 <i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s></p>
 
 <p>
+<s>compare</s> <s>[</s> <i>options</i> <s>... ]</s> <i>reference-image</i>
+<s>[</s> <i>options</i> <s>... ]</s> <i>compare-image</i>
+<s>[</s> <i>options</i> <s>... ]</s></p>
+
+<p>
 <s>gm composite</s> <s>[</s> <i>options ...</i> <s>]</s> <i>change-image base-image</i>
 <s>[</s> <i>mask-image</i> <s>]</s> <i>output-image</i></p>
 

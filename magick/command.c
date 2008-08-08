@@ -1679,22 +1679,6 @@ CompareImageCommand(ImageInfo *image_info,
     {
       case 'a':
       {
-        if (LocaleCompare("algorithm",option+1) == 0)
-          {
-            difference_options.algorithm=UndefinedDifferenceAlgorithm;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  ThrowCompareException(OptionError,MissingArgument,option);
-                option=argv[i];
-                difference_options.algorithm=StringToDifferenceAlgorithm(option);
-                if (difference_options.algorithm == UndefinedDifferenceAlgorithm)
-                  ThrowCompareException(OptionError,UnrecognizedDifferenceAlgorithm,
-                    option);
-              }
-            break;
-          }
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             (void) CloneString(&image_info->authenticate,(char *) NULL);
@@ -1839,7 +1823,8 @@ CompareImageCommand(ImageInfo *image_info,
             CompareUsage();
             ThrowCompareException(OptionError,UsageError,NULL);
           }
-        if (LocaleCompare("highlight-color",option+1) == 0)
+        if ((LocaleCompare("highlight-color",option+1) == 0) ||
+            (LocaleCompare("hilight-color",option+1) == 0))
           {
             if (*option == '-')
               {
@@ -1849,6 +1834,23 @@ CompareImageCommand(ImageInfo *image_info,
                     option);
                 (void) QueryColorDatabase(argv[i],&difference_options.highlight_color,
                   exception);
+              }
+            break;
+          }
+        if ((LocaleCompare("highlight-style",option+1) == 0) ||
+            (LocaleCompare("hilight-style",option+1) == 0))
+          {
+            difference_options.highlight_style=UndefinedHighlightStyle;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompareException(OptionError,MissingArgument,option);
+                option=argv[i];
+                difference_options.highlight_style=StringToHighlightStyle(option);
+                if (difference_options.highlight_style == UndefinedHighlightStyle)
+                  ThrowCompareException(OptionError,UnrecognizedHighlightStyle,
+                    option);
               }
             break;
           }
@@ -2072,7 +2074,7 @@ CompareImageCommand(ImageInfo *image_info,
   }
 
   if ((difference_filename != (const char *) NULL) &&
-      (difference_options.algorithm != UndefinedDifferenceAlgorithm))
+      (difference_options.highlight_style != UndefinedHighlightStyle))
     {
       /*
         Generate an annotated difference image and write file.
@@ -2125,8 +2127,6 @@ static void CompareUsage(void)
   static const char
     *options[]=
     {
-      "-algorithm algorithm difference annotation algorithm (annotate,",
-      "                     threshold, xor)",
       "-authenticate value  decrypt image with this password",
       "-colorspace type     alternate image colorspace",
       "-debug events        display copious debugging information",
@@ -2139,6 +2139,8 @@ static void CompareUsage(void)
       "-help                print program options",
       "-highlight-color color",
       "                     color to use when annotating difference pixels",
+      "-highlight-style style",
+      "                     pixel highlight style (assign, threshold, tint, xor)",
       "-interlace type      None, Line, Plane, or Partition",
       "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
@@ -3360,7 +3362,7 @@ static void CompositeUsage(void)
       "-dissolve value      dissolve the two images a given percent",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-encoding type       text encoding type",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-filter type         use this filter when resizing an image",
       "-font name           render text with this font",
       "-geometry geometry   location of the composite image",
@@ -5315,7 +5317,7 @@ static void ConvertUsage(void)
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
       "-encoding type       text encoding type",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -5664,7 +5666,7 @@ static void DisplayUsage(void)
       "-dispose method      Undefined, None, Background, Previous",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-edge factor         apply a filter to detect edges in the image",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
@@ -12044,7 +12046,7 @@ static void MogrifyUsage(void)
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
       "-encoding type       text encoding type",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -13340,7 +13342,7 @@ static void MontageUsage(void)
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
       "-encoding type       text encoding type",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
@@ -14321,7 +14323,7 @@ static void ImportUsage(void)
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-frame               include window manager frame",
       "-encoding type       text encoding type",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-geometry geometry   perferred size or location of the image",
       "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",

@@ -9,7 +9,7 @@
 #
 
 UTILITIES = \
-	animate composite conjure convert display identify import \
+	animate compare composite conjure convert display identify import \
 	mogrify montage GraphicsMagick
 
 UTILSUBDIR       = expanded/$(UTILITY)
@@ -26,9 +26,10 @@ DOCSELECTCOMBINED = ./gmdocselect
 DOCSELECTSEPERATE = ./imdocselect
 DOCINCLUDE       = ./imdocinclude
 
-HTML_TARGETS     = GraphicsMagick.html animate.html composite.html \
-		conjure.html convert.html display.html gm.html identify.html \
-		import.html mogrify.html montage.html
+HTML_TARGETS = \
+	GraphicsMagick.html animate.html compare.html composite.html \
+	conjure.html convert.html display.html gm.html identify.html \
+	import.html mogrify.html montage.html
 
 MAN_TARGES       = gm.1
 

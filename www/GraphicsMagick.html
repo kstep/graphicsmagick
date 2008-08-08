@@ -7,8 +7,8 @@
 	<style type=text/css>
 	<!--
 		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -83,6 +83,10 @@ color="#FFFFFF"><font size="+1">
 <p>
 <strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
+<p>
+<strong>compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong> <em>compare-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong>
 <p>
 <strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>change-image base-image</em>
 <strong>[</strong> <em>mask-image</em> <strong>]</strong> <em>output-image</em>
@@ -468,9 +472,9 @@ Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
 This is a combined list of the commandline options used by the
-GraphicsMagick utilities (<em>animate</em>, <em>composite</em>,
-<em>convert</em>, <em>display</em>, <em>identify</em>, <em>import</em>,
-<em>mogrify</em> and <em>montage</em>).
+GraphicsMagick utilities (<em>animate</em>, <em>compare</em>,
+<em>composite</em>, <em>convert</em>, <em>display</em>, <em>identify</em>,
+<em>import</em>, <em>mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
 <p>
 In this document, angle brackets ("&lt;&gt;") enclose variables and curly
@@ -1983,6 +1987,25 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="details-file"></a>-file <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write annotated difference image to file</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If <strong>-file</strong> is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the <strong>reference</strong> and <strong>compare</strong> images are modified from those in
+the <strong>compare</strong> image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+<strong>-highlight-style</strong>) or highlight color (see <strong>-highlight-color</strong>)
+before the changes are obvious.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-fill"></a>-fill <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when filling a graphic primitive</td></tr></table>
@@ -2529,6 +2552,38 @@ width=15><b><font face="Helvetica, Arial"
     -help
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-highlight-color"></a>-highlight-color <i>&lt;color&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation color</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the color to use when annotating difference pixels.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="details-highlight-style"></a>-highlight-style <i>&lt;style&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation style</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of <strong>Assign</strong>, <strong>Threshold</strong>,
+<strong>Tint</strong>, or <strong>XOR</strong>; where <strong>Assign</strong> replaces the pixel with
+the highlight color (see <strong>-highlight-color</strong>), <strong>Threshold</strong>
+replaces the pixel with black or white based on the difference in
+intensity, <strong>Tint</strong> alpha tints the pixel with the highlight color,
+and <strong>XOR</strong> does an XOR between the pixel and the highlight color.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5419,6 +5474,6 @@ otherwise see http://www.graphicsmagick.org/www/Copyright.html.</strong>
 
 [<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002, 2003, 2004</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2008</a></p></td>
 </tr></table>
 </body></html>

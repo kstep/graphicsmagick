@@ -279,11 +279,11 @@ extern MagickExport const char *GetLocaleMessageFromID(const int);
 #define MGK_OptionErrorUnrecognizedColorspace 272
 #define MGK_OptionErrorUnrecognizedCommand 273
 #define MGK_OptionErrorUnrecognizedComposeOperator 274
-#define MGK_OptionErrorUnrecognizedDifferenceAlgorithm 275
-#define MGK_OptionErrorUnrecognizedDisposeMethod 276
-#define MGK_OptionErrorUnrecognizedElement 277
-#define MGK_OptionErrorUnrecognizedEndianType 278
-#define MGK_OptionErrorUnrecognizedGravityType 279
+#define MGK_OptionErrorUnrecognizedDisposeMethod 275
+#define MGK_OptionErrorUnrecognizedElement 276
+#define MGK_OptionErrorUnrecognizedEndianType 277
+#define MGK_OptionErrorUnrecognizedGravityType 278
+#define MGK_OptionErrorUnrecognizedHighlightStyle 279
 #define MGK_OptionErrorUnrecognizedImageCompression 280
 #define MGK_OptionErrorUnrecognizedImageFilter 281
 #define MGK_OptionErrorUnrecognizedImageFormat 282
@@ -879,11 +879,11 @@ static const MessageInfo message_map[] =
     { "UnrecognizedColorspace", 272 },
     { "UnrecognizedCommand", 273 },
     { "UnrecognizedComposeOperator", 274 },
-    { "UnrecognizedDifferenceAlgorithm", 275 },
-    { "UnrecognizedDisposeMethod", 276 },
-    { "UnrecognizedElement", 277 },
-    { "UnrecognizedEndianType", 278 },
-    { "UnrecognizedGravityType", 279 },
+    { "UnrecognizedDisposeMethod", 275 },
+    { "UnrecognizedElement", 276 },
+    { "UnrecognizedEndianType", 277 },
+    { "UnrecognizedGravityType", 278 },
+    { "UnrecognizedHighlightStyle", 279 },
     { "UnrecognizedImageCompression", 280 },
     { "UnrecognizedImageFilter", 281 },
     { "UnrecognizedImageFormat", 282 },
@@ -1380,11 +1380,11 @@ static const char *message_dat[] =
     "Unrecognized image colorspace",
     "Unrecognized command '%s'. Use -help for a usage summary or see manual.",
     "Unrecognized compose operator",
-    "Unrecognized differencing algorithm",
     "Unrecognized dispose method",
     "Unrecognized element",
     "Unrecognized endian type",
     "Unrecognized gravity type",
+    "Unrecognized highlight style",
     "Unrecognized image compression",
     "Unrecognized image filter",
     "Unrecognized image format",

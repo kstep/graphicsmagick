@@ -32,6 +32,10 @@ of one or more image files. It will also report if an image is incomplete
 or corrupt.</p>
 
 <p>
+<s>Compare</s> compares two images using statistical comparison methods
+and/or creates an annotated difference image.</p>
+
+<p>
 <s>Composite</s> composites images to create new images.</p>
 
 <p>

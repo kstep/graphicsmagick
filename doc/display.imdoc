@@ -100,10 +100,10 @@ display - display an image on any workstation running X
 <a href="#disp-ackn">Acknowledgement</a></li>
 
 <li>
-<a href="#disp-auth">Authors</a></li>
+<a href="#auth">Authors</a></li>
 
 <li>
-<a href="#disp-copy">Copyright</a></li>
+<a href="#copy">Copyright</a></li>
 </ul>
 
 </sect>
@@ -2803,8 +2803,16 @@ spatial subdivision color reduction algorithm is based on his Img software.</p>
 <format type=man>
 <sect NAME="disp-also">SEE ALSO
 <p>
-animate(1), composite(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
-import(1), mogrify(1), montage(1)
+GraphicsMagick(1),
+animate(1),
+compare(1),
+composite(1),
+conjure(1),
+convert(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
 </p>
 </sect>
 <include file=copyright.imdoc>

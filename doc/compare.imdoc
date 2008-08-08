@@ -1,0 +1,176 @@
+<imdoc>
+<utils apps=compare>
+<title>Compare</title>
+<gm>
+<sect NAME="compare">gm compare
+</gm>
+<im>
+<sect NAME="comp-top">NAME
+compare - compare two images.
+</sect>
+<format type=html>
+<sect NAME="comp-contents">Contents
+
+<dl>
+<dt>
+<a href="#comp-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#comp-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#comp-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#comp-opti">Options</a>
+</dt>
+
+<dt>
+<a href="#comp-envi">Environment</a>
+</dt>
+
+<dt>
+<a href="#comp-file">Configuration Files</a>
+</dt>
+
+<dt>
+<a href="#auth">Authors</a>
+</dt>
+
+<dt>
+<a href="#copy">Copyright</a>
+</dt>
+</dl>
+</format>
+</sect>
+
+<sect NAME="comp-syno">Synopsis
+
+<p>
+<s>compare</s> <s>[</s> <i>options</i> <s>... ]</s> <i>reference-image</i>
+<s>[</s> <i>options</i> <s>... ]</s> <i>compare-image</i>
+<s>[</s> <i>options</i> <s>... ]</s></p>
+
+</sect>
+
+<sect NAME="comp-desc">Description
+</im>
+<p>
+<s>compare</s> compares two similar images using a specified statistical
+method (see <s>-metric</s>) and/or by writing a difference image
+(<s>-file</s>), with the altered pixels annotated using a specified
+method (see <s>-highlight-style</s>) and color (see
+<s>-highlight-color</s>).</p> <p><i>Reference-image</i> is the original
+image and <i>compare-image</i> is the (possibly) altered version, which
+should have the same dimensions as <i>reference-image</i>.</p>
+
+</sect>
+
+<sect NAME="comp-exam">Examples
+
+<p>
+To compare two images using Mean Square Error (MSE) statistical analysis
+use:</p>
+
+<pre>
+    compare -metric mse original.miff compare.miff
+</pre>
+
+<p>
+To create an annotated difference image use:</p>
+
+<format type=man,tex>
+<pre>
+    compare -algorithm annotate -highlight-color purple
+            -file diff.miff original.miff compare.miff
+</pre>
+</format>
+<format type=html>
+<pre>
+    compare -algorithm annotate -highlight-color purple -file diff.miff original.miff compare.miff
+</pre>
+</format>
+
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="comp-opti">Options
+
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.</p>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+</utils>
+
+<include file=brief_options.imdoc>
+
+<utils apps=compare>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+</sect>
+<im>
+<back>
+
+<sect NAME="comp-envi">Environment
+<include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="comp-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="comp-also">SEE ALSO
+<p>
+GraphicsMagick(1),
+animate(1),
+compare(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
+</p>
+</sect>
+</format>
+<include file=copyright.imdoc>
+</im>
+</utils>
+</imdoc>
