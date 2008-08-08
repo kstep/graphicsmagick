@@ -2125,16 +2125,16 @@ static void CompareUsage(void)
   static const char
     *options[]=
     {
-      "-algorithm algorithm differencing algorithm (Annotate, Threshold)",
+      "-algorithm algorithm difference annotation algorithm (annotate,",
+      "                     threshold, xor)",
       "-authenticate value  decrypt image with this password",
       "-colorspace type     alternate image colorspace",
       "-debug events        display copious debugging information",
-      "-define values       Coder/decoder specific options",
+      "-define values       coder/decoder specific options",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
-      "-algorithm algorithm differencing algorithm (Annotate, Threshold)",
       "-display server      get image or font from this X server",
-      "-endian type         LSB, MSB, or Native",
+      "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-file filename       write difference image to this file",
       "-help                print program options",
       "-highlight-color color",

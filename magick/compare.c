@@ -399,9 +399,6 @@ ComputeAbsoluteError(void *mutable_data,
   DifferenceStatistics
     *stats = (DifferenceStatistics *) mutable_data;
 
-  double
-    difference;
-
   register long
     i;
 
