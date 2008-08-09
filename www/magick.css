@@ -23,37 +23,37 @@ H3, H4  {
 
 A:LINK  {
 	text-decoration : underline;
-	color : #0085C0;
+	color : #00B04F;
 }
 
 A:VISITED  {
 	text-decoration : underline;
-	color : Purple;
+	color : #007B37;
 }
 
 A:HOVER  {
 	text-decoration : underline;
-	color : #0085C0;
+	color : #00B04F;
 }
 
 A.nav:LINK  {
 	text-decoration : none;
-	color : #0085C0;
+	color : #00B04F;
 }
 
 A.nav:VISITED  {
 	text-decoration : none;
-	color : Purple;
+	color : #007B37;
 }
 
 A.nav:HOVER  {
 	text-decoration : underline;
-	color : #0085C0;
+	color : #00B04F;
 }
 
 A.leftcolnav:LINK  {
 	text-decoration : none;
-	color : #0085C0;
+	color : #00B04F;
 }
 
 A.leftcolnav:HOVER  {
@@ -64,7 +64,7 @@ A.leftcolnav:HOVER  {
 
 A.leftcolnav:VISITED  {
 	text-decoration : none;
-	color : Purple;
+	color : #007B37;
 }
 
 .stripes  {

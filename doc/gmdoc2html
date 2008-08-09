@@ -47,13 +47,13 @@ cat <<!!
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
+		A:link { color: #00B04F }
+		A:visited { color: #007B37 }
 	-->
 	</style>
 
 </head>
-<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">
 <a name="top"></a>
 <table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 !!
@@ -185,10 +185,10 @@ cat <<!!
      /<sect /i\\
 <table BORDER=0 WIDTH=\"100%\"> \\
 <tr> \\
-<td ALIGN=LEFT bgcolor=\"#52799E\"><img \\
+<td ALIGN=LEFT bgcolor=\"#FFFFFF\"><img \\
 SRC=\"../images/right_triangle.png\" \\ ALT=\">\" BORDER=0 \\
 height=14 width=15><b><font face=\"Helvetica, Arial\"><font \\
-color=\"#FFFFFF\"><font size=\"+1\">
+color=\"#00B04F\"><font size=\"+1\">
 
      t dummy
    : dummy
@@ -237,11 +237,11 @@ color=\"#FFFFFF\"><font size=\"+1\">
 <table BORDER=0 WIDTH=\"94%\">\\
 <tr>\\
 <td width=\"3%\"><br></td> \\
-<td ALIGN=LEFT BGCOLOR=\"#9EBAC6\">\\
+<td ALIGN=LEFT BGCOLOR=\"#FFFFFF\">\\
 <img SRC=\"../images/right_triangle_option.png\"\\
 ALT=\">\" BORDER=0 height=14\\
 width=15><b><font face=\"Helvetica, Arial\"\\
-><font color=\"#FFFFFF\"><font size=\"+1\">
+><font color=\"#00B04F\"><font size=\"+1\">
 
      /^<opt>$/d
      /<\/opt>/a\\

@@ -1,3 +1,8 @@
+2008-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www: Convert HTML pages to use a vibrant green theme rather than
+	colors stolen from old GIMP web site.
+
 2008-08-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/{compare.imdoc, options.imdoc}: Added documentation for
