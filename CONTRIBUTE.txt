@@ -49,8 +49,15 @@ the GraphicsMagick project:
 
 * Support building and distributing GraphicsMagick RPMs for Linux.
 
-* Support a FreeBSD "port" in the FreeBSD ports collection for
-  GraphicsMagick.
+* Act as formal maintainer for the Gentoo Linux GraphicsMagick ebuild so
+  that it is added back to Portage. This is not difficult since the
+  ebuild has been actively maintained via the Gentoo bug tracking system.
+  At the very least, registering a vote for the Gentoo bug may be helpful.
+  See http://bugs.gentoo.org/show_bug.cgi?id=190372.
+
+* Help get GraphicsMagick 1.2.X added to the FreeBSD ports collection.
+  Currently GraphicsMagick is stuck at 1.1.X on FreeBSD since KDE and
+  other significant software depends on it.
 
 * Set up an FTP mirror site for GraphicsMagick.
 
@@ -69,6 +76,10 @@ the GraphicsMagick project:
 * Create an OpenEXR coder based on the OpenEXR
   <http://www.openexr.org/> library from Industrial Light & Magic.
 
+* Contribute fast and portable 16-bit (Half) and 24-bit floating point
+  translation code in (C language) so that GraphicsMagick can support
+  these small float samples in TIFF and OpenEXR.
+
 * Create a *pstoedit* module to import Postscript, EPS, and PDF
   files as vector data using pstoedit <http://www.pstoedit.net/> which
   already includes a high-quality driver to render Postscript vectors via
@@ -78,14 +89,12 @@ the GraphicsMagick project:
 * Create a coder to support the CALS
   <http://www.fileformat.info/format/cals/> raster file format.
 
-* Support reading/rendering HP printer PCL formats.
+* Work on adding EXIF profile writing support which works for JPEG and
+  TIFF formats.
 
 * Add integrated Adobe XMP
   <http://www.adobe.com/products/xmp/main.html> profile support for
   TIFF, JPEG, PNG, PDF, EPS, and Postscript.
-
-* Add a GeoTIFF <http://www.remotesensing.org/geotiff/geotiff.html>
-  extension to GraphicsMagick.
 
 * Port Erik Reinhard's super-cool Parameter Estimation For
   Photographic Tone Reproduction
@@ -93,7 +102,7 @@ the GraphicsMagick project:
   GraphicsMagick.
 
 * Create a replacement (using a portable Widget set such as FLTK) for the
-  IMDisplay Windows GUI program.
+  IMDisplay Windows GUI program and possibly the X11 'display' program.
 
 * Write a shim-layer to allow The GIMP <http://www.gimp.org/> to be
   executed as a loadable process module providing GraphicsMagick
@@ -107,8 +116,6 @@ the GraphicsMagick project:
   any format supported by GraphicsMagick. OpenOffice.org offers a
   separate SDK so there may be a number of other opportunities to
   explore.
-
-* Resolve the remaining porting bugs in the FlashPIX library.
 
 * Complete the port of ralcgm to Windows so that it may be used as a
   delegate under Windows.
