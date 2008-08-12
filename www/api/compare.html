@@ -19,12 +19,13 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#differenceimageoptionsdefaults">DifferenceImageOptionsDefaults</a></li>
 		<li><a href="#differenceimage">DifferenceImage</a></li>
 		<li><a href="#getimagechanneldifference">GetImageChannelDifference</a></li>
 		<li><a href="#getimagechanneldistortion">GetImageChannelDistortion</a></li>
 		<li><a href="#getimagedistortion">GetImageDistortion</a></li>
 		<li><a href="#isimagesequal">IsImagesEqual</a></li>
+		<li><a href="#initializedifferenceimageoptions">InitializeDifferenceImageOptions</a></li>
+		<li><a href="#initializedifferencestatistics">InitializeDifferenceStatistics</a></li>
 	</ul>
 
 </ul>
@@ -40,34 +41,16 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>DifferenceImage</strong>( const Image *reference_image, const Image *compare_image, const DifferenceImageOptions *difference_options, ExceptionInfo *exception );</P>
-<P>void  <strong>DifferenceImageOptionsDefaults</strong>( DifferenceImageOptions *options );</P>
 <P>MagickPassFail  <strong>GetImageChannelDifference</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, DifferenceStatistics *statistics, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>GetImageChannelDistortion</strong>( const Image *reference_image, const Image *compare_image, const ChannelType channel, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>GetImageDistortion</strong>( const Image *reference_image, const Image *compare_image, const MetricType metric, double *distortion, ExceptionInfo *exception );</P>
+<P>void  <strong>InitializeDifferenceImageOptions</strong>( DifferenceImageOptions *options, ExceptionInfo *exception );</P>
+<P>void  <strong>InitializeDifferenceStatistics</strong>( DifferenceStatistics *options, ExceptionInfo *exception );</P>
 <P>MagickBool  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="differenceimageoptionsdefaults">DifferenceImageOptionsDefaults</a></h2>
-<blockquote>DifferenceImageOptionsDefaults() assigns default options to a user-provided DifferenceImageOptions structure. This function should always be used to initialize the DifferenceImageOptions structure prior to making any changes to it. </blockquote><P>The format of the DifferenceImageOptionsDefaults method is:</P>
-<blockquote>void DifferenceImageOptionsDefaults ( DifferenceImageOptions *options ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_options_3a">options:</a></strong>
-
-<DD>
-<P>pointer to DifferenceImageOptions structure to initialize.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
-</dl>
 <P>
 </P>
 <h2><a name="differenceimage">DifferenceImage</a></h2>
@@ -98,7 +81,7 @@
 <P>the <code>channel(s)</code> to compare.</P>
 </dd>
 </li>
-<dt><strong>exception:</strong>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
 
 <DD>
 <P>Return any errors or warnings in this structure.</P>
@@ -265,6 +248,44 @@
 
 <DD>
 <P>The reference image.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="initializedifferenceimageoptions">InitializeDifferenceImageOptions</a></h2>
+<blockquote>InitializeDifferenceImageOptions() assigns default options to a user-provided DifferenceImageOptions structure. This function should always be used to initialize the DifferenceImageOptions structure prior to making any changes to it. </blockquote><P>The format of the InitializeDifferenceImageOptions method is:</P>
+<blockquote>void InitializeDifferenceImageOptions ( DifferenceImageOptions *options, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_options_3a">options:</a></strong>
+
+<DD>
+<P>pointer to DifferenceImageOptions structure to initialize.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="initializedifferencestatistics">InitializeDifferenceStatistics</a></h2>
+<blockquote>InitializeDifferenceStatistics() assigns default options to a user-provided DifferenceStatistics structure. </blockquote><P>The format of the InitializeDifferenceStatistics method is:</P>
+<blockquote>void InitializeDifferenceStatistics ( DifferenceStatistics *options, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>options:</strong>
+
+<DD>
+<P>pointer to DifferenceStatistics structure to initialize.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
 </dd>
 </dl>
 

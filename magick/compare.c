@@ -44,44 +44,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D i f f e r e n c e I m a g e O p t i o n s D e f a u l t s               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DifferenceImageOptionsDefaults() assigns default options to a user-provided
-%  DifferenceImageOptions structure.  This function should always be used
-%  to initialize the DifferenceImageOptions structure prior to making any
-%  changes to it.
-%
-%  The format of the DifferenceImageOptionsDefaults method is:
-%
-%      void DifferenceImageOptionsDefaults(DifferenceImageOptions *options)
-%
-%  A description of each parameter follows:
-%
-%    o options: pointer to DifferenceImageOptions structure to initialize.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-*/
-MagickExport void
-DifferenceImageOptionsDefaults(DifferenceImageOptions *options,
-                               ExceptionInfo *exception)
-{
-  assert(options != (DifferenceImageOptions *) NULL);
-  memset(options,0,sizeof(DifferenceImageOptions));
-  options->channel=AllChannels;
-  options->highlight_style=TintHighlightStyle;
-  (void) QueryColorDatabase(HighlightColor,&options->highlight_color,exception);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D i f f e r e n c e I m a g e                                             %
 %                                                                             %
 %                                                                             %
@@ -334,6 +296,55 @@ DifferenceImage(const Image *reference_image,const Image *compare_image,
 %
 */
 /*
+  Compute the total absolute value difference.
+
+  In this case we sum the absolute value difference between channel
+  pixel quantums.
+*/
+static MagickPassFail
+ComputeAbsoluteError(void *mutable_data,
+                     const void *immutable_data,
+                     const Image *first_image,
+                     const PixelPacket *first_pixels,
+                     const IndexPacket *first_indexes,
+                     const Image *second_image,
+                     const PixelPacket *second_pixels,
+                     const IndexPacket *second_indexes,
+                     const long npixels,
+                     ExceptionInfo *exception)
+{
+  DifferenceStatistics
+    lstats,
+    *stats = (DifferenceStatistics *) mutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(first_image);
+  ARG_NOT_USED(first_indexes);
+  ARG_NOT_USED(second_image);
+  ARG_NOT_USED(second_indexes);
+  ARG_NOT_USED(exception);
+
+  InitializeDifferenceStatistics(&lstats,exception);
+  for (i=0; i < npixels; i++)
+    {
+      lstats.red += fabs(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGBDouble;
+      lstats.green += fabs(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGBDouble;
+      lstats.blue += fabs(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGBDouble;
+      lstats.opacity += fabs(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
+    }
+
+  stats->red += lstats.red;
+  stats->green += lstats.green;
+  stats->blue += lstats.blue;
+  stats->opacity += lstats.opacity;
+
+  return (MagickPass);
+}
+
+/*
   Compute the peak absolute difference.
 
   In this case we compute the simple difference between channel pixel
@@ -353,6 +364,7 @@ ComputePeakAbsoluteError(void *mutable_data,
                          ExceptionInfo *exception)
 {
   DifferenceStatistics
+    lstats,
     *stats = (DifferenceStatistics *) mutable_data;
 
   double
@@ -362,70 +374,39 @@ ComputePeakAbsoluteError(void *mutable_data,
     i;
 
   ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(first_image);
   ARG_NOT_USED(first_indexes);
   ARG_NOT_USED(second_image);
   ARG_NOT_USED(second_indexes);
-  ARG_NOT_USED(exception);
 
+  InitializeDifferenceStatistics(&lstats,exception);
   for (i=0; i < npixels; i++)
     {
       difference=fabs(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGBDouble;
-      if (difference > stats->red)
-        stats->red=difference;
+      if (difference > lstats.red)
+        lstats.red=difference;
 
       difference=fabs(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGBDouble;
-      if (difference > stats->green)
-        stats->green=difference;
+      if (difference > lstats.green)
+        lstats.green=difference;
 
       difference=fabs(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGBDouble;
-      if (difference > stats->blue)
-        stats->blue=difference;
+      if (difference > lstats.blue)
+        lstats.blue=difference;
 
       difference=fabs(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
-      if (difference > stats->opacity)
-        stats->opacity=difference;
+      if (difference > lstats.opacity)
+        lstats.opacity=difference;
     }
 
-  return (MagickPass);
-}
-
-/*
-  Compute the total absolute value difference.
-
-  In this case we sum the absolute value difference between channel
-  pixel quantums.
-*/
-static MagickPassFail
-ComputeAbsoluteError(void *mutable_data,
-                              const void *immutable_data,
-                              const Image *first_image,
-                              const PixelPacket *first_pixels,
-                              const IndexPacket *first_indexes,
-                              const Image *second_image,
-                              const PixelPacket *second_pixels,
-                              const IndexPacket *second_indexes,
-                              const long npixels,
-                              ExceptionInfo *exception)
-{
-  DifferenceStatistics
-    *stats = (DifferenceStatistics *) mutable_data;
-
-  register long
-    i;
-
-  ARG_NOT_USED(immutable_data);
-  ARG_NOT_USED(first_indexes);
-  ARG_NOT_USED(second_image);
-  ARG_NOT_USED(second_indexes);
-  ARG_NOT_USED(exception);
-
-  for (i=0; i < npixels; i++)
-    {
-      stats->red += fabs(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGBDouble;
-      stats->green += fabs(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGBDouble;
-      stats->blue += fabs(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGBDouble;
-      stats->opacity += fabs(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
-    }
+  if (lstats.red > stats->red)
+    stats->red=lstats.red;
+  if (lstats.green > stats->green)
+    stats->green=lstats.green;
+  if (lstats.blue > stats->blue)
+    stats->blue=lstats.blue;
+  if (lstats.opacity > stats->opacity)
+    stats->opacity=lstats.opacity;
 
   return (MagickPass);
 }
@@ -438,17 +419,18 @@ ComputeAbsoluteError(void *mutable_data,
 */
 static MagickPassFail
 ComputeSquaredError(void *mutable_data,
-                         const void *immutable_data,
-                         const Image *first_image,
-                         const PixelPacket *first_pixels,
-                         const IndexPacket *first_indexes,
-                         const Image *second_image,
-                         const PixelPacket *second_pixels,
-                         const IndexPacket *second_indexes,
-                         const long npixels,
-                         ExceptionInfo *exception)
+                    const void *immutable_data,
+                    const Image *first_image,
+                    const PixelPacket *first_pixels,
+                    const IndexPacket *first_indexes,
+                    const Image *second_image,
+                    const PixelPacket *second_pixels,
+                    const IndexPacket *second_indexes,
+                    const long npixels,
+                    ExceptionInfo *exception)
 {
   DifferenceStatistics
+    lstats,
     *stats = (DifferenceStatistics *) mutable_data;
 
   double
@@ -458,25 +440,32 @@ ComputeSquaredError(void *mutable_data,
     i;
 
   ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(first_image);
   ARG_NOT_USED(first_indexes);
   ARG_NOT_USED(second_image);
   ARG_NOT_USED(second_indexes);
   ARG_NOT_USED(exception);
 
+  InitializeDifferenceStatistics(&lstats,exception);
   for (i=0; i < npixels; i++)
     {
       difference=(first_pixels[i].red-(double) second_pixels[i].red)/MaxRGBDouble;
-      stats->red += difference*difference;
+      lstats.red += difference*difference;
 
       difference=(first_pixels[i].green-(double) second_pixels[i].green)/MaxRGBDouble;
-      stats->green += difference*difference;
+      lstats.green += difference*difference;
 
       difference=(first_pixels[i].blue-(double) second_pixels[i].blue)/MaxRGBDouble;
-      stats->blue += difference*difference;
+      lstats.blue += difference*difference;
 
       difference=(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
-      stats->opacity += difference*difference;
+      lstats.opacity += difference*difference;
     }
+
+  stats->red += lstats.red;
+  stats->green += lstats.green;
+  stats->blue += lstats.blue;
+  stats->opacity += lstats.opacity;
 
   return (MagickPass);
 }
@@ -500,11 +489,7 @@ GetImageChannelDifference(const Image *reference_image,
   assert(statistics != (DifferenceStatistics *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  statistics->red=0.0;
-  statistics->green=0.0;
-  statistics->blue=0.0;
-  statistics->opacity=0.0;
-  statistics->combined=0.0;
+  InitializeDifferenceStatistics(statistics,exception);
 
   /*
     Select basic differencing function to use.
@@ -923,4 +908,83 @@ IsImagesEqual(Image *image,const Image *reference)
   image->error.normalized_mean_error=mean_error_per_pixel/normalize;
   image->error.normalized_maximum_error=stats.maximum/normalize;
   return(image->error.normalized_mean_error == 0.0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e D i f f e r e n c e I m a g e O p t i o n s           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeDifferenceImageOptions() assigns default options to a user-provided
+%  DifferenceImageOptions structure.  This function should always be used
+%  to initialize the DifferenceImageOptions structure prior to making any
+%  changes to it.
+%
+%  The format of the InitializeDifferenceImageOptions method is:
+%
+%      void InitializeDifferenceImageOptions(DifferenceImageOptions *options,
+%                                            ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o options: pointer to DifferenceImageOptions structure to initialize.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+MagickExport void
+InitializeDifferenceImageOptions(DifferenceImageOptions *options,
+                                 ExceptionInfo *exception)
+{
+  assert(options != (DifferenceImageOptions *) NULL);
+  memset(options,0,sizeof(DifferenceImageOptions));
+  options->channel=AllChannels;
+  options->highlight_style=TintHighlightStyle;
+  (void) QueryColorDatabase(HighlightColor,&options->highlight_color,exception);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e D i f f e r e n c e S t a t i s t i c s               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeDifferenceStatistics() assigns default options to a user-provided
+%  DifferenceStatistics structure.
+%
+%  The format of the InitializeDifferenceStatistics method is:
+%
+%      void InitializeDifferenceStatistics(DifferenceStatistics *options,
+%                                          ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o options: pointer to DifferenceStatistics structure to initialize.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+MagickExport void
+InitializeDifferenceStatistics(DifferenceStatistics *statistics,
+                               ExceptionInfo *exception)
+{
+  ARG_NOT_USED(exception);
+  assert(statistics != (DifferenceStatistics *) NULL);
+  statistics->red=0.0;
+  statistics->green=0.0;
+  statistics->blue=0.0;
+  statistics->opacity=0.0;
+  statistics->combined=0.0;
 }

@@ -34,8 +34,8 @@ typedef struct _DifferenceImageOptions
 } DifferenceImageOptions;
 
 extern MagickExport void
-  DifferenceImageOptionsDefaults(DifferenceImageOptions *options,
-                                 ExceptionInfo *exception);
+  InitializeDifferenceImageOptions(DifferenceImageOptions *options,
+                                   ExceptionInfo *exception);
 
 extern MagickExport Image
   *DifferenceImage(const Image *reference_image,const Image *compare_image,
@@ -67,6 +67,10 @@ typedef struct _DifferenceStatistics
     opacity,
     combined;
 } DifferenceStatistics;
+
+extern MagickExport void
+  InitializeDifferenceStatistics(DifferenceStatistics *difference_statistics,
+                                 ExceptionInfo *exception);
 
 extern MagickExport MagickPassFail
   GetImageChannelDifference(const Image *reference_image,

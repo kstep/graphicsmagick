@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2008-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/compare.c (InitializeDifferenceImageOptions): Renamed
+        from DifferenceImageOptionsDefaults().
+        (InitializeDifferenceStatistics): New function to initialize
+        DifferenceStatistics.<BR>
+        (ComputeAbsoluteError, ComputePeakAbsoluteError,
+        ComputeSquaredError): Use local totalizing structure on stack and
+        update cumulative statistics when the loop terminates.
+
+</UL>
+<p>
 2008-08-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -1458,5 +1471,5 @@ package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 <hr>
 <P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P></BODY>
+GraphicsMagick Group 2002 - 2008</FONT></P></BODY>
 </HTML>

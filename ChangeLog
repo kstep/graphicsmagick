@@ -1,3 +1,13 @@
+2008-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/compare.c (InitializeDifferenceImageOptions): Renamed
+	from DifferenceImageOptionsDefaults().
+	(InitializeDifferenceStatistics): New function to initialize
+	DifferenceStatistics.
+	(ComputeAbsoluteError, ComputePeakAbsoluteError,
+	ComputeSquaredError): Use local totalizing structure on stack and
+	update cumulative statistics when the loop terminates.
+
 2008-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www: Convert HTML pages to use a vibrant green theme rather than

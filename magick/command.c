@@ -1640,7 +1640,7 @@ CompareImageCommand(ImageInfo *image_info,
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
     (char *) NULL);
 
-  DifferenceImageOptionsDefaults(&difference_options,exception);
+  InitializeDifferenceImageOptions(&difference_options,exception);
   difference_image=NewImageList();
   reference_image=NewImageList();
   difference_filename=(const char *) NULL;
@@ -2045,6 +2045,7 @@ CompareImageCommand(ImageInfo *image_info,
     DifferenceStatistics
       statistics;
 
+    InitializeDifferenceStatistics(&statistics,exception);
     status&=GetImageChannelDifference(reference_image,compare_image,metric,
                                       &statistics,exception);
     fprintf(stdout,"Image Difference (%s):\n",MetricTypeToString(metric));

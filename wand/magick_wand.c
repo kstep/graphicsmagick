@@ -1266,8 +1266,8 @@ MagickCompareImageChannels(MagickWand *wand,
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   if (distortion != (double *) NULL)
     *distortion=0.0;
-  DifferenceImageOptionsDefaults(&difference_options,
-                                 &wand->image->exception);
+  InitializeDifferenceImageOptions(&difference_options,
+                                   &wand->image->exception);
   difference_options.channel=channel;
   compare_image=DifferenceImage(wand->image,reference->image,
                                 &difference_options,
