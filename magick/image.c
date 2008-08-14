@@ -3247,6 +3247,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
                                              ExceptionInfo *exception)
 {
   ImageStatistics
+    lstatistics,
     *statistics=(ImageStatistics *) mutable_data;
 
   const StatisticsContext
@@ -3261,39 +3262,76 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
+  (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
+  lstatistics.red.minimum=1.0;
+  lstatistics.green.minimum=1.0;
+  lstatistics.blue.minimum=1.0;
+  if (image->matte)
+    lstatistics.opacity.minimum=1.0;
+
   for (i=0; i < npixels; i++)
     {
       normalized=(double) pixel[i].red/MaxRGB;
-      statistics->red.mean += normalized/context->samples;
-      if (normalized > statistics->red.maximum)
-        statistics->red.maximum=normalized;
-      if (normalized <  statistics->red.minimum)
-        statistics->red.minimum=normalized;
+      lstatistics.red.mean += normalized/context->samples;
+      if (normalized > lstatistics.red.maximum)
+        lstatistics.red.maximum=normalized;
+      if (normalized <  lstatistics.red.minimum)
+        lstatistics.red.minimum=normalized;
 
       normalized=(double) pixel[i].green/MaxRGB;
-      statistics->green.mean += normalized/context->samples;
-      if (normalized > statistics->green.maximum)
-        statistics->green.maximum=normalized;
-      if (normalized <  statistics->green.minimum)
-        statistics->green.minimum=normalized;
+      lstatistics.green.mean += normalized/context->samples;
+      if (normalized > lstatistics.green.maximum)
+        lstatistics.green.maximum=normalized;
+      if (normalized <  lstatistics.green.minimum)
+        lstatistics.green.minimum=normalized;
 
       normalized=(double) pixel[i].blue/MaxRGB;
-      statistics->blue.mean += normalized/context->samples;
-      if (normalized > statistics->blue.maximum)
-        statistics->blue.maximum=normalized;
-      if (normalized <  statistics->blue.minimum)
-        statistics->blue.minimum=normalized;
+      lstatistics.blue.mean += normalized/context->samples;
+      if (normalized > lstatistics.blue.maximum)
+        lstatistics.blue.maximum=normalized;
+      if (normalized <  lstatistics.blue.minimum)
+        lstatistics.blue.minimum=normalized;
 
       if (image->matte)
         {
           normalized=(double) pixel[i].opacity/MaxRGB;
-          statistics->opacity.mean += normalized/context->samples;
-          if (normalized > statistics->opacity.maximum)
-            statistics->opacity.maximum=normalized;
-          if (normalized <  statistics->opacity.minimum)
-            statistics->opacity.minimum=normalized;
+          lstatistics.opacity.mean += normalized/context->samples;
+          if (normalized > lstatistics.opacity.maximum)
+            lstatistics.opacity.maximum=normalized;
+          if (normalized <  lstatistics.opacity.minimum)
+            lstatistics.opacity.minimum=normalized;
         }
     }
+
+#pragma omp critical
+  {
+    statistics->red.mean += lstatistics.red.mean;
+    if (lstatistics.red.maximum > statistics->red.maximum)
+      statistics->red.maximum=lstatistics.red.maximum;
+    if (lstatistics.red.minimum < statistics->red.minimum)
+      statistics->red.minimum=lstatistics.red.minimum;
+
+    statistics->green.mean += lstatistics.green.mean;
+    if (lstatistics.green.maximum > statistics->green.maximum)
+      statistics->green.maximum=lstatistics.green.maximum;
+    if (lstatistics.green.minimum < statistics->green.minimum)
+      statistics->green.minimum=lstatistics.green.minimum;
+
+    statistics->blue.mean += lstatistics.blue.mean;
+    if (lstatistics.blue.maximum > statistics->blue.maximum)
+      statistics->blue.maximum=lstatistics.blue.maximum;
+    if (lstatistics.blue.minimum < statistics->blue.minimum)
+      statistics->blue.minimum=lstatistics.blue.minimum;
+
+    if (image->matte)
+      {
+        statistics->opacity.mean += lstatistics.opacity.mean;
+        if (lstatistics.opacity.maximum > statistics->opacity.maximum)
+          statistics->opacity.maximum=lstatistics.opacity.maximum;
+        if (lstatistics.opacity.minimum < statistics->opacity.minimum)
+          statistics->opacity.minimum=lstatistics.opacity.minimum;
+      }
+  }
 
   return MagickPass;
 }
@@ -3307,6 +3345,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
                                                  ExceptionInfo *exception)
 {
   ImageStatistics
+    lstatistics,
     *statistics=(ImageStatistics *) mutable_data;
 
   const StatisticsContext
@@ -3321,27 +3360,44 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
+  (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
+#pragma omp critical
+  {
+    lstatistics.red.mean=statistics->red.mean;
+    lstatistics.green.mean=statistics->green.mean;
+    lstatistics.blue.mean=statistics->blue.mean;
+    lstatistics.opacity.mean=statistics->opacity.mean;
+  }
+
   for (i=0; i < npixels; i++)
     {
       normalized=(double) pixel[i].red/MaxRGB;
-      statistics->red.variance +=
-        Square(normalized-statistics->red.mean)/context->variance_divisor;
+      lstatistics.red.variance +=
+        Square(normalized-lstatistics.red.mean)/context->variance_divisor;
       
       normalized=(double) pixel[i].green/MaxRGB;
-      statistics->green.variance +=
-        Square(normalized-statistics->green.mean)/context->variance_divisor;
+      lstatistics.green.variance +=
+        Square(normalized-lstatistics.green.mean)/context->variance_divisor;
       
       normalized=(double) pixel[i].blue/MaxRGB;
-      statistics->blue.variance +=
-        Square(normalized-statistics->blue.mean)/context->variance_divisor;
+      lstatistics.blue.variance +=
+        Square(normalized-lstatistics.blue.mean)/context->variance_divisor;
       
       if (image->matte)
         {
           normalized=(double) pixel[i].opacity/MaxRGB;
-          statistics->opacity.variance +=
-            Square(normalized-statistics->opacity.mean)/context->variance_divisor;
+          lstatistics.opacity.variance +=
+            Square(normalized-lstatistics.opacity.mean)/context->variance_divisor;
         }
     }
+
+#pragma omp critical
+  {
+    statistics->red.variance += lstatistics.red.variance;
+    statistics->green.variance += lstatistics.green.variance;
+    statistics->blue.variance += lstatistics.blue.variance;
+    statistics->opacity.variance += lstatistics.opacity.variance;
+  }
 
   return MagickPass;
 }

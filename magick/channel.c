@@ -457,7 +457,10 @@ GetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable
 
   ARG_NOT_USED(exception);
 
-  depth=*channel_depth;
+#pragma omp critical
+  {
+    depth=*channel_depth;
+  }
 
   switch (channel)
     {
@@ -502,8 +505,11 @@ GetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable
       }
     }
 
-  if (depth > *channel_depth)
-    *channel_depth=depth;
+#pragma omp critical
+  {
+    if (depth > *channel_depth)
+      *channel_depth=depth;
+  }
 
   if (depth >= QuantumDepth)
     return MagickFail;

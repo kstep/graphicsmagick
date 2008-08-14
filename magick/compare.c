@@ -336,10 +336,13 @@ ComputeAbsoluteError(void *mutable_data,
       lstats.opacity += fabs(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
     }
 
-  stats->red += lstats.red;
-  stats->green += lstats.green;
-  stats->blue += lstats.blue;
-  stats->opacity += lstats.opacity;
+#pragma omp critical
+  {
+    stats->red += lstats.red;
+    stats->green += lstats.green;
+    stats->blue += lstats.blue;
+    stats->opacity += lstats.opacity;
+  }
 
   return (MagickPass);
 }
@@ -399,14 +402,17 @@ ComputePeakAbsoluteError(void *mutable_data,
         lstats.opacity=difference;
     }
 
-  if (lstats.red > stats->red)
-    stats->red=lstats.red;
-  if (lstats.green > stats->green)
-    stats->green=lstats.green;
-  if (lstats.blue > stats->blue)
-    stats->blue=lstats.blue;
-  if (lstats.opacity > stats->opacity)
-    stats->opacity=lstats.opacity;
+#pragma omp critical
+  {
+    if (lstats.red > stats->red)
+      stats->red=lstats.red;
+    if (lstats.green > stats->green)
+      stats->green=lstats.green;
+    if (lstats.blue > stats->blue)
+      stats->blue=lstats.blue;
+    if (lstats.opacity > stats->opacity)
+      stats->opacity=lstats.opacity;
+  }
 
   return (MagickPass);
 }
@@ -462,10 +468,13 @@ ComputeSquaredError(void *mutable_data,
       lstats.opacity += difference*difference;
     }
 
-  stats->red += lstats.red;
-  stats->green += lstats.green;
-  stats->blue += lstats.blue;
-  stats->opacity += lstats.opacity;
+#pragma omp critical
+  {
+    stats->red += lstats.red;
+    stats->green += lstats.green;
+    stats->blue += lstats.blue;
+    stats->opacity += lstats.opacity;
+  }
 
   return (MagickPass);
 }
@@ -811,7 +820,9 @@ ComputePixelError(void *mutable_data,
   double
     difference,
     distance,
-    distance_squared;
+    distance_squared,
+    stats_maximum,
+    stats_total;
 
   register long
     i;
@@ -821,6 +832,9 @@ ComputePixelError(void *mutable_data,
   ARG_NOT_USED(second_image);
   ARG_NOT_USED(second_indexes);
   ARG_NOT_USED(exception);
+
+  stats_maximum=0.0;
+  stats_total=0.0;
 
   for (i=0; i < npixels; i++)
     {
@@ -840,11 +854,18 @@ ComputePixelError(void *mutable_data,
         }
       distance=sqrt(distance_squared);
 
-      stats->total+=distance;
-
-      if (distance > stats->maximum)
-        stats->maximum=distance;
+      stats_total+=distance;
+      if (distance > stats_maximum)
+        stats_maximum=distance;
     }
+
+#pragma omp critical
+  {
+    stats->total+=stats_total;
+
+    if (stats_maximum > stats->maximum)
+      stats->maximum=stats_maximum;
+  }
   return (MagickPass);
 }
 

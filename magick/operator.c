@@ -605,6 +605,9 @@ QuantumGamma(void *mutable_data,
   
   register long
     i;
+
+  MagickPassFail
+    status=MagickPass;
   
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
@@ -614,21 +617,27 @@ QuantumGamma(void *mutable_data,
     Build LUT for Q8 and Q16 builds
   */
 #if MaxRGB <= MaxMap
+#pragma omp critical
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {
-      mutable_context->channel_lut=MagickAllocateMemory(Quantum *, MaxMap*sizeof(Quantum));
+      mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap,sizeof(Quantum));
       if (mutable_context->channel_lut == (Quantum *) NULL)
-        return MagickFail;
+        status=MagickFail;
 
+      if (mutable_context->channel_lut != (Quantum *) NULL)
+        {
 #if MaxMap > 255
 #pragma omp parallel for
 #endif
-      for (i=0; i <= (long) MaxMap; i++)
-        mutable_context->channel_lut[i] =
-          ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,
-                                       1.0/immutable_context->double_value));
+          for (i=0; i <= (long) MaxMap; i++)
+            mutable_context->channel_lut[i] =
+              ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,
+                                           1.0/immutable_context->double_value));
+        }
     }
 #endif
+  if (MagickFail == status)
+    return status;
 
   switch (immutable_context->channel)
     {
@@ -693,7 +702,7 @@ QuantumGamma(void *mutable_data,
       break;
     }
 
-  return (MagickPass);
+  return status;
 }
 static MagickPassFail
 QuantumNegate(void *mutable_data,

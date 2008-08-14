@@ -1,3 +1,9 @@
+2008-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{compare.c, channel.c, enhance.c, image.c, operator.c}:
+	Update existing pixel iterator callback functions so that they are
+	OpenMP safe.
+
 2008-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/compare.c (InitializeDifferenceImageOptions): Renamed
