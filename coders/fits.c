@@ -24,6 +24,8 @@
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                                 July 1992                                   %
+%                              Jaroslav Fojtik                                %
+%                                August 2008                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -639,6 +641,21 @@ ModuleExport void UnregisterFITSImage(void)
   (void) UnregisterMagickInfo("FITS");
 }
 
+
+/* This functions inserts one row into a HDU */
+int InsertRowHDU(char *buffer, const char *data, int offset)
+{
+int len;
+
+  if(data==NULL) return offset;
+  len = strlen(data);
+
+  if(len > 2880-offset) len = 2880-offset;
+
+  (void) strncpy(buffer+offset,data,len);
+  return offset +80;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -679,10 +696,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     y;
 
   register const PixelPacket
-    *p;
-
-  register long
-    i;
+    *p;  
 
   unsigned char
     *pixels;
@@ -723,31 +737,29 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
   /*
     Initialize image header.
-  */
-  for (i=0; i < 2880; i++)
-    fits_info[i]=' ';
-  (void) strcpy(buffer,"SIMPLE  =                    T");
-  (void) strncpy(fits_info+0,buffer,strlen(buffer));
-  FormatString(buffer,"BITPIX  =                    %u",depth);
-  (void) strncpy(fits_info+80,buffer,strlen(buffer));
-  (void) strcpy(buffer,"NAXIS   =                    2");
-  (void) strncpy(fits_info+160,buffer,strlen(buffer));
-  FormatString(buffer,"NAXIS1  =           %10lu",image->columns);
-  (void) strncpy(fits_info+240,buffer,strlen(buffer));
-  FormatString(buffer,"NAXIS2  =           %10lu",image->rows);
-  (void) strncpy(fits_info+320,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMIN =           %10u",0);
-  (void) strncpy(fits_info+400,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));
-  (void) strncpy(fits_info+480,buffer,strlen(buffer));
-  (void) strcpy(buffer,"HISTORY Created by GraphicsMagick.");
-  (void) strncpy(fits_info+560,buffer,strlen(buffer));
-  (void) strcpy(buffer,"END");
-  (void) strncpy(fits_info+640,buffer,strlen(buffer));
+  */  
+  memset(fits_info,' ',2880);
+  y = 0;
+  y = InsertRowHDU(fits_info, "SIMPLE  =                    T", y);
+  FormatString(buffer,        "BITPIX  =                    %u",depth);
+  y = InsertRowHDU(fits_info, buffer, y);
+  y = InsertRowHDU(fits_info, "NAXIS   =                    2", y);
+  FormatString(buffer,        "NAXIS1  =           %10lu",image->columns);
+  y = InsertRowHDU(fits_info, buffer, y);
+  FormatString(buffer,        "NAXIS2  =           %10lu",image->rows); 
+  y = InsertRowHDU(fits_info, buffer, y);  
+  FormatString(buffer,        "DATAMIN =           %10u",0);
+  y = InsertRowHDU(fits_info, buffer, y);    
+  FormatString(buffer,        "DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));  
+  y = InsertRowHDU(fits_info, buffer, y);
+  (void) strcpy(buffer,       "HISTORY Created by GraphicsMagick.");
+  y = InsertRowHDU(fits_info, buffer, y);
+  y = InsertRowHDU(fits_info, "END", y);        
   (void) WriteBlob(image,2880,(char *) fits_info);
-  MagickFreeMemory(fits_info);
+  
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -766,6 +778,16 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
           break;
       }
   }
+  
+	/* Calculate of padding */
+  y = 2880 - (image->columns * image->rows * packet_size) % 2880;
+  if(y>0)
+  {
+    memset(fits_info, 0, y);    
+    (void)WriteBlob(image,y,(char *) fits_info);
+  }
+  MagickFreeMemory(fits_info);
+
   MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);

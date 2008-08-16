@@ -1,3 +1,11 @@
+2008-08-16  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c Writer now creates valid images according to
+	http://fits.gsfc.nasa.gov/fits_verify.html
+	Fixed problems: 1, zeros in HDU.
+			2, wrong padding.
+			3, possible strlen overflow.
+
 2008-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{compare.c, channel.c, enhance.c, image.c, operator.c}:
@@ -102,7 +110,7 @@
 
 	* coders/mat.c Fixed problem: "In this case, the referenced 
 	images had previously been deallocated but are still being used.
-	Since they are overwritten, their signatures are invalid."
+	Since they are overwritten, their signatures are invalid.
 
 2008-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
