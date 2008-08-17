@@ -80,7 +80,7 @@ Bug fixes:
 
 Performance Improvements:
 
-  * OpenMP (parallel processing) improvements for these funcions:
+  * OpenMP (parallel processing) improvements for these functions:
 
     - Channel import, export, and depth-setting.
     - Colorspace transformation.
