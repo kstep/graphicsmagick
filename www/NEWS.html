@@ -246,19 +246,138 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on April 29, 2008</p>
+<p>This file was last updated on August 17, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#april-29-2008" id="id1" name="id1">1.2 (April 29, 2008)</a></li>
-<li><a class="reference" href="#released-april-4-2004" id="id2" name="id2">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference" href="#released-in-may-2003" id="id3" name="id3">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference" href="#not-yet-released" id="id1" name="id1">1.3 (Not yet released)</a></li>
+<li><a class="reference" href="#april-29-2008" id="id2" name="id2">1.2 (April 29, 2008)</a></li>
+<li><a class="reference" href="#released-april-4-2004" id="id3" name="id3">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference" href="#released-in-may-2003" id="id4" name="id4">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id1" id="not-yet-released" name="not-yet-released">1.3 (Not yet released)</a></h1>
+<p>Security fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>AVI reader: Re-worked to be more robust against crash or DOS.</li>
+<li>AVS reader: Re-worked to be more robust against crash or DOS.</li>
+<li>DCM reader: Re-worked to be more robust against crash or DOS.</li>
+<li>EPT reader: Re-worked to be more robust against crash or DOS.</li>
+<li>FITS reader: Re-worked to be more robust against crash or DOS.</li>
+<li>MTV reader: Re-worked to be more robust against crash or DOS.</li>
+<li>PALM reader: Re-worked to be more robust against crash or DOS.</li>
+<li>RLA reader: Re-worked to be more robust against crash or DOS.</li>
+<li>TGA reader: Re-worked to be more robust against crash or DOS.</li>
+<li>Avoid possible crash in GetImageCharacteristics() when substituting
+text in comment read from file.</li>
+<li>Cineon reader: Fixed crash with broken file from Sami Liedes.</li>
+<li>Palm reader: Fixed crash with broken files from Sami Liedes.</li>
+<li>PICT reader: Fixed crash with broken files from Sami Liedes.</li>
+<li>DPX reader: Validate file data better to avoid improper operation with
+intentionally (or accidentally) defective files.</li>
+<li>XCF reader: Fixed crash with broken files from Sami Liedes.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Libbz2 is now detected for MinGW.</li>
+<li>Install documentation under /usr/local/share/doc/GraphicsMagick by
+default, according to GNU conventions.</li>
+<li>In PerlMagick, Dissolve composition was not working right.</li>
+<li>FITS: Ensure that written format conforms to specification.</li>
+<li>TIFF:<ul>
+<li>Don't accidentially convert CMYK images to RGB.</li>
+<li>Eliminated a memory leak in the codec support detection code.</li>
+</ul>
+</li>
+<li>JPEG: Removed over-write of image-&gt;client_data.</li>
+<li>PDF: Try to properly deal with reading rotated PDFs.</li>
+<li>PNG: Fixed crash when writing PNG images with transparency and either
+optimize is requested, or the image is colormapped.</li>
+<li>Configure: Fixed the --enable-magick-compat configure option, which
+had stopped working.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>OpenMP (parallel processing) improvements for these funcions:<ul>
+<li>Channel import, export, and depth-setting.</li>
+<li>Colorspace transformation.</li>
+<li>Compare images.</li>
+<li>Statistics compuation.</li>
+<li>Add noise.</li>
+<li>Threshold channel.</li>
+<li>Composition.</li>
+<li>Contrast adjust.</li>
+<li>Equalize.</li>
+<li>Gamma adjust.</li>
+<li>Levels adjust image.</li>
+<li>Modulate image.</li>
+<li>Negate image.</li>
+<li>Normalize image.</li>
+<li>Operators.</li>
+<li>UnsharpMaskImage.</li>
+<li>Profile adjust (ICC).</li>
+<li>Resize image.</li>
+</ul>
+</li>
+<li>Improved coder management performance.</li>
+<li>XCF (GIMP) reader is much faster.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>Use MAGICK_CODER_STABILITY environment variable to enable a subset
+of the coders based on their stability classification.</li>
+<li>Use MAGICK_IO_FSYNC environment variable to cause written file to
+be synchronized to disk to avoid possible data loss on power fail.</li>
+<li>Added 'compare' command to statistically or visually compare two
+image files.</li>
+<li>Added new channel operators (-operator):<ul>
+<li>Assign</li>
+<li>Gamma</li>
+<li>Negate</li>
+<li>Noise-Gaussian</li>
+<li>Noise-Impulse</li>
+<li>Noise-Laplacian</li>
+<li>Noise-Multiplicative</li>
+<li>Noise-Poisson</li>
+<li>Noise-Uniform</li>
+<li>Threshold</li>
+<li>ThresholdBlack</li>
+<li>ThresholdWhite</li>
+</ul>
+</li>
+<li>New composition operators (-compose):<ul>
+<li>CopyBlack</li>
+<li>CopyCyan</li>
+<li>CopyMagenta</li>
+<li>CopyYellow</li>
+<li>Divide</li>
+</ul>
+</li>
+<li>Mogrify and convert now support -black-threshold and -white-threshold.</li>
+<li>MAT: Now supports reading compressed files.</li>
+<li>DCRAW: Coder proxy module allows reading digital camera files as if
+they were natively supported.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>TBD</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -514,7 +633,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id2" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id3" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -754,7 +873,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id4" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -910,7 +1029,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-08-09 19:36 UTC.
+Generated on: 2008-08-17 23:25 UTC.
 
 </div>
 </body>

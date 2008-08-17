@@ -1,5 +1,6 @@
 2008-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS.txt: Updated for changes to date in 1.3 development code.
 	* magick/pixel_iterator.c: Execute pixel iterators in parallel via
 	OpenMP.
 	* magick/pixel_cache.c (OpenCacheView): Ensure that pixel cache is

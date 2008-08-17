@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on April 29, 2008
+This file was last updated on August 17, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,142 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3 (Not yet released)
+======================
+
+Security fixes:
+
+  * AVI reader: Re-worked to be more robust against crash or DOS.
+
+  * AVS reader: Re-worked to be more robust against crash or DOS.
+
+  * DCM reader: Re-worked to be more robust against crash or DOS.
+
+  * EPT reader: Re-worked to be more robust against crash or DOS.
+
+  * FITS reader: Re-worked to be more robust against crash or DOS.
+
+  * MTV reader: Re-worked to be more robust against crash or DOS.
+
+  * PALM reader: Re-worked to be more robust against crash or DOS.
+
+  * RLA reader: Re-worked to be more robust against crash or DOS.
+
+  * TGA reader: Re-worked to be more robust against crash or DOS.
+
+  * Avoid possible crash in GetImageCharacteristics() when substituting
+    text in comment read from file.
+
+  * Cineon reader: Fixed crash with broken file from Sami Liedes.
+
+  * Palm reader: Fixed crash with broken files from Sami Liedes.
+
+  * PICT reader: Fixed crash with broken files from Sami Liedes.
+
+  * DPX reader: Validate file data better to avoid improper operation with
+    intentionally (or accidentally) defective files.
+
+  * XCF reader: Fixed crash with broken files from Sami Liedes.
+
+Bug fixes:
+
+  * Libbz2 is now detected for MinGW.
+
+  * Install documentation under /usr/local/share/doc/GraphicsMagick by
+    default, according to GNU conventions.
+
+  * In PerlMagick, Dissolve composition was not working right.
+
+  * FITS: Ensure that written format conforms to specification.
+
+  * TIFF:
+
+    - Don't accidentially convert CMYK images to RGB.
+
+    - Eliminated a memory leak in the codec support detection code.
+
+  * JPEG: Removed over-write of image->client_data.
+
+  * PDF: Try to properly deal with reading rotated PDFs.
+
+  * PNG: Fixed crash when writing PNG images with transparency and either
+    optimize is requested, or the image is colormapped.
+
+  * Configure: Fixed the --enable-magick-compat configure option, which
+    had stopped working.
+
+Performance Improvements:
+
+  * OpenMP (parallel processing) improvements for these funcions:
+
+    - Channel import, export, and depth-setting.
+    - Colorspace transformation.
+    - Compare images.
+    - Statistics compuation.
+    - Add noise.
+    - Threshold channel.
+    - Composition.
+    - Contrast adjust.
+    - Equalize.
+    - Gamma adjust.
+    - Levels adjust image.
+    - Modulate image.
+    - Negate image.
+    - Normalize image.
+    - Operators.
+    - UnsharpMaskImage.
+    - Profile adjust (ICC).
+    - Resize image.
+
+  * Improved coder management performance.
+
+  * XCF (GIMP) reader is much faster.
+
+New Features:
+
+  * Use MAGICK_CODER_STABILITY environment variable to enable a subset
+    of the coders based on their stability classification.
+
+  * Use MAGICK_IO_FSYNC environment variable to cause written file to
+    be synchronized to disk to avoid possible data loss on power fail.
+
+  * Added 'compare' command to statistically or visually compare two
+    image files.
+
+  * Added new channel operators (-operator):
+
+    - Assign
+    - Gamma
+    - Negate
+    - Noise-Gaussian
+    - Noise-Impulse
+    - Noise-Laplacian
+    - Noise-Multiplicative
+    - Noise-Poisson
+    - Noise-Uniform
+    - Threshold
+    - ThresholdBlack
+    - ThresholdWhite
+
+  * New composition operators (-compose):
+
+    - CopyBlack
+    - CopyCyan
+    - CopyMagenta
+    - CopyYellow
+    - Divide
+
+  * Mogrify and convert now support -black-threshold and -white-threshold.
+
+  * MAT: Now supports reading compressed files.
+
+  * DCRAW: Coder proxy module allows reading digital camera files as if
+    they were natively supported.
+
+Feature improvements:
+
+  * TBD
 
 1.2 (April 29, 2008)
 ====================
