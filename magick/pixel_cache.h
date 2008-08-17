@@ -148,46 +148,47 @@ extern "C" {
     AcquireCacheView() obtains a pixel region from a cache view for read-only access.
   */
   extern MagickExport const PixelPacket
-  *AcquireCacheView(const ViewInfo *,const long,const long,const unsigned long,
-                    const unsigned long,ExceptionInfo *);
+  *AcquireCacheView(const ViewInfo *view,
+                    const long x,const long y,const unsigned long columns,
+                    const unsigned long rows,ExceptionInfo *exception);
 
   /*
     CloseCacheView() closes a cache view.
   */
   extern MagickExport void
-  CloseCacheView(ViewInfo *);
+  CloseCacheView(ViewInfo *view);
 
   /*
     GetCacheView() obtains a pixel region from a cache view for read/write access.
   */
   extern MagickExport PixelPacket
-  *GetCacheView(ViewInfo *,const long,const long,const unsigned long,
-                const unsigned long);
+  *GetCacheView(ViewInfo *view,const long x,const long y,
+                const unsigned long columns,const unsigned long rows);
 
   /*
     GetCacheViewIndexes() returns the indexes associated with a cache view.
   */
   extern MagickExport IndexPacket
-  *GetCacheViewIndexes(const ViewInfo *);
+  *GetCacheViewIndexes(const ViewInfo *view);
 
   /*
      OpenCacheView() opens a view into the pixel cache.
   */
   extern MagickExport ViewInfo
-  *OpenCacheView(Image *);
+  *OpenCacheView(Image *image);
 
   /*
     SetCacheView() gets blank pixels from the pixel cache view.
   */
   extern MagickExport PixelPacket
-  *SetCacheView(ViewInfo *,const long,const long,const unsigned long,
-                const unsigned long);
+  *SetCacheView(ViewInfo *view,const long x,const long y,
+                const unsigned long columns,const unsigned long rows);
 
   /*
     SyncCacheView() saves any changes to the pixel cache view.
   */
   extern MagickExport MagickPassFail
-  SyncCacheView(ViewInfo *);
+  SyncCacheView(ViewInfo *view);
 
 
   /*
@@ -202,7 +203,8 @@ extern "C" {
     Used only by ReadXTRNImage(), PingBlob(), and PingImage().
   */
   extern MagickExport Image
-  *ReadStream(const ImageInfo *,StreamHandler,ExceptionInfo *);
+  *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+              ExceptionInfo *exception);
   
   /*
     WriteStream() makes the image pixels available to a user supplied
@@ -212,7 +214,8 @@ extern "C" {
     Used only by WriteXTRNImage()
   */
   extern MagickExport MagickPassFail
-  WriteStream(const ImageInfo *,Image *,StreamHandler);
+  WriteStream(const ImageInfo *image_info,Image *image,
+              StreamHandler stream);
 
 #if defined(MAGICK_IMPLEMENTATION)
 

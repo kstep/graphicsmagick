@@ -71,6 +71,12 @@ Pixel cache is not open
 .
 
 MessageId       = +1
+SymbolicName    = CacheErrorUnableToAllocateCacheView
+Language        = English
+Unable to allocate cache view
+.
+
+MessageId       = +1
 SymbolicName    = CacheErrorUnableToCloneCache
 Language        = English
 Unable to clone cache

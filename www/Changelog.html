@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2008-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_iterator.c: Execute pixel iterators in parallel via
+        OpenMP.<BR>
+  <LI> magick/pixel_cache.c (OpenCacheView): Ensure that pixel cache is
+        open.<BR>
+        (GetCacheInfo): Allocate semaphore immediately.
+
+</UL>
+<p>
+2008-08-16  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c Writer now creates valid images according to
+        http://fits.gsfc.nasa.gov/fits_verify.html
+        Fixed problems: 1, zeros in HDU.
+                        2, wrong padding.
+                        3, possible strlen overflow.
+
+</UL>
+<p>
 2008-08-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -159,7 +181,7 @@
 <UL>
   <LI> coders/mat.c Fixed problem: "In this case, the referenced
         images had previously been deallocated but are still being used.
-        Since they are overwritten, their signatures are invalid."
+        Since they are overwritten, their signatures are invalid.
 
 </UL>
 <p>

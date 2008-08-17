@@ -46,7 +46,7 @@
 /*
   Define declarations.
 */
-#define MaxCacheViews  (Max(cache_info->columns,cache_info->rows)+3)
+#define MaxCacheViews  (Max(Max(cache_info->columns,cache_info->rows),256)+3)
 
 #if defined(POSIX) && defined(S_IRUSR)
 #  define S_MODE     (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
@@ -523,10 +523,6 @@ static inline MagickPassFail IsNexusInCore(const Cache cache,
 %
 %
 */
-static const PixelPacket *AcquireCacheNexus(const Image *image,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
-{
 #define EdgeX(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
   (long) cache_info->columns-1 : (x))
 #define EdgeY(y) ((y) < 0 ? 0 : (y) >= (long) cache_info->rows ? \
@@ -540,6 +536,10 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
 #define TileY(y) (((y) >= 0) ? ((y) % (long) cache_info->rows) : \
   (long) cache_info->rows-(-(y) % (long) cache_info->rows))
 
+static const PixelPacket *AcquireCacheNexus(const Image *image,
+  const long x,const long y,const unsigned long columns,
+  const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
+{
   CacheInfo
     *cache_info;
 
@@ -1569,7 +1569,8 @@ void DestroyCacheInfo(Cache cache_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyCacheNexus() destroys a cache nexus.
+%  DestroyCacheNexus() destroys a cache nexus which was allocated via 
+%  GetNexus().  This function is not thread safe.
 %
 %  The format of the DestroyCacheNexus() method is:
 %
@@ -1597,8 +1598,10 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
   nexus_info=cache_info->nexus_info+nexus;
   if (nexus_info->staging != (PixelPacket *) NULL)
     MagickFreeMemory(nexus_info->staging);
+  /* LockSemaphoreInfo(cache_info->semaphore); */
   (void) memset(nexus_info,0,sizeof(NexusInfo));
   nexus_info->available=MagickTrue;
+  /* UnlockSemaphoreInfo(cache_info->semaphore); */
 }
 
 /*
@@ -1829,6 +1832,10 @@ void GetCacheInfo(Cache *cache)
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
   cache_info->file=(-1);
+  cache_info->semaphore=AllocateSemaphoreInfo();
+  if (cache_info->semaphore == (SemaphoreInfo *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToAllocateCacheInfo);
   cache_info->signature=MagickSignature;
   SetPixelCacheMethods(cache_info,AcquirePixelCache,GetPixelCache,
     SetPixelCache,SyncPixelCache,GetPixelsFromCache,GetIndexesFromCache,
@@ -2213,7 +2220,9 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNexus() returns an available cache nexus.
+%  GetNexus() returns an available cache nexus from the nexus_info pool.
+%  The cache nexus is returned to the pool via DestroyCacheNexus(). This
+%  function is not thread safe.
 %
 %  The format of the GetNexus() method is:
 %
@@ -2235,16 +2244,25 @@ static unsigned long GetNexus(Cache cache)
   register long
     id;
 
+  MagickPassFail
+    status=MagickFail;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
+  assert(cache_info->nexus_info != (NexusInfo *) NULL);
+  /* LockSemaphoreInfo(cache_info->semaphore); */
   for (id=1; id < (long) MaxCacheViews; id++)
     if (cache_info->nexus_info[id].available)
       {
         cache_info->nexus_info[id].available=MagickFalse;
-        return(id);
+        status=MagickPass;
+        break;
       }
-  return(0);
+  /* UnlockSemaphoreInfo(cache_info->semaphore); */
+  if (MagickFail == status)
+    id=0;
+  return(id);
 }
 
 /*
@@ -3196,8 +3214,23 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   View
     *view;
 
+  CacheInfo
+    *cache_info;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
+  /*
+    Make sure that cache is open.
+  */
+  cache_info=(CacheInfo *) image->cache;
+  if (!cache_info->nexus_info)
+    if (!OpenCache(image,IOMode))
+      return ((ViewInfo *) NULL);
+
+  /*
+    Allocate a user view handle and find an available cache nexus.
+  */
   view=MagickAllocateMemory(View *,sizeof(View));
   if (view == (View *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -3209,9 +3242,9 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   if (view->id == 0)
     {
       CloseCacheView((ViewInfo *) view);
-      return((ViewInfo *) NULL);
+      return ((ViewInfo *) NULL);
     }
-  return((ViewInfo *) view);
+  return ((ViewInfo *) view);
 }
 
 /*

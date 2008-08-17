@@ -241,16 +241,13 @@ BuildHistogram(void *mutable_data,          /* User provided mutable data */
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
+#pragma omp critical
   for (i=0; i < npixels; i++)
     {
-#pragma omp atomic
       histogram[ScaleQuantumToMap(pixels[i].red)].red++;
-#pragma omp atomic
       histogram[ScaleQuantumToMap(pixels[i].green)].green++;
-#pragma omp atomic
       histogram[ScaleQuantumToMap(pixels[i].blue)].blue++;
       if (const_image->matte)
-#pragma omp atomic
         histogram[ScaleQuantumToMap(pixels[i].opacity)].opacity++;
     }
 

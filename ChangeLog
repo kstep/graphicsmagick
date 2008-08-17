@@ -1,3 +1,11 @@
+2008-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c: Execute pixel iterators in parallel via
+	OpenMP.
+	* magick/pixel_cache.c (OpenCacheView): Ensure that pixel cache is
+	open.
+	(GetCacheInfo): Allocate semaphore immediately.
+
 2008-08-16  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c Writer now creates valid images according to
