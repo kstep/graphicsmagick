@@ -82,12 +82,10 @@ Performance Improvements:
 
   * OpenMP (parallel processing) improvements for these functions:
 
+    - Add noise.
     - Channel import, export, and depth-setting.
     - Colorspace transformation.
     - Compare images.
-    - Statistics compuation.
-    - Add noise.
-    - Threshold channel.
     - Composition.
     - Contrast adjust.
     - Equalize.
@@ -97,9 +95,11 @@ Performance Improvements:
     - Negate image.
     - Normalize image.
     - Operators.
-    - UnsharpMaskImage.
     - Profile adjust (ICC).
     - Resize image.
+    - Statistics compuation.
+    - Threshold channel.
+    - UnsharpMaskImage.
 
   * Improved coder management performance.
 
