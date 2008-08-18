@@ -97,7 +97,7 @@ Performance Improvements:
     - Operators.
     - Profile adjust (ICC).
     - Resize image.
-    - Statistics compuation.
+    - Statistics computation.
     - Threshold channel.
     - UnsharpMaskImage.
 
