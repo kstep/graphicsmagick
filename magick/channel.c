@@ -199,6 +199,7 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
   assert(image->signature == MagickSignature);
 
   status=PixelIterateMonoModify(ChannelImagePixels,
+                                NULL,
                                 ChannelImageText,
                                 NULL,&channel_type,0,0,image->columns,image->rows,
                                 image,&image->exception);
@@ -361,7 +362,9 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
 
   new_image->storage_class=DirectClass;
 
-  (void) PixelIterateDualNew(ExportImageChannelPixels,ExportImageChannelText,
+  (void) PixelIterateDualNew(ExportImageChannelPixels,
+                             NULL,
+                             ExportImageChannelText,
                              NULL,&channel_type,
                              source_image->columns,source_image->rows,
                              source_image,0,0,
@@ -531,6 +534,7 @@ GetImageChannelDepth(const Image *image,
   depth=1;
 
   (void) PixelIterateMonoRead(GetImageChannelDepthPixels,
+                              NULL,
                               ComputeChannelDepthText,
                               &depth,
                               &channel,
@@ -676,7 +680,9 @@ MagickPassFail ImportImageChannel(const Image *source_image,
   assert(source_image->signature == MagickSignature);
 
   update_image->storage_class=DirectClass;
-  status=PixelIterateDualModify(ImportImageChannelPixels,ImportImageChannelText,
+  status=PixelIterateDualModify(ImportImageChannelPixels,
+                                NULL,
+                                ImportImageChannelText,
                                 NULL,&channel_type,
                                 source_image->columns,source_image->rows,
                                 source_image,0,0,
@@ -827,6 +833,7 @@ MagickExport MagickPassFail SetImageChannelDepth(Image *image,
     {
       image->storage_class=DirectClass;
       status=PixelIterateMonoModify(SetImageChannelDepthPixels,
+                                    NULL,
                                     SetChannelDepthText,
                                     NULL,&depth_info,0,0,image->columns,image->rows,
                                     image,&image->exception);

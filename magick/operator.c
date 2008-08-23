@@ -1699,6 +1699,7 @@ QuantumOperatorRegionImage(Image *image,
                    ((rvalue/MaxRGBFloat)*100),
                    ChannelTypeToString(channel));
       status=PixelIterateMonoModify(call_back,
+                                    NULL,
                                     description,
                                     &mutable_context,&immutable_context,x,y,columns,rows,
                                     image,exception);

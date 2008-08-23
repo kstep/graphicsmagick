@@ -302,7 +302,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  (void) PixelIterateDualNew(AddNoiseImagePixels,AddNoiseImageText,NULL,&noise,
+  (void) PixelIterateDualNew(AddNoiseImagePixels,NULL,
+                             AddNoiseImageText,NULL,&noise,
                              image->columns,image->rows,image,0,0,
                              noise_image,0,0,&noise_image->exception);
   noise_image->is_grayscale=is_grayscale;
@@ -833,6 +834,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
   (void) SetImageType(image,TrueColorType);
 
   status=PixelIterateMonoModify(ChannelThresholdPixels,
+                                NULL,
                                 ChannelThresholdImageText,
                                 NULL,&options,
                                 0,0,image->columns,image->rows,
@@ -3002,7 +3004,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     return((Image *) NULL);
   options.amount=amount;
   options.threshold=(MaxRGBFloat*threshold)/2.0;
-  (void) PixelIterateDualModify(UnsharpMaskPixels,SharpenImageText,NULL,&options,
+  (void) PixelIterateDualModify(UnsharpMaskPixels,NULL,
+                                SharpenImageText,NULL,&options,
                                 image->columns,image->rows,image,0,0,sharp_image,
                                 0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;

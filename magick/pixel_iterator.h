@@ -21,6 +21,22 @@ extern "C" {
 #endif
 
   /*
+    Pixel iterator options.
+  */
+  typedef struct _PixelIteratorOptions
+  {
+    unsigned long signature;
+  } PixelIteratorOptions;
+
+
+  /*
+    Initialize pixel iterator options with defaults.
+  */
+  extern MagickExport void
+  InitializePixelIteratorOptions(PixelIteratorOptions *options,
+                                 ExceptionInfo *exception);
+
+  /*
     Read-only access across pixel region.
   */
 
@@ -37,6 +53,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
+                       const PixelIteratorOptions *options,
                        const char *description,
                        void *mutable_data,
                        const void *immutable_data,
@@ -63,6 +80,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
+                         const PixelIteratorOptions *options,
                          const char *description,
                          void *mutable_data,
                          const void *immutable_data,
@@ -93,6 +111,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
+                       const PixelIteratorOptions *options,
                        const char *description,
                        void *mutable_data,
                        const void *immutable_data,
@@ -128,6 +147,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
+                         const PixelIteratorOptions *options,
                          const char *description,
                          void *mutable_data,
                          const void *immutable_data,
@@ -150,6 +170,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateDualNew(PixelIteratorDualNewCallback call_back,
+                      const PixelIteratorOptions *options,
                       const char *description,
                       void *mutable_data,
                       const void *immutable_data,
@@ -188,6 +209,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
+                           const PixelIteratorOptions *options,
                            const char *description,
                            void *mutable_data,
                            const void *immutable_data,
@@ -211,6 +233,7 @@ extern "C" {
 
   extern MagickExport MagickPassFail
   PixelIterateTripleNew(PixelIteratorTripleNewCallback call_back,
+                        const PixelIteratorOptions *options,
                         const char *description,
                         void *mutable_data,
                         const void *immutable_data,

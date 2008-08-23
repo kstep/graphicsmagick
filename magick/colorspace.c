@@ -369,6 +369,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         }
       if (status != MagickFail)
         status=PixelIterateMonoModify(RGBToCMYKTransform,
+                                      NULL,
                                       progress_message,
                                       NULL,NULL,
                                       0,0,image->columns,image->rows,
@@ -486,6 +487,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Convert DirectClass image.
           */
           status=PixelIterateMonoModify(RGBToCineonLogTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,logmap,
                                         0,0,image->columns,image->rows,
@@ -523,6 +525,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             Convert DirectClass image.
           */
           status=PixelIterateMonoModify(RGBToHSLTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,NULL,
                                         0,0,image->columns,image->rows,
@@ -553,6 +556,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       else
         {
           status=PixelIterateMonoModify(RGBToHWBTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,NULL,
                                         0,0,image->columns,image->rows,
@@ -978,6 +982,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           Convert DirectClass image.
         */
         status=PixelIterateMonoModify(XYZTransformPackets,
+                                      NULL,
                                       progress_message,
                                       NULL,&xform,
                                       0,0,image->columns,image->rows,
@@ -1420,6 +1425,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         }
       if (status != MagickFail)
         status=PixelIterateMonoModify(CMYKToRGBTransform,
+                                      NULL,
                                       progress_message,
                                       NULL,NULL,
                                       0,0,image->columns,image->rows,
@@ -1539,6 +1545,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
             Convert DirectClass image.
           */
           status=PixelIterateMonoModify(CineonLogToRGBTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,linearmap,
                                         0,0,image->columns,image->rows,
@@ -1572,6 +1579,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       else
         {
           status=PixelIterateMonoModify(HSLToRGBTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,NULL,
                                         0,0,image->columns,image->rows,
@@ -1603,6 +1611,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       else
         {
           status=PixelIterateMonoModify(HWBToRGBTransform,
+                                        NULL,
                                         progress_message,
                                         NULL,NULL,
                                         0,0,image->columns,image->rows,
@@ -1965,6 +1974,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           Convert DirectClass image.
         */
         status=PixelIterateMonoModify(RGBTransformPackets,
+                                      NULL,
                                       progress_message,
                                       NULL,&xform,
                                       0,0,image->columns,image->rows,

@@ -250,6 +250,7 @@ DifferenceImage(const Image *reference_image,const Image *compare_image,
     Update "difference" image to mark changes.
   */
   (void) PixelIterateTripleModify(DifferenceImagePixels,
+                                  NULL,
                                   "Difference image pixels ...",
                                   NULL,difference_options,
                                   reference_image->columns,reference_image->rows,
@@ -537,6 +538,7 @@ GetImageChannelDifference(const Image *reference_image,
                    MetricTypeToString(metric));
 
       status=PixelIterateDualRead(call_back,
+                                  NULL,
                                   description,
                                   statistics, NULL,
                                   reference_image->columns,reference_image->rows,
@@ -909,6 +911,7 @@ IsImagesEqual(Image *image,const Image *reference)
   stats.total=0.0;
 
   (void) PixelIterateDualRead(ComputePixelError,
+                              NULL,
                               "Compute pixel error ...",
                               &stats, NULL,
                               image->columns,image->rows,

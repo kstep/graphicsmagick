@@ -131,7 +131,8 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
     }
   else
     {
-      status=PixelIterateMonoModify(ContrastImagePixels,progress_message,
+      status=PixelIterateMonoModify(ContrastImagePixels,NULL,
+                                    progress_message,
                                     NULL,&sign,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
@@ -295,6 +296,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   status=PixelIterateMonoRead(BuildHistogram,
+                              NULL,
                               "Building image histogram ...",
                               histogram,NULL,
                               0,0,image->columns,image->rows,
@@ -349,6 +351,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   else
     {
       status=PixelIterateMonoModify(ApplyLevels,
+                                    NULL,
                                     "Applying histogram equalization ...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
@@ -466,6 +469,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
   else
     {
       status=PixelIterateMonoModify(ApplyLevels,
+                                    NULL,
                                     "Applying gamma correction ...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
@@ -724,6 +728,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
   else
     {
       status=PixelIterateMonoModify(ApplyLevels,
+                                    NULL,
                                     "Leveling image ...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
@@ -842,7 +847,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
     }
   else
     {
-      status=PixelIterateMonoModify(ModulateImagePixels,ModulateImageText,
+      status=PixelIterateMonoModify(ModulateImagePixels,NULL,ModulateImageText,
                                     NULL,&param,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
@@ -955,7 +960,7 @@ MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscal
     }
   else
     {
-      status=PixelIterateMonoModify(NegateImagePixels,NegateImageText,
+      status=PixelIterateMonoModify(NegateImagePixels,NULL,NegateImageText,
                                     NULL,&non_gray,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
@@ -1029,6 +1034,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   status=PixelIterateMonoRead(BuildHistogram,
+                              NULL,
                               "Building image histogram ...",
                               histogram,NULL,
                               0,0,image->columns,image->rows,
@@ -1246,6 +1252,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   else
     {
       status=PixelIterateMonoModify(ApplyLevels,
+                                    NULL,
                                     "Applying histogram normalization ...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,

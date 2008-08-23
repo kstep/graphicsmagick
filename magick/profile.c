@@ -843,6 +843,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
                 image->colorspace=transform_info.target_colorspace;
 
               status=PixelIterateMonoModify(ProfileImagePixels,
+                                            NULL,
                                             ProfileImageText,
                                             NULL,&transform_info,0,0,image->columns,image->rows,
                                             image,&image->exception);

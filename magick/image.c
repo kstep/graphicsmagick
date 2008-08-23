@@ -3429,6 +3429,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
     Compute Mean, Max, and Min
   */
   status = PixelIterateMonoRead(GetImageStatisticsMean,
+                                NULL,
                                 "Compute image mean, max, min ...",
                                 statistics,&context,0,0,image->columns,
                                 image->rows,image,exception);
@@ -3437,6 +3438,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   */
   if (status == MagickPass)
     status = PixelIterateMonoRead(GetImageStatisticsVariance,
+                                  NULL,
                                   "Compute image variance ...",
                                   statistics,&context,0,0,image->columns,
                                   image->rows,image,exception);

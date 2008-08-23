@@ -2211,6 +2211,7 @@ CompositeImage(Image *canvas_image,
                          CompositeOperatorToString(compose));
                          
             status=PixelIterateDualModify(call_back,              /* Callback */
+                                          NULL,
                                           description,            /* Description */
                                           NULL,
                                           &options,               /* Options */
