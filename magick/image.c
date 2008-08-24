@@ -5484,24 +5484,61 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 %
 %
 */
-#define SyncImageText "  Synchronizing DirectClass pixels to colormap...  "
+#define SyncImageText "Synchronizing DirectClass pixels to colormap...  "
+static MagickPassFail
+SyncImageCallBack(void *mutable_data,         /* User provided mutable data */
+                  const void *immutable_data, /* User provided immutable data */
+                  Image *image,               /* Modify image */
+                  PixelPacket *pixels,        /* Pixel row */
+                  IndexPacket *indexes,       /* Pixel row indexes */
+                  const long npixels,         /* Number of pixels in row */
+                  ExceptionInfo *exception)   /* Exception report */
+{
+  /*
+    Synchronize DirectClass pixels with Indexes and colormap.
+  */
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  if (image->matte)
+    {
+      register const PixelPacket
+        *p;
+
+      for (i=0; i < npixels; i++)
+        {
+          VerifyColormapIndex(image,indexes[i]);
+          /*
+            Explicit member assignment is used in order to support a colormap
+            simultaneous with with pixel opacity.
+          */
+          p=&image->colormap[indexes[i]];
+          pixels[i].red=p->red;
+          pixels[i].green=p->green;
+          pixels[i].blue=p->blue;
+        }
+    }
+  else
+    {
+      for (i=0; i < npixels; i++)
+        {
+          VerifyColormapIndex(image,indexes[i]);
+          /*
+            Use structure assignment for improved performance.
+            Trash whatever is in the opacity channel.
+          */
+          pixels[i]=image->colormap[indexes[i]];
+        }
+    }
+
+  return MagickPass;
+}
 MagickExport MagickPassFail SyncImage(Image *image)
 {
-  unsigned long
-    y;
-
-  register IndexPacket
-    *indexes;
-
-  register unsigned long
-    x;
-
-  register PixelPacket
-    *q;
-
-  register const PixelPacket
-    *p;
-
   MagickBool
     is_grayscale,
     is_monochrome;
@@ -5516,57 +5553,10 @@ MagickExport MagickPassFail SyncImage(Image *image)
   assert(image->colormap != (PixelPacket *) NULL);
   is_grayscale=image->is_grayscale;
   is_monochrome=image->is_monochrome;
-  for (y=0; y < image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFail;
-        break;
-      }
-    indexes=GetIndexes(image);
-    assert(indexes != (IndexPacket *) NULL);
-    if (image->matte)
-      {
-        for (x=image->columns; x != 0; x--)
-          {
-            VerifyColormapIndex(image,*indexes);
-            /*
-              Explicit member assignment is used in order to support a colormap
-              simultaneous with with pixel opacity.
-            */
-            p=&image->colormap[*indexes++];
-            q->red=p->red;
-            q->green=p->green;
-            q->blue=p->blue;
-            q++;
-          }
-      }
-    else
-      {
-        for (x=image->columns; x != 0; x--)
-          {
-            VerifyColormapIndex(image,*indexes);
-            /*
-              Use structure assignment for improved performance.
-              Trash whatever is in the opacity channel.
-            */
-            *q++=image->colormap[*indexes++];
-          }
-      }
-     
-    if (!SyncImagePixels(image))
-      {
-        status=MagickFail;
-        break;
-      }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SyncImageText,y,image->rows,&image->exception))
-        {
-          status=MagickFail;
-          break;
-        }
-  }
+  status=PixelIterateMonoModify(SyncImageCallBack,NULL,
+                                SyncImageText,
+                                NULL,NULL,0,0,image->columns,image->rows,
+                                image,&image->exception);
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
   return (status);

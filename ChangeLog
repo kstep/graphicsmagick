@@ -1,3 +1,7 @@
+2008-08-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SyncImage): Re-implement using pixel iterators.
+
 2008-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/operator.c (QuantumGamma): Removed unnecessary OpenMP
