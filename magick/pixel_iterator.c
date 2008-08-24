@@ -70,6 +70,7 @@ static ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *exceptio
     omp_get_num_threads() returns the # of threads in current team (1 in main thread).
   */
   view_set->nviews=omp_get_max_threads();
+  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
   
   view_set->views=MagickAllocateMemory(ViewInfo *,view_set->nviews*sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)

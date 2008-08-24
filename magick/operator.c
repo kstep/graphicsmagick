@@ -626,15 +626,14 @@ QuantumGamma(void *mutable_data,
 
       if (mutable_context->channel_lut != (Quantum *) NULL)
         {
-#if MaxMap > 255
-#pragma omp parallel for
-#endif
           for (i=0; i <= (long) MaxMap; i++)
             mutable_context->channel_lut[i] =
               ScaleMapToQuantum(MaxMap*pow((double) i/MaxMap,
                                            1.0/immutable_context->double_value));
         }
     }
+#else
+  ARG_NOT_USED(*mutable_context);
 #endif
   if (MagickFail == status)
     return status;
@@ -643,42 +642,27 @@ QuantumGamma(void *mutable_data,
     {
     case RedChannel:
     case CyanChannel:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         pixels[i].red=GammaAdjustQuantum(pixels[i].red);
       break;
     case GreenChannel:
     case MagentaChannel:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         pixels[i].green=GammaAdjustQuantum(pixels[i].green);
       break;
     case BlueChannel:
     case YellowChannel:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         pixels[i].blue=GammaAdjustQuantum(pixels[i].blue);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         pixels[i].opacity=GammaAdjustQuantum(pixels[i].opacity);
       break;
     case UndefinedChannel:
     case AllChannels:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         {
           pixels[i].red=GammaAdjustQuantum(pixels[i].red);
@@ -687,9 +671,6 @@ QuantumGamma(void *mutable_data,
         }
       break;
     case GrayChannel:
-#if QuantumDepth > 16
-#pragma omp parallel for
-#endif
       for (i=0; i < npixels; i++)
         {
           Quantum
