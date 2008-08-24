@@ -1304,22 +1304,50 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-#define CycleColormapImageText "  Cycle image colormap...  "
-MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
+#define CycleColormapImageText "Cycle image colormap...  "
+static MagickPassFail
+CycleColormapCallBack(void *mutable_data,         /* User provided mutable data */
+                      const void *immutable_data, /* User provided immutable data */
+                      Image *image,               /* Modify image */
+                      PixelPacket *pixels,        /* Pixel row */
+                      IndexPacket *indexes,       /* Pixel row indexes */
+                      const long npixels,         /* Number of pixels in row */
+                      ExceptionInfo *exception)   /* Exception report */
 {
-  long
-    index,
-    y;
+  /*
+    Cycle colormap by amount.
+  */
+  const int
+    amount = *((const int *) immutable_data);
 
-  register IndexPacket
-    *indexes;
+  long
+    index;
+
+  const unsigned long
+    colors = image->colors;
 
   register long
-    x;
+    i;
 
-  register PixelPacket
-    *q;
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
 
+  for (i=0; i < npixels; i++)
+    {
+      index=(long) ((indexes[i]+amount) % colors);
+      if (index < 0)
+        index+=colors;
+      indexes[i]=(IndexPacket) index;
+      pixels[i].red=image->colormap[index].red;
+      pixels[i].green=image->colormap[index].green;
+      pixels[i].blue=image->colormap[index].blue;
+    }
+
+  return MagickPass;
+}
+MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
+{
   unsigned int
     is_grayscale,
     is_monochrome,
@@ -1332,38 +1360,10 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
   is_monochrome=image->is_monochrome;
   if (image->storage_class == DirectClass)
     (void) SetImageType(image,PaletteType);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFail;
-        break;
-      }
-    indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      index=(long) ((indexes[x]+amount) % image->colors);
-      if (index < 0)
-        index+=image->colors;
-      indexes[x]=(IndexPacket) index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      {
-        status=MagickFail;
-        break;
-      }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(CycleColormapImageText,y,image->rows,&image->exception))
-        {
-          status=MagickFail;
-          break;
-        }
-  }
+  status=PixelIterateMonoModify(CycleColormapCallBack,NULL,
+                                CycleColormapImageText,
+                                NULL,&amount,0,0,image->columns,image->rows,
+                                image,&image->exception);
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
   return(status);
