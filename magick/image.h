@@ -1072,7 +1072,7 @@ extern MagickExport MagickPassFail
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ClipImage(Image *),
-  ClipPathImage(Image *,const char *,const unsigned int),
+  ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),

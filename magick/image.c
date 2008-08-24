@@ -891,9 +891,54 @@ MagickExport MagickPassFail ClipImage(Image *image)
   return(ClipPathImage(image,"#1",True));
 }
 
-#define ClipPathImageTag  "ClipPath/Image"
+#define ClipPathImageText  "Creating image clip mask ..."
+static MagickPassFail
+ClipPathImageCallBack(void *mutable_data,         /* User provided mutable data */
+                      const void *immutable_data, /* User provided immutable data */
+                      Image *image,               /* Modify image */
+                      PixelPacket *pixels,        /* Pixel row */
+                      IndexPacket *indexes,       /* Pixel row indexes */
+                      const long npixels,         /* Number of pixels in row */
+                      ExceptionInfo *exception)   /* Exception report */
+{
+  /*
+    Force all pixels to be either black or white (opaque or transparent)
+    to remove any unintended antialiasing effects created by the SVG
+    renderer.
+  */
+  const MagickBool
+    inside = *((MagickBool *) immutable_data);
+
+  register Quantum
+    intensity;
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      intensity=PixelIntensityToQuantum(&pixels[i]);
+      if (inside)
+        intensity=(intensity == TransparentOpacity ? TransparentOpacity :
+          OpaqueOpacity);
+      else
+        intensity=(intensity == TransparentOpacity ? OpaqueOpacity :
+          TransparentOpacity);
+      pixels[i].red=intensity;
+      pixels[i].green=intensity;
+      pixels[i].blue=intensity;
+      pixels[i].opacity=intensity;
+    }
+
+  return MagickPass;
+}
 MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
-  const unsigned int inside)
+  const MagickBool inside)
 {
 
   char
@@ -908,17 +953,8 @@ MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
   ImageInfo
     *image_info;
 
-  unsigned long
-    intensity;
-
-  long
-    y;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
+  MagickPassFail
+    status=MagickPass;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -947,32 +983,10 @@ MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
     to remove any unintended antialiasing effects created by the SVG
     renderer.
   */
-  for (y=0; y < (long) clip_mask->rows; y++)
-  {
-    q=GetImagePixels(clip_mask,0,y,clip_mask->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) clip_mask->columns; x++)
-    {
-      intensity=PixelIntensityToQuantum(q);
-      if (inside)
-        intensity=(intensity == TransparentOpacity ? TransparentOpacity :
-          OpaqueOpacity);
-      else
-        intensity=(intensity == TransparentOpacity ? OpaqueOpacity :
-          TransparentOpacity);
-      q->red=intensity;
-      q->green=intensity;
-      q->blue=intensity;
-      q->opacity=intensity;
-      q++;
-    }
-    if (!SyncImagePixels(clip_mask))
-      break;
-    if (QuantumTick(y,clip_mask->rows))
-      if (!MagickMonitor(ClipPathImageTag,y,clip_mask->rows,&image->exception))
-        break;
-  }
+  status=PixelIterateMonoModify(ClipPathImageCallBack,NULL,
+                                ClipPathImageText,
+                                NULL,&inside,0,0,clip_mask->columns,clip_mask->rows,
+                                clip_mask,&image->exception);
   /*
     Overload magick_filename to keep name of path that created image.
     This is needed so we can get the path as postscript for PS coders
@@ -984,7 +998,7 @@ MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
   clip_mask->is_monochrome=True;
   (void) SetImageClipMask(image,clip_mask);
   DestroyImage(clip_mask);
-  return(MagickPass);
+  return status;
 }
 
 /*
