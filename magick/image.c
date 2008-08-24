@@ -2680,21 +2680,98 @@ static magick_uint8_t* AllocateDepthMap(void)
     }
   return map;
 }
-#define GetImageDepthText "  Get image depth...  "
-MagickExport unsigned long GetImageDepth(const Image *image,
-  ExceptionInfo *exception)
+#define GetImageDepthText "Get image depth...  "
+
+static MagickPassFail
+GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data */
+                      const void *immutable_data,  /* User provided immutable data */
+                      const Image *image,          /* Input image */
+                      const PixelPacket *pixels,   /* Pixel row */
+                      const IndexPacket *indexes,  /* Pixel indexes */
+                      const long npixels,          /* Number of pixels in row */
+                      ExceptionInfo *exception     /* Exception report */
+                      )
 {
-  long
-    y;
+  unsigned int
+    *current_depth=(unsigned int *) mutable_data;
 
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
+  magick_uint8_t
+    *map = (magick_uint8_t *) immutable_data;
 
   register unsigned int
-    scale;
+    depth;
+
+  register long
+    i;
+
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+#pragma omp critical
+  {
+    depth=*current_depth;
+  }
+
+#if MaxMap == MaxRGB
+  if (map)
+    {
+      /*
+        Use fast table lookups if we can
+      */
+      for (i=0; i < npixels; i++)
+        {
+          depth=Max(depth,map[pixels[i].red]);
+          depth=Max(depth,map[pixels[i].green]);
+          depth=Max(depth,map[pixels[i].blue]);
+          if (image->matte)
+            depth=Max(depth,map[pixels[i].opacity]);
+          if (depth == QuantumDepth)
+            break;
+        }
+    }
+#else
+    {
+      /*
+        Use the slow, sure, way (Q32 only)
+      */
+      register unsigned int
+        scale;
+
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+      i=0;
+      while (i < npixels)
+        {
+          if ((pixels[i].red != scale*(pixels[i].red/scale)) ||
+              (pixels[i].green != scale*(pixels[i].green/scale)) ||
+              (pixels[i].blue != scale*(pixels[i].blue/scale)) ||
+              (image->matte &&
+               (pixels[i].opacity != scale*((pixels[i].opacity/scale)))))
+            {
+              depth++;
+              if (depth == QuantumDepth)
+                break;
+              scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+              continue;
+            }
+          i++;
+        }
+    }
+#endif
+
+#pragma omp critical
+  {
+    if (depth > *current_depth)
+      *current_depth=depth;
+  }
+
+  return (depth >= QuantumDepth ? MagickFail : MagickPass);
+}
+
+MagickExport unsigned long GetImageDepth(const Image *image,
+                                         ExceptionInfo *exception)
+{
+  magick_uint8_t
+    *map = (magick_uint8_t *) NULL;
 
   unsigned int
     depth=1;
@@ -2705,119 +2782,39 @@ MagickExport unsigned long GetImageDepth(const Image *image,
   if (image->is_monochrome)
     return depth;
 
+#if MaxMap == MaxRGB
+  /*
+    Use fast table lookups if we can
+  */
+  map = AllocateDepthMap();
+#endif
   if ((image->storage_class == PseudoClass) && !(image->matte))
     {
       /*
         PseudoClass
       */
-      p=image->colormap;
-      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-      for (x=image->colors ; x > 0; x--)
-        {
-          if (QuantumTick(image->colors-x,image->colors))
-            if (!MagickMonitor(GetImageDepthText,image->colors-x,image->colors,exception))
-              break;
-          if ((p->red != scale*(p->red/scale)) ||
-              (p->green != scale*(p->green/scale)) ||
-              (p->blue != scale*(p->blue/scale)))
-            {
-              depth++;
-              if (depth == QuantumDepth)
-                break;
-              scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-              continue;
-            }
-          p++;
-        }
-      /* Force 100% */
-      (void) MagickMonitor(GetImageDepthText,image->colors,image->colors,exception);
+      (void) GetImageDepthCallBack(&depth,map,image,
+                                   image->colormap,
+                                   (IndexPacket *) NULL,
+                                   image->colors,
+                                   exception);
     }
   else
     {
       /*
         DirectClass.
-
+       
         Notice that all pixels in the image must be inspected if the
         image depth is less than QuantumDepth.
       */
-#if MaxMap == MaxRGB
-      /*
-        Use fast table lookups if we can
-      */
-      magick_uint8_t
-        *map = (magick_uint8_t *) NULL;
-      
-      map = AllocateDepthMap();
-      
-      /*       printf("GetImageDepth: Exhaustive pixel test!\n"); */
-      if (map)
-        {
-          for (y=0; y < (long) image->rows; y++)
-            {
-              p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              for (x=image->columns; x != 0 ; x--)
-                {
-                  depth=Max(depth,map[p->red]);
-                  depth=Max(depth,map[p->green]);
-                  depth=Max(depth,map[p->blue]);
-                  if (image->matte)
-                    depth=Max(depth,map[p->opacity]);
-                  if (depth == QuantumDepth)
-                    break;
-                  p++;
-                }
-              if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(GetImageDepthText,y,image->rows,exception))
-                  break;
-              if (depth == QuantumDepth)
-                break;
-            }
-          /* Force 100% */
-          (void) MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
-          MagickFreeMemory(map);
-        }
-#else /* MaxMap == MaxRGB */
-      /*
-        Use the slow, sure, way (Q32 only)
-      */
-      for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          
-          scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-          x=(long) image->columns;
-          while(x > 0)
-            {
-              if ((p->red != scale*(p->red/scale)) ||
-                  (p->green != scale*(p->green/scale)) ||
-                  (p->blue != scale*(p->blue/scale)) ||
-                  (image->matte &&
-                   (p->opacity != scale*((p->opacity/scale)))))
-                {
-                  depth++;
-                  if (depth == QuantumDepth)
-                    break;
-                  scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-                  continue;
-                }
-              p++;
-              x--;
-            }
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(GetImageDepthText,y,image->rows,exception))
-              break;
-          if (depth == QuantumDepth)
-            break;
-        }
-      /* Force 100% */
-      MagickMonitor(GetImageDepthText,image->rows,image->rows,exception);
-#endif
+     
+      (void) PixelIterateMonoRead(GetImageDepthCallBack,
+                                  NULL,
+                                  GetImageDepthText,
+                                  &depth,map,0,0,image->columns,
+                                  image->rows,image,exception);
     }
-  
+
   return depth;
 }
 
