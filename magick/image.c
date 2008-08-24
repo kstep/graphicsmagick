@@ -4166,29 +4166,48 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
 %    o colors: number of colors in new colormap.
 %
 */
+#define ReplaceImageColormapText "Replacing image colormap ..."
+static MagickPassFail
+ReplaceImageColormapCallBack(void *mutable_data,         /* User provided mutable data */
+                             const void *immutable_data, /* User provided immutable data */
+                             Image *image,               /* Modify image */
+                             PixelPacket *pixels,        /* Pixel row */
+                             IndexPacket *indexes,       /* Pixel row indexes */
+                             const long npixels,         /* Number of pixels in row */
+                             ExceptionInfo *exception)   /* Exception report */
+{
+  /*
+    Replace image colormap
+  */
+
+  const unsigned int
+    *colormap_index=(const unsigned int *) immutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(pixels);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    indexes[i]=colormap_index[indexes[i]];
+
+  return MagickPass;
+}
 MagickExport MagickPassFail
 ReplaceImageColormap(Image *image,
                      const PixelPacket *colormap,
                      const unsigned int colors)
 {
-  long
-    y;
-
-  register long
-    x;
-
   unsigned int
     *colormap_index=(unsigned int *) NULL;
 
   register unsigned int
     i,
     j;
-
-  register IndexPacket
-    *indexes;
-
-  const PixelPacket
-    *q;
 
   MagickPassFail
     status=MagickPass;
@@ -4231,24 +4250,11 @@ ReplaceImageColormap(Image *image,
       /*
         Reassign image colormap indexes
       */
-      for (y=0; y < (long) image->rows; y++)
-        {
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              *indexes=colormap_index[*indexes];
-              indexes++;
-            }
-          if (!SyncImagePixels(image))
-            {
-              status=MagickFail;
-              break;
-            }
-        }
-
+      status=PixelIterateMonoModify(ReplaceImageColormapCallBack,NULL,
+                                    ReplaceImageColormapText,
+                                    NULL,colormap_index,0,0,
+                                    image->columns,image->rows,
+                                    image,&image->exception);
       /*
         Replace existing colormap.
       */
