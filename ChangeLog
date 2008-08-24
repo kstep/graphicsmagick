@@ -5,6 +5,8 @@
 	(ClipPathImage): Re-implement using pixel iterators.
 	(CycleColormapImage): Re-implement using pixel iterators.
 	(GetImageDepth): Re-implement using pixel iterators.
+	(GradientImage): Parallize inner loop for speedup with larger
+	images.
 
 2008-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

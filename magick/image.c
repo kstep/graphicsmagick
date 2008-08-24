@@ -3602,15 +3602,19 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 */
 
-#define GradientImageText "  Gradient image...  "
+#define GradientImageText "Gradient image...  "
 MagickExport MagickPassFail GradientImage(Image *image,
-  const PixelPacket *start_color,const PixelPacket *stop_color)
+                                          const PixelPacket *start_color,
+                                          const PixelPacket *stop_color)
 {
+  const unsigned long
+    image_rows=image->rows,
+    image_columns=image->columns;
+
   long
     y;
 
   register long
-    i,
     x;
 
   register PixelPacket
@@ -3629,31 +3633,30 @@ MagickExport MagickPassFail GradientImage(Image *image,
   /*
     Generate gradient pixels.
   */
-  i=0;
   for (y=0; y < (long) image->rows; y++)
-  {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFail;
-        break;
-      }
-    for (x=0; x < (long) image->columns; x++)
     {
-      *q=BlendComposite(start_color,stop_color,(double)
-        MaxRGB*i/(image->columns*image->rows));
-      q++;
-      i++;
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        {
+          status=MagickFail;
+          break;
+        }
+
+#pragma omp parallel for schedule(static,256)
+      for (x=0; x < (long) image->columns; x++)
+        {
+          q[x]=BlendComposite(start_color,stop_color,(double)
+                              MaxRGB*(y*image_columns+x)/(image_columns*image_rows));
+        }
+      if (!SyncImagePixels(image))
+        {
+          status=MagickFail;
+          break;
+        }
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitor(GradientImageText,y,image->rows,&image->exception))
+          break;
     }
-    if (!SyncImagePixels(image))
-      {
-        status=MagickFail;
-        break;
-      }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(GradientImageText,y,image->rows,&image->exception))
-        break;
-  }
   return(status);
 }
 
