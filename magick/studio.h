@@ -439,6 +439,16 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define SignalHandlerExit Exit
 #endif /* defined(HAVE__EXIT) */
 
+/*
+  OpenMP function null replacements if not using OpenMP.
+*/
+#if !defined(_OPENMP)
+#  define omp_get_max_threads() 1
+#  define omp_get_num_threads() 1
+#  define omp_get_thread_num() 0;
+#  define omp_set_num_threads(nthreads)
+#endif /* !defined(_OPENMP) */
+
 
 /*
   Image const declarations.

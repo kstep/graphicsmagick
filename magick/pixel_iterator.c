@@ -65,14 +65,11 @@ static ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *exceptio
   if (view_set == (ThreadViewSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
-  view_set->nviews=1;
-#if defined(_OPENMP)
   /*
     omp_get_max_threads() returns the # threads which will be used in team by default.
     omp_get_num_threads() returns the # of threads in current team (1 in main thread).
   */
   view_set->nviews=omp_get_max_threads();
-#endif /* defined(_OPENMP) */
   
   view_set->views=MagickAllocateMemory(ViewInfo *,view_set->nviews*sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
@@ -110,9 +107,7 @@ static ViewInfo *AccessThreadView(ThreadViewSet *view_set)
   unsigned int
     thread_num=0;
 
-#if defined(_OPENMP)
   thread_num=omp_get_thread_num();
-#endif /* defined(_OPENMP) */
   assert(thread_num < view_set->nviews);
   view=view_set->views[thread_num];
 
@@ -154,7 +149,7 @@ InitializePixelIteratorOptions(PixelIteratorOptions *options,
 {
   ARG_NOT_USED(exception);
   assert(options != (PixelIteratorOptions *) NULL);
-  memset(options,0,sizeof(PixelIteratorOptions));
+  options->max_threads=0;
   options->signature=MagickSignature;
 }
 
@@ -241,6 +236,13 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   ThreadViewSet
     *view_set;
 
+  int
+    max_threads;
+
+  max_threads=omp_get_max_threads();
+  if ((options) && (options->max_threads > 0))
+    omp_set_num_threads(Min(max_threads,options->max_threads));
+
   view_set=AllocateThreadViewSet((Image *) image,exception);
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
@@ -288,7 +290,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
     }
 
   DestroyThreadViewSet(view_set);
- 
+
+  omp_set_num_threads(max_threads);
+
   return (status);
 }
 
@@ -374,6 +378,13 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   ThreadViewSet
     *view_set=(ThreadViewSet *) NULL;
 
+  int
+    max_threads;
+
+  max_threads=omp_get_max_threads();
+  if ((options) && (options->max_threads > 0))
+    omp_set_num_threads(Min(max_threads,options->max_threads));
+
   view_set=AllocateThreadViewSet(image,exception);
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
@@ -429,6 +440,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
     }
 
   DestroyThreadViewSet(view_set);
+
+  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -528,6 +541,13 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
     *first_view_set,
     *second_view_set;
 
+  int
+    max_threads;
+
+  max_threads=omp_get_max_threads();
+  if ((options) && (options->max_threads > 0))
+    omp_set_num_threads(Min(max_threads,options->max_threads));
+
   first_view_set=AllocateThreadViewSet((Image *) first_image,exception);
   second_view_set=AllocateThreadViewSet((Image *) second_image,exception);
   if ((first_view_set == (ThreadViewSet *) NULL) ||
@@ -601,6 +621,8 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 
   DestroyThreadViewSet(second_view_set);
   DestroyThreadViewSet(first_view_set);
+
+  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -701,6 +723,13 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
     *source_view_set,
     *update_view_set;
 
+  int
+    max_threads;
+
+  max_threads=omp_get_max_threads();
+  if ((options) && (options->max_threads > 0))
+    omp_set_num_threads(Min(max_threads,options->max_threads));
+
   source_view_set=AllocateThreadViewSet((Image *) source_image,exception);
   update_view_set=AllocateThreadViewSet(update_image,exception);
   if ((source_view_set == (ThreadViewSet *) NULL) ||
@@ -794,6 +823,8 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
 
   DestroyThreadViewSet(update_view_set);
   DestroyThreadViewSet(source_view_set);
+
+  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -1015,6 +1046,13 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
     *source2_view_set,
     *update_view_set;
 
+  int
+    max_threads;
+
+  max_threads=omp_get_max_threads();
+  if ((options) && (options->max_threads > 0))
+    omp_set_num_threads(Min(max_threads,options->max_threads));
+
   source1_view_set=AllocateThreadViewSet((Image *) source1_image,exception);
   source2_view_set=AllocateThreadViewSet((Image *) source2_image,exception);
   update_view_set=AllocateThreadViewSet(update_image,exception);
@@ -1134,6 +1172,8 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
   DestroyThreadViewSet(source1_view_set);
   DestroyThreadViewSet(source2_view_set);
   DestroyThreadViewSet(update_view_set);
+
+  omp_set_num_threads(max_threads);
 
   return (status);
 }

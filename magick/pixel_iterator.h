@@ -25,6 +25,7 @@ extern "C" {
   */
   typedef struct _PixelIteratorOptions
   {
+    int           max_threads; /* Desired number of threads */
     unsigned long signature;
   } PixelIteratorOptions;
 

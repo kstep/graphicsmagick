@@ -231,6 +231,9 @@ BuildHistogram(void *mutable_data,          /* User provided mutable data */
 {
   /*
     Built an image histogram in the supplied table.
+
+    Should be executed by just one thread in order to avoid contention
+    for the histogram table.
   */
   DoublePixelPacket
     *histogram = (DoublePixelPacket *) mutable_data;
@@ -242,7 +245,7 @@ BuildHistogram(void *mutable_data,          /* User provided mutable data */
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
-#pragma omp critical
+  /* #pragma omp critical */
   for (i=0; i < npixels; i++)
     {
       histogram[ScaleQuantumToMap(pixels[i].red)].red++;
@@ -295,12 +298,19 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     Build histogram.
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  status=PixelIterateMonoRead(BuildHistogram,
-                              NULL,
-                              "Building image histogram ...",
-                              histogram,NULL,
-                              0,0,image->columns,image->rows,
-                              image,&image->exception);
+  {
+    PixelIteratorOptions
+      options;
+
+    InitializePixelIteratorOptions(&options,&image->exception);
+    options.max_threads=1;
+    status=PixelIterateMonoRead(BuildHistogram,
+                                &options,
+                                "Building image histogram ...",
+                                histogram,NULL,
+                                0,0,image->columns,image->rows,
+                                image,&image->exception);
+  }
   /*
     Integrate the histogram to get the equalization map.
   */
@@ -1023,40 +1033,47 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
   histogram=MagickAllocateMemory(DoublePixelPacket *,
-    (MaxMap+1)*sizeof(DoublePixelPacket));
+                                 (MaxMap+1)*sizeof(DoublePixelPacket));
   levels.map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (levels.map == (PixelPacket *) NULL))
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToNormalizeImage);
+                          UnableToNormalizeImage);
   /*
     Form histogram.
   */
   (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  status=PixelIterateMonoRead(BuildHistogram,
-                              NULL,
-                              "Building image histogram ...",
-                              histogram,NULL,
-                              0,0,image->columns,image->rows,
-                              image,&image->exception);
+  {
+    PixelIteratorOptions
+      options;
+
+    InitializePixelIteratorOptions(&options,&image->exception);
+    options.max_threads=1;
+    status=PixelIterateMonoRead(BuildHistogram,
+                                &options,
+                                "Building image histogram ...",
+                                histogram,NULL,
+                                0,0,image->columns,image->rows,
+                                image,&image->exception);
+  }
   /*
     Find the histogram boundaries by locating the 0.1 percent levels.
   */
   threshold_intensity=(long) (image->columns*image->rows)/1000;
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.red=0; low.red < MaxMap; low.red++)
-  {
-    intensity.red+=histogram[(long) low.red].red;
-    if (intensity.red > threshold_intensity)
-      break;
-  }
+    {
+      intensity.red+=histogram[(long) low.red].red;
+      if (intensity.red > threshold_intensity)
+        break;
+    }
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.red=MaxMap; high.red != 0; high.red--)
-  {
-    intensity.red+=histogram[(long) high.red].red;
-    if (intensity.red > threshold_intensity)
-      break;
-  }
+    {
+      intensity.red+=histogram[(long) high.red].red;
+      if (intensity.red > threshold_intensity)
+        break;
+    }
   if (low.red == high.red)
     {
       /*
@@ -1065,33 +1082,33 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
       threshold_intensity=0;
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.red=0; low.red < MaxRange(MaxRGB); low.red++)
-      {
-        intensity.red+=histogram[(long) low.red].red;
-        if (intensity.red > threshold_intensity)
-          break;
-      }
+        {
+          intensity.red+=histogram[(long) low.red].red;
+          if (intensity.red > threshold_intensity)
+            break;
+        }
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.red=MaxRange(MaxRGB); high.red != 0; high.red--)
-      {
-        intensity.red+=histogram[(long) high.red].red;
-        if (intensity.red > threshold_intensity)
-          break;
-      }
+        {
+          intensity.red+=histogram[(long) high.red].red;
+          if (intensity.red > threshold_intensity)
+            break;
+        }
     }
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
-  {
-    intensity.green+=histogram[(long) low.green].green;
-    if (intensity.green > threshold_intensity)
-      break;
-  }
+    {
+      intensity.green+=histogram[(long) low.green].green;
+      if (intensity.green > threshold_intensity)
+        break;
+    }
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
-  {
-    intensity.green+=histogram[(long) high.green].green;
-    if (intensity.green > threshold_intensity)
-      break;
-  }
+    {
+      intensity.green+=histogram[(long) high.green].green;
+      if (intensity.green > threshold_intensity)
+        break;
+    }
   if (low.green == high.green)
     {
       /*
@@ -1100,33 +1117,33 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
       threshold_intensity=0;
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
-      {
-        intensity.green+=histogram[(long) low.green].green;
-        if (intensity.green > threshold_intensity)
-          break;
-      }
+        {
+          intensity.green+=histogram[(long) low.green].green;
+          if (intensity.green > threshold_intensity)
+            break;
+        }
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
-      {
-        intensity.green+=histogram[(long) high.green].green;
-        if (intensity.green > threshold_intensity)
-          break;
-      }
+        {
+          intensity.green+=histogram[(long) high.green].green;
+          if (intensity.green > threshold_intensity)
+            break;
+        }
     }
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
-  {
-    intensity.blue+=histogram[(long) low.blue].blue;
-    if (intensity.blue > threshold_intensity)
-      break;
-  }
+    {
+      intensity.blue+=histogram[(long) low.blue].blue;
+      if (intensity.blue > threshold_intensity)
+        break;
+    }
   (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
-  {
-    intensity.blue+=histogram[(long) high.blue].blue;
-    if (intensity.blue > threshold_intensity)
-      break;
-  }
+    {
+      intensity.blue+=histogram[(long) high.blue].blue;
+      if (intensity.blue > threshold_intensity)
+        break;
+    }
   if (low.blue == high.blue)
     {
       /*
@@ -1135,18 +1152,18 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
       threshold_intensity=0;
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
-      {
-        intensity.blue+=histogram[(long) low.blue].blue;
-        if (intensity.blue > threshold_intensity)
-          break;
-      }
+        {
+          intensity.blue+=histogram[(long) low.blue].blue;
+          if (intensity.blue > threshold_intensity)
+            break;
+        }
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
-      {
-        intensity.blue+=histogram[(long) high.blue].blue;
-        if (intensity.blue > threshold_intensity)
-          break;
-      }
+        {
+          intensity.blue+=histogram[(long) high.blue].blue;
+          if (intensity.blue > threshold_intensity)
+            break;
+        }
     }
   high.opacity=0;
   low.opacity=0;
@@ -1194,47 +1211,47 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   */
   (void) memset(levels.map,0,(MaxMap+1)*sizeof(PixelPacket));
   for (i=0; i <= (long) MaxMap; i++)
-  {
-    if (i < (long) low.red)
-      levels.map[i].red=0;
-    else
-      if (i > (long) high.red)
-        levels.map[i].red=MaxRGB;
+    {
+      if (i < (long) low.red)
+        levels.map[i].red=0;
       else
-        if (low.red != high.red)
-          levels.map[i].red=
-            ScaleMapToQuantum((MaxMap*(i-low.red))/(high.red-low.red));
-    if (i < (long) low.green)
-      levels.map[i].green=0;
-    else
-      if (i > (long) high.green)
-        levels.map[i].green=MaxRGB;
-      else
-        if (low.green != high.green)
-          levels.map[i].green=ScaleMapToQuantum((MaxMap*(i-low.green))/
-            (high.green-low.green));
-    if (i < (long) low.blue)
-      levels.map[i].blue=0;
-    else
-      if (i > (long) high.blue)
-        levels.map[i].blue=MaxRGB;
-      else
-        if (low.blue != high.blue)
-          levels.map[i].blue=
-            ScaleMapToQuantum((MaxMap*(i-low.blue))/(high.blue-low.blue));
-    if (image->matte)
-      {
-        if (i < (long) low.opacity)
-          levels.map[i].opacity=0;
+        if (i > (long) high.red)
+          levels.map[i].red=MaxRGB;
         else
-          if (i > (long) high.opacity)
-            levels.map[i].opacity=MaxRGB;
+          if (low.red != high.red)
+            levels.map[i].red=
+              ScaleMapToQuantum((MaxMap*(i-low.red))/(high.red-low.red));
+      if (i < (long) low.green)
+        levels.map[i].green=0;
+      else
+        if (i > (long) high.green)
+          levels.map[i].green=MaxRGB;
+        else
+          if (low.green != high.green)
+            levels.map[i].green=ScaleMapToQuantum((MaxMap*(i-low.green))/
+                                                  (high.green-low.green));
+      if (i < (long) low.blue)
+        levels.map[i].blue=0;
+      else
+        if (i > (long) high.blue)
+          levels.map[i].blue=MaxRGB;
+        else
+          if (low.blue != high.blue)
+            levels.map[i].blue=
+              ScaleMapToQuantum((MaxMap*(i-low.blue))/(high.blue-low.blue));
+      if (image->matte)
+        {
+          if (i < (long) low.opacity)
+            levels.map[i].opacity=0;
           else
-            if (low.opacity != high.opacity)
-              levels.map[i].opacity=ScaleMapToQuantum(
-                (MaxMap*(i-low.opacity))/(high.opacity-low.opacity));
-      }
-  }
+            if (i > (long) high.opacity)
+              levels.map[i].opacity=MaxRGB;
+            else
+              if (low.opacity != high.opacity)
+                levels.map[i].opacity=ScaleMapToQuantum(
+                                                        (MaxMap*(i-low.opacity))/(high.opacity-low.opacity));
+        }
+    }
   /*
     Normalize the image.
   */

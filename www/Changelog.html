@@ -24,6 +24,9 @@
 2008-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/enhance.c (EqualizeImage,NormalizeImage): Execute
+        histogram generation pixel iterator with just one thread to
+        decrease contention for the histogram array.
   <LI> magick/pixel_iterator.c (InitializePixelIteratorOptions): New
         function to initialize PixelIteratorOptions with defaults.
   <LI> magick/pixel_iterator.h (PixelIteratorOptions): New structure to
