@@ -5376,32 +5376,46 @@ static int InverseIntensityCompare(const void *x,const void *y)
 }
 #endif
 
-#define SortColormapByIntensityText "  Sorting colormap by intensity...  "
-MagickExport MagickPassFail SortColormapByIntensity(Image *image)
+#define SortColormapByIntensityText "Sorting colormap by intensity...  "
+static MagickPassFail
+SortColormapByIntensityCallBack(void *mutable_data,         /* User provided mutable data */
+                                const void *immutable_data, /* User provided immutable data */
+                                Image *image,               /* Modify image */
+                                PixelPacket *pixels,        /* Pixel row */
+                                IndexPacket *indexes,       /* Pixel row indexes */
+                                const long npixels,         /* Number of pixels in row */
+                                ExceptionInfo *exception)   /* Exception report */
 {
-  IndexPacket
-    index;
-
-  long
-    y;
-
-  register long
-    x;
-
-  register IndexPacket
-    *indexes;
-
-  register PixelPacket
-    *q;
+  /*
+    Update image colormap indexes to reflect new ordering indicated by
+    new_indexes array.
+  */
+  const unsigned short
+    *new_indexes = (const unsigned short *) immutable_data;
 
   register long
     i;
 
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(pixels);
+  ARG_NOT_USED(exception);
+  for (i=0; i < npixels; i++)
+    indexes[i]=new_indexes[indexes[i]];
+
+  return MagickPass;
+}
+MagickExport MagickPassFail SortColormapByIntensity(Image *image)
+{
+  register long
+    i;
+
   unsigned int
-    is_grayscale;
+    is_grayscale,
+    is_monochrome;
 
   unsigned short
-    *pixels;
+    *new_indexes;
 
   MagickPassFail
     status=MagickPass;
@@ -5411,13 +5425,14 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
   if (image->storage_class != PseudoClass)
     return(MagickFail);
   is_grayscale=image->is_grayscale;
+  is_monochrome=image->is_monochrome;
   /*
     Allocate memory for pixel indexes.
   */
-  pixels=MagickAllocateMemory(unsigned short *,image->colors*sizeof(unsigned short));
-  if (pixels == (unsigned short *) NULL)
+  new_indexes=MagickAllocateMemory(unsigned short *,image->colors*sizeof(unsigned short));
+  if (new_indexes == (unsigned short *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToSortImageColormap);
+                          UnableToSortImageColormap);
   /*
     Assign index values to colormap entries.
   */
@@ -5427,36 +5442,19 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
     Sort image colormap by decreasing intensity.
   */
   qsort((void *) image->colormap,image->colors,sizeof(PixelPacket),
-    InverseIntensityCompare);
+        InverseIntensityCompare);
   /*
-    Update image colormap indexes to sorted colormap order.
+    Update image colormap indexes to new order.
   */
   for (i=0; i < (long) image->colors; i++)
-    pixels[image->colormap[i].opacity]=(unsigned short) i;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFail;
-        break;
-      }
-    indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      index=pixels[indexes[x]];
-      indexes[x]=index;
-      *q++=image->colormap[index];
-    }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SortColormapByIntensityText,y,image->rows,&image->exception))
-        {
-          status=MagickFail;
-          break;
-        }
-  }
-  MagickFreeMemory(pixels);
+    new_indexes[image->colormap[i].opacity]=(unsigned short) i;
+  status=PixelIterateMonoModify(SortColormapByIntensityCallBack,NULL,
+                                SortColormapByIntensityText,
+                                NULL,new_indexes,0,0,image->columns,image->rows,
+                                image,&image->exception);
+  MagickFreeMemory(new_indexes);
   image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
   return(status);
 }
 
