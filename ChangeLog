@@ -8,6 +8,7 @@
 	(GradientImage): Parallize inner loop for speedup with larger
 	images.
 	(ReplaceImageColormap): Re-implement using pixel iterators.
+	(SetImage): Re-implement using pixel iterators.
 
 2008-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

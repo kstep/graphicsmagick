@@ -4307,23 +4307,51 @@ ReplaceImageColormap(Image *image,
 %
 %
 */
-#define SetImageColorText "  Set image color...  "
+#define SetImageColorText "Set image color...  "
+static MagickPassFail
+SetImageColorCallBack(void *mutable_data,         /* User provided mutable data */
+                      const void *immutable_data, /* User provided immutable data */
+                      Image *image,               /* Modify image */
+                      PixelPacket *pixels,        /* Pixel row */
+                      IndexPacket *indexes,       /* Pixel row indexes */
+                      const long npixels,         /* Number of pixels in row */
+                      ExceptionInfo *exception)   /* Exception report */
+{
+  /*
+    Assign color to pixels.
+  */
+  const PixelPacket
+    background_color = *(const PixelPacket *) immutable_data;
+  
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  /*
+    Set DirectClass pixels
+  */
+  for (i=0; i < npixels; i++)
+    pixels[i]=background_color;
+
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    {
+      /*
+        Set PseudoClass pixel indexes.
+      */
+      (void) memset(indexes,0,npixels*sizeof(IndexPacket));
+    }
+
+  return MagickPass;
+}
 MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
 {
-  unsigned long
-    y;
-
   PixelPacket
     background_color;
-
-  register IndexPacket
-    *indexes;
-
-  register unsigned long
-    x;
-
-  register PixelPacket
-    *q;
 
   MagickPassFail
     status;
@@ -4341,43 +4369,12 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
       image->storage_class=DirectClass;
     }
 
-  for (y=0; y < image->rows; y++)
-    {
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
+  status=PixelIterateMonoModify(SetImageColorCallBack,NULL,
+                                SetImageColorText,
+                                NULL,&background_color,0,0,
+                                image->columns,image->rows,
+                                image,&image->exception);
 
-      /*
-        Set DirectClass pixels
-      */
-      for (x=image->columns; x != 0; x--)
-        *q++=background_color;
-      
-      if ((image->storage_class == PseudoClass) ||
-          (image->colorspace == CMYKColorspace))
-        {
-          /*
-            Set PseudoClass pixel indexes.
-          */
-          indexes=GetIndexes(image);
-          for (x=image->columns; x != 0; x--)
-            *indexes++=0;
-        }
-      if (!SyncImagePixels(image))
-        {
-          status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SetImageColorText,y,image->rows,&image->exception))
-          {
-            status=MagickFail;
-            break;
-          }
-    }
   image->is_grayscale=IsGray(image->background_color);
   image->is_monochrome=IsMonochrome(image->background_color);
   return status;
