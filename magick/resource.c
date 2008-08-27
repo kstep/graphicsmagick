@@ -660,8 +660,10 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
   if (file == (const FILE *) NULL)
     file=stdout;
 
-  fprintf(file,"Resource Limits\n");
-  fprintf(file,"----------------------------------------\n");
+  fprintf(file,"Resource Limits (Q%d, %d bits/pixel, %dbit address)\n",
+          QuantumDepth,4*QuantumDepth,
+          (sizeof(PixelPacket *) > 4 ? 64 : 32));
+  fprintf(file,"----------------------------------------------------\n");
   for (index=1 ; index <= ResourceInfoMaxIndex; index++)
     {
       char
