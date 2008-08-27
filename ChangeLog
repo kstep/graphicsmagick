@@ -1,3 +1,9 @@
+2008-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (ListMagickResourceInfo): Include quantum
+	depth, bits per pixel, and process address size in resource
+	output so that output is more complete.
+
 2008-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2.5 released.
