@@ -37,6 +37,7 @@
 #include "magick/studio.h"
 #include "magick/channel.h"
 #include "magick/image.h"
+#include "magick/operator.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
 
@@ -726,117 +727,10 @@ MagickPassFail ImportImageChannel(const Image *source_image,
 %
 %
 */
-#define SetChannelDepthText  "SetChannelDepth...  "
-
-#define SET_DEPTH(parameter)                                            \
-  {                                                                     \
-    for (i=0; i < npixels; i++)                                         \
-      parameter=scale*((parameter)/scale);                              \
-  }
-
-typedef struct _ChannelDepthInfo
-{
-  ChannelType   channel;
-  unsigned int  depth;
-} ChannelDepthInfo;
-
-static MagickPassFail
-SetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable data */
-                           const void *immutable_data,  /* User provided immutable data */
-                           Image *image,                /* Modify image */
-                           PixelPacket *pixels,         /* Pixel row */
-                           IndexPacket *indexes,        /* Pixel row indexes */
-                           const long npixels,          /* Number of pixels in row */
-                           ExceptionInfo *exception)    /* Exception report */
-{
-  const ChannelDepthInfo
-    *depth_info = (const ChannelDepthInfo *) immutable_data;
-
-  register unsigned int
-    scale;
-
-  register long
-    i;
-
-  ARG_NOT_USED(mutable_data);
-  ARG_NOT_USED(exception);
-
-  scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth_info->depth));
-
-  switch (depth_info->channel)
-    {
-    case RedChannel:
-    case CyanChannel:
-      {
-        SET_DEPTH(pixels[i].red);
-        break;
-      }
-    case GreenChannel:
-    case MagentaChannel:
-      {
-        SET_DEPTH(pixels[i].green);
-        break;
-      }
-    case BlueChannel:
-    case YellowChannel:
-      {
-        SET_DEPTH(pixels[i].blue);
-        break;
-      }
-    case MatteChannel:
-    case OpacityChannel:
-      {
-        if (image->colorspace == CMYKColorspace)
-          {
-            SET_DEPTH(indexes[i]);
-          }
-        else
-          {
-            SET_DEPTH(pixels[i].opacity);
-          }
-        break;
-      }
-    case BlackChannel:
-      {
-        SET_DEPTH(pixels[i].opacity);
-        break;
-      }
-    default:
-      {
-      }
-    }
-  
-  return MagickPass;
-}
-
 MagickExport MagickPassFail SetImageChannelDepth(Image *image,
                                                  const ChannelType channel,
                                                  const unsigned int depth)
 {
-  ChannelDepthInfo
-    depth_info;
-
-  MagickPassFail
-    status=MagickPass;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  depth_info.channel=channel;
-  depth_info.depth=depth;
-  if (depth_info.depth < 1)
-    depth_info.depth=1;
-  else if (depth_info.depth > QuantumDepth)
-    depth_info.depth=QuantumDepth;
-
-  if (depth_info.depth < QuantumDepth)
-    {
-      image->storage_class=DirectClass;
-      status=PixelIterateMonoModify(SetImageChannelDepthPixels,
-                                    NULL,
-                                    SetChannelDepthText,
-                                    NULL,&depth_info,0,0,image->columns,image->rows,
-                                    image,&image->exception);
-    }
-  return status;
+  return QuantumOperatorImage(image,channel,DepthQuantumOp,(double) depth,
+                              &image->exception);
 }

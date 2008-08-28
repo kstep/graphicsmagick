@@ -937,7 +937,7 @@ MagickExport PreviewType StringToPreviewType(const char *option)
     preview_type=JPEGPreview;
 
   return preview_type;
-};
+}
 
 
 /*
@@ -991,6 +991,8 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
     quantum_operator=NegateQuantumOp;
   else if (LocaleCompare("gamma",option) == 0)
     quantum_operator=GammaQuantumOp;
+  else if (LocaleCompare("depth",option) == 0)
+    quantum_operator=DepthQuantumOp;
 
   return quantum_operator;
 }
@@ -1065,6 +1067,9 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
       break;
     case GammaQuantumOp:
       operator_text="gamma";
+      break;
+    case DepthQuantumOp:
+      operator_text="depth";
       break;
     }
 

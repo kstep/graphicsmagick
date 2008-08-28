@@ -1517,15 +1517,21 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
       }
     {
       double
+        rate_cpu,
+        rate_total,
+        resolution,
         user_time;
 
       double
         elapsed_time;
 
+      resolution=GetTimerResolution();
       user_time=GetUserTime(&timer);
       elapsed_time=GetElapsedTime(&timer);
-      (void) printf("Results: %ld iter %.2fs user %.2fs total %.3f iter/s\n",
-                    iteration,user_time, elapsed_time,(((double) iteration)/elapsed_time));
+      rate_total=(((double) iteration)/elapsed_time);
+      rate_cpu=(((double) iteration)/user_time);
+      (void) printf("Results: %ld iter %.2fs user %.2fs total %.2f iter/s (%.2f iter/s cpu)\n",
+                    iteration,user_time,elapsed_time,rate_total,rate_cpu);
     }
   }
 

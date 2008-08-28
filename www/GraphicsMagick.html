@@ -3246,7 +3246,7 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Divide</strong>, <strong>Gamma</strong>, <strong>Invert</strong>, <strong>LShift</strong>,
+<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Invert</strong>, <strong>LShift</strong>,
 <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>,
 <strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
 <strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
@@ -3271,6 +3271,10 @@ The following is a description of the operators:</font></td></tr></table>
 </dd>
 <dt>Assign</dt>
 <dd>Result is rvalue.
+</dd>
+<dt>Depth</dt>
+<dd>Result is channel value adjusted so that it may be (approximately)
+stored in the specified number of bits without additional loss.
 </dd>
 <dt>Divide</dt>
 <dd>Result is channel value divided by rvalue.

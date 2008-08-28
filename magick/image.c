@@ -55,6 +55,7 @@
 #include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/module.h"
+#include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
@@ -2664,6 +2665,7 @@ static inline unsigned char MinimumDepthForValue(const Quantum quantum)
   
   return depth;
 }
+#if MaxMap == MaxRGB
 static magick_uint8_t* AllocateDepthMap(void)
 {
   magick_uint8_t 
@@ -2680,6 +2682,7 @@ static magick_uint8_t* AllocateDepthMap(void)
     }
   return map;
 }
+#endif /* MaxMap == MaxRGB */
 #define GetImageDepthText "Get image depth...  "
 
 static MagickPassFail
@@ -2737,6 +2740,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
       register unsigned int
         scale;
 
+      ARG_NOT_USED(map);
       scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
       i=0;
       while (i < npixels)
@@ -4467,6 +4471,20 @@ MagickExport MagickPassFail SetImageClipMask(Image *image,const Image *clip_mask
 %
 %
 */
+#if 1
+MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth)
+{
+  MagickPassFail
+    status;
+
+  status=QuantumOperatorImage(image,AllChannels,DepthQuantumOp,(double) depth,
+                              &image->exception);
+  if ((image->matte) && (MagickFail != status))
+    status=QuantumOperatorImage(image,OpacityChannel,DepthQuantumOp,(double) depth,
+                                &image->exception);
+  return status;
+}
+#else
 #define ScaleQuantumDepth(quantum,scale) (scale*(quantum/scale))
 MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth)
 {
@@ -4609,6 +4627,7 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   image->is_monochrome=is_monochrome;
   return(status);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

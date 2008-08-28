@@ -85,13 +85,13 @@ typedef struct _ChannelOptions_t
 %        as if they represent an intensity.
 %
 %    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
-%        AssignQuantumOp, DivideQuantumOp, GammaQuantumOp, LShiftQuantumOp,
-%        MultiplyQuantumOp,  NegateQuantumOp, NoiseGaussianQuantumOp,
-%        NoiseImpulseQuantumOp, NoiseLaplacianQuantumOp,
-%        NoiseMultiplicativeQuantumOp, NoisePoissonQuantumOp,
-%        NoiseUniformQuantumOp, OrQuantumOp, RShiftQuantumOp,
-%        SubtractQuantumOp, ThresholdBlackQuantumOp, ThresholdQuantumOp,
-%        ThresholdWhiteQuantumOp, XorQuantumOp).
+%        AssignQuantumOp, DepthQuantumOp, DivideQuantumOp, GammaQuantumOp,
+%        LShiftQuantumOp, MultiplyQuantumOp,  NegateQuantumOp,
+%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
+%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
+%        NoisePoissonQuantumOp, NoiseUniformQuantumOp, OrQuantumOp,
+%        RShiftQuantumOp, SubtractQuantumOp, ThresholdBlackQuantumOp,
+%        ThresholdQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -296,13 +296,13 @@ QuantumOperatorImageMultivalue(Image *image,
 %    o rows: Height of region.
 %
 %    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
-%        AssignQuantumOp, DivideQuantumOp, GammaQuantumOp, LShiftQuantumOp,
-%        MultiplyQuantumOp,  NegateQuantumOp, NoiseGaussianQuantumOp,
-%        NoiseImpulseQuantumOp, NoiseLaplacianQuantumOp,
-%        NoiseMultiplicativeQuantumOp, NoisePoissonQuantumOp,
-%        NoiseUniformQuantumOp, OrQuantumOp, RShiftQuantumOp,
-%        SubtractQuantumOp, ThresholdBlackQuantumOp, ThresholdQuantumOp,
-%        ThresholdWhiteQuantumOp, XorQuantumOp).
+%        AssignQuantumOp, DepthQuantumOp, DivideQuantumOp, GammaQuantumOp,
+%        LShiftQuantumOp, MultiplyQuantumOp,  NegateQuantumOp,
+%        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
+%        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
+%        NoisePoissonQuantumOp, NoiseUniformQuantumOp, OrQuantumOp,
+%        RShiftQuantumOp, SubtractQuantumOp, ThresholdBlackQuantumOp,
+%        ThresholdQuantumOp, ThresholdWhiteQuantumOp, XorQuantumOp).
 %
 %    o rvalue: Operator argument.
 %
@@ -320,13 +320,13 @@ QuantumOperatorImageMultivalue(Image *image,
 }
 
 static MagickPassFail
-QuantumAdd(void *mutable_data,
-           const void *immutable_data,
-           Image *image,
-           PixelPacket *pixels,
-           IndexPacket *indexes,
-           const long npixels,
-           ExceptionInfo *exception)
+QuantumAddCB(void *mutable_data,
+             const void *immutable_data,
+             Image *image,
+             PixelPacket *pixels,
+             IndexPacket *indexes,
+             const long npixels,
+             ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -387,13 +387,13 @@ QuantumAdd(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumAnd(void *mutable_data,
-           const void *immutable_data,
-           Image *image,
-           PixelPacket *pixels,
-           IndexPacket *indexes,
-           const long npixels,
-           ExceptionInfo *exception)
+QuantumAndCB(void *mutable_data,
+             const void *immutable_data,
+             Image *image,
+             PixelPacket *pixels,
+             IndexPacket *indexes,
+             const long npixels,
+             ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -454,13 +454,13 @@ QuantumAnd(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumAssign(void *mutable_data,
-              const void *immutable_data,
-              Image *image,
-              PixelPacket *pixels,
-              IndexPacket *indexes,
-              const long npixels,
-              ExceptionInfo *exception)
+QuantumAssignCB(void *mutable_data,
+                const void *immutable_data,
+                Image *image,
+                PixelPacket *pixels,
+                IndexPacket *indexes,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -516,14 +516,145 @@ QuantumAssign(void *mutable_data,
 
   return (MagickPass);
 }
+#define ApplyChannelDepth(parameter)                                    \
+  {                                                                     \
+    for (i=0; i < npixels; i++)                                         \
+      parameter=scale*((parameter)/scale);                              \
+  }
+#if MaxRGB > MaxMap
+#  define CrushChannelDepth(parameter) (scale*((parameter)/scale))
+#else
+#  define CrushChannelDepth(parameter) (mutable_context->channel_lut[ScaleQuantumToMap(parameter)])
+#endif
 static MagickPassFail
-QuantumDivide(void *mutable_data,
-              const void *immutable_data,
-              Image *image,
-              PixelPacket *pixels,
-              IndexPacket *indexes,
-              const long npixels,
-              ExceptionInfo *exception)
+QuantumDepthCB(void *mutable_data,
+               const void *immutable_data,
+               Image *image,
+               PixelPacket *pixels,
+               IndexPacket *indexes,
+               const long npixels,
+               ExceptionInfo *exception)
+{
+  QuantumMutableContext
+    *mutable_context=(QuantumMutableContext *) mutable_data;
+
+  const QuantumImmutableContext
+    *immutable_context=(const QuantumImmutableContext *) immutable_data;
+
+  unsigned int
+    depth;
+
+  register unsigned int
+    scale;
+
+  register long
+    i;
+
+  MagickPassFail
+    status=MagickPass;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(exception);
+
+  depth=immutable_context->quantum_value;
+  if (depth < 1)
+    depth=1;
+  else if (depth > QuantumDepth)
+    depth=QuantumDepth;
+
+  if (depth < QuantumDepth)
+    {
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+
+      /*
+        Build LUT for Q8 and Q16 builds
+      */
+#if MaxRGB <= MaxMap
+#pragma omp critical
+      if (mutable_context->channel_lut == (Quantum *) NULL)
+        {
+          mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap+1,sizeof(Quantum));
+          if (mutable_context->channel_lut == (Quantum *) NULL)
+            status=MagickFail;
+          
+          if (mutable_context->channel_lut != (Quantum *) NULL)
+            {
+              for (i=0; i <= (long) MaxMap; i++)
+                mutable_context->channel_lut[i] = scale*(i/scale);
+            }
+        }
+#else
+      ARG_NOT_USED(*mutable_context);
+#endif
+
+      if (MagickFail == status)
+        return status;
+
+      switch (immutable_context->channel)
+        {
+        case RedChannel:
+        case CyanChannel:
+          for (i=0; i < npixels; i++)
+            pixels[i].red=CrushChannelDepth(pixels[i].red);
+          break;
+        case GreenChannel:
+        case MagentaChannel:
+          for (i=0; i < npixels; i++)
+            pixels[i].green=CrushChannelDepth(pixels[i].green);
+          break;
+        case BlueChannel:
+        case YellowChannel:
+          for (i=0; i < npixels; i++)
+            pixels[i].blue=CrushChannelDepth(pixels[i].blue);
+          break;
+        case MatteChannel:
+        case OpacityChannel:
+          if (image->colorspace == CMYKColorspace)
+            for (i=0; i < npixels; i++)
+              indexes[i]=CrushChannelDepth(indexes[i]);
+          else
+            for (i=0; i < npixels; i++)
+              pixels[i].opacity=CrushChannelDepth(pixels[i].opacity);
+          break;
+        case BlackChannel:
+          for (i=0; i < npixels; i++)
+            pixels[i].opacity=CrushChannelDepth(pixels[i].opacity);
+          break;
+        case UndefinedChannel:
+        case AllChannels:
+          for (i=0; i < npixels; i++)
+            {
+              pixels[i].red=CrushChannelDepth(pixels[i].red);
+              pixels[i].green=CrushChannelDepth(pixels[i].green);
+              pixels[i].blue=CrushChannelDepth(pixels[i].blue);
+              if (image->colorspace == CMYKColorspace)
+                pixels[i].opacity=CrushChannelDepth(pixels[i].opacity);
+            }
+          break;
+        case GrayChannel:
+          for (i=0; i < npixels; i++)
+            {
+              Quantum
+                intensity;
+                
+              intensity = PixelIntensity(&pixels[i]);
+              intensity=CrushChannelDepth(intensity);
+              pixels[i].red = pixels[i].green = pixels[i].blue = intensity;
+            }
+          break;
+        }
+    }
+  
+  return MagickPass;
+}
+static MagickPassFail
+QuantumDivideCB(void *mutable_data,
+                const void *immutable_data,
+                Image *image,
+                PixelPacket *pixels,
+                IndexPacket *indexes,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -589,13 +720,13 @@ QuantumDivide(void *mutable_data,
 #  define GammaAdjustQuantum(quantum) (mutable_context->channel_lut[ScaleQuantumToMap(quantum)])
 #endif
 static MagickPassFail
-QuantumGamma(void *mutable_data,
-             const void *immutable_data,
-             Image *image,
-             PixelPacket *pixels,
-             IndexPacket *indexes,
-             const long npixels,
-             ExceptionInfo *exception)
+QuantumGammaCB(void *mutable_data,
+               const void *immutable_data,
+               Image *image,
+               PixelPacket *pixels,
+               IndexPacket *indexes,
+               const long npixels,
+               ExceptionInfo *exception)
 {
   QuantumMutableContext
     *mutable_context=(QuantumMutableContext *) mutable_data;
@@ -620,10 +751,10 @@ QuantumGamma(void *mutable_data,
 #pragma omp critical
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {
-      mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap,sizeof(Quantum));
+      mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap+1,sizeof(Quantum));
       if (mutable_context->channel_lut == (Quantum *) NULL)
         status=MagickFail;
-
+      
       if (mutable_context->channel_lut != (Quantum *) NULL)
         {
           for (i=0; i <= (long) MaxMap; i++)
@@ -686,13 +817,13 @@ QuantumGamma(void *mutable_data,
   return status;
 }
 static MagickPassFail
-QuantumNegate(void *mutable_data,
-              const void *immutable_data,
-              Image *image,
-              PixelPacket *pixels,
-              IndexPacket *indexes,
-              const long npixels,
-              ExceptionInfo *exception)
+QuantumNegateCB(void *mutable_data,
+                const void *immutable_data,
+                Image *image,
+                PixelPacket *pixels,
+                IndexPacket *indexes,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -753,13 +884,13 @@ QuantumNegate(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumLShift(void *mutable_data,
-              const void *immutable_data,
-              Image *image,
-              PixelPacket *pixels,
-              IndexPacket *indexes,
-              const long npixels,
-              ExceptionInfo *exception)
+QuantumLShiftCB(void *mutable_data,
+                const void *immutable_data,
+                Image *image,
+                PixelPacket *pixels,
+                IndexPacket *indexes,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -820,13 +951,13 @@ QuantumLShift(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumMultiply(void *mutable_data,
-                const void *immutable_data,
-                Image *image,
-                PixelPacket *pixels,
-                IndexPacket *indexes,
-                const long npixels,
-                ExceptionInfo *exception)
+QuantumMultiplyCB(void *mutable_data,
+                  const void *immutable_data,
+                  Image *image,
+                  PixelPacket *pixels,
+                  IndexPacket *indexes,
+                  const long npixels,
+                  ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -900,15 +1031,15 @@ GenerateQuantumNoise(const Quantum quantum,const NoiseType noise_type,
 }
 
 static MagickPassFail
-QuantumNoise(void *mutable_data,
-             const void *immutable_data,
-             Image *image,
-             PixelPacket *pixels,
-             IndexPacket *indexes,
-             const long npixels,
-             ExceptionInfo *exception,
-             const NoiseType noise_type
-             )
+QuantumNoiseCB(void *mutable_data,
+               const void *immutable_data,
+               Image *image,
+               PixelPacket *pixels,
+               IndexPacket *indexes,
+               const long npixels,
+               ExceptionInfo *exception,
+               const NoiseType noise_type
+               )
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -974,31 +1105,19 @@ QuantumNoise(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumNoiseGaussian(void *mutable_data,
-                     const void *immutable_data,
-                     Image *image,
-                     PixelPacket *pixels,
-                     IndexPacket *indexes,
-                     const long npixels,
-                     ExceptionInfo *exception)
+QuantumNoiseGaussianCB(void *mutable_data,
+                       const void *immutable_data,
+                       Image *image,
+                       PixelPacket *pixels,
+                       IndexPacket *indexes,
+                       const long npixels,
+                       ExceptionInfo *exception)
 {
   return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,GaussianNoise);
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,GaussianNoise);
 }
 static MagickPassFail
-QuantumNoiseImpulse(void *mutable_data,
-                    const void *immutable_data,
-                    Image *image,
-                    PixelPacket *pixels,
-                    IndexPacket *indexes,
-                    const long npixels,
-                    ExceptionInfo *exception)
-{
-  return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,ImpulseNoise);
-}
-static MagickPassFail
-QuantumNoiseLaplacian(void *mutable_data,
+QuantumNoiseImpulseCB(void *mutable_data,
                       const void *immutable_data,
                       Image *image,
                       PixelPacket *pixels,
@@ -1007,53 +1126,65 @@ QuantumNoiseLaplacian(void *mutable_data,
                       ExceptionInfo *exception)
 {
   return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,LaplacianNoise);
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,ImpulseNoise);
 }
 static MagickPassFail
-QuantumNoiseMultiplicative(void *mutable_data,
-                           const void *immutable_data,
-                           Image *image,
-                           PixelPacket *pixels,
-                           IndexPacket *indexes,
-                           const long npixels,
-                           ExceptionInfo *exception)
+QuantumNoiseLaplacianCB(void *mutable_data,
+                        const void *immutable_data,
+                        Image *image,
+                        PixelPacket *pixels,
+                        IndexPacket *indexes,
+                        const long npixels,
+                        ExceptionInfo *exception)
 {
   return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,LaplacianNoise);
+}
+static MagickPassFail
+QuantumNoiseMultiplicativeCB(void *mutable_data,
+                             const void *immutable_data,
+                             Image *image,
+                             PixelPacket *pixels,
+                             IndexPacket *indexes,
+                             const long npixels,
+                             ExceptionInfo *exception)
+{
+  return
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,
                  exception,MultiplicativeGaussianNoise);
 }
 static MagickPassFail
-QuantumNoisePoisson(void *mutable_data,
-                    const void *immutable_data,
-                    Image *image,
-                    PixelPacket *pixels,
-                    IndexPacket *indexes,
-                    const long npixels,
-                    ExceptionInfo *exception)
+QuantumNoisePoissonCB(void *mutable_data,
+                      const void *immutable_data,
+                      Image *image,
+                      PixelPacket *pixels,
+                      IndexPacket *indexes,
+                      const long npixels,
+                      ExceptionInfo *exception)
 {
   return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,PoissonNoise);
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,PoissonNoise);
 }
 static MagickPassFail
-QuantumNoiseUniform(void *mutable_data,
-                    const void *immutable_data,
-                    Image *image,
-                    PixelPacket *pixels,
-                    IndexPacket *indexes,
-                    const long npixels,
-                    ExceptionInfo *exception)
+QuantumNoiseUniformCB(void *mutable_data,
+                      const void *immutable_data,
+                      Image *image,
+                      PixelPacket *pixels,
+                      IndexPacket *indexes,
+                      const long npixels,
+                      ExceptionInfo *exception)
 {
   return
-    QuantumNoise(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,UniformNoise);
+    QuantumNoiseCB(mutable_data,immutable_data,image,pixels,indexes,npixels,exception,UniformNoise);
 }
 static MagickPassFail
-QuantumOr(void *mutable_data,
-          const void *immutable_data,
-          Image *image,
-          PixelPacket *pixels,
-          IndexPacket *indexes,
-          const long npixels,
-          ExceptionInfo *exception)
+QuantumOrCB(void *mutable_data,
+            const void *immutable_data,
+            Image *image,
+            PixelPacket *pixels,
+            IndexPacket *indexes,
+            const long npixels,
+            ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1114,13 +1245,13 @@ QuantumOr(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumRShift(void *mutable_data,
-              const void *immutable_data,
-              Image *image,
-              PixelPacket *pixels,
-              IndexPacket *indexes,
-              const long npixels,
-              ExceptionInfo *exception)
+QuantumRShiftCB(void *mutable_data,
+                const void *immutable_data,
+                Image *image,
+                PixelPacket *pixels,
+                IndexPacket *indexes,
+                const long npixels,
+                ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1181,13 +1312,13 @@ QuantumRShift(void *mutable_data,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumSubtract(void *mutable_data,
-                const void *immutable_data,
-                Image *image,
-                PixelPacket *pixels,
-                IndexPacket *indexes,
-                const long npixels,
-                ExceptionInfo *exception)
+QuantumSubtractCB(void *mutable_data,
+                  const void *immutable_data,
+                  Image *image,
+                  PixelPacket *pixels,
+                  IndexPacket *indexes,
+                  const long npixels,
+                  ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1262,13 +1393,13 @@ static inline Quantum ApplyThresholdOperator(const Quantum quantum,
   return result;
 }
 static MagickPassFail
-QuantumThreshold(void *mutable_data,
-                 const void *immutable_data,
-                 Image *image,
-                 PixelPacket *pixels,
-                 IndexPacket *indexes,
-                 const long npixels,
-                 ExceptionInfo *exception)
+QuantumThresholdCB(void *mutable_data,
+                   const void *immutable_data,
+                   Image *image,
+                   PixelPacket *pixels,
+                   IndexPacket *indexes,
+                   const long npixels,
+                   ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1335,13 +1466,13 @@ static inline Quantum ApplyThresholdBlackOperator(const Quantum quantum,
   return result;
 }
 static MagickPassFail
-QuantumThresholdBlack(void *mutable_data,
-                      const void *immutable_data,
-                      Image *image,
-                      PixelPacket *pixels,
-                      IndexPacket *indexes,
-                      const long npixels,
-                      ExceptionInfo *exception)
+QuantumThresholdBlackCB(void *mutable_data,
+                        const void *immutable_data,
+                        Image *image,
+                        PixelPacket *pixels,
+                        IndexPacket *indexes,
+                        const long npixels,
+                        ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1427,13 +1558,13 @@ static inline Quantum ApplyThresholdWhiteOperator(const Quantum quantum,
   return result;
 }
 static MagickPassFail
-QuantumThresholdWhite(void *mutable_data,
-                      const void *immutable_data,
-                      Image *image,
-                      PixelPacket *pixels,
-                      IndexPacket *indexes,
-                      const long npixels,
-                      ExceptionInfo *exception)
+QuantumThresholdWhiteCB(void *mutable_data,
+                        const void *immutable_data,
+                        Image *image,
+                        PixelPacket *pixels,
+                        IndexPacket *indexes,
+                        const long npixels,
+                        ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1506,13 +1637,13 @@ QuantumThresholdWhite(void *mutable_data,
 }
 
 static MagickPassFail
-QuantumXor(void *mutable_data,
-           const void *immutable_data,
-           Image *image,
-           PixelPacket *pixels,
-           IndexPacket *indexes,
-           const long npixels,
-           ExceptionInfo *exception)
+QuantumXorCB(void *mutable_data,
+             const void *immutable_data,
+             Image *image,
+             PixelPacket *pixels,
+             IndexPacket *indexes,
+             const long npixels,
+             ExceptionInfo *exception)
 {
   const QuantumImmutableContext
     *context=(const QuantumImmutableContext *) immutable_data;
@@ -1609,67 +1740,70 @@ QuantumOperatorRegionImage(Image *image,
     case UndefinedQuantumOp:
       break;
     case AddQuantumOp:
-      call_back=QuantumAdd;
+      call_back=QuantumAddCB;
       break;
     case AndQuantumOp:
-      call_back=QuantumAnd;
+      call_back=QuantumAndCB;
       break;
     case AssignQuantumOp:
-      call_back=QuantumAssign;
+      call_back=QuantumAssignCB;
       break;
     case DivideQuantumOp:
-      call_back=QuantumDivide;
+      call_back=QuantumDivideCB;
       break;
     case LShiftQuantumOp:
-      call_back=QuantumLShift;
+      call_back=QuantumLShiftCB;
       break;
     case MultiplyQuantumOp:
-      call_back=QuantumMultiply;
+      call_back=QuantumMultiplyCB;
       break;
     case OrQuantumOp:
-      call_back=QuantumOr;
+      call_back=QuantumOrCB;
       break;
     case RShiftQuantumOp:
-      call_back=QuantumRShift;
+      call_back=QuantumRShiftCB;
       break;
     case SubtractQuantumOp:
-      call_back=QuantumSubtract;
+      call_back=QuantumSubtractCB;
       break;
     case ThresholdQuantumOp:
-      call_back=QuantumThreshold;
+      call_back=QuantumThresholdCB;
       break;
     case ThresholdBlackQuantumOp:
-      call_back=QuantumThresholdBlack;
+      call_back=QuantumThresholdBlackCB;
       break;
     case ThresholdWhiteQuantumOp:
-      call_back=QuantumThresholdWhite;
+      call_back=QuantumThresholdWhiteCB;
       break;
     case XorQuantumOp:
-      call_back=QuantumXor;
+      call_back=QuantumXorCB;
       break;
     case NoiseGaussianQuantumOp:
-      call_back=QuantumNoiseGaussian;
+      call_back=QuantumNoiseGaussianCB;
       break;
     case NoiseImpulseQuantumOp:
-      call_back=QuantumNoiseImpulse;
+      call_back=QuantumNoiseImpulseCB;
       break;
     case NoiseLaplacianQuantumOp:
-      call_back=QuantumNoiseLaplacian;
+      call_back=QuantumNoiseLaplacianCB;
       break;
     case NoiseMultiplicativeQuantumOp:
-      call_back=QuantumNoiseMultiplicative;
+      call_back=QuantumNoiseMultiplicativeCB;
       break;
     case NoisePoissonQuantumOp:
-      call_back=QuantumNoisePoisson;
+      call_back=QuantumNoisePoissonCB;
       break;
     case NoiseUniformQuantumOp:
-      call_back=QuantumNoiseUniform;
+      call_back=QuantumNoiseUniformCB;
       break;
     case NegateQuantumOp:
-      call_back=QuantumNegate;
+      call_back=QuantumNegateCB;
       break;
     case GammaQuantumOp:
-      call_back=QuantumGamma;
+      call_back=QuantumGammaCB;
+      break;
+    case DepthQuantumOp:
+      call_back=QuantumDepthCB;
       break;
     }
 

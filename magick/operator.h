@@ -42,7 +42,8 @@ typedef enum
   NoisePoissonQuantumOp,          /* Poisson noise */
   NoiseUniformQuantumOp,          /* Uniform noise */
   NegateQuantumOp,                /* Negate channel, ignore value */
-  GammaQuantumOp                  /* Adjust image gamma */
+  GammaQuantumOp,                 /* Adjust image gamma */
+  DepthQuantumOp                  /* Adjust image depth */
  } QuantumOperator;
 
 extern MagickExport MagickPassFail

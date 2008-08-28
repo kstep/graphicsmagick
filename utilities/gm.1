@@ -1,4 +1,4 @@
-.TH gm 1 "2008/08/09" "GraphicsMagick"
+.TH gm 1 "2008/08/27" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2473,7 +2473,7 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
-\fBDivide\fP, \fBGamma\fP, \fBInvert\fP, \fBLShift\fP,
+\fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBInvert\fP, \fBLShift\fP,
 \fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP,
 \fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
 \fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
@@ -2513,6 +2513,15 @@ Result is the logical AND of rvalue with channel value.
  \fR
 .in 20
 Result is rvalue.
+
+.in 15
+.in 15
+.B "Depth"
+.in 20
+ \fR
+.in 20
+Result is channel value adjusted so that it may be (approximately)
+stored in the specified number of bits without additional loss.
 
 .in 15
 .in 15

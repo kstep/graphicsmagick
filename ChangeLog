@@ -1,5 +1,13 @@
 2008-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/channel.c (SetImageChannelDepth): Re-implement using
+	QuantumOperatorImage().
+	* magick/image.c (SetImageDepth): Re-implement using
+	QuantumOperatorImage().
+	* magick/operator.h (QuantumOperator): Added DepthQuantumOp for
+	setting the channel depth.
+	* magick/command.c (BenchmarkImageCommand): Add CPU-based
+	iteration rate metric to benchmark output.
 	* magick/resource.c (ListMagickResourceInfo): Include quantum
 	depth, bits per pixel, and process address size in resource
 	output so that output is more complete.
