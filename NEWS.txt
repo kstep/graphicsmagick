@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on August 17, 2008
+This file was last updated on August 27, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -88,6 +88,7 @@ Performance Improvements:
     - Compare images ('compare' command).
     - Composition ('composite' command).
     - Contrast adjust (-contrast).
+    - Depth setting (-depth, -operator depth).
     - Equalize (-equalize).
     - Gamma adjust (-gamma, -operator gamma).
     - Levels adjust image (-level).
@@ -120,6 +121,7 @@ New Features:
 
     - Assign
     - Gamma
+    - Depth
     - Negate
     - Noise-Gaussian
     - Noise-Impulse
