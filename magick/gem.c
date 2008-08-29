@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/pixel_cache.h"
 #include "magick/gem.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,6 +161,10 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %    o noise_type:  The type of noise: Uniform, gaussian,
 %      multiplicative Gaussian, impulse, laplacian, or Poisson.
 %
+%    o seed: Seed for random number generator.  Should be initialized
+%      with a semi-random value once (e.g. from time()) and then simply
+%      passed thereafter.   If 'seed' is NULL, then the global seed
+%      value is used.
 %
 */
 #define NoiseEpsilon   1.0e-5
@@ -172,7 +177,8 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 #define TauGaussian    20.0
 
 MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
-                                              const NoiseType noise_type)
+                                              const NoiseType noise_type,
+                                              unsigned int *seed)
 {
   double
     alpha,
@@ -187,7 +193,7 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
   pixel /= MaxRGBDouble/255.0;
 #endif
 
-  alpha=(double) rand()/RAND_MAX;
+  alpha=(double) MagickRandReentrant(seed)/RAND_MAX;
   if (alpha == 0.0)
     alpha=1.0;
   switch (noise_type)
@@ -203,7 +209,7 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
       double
         tau;
 
-      beta=(double) rand()/RAND_MAX;
+      beta=(double) MagickRandReentrant(seed)/RAND_MAX;
       sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
       tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
       value=sqrt((double) pixel)*SigmaGaussian*sigma+TauGaussian*tau;
@@ -215,7 +221,7 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
         sigma=255.0;
       else
         sigma=sqrt(-2.0*log(alpha));
-      beta=(double) rand()/RAND_MAX;
+      beta=(double) MagickRandReentrant(seed)/RAND_MAX;
       value=pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*MagickPI*beta);
       break;
     }
@@ -258,7 +264,7 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
       limit=exp(-SigmaPoisson*(double) pixel);
       for (i=0; alpha > limit; i++)
       {
-        beta=(double) rand()/RAND_MAX;
+        beta=(double) MagickRandReentrant(seed)/RAND_MAX;
         alpha=alpha*beta;
       }
       value=pixel-((double) i/SigmaPoisson);
@@ -305,7 +311,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
   double
     value;
 
-  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type);
+  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type,NULL);
   return (RoundDoubleToQuantum(value));
 }
 

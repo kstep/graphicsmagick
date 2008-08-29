@@ -100,10 +100,14 @@ extern MagickExport int
   LocaleCompare(const char *,const char *),
   GetMagickDimension(const char *str,double *width,double *height),
   GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
+  MagickRandReentrant(unsigned int *seed),
   SubstituteString(char **,const char*,const char *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);
+
+extern MagickExport unsigned int
+  MagickRandNewSeed(void);
 
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);

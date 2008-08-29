@@ -3336,6 +3336,87 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k R a n d R e e n t r a n t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickRandReentrant() is a reentrant version of the standard
+%  rand() function but which allows the user to pass a pointer to the
+%  'seed'.
+%
+%  The format of the MagickRandReentrant method is:
+%
+%      int MagickRandReentrant(unsigned int *seed)
+%
+%  A description of each parameter follows:
+%
+%    o seed: The random sequence seed value.  Initialized by the user
+%            once (e.g. with output from MagickRandNewSeed()) and then
+%            passed via pointer thereafter.  If seed is NULL then
+%            this function behaves identically to rand(), using the
+%            global seed value set via srand().
+%
+*/
+MagickExport int MagickRandReentrant(unsigned int *seed)
+{
+  int
+    result;
+
+#if defined(HAVE_RAND_R)
+  if (seed)
+    result=rand_r(seed);
+  else
+    result=rand();
+#else
+  /* This version is not reentrant */
+  if (seed)
+    srand(*seed);
+  result=rand();
+#endif
+  return result;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R a n d R e e n t r a n t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickRandNewSeed() returns a semi-random initial seed value for
+%  use with MagickRandReentrant() or rand().
+%
+%  The format of the MagickRandNewSeed method is:
+%
+%      unsigned int MagickRandNewSeed(void)
+%
+*/
+MagickExport unsigned int MagickRandNewSeed(void)
+{
+  unsigned int
+    seed;
+
+  seed=time(0);
+  /*
+    It is quite likely that multiple threads will invoke this function
+    during the same second so we also tap into the default random
+    number generator to help produce a more random seed.
+  */
+  seed ^= (unsigned int) rand();
+  return seed;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S i z e S t r T o I n t 6 4                                   %
 %                                                                             %
 %                                                                             %

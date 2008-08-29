@@ -1020,13 +1020,13 @@ QuantumMultiplyCB(void *mutable_data,
 
 static inline Quantum
 GenerateQuantumNoise(const Quantum quantum,const NoiseType noise_type,
-                     const double factor)
+                     const double factor,unsigned int *seed)
 {
   double
     value;
 
   value = (double) quantum+
-    factor*GenerateDifferentialNoise((double) quantum,noise_type);
+    factor*GenerateDifferentialNoise((double) quantum,noise_type,seed);
   return RoundDoubleToQuantum(value);
 }
 
@@ -1050,11 +1050,15 @@ QuantumNoiseCB(void *mutable_data,
   double
     factor;
 
+  unsigned int
+    seed;
+
   ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
+  seed=MagickRandNewSeed();
   factor=context->double_value/MaxRGBDouble;
 
   switch (context->channel)
@@ -1062,31 +1066,31 @@ QuantumNoiseCB(void *mutable_data,
     case RedChannel:
     case CyanChannel:
       for (i=0; i < npixels; i++)
-        pixels[i].red = GenerateQuantumNoise(pixels[i].red,noise_type,factor);
+        pixels[i].red = GenerateQuantumNoise(pixels[i].red,noise_type,factor,&seed);
       break;
     case GreenChannel:
     case MagentaChannel:
       for (i=0; i < npixels; i++)
-        pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor);
+        pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor,&seed);
       break;
     case BlueChannel:
     case YellowChannel:
       for (i=0; i < npixels; i++)
-        pixels[i].blue = GenerateQuantumNoise(pixels[i].blue,noise_type,factor);
+        pixels[i].blue = GenerateQuantumNoise(pixels[i].blue,noise_type,factor,&seed);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
       for (i=0; i < npixels; i++)
-        pixels[i].opacity = GenerateQuantumNoise(pixels[i].opacity,noise_type,factor);
+        pixels[i].opacity = GenerateQuantumNoise(pixels[i].opacity,noise_type,factor,&seed);
       break;
     case UndefinedChannel:
     case AllChannels:
       for (i=0; i < npixels; i++)
         {
-          pixels[i].red   = GenerateQuantumNoise(pixels[i].red,noise_type,factor);
-          pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor);
-          pixels[i].blue  = GenerateQuantumNoise(pixels[i].blue,noise_type,factor);
+          pixels[i].red   = GenerateQuantumNoise(pixels[i].red,noise_type,factor,&seed);
+          pixels[i].green = GenerateQuantumNoise(pixels[i].green,noise_type,factor,&seed);
+          pixels[i].blue  = GenerateQuantumNoise(pixels[i].blue,noise_type,factor,&seed);
         }
       break;
     case GrayChannel:
@@ -1097,7 +1101,7 @@ QuantumNoiseCB(void *mutable_data,
 
           intensity = PixelIntensity(&pixels[i]);
           pixels[i].red = pixels[i].green = pixels[i].blue =
-            GenerateQuantumNoise(intensity,noise_type,factor);
+            GenerateQuantumNoise(intensity,noise_type,factor,&seed);
         }
       break;
     }

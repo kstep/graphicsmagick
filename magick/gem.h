@@ -20,7 +20,8 @@ extern "C" {
 */
 extern MagickExport double
   ExpandAffine(const AffineMatrix *),
-  GenerateDifferentialNoise(const Quantum pixel,const NoiseType noise_type);
+  GenerateDifferentialNoise(const Quantum pixel,const NoiseType noise_type,
+    unsigned int *seed);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),

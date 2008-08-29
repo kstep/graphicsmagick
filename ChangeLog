@@ -1,3 +1,14 @@
+2008-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (GenerateDifferentialNoise): Use
+	MagickRandReentrant(). Added a 'seed' argument so that we can pass
+	a per-thread 'seed' value.
+	* magick/utility.c (MagickRandNewSeed): New function to produce a
+	semi-random 'seed' value.
+	(MagickRandReentrant): New function which works like rand() but
+	attempts to be re-entrant if possible by allowing a seed value to
+	be passed.
+
 2008-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (SetImageChannelDepth): Re-implement using
