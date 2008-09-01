@@ -212,6 +212,17 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %
 */
+static inline Quantum
+GenerateQuantumNoise(const Quantum quantum,const NoiseType noise_type,
+                     const double factor,unsigned int *seed)
+{
+  double
+    value;
+
+  value = (double) quantum+
+    factor*GenerateDifferentialNoise((double) quantum,noise_type,seed);
+  return RoundDoubleToQuantum(value);
+}
 static MagickPassFail
 AddNoiseImagePixels(void *mutable_data,                /* User provided mutable data */
                     const void *immutable_data,        /* User provided immutable data */
@@ -231,6 +242,12 @@ AddNoiseImagePixels(void *mutable_data,                /* User provided mutable 
   const NoiseType
     noise_type = *((const NoiseType *) immutable_data);
 
+  unsigned int
+    seed;
+
+  double
+    factor;
+
   register long
     i;
   
@@ -240,6 +257,8 @@ AddNoiseImagePixels(void *mutable_data,                /* User provided mutable 
   ARG_NOT_USED(new_indexes);
   ARG_NOT_USED(exception);
 
+  seed=MagickRandNewSeed();
+  factor=1.0;
   if (source_image->is_grayscale)
     {
       /*
@@ -248,7 +267,7 @@ AddNoiseImagePixels(void *mutable_data,                /* User provided mutable 
       for (i=0; i < npixels; i++)
         {
           new_pixels[i].red=new_pixels[i].green=new_pixels[i].blue=
-            GenerateNoise(PixelIntensityToQuantum(&source_pixels[i]),noise_type);
+            GenerateQuantumNoise(PixelIntensityToQuantum(&source_pixels[i]),noise_type,factor,&seed);
           if (source_image->matte && new_image->matte)
             new_pixels[i].opacity=source_pixels[i].opacity;
           else
@@ -262,9 +281,9 @@ AddNoiseImagePixels(void *mutable_data,                /* User provided mutable 
       */
       for (i=0; i < npixels; i++)
         {
-          new_pixels[i].red=GenerateNoise(source_pixels[i].red,noise_type);
-          new_pixels[i].green=GenerateNoise(source_pixels[i].green,noise_type);
-          new_pixels[i].blue=GenerateNoise(source_pixels[i].blue,noise_type);
+          new_pixels[i].red=GenerateQuantumNoise(source_pixels[i].red,noise_type,factor,&seed);
+          new_pixels[i].green=GenerateQuantumNoise(source_pixels[i].green,noise_type,factor,&seed);
+          new_pixels[i].blue=GenerateQuantumNoise(source_pixels[i].blue,noise_type,factor,&seed);
           if (source_image->matte && new_image->matte)
             new_pixels[i].opacity=source_pixels[i].opacity;
           else

@@ -82,7 +82,7 @@ Performance Improvements:
 
   * OpenMP (parallel processing) improvements for these functions:
 
-    - Add noise (-noise).
+    - Add noise (+noise).
     - Channel import, export, and depth-setting (-channel, -depth).
     - Colorspace transformation (-colorspace).
     - Compare images ('compare' command).
