@@ -1,3 +1,9 @@
+2008-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Restore original
+	client name for each loop so that it is not extended further for
+	each iteration.
+
 2008-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than

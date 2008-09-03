@@ -1388,12 +1388,16 @@ static unsigned int BenchmarkImageCommand(ImageInfo *image_info,
     }
 
   {
+    char
+      client_name[MaxTextExtent];
+
     long
       iteration=0;
     
     TimerInfo
       timer;
-    
+
+    (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
     GetTimerInfo(&timer);
     
     if (duration > 0)
@@ -1407,6 +1411,7 @@ static unsigned int BenchmarkImageCommand(ImageInfo *image_info,
             if (GetElapsedTime(&timer) > duration)
               break;
             ContinueTimer(&timer);
+            (void) SetClientName(client_name);
           }
       }
     else if (iterations > 0)
@@ -1418,6 +1423,7 @@ static unsigned int BenchmarkImageCommand(ImageInfo *image_info,
             iteration++;
             if (!status)
               break;
+            (void) SetClientName(client_name);
           }
       }
     {
