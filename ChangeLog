@@ -1,3 +1,14 @@
+2008-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Restore original
+	client name for each loop so that it is not extended further for
+	each iteration.
+
+2008-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c (UnlockSemaphoreInfo): Decrement lock depth
+	under protection of the lock.
+
 2008-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (ListMagickResourceInfo): Include quantum

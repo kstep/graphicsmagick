@@ -512,8 +512,17 @@ MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
+
   if (semaphore_info->lock_depth == 0)
-    return (MagickFail);
+    {
+      fprintf(stderr,
+              "Warning: unlock on unlocked semaphore (p=%p)!\n",
+              semaphore_info);
+      fflush(stderr);
+      return (MagickFail);
+    }
+
+  semaphore_info->lock_depth--;
   
 #if defined(HAVE_PTHREAD)
   /* Enforce that unlocking thread is the same as the locking thread */
@@ -526,6 +535,5 @@ MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(GetCurrentThreadId() == semaphore_info->owner_thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);
 #endif
-  semaphore_info->lock_depth--;
   return(MagickPass);
 }

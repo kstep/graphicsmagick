@@ -1529,12 +1529,16 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
     }
 
   {
+    char
+      client_name[MaxTextExtent];
+
     long
       iteration=0;
     
     TimerInfo
       timer;
-    
+
+    (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
     GetTimerInfo(&timer);
     
     if (duration > 0)
@@ -1548,17 +1552,19 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
             if (GetElapsedTime(&timer) > duration)
               break;
             (void) ContinueTimer(&timer);
+            (void) SetClientName(client_name);
           }
       }
     else if (iterations > 0)
       {
-
         for (iteration=0; iteration < iterations; )
           {
+            
             status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
             iteration++;
             if (!status)
               break;
+            (void) SetClientName(client_name);
           }
       }
     {
