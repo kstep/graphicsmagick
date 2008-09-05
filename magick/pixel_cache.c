@@ -235,7 +235,7 @@ typedef struct _CacheInfo
     reference_count;
 
   SemaphoreInfo
-    *semaphore;
+    *reference_semaphore;
 
   unsigned long
     signature;
@@ -718,8 +718,9 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method AcquireCacheView gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  as defined by the geometry parameters for read-only access.   A pointer to
+%  the pixels is returned if the pixels are transferred, otherwise NULL is
+%  returned.
 %
 %  The format of the AcquireCacheView method is:
 %
@@ -748,9 +749,18 @@ MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
   const View
     *view_info = (const View *) view;
 
+  CacheInfo
+    *cache_info;
+
+  const PixelPacket
+    *pixels;
+
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return(AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception));
+  cache_info=(CacheInfo *) view_info->image->cache;
+#pragma omp critical (pixel_cache)
+  pixels=AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception);
+  return pixels;
 }
 
 /*
@@ -808,17 +818,16 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
     *cache_info;
 
   const PixelPacket
-    *pixels;
+    *pixels = (const PixelPacket *) NULL;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.acquire_pixel_handler == (AcquirePixelHandler) NULL)
-    return((const PixelPacket *) NULL);
-  pixels=cache_info->methods.
-    acquire_pixel_handler(image,x,y,columns,rows,exception);
+  if (cache_info->methods.acquire_pixel_handler != (AcquirePixelHandler) NULL)
+    pixels=cache_info->methods.
+      acquire_pixel_handler(image,x,y,columns,rows,exception);
   return(pixels);
 }
 
@@ -1213,9 +1222,9 @@ static MagickPassFail ClipCacheNexus(Image *image,const unsigned long nexus)
 %
 %  A description of each parameter follows:
 %
-%    o clone: Specifies a pointer to a Cache structure.
+%    o image: Image to clone from (the master).
 %
-%    o cache: Specifies a pointer to a Cache structure.
+%    o clone_image: Image to clone to (the copy).
 %
 %
 */
@@ -1496,7 +1505,7 @@ void DestroyCacheInfo(Cache cache_info)
 {
   assert(cache_info != (Cache) NULL);
   assert(cache_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->reference_semaphore);
   cache_info->reference_count--;
   if (cache_info->reference_count > 0)
     {
@@ -1504,10 +1513,10 @@ void DestroyCacheInfo(Cache cache_info)
                             "destroy skipped (still referenced %ld times) %.1024s",
                             cache_info->reference_count,
                             cache_info->filename);
-      LiberateSemaphoreInfo(&cache_info->semaphore);
+      UnlockSemaphoreInfo(cache_info->reference_semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->reference_semaphore);
   switch (cache_info->type)
   {
     default:
@@ -1551,8 +1560,8 @@ void DestroyCacheInfo(Cache cache_info)
         DestroyCacheNexus(cache_info,id);
       MagickFreeMemory(cache_info->nexus_info);
     }
-  if (cache_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->semaphore);
+  if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&cache_info->reference_semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
      cache_info->filename);
   MagickFreeMemory(cache_info);
@@ -1570,7 +1579,7 @@ void DestroyCacheInfo(Cache cache_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DestroyCacheNexus() destroys a cache nexus which was allocated via 
-%  GetNexus().  This function is not thread safe.
+%  GetNexus().
 %
 %  The format of the DestroyCacheNexus() method is:
 %
@@ -1595,13 +1604,14 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  nexus_info=cache_info->nexus_info+nexus;
-  if (nexus_info->staging != (PixelPacket *) NULL)
-    MagickFreeMemory(nexus_info->staging);
-  /* LockSemaphoreInfo(cache_info->semaphore); */
-  (void) memset(nexus_info,0,sizeof(NexusInfo));
-  nexus_info->available=MagickTrue;
-  /* UnlockSemaphoreInfo(cache_info->semaphore); */
+#pragma omp critical (pixel_cache)
+  {
+    nexus_info=cache_info->nexus_info+nexus;
+    if (nexus_info->staging != (PixelPacket *) NULL)
+      MagickFreeMemory(nexus_info->staging);
+    (void) memset(nexus_info,0,sizeof(NexusInfo));
+    nexus_info->available=MagickTrue;
+  }
 }
 
 /*
@@ -1637,9 +1647,8 @@ MagickExport void DestroyImagePixels(Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.destroy_pixel_handler == (DestroyPixelHandler) NULL)
-    return;
-  cache_info->methods.destroy_pixel_handler(image);
+  if (cache_info->methods.destroy_pixel_handler != (DestroyPixelHandler) NULL)
+    cache_info->methods.destroy_pixel_handler(image);
 }
 
 /*
@@ -1669,9 +1678,8 @@ static void DestroyPixelCache(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->cache == (void *) NULL)
-    return;
-  DestroyCacheInfo(image->cache);
+  if (image->cache != (void *) NULL)
+    DestroyCacheInfo(image->cache);
   image->cache=(Cache) NULL;
 }
 
@@ -1708,18 +1716,18 @@ static void DestroyPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&stream_info->semaphore);
+  LockSemaphoreInfo(stream_info->reference_semaphore);
   stream_info->reference_count--;
   if (stream_info->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&stream_info->semaphore);
+      UnlockSemaphoreInfo(stream_info->reference_semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&stream_info->semaphore);
+  UnlockSemaphoreInfo(stream_info->reference_semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
     MagickFreeMemory(stream_info->pixels);
-  if (stream_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&stream_info->semaphore);
+  if (stream_info->reference_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&stream_info->reference_semaphore);
   MagickFreeMemory(stream_info);
 }
 
@@ -1832,8 +1840,8 @@ void GetCacheInfo(Cache *cache)
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
   cache_info->file=(-1);
-  cache_info->semaphore=AllocateSemaphoreInfo();
-  if (cache_info->semaphore == (SemaphoreInfo *) NULL)
+  cache_info->reference_semaphore=AllocateSemaphoreInfo();
+  if (cache_info->reference_semaphore == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheInfo);
   cache_info->signature=MagickSignature;
@@ -1948,9 +1956,21 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
   View
     *view_info = (View *) view;
 
+  CacheInfo
+    *cache_info;
+
+  PixelPacket
+    *pixels;
+
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return(GetCacheNexus(view_info->image,x,y,columns,rows,view_info->id));
+
+#pragma omp critical (pixel_cache)
+  {
+    cache_info=(CacheInfo *) view_info->image->cache;
+    pixels=GetCacheNexus(view_info->image,x,y,columns,rows,view_info->id);
+  }
+  return pixels;
 }
 
 /*
@@ -1985,9 +2005,20 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
   const View
     *view_info = (const View *) view;
 
+  CacheInfo
+    *cache_info;
+
+  IndexPacket
+    *indexes;
+
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return(GetNexusIndexes(view_info->image->cache,view_info->id));
+#pragma omp critical (pixel_cache)
+  {
+    cache_info=(CacheInfo *) view_info->image->cache;
+    indexes=GetNexusIndexes(view_info->image->cache,view_info->id);
+  }
+  return indexes;
 }
 
 /*
@@ -2041,6 +2072,9 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
 {
   CacheInfo
     *cache_info;
+  
+  PixelPacket
+    *pixels = (PixelPacket *) NULL;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2048,9 +2082,9 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   /* printf("GetImagePixels %ldx%ld+%ld+%ld\n",columns,rows,x,y); */
-  if (cache_info->methods.get_pixel_handler == (GetPixelHandler) NULL)
-    return((PixelPacket *) NULL);
-  return(cache_info->methods.get_pixel_handler(image,x,y,columns,rows));
+  if (cache_info->methods.get_pixel_handler != (GetPixelHandler) NULL)
+    pixels=cache_info->methods.get_pixel_handler(image,x,y,columns,rows);
+  return pixels;
 }
 
 /*
@@ -2221,8 +2255,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetNexus() returns an available cache nexus from the nexus_info pool.
-%  The cache nexus is returned to the pool via DestroyCacheNexus(). This
-%  function is not thread safe.
+%  The cache nexus is returned to the pool via DestroyCacheNexus().
 %
 %  The format of the GetNexus() method is:
 %
@@ -2251,17 +2284,18 @@ static unsigned long GetNexus(Cache cache)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   assert(cache_info->nexus_info != (NexusInfo *) NULL);
-  /* LockSemaphoreInfo(cache_info->semaphore); */
-  for (id=1; id < (long) MaxCacheViews; id++)
-    if (cache_info->nexus_info[id].available)
-      {
-        cache_info->nexus_info[id].available=MagickFalse;
-        status=MagickPass;
-        break;
-      }
-  /* UnlockSemaphoreInfo(cache_info->semaphore); */
-  if (MagickFail == status)
-    id=0;
+#pragma omp critical (pixel_cache)
+  {
+    for (id=1; id < (long) MaxCacheViews; id++)
+      if (cache_info->nexus_info[id].available)
+        {
+          cache_info->nexus_info[id].available=MagickFalse;
+          status=MagickPass;
+          break;
+        }
+    if (MagickFail == status)
+      id=0;
+  }
   return(id);
 }
 
@@ -2303,14 +2337,20 @@ static IndexPacket *GetNexusIndexes(const Cache cache,
   register NexusInfo
     *nexus_info;
 
-  if (cache == (Cache) NULL)
-    return((IndexPacket *) NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((IndexPacket *) NULL);
-  nexus_info=cache_info->nexus_info+nexus;
-  return(nexus_info->indexes);
+  IndexPacket
+    *indexes = (IndexPacket *) NULL;
+
+  if (cache != (Cache) NULL)
+    {
+      cache_info=(CacheInfo *) cache;
+      assert(cache_info->signature == MagickSignature);
+      if (cache_info->storage_class != UndefinedClass)
+        {
+          nexus_info=cache_info->nexus_info+nexus;
+          indexes=nexus_info->indexes;
+        }
+    }
+  return indexes;
 }
 
 /*
@@ -2349,14 +2389,20 @@ static PixelPacket *GetNexusPixels(const Cache cache,
   register NexusInfo
     *nexus_info;
 
-  if (cache == (Cache) NULL)
-    return((PixelPacket *) NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class == UndefinedClass)
-    return((PixelPacket *) NULL);
-  nexus_info=cache_info->nexus_info+nexus;
-  return(nexus_info->pixels);
+  PixelPacket
+    *pixels = (PixelPacket *) NULL;
+
+  if (cache != (Cache) NULL)
+    {
+      cache_info=(CacheInfo *) cache;
+      assert(cache_info->signature == MagickSignature);
+      if (cache_info->storage_class != UndefinedClass)
+        {
+          nexus_info=cache_info->nexus_info+nexus;
+          pixels=nexus_info->pixels;
+        }
+    }
+  return pixels;
 }
 
 /*
@@ -2390,15 +2436,18 @@ MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
   CacheInfo
     *cache_info;
 
+  PixelPacket
+    pixel=image->background_color;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_one_pixel_from_handler ==
+  if (cache_info->methods.get_one_pixel_from_handler !=
       (GetOnePixelFromHandler) NULL)
-    return(image->background_color);
-  return(cache_info->methods.get_one_pixel_from_handler(image,x,y));
+    pixel=cache_info->methods.get_one_pixel_from_handler(image,x,y);
+  return pixel;
 }
 
 /*
@@ -2438,9 +2487,9 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   pixel=GetPixelCache(image,x,y,1,1);
-  if (pixel != (PixelPacket *) NULL)
-    return(*pixel);
-  return(image->background_color);
+  if (pixel == (PixelPacket *) NULL)
+    pixel=&image->background_color;
+  return *pixel;
 }
 
 /*
@@ -2475,14 +2524,14 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
 static PixelPacket GetOnePixelFromStream(Image *image,const long x,const long y)
 {
   register PixelPacket
-    *pixel;
+    *pixel = (PixelPacket *) NULL;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   pixel=GetPixelStream(image,x,y,1,1);
-  if (pixel != (PixelPacket *) NULL)
-    return(*pixel);
-  return(image->background_color);
+  if (pixel == (PixelPacket *) NULL)
+    pixel=&image->background_color;
+  return(*pixel);
 }
 
 /*
@@ -2798,10 +2847,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 static MagickPassFail ModifyCache(Image *image)
 {
   CacheInfo
-    *cache_info;
-
-  Image
-    clone_image;
+    *original_cache_info;
 
   MagickPassFail
     status;
@@ -2811,35 +2857,27 @@ static MagickPassFail ModifyCache(Image *image)
   assert(image->cache != (Cache) NULL);
   status=MagickPass;
 
-  cache_info=(CacheInfo *) image->cache;
-  /* These calls were removed for performance reasons. The most common case
-     for the code was causing a cache semaphore to be allocated and locked
-     for EACH AND EVERY scanline being read by a coder. This was despite the
-     fact that the reference count on the cache was always 1. Big WOT. */
-  /* AcquireSemaphoreInfo(&cache_info->semaphore); */
-  if (cache_info->reference_count <= 1)
+  original_cache_info=(CacheInfo *) image->cache;
+  /*
+    Note that this function is normally executed for each and every
+    scanline which is read/updated so it represents constant locking
+    overhead.
+  */
+  LockSemaphoreInfo(original_cache_info->reference_semaphore);
+  if (original_cache_info->reference_count > 1)
     {
-      /* LiberateSemaphoreInfo(&cache_info->semaphore); */
-      return(MagickPass);
-    }
-  /* we don't actually lock until we know for sure that someone else is using
-     the same cache. */
-  AcquireSemaphoreInfo(&cache_info->semaphore);
-  if (!cache_info->nexus_info)
-    {
-      status=OpenCache(image,IOMode);
-    }
-  if (status != MagickFail)
-    {
-      cache_info->reference_count--;
-      clone_image=(*image);
-      GetCacheInfo(&image->cache);
-      if (AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception)
+      Image
+        modify_image;
+
+      modify_image=(*image);
+
+      GetCacheInfo(&modify_image.cache);
+      if (AcquireImagePixels(image,0,0,image->columns,1,&image->exception)
           == (PixelPacket *) NULL)
         status=MagickFail;
       if (status != MagickFail)
         {
-          status=OpenCache(image,IOMode);
+          status=OpenCache(&modify_image,IOMode);
           if (status != MagickFail)
             {
               NexusInfo
@@ -2848,20 +2886,23 @@ static MagickPassFail ModifyCache(Image *image)
               /*
                 More than one reference, clone the pixel cache.
               */
-              nexus_info=(*cache_info->nexus_info);
-              status=ClonePixelCache(&clone_image,image);
+              nexus_info=(*original_cache_info->nexus_info);
+              status=ClonePixelCache(image,&modify_image);
               if (status != MagickFail)
                 {
                   if ((nexus_info.columns != 0) && (nexus_info.rows != 0))
-                    if (AcquireImagePixels(&clone_image,nexus_info.x,nexus_info.y,
-                                           nexus_info.columns,nexus_info.rows,&image->exception)
+                    if (AcquireImagePixels(&modify_image,nexus_info.x,nexus_info.y,
+                                           nexus_info.columns,nexus_info.rows,
+                                           &image->exception)
                         == (PixelPacket *) NULL)
                       status=MagickFail;
                 }
             }
         }
+      original_cache_info->reference_count--;
+      image->cache=modify_image.cache;
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  UnlockSemaphoreInfo(original_cache_info->reference_semaphore);
   return(status);
 }
 
@@ -3336,7 +3377,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
                             cache_info->filename);
       return(MagickPass);
     }
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->reference_semaphore);
   if ((cache_info->reference_count == 1) &&
       (cache_info->type != MemoryCache))
     {
@@ -3347,7 +3388,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       if (status == 0)
         {
           (void) strlcpy(cache_info->cache_filename,filename,MaxTextExtent);
-          LiberateSemaphoreInfo(&cache_info->semaphore);
+          UnlockSemaphoreInfo(cache_info->reference_semaphore);
           cache_info=(CacheInfo*) ReferenceCache(cache_info);
           *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -3355,7 +3396,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
           return(MagickPass);
         }
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->reference_semaphore);
   /*
     Clone persistent pixel cache.
   */
@@ -3711,12 +3752,12 @@ Cache ReferenceCache(Cache cache_info)
 {
   assert(cache_info != (_CacheInfoPtr_) NULL);
   assert(cache_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  LockSemaphoreInfo(cache_info->reference_semaphore);
   cache_info->reference_count++;
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),
                         "reference (reference count now %ld) %.1024s",
                         cache_info->reference_count, cache_info->filename);
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  UnlockSemaphoreInfo(cache_info->reference_semaphore);
   return(cache_info);
 }
 
@@ -3836,9 +3877,20 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
   View
     *view_info = (View *) view;
 
+  CacheInfo
+    *cache_info;
+
+  PixelPacket
+    *pixels;
+
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return(SetCacheNexus(view_info->image,x,y,columns,rows,view_info->id));
+#pragma omp critical (pixel_cache)
+  {
+    cache_info=(CacheInfo *) view_info->image->cache;
+    pixels=SetCacheNexus(view_info->image,x,y,columns,rows,view_info->id);
+  }
+  return pixels;
 }
 
 /*
@@ -4435,9 +4487,20 @@ MagickExport MagickPassFail SyncCacheView(ViewInfo *view)
   View
     *view_info = (View *) view;
 
+  CacheInfo
+    *cache_info;
+
+  MagickPassFail
+    status;
+
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return(SyncCacheNexus(view_info->image,view_info->id));
+#pragma omp critical (pixel_cache)
+  {
+    cache_info=(CacheInfo *) view_info->image->cache;
+    status=SyncCacheNexus(view_info->image,view_info->id);
+  }
+  return status;
 }
 
 /*

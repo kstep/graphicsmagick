@@ -40,7 +40,7 @@ extern "C" {
 
   /*****
    *
-   * Default View interfaces
+   * Default View interfaces (Not thread/OpenMP safe)
    *
    *****/
 
@@ -140,17 +140,15 @@ extern "C" {
 
   /****
    *
-   * Cache view interfaces.
+   * Cache view interfaces (OpenMP safe).
    *
    ****/
 
   /*
-    AcquireCacheView() obtains a pixel region from a cache view for read-only access.
+    OpenCacheView() opens a cache view.
   */
-  extern MagickExport const PixelPacket
-  *AcquireCacheView(const ViewInfo *view,
-                    const long x,const long y,const unsigned long columns,
-                    const unsigned long rows,ExceptionInfo *exception);
+  extern MagickExport ViewInfo
+  *OpenCacheView(Image *image);
 
   /*
     CloseCacheView() closes a cache view.
@@ -166,16 +164,18 @@ extern "C" {
                 const unsigned long columns,const unsigned long rows);
 
   /*
+    AcquireCacheView() obtains a pixel region from a cache view for read-only access.
+  */
+  extern MagickExport const PixelPacket
+  *AcquireCacheView(const ViewInfo *view,
+                    const long x,const long y,const unsigned long columns,
+                    const unsigned long rows,ExceptionInfo *exception);
+
+  /*
     GetCacheViewIndexes() returns the indexes associated with a cache view.
   */
   extern MagickExport IndexPacket
   *GetCacheViewIndexes(const ViewInfo *view);
-
-  /*
-     OpenCacheView() opens a view into the pixel cache.
-  */
-  extern MagickExport ViewInfo
-  *OpenCacheView(Image *image);
 
   /*
     SetCacheView() gets blank pixels from the pixel cache view.
@@ -192,7 +192,7 @@ extern "C" {
 
 
   /*
-    Stream interfaces.
+    Stream interfaces (not thread/OpenMP safe).
   */
   
   /*
@@ -258,7 +258,7 @@ extern "C" {
 
   /*
     ReferenceCache() increments the reference count associated with
-    the pixel cache.
+    the pixel cache.  Thread safe.
 
     Used only by CloneImage() and CloneImageInfo().
   */

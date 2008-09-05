@@ -21,6 +21,34 @@
 </tr>
 </table>
 <p>
+2008-09-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c: Exhuastive study of the pixel cache code
+        reveals that it is inscrutable and not implemented in a fashion
+        which enables useful multi-threading.  Therefore, the cache view
+        interfaces are now made OpenMP-safe via a global critical section.
+
+</UL>
+<p>
+2008-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_iterator.c: Reduce use of critical sections around
+        pixel cache to the bare minimum based on analysis and testing.
+        Unfortunately, testing shows that the pixel cache views are still
+        not 100% thread safe so the extra locking is still required.
+  <LI> magick/pixel_cache.c (ModifyCache): Make implementation thread
+        safe.  This required removing a thread-unsafe optimization from
+        Bill Radcliffe.<BR>
+  <LI> magick/command.c (BenchmarkImageCommand): Restore original
+        client name for each loop so that it is not extended further for
+        each iteration.<BR>
+  <LI> magick/semaphore.c (UnlockSemaphoreInfo): Decrement lock depth
+        under protection of the lock.
+
+</UL>
+<p>
 2008-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
