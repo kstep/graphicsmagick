@@ -6,9 +6,10 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20020718;11000900">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080725;18431100">
+	<META NAME="CHANGED" CONTENT="20080905;14513100">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
@@ -17,12 +18,12 @@
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #00B04F }
-		A:visited { color: #007B37 }
+		A:link { color: #00b04f }
+		A:visited { color: #007b37 }
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff" DIR="LTR">
+<BODY LANG="en-US" TEXT="#000000" LINK="#00b04f" VLINK="#007b37" BGCOLOR="#ffffff" DIR="LTR">
 <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0 RULES=ROWS STYLE="page-break-before: always">
 	<COL WIDTH=62*>
 	<COL WIDTH=194*>
@@ -121,7 +122,16 @@ every general purpose operating system that runs on 32-bit or 64-bit
 CPUs. <I>GraphicsMagick</I> is available for virtually any Unix or
 Unix-like system, including Linux. It also runs under <A HREF="INSTALL-windows.html">Windows</A>
 '98 and later ('98, ME, NT 4.0, 2000, and XP), and MacOS-X.</P>
-<P>Major developments in GraphicsMagick 1.2:</P>
+<P>Major developments in the works for GraphicsMagick 1.3:</P>
+<UL>
+	<LI><P>Algorithms are being re-written so that they are accelerated
+	via <A HREF="OpenMP.html">OpenMP</A>. OpenMP allows you to take
+	advantage of those extra cores in your multi-core/multi-CPU system
+	in order to dramatically reduce processing time.</P>
+	<LI><P>Additional operators are added for tasks like thresholding,
+	gamma correction, and adding noise.</P>
+</UL>
+<P>Major developments which appeared in GraphicsMagick 1.2:</P>
 <UL>
 	<LI><P>Stellar support for SMPTE DPX format as used by the motion
 	picture industry for film frames. <A HREF="motion-picture.html">Read

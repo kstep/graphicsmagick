@@ -2007,6 +2007,7 @@ TOP_EXTRA_DIST = \
 	INSTALL-windows.txt \
 	MISSION.txt \
 	NEWS.txt \
+	OpenMP.txt \
 	PLATFORMS.txt \
 	PROCESS.txt \
 	README.txt \
@@ -4465,18 +4466,19 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @HasRST2HTML_TRUE@RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
 @HasRST2HTML_TRUE@RST2HTML_TARGETS = \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/AUTHORS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/BUGS.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/BENCHMARKS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/contribute.html \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/BUGS.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/Copyright.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/development.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/FAQ.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/mission.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/NEWS.html \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/OpenMP.html \
 @HasRST2HTML_TRUE@	$(top_srcdir)/www/PLATFORMS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/README.html
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/README.html \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/contribute.html \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/development.html \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/mission.html
 
 
 # txt2html requires perl.
@@ -9819,6 +9821,10 @@ $(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
+
+# Build HTML version of OpenMP.txt
+$(top_srcdir)/www/OpenMP.html: $(top_srcdir)/OpenMP.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/OpenMP.txt $(top_srcdir)/www/OpenMP.html
 
 # Format C API documentation
 format_c_api_docs:

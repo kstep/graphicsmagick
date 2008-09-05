@@ -98,6 +98,7 @@ TOP_EXTRA_DIST = \
 	INSTALL-windows.txt \
 	MISSION.txt \
 	NEWS.txt \
+	OpenMP.txt \
 	PLATFORMS.txt \
 	PROCESS.txt \
 	README.txt \
@@ -254,18 +255,19 @@ if HasRST2HTML
 RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
 RST2HTML_TARGETS = \
 	$(top_srcdir)/www/AUTHORS.html \
-	$(top_srcdir)/www/BUGS.html \
 	$(top_srcdir)/www/BENCHMARKS.html \
-	$(top_srcdir)/www/contribute.html \
+	$(top_srcdir)/www/BUGS.html \
 	$(top_srcdir)/www/Copyright.html \
-	$(top_srcdir)/www/development.html \
 	$(top_srcdir)/www/FAQ.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
 	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/mission.html \
 	$(top_srcdir)/www/NEWS.html \
+	$(top_srcdir)/www/OpenMP.html \
 	$(top_srcdir)/www/PLATFORMS.html \
-	$(top_srcdir)/www/README.html
+	$(top_srcdir)/www/README.html \
+	$(top_srcdir)/www/contribute.html \
+	$(top_srcdir)/www/development.html \
+	$(top_srcdir)/www/mission.html
 endif # HasRST2HTML
 
 if WITH_PERL
@@ -334,6 +336,10 @@ $(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
+
+# Build HTML version of OpenMP.txt
+$(top_srcdir)/www/OpenMP.html: $(top_srcdir)/OpenMP.txt
+	$(RST2HTML_COMMAND) $(top_srcdir)/OpenMP.txt $(top_srcdir)/www/OpenMP.html
 
 # Format C API documentation
 format_c_api_docs:
