@@ -304,6 +304,22 @@ results in a performance penalty since if the pixels are in memory, it
 should be possible for the threads to access the memory with no locking
 at all. Testing shows that the pixel cache locking is not noticeable with
 medium and large images, but may be noticeable with thumbnail-sized images.</p>
+<p>The following is an example of per-core speed-up due to OpenMP on a
+four-core system.  All the pixel quantum values are divided by 2:</p>
+<pre class="literal-block">
+% for threads in 1 2 3 4
+do
+  env OMP_NUM_THREADS=$threads gm benchmark -duration 10 convert \
+    -size 2048x1080 -type truecolor 'xc:#f00' -operator all divide 2.0 null:
+done
+Results: 252 iter 10.02s user 10.01s total 25.17 iter/s (25.15 iter/s cpu)
+Results: 442 iter 18.75s user 10.00s total 44.20 iter/s (23.57 iter/s cpu)
+Results: 607 iter 26.92s user 10.01s total 60.64 iter/s (22.55 iter/s cpu)
+Results: 755 iter 33.78s user 10.01s total 75.42 iter/s (22.35 iter/s cpu)
+</pre>
+<p>Note that the &quot;iter/s cpu&quot; value is a measure of the number of iterations
+given the amount of reported CPU time consumed. It is a good way to
+compare relative efficiency.</p>
 <hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2008 GraphicsMagick Group</div>
@@ -314,7 +330,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-09-05 19:40 UTC.
+Generated on: 2008-09-06 00:31 UTC.
 
 </div>
 </body>
