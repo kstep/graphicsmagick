@@ -358,6 +358,96 @@ static MagickPassFail
 static void
   DestroyPixelStream(Image *);
 
+
+
+MagickExport void DestroyThreadViewSet(ThreadViewSet *view_set)
+{
+  unsigned int
+    i;
+  
+  if (view_set != (ThreadViewSet *) NULL)
+    {
+      if (view_set->views != (ViewInfo *) NULL)
+        {
+          for (i=0; i < view_set->nviews; i++)
+            {
+              if (view_set->views[i] != (ViewInfo *) NULL)
+                {
+                  CloseCacheView(view_set->views[i]);
+                  view_set->views[i]=(ViewInfo *) NULL;
+                }
+            }
+        }
+      view_set->nviews=0;
+      MagickFreeMemory(view_set->views);
+      MagickFreeMemory(view_set);
+    }
+}
+MagickExport ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
+{
+  ThreadViewSet
+    *view_set;
+  
+  unsigned int
+    i;
+  
+  MagickPassFail
+    status=MagickPass;
+  
+  view_set=MagickAllocateMemory(ThreadViewSet *,sizeof(ThreadViewSet));
+  if (view_set == (ThreadViewSet *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToAllocateCacheView);
+  /*
+    omp_get_max_threads() returns the # threads which will be used in team by default.
+    omp_get_num_threads() returns the # of threads in current team (1 in main thread).
+  */
+  view_set->nviews=omp_get_max_threads();
+  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
+  
+  view_set->views=MagickAllocateMemory(ViewInfo *,view_set->nviews*sizeof(ViewInfo *));
+  if (view_set->views == (ViewInfo *) NULL)
+    {
+      ThrowException(exception,CacheError,UnableToAllocateCacheView,
+                     image->filename);
+      status=MagickFail;
+    }
+
+  if (view_set->views != (ViewInfo *) NULL)
+    for (i=0; i < view_set->nviews; i++)
+      {
+        view_set->views[i]=OpenCacheView(image);
+        if (view_set->views[i] == (ViewInfo *) NULL)
+          {
+            ThrowException(exception,CacheError,UnableToAllocateCacheView,
+                           image->filename);
+            status=MagickFail;
+          }
+      }
+  
+  if (status == MagickFail)
+    {
+      DestroyThreadViewSet(view_set);
+      view_set=(ThreadViewSet *) NULL;
+    }
+
+  return view_set;
+}
+MagickExport  ViewInfo *AccessThreadView(ThreadViewSet *view_set)
+{
+  ViewInfo
+    *view;
+
+  unsigned int
+    thread_num=0;
+
+  thread_num=omp_get_thread_num();
+  assert(thread_num < view_set->nviews);
+  view=view_set->views[thread_num];
+
+  return view;
+}
+
 
 /*
 
@@ -749,17 +839,15 @@ MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
   const View
     *view_info = (const View *) view;
 
-  CacheInfo
-    *cache_info;
-
   const PixelPacket
     *pixels;
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  cache_info=(CacheInfo *) view_info->image->cache;
 #pragma omp critical (pixel_cache)
-  pixels=AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception);
+  {
+    pixels=AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception);
+  }
   return pixels;
 }
 
@@ -1604,7 +1692,7 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
+#pragma omp critical (pixel_cache_nexus)
   {
     nexus_info=cache_info->nexus_info+nexus;
     if (nexus_info->staging != (PixelPacket *) NULL)
@@ -2284,7 +2372,7 @@ static unsigned long GetNexus(Cache cache)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   assert(cache_info->nexus_info != (NexusInfo *) NULL);
-#pragma omp critical (pixel_cache)
+#pragma omp critical (pixel_cache_nexus)
   {
     for (id=1; id < (long) MaxCacheViews; id++)
       if (cache_info->nexus_info[id].available)
@@ -4907,3 +4995,4 @@ MagickExport MagickPassFail WriteStream(const ImageInfo *image_info,Image *image
   DestroyImageInfo(clone_info);
   return(status);
 }
+

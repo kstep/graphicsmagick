@@ -1,3 +1,8 @@
+2008-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/fx.c (ConvolveImage): Accelerate using OpenMP.
+	* magick/effect.c (AdaptiveThresholdImage): Accelerate using OpenMP.
+
 2008-09-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c: Exhuastive study of the pixel cache code

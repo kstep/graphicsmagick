@@ -190,6 +190,27 @@ extern "C" {
   extern MagickExport MagickPassFail
   SyncCacheView(ViewInfo *view);
 
+  /*
+    Simplified support for OpenMP thread view sets.
+  */
+  typedef struct _ThreadViewSet
+  { 
+    ViewInfo
+    *views;
+    
+    unsigned int
+    nviews;
+  } ThreadViewSet;
+
+  extern MagickExport void
+  DestroyThreadViewSet(ThreadViewSet *view_set);
+  
+  extern MagickExport ThreadViewSet
+  *AllocateThreadViewSet(Image *image,ExceptionInfo *exception);
+  
+  extern MagickExport ViewInfo
+  *AccessThreadView(ThreadViewSet *view_set);
+
 
   /*
     Stream interfaces (not thread/OpenMP safe).

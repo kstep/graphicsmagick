@@ -265,17 +265,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 %
 %
 */
+#define ConvolveImageText  "Convolving image...  "
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
-  const double *kernel,ExceptionInfo *exception)
+                                  const double *kernel,ExceptionInfo *exception)
 {
-#define ConvolveImageText  "  Convolving image...  "
-
-  DoublePixelPacket
-    pixel,
-    zero;
-
   double
-    normalize,
     *normal_kernel;
 
   Image
@@ -285,25 +279,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     width,
     y;
 
-  register const double
-    *k;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    i,
-    u,
-    v;
-
-  long
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned int
-    logging;
+  MagickPassFail
+    status;
 
   /*
     Initialize convolve image attributes.
@@ -315,107 +292,210 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   width=(long) order;
   if ((width % 2) == 0)
     ThrowImageException3(OptionError,UnableToConvolveImage,
-      KernelWidthMustBeAnOddNumber);
+                         KernelWidthMustBeAnOddNumber);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException3(OptionError,UnableToConvolveImage,
-      ImageSmallerThanKernelWidth);
-  convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
+                         ImageSmallerThanKernelWidth);
+  convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
   convolve_image->storage_class=DirectClass;
-  /*
-    Convolve image.
-  */
-  normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
-  if (normal_kernel == (double *) NULL)
-    {
-      DestroyImage(convolve_image);
-      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
-        MagickMsg(OptionError,UnableToConvolveImage));
-    }
-  normalize=0.0;
-  for (i=0; i < (width*width); i++)
-    normalize+=kernel[i];
-  if (AbsoluteValue(normalize) <= MagickEpsilon)
-    normalize=1.0;
-  normalize=1.0/normalize;
-  for (i=0; i < (width*width); i++)
   {
-    normal_kernel[i]=normalize*kernel[i];
-  }
+    /*
+      Build normalized kernel.
+    */
+    double
+      normalize;
+    
+    register long
+      i;
 
-  logging=LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  ConvolveImage with %ldx%ld kernel:",width,width);
-  if (logging)
+    normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
+    if (normal_kernel == (double *) NULL)
+      {
+        DestroyImage(convolve_image);
+        ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+                            MagickMsg(OptionError,UnableToConvolveImage));
+      }
+    normalize=0.0;
+    for (i=0; i < (width*width); i++)
+      normalize+=kernel[i];
+    if (AbsoluteValue(normalize) <= MagickEpsilon)
+      normalize=1.0;
+    normalize=1.0/normalize;
+    for (i=0; i < (width*width); i++)
+      {
+        normal_kernel[i]=normalize*kernel[i];
+      }
+  }
+  
+  if (LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "  ConvolveImage with %ldx%ld kernel:",width,width))
     {
+      /*
+        Log convolution matrix.
+      */
       char
         cell_text[13],
         row_text[65];
 
-      k=kernel;
-      for (v=0; v<width; v++)
-      {
-         *row_text='\0';
-         for (u=0; u<width; u++)
-         {
-           FormatString(cell_text,"%#12.4g",*k++);
-           (void) strlcat(row_text,cell_text,sizeof(cell_text));
-           if (u%5 == 4)
-             {
-                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                    "   %.64s", row_text);
-                *row_text='\0';
-             }
-         }
-         if (u > 5)
-           (void) strlcat(row_text,"\n",sizeof(row_text));
-         if (row_text[0] != '\0')
-           (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-               "   %.64s", row_text);
-      }
-    }
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) convolve_image->rows; y++)
-  {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
-      exception);
-    q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) convolve_image->columns; x++)
-      {
-        register const PixelPacket
-          *r=p;
+      const double
+        *k;
 
-        pixel=zero;
-        k=normal_kernel;
-        for (v=width; v > 0; v--)
+      long
+        u,
+        v;
+
+      k=kernel;
+      for (v=0; v < width; v++)
         {
+          *row_text='\0';
           for (u=0; u < width; u++)
-          {
-            pixel.red+=(*k)*r[u].red;
-            pixel.green+=(*k)*r[u].green;
-            pixel.blue+=(*k)*r[u].blue;
-            pixel.opacity+=(*k)*r[u].opacity;
-            k++;
-          }
-          r+=image->columns+width;
+            {
+              FormatString(cell_text,"%#12.4g",*k++);
+              (void) strlcat(row_text,cell_text,sizeof(cell_text));
+              if (u%5 == 4)
+                {
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                        "   %.64s", row_text);
+                  *row_text='\0';
+                }
+            }
+          if (u > 5)
+            (void) strlcat(row_text,"\n",sizeof(row_text));
+          if (row_text[0] != '\0')
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "   %.64s", row_text);
         }
-        q->red=RoundDoubleToQuantum(pixel.red);
-        q->green=RoundDoubleToQuantum(pixel.green);
-        q->blue=RoundDoubleToQuantum(pixel.blue);
-        q->opacity=RoundDoubleToQuantum(pixel.opacity);
-        p++;
-        q++;
+    }
+
+  status=MagickPass;
+  /*
+    Convolve image.
+  */
+  {
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
+    DoublePixelPacket
+      zero;
+
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(convolve_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
+      {
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        MagickFreeMemory(normal_kernel);
+        return (Image *) NULL;
       }
-    if (!SyncImagePixels(convolve_image))
-      break;
-    if (QuantumTick(y,convolve_image->rows))
-      if (!MagickMonitor(ConvolveImageText,y,convolve_image->rows,exception))
-        break;
+
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) convolve_image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        const PixelPacket
+          *p;
+    
+        PixelPacket
+          *q;
+
+        long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        read_view=AccessThreadView(read_view_set);
+        p=AcquireCacheView(read_view,-width/2,y-width/2,image->columns+width,width,
+                           exception);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,convolve_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) convolve_image->columns; x++)
+              {
+                DoublePixelPacket
+                  pixel;
+
+                const PixelPacket
+                  *r;
+
+                long
+                  u,
+                  v;
+
+                const double
+                  *k;
+
+                r=p;
+                pixel=zero;
+                k=normal_kernel;
+                for (v=width; v > 0; v--)
+                  {
+                    for (u=0; u < width; u++)
+                      {
+                        pixel.red+=(*k)*r[u].red;
+                        pixel.green+=(*k)*r[u].green;
+                        pixel.blue+=(*k)*r[u].blue;
+                        pixel.opacity+=(*k)*r[u].opacity;
+                        k++;
+                      }
+                    r+=image->columns+width;
+                  }
+                q->red=RoundDoubleToQuantum(pixel.red);
+                q->green=RoundDoubleToQuantum(pixel.green);
+                q->blue=RoundDoubleToQuantum(pixel.blue);
+                q->opacity=RoundDoubleToQuantum(pixel.opacity);
+                p++;
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&convolve_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(ConvolveImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   MagickFreeMemory(normal_kernel);
-  convolve_image->is_grayscale=image->is_grayscale;
+  if (MagickFail == status)
+    {
+      DestroyImage(convolve_image);
+      convolve_image=(Image *) NULL;
+    }
+  else
+    {
+      convolve_image->is_grayscale=image->is_grayscale;
+    }
   return(convolve_image);
 }
 

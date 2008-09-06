@@ -17,104 +17,6 @@
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
-
-typedef struct _ThreadViewSet
-{ 
-  ViewInfo
-    *views;
-
- unsigned int
-    nviews;
-} ThreadViewSet;
-
-static void DestroyThreadViewSet(ThreadViewSet *view_set)
-{
-  unsigned int
-    i;
-  
-  if (view_set != (ThreadViewSet *) NULL)
-    {
-      if (view_set->views != (ViewInfo *) NULL)
-        {
-          for (i=0; i < view_set->nviews; i++)
-            {
-              if (view_set->views[i] != (ViewInfo *) NULL)
-                {
-                  CloseCacheView(view_set->views[i]);
-                  view_set->views[i]=(ViewInfo *) NULL;
-                }
-            }
-        }
-      view_set->nviews=0;
-      MagickFreeMemory(view_set->views);
-      MagickFreeMemory(view_set);
-    }
-}
-static ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
-{
-  ThreadViewSet
-    *view_set;
-  
-  unsigned int
-    i;
-  
-  MagickPassFail
-    status=MagickPass;
-  
-  view_set=MagickAllocateMemory(ThreadViewSet *,sizeof(ThreadViewSet));
-  if (view_set == (ThreadViewSet *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-                      UnableToAllocateCacheView);
-  /*
-    omp_get_max_threads() returns the # threads which will be used in team by default.
-    omp_get_num_threads() returns the # of threads in current team (1 in main thread).
-  */
-  view_set->nviews=omp_get_max_threads();
-  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
-  
-  view_set->views=MagickAllocateMemory(ViewInfo *,view_set->nviews*sizeof(ViewInfo *));
-  if (view_set->views == (ViewInfo *) NULL)
-    {
-      ThrowException(exception,CacheError,UnableToAllocateCacheView,
-                     image->filename);
-      status=MagickFail;
-    }
-
-  if (view_set->views != (ViewInfo *) NULL)
-    for (i=0; i < view_set->nviews; i++)
-      {
-        view_set->views[i]=OpenCacheView(image);
-        if (view_set->views[i] == (ViewInfo *) NULL)
-          {
-            ThrowException(exception,CacheError,UnableToAllocateCacheView,
-                           image->filename);
-            status=MagickFail;
-          }
-      }
-  
-  if (status == MagickFail)
-    {
-      DestroyThreadViewSet(view_set);
-      view_set=(ThreadViewSet *) NULL;
-    }
-
-  return view_set;
-}
-static ViewInfo *AccessThreadView(ThreadViewSet *view_set)
-{
-  ViewInfo
-    *view;
-
-  unsigned int
-    thread_num=0;
-
-  thread_num=omp_get_thread_num();
-  assert(thread_num < view_set->nviews);
-  view=view_set->views[thread_num];
-
-  return view;
-}
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,7 +153,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 #pragma omp parallel for schedule(static,64)
   for (row=y; row < (long) (y+rows); row++)
     {
-      MagickBool
+      MagickPassFail
         thread_status;
 
       const PixelPacket

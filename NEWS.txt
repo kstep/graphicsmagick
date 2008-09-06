@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on August 27, 2008
+This file was last updated on September 6, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -87,11 +87,13 @@ Performance Improvements:
     - Colorspace transformation (-colorspace).
     - Compare images ('compare' command).
     - Composition ('composite' command).
+    - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
     - Contrast adjust (-contrast).
     - Depth setting (-depth, -operator depth).
     - Equalize (-equalize).
     - Gamma adjust (-gamma, -operator gamma).
     - Levels adjust image (-level).
+    - Local adaptive threshold (-lat).
     - Modulate image (-modulate).
     - Negate image (-negate).
     - Normalize image (-normalize).

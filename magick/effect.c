@@ -86,13 +86,11 @@
 */
 #define AdaptiveThresholdImageText  "Adaptive threshold the image...  "
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
-  const unsigned long width,const unsigned long height,
-  const double offset,ExceptionInfo *exception)
+                                           const unsigned long width,
+                                           const unsigned long height,
+                                           const double offset,
+                                           ExceptionInfo *exception)
 {
-  DoublePixelPacket
-    aggregate,
-    mean,
-    zero;
 
   Image
     *threshold_image;
@@ -100,17 +98,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   long
     y;
 
-  register const PixelPacket
-    *p,
-    *r;
-
-  register long
-    x,
-    u,
-    v;
-
-  register PixelPacket
-    *q;
+  MagickPassFail
+    status;
 
   /*
     Initialize thresholded image attributes.
@@ -121,57 +110,131 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   assert(exception->signature == MagickSignature);
   if ((image->columns < width) || (image->rows < height))
     ThrowImageException3(OptionError,UnableToThresholdImage,
-      ImageSmallerThanRadius);
+                         ImageSmallerThanRadius);
   threshold_image=CloneImage(image,0,0,True,exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
   if (image->is_monochrome)
     return threshold_image;
   (void) SetImageType(threshold_image,TrueColorType);
+  status=MagickPass;
   /*
-    Threshold each row of the image.
+    Adaptive threshold image.
   */
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,-(long) width/2,y-height/2,image->columns+width,
-      height,exception);
-    q=SetImagePixels(threshold_image,0,y,threshold_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      r=p;
-      aggregate=zero;
-      for (v=0; v < (long) height; v++)
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
+    DoublePixelPacket
+      zero;
+
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(threshold_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
       {
-        for (u=0; u < (long) width; u++)
-        {
-          aggregate.red+=r[u].red;
-          aggregate.green+=r[u].green;
-          aggregate.blue+=r[u].blue;
-          aggregate.opacity+=r[u].opacity;
-        }
-        r+=image->columns+width;
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        return (Image *) NULL;
       }
-      mean.red=aggregate.red/(width*height)+offset;
-      mean.green=aggregate.green/(width*height)+offset;
-      mean.blue=aggregate.blue/(width*height)+offset;
-      mean.opacity=aggregate.opacity/(width*height)+offset;
-      q->red=q->red <= mean.red ? 0 : MaxRGB;
-      q->green=q->green <= mean.green ? 0 : MaxRGB;
-      q->blue=q->blue <= mean.blue ? 0 : MaxRGB;
-      q->opacity=q->opacity <= mean.opacity ? 0 : MaxRGB;
-      p++;
-      q++;
-    }
-    if (!SyncImagePixels(threshold_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(AdaptiveThresholdImageText,y,image->rows,exception))
-        break;
+
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        const PixelPacket
+          *p;
+
+        PixelPacket
+          *q;
+
+        long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        read_view=AccessThreadView(read_view_set);
+        p=AcquireCacheView(read_view,-(long) width/2,y-height/2,image->columns+width,
+                           height,exception);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,threshold_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) image->columns; x++)
+              {
+                DoublePixelPacket
+                  pixel;
+
+                const PixelPacket
+                  *r;
+
+                long
+                  u,
+                  v;
+
+                r=p;
+                pixel=zero;
+                for (v=0; v < (long) height; v++)
+                  {
+                    for (u=0; u < (long) width; u++)
+                      {
+                        pixel.red+=r[u].red;
+                        pixel.green+=r[u].green;
+                        pixel.blue+=r[u].blue;
+                        pixel.opacity+=r[u].opacity;
+                      }
+                    r+=image->columns+width;
+                  }
+
+                pixel.red=pixel.red/(width*height)+offset;
+                pixel.green=pixel.green/(width*height)+offset;
+                pixel.blue=pixel.blue/(width*height)+offset;
+                pixel.opacity=pixel.opacity/(width*height)+offset;
+
+                q->red=q->red <= pixel.red ? 0 : MaxRGB;
+                q->green=q->green <= pixel.green ? 0 : MaxRGB;
+                q->blue=q->blue <= pixel.blue ? 0 : MaxRGB;
+                q->opacity=q->opacity <= pixel.opacity ? 0 : MaxRGB;
+                p++;
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&threshold_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(AdaptiveThresholdImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
-  if (y < (long) image->rows)
+  if (MagickFail == status)
     {
       DestroyImage(threshold_image);
       threshold_image=(Image *) NULL;
