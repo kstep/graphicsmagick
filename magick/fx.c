@@ -1069,6 +1069,39 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %
 */
+static MagickPassFail
+SolarizeImagePixelsCB(void *mutable_data,         /* User provided mutable data */
+                      const void *immutable_data, /* User provided immutable data */
+                      Image *image,               /* Modify image */
+                      PixelPacket *pixels,        /* Pixel row */
+                      IndexPacket *indexes,       /* Pixel row indexes */
+                      const long npixels,         /* Number of pixels in row */
+                      ExceptionInfo *exception)   /* Exception report */
+{
+
+  const Quantum
+    threshold = *((const double *) immutable_data);
+
+  register long
+    i;  
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      pixels[i].red=(pixels[i].red > threshold ?
+                     MaxRGB-pixels[i].red : pixels[i].red);
+      pixels[i].green=(pixels[i].green > threshold ?
+                       MaxRGB-pixels[i].green : pixels[i].green);
+      pixels[i].blue=(pixels[i].blue > threshold ?
+                      MaxRGB-pixels[i].blue : pixels[i].blue);
+    }
+
+  return MagickPass;
+}
 MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
@@ -1100,34 +1133,11 @@ MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
       /*
         Solarize DirectClass packets.
       */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          {
-            status=MagickFail;
-            break;
-          }
-        for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=(Quantum) (q->red > threshold ? MaxRGB-q->red : q->red);
-          q->green=(Quantum)
-            (q->green > threshold ? MaxRGB-q->green : q->green);
-          q->blue=(Quantum) (q->blue > threshold ? MaxRGB-q->blue : q->blue);
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          {
-            status=MagickFail;
-            break;
-          }
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SolarizeImageText,y,image->rows,&image->exception))
-            {
-              status=MagickFail;
-              break;
-            }
-      }
+      status=PixelIterateMonoModify(SolarizeImagePixelsCB,
+                                    NULL,
+                                    SolarizeImageText,
+                                    NULL,&threshold,0,0,image->columns,image->rows,
+                                    image,&image->exception);
       break;
     }
     case PseudoClass:
@@ -1135,15 +1145,13 @@ MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
       /*
         Solarize PseudoClass packets.
       */
-      for (i=0; i < (long) image->colors; i++)
-      {
-        image->colormap[i].red=(Quantum) (image->colormap[i].red > threshold ?
-          MaxRGB-image->colormap[i].red : image->colormap[i].red);
-        image->colormap[i].green=(Quantum) (image->colormap[i].green > threshold ?
-          MaxRGB-image->colormap[i].green : image->colormap[i].green);
-        image->colormap[i].blue=(Quantum) (image->colormap[i].blue > threshold ?
-          MaxRGB-image->colormap[i].blue : image->colormap[i].blue);
-      }
+      SolarizeImagePixelsCB(0,
+                            &threshold,
+                            image,
+                            image->colormap,
+                            (IndexPacket *) NULL,
+                            image->colors,
+                            &image->exception);
       status &= SyncImage(image);
       break;
     }

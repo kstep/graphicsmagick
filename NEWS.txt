@@ -103,6 +103,7 @@ Performance Improvements:
     - Operators (-operator)
     - Profile adjust (ICC) (-profile)
     - Resize image (-resize)
+    - Solarize image (-solarize)
     - Statistics computation (identify -verbose)
     - Threshold channel (-threshold, -operator threshold)
     - UnsharpMaskImage (-unsharp)
