@@ -127,7 +127,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
                      ExceptionInfo *exception)
 {
 
-  MagickPassFail
+  volatile MagickPassFail
     status = MagickPass;
 
   register long
@@ -267,7 +267,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
                        Image *image,
                        ExceptionInfo *exception)
 {
-  MagickPassFail
+  volatile MagickPassFail
     status = MagickPass;
 
   register long
@@ -426,7 +426,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                      const long second_y,
                      ExceptionInfo *exception)
 {
-  MagickPassFail
+  volatile MagickPassFail
     status = MagickPass;
 
   register long
@@ -606,7 +606,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
                                ExceptionInfo *exception,
                                MagickBool set)
 {
-  MagickPassFail
+  volatile MagickPassFail
     status = MagickPass;
 
   register long
@@ -924,7 +924,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
                                  ExceptionInfo *exception,
                                  MagickBool set)
 {
-  MagickPassFail
+  volatile MagickPassFail
     status = MagickPass;
 
   register long

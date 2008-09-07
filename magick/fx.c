@@ -302,7 +302,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     width,
     y;
 
-  MagickPassFail
+  volatile MagickPassFail
     status;
 
   /*
@@ -899,7 +899,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *read_view_set,
     *write_view_set;
 
-  MagickPassFail
+  volatile MagickPassFail
     status=MagickPass;
 
   /*
@@ -1106,18 +1106,8 @@ MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
-  long
-    y;
-
-  register long
-    i,
-    x;
-
   unsigned int
     is_grayscale;
-
-  register PixelPacket
-    *q;
 
   MagickPassFail
     status=MagickPass;
@@ -1551,7 +1541,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %
 */
 MagickExport Image *WaveImage(const Image *image,const double amplitude,
-  const double wave_length,ExceptionInfo *exception)
+                              const double wave_length,ExceptionInfo *exception)
 {
 #define WaveImageText  "  Wave image...  "
 

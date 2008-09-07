@@ -98,7 +98,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   long
     y;
 
-  MagickPassFail
+  volatile MagickPassFail
     status;
 
   /*
