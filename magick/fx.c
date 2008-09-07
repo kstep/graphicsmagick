@@ -881,16 +881,9 @@ MagickExport Image *MorphImages(const Image *image,
 */
 #define PaintHistSize 256
 MagickExport Image *OilPaintImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+                                  ExceptionInfo *exception)
 {
 #define OilPaintImageTag  "OilPaint/Image"
-
-  const PixelPacket
-    *s;
-
-  unsigned long
-    count,
-    *histogram;
 
   Image
     *paint_image;
@@ -899,15 +892,15 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     width,
     y;
 
-  register const PixelPacket
-    *p,
-    *r;
+  unsigned long
+    row_count=0;
+  
+  ThreadViewSet
+    *read_view_set,
+    *write_view_set;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Initialize painted image attributes.
@@ -919,77 +912,131 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException3(OptionError,UnableToPaintImage,
-      ImageSmallerThanRadius);
+                         ImageSmallerThanRadius);
+
   paint_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageType(paint_image,TrueColorType);
-  /*
-    Allocate histogram and scanline.
-  */
-  histogram=MagickAllocateMemory(unsigned long *,(PaintHistSize)*sizeof(unsigned long));
-  if (histogram == (unsigned long *) NULL)
+
+  read_view_set=AllocateThreadViewSet((Image *) image,exception);
+  write_view_set=AllocateThreadViewSet(paint_image,exception);
+  if ((read_view_set == (ThreadViewSet *) NULL) ||
+      (write_view_set == (ThreadViewSet *) NULL))
     {
+      DestroyThreadViewSet(read_view_set);
+      DestroyThreadViewSet(write_view_set);
       DestroyImage(paint_image);
-      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
-        MagickMsg(OptionError,UnableToOilPaintImage));
+      return (Image *) NULL;
     }
+
+  (void) SetImageType(paint_image,TrueColorType);
+
   /*
     Paint each row of the image.
   */
+#pragma omp parallel for schedule(static,64)
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
-      exception);
-    q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=(long) image->columns; x > 0; x--)
     {
-      register long
-        v;
+      ViewInfo
+        *read_view,
+        *write_view;
 
-      /*
-        Determine most frequent color.
-      */
-      count=0;
-      (void) memset(histogram,0,(PaintHistSize)*sizeof(unsigned long));
-      r=p++;
-      s=r;
-      for (v=width; v > 0; v--)
-      {
-        register long
-          u;
+      const PixelPacket
+        *p,
+        *r;
+    
+      PixelPacket
+        *q;
+    
+      long
+        x;
 
-        register const PixelPacket
-          *ru;
+      const PixelPacket
+        *s;
 
-        ru=r;
-        for (u=width; u > 0; u--)
+      MagickBool
+        thread_status;
+      
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      read_view=AccessThreadView(read_view_set);
+      p=AcquireCacheView(read_view,-width/2,y-width/2,image->columns+width,width,
+                         exception);
+      write_view=AccessThreadView(write_view_set);
+      q=SetCacheView(write_view,0,y,paint_image->columns,1);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
         {
-          register unsigned long
-            *hp;
-
-          hp=histogram+ScaleQuantumToChar(PixelIntensityToQuantum(ru));
-          (*hp)++;
-          if (*hp > count)
+          for (x=(long) image->columns; x > 0; x--)
             {
-              s=ru;
-              count=*hp;
+              long
+                v;
+
+              unsigned long
+                count;
+
+              unsigned int
+                histogram[PaintHistSize];
+
+              /*
+                Determine most frequent color.
+              */
+              count=0;
+              (void) memset(histogram,0,sizeof(histogram));
+              r=p++;
+              s=r;
+              for (v=width; v > 0; v--)
+                {
+                  register long
+                    u;
+
+                  register const PixelPacket
+                    *ru;
+
+                  ru=r;
+                  for (u=width; u > 0; u--)
+                    {
+                      register unsigned int
+                        *hp;
+
+                      hp=histogram+ScaleQuantumToChar(PixelIntensityToQuantum(ru));
+                      (*hp)++;
+                      if (*hp > count)
+                        {
+                          s=ru;
+                          count=*hp;
+                        }
+                      ru++;
+                    }
+                  r+=image->columns+width;
+                }
+              *q++=(*s);
             }
-          ru++;
+          if (!SyncCacheView(write_view))
+            {
+              thread_status=MagickFail;
+              CopyException(exception,&paint_image->exception);
+            }
+
         }
-        r+=image->columns+width;
+#pragma omp critical
+      {
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitor(OilPaintImageTag,row_count,image->rows,exception))
+            thread_status=MagickFail;
+          
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
-      *q++=(*s);
     }
-    if (!SyncImagePixels(paint_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(OilPaintImageTag,y,image->rows,exception))
-        break;
-  }
-  MagickFreeMemory(histogram);
+
+  DestroyThreadViewSet(write_view_set);
+  DestroyThreadViewSet(read_view_set);
+  
   paint_image->is_grayscale=image->is_grayscale;
   return(paint_image);
 }

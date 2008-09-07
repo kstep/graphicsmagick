@@ -2,6 +2,7 @@
 
 	* magick/fx.c (ColorizeImage): Re-implement using pixel iterators.
 	(MorphImages): Re-implement using pixel iterators.
+	(OilPaintImage): Accelerate using OpenMP.
 
 2008-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
