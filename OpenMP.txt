@@ -19,8 +19,7 @@ Unfortunately, some older multi-CPU hardware is more suitable for
 multi-processing than multi-threading. Recent multi-core chipsets from
 Intel and AMD perform very well with OpenMP. The operating system makes a
 difference when it comes to OpenMP acceleration, with Linux and Solaris
-working exceptionally well, and FreeBSD and Apple's OS-X working quite
-poorly.
+working exceptionally well, and FreeBSD and Apple's OS-X working poorly.
 
 Most image processing routines are comprised of loops which iterate
 through the image pixels, image rows, or image regions. These loops are
@@ -83,8 +82,8 @@ four-core system.  All the pixel quantum values are divided by 2::
   Results: 755 iter 33.78s user 10.01s total 75.42 iter/s (22.35 iter/s cpu)
 
 Note that the "iter/s cpu" value is a measure of the number of iterations
-given the amount of reported CPU time consumed. It is a good way to
-compare relative efficiency.
+given the amount of reported CPU time consumed. It is an effective
+measure of relative efficacy.
 
 --------------------------------------------------------------------------
 

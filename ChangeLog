@@ -1,7 +1,6 @@
 2008-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/fx.c (ColorizeImagePixelsCB): Re-implement using pixel
-	iterators.
+	* magick/fx.c (ColorizeImage): Re-implement using pixel iterators.
 
 2008-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
