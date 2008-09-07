@@ -44,6 +44,7 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
@@ -146,32 +147,71 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 %
 %
 */
+typedef struct _ColorizeImagePixelsOptions
+{
+  DoublePixelPacket amount;
+  DoublePixelPacket color;
+} ColorizeImagePixelsOptions;
+static MagickPassFail
+ColorizeImagePixelsCB(void *mutable_data,                /* User provided mutable data */
+                      const void *immutable_data,        /* User provided immutable data */
+                      const Image *source_image,         /* Source image */
+                      const PixelPacket *source_pixels,  /* Pixel row in source image */
+                      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                      Image *new_image,                  /* New image */
+                      PixelPacket *new_pixels,           /* Pixel row in new image */
+                      IndexPacket *new_indexes,          /* Pixel row indexes in new image */
+                      const long npixels,                /* Number of pixels in row */
+                      ExceptionInfo *exception           /* Exception report */
+                      )
+{
+  ColorizeImagePixelsOptions
+    options = *((const ColorizeImagePixelsOptions *) immutable_data);
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(source_image);
+  ARG_NOT_USED(source_indexes);
+  ARG_NOT_USED(new_image);
+  ARG_NOT_USED(new_indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      new_pixels[i].red=(Quantum)
+        ((source_pixels[i].red*(100.0-options.amount.red)+
+          options.color.red*options.amount.red)/100.0);
+      new_pixels[i].green=(Quantum)
+        ((source_pixels[i].green*(100.0-options.amount.green)+
+          options.color.green*options.amount.green)/100.0);
+      new_pixels[i].blue=(Quantum)
+        ((source_pixels[i].blue*(100.0-options.amount.blue)+
+          options.color.blue*options.amount.blue)/100.0);
+      new_pixels[i].opacity=(Quantum)
+        ((source_pixels[i].opacity*(100.0-options.amount.opacity)+
+          options.color.opacity*options.amount.opacity)/100.0);
+    }
+
+  return MagickPass;
+}
 MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
 #define ColorizeImageText  "  Colorize the image...  "
 
-  DoublePixelPacket
-    pixel;
+  ColorizeImagePixelsOptions
+    options;
 
   Image
     *colorize_image;
 
   long
-    count,
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
+    count;
 
   unsigned int
     is_grayscale;
-
-  register PixelPacket
-    *q;
 
   /*
     Allocate colorized image.
@@ -188,50 +228,33 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   if (opacity == (const char *) NULL)
     return(colorize_image);
   /*
-    Determine RGB values of the pen color.
+    Determine percentage RGB values of the pen color.
   */
-  pixel.red=100.0;
-  pixel.green=100.0;
-  pixel.blue=100.0;
-  pixel.opacity=0.0;
+  options.amount.red=100.0;
+  options.amount.green=100.0;
+  options.amount.blue=100.0;
+  options.amount.opacity=0.0;
   count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf%*[/,]%lf",
-    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
+    &options.amount.red,&options.amount.green,&options.amount.blue,&options.amount.opacity);
   if (count == 1)
     {
-      if (pixel.red == 0.0)
+      if (options.amount.red == 0.0)
         return(colorize_image);
-      pixel.green=pixel.red;
-      pixel.blue=pixel.red;
-      pixel.opacity=pixel.red;
+      options.amount.green=options.amount.red;
+      options.amount.blue=options.amount.red;
+      options.amount.opacity=options.amount.red;
     }
+  options.color.red=target.red;
+  options.color.green=target.green;
+  options.color.blue=target.blue;
+  options.color.opacity=target.opacity;
   /*
     Colorize DirectClass image.
   */
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(colorize_image,0,y,colorize_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q->red=(Quantum)
-        ((p->red*(100.0-pixel.red)+target.red*pixel.red)/100.0);
-      q->green=(Quantum)
-        ((p->green*(100.0-pixel.green)+target.green*pixel.green)/100.0);
-      q->blue=(Quantum)
-        ((p->blue*(100.0-pixel.blue)+target.blue*pixel.blue)/100.0);
-      q->opacity=(Quantum)
-        ((p->opacity*(100.0-pixel.opacity)+target.opacity*pixel.opacity)/100.0);
-      p++;
-      q++;
-    }
-    if (!SyncImagePixels(colorize_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ColorizeImageText,y,image->rows,exception))
-        break;
-  }
+  (void) PixelIterateDualNew(ColorizeImagePixelsCB,NULL,
+                             ColorizeImageText,NULL,&options,
+                             image->columns,image->rows,image,0,0,
+                             colorize_image,0,0,&colorize_image->exception);
   colorize_image->is_grayscale=(is_grayscale && IsGray(target));
   return(colorize_image);
 }

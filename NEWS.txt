@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 6, 2008
+This file was last updated on September 7, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -82,27 +82,28 @@ Performance Improvements:
 
   * OpenMP (parallel processing) improvements for these functions:
 
-    - Add noise (+noise).
-    - Channel import, export, and depth-setting (-channel, -depth).
-    - Colorspace transformation (-colorspace).
-    - Compare images ('compare' command).
-    - Composition ('composite' command).
+    - Add noise (+noise)
+    - Channel import, export, and depth-setting (-channel, -depth)
+    - Colorize (-colorize)
+    - Colorspace transformation (-colorspace)
+    - Compare images ('compare' command)
+    - Composition ('composite' command)
     - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
-    - Contrast adjust (-contrast).
-    - Depth setting (-depth, -operator depth).
-    - Equalize (-equalize).
-    - Gamma adjust (-gamma, -operator gamma).
-    - Levels adjust image (-level).
-    - Local adaptive threshold (-lat).
-    - Modulate image (-modulate).
-    - Negate image (-negate).
-    - Normalize image (-normalize).
-    - Operators (-operator).
-    - Profile adjust (ICC) (-profile).
-    - Resize image (-resize).
-    - Statistics computation (identify -verbose).
-    - Threshold channel (-threshold, -operator threshold).
-    - UnsharpMaskImage (-unsharp).
+    - Contrast adjust (-contrast)
+    - Depth setting (-depth, -operator depth)
+    - Equalize (-equalize)
+    - Gamma adjust (-gamma, -operator gamma)
+    - Levels adjust image (-level)
+    - Local adaptive threshold (-lat)
+    - Modulate image (-modulate)
+    - Negate image (-negate)
+    - Normalize image (-normalize)
+    - Operators (-operator)
+    - Profile adjust (ICC) (-profile)
+    - Resize image (-resize)
+    - Statistics computation (identify -verbose)
+    - Threshold channel (-threshold, -operator threshold)
+    - UnsharpMaskImage (-unsharp)
 
   * Improved coder management performance.
 
