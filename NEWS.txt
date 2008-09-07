@@ -96,6 +96,7 @@ Performance Improvements:
     - Levels adjust image (-level)
     - Local adaptive threshold (-lat)
     - Modulate image (-modulate)
+    - Morph image (-morph)
     - Negate image (-negate)
     - Normalize image (-normalize)
     - Operators (-operator)

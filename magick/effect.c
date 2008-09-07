@@ -139,6 +139,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       {
         DestroyThreadViewSet(read_view_set);
         DestroyThreadViewSet(write_view_set);
+        DestroyImage(threshold_image);
         return (Image *) NULL;
       }
 

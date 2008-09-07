@@ -199,7 +199,7 @@ ColorizeImagePixelsCB(void *mutable_data,                /* User provided mutabl
 MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
-#define ColorizeImageText  "  Colorize the image...  "
+#define ColorizeImageText  "Colorize the image...  "
 
   ColorizeImagePixelsOptions
     options;
@@ -415,6 +415,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         DestroyThreadViewSet(read_view_set);
         DestroyThreadViewSet(write_view_set);
         MagickFreeMemory(normal_kernel);
+        DestroyImage(convolve_image);
         return (Image *) NULL;
       }
 
@@ -557,9 +558,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %
 */
 MagickExport Image *ImplodeImage(const Image *image,const double amount,
-  ExceptionInfo *exception)
+                                 ExceptionInfo *exception)
 {
-#define ImplodeImageText  "  Implode image...  "
+#define ImplodeImageText  "Implode image...  "
 
   double
     distance,
@@ -685,22 +686,63 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %
 %
 */
+typedef struct _MorphImagePixelsOptions
+{
+  double alpha;
+  double beta;
+} MorphImagePixelsOptions;
+static MagickPassFail
+MorphImagePixelsCB(void *mutable_data,                /* User provided mutable data */
+                   const void *immutable_data,        /* User provided immutable data */
+                   const Image *source_image,         /* Source image */
+                   const PixelPacket *source_pixels,  /* Pixel row in source image */
+                   const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                   Image *new_image,                  /* New image */
+                   PixelPacket *new_pixels,           /* Pixel row in new image */
+                   IndexPacket *new_indexes,          /* Pixel row indexes in new image */
+                   const long npixels,                /* Number of pixels in row */
+                   ExceptionInfo *exception           /* Exception report */
+                   )
+{
+  MorphImagePixelsOptions
+    options = *((const MorphImagePixelsOptions *) immutable_data);
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(source_image);
+  ARG_NOT_USED(source_indexes);
+  ARG_NOT_USED(new_image);
+  ARG_NOT_USED(new_indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      new_pixels[i].red=(Quantum) (options.alpha*new_pixels[i].red+
+                                   options.beta*source_pixels[i].red+0.5);
+      new_pixels[i].green=(Quantum) (options.alpha*new_pixels[i].green+
+                                     options.beta*source_pixels[i].green+0.5);
+      new_pixels[i].blue=(Quantum) (options.alpha*new_pixels[i].blue+
+                                    options.beta*source_pixels[i].blue+0.5);
+      new_pixels[i].opacity=(Quantum) (options.alpha*new_pixels[i].opacity+
+                                       options.beta*source_pixels[i].opacity+0.5);
+    }
+
+  return MagickPass;
+}
 MagickExport Image *MorphImages(const Image *image,
   const unsigned long number_frames,ExceptionInfo *exception)
 {
-#define MorphImageText  "  Morph image sequence...  "
+#define MorphImageText  "Morph image sequence...  "
 
-  double
-    alpha,
-    beta;
+  MorphImagePixelsOptions
+    options;
 
   Image
     *clone_image,
     *morph_image,
     *morph_images;
-
-  long
-    y;
 
   MonitorHandler
     handler;
@@ -708,15 +750,8 @@ MagickExport Image *MorphImages(const Image *image,
   register const Image
     *next;
 
-  register const PixelPacket
-    *p;
-
   register long
-    i,
-    x;
-
-  register PixelPacket
-    *q;
+    i;
 
   unsigned long
     scene;
@@ -762,14 +797,14 @@ MagickExport Image *MorphImages(const Image *image,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     for (i=0; i < (long) number_frames; i++)
     {
-      beta=((double) i+1.0)/(number_frames+1.0);
-      alpha=1.0-beta;
+      options.beta=((double) i+1.0)/(number_frames+1.0);
+      options.alpha=1.0-options.beta;
       clone_image=CloneImage(next,0,0,True,exception);
       if (clone_image == (Image *) NULL)
         break;
       morph_images->next=ZoomImage(clone_image,
-        (unsigned long) (alpha*next->columns+beta*next->next->columns+0.5),
-        (unsigned long) (alpha*next->rows+beta*next->next->rows+0.5),exception);
+        (unsigned long) (options.alpha*next->columns+options.beta*next->next->columns+0.5),
+        (unsigned long) (options.alpha*next->rows+options.beta*next->next->rows+0.5),exception);
       DestroyImage(clone_image);
       if (morph_images->next == (Image *) NULL)
         break;
@@ -784,24 +819,10 @@ MagickExport Image *MorphImages(const Image *image,
       if (morph_image == (Image *) NULL)
         break;
       (void) SetImageType(morph_images,TrueColorType);
-      for (y=0; y < (long) morph_images->rows; y++)
-      {
-        p=AcquireImagePixels(morph_image,0,y,morph_image->columns,1,exception);
-        q=GetImagePixels(morph_images,0,y,morph_images->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        for (x=0; x < (long) morph_images->columns; x++)
-        {
-          q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
-          q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
-          q->blue=(Quantum) (alpha*q->blue+beta*p->blue+0.5);
-          q->opacity=(Quantum) (alpha*q->opacity+beta*p->opacity+0.5);
-          p++;
-          q++;
-        }
-        if (!SyncImagePixels(morph_images))
-          break;
-      }
+      (void) PixelIterateDualNew(MorphImagePixelsCB,NULL,
+                                 MorphImageText,NULL,&options,
+                                 morph_images->columns,morph_images->rows,morph_image,0,0,
+                                 morph_images,0,0,exception);
       DestroyImage(morph_image);
     }
     if (i < (long) number_frames)
