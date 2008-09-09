@@ -284,7 +284,8 @@ static void CropToFitImage(Image **image,const double x_shear,
 static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   ExceptionInfo *exception)
 {
-#define RotateImageText  "  Rotate image...  "
+  char
+    message[MaxTextExtent];
 
   Image
     *rotate_image;
@@ -381,6 +382,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 0 degrees.
         */
+        (void) strlcpy(message,"Rotate image 0 degrees...",sizeof(message));
         for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -397,7 +399,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             if (!SyncImagePixels(rotate_image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+              if (!MagickMonitor(message,y,image->rows,exception))
                 break;
           }
         break;
@@ -407,6 +409,16 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 90 degrees.
         */
+        magick_int64_t
+          tile;
+
+        magick_uint64_t
+          total_tiles;
+
+        (void) strlcpy(message,"Rotate image 90 degrees...",sizeof(message));
+        total_tiles=(((image->rows/tile_height_max)+1)*
+                     ((image->columns/tile_width_max)+1));
+        tile=0;
         status=MagickPass;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -416,6 +428,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   dest_tile_x,
                   dest_tile_y;
               
+                tile++;
                 /*
                   Compute image region corresponding to tile.
                 */
@@ -488,6 +501,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                         break;
                       }
                   }
+                if (QuantumTick(tile,total_tiles))
+                  if (!MagickMonitor(message,tile,total_tiles,exception))
+                    status=MagickFail;
                 if (status == MagickFail)
                   break;
               }
@@ -504,6 +520,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 180 degrees.
         */
+        (void) strlcpy(message,"Rotate image 180 degrees...",sizeof(message));
         for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -523,7 +540,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             if (!SyncImagePixels(rotate_image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+              if (!MagickMonitor(message,y,image->rows,exception))
                 break;
           }
         page.x=(long) (page.width-rotate_image->columns-page.x);
@@ -535,6 +552,16 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 270 degrees.
         */
+        magick_int64_t
+          tile;
+
+        magick_uint64_t
+          total_tiles;
+
+        (void) strlcpy(message,"Rotate image 270 degrees...",sizeof(message));
+        total_tiles=(((image->rows/tile_height_max)+1)*
+                     ((image->columns/tile_width_max)+1));
+        tile=0;
         status=MagickPass;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -544,6 +571,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   dest_tile_x,
                   dest_tile_y;
 
+                tile++;
                 /*
                   Compute image region corresponding to tile.
                 */
@@ -616,6 +644,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                         break;
                       }
                   }
+                if (QuantumTick(tile,total_tiles))
+                  if (!MagickMonitor(message,tile,total_tiles,exception))
+                    status=MagickFail;
                 if (status == MagickFail)
                   break;
               }
