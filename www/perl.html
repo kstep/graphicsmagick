@@ -3,13 +3,14 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Perl API</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20030217;19430800">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040418;19152500">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20080909;10210600">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<STYLE TYPE="text/css">
 	<!--
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
@@ -22,13 +23,15 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR"><A NAME="contents"></A>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<P STYLE="margin-bottom: 0in"><A NAME="contents"></A><BR>
+</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Perl API -- PerlMagick</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>GraphicsMagick
+			Perl API -- PerlMagick</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -71,7 +74,7 @@
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Introduction</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Introduction</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -98,7 +101,7 @@
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Installation</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Installation</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -149,7 +152,7 @@ within your Perl scripts.</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic5" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Overview</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Overview</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -214,8 +217,8 @@ path in your PATH environment variable to work properly. For example,
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic6" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Example
-			Script</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Example
+			Script</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -229,7 +232,7 @@ path in your PATH environment variable to work properly. For example,
  $image = Graphics::Magick-&gt;new;
  $x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
  warn &quot;$x&quot; if &quot;$x&quot;;
- $x = $image-&gt;Crop(geometry=&gt;'100x100&quot;+1&quot;00&quot;+1&quot;00');
+ $x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
  warn &quot;$x&quot; if &quot;$x&quot;;
  $x = $image-&gt;Write('x.png');
  warn &quot;$x&quot; if &quot;$x&quot;;</PRE><BLOCKQUOTE>
@@ -252,7 +255,7 @@ this is done:
  undef $image-&gt;[x] if $image-&gt;[x]-&gt;Get('columns') &lt; 100;
  }
  $p = $image-&gt;[1];
- $p-&gt;Draw(stroke=&gt;'red', primitive=&gt;'rectangle', points=&gt;20,20 100,100');
+ $p-&gt;Draw(stroke=&gt;'red', primitive=&gt;'rectangle', points=&gt;'20,20 100,100');
  $q = $p-&gt;Montage();
  undef $image;
  $q-&gt;Write('x.miff');</PRE><BLOCKQUOTE>
@@ -283,8 +286,8 @@ include
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic7" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Read or
-			Write an Image</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Read or
+			Write an Image</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -406,8 +409,8 @@ For example, ReadImage() is an alias for method Read().</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Manipulate
-			an Image</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Manipulate
+			an Image</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -1402,8 +1405,8 @@ detailed description of these attributes.</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic9" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Set an
-			Image Attribute</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Set an
+			Image Attribute</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -2096,8 +2099,8 @@ documentation for a more detailed description of these attributes.</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic10" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Get an
-			Image Attribute</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Get an
+			Image Attribute</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -2415,8 +2418,8 @@ detailed description of these attributes.</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Create an
-			Image Montage</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Create an
+			Image Montage</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -2684,8 +2687,8 @@ detailed description of these attributes.</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic12" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Working
-			with Blobs</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Working
+			with Blobs</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -2768,8 +2771,8 @@ from the supplied blob:
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic13" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Miscellaneous
-			Methods</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Miscellaneous
+			Methods</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -2891,8 +2894,8 @@ example, PingImage() is an alias for method Ping().</BLOCKQUOTE>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic14" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Handling
-			Errors</FONT></FONT></B></P>
+			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>Handling
+			Errors</B></FONT></FONT></P>
 		</TD>
 	</TR>
 </TABLE>
