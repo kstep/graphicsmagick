@@ -47,6 +47,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/render.h"
+#include "magick/shear.h"
 #include "magick/utility.h"
 
 /*
@@ -457,7 +458,8 @@ MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresho
 %
 %
 */
-
+#define BlurImageColumnsText  "Blur image columns...  "
+#define BlurImageRowsText  "Blur image rows...  "
 static void BlurScanline(const double *kernel,const unsigned long width,
   const PixelPacket *source,PixelPacket *destination,
   const unsigned long columns)
@@ -618,10 +620,118 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
   return(width);
 }
 
-MagickExport Image *BlurImage(const Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
+static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
+                                         const unsigned long width,
+                                         const char *text,
+                                         ExceptionInfo *exception)
 {
-#define BlurImageText  "Blur image...  "
+  ThreadViewSet
+    *view_set;
+
+  MagickBool
+    is_grayscale;
+
+  volatile MagickPassFail
+    status=MagickPass;
+
+  is_grayscale=image->is_grayscale;
+  view_set=AllocateThreadViewSet((Image *) image,exception);
+  if (view_set == (ThreadViewSet *) NULL)
+    status=MagickFail;
+
+  if (status != MagickFail)
+    {
+      unsigned int
+        i,
+        views;
+
+      views=GetThreadViewSetAllocatedViews(view_set);
+      for (i=0; i < views; i++)
+        {
+          void
+            *scanline;
+
+          scanline=MagickAllocateMemory(PixelPacket *,image->columns*sizeof(PixelPacket));
+          if (scanline == (PixelPacket *) NULL)
+            {
+              ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+                             MagickMsg(OptionError,UnableToBlurImage));
+              status=MagickFail;
+              break;
+            }
+          else
+            {
+              AssignThreadViewData(view_set,i,scanline);
+            }
+        }
+    }
+
+  if (status != MagickFail)
+    {
+      unsigned long
+        row_count=0;
+
+      long
+        y;
+
+#pragma omp parallel for schedule(static,64)
+      for (y=0; y < (long) image->rows; y++)
+        {
+          ViewInfo
+            view;
+
+          register PixelPacket
+            *q;
+
+          PixelPacket
+            *scanline;
+
+          MagickBool
+            thread_status;
+
+          thread_status=status;
+          if (thread_status == MagickFail)
+            continue;
+  
+          scanline=AccessThreadViewData(view_set);
+          view=AccessThreadView(view_set);
+          q=GetCacheView(view,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            thread_status=MagickFail;
+
+          if (thread_status != MagickFail)
+            {
+              (void) memcpy(scanline,q,image->columns*sizeof(PixelPacket));
+              BlurScanline(kernel,width,scanline,q,image->columns);
+
+              if (!SyncCacheView(view))
+                {
+                  thread_status=MagickFail;
+                  CopyException(exception,&image->exception);
+                }
+            }
+#pragma omp critical
+          {
+            row_count++;
+            if (QuantumTick(row_count,image->rows))
+              if (!MagickMonitor(text,row_count,image->rows,exception))
+                thread_status=MagickFail;
+          
+            if (thread_status == MagickFail)
+              status=MagickFail;
+          }
+        }
+    }
+
+  DestroyThreadViewSet(view_set);
+  image->is_grayscale=is_grayscale;
+
+  return status;
+}
+
+MagickExport Image *BlurImage(const Image *original_image,const double radius,
+                              const double sigma,ExceptionInfo *exception)
+{
 
   double
     *kernel;
@@ -632,29 +742,14 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   int
     width;
 
-  long
-    y;
-
-  PixelPacket
-    *scanline;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned int
-    status;
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Get convolution matrix for the specified standard-deviation.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(original_image != (Image *) NULL);
+  assert(original_image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
@@ -668,13 +763,13 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       last_kernel=(double *) NULL;
       width=GetBlurKernel(3,sigma,&kernel);
       while ((long) (MaxRGB*kernel[0]) > 0)
-      {
-        if (last_kernel != (double *)NULL)
-          MagickFreeMemory(last_kernel);
-        last_kernel=kernel;
-        kernel=(double *) NULL;
-        width=GetBlurKernel(width+2,sigma,&kernel);
-      }
+        {
+          if (last_kernel != (double *)NULL)
+            MagickFreeMemory(last_kernel);
+          last_kernel=kernel;
+          kernel=(double *) NULL;
+          width=GetBlurKernel(width+2,sigma,&kernel);
+        }
       if (last_kernel != (double *) NULL)
         {
           MagickFreeMemory(kernel);
@@ -684,67 +779,36 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     }
   if (width < 3)
     ThrowImageException3(OptionError,UnableToBlurImage,
-      KernelRadiusIsTooSmall);
-  /*
-    Allocate blur image.
-  */
-  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
+                         KernelRadiusIsTooSmall);
+  
+  blur_image=RotateImage(original_image,90,exception);
   if (blur_image == (Image *) NULL)
-    {
-      MagickFreeMemory(kernel);
-      return((Image *) NULL);
-    }
-  blur_image->storage_class=DirectClass;
-  scanline=MagickAllocateMemory(PixelPacket *,image->rows*sizeof(PixelPacket));
-  if (scanline == (PixelPacket *) NULL)
-    {
-      DestroyImage(blur_image);
-      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
-        MagickMsg(OptionError,UnableToBlurImage))
-    }
-  /*
-    Blur the image rows.
-  */
-  for (y=0; y < (long) image->rows; y++)
+    status=MagickFail;
+
+  if (status != MagickFail)
+    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageColumnsText,exception);
+  
+  if (status != MagickFail)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(blur_image,0,y,image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    BlurScanline(kernel,width,p,q,image->columns);
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(y,blur_image->rows+blur_image->columns))
+    Image
+      *rotate_image;
+
+    rotate_image=RotateImage(blur_image,-90,exception);
+    if (rotate_image == (Image *) NULL)
+      status=MagickFail;
+
+    if (status != MagickFail)
       {
-        status=MagickMonitor(BlurImageText,y,blur_image->rows+
-          blur_image->columns,exception);
-        if (status == False)
-          break;
+        DestroyImage(blur_image);
+        blur_image=rotate_image;
       }
   }
-  /*
-    Blur the image columns.
-  */
-  for (x=0; x < (long) image->columns; x++)
-  {
-    q=GetImagePixels(blur_image,x,0,1,image->rows);
-    if (q == (PixelPacket *) NULL)
-      break;
-    (void) memcpy(scanline,q,image->rows*sizeof(PixelPacket));
-    BlurScanline(kernel,width,scanline,q,image->rows);
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      {
-        status=MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
-          blur_image->columns,exception);
-        if (status == False)
-          break;
-      }
-  }
-  MagickFreeMemory(scanline);
+
+  if (status != MagickFail)
+    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageRowsText,exception);
+
   MagickFreeMemory(kernel);
-  blur_image->is_grayscale=image->is_grayscale;
+  blur_image->is_grayscale=original_image->is_grayscale;
   return(blur_image);
 }
 
@@ -1923,6 +1987,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
   return(width);
 }
 
+#define MotionBlurImageText  "Motion blur image...  "
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
@@ -2041,7 +2106,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(BlurImageText,y,image->rows,exception))
+      if (!MagickMonitor(MotionBlurImageText,y,image->rows,exception))
         break;
   }
   MagickFreeMemory(kernel);

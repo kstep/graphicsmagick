@@ -378,6 +378,14 @@ MagickExport void DestroyThreadViewSet(ThreadViewSet *view_set)
                 }
             }
         }
+      if (view_set->view_data != (void *) NULL)
+        {
+          for (i=0; i < view_set->nviews; i++)
+            {
+              MagickFreeMemory(view_set->view_data[i]);
+            }
+          MagickFreeMemory(view_set->view_data);
+        }
       view_set->nviews=0;
       MagickFreeMemory(view_set->views);
       MagickFreeMemory(view_set);
@@ -424,6 +432,17 @@ MagickExport ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *ex
             status=MagickFail;
           }
       }
+
+  view_set->view_data=MagickAllocateMemory(void *,view_set->nviews*sizeof(void *));
+  if (view_set->view_data == (void *) NULL)
+    {
+      ThrowException(exception,CacheError,UnableToAllocateCacheView,
+                     image->filename);
+      status=MagickFail;
+    }
+
+  if (view_set->view_data != (void *) NULL)
+    (void) memset(view_set->view_data,0,view_set->nviews*sizeof(void *));
   
   if (status == MagickFail)
     {
@@ -433,7 +452,7 @@ MagickExport ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *ex
 
   return view_set;
 }
-MagickExport  ViewInfo *AccessThreadView(ThreadViewSet *view_set)
+MagickExport ViewInfo *AccessThreadView(ThreadViewSet *view_set)
 {
   ViewInfo
     *view;
@@ -446,6 +465,29 @@ MagickExport  ViewInfo *AccessThreadView(ThreadViewSet *view_set)
   view=view_set->views[thread_num];
 
   return view;
+}
+
+MagickExport void *AccessThreadViewData(ThreadViewSet *view_set)
+{
+  unsigned int
+    thread_num=0;
+
+  thread_num=omp_get_thread_num();
+  assert(thread_num < view_set->nviews);
+  return view_set->view_data[thread_num];
+}
+
+MagickExport void AssignThreadViewData(ThreadViewSet *view_set, unsigned int index, void *data)
+{
+  assert(index < view_set->nviews);
+  MagickFreeMemory(view_set->view_data[index]);
+  view_set->view_data[index]=data;
+}
+
+MagickExport unsigned int
+GetThreadViewSetAllocatedViews(ThreadViewSet *view_set)
+{
+  return view_set->nviews;
 }
 
 

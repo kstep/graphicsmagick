@@ -452,11 +452,11 @@
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 #undef LTDL_DLOPEN_DEPLIBS
 
-/* Define if dlopen(NULL) is able to resolve symbols from the main program. */
-#undef LTDL_DLOPEN_SELF_WORKS
-
 /* Define to the system default library search path. */
 #undef LT_DLSEARCH_PATH
+
+/* The archive extension */
+#undef LT_LIBEXT
 
 /* Define to the extension used for runtime loadable modules, say, ".so". */
 #undef LT_MODULE_EXT

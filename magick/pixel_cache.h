@@ -192,11 +192,15 @@ extern "C" {
 
   /*
     Simplified support for OpenMP thread view sets.
+    These interfaces are subject to change.
   */
   typedef struct _ThreadViewSet
   { 
     ViewInfo
     *views;
+
+    void
+    **view_data;
     
     unsigned int
     nviews;
@@ -211,6 +215,14 @@ extern "C" {
   extern MagickExport ViewInfo
   *AccessThreadView(ThreadViewSet *view_set);
 
+  extern MagickExport void
+  *AccessThreadViewData(ThreadViewSet *view_set);
+
+  extern MagickExport void
+  AssignThreadViewData(ThreadViewSet *view_set, unsigned int index, void *data);
+
+  extern MagickExport unsigned int
+  GetThreadViewSetAllocatedViews(ThreadViewSet *view_set);
 
   /*
     Stream interfaces (not thread/OpenMP safe).

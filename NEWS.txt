@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 7, 2008
+This file was last updated on September 8, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -83,6 +83,7 @@ Performance Improvements:
   * OpenMP (parallel processing) improvements for these functions:
 
     - Add noise (+noise)
+    - Blur (-blur)
     - Channel import, export, and depth-setting (-channel, -depth)
     - Colorize (-colorize)
     - Colorspace transformation (-colorspace)

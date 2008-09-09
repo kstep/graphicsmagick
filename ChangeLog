@@ -1,3 +1,7 @@
+2008-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (BlurImage): Accelerate using OpenMP.
+
 2008-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/fx.c (ColorizeImage): Re-implement using pixel iterators.
