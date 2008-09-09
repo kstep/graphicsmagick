@@ -6,9 +6,10 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
 	<META NAME="CREATED" CONTENT="20030217;19430800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080809;13492900">
+	<META NAME="CHANGED" CONTENT="20080909;10124300">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
 	<STYLE TYPE="text/css">
 	<!--
@@ -232,7 +233,7 @@ path in your PATH environment variable to work properly. For example,
  $image = Graphics::Magick-&gt;new;
  $x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
  warn &quot;$x&quot; if &quot;$x&quot;;
- $x = $image-&gt;Crop(geometry=&gt;'100x100&quot;+1&quot;00&quot;+1&quot;00');
+ $x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
  warn &quot;$x&quot; if &quot;$x&quot;;
  $x = $image-&gt;Write('x.png');
  warn &quot;$x&quot; if &quot;$x&quot;;</PRE><BLOCKQUOTE>
@@ -255,7 +256,7 @@ this is done:
  undef $image-&gt;[x] if $image-&gt;[x]-&gt;Get('columns') &lt; 100;
  }
  $p = $image-&gt;[1];
- $p-&gt;Draw(stroke=&gt;'red', primitive=&gt;'rectangle', points=&gt;20,20 100,100');
+ $p-&gt;Draw(stroke=&gt;'red', primitive=&gt;'rectangle', points=&gt;'20,20 100,100');
  $q = $p-&gt;Montage();
  undef $image;
  $q-&gt;Write('x.miff');</PRE><BLOCKQUOTE>
@@ -301,16 +302,16 @@ Read or Write Methods</P>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Method</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Parameters</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Return Value</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -434,13 +435,13 @@ parameters.</BLOCKQUOTE>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Method</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Parameters</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -1422,13 +1423,13 @@ And here is a list of all the image attributes you can set:</BLOCKQUOTE>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Attribute</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Values</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -2117,13 +2118,13 @@ Image Attribute</A> , you can get these additional attributes:</BLOCKQUOTE>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Attribute</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Values</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -2436,13 +2437,13 @@ And here is a list of Montage() parameters you can set:</BLOCKQUOTE>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Parameter</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Values</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -2705,16 +2706,16 @@ Blob Methods</P>
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Method</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Parameters</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Return Value</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>
@@ -2944,13 +2945,13 @@ Below is a list of error and warning codes:
 	<DD>
 	<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=2>
 		<TR>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Code</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Mnemonic</FONT></P>
 			</TH>
-			<TH BGCOLOR="#00B04F">
+			<TH BGCOLOR="#00b04f">
 				<P><FONT COLOR="#ffffff">Description</FONT></P>
 			</TH>
 		</TR>

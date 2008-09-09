@@ -1,3 +1,9 @@
+2008-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/perl.html: Fix formatting of examples.  Should address
+	SourceForge issue [ 2100339 ] "Wrong format in example script on
+	web page".
+
 2008-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (BlurImage): Accelerate using OpenMP.
