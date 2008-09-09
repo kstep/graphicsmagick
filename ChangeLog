@@ -1,5 +1,7 @@
 2008-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/shear.c (IntegralRotateImage): Add missing progress
+	indication for 90 and 270 degrees rotation.
 	* www/perl.html: Fix formatting of examples.  Should address
 	SourceForge issue [ 2100339 ] "Wrong format in example script on
 	web page".
