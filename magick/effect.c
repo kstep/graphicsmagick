@@ -701,13 +701,26 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
 
           if (thread_status != MagickFail)
             {
-              (void) memcpy(scanline,q,image->columns*sizeof(PixelPacket));
-              BlurScanline(kernel,width,scanline,q,image->columns);
+              unsigned long
+                i=0;
 
-              if (!SyncCacheView(view))
+              scanline[i]=q[i];
+              i++;
+              for ( ; i < image->columns; i++)
                 {
-                  thread_status=MagickFail;
-                  CopyException(exception,&image->exception);
+                  if (NotColorMatch(&scanline[i-1],&q[i]))
+                    break;
+                  scanline[i]=q[i];
+                }
+              if (i != image->columns)
+                {
+                  (void) memcpy(&scanline[i],&q[i],(image->columns-i)*sizeof(PixelPacket));
+                  BlurScanline(kernel,width,scanline,q,image->columns);
+                  if (!SyncCacheView(view))
+                    {
+                      thread_status=MagickFail;
+                      CopyException(exception,&image->exception);
+                    }
                 }
             }
 #pragma omp critical
