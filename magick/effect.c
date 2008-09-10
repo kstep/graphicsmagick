@@ -1343,62 +1343,41 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %
 */
+#define Enhance(weight)                                                 \
+  mean=((double) r->red+pixel.red)/2.0;                                 \
+  distance=r->red-(double) pixel.red;                                   \
+  distance_squared=(2.0*((double) MaxRGBDouble+1.0)+mean)*distance*     \
+    distance/MaxRGBDouble;                                              \
+  mean=((double) r->green+pixel.green)/2.0;                             \
+  distance=r->green-(double) pixel.green;                               \
+  distance_squared+=4.0*distance*distance;                              \
+  mean=((double) r->blue+pixel.blue)/2.0;                               \
+  distance=r->blue-(double) pixel.blue;                                 \
+  distance_squared+=                                                    \
+  (3.0*(MaxRGBDouble+1.0)-1.0-mean)*distance*distance/MaxRGBDouble;     \
+  mean=((double) r->opacity+pixel.opacity)/2.0;                         \
+  distance=r->opacity-(double) pixel.opacity;                           \
+  distance_squared+=                                                    \
+  (3.0*((double) MaxRGBDouble+1.0)-1.0-mean)*distance*                  \
+    distance/MaxRGBDouble;                                              \
+  if (distance_squared < ((double) MaxRGBDouble*MaxRGBDouble/25.0))     \
+    {                                                                   \
+      aggregate.red+=(weight)*r->red;                                   \
+      aggregate.green+=(weight)*r->green;                               \
+      aggregate.blue+=(weight)*r->blue;                                 \
+      aggregate.opacity+=(weight)*r->opacity;                           \
+      total_weight+=(weight);                                           \
+    }                                                                   \
+  r++;
+#define EnhanceImageText  "Enhance image...  "
+
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
-#define Enhance(weight) \
-  mean=((double) r->red+pixel.red)/2; \
-  distance=r->red-(double) pixel.red; \
-  distance_squared=(2.0*((double) MaxRGB+1.0)+mean)*distance*distance/MaxRGB; \
-  mean=((double) r->green+pixel.green)/2; \
-  distance=r->green-(double) pixel.green; \
-  distance_squared+=4.0*distance*distance; \
-  mean=((double) r->blue+pixel.blue)/2; \
-  distance=r->blue-(double) pixel.blue; \
-  distance_squared+= \
-    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  mean=((double) r->opacity+pixel.opacity)/2; \
-  distance=r->opacity-(double) pixel.opacity; \
-  distance_squared+= \
-    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
-    { \
-      aggregate.red+=(weight)*r->red; \
-      aggregate.green+=(weight)*r->green; \
-      aggregate.blue+=(weight)*r->blue; \
-      aggregate.opacity+=(weight)*r->opacity; \
-      total_weight+=(weight); \
-    } \
-  r++;
-#define EnhanceImageText  "  Enhance image...  "
-
-  DoublePixelPacket
-    aggregate,
-    zero;
-
-  double
-    distance,
-    distance_squared,
-    mean,
-    total_weight;
-
   Image
     *enhance_image;
 
   long
     y;
-
-  PixelPacket
-    pixel;
-
-  register const PixelPacket
-    *p,
-    *r;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   /*
     Initialize enhanced image attributes.
@@ -1416,56 +1395,135 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   /*
     Enhance image.
   */
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) image->rows; y++)
   {
-    /*
-      Read another scan line.
-    */
-    p=AcquireImagePixels(image,0,y-2,image->columns,5,exception);
-    q=SetImagePixels(enhance_image,0,y,enhance_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Transfer first 2 pixels of the scanline.
-    */
-    *q++=(*(p+2*image->columns));
-    *q++=(*(p+2*image->columns+1));
-    for (x=2; x < (long) (image->columns-2); x++)
-    {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      aggregate=zero;
-      total_weight=0.0;
-      r=p+2*image->columns+2;
-      pixel=(*r);
-      r=p;
-      Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      r=p+image->columns;
-      Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
-      r=p+2*image->columns;
-      Enhance(10); Enhance(40); Enhance(80); Enhance(40); Enhance(10);
-      r=p+3*image->columns;
-      Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
-      r=p+4*image->columns;
-      Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      q->red=(Quantum) ((aggregate.red+(total_weight/2)-1)/total_weight);
-      q->green=(Quantum) ((aggregate.green+(total_weight/2)-1)/total_weight);
-      q->blue=(Quantum) ((aggregate.blue+(total_weight/2)-1)/total_weight);
-      q->opacity=(Quantum)
-        ((aggregate.opacity+(total_weight/2)-1)/total_weight);
-      p++;
-      q++;
-    }
-    p++;
-    *q++=(*p++);
-    *q++=(*p++);
-    if (!SyncImagePixels(enhance_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(EnhanceImageText,y,image->rows-2,exception))
-        break;
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
+    DoublePixelPacket
+      zero;
+
+    volatile MagickPassFail
+      status=MagickPass;
+
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(enhance_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
+      {
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        DestroyImage(enhance_image);
+        return (Image *) NULL;
+      }
+
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        register const PixelPacket
+          *p;
+
+        register PixelPacket
+          *q;
+
+        register long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        /*
+          Read another scan line.
+        */
+        read_view=AccessThreadView(read_view_set);
+        p=AcquireCacheView(read_view,0,y-2,image->columns,5,exception);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,enhance_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            /*
+              Transfer first 2 pixels of the scanline.
+            */
+            *q++=(*(p+2*image->columns));
+            *q++=(*(p+2*image->columns+1));
+            for (x=2; x < (long) (image->columns-2); x++)
+              {
+                DoublePixelPacket
+                  aggregate;
+
+                double
+                  distance,
+                  distance_squared,
+                  mean,
+                  total_weight;
+
+                PixelPacket
+                  pixel;
+
+                register const PixelPacket
+                  *r;
+
+                /*
+                  Compute weighted average of target pixel color components.
+                */
+                aggregate=zero;
+                total_weight=0.0;
+                r=p+2*image->columns+2;
+                pixel=(*r);
+                r=p;
+                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
+                r=p+image->columns;
+                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+                r=p+2*image->columns;
+                Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
+                r=p+3*image->columns;
+                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
+                r=p+4*image->columns;
+                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
+                q->red=(Quantum) ((aggregate.red+(total_weight/2.0)-1.0)/total_weight);
+                q->green=(Quantum) ((aggregate.green+(total_weight/2.0)-1.0)/total_weight);
+                q->blue=(Quantum) ((aggregate.blue+(total_weight/2.0)-1.0)/total_weight);
+                q->opacity=(Quantum)
+                  ((aggregate.opacity+(total_weight/2.0)-1.0)/total_weight);
+                p++;
+                q++;
+              }
+            p++;
+            *q++=(*p++);
+            *q++=(*p++);
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&enhance_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(EnhanceImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   enhance_image->is_grayscale=image->is_grayscale;
   return(enhance_image);

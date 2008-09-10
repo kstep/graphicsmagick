@@ -92,6 +92,7 @@ Performance Improvements:
     - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
     - Contrast adjust (-contrast)
     - Depth setting (-depth, -operator depth)
+    - Enhance (-enhance)
     - Equalize (-equalize)
     - Gamma adjust (-gamma, -operator gamma)
     - Levels adjust image (-level)

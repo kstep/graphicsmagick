@@ -1,5 +1,6 @@
 2008-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (EnhanceImage): Accelerate using OpenMP.
 	* magick/shear.c (IntegralRotateImage): Add missing progress
 	indication for 90 and 270 degrees rotation.
 	* www/perl.html: Fix formatting of examples.  Should address
