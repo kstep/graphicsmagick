@@ -2910,14 +2910,9 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 */
 
 MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
-  double azimuth,double elevation,ExceptionInfo *exception)
+                               double azimuth,double elevation,ExceptionInfo *exception)
 {
 #define ShadeImageText  "Shade image...  "
-
-  double
-    distance,
-    normal_distance,
-    shade;
 
   Image
     *shade_image;
@@ -2926,20 +2921,10 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
     y;
 
   PrimaryInfo
-    light,
-    normal;
+    light;
 
-  register const PixelPacket
-    *p,
-    *s0,
-    *s1,
-    *s2;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
+  volatile MagickPassFail
+    status;
 
   /*
     Initialize shaded image attributes.
@@ -2960,70 +2945,140 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
   light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
   light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
   light.z=(double) MaxRGB*sin(elevation);
-  normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
   */
-  for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,-1,y-1,image->columns+2,3,exception);
-    q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Shade this row of pixels.
-    */
-    s0=p+1;
-    s1=s0+image->columns+2;
-    s2=s1+image->columns+2;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      /*
-        Determine the surface normal and compute shading.
-      */
-      normal.x=PixelIntensityToDouble(s0-1)+ PixelIntensityToDouble(s1-1)+
-        PixelIntensityToDouble(s2-1)-PixelIntensityToDouble(s0+1)-
-        PixelIntensityToDouble(s1+1)-PixelIntensityToDouble(s2+1);
-      normal.y=PixelIntensityToDouble(s2-1)+PixelIntensityToDouble(s2)+
-        PixelIntensityToDouble(s2+1)-PixelIntensityToDouble(s0-1)-
-        PixelIntensityToDouble(s0)-PixelIntensityToDouble(s0+1);
-      if ((normal.x == 0.0) && (normal.y == 0.0))
-        shade=light.z;
-      else
+    unsigned long
+      row_count=0;
+    
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(shade_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
+      {
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        DestroyImage(shade_image);
+        return (Image *) NULL;
+      }
+
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        PrimaryInfo
+          normal;
+
+        register const PixelPacket
+          *p,
+          *s0,
+          *s1,
+          *s2;
+
+        register PixelPacket
+          *q;
+
+        register long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
+
+        read_view=AccessThreadView(read_view_set);
+        p=AcquireCacheView(read_view,-1,y-1,image->columns+2,3,exception);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,shade_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+        /*
+          Shade this row of pixels.
+        */
+        if (thread_status != MagickFail)
+          {
+            s0=p+1;
+            s1=s0+image->columns+2;
+            s2=s1+image->columns+2;
+            for (x=0; x < (long) image->columns; x++)
+              {
+                double
+                  distance,
+                  normal_distance,
+                  shade;
+
+                /*
+                  Determine the surface normal and compute shading.
+                */
+                normal.x=PixelIntensityToDouble(s0-1)+ PixelIntensityToDouble(s1-1)+
+                  PixelIntensityToDouble(s2-1)-PixelIntensityToDouble(s0+1)-
+                  PixelIntensityToDouble(s1+1)-PixelIntensityToDouble(s2+1);
+                normal.y=PixelIntensityToDouble(s2-1)+PixelIntensityToDouble(s2)+
+                  PixelIntensityToDouble(s2+1)-PixelIntensityToDouble(s0-1)-
+                  PixelIntensityToDouble(s0)-PixelIntensityToDouble(s0+1);
+                if ((normal.x == 0.0) && (normal.y == 0.0))
+                  shade=light.z;
+                else
+                  {
+                    shade=0.0;
+                    distance=normal.x*light.x+normal.y*light.y+normal.z*light.z;
+                    if (distance > MagickEpsilon)
+                      {
+                        normal_distance=
+                          normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
+                        if (normal_distance > (MagickEpsilon*MagickEpsilon))
+                          shade=distance/sqrt(normal_distance);
+                      }
+                  }
+                if (gray)
+                  {
+                    q->red=(Quantum) shade;
+                    q->green=(Quantum) shade;
+                    q->blue=(Quantum) shade;
+                  }
+                else
+                  {
+                    q->red=(Quantum) ((shade*s1->red)/MaxRGB+0.5);
+                    q->green=(Quantum) ((shade*s1->green)/MaxRGB+0.5);
+                    q->blue=(Quantum) ((shade*s1->blue)/MaxRGB+0.5);
+                  }
+                q->opacity=s1->opacity;
+                s0++;
+                s1++;
+                s2++;
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&shade_image->exception);
+              }
+          }
+#pragma omp critical
         {
-          shade=0.0;
-          distance=normal.x*light.x+normal.y*light.y+normal.z*light.z;
-          if (distance > MagickEpsilon)
-            {
-              normal_distance=
-                normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
-              if (normal_distance > (MagickEpsilon*MagickEpsilon))
-                shade=distance/sqrt(normal_distance);
-            }
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(ShadeImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
         }
-      if (gray)
-        {
-          q->red=(Quantum) shade;
-          q->green=(Quantum) shade;
-          q->blue=(Quantum) shade;
-        }
-      else
-        {
-          q->red=(Quantum) ((shade*s1->red)/MaxRGB+0.5);
-          q->green=(Quantum) ((shade*s1->green)/MaxRGB+0.5);
-          q->blue=(Quantum) ((shade*s1->blue)/MaxRGB+0.5);
-        }
-      q->opacity=s1->opacity;
-      s0++;
-      s1++;
-      s2++;
-      q++;
-    }
-    if (!SyncImagePixels(shade_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ShadeImageText,y,image->rows,exception))
-        break;
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   shade_image->is_grayscale=image->is_grayscale;
   if (gray)

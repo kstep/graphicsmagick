@@ -1,3 +1,7 @@
+2008-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ShadeImage): Accelerate using OpenMP.
+
 2008-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (RandomChannelThresholdImage): Accelerate using

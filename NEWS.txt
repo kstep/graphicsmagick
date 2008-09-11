@@ -107,6 +107,7 @@ Performance Improvements:
     - Profile adjust (ICC) (-profile)
     - Random threshold (-random-threshold)
     - Resize image (-resize)
+    - Shade image (-shade)
     - Solarize image (-solarize)
     - Statistics computation (identify -verbose)
     - Threshold channel (-threshold, -operator threshold)
