@@ -966,6 +966,58 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A c q u i r e O n e C a c h e V i e w P i x e l                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireOneCacheViewPixel gets one pixel from the in-memory or disk
+%  pixel cache as defined by the geometry parameters for read-only access.
+%  The image background color is returned if there is an error retrieving
+%  the pixel.
+%
+%  The format of the AcquireOneCacheViewPixel method is:
+%
+%      PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
+%        const long x,const long y,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y:  Coordinate of pixel to retrieve
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
+  const long x,const long y,ExceptionInfo *exception)
+{
+  const View
+    *view_info = (const View *) view;
+
+  const PixelPacket
+    *pixel;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+#pragma omp critical (pixel_cache)
+  {
+    pixel=AcquireCacheNexus(view_info->image,x,y,1,1,view_info->id,exception);
+  }
+  if (pixel != (const PixelPacket *) NULL)
+    return *pixel;
+
+  return (view_info->image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   A c q u i r e P i x e l C a c h e                                         %
 %                                                                             %
 %                                                                             %

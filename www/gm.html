@@ -1155,10 +1155,10 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>convolve image with the specified convolution kernel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.</font></td></tr></table>
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3341,23 +3341,20 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>ordered dither the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The channel or channels specified in the <strong>channeltype</strong> argument are
-reduced to binary, using an ordered dither method.
-The choices for <strong>channeltype</strong> are:</font></td></tr></table>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an ordered dither method. The choices for
+<strong>channeltype</strong> are <strong>All</strong>, <strong>Intensity</strong>, <strong>Red</strong>,
+<strong>Green</strong>, <strong>Blue</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
+<strong>Black</strong>, and <strong>Opacity</strong></font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When <strong>channeltype</strong> is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "intensity", only the color samples are
-dithered.  When <strong>channeltype</strong> is "opacity" or "matte", only the
-opacity channel is dithered.</font></td></tr></table>
+When <strong>channeltype</strong> is "Intensity", only the color samples are
+dithered. When <strong>channeltype</strong> is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -3781,26 +3778,23 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>random threshold the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The channel or channels specified in the &lt;channeltype&gt; argument are
-reduced to binary, using an random-threshold method.  The choices for
-<strong>channeltype</strong> are:</font></td></tr></table>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an random-threshold method. The choices for
+<strong>channeltype</strong> are <strong>All</strong>, <strong>Intensity</strong>, <strong>Red</strong>,
+<strong>Green</strong>, <strong>Blue</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
+<strong>Black</strong>, and <strong>Opacity</strong></font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When <strong>channeltype</strong> is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When <strong>channeltype</strong> is "intensity", only the color samples are
-thresholded.  When <strong>channeltype</strong> is "opacity" or "matte", only the
-opacity channel is thresholded.</font></td></tr></table>
+thresholded. When <strong>channeltype</strong> is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

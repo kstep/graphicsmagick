@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2008-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (RandomChannelThresholdImage): Accelerate using
+        OpenMP.  Support individual thresholding of the color channels.
+        (BlurImage): Blur was failing for PseudoClass images.  This bug
+        was added on 2008-09-08.<BR>
+  <LI> magick/pixel_cache.c (AcquireOneCacheViewPixel): New function to
+        return just one pixel from a cache view.
+
+</UL>
+<p>
 2008-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

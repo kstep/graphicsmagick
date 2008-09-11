@@ -172,6 +172,13 @@ extern "C" {
                     const unsigned long rows,ExceptionInfo *exception);
 
   /*
+    AcquireOneCacheViewPixel() returns one pixel from a cache view.
+  */
+  extern MagickExport PixelPacket
+  AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
+                           ExceptionInfo *exception);
+
+  /*
     GetCacheViewIndexes() returns the indexes associated with a cache view.
   */
   extern MagickExport IndexPacket

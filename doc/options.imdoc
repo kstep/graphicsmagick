@@ -849,10 +849,10 @@ For a more pronounced effect you can repeat the option:</pp>
 <abs>convolve image with the specified convolution kernel</abs>
 
 <pp>
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.</pp>
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.</pp>
 
 </utils>
 
@@ -3334,23 +3334,20 @@ image:</pp>
 
 <pp>
 The channel or channels specified in the <s>channeltype</s> argument are
-reduced to binary, using an ordered dither method.
-The choices for <s>channeltype</s> are:</pp>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an ordered dither method. The choices for
+<s>channeltype</s> are <s>All</s>, <s>Intensity</s>, <s>Red</s>,
+<s>Green</s>, <s>Blue</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>,
+<s>Black</s>, and <s>Opacity</s></pp>
 <pp>
-When <s>channeltype</s> is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When <s>channeltype</s> is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.</pp>
 <pp>
-When <s>channeltype</s> is "intensity", only the color samples are
-dithered.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is dithered.</pp>
+When <s>channeltype</s> is "Intensity", only the color samples are
+dithered. When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.</pp>
 <pp>
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -3825,27 +3822,23 @@ Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.</pp>
 
 <pp>
 The channel or channels specified in the <channeltype> argument are
-reduced to binary, using an random-threshold method.  The choices for
-<s>channeltype</s> are:</pp>
-
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an random-threshold method. The choices for
+<s>channeltype</s> are <s>All</s>, <s>Intensity</s>, <s>Red</s>,
+<s>Green</s>, <s>Blue</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>,
+<s>Black</s>, and <s>Opacity</s></pp>
 <pp>
-When <s>channeltype</s> is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When <s>channeltype</s> is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).</pp>
 <pp>
 When <s>channeltype</s> is "intensity", only the color samples are
-thresholded.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is thresholded.</pp>
+thresholded. When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.</pp>
 
 </utils>
 

@@ -1,4 +1,4 @@
-.TH gm 1 "2008/08/27" "GraphicsMagick"
+.TH gm 1 "2008/09/10" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -956,10 +956,10 @@ For a more pronounced effect you can repeat the option:
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
 
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.
 .TP
 .B "-create-directories"
 \fRcreate output directory if required
@@ -2706,22 +2706,20 @@ image:
 \fRordered dither the image
 
 The channel or channels specified in the \fBchanneltype\fP argument are
-reduced to binary, using an ordered dither method.
-The choices for \fBchanneltype\fP are:
+reduced to binary, using an ordered dither method. The choices for
+\fBchanneltype\fP are \fBAll\fP, \fBIntensity\fP, \fBRed\fP,
+\fBGreen\fP, \fBBlue\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, and \fBOpacity\fP
 
-    all
-    intensity
-    opacity
-    matte
-
-When \fBchanneltype\fP is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When \fBchanneltype\fP is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.
 
-When \fBchanneltype\fP is "intensity", only the color samples are
-dithered.  When \fBchanneltype\fP is "opacity" or "matte", only the
-opacity channel is dithered.
+When \fBchanneltype\fP is "Intensity", only the color samples are
+dithered. When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.
 
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -3021,25 +3019,23 @@ Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 \fRrandom threshold the image
 
 The channel or channels specified in the <channeltype> argument are
-reduced to binary, using an random-threshold method.  The choices for
-\fBchanneltype\fP are:
+reduced to binary, using an random-threshold method. The choices for
+\fBchanneltype\fP are \fBAll\fP, \fBIntensity\fP, \fBRed\fP,
+\fBGreen\fP, \fBBlue\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, and \fBOpacity\fP
 
-    all
-    intensity
-    opacity
-    matte
-
-When \fBchanneltype\fP is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When \fBchanneltype\fP is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).
 
 When \fBchanneltype\fP is "intensity", only the color samples are
-thresholded.  When \fBchanneltype\fP is "opacity" or "matte", only the
-opacity channel is thresholded.
+thresholded. When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point

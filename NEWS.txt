@@ -102,8 +102,10 @@ Performance Improvements:
     - Negate image (-negate)
     - Normalize image (-normalize)
     - Oil Paint (-paint)
+    - Ordered dither (-ordered-dither)
     - Operators (-operator)
     - Profile adjust (ICC) (-profile)
+    - Random threshold (-random-threshold)
     - Resize image (-resize)
     - Solarize image (-solarize)
     - Statistics computation (identify -verbose)
@@ -158,7 +160,8 @@ New Features:
 
 Feature improvements:
 
-  * TBD
+  * -ordered-dither and -random-threshold may now be used to individually
+    dither any named channel.
 
 1.2 (April 29, 2008)
 ====================

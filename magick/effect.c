@@ -39,6 +39,7 @@
 #include "magick/color.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/fx.h"
 #include "magick/gem.h"
 #include "magick/log.h"
@@ -793,10 +794,11 @@ MagickExport Image *BlurImage(const Image *original_image,const double radius,
   if (width < 3)
     ThrowImageException3(OptionError,UnableToBlurImage,
                          KernelRadiusIsTooSmall);
-  
+
   blur_image=RotateImage(original_image,90,exception);
   if (blur_image == (Image *) NULL)
     status=MagickFail;
+  blur_image->storage_class=DirectClass;
 
   if (status != MagickFail)
     status&=BlurImageScanlines(blur_image,kernel,width,BlurImageColumnsText,exception);
@@ -2066,7 +2068,6 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     *kernel;
 
   DoublePixelPacket
-    aggregate,
     zero;
 
   Image
@@ -2078,20 +2079,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   long
     y;
 
-  PixelPacket
-    pixel;
-
   PointInfo
     *offsets;
-
-  register long
-    i,
-    x,
-    u,
-    v;
-
-  register PixelPacket
-    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2139,24 +2128,51 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->storage_class=DirectClass;
-  x=(long) (width*sin(DegreesToRadians(angle)));
-  y=(long) (width*cos(DegreesToRadians(angle)));
-  for (i=0; i < width; i++)
   {
-    offsets[i].x=i*x/sqrt(x*x+y*y);
-    offsets[i].y=i*y/sqrt(x*x+y*y);
+     register long
+       x;
+
+     register long
+       i;
+
+     x=(long) (width*sin(DegreesToRadians(angle)));
+     y=(long) (width*cos(DegreesToRadians(angle)));
+     for (i=0; i < width; i++)
+       {
+         offsets[i].x=i*x/sqrt(x*x+y*y);
+         offsets[i].y=i*y/sqrt(x*x+y*y);
+       }
   }
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
+    register PixelPacket
+      *q;
+
+    register long
+      x;
+
     q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
+      DoublePixelPacket
+        aggregate;
+
+      register long
+        i;
+
       aggregate=zero;
       for (i=0; i < width; i++)
       {
+        register long
+          u,
+          v;
+        
+        PixelPacket
+          pixel;
+
         u=x+(long) offsets[i].x;
         v=y+(long) offsets[i].y;
         if ((u < 0) || (u >= (long) image->columns) ||
@@ -2219,40 +2235,47 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
-    *channel,const char *thresholds,ExceptionInfo *exception)
+MagickExport MagickPassFail
+RandomChannelThresholdImage(Image *image,const char *channel,
+                            const char *thresholds,ExceptionInfo *exception)
 {
 #define RandomChannelThresholdImageText  "Random-channel threshold image...  "
 
   const double
-    o2[4]={.2,.6,.8,.4},
-    o3[9]={.1,.6,.3,.7,.5,.8,.4,.9,.2},
-    o4[16]={.1,.7,1.1,.3,1.0,.5,1.5,.8,1.4,1.6,.6,1.2,.4,.9,1.3,.2};
+    o2[4]={0.2,0.6,0.8,0.4};
 
-  double
-    lower_threshold,
-    threshold=128,
-    upper_threshold;
+  const double
+    o3[9]={0.1,0.6,0.3,0.7,0.5,0.8,0.4,0.9,0.2};
 
-  register IndexPacket
-    index;
+  const double
+    o4[16]={0.1,0.7,1.1,0.3,1.0,0.5,1.5,0.8,1.4,1.6,0.6,1.2,0.4,0.9,1.3,0.2};
+
+  Quantum
+    matrix[16];
+
+  Quantum
+    lower_threshold=0U,
+    upper_threshold=MaxRGB;
 
   long
-    count,
-    y;
+    count;
 
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned long
-    logging,
+  unsigned int
+    i,
     order;
+
+  const MagickBool
+    is_grayscale=image->is_grayscale,
+    is_monochrome=image->is_monochrome;
+  
+  MagickBool
+    logging;
+
+  ChannelType
+    channel_type;
+
+  volatile MagickPassFail
+    status=MagickPass;
 
   /*
     Threshold image.
@@ -2275,152 +2298,404 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     order=4;
   else
     {
+      double
+        lower,
+        upper;
+
       order=1;
-      lower_threshold=0;
-      upper_threshold=0;
+      lower=0.0;
+      upper=0.0;
       count=sscanf(thresholds,"%lf[/x%%]%lf",
-        &lower_threshold,&upper_threshold);
+                   &lower,&upper);
 
       if (strchr(thresholds,'%') != (char *) NULL)
         {
-          upper_threshold*=(.01*MaxRGB);
-          lower_threshold*=(.01*MaxRGB);
+          upper*=(0.01*MaxRGB);
+          lower*=(0.01*MaxRGB);
         }
       if (count == 1)
-        upper_threshold=MaxRGB-lower_threshold;
+        upper=MaxRGBDouble-lower;
+      lower_threshold=RoundDoubleToQuantum(lower);
+      upper_threshold=RoundDoubleToQuantum(upper);
     }
 
   logging=LogMagickEvent(TransformEvent,GetMagickModule(),
-      "  RandomChannelThresholdImage: channel type=%s",channel);
+                         "  RandomChannelThresholdImage: channel type=%s",channel);
   if (logging)
     (void)LogMagickEvent(TransformEvent,GetMagickModule(),
-        "    Thresholds: %s (%fx%f)",
-        thresholds,lower_threshold,upper_threshold);
+                         "    Thresholds: %s (%lux%lu)",
+                         thresholds,(unsigned long) lower_threshold,
+                         (unsigned long) upper_threshold);
 
-  if (LocaleCompare(channel,"all") == 0 ||
-      LocaleCompare(channel,"intensity") == 0)
+  channel_type=StringToChannelType(channel);
+  if (UndefinedChannel == channel_type)
+    ThrowBinaryException3(OptionError, UnableToThresholdImage,
+                          UnrecognizedChannelType);
+
+  if ((AllChannels == channel_type) ||
+      (GrayChannel == channel_type))
     if (!AllocateImageColormap(image,2))
       ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToThresholdImage);
+                            UnableToThresholdImage);
 
-  for (y=0; y < (long) image->rows; y++)
   {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if (LocaleCompare(channel,"all") == 0 ||
-        LocaleCompare(channel,"intensity") == 0)
+    double
+      value;
+
+    /*
+      Pre-scale the ordered dither matrix.
+    */
+    if (2 == order)
+      for (i=0;i < (sizeof(o2)/sizeof(double)); i++)
+        {
+          value=o2[i]*MaxRGBDouble;
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else if (3 == order)
+      for (i=0;i < (sizeof(o3)/sizeof(double)); i++)
+        {
+          value=o3[i]*MaxRGBDouble;
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else if (4 == order)
+      for (i=0;i < (sizeof(o4)/sizeof(double)); i++)
+        {
+          value=o4[i]*MaxRGBDouble/1.7;
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else
       {
-        if (!image->is_monochrome)
+        for (i=0;i < (sizeof(matrix)/sizeof(Quantum)); i++)
+          matrix[i]=0U;
+      }
+  }
+
+  {
+    ThreadViewSet
+      *view_set;
+
+    unsigned long
+      row_count=0;
+
+    long
+      y;
+
+    view_set=AllocateThreadViewSet((Image *) image,exception);
+    if (view_set == (ThreadViewSet *) NULL)
+      ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+                            UnableToThresholdImage);
+
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) image->rows; y++)
+      {
+        Quantum
+          intensity,
+          threshold=0U;
+
+        ViewInfo
+          view;
+
+        register IndexPacket
+          *indexes;
+
+        register PixelPacket
+          *q;
+
+        register IndexPacket
+          index;
+
+        register unsigned long
+          x;
+
+        unsigned int
+          seed;
+
+        MagickBool
+          thread_status;
+        
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        seed=MagickRandNewSeed();
+        view=AccessThreadView(view_set);
+        q=GetCacheView(view,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
           {
-            if (image->is_grayscale)
+            indexes=GetCacheViewIndexes(view);
+            if (((AllChannels == channel_type) ||
+                 (GrayChannel == channel_type)) &&
+                (!is_monochrome))
               {
-                for (x=(long) image->columns; x > 0; x--)
+                switch (order)
                   {
-                    if (order == 1)
+                  case 1:
+                    for (x=(long) image->columns; x > 0; x--)
                       {
-                        if ((double) q->red < lower_threshold)
-                          threshold=lower_threshold;
-                        else if ((double) q->red > upper_threshold)
-                          threshold=upper_threshold;
-                        else
-                          threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
-                      }
-                    else if (order == 2)
-                      threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
-                    else if (order == 3)
-                      threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
-                    else if (order == 4)
-                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
-                    index=(double) q->red <= threshold ? 0 : 1;
-                    *indexes++=index;
-                    q->red=q->green=q->blue=image->colormap[index].red;
-                    q++;
-                  }
-              }
-            else
-              {
-                for (x=(long) image->columns; x > 0; x--)
-                  {
-                    double
-                      intensity;
-      
-                    intensity=(double) PixelIntensityToQuantum(q);
-                    if (order == 1)
-                      {
+                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
                         if (intensity < lower_threshold)
                           threshold=lower_threshold;
                         else if (intensity > upper_threshold)
                           threshold=upper_threshold;
                         else
-                          threshold=(double) (MaxRGB*(rand()
-                              /(double) RAND_MAX));
+                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)
+                                                             /(double) RAND_MAX));
+                        index=intensity <= threshold ? 0U : 1U;
+                        *indexes++=index;
+                        q->red=q->green=q->blue=image->colormap[index].red;
+                        q++;
                       }
-                    else if (order == 2)
-                      threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
-                    else if (order == 3)
-                      threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
-                    else if (order == 4)
-                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
-
-                    index=intensity <= threshold ? 0 : 1;
-                    *indexes++=index;
-                    q->red=q->green=q->blue=image->colormap[index].red;
-                    q++;
+                    break;
+                  case 2:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
+                        threshold=matrix[(x%2)+2*(y%2)];
+                        index=intensity <= threshold ? 0U : 1U;
+                        *indexes++=index;
+                        q->red=q->green=q->blue=image->colormap[index].red;
+                        q++;
+                      }
+                    break;
+                  case 3:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
+                        threshold=matrix[(x%3)+3*(y%3)];
+                        index=intensity <= threshold ? 0U : 1U;
+                        *indexes++=index;
+                        q->red=q->green=q->blue=image->colormap[index].red;
+                        q++;
+                      }
+                    break;
+                  case 4:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
+                        threshold=matrix[(x%4)+4*(y%4)];
+                        index=intensity <= threshold ? 0U : 1U;
+                        *indexes++=index;
+                        q->red=q->green=q->blue=image->colormap[index].red;
+                        q++;
+                      }
+                    break;
                   }
               }
-          }
-      }
-    if (LocaleCompare(channel,"opacity") == 0 ||
-        LocaleCompare(channel,"all") == 0 ||
-        LocaleCompare(channel,"matte") == 0)
-      {
-        if (image->matte)
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              if (order == 1)
-                {
-                  if ((double) q->opacity < lower_threshold)
-                    threshold=lower_threshold;
-                  else if ((double) q->opacity > upper_threshold)
-                    threshold=upper_threshold;
-                  else
-                    threshold=(double) (MaxRGB*(rand()/(double) RAND_MAX));
-                }
-              else if (order == 2)
-                threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
-              else if (order == 3)
-                threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
-              else if (order == 4)
-                threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
-              q->opacity=(Quantum) ((double) q->opacity <= threshold ?
-                 0 : MaxRGB);
-              q++;
-            }
-      }
-    else
-      {
-        /* To Do: red, green, blue, cyan, magenta, yellow, black */
-        if (LocaleCompare(channel,"intensity") != 0)
-          ThrowBinaryException3(OptionError, UnableToThresholdImage,
-              UnrecognizedChannelType);
-      }
+            if ((OpacityChannel == channel_type) ||
+                (AllChannels == channel_type) ||
+                (MatteChannel == channel_type) ||
+                (BlackChannel == channel_type))
+              {
+                if (image->matte)
+                  switch (order)
+                    {
+                    case 1:
+                      for (x=(long) image->columns; x > 0; x--)
+                        {
+                          if (q->opacity < lower_threshold)
+                            threshold=lower_threshold;
+                          else if (q->opacity > upper_threshold)
+                            threshold=upper_threshold;
+                          else
+                            threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
+                                                               (double) RAND_MAX));
+                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
+                          q++;
+                        }
+                      break;
+                    case 2:
+                      for (x=(long) image->columns; x > 0; x--)
+                        {
+                          threshold=matrix[(x%2)+2*(y%2)];
+                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
+                          q++;
+                        }
+                      break;
+                    case 3:
+                      for (x=(long) image->columns; x > 0; x--)
+                        {
+                          threshold=matrix[(x%3)+3*(y%3)];
+                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
+                          q++;
+                        }
+                      break;
+                    case 4:
+                      for (x=(long) image->columns; x > 0; x--)
+                        {
+                          threshold=matrix[(x%4)+4*(y%4)];
+                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
+                          q++;
+                        }
+                      break;
+                    }
+              }
 
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RandomChannelThresholdImageText,y,image->rows,
-          exception))
-        break;
+            if ((RedChannel == channel_type) ||
+                (CyanChannel == channel_type))
+              {
+                switch (order)
+                  {
+                  case 1:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        if (q->red < lower_threshold)
+                          threshold=lower_threshold;
+                        else if (q->red > upper_threshold)
+                          threshold=upper_threshold;
+                        else
+                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
+                                                             (double) RAND_MAX));
+                        q->red=(q->red <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 2:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%2)+2*(y%2)];
+                        q->red=(q->red <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 3:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%3)+3*(y%3)];
+                        q->red=(q->red <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 4:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%4)+4*(y%4)];
+                        q->red=(q->red <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  }
+              }
+
+            if ((GreenChannel == channel_type) ||
+                (MagentaChannel == channel_type))
+              {
+                switch (order)
+                  {
+                  case 1:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        if (q->green < lower_threshold)
+                          threshold=lower_threshold;
+                        else if (q->green > upper_threshold)
+                          threshold=upper_threshold;
+                        else
+                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
+                                                             (double) RAND_MAX));
+                        q->green=(q->green <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 2:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%2)+2*(y%2)];
+                        q->green=(q->green <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 3:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%3)+3*(y%3)];
+                        q->green=(q->green <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 4:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%4)+4*(y%4)];
+                        q->green=(q->green <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  }
+              }
+            
+            if ((BlueChannel == channel_type) ||
+                (YellowChannel == channel_type))
+              {
+                switch (order)
+                  {
+                  case 1:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        if (q->blue < lower_threshold)
+                          threshold=lower_threshold;
+                        else if (q->blue > upper_threshold)
+                          threshold=upper_threshold;
+                        else
+                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
+                                                             (double) RAND_MAX));
+                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 2:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%2)+2*(y%2)];
+                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 3:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%3)+3*(y%3)];
+                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  case 4:
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        threshold=matrix[(x%4)+4*(y%4)];
+                        q->blue=(q->opacity <= threshold ? 0U : MaxRGB);
+                        q++;
+                      }
+                    break;
+                  }
+              }
+
+            if (!SyncCacheView(view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(RandomChannelThresholdImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(view_set);
   }
-  if (LocaleCompare(channel,"all") == 0 ||
-      LocaleCompare(channel,"intensity") == 0)
+  if ((AllChannels == channel_type) ||
+      (GrayChannel == channel_type))
     {
       image->is_monochrome=True;
       image->is_grayscale=True;
     }
-  return(True);
+  return (status);
 }
 
 /*

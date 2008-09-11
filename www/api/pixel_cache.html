@@ -21,6 +21,7 @@
 
 		<li><a href="#acquirecacheview">AcquireCacheView</a></li>
 		<li><a href="#acquireimagepixels">AcquireImagePixels</a></li>
+		<li><a href="#acquireonecacheviewpixel">AcquireOneCacheViewPixel</a></li>
 		<li><a href="#acquireonepixel">AcquireOnePixel</a></li>
 		<li><a href="#destroycacheinfo">DestroyCacheInfo</a></li>
 		<li><a href="#destroyimagepixels">DestroyImagePixels</a></li>
@@ -56,6 +57,7 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>const PixelPacket * <strong>AcquireCacheView</strong>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>const PixelPacket * <strong>AcquireImagePixels</strong>( const Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>PixelPacket  <strong>AcquireOneCacheViewPixel</strong>( const ViewInfo *view, const long x, const long y, ExceptionInfo *exception );</P>
 <P>PixelPacket  <strong>AcquireOnePixel</strong>( const Image image, const long x, const long y, ExceptionInfo exception );</P>
 <P>void  <strong>DestroyCacheInfo</strong>( Cache cache );</P>
 <P>void  <strong>DestroyImagePixels</strong>( Image *image );</P>
@@ -83,7 +85,7 @@
 <P>
 </P>
 <h2><a name="acquirecacheview">AcquireCacheView</a></h2>
-<P>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</P>
+<P>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters for read-only access.  A pointer to the pixels is returned if the pixels are transferred, otherwise NULL is returned.</P>
 <P>The format of the AcquireCacheView method is:</P>
 <blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireCacheView ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -146,6 +148,32 @@
 </dl>
 <P>
 </P>
+<h2><a name="acquireonecacheviewpixel">AcquireOneCacheViewPixel</a></h2>
+<P>Method AcquireOneCacheViewPixel gets one pixel from the in-memory or disk pixel cache as defined by the geometry parameters for read-only access.  The image background color is returned if there is an error retrieving the pixel.</P>
+<P>The format of the AcquireOneCacheViewPixel method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> AcquireOneCacheViewPixel ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong>
+
+<DD>
+<P>The address of a structure of type ViewInfo.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_x_2cy_3a">x,y:</a></strong>
+
+<DD>
+<P>Coordinate of pixel to retrieve</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
 <h2><a name="acquireonepixel">AcquireOnePixel</a></h2>
 <blockquote>AcquireOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOnePixel ( ) instead. This function is convenient but performance will be poor if it is used too often. </blockquote><blockquote>The format of the AcquireOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> AcquireOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -161,7 +189,7 @@
 <P>The image.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_x_2cy_3a">x,y:</a></strong>
+<dt><strong>x,y:</strong>
 
 <DD>
 <P>These values define the location of the pixel to return.</P>
