@@ -1,3 +1,9 @@
+2008-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/msl.c: Applied MSL patch from graphicsmagick-bugs list to
+	correct handling of geometry x,y values by setting gravity
+	attribute to ForgetGravity.
+
 2008-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Add missing progress
