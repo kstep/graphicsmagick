@@ -1,3 +1,10 @@
+2008-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (SpreadImage): Accelerate using OpenMP.
+	* coders/msl.c: Applied MSL patch from graphicsmagick-bugs list to
+	correct handling of geometry x,y values by setting gravity
+	attribute to ForgetGravity.
+
 2008-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ShadeImage): Accelerate using OpenMP.

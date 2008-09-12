@@ -3198,33 +3198,16 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 */
 MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
-  ExceptionInfo *exception)
+                                ExceptionInfo *exception)
 {
 #define SpreadImageText  "Spread image...  "
-#define OFFSETS_ENTRIES 5000
+#define OFFSETS_ENTRIES 5000U
 
   Image
     *spread_image;
 
   int
-    offsets_index;
-
-  int
-    x_distance,
-    y,
-    y_distance;
-
-  register int
-    x;
-
-  long
     *offsets;
-
-  register PixelPacket
-    *q;
-
-  const PixelPacket
-    *neighbors;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3239,71 +3222,148 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
   spread_image->storage_class=DirectClass;
-  offsets_index=0;
 
   /*
     Initialize random offsets cache
   */
-  offsets=MagickAllocateMemory(long *,OFFSETS_ENTRIES*sizeof(long));
-  if (offsets == (long *) NULL)
-    {
-      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,NULL);
-      return (Image *) NULL;
-    }
-  for (x=0; x < OFFSETS_ENTRIES; x++)
-    offsets[x]=((((2*(double) radius+1)*rand())/RAND_MAX)-((long)radius));
+  {
+    unsigned int
+      seed,
+      x;
+
+    seed=MagickRandNewSeed();
+    offsets=MagickAllocateMemory(int *,OFFSETS_ENTRIES*sizeof(int));
+    if (offsets == (int *) NULL)
+      {
+        ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,NULL);
+        return (Image *) NULL;
+      }
+    for (x=0; x < OFFSETS_ENTRIES; x++)
+      offsets[x]=((((2*(double) radius+1)*MagickRandReentrant(&seed))/
+                   RAND_MAX)-((int) radius));
+  }
 
   /*
-    Convolve each row.
+    Spread each row.
   */
-  for (y=0; y < (long) image->rows; y++)
   {
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
     long
-      y_min,
-      y_max;
+      y;
 
-    q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
+    volatile MagickPassFail
+      status=MagickPass;
 
-    if (radius > (unsigned int) y)
-      y_min=0;
-    else
-      y_min=y-radius;
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(spread_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
+      {
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        DestroyImage(spread_image);
+        return (Image *) NULL;
+      }
+
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        register PixelPacket
+          *q;
+
+        const PixelPacket
+          *neighbors;
+
+        register long
+          x;
+
+        long
+          y_min,
+          y_max;
+
+        long
+          x_distance,
+          y_distance;
+
+        unsigned int
+          offsets_index;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        offsets_index=(y*image->columns) % OFFSETS_ENTRIES;
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,spread_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (radius > (unsigned int) y)
+          y_min=0;
+        else
+          y_min=y-radius;
     
-    if ((y+radius) >= image->rows)
-      y_max=image->rows-1;
-    else
-      y_max=y+radius;
+        if ((y+radius) >= image->rows)
+          y_max=image->rows-1;
+        else
+          y_max=y+radius;
 
-    neighbors=AcquireImagePixels(image,0,y_min,image->columns,y_max-y_min,exception);
-    if (neighbors == (PixelPacket *) NULL)
-      break;
-
-    for (x=0; x < (long) image->columns; x++)
-    {
-      do
-      {
-        x_distance=offsets[offsets_index++];
-        if (offsets_index==OFFSETS_ENTRIES)
-          offsets_index=0;
-      } while (((x+x_distance) < 0) ||
-               ((x+x_distance) >= (long) image->columns));
-      do
-      {
-        y_distance=offsets[offsets_index++];
-        if (offsets_index==OFFSETS_ENTRIES)
-          offsets_index=0;
-      } while (((y+y_distance) < 0) ||
-               ((y+y_distance) >= (long) image->rows));
-      *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));
-      q++;
-    }
-    if (!SyncImagePixels(spread_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SpreadImageText,y,image->rows,exception))
-        break;
+        read_view=AccessThreadView(read_view_set);
+        neighbors=AcquireCacheView(read_view,0,y_min,image->columns,y_max-y_min,exception);
+        if (neighbors == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) image->columns; x++)
+              {
+                do
+                  {
+                    x_distance=offsets[offsets_index++];
+                    if (offsets_index==OFFSETS_ENTRIES)
+                      offsets_index=0;
+                  } while (((x+x_distance) < 0) ||
+                           ((x+x_distance) >= (long) image->columns));
+                do
+                  {
+                    y_distance=offsets[offsets_index++];
+                    if (offsets_index==OFFSETS_ENTRIES)
+                      offsets_index=0;
+                  } while (((y+y_distance) < 0) ||
+                           ((y+y_distance) >= (long) image->rows));
+                *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&spread_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(EnhanceImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   MagickFreeMemory(offsets);
   spread_image->is_grayscale=image->is_grayscale;

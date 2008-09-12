@@ -109,6 +109,7 @@ Performance Improvements:
     - Resize image (-resize)
     - Shade image (-shade)
     - Solarize image (-solarize)
+    - Spread image (-spread)
     - Statistics computation (identify -verbose)
     - Threshold channel (-threshold, -operator threshold)
     - UnsharpMaskImage (-unsharp)
