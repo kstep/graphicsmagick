@@ -3035,6 +3035,24 @@ in the mosaic.</pp>
 
 
 
+<!-- ------------ -motion-blur --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-motion-blur <radius>{x<sigma>}{+angle}</opt>
+
+<abs>Simulate motion blur</abs>
+
+<pp>
+Simulate motion blur by convolving the image with a Gaussian operator of
+the given radius and standard deviation (sigma). For reasonable results,
+radius should be larger than sigma. If radius is zero, then a suitable
+radius is automatically selected based on sigma. The angle specifies the
+angle that the object is coming from (side which is blurred).</pp>
+
+</utils>
+
+
+
 <!-- ------------ -name --------------------------------------------- -->
 
 <utils apps=animate,display>

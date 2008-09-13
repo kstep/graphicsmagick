@@ -1,4 +1,4 @@
-.TH gm 1 "2008/09/10" "GraphicsMagick"
+.TH gm 1 "2008/09/13" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2398,6 +2398,15 @@ is terminated by the appearance of any option.
 If the \fB-mosaic\fP
 option appears after all of the input images, all images are included
 in the mosaic.
+.TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
+
+Simulate motion blur by convolving the image with a Gaussian operator of
+the given radius and standard deviation (sigma). For reasonable results,
+radius should be larger than sigma. If radius is zero, then a suitable
+radius is automatically selected based on sigma. The angle specifies the
+angle that the object is coming from (side which is blurred).
 .TP
 .B "-name"
 \fRname an image
@@ -5283,6 +5292,9 @@ Options, above.
 .B "-mosaic"
 \fRcreate a mosaic from an image or an image sequence
 .TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
+.TP
 .B "-negate"
 \fRreplace every pixel with its complementary color
 .TP
@@ -8163,6 +8175,9 @@ Options, above.
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
+.TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
 .TP
 .B "-negate"
 \fRreplace every pixel with its complementary color

@@ -417,6 +417,10 @@
 <lopt>-mosaic</opt>
 <abs>create a mosaic from an image or an image sequence</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt>-motion-blur <radius>{x<sigma>}{+angle}</opt>
+<abs>Simulate motion blur</abs>
+</utils>
 <utils apps=animate,display>
 <opt>-name</opt>
 <abs>name an image</abs>

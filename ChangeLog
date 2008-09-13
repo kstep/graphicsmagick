@@ -1,3 +1,10 @@
+2008-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand): Provide 'convert' access
+	to MotionBlurImage() via -motion-blur option.
+	(MogrifyImageCommand): Provide 'mogrify' access to
+	MotionBlurImage() via -motion-blur option.
+
 2008-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (SpreadImage): Accelerate using OpenMP.

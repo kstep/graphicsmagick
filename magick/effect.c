@@ -1995,7 +1995,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %  Gaussian operator of the given radius and standard deviation (sigma).
 %  For reasonable results, radius should be larger than sigma.  Use a
 %  radius of 0 and MotionBlurImage() selects a suitable radius for you.
-%  Angle gives the angle of the blurring motion.
+%  Angle gives the angle of the blurring motion (direction object appears
+%  to be coming from).
 %
 %  Andrew Protano contributed this effect.
 %
@@ -2085,6 +2086,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  printf("radius=%g, sigma=%g, angle=%g\n", radius,sigma,angle);
+
   kernel=(double *) NULL;
   if (radius > 0)
     width=GetMotionBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);

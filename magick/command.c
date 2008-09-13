@@ -4563,6 +4563,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("mosaic",option+1) == 0)
           break;
+        if (LocaleCompare("motion-blur",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+              ThrowConvertException(OptionError,MissingArgument,option);
+            break;
+          }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
       }
       case 'n':
@@ -5366,6 +5373,8 @@ static void ConvertUsage(void)
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
+      "-motion-blur radiusxsigma+angle",
+      "                     simulate motion blur",
       "-negate              replace every pixel with its complementary color ",
       "-noop                do not apply options to image",
       "-noise radius        add or reduce noise in an image",
@@ -8834,6 +8843,30 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.colorspace=GRAYColorspace;
             continue;
           }
+        if (LocaleCompare("motion-blur",option+1) == 0)
+          {
+            double
+              angle,
+              radius,
+              sigma;
+
+            Image
+              *blur_image;
+
+            /*
+              Motion blur image.
+            */
+            radius=0.0;
+            sigma=1.0;
+            angle=0.0;
+            (void) sscanf(argv[++i],"%lfx%lf%lf",&radius,&sigma,&angle);
+            blur_image=MotionBlurImage(*image,radius,sigma,angle,&(*image)->exception);
+            if (blur_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=blur_image;
+            continue;
+          }        
         break;
       }
       case 'n':
@@ -11347,6 +11380,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->monochrome=(*option == '-');
             break;
           }
+        if (LocaleCompare("motion-blur",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) ||  !sscanf(argv[i],"%lf",&sans))
+              ThrowMogrifyException(OptionError,MissingArgument,option);
+            break;
+          }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
       case 'n':
@@ -12091,6 +12131,8 @@ static void MogrifyUsage(void)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
+      "-motion-blur radiusxsigma+angle",
+      "                     simulate motion blur",
       "-negate              replace every pixel with its complementary color ",
       "-noop                do not apply options to image",
       "-noise radius        add or reduce noise in an image",
