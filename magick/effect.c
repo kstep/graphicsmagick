@@ -2021,55 +2021,62 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 */
 
-static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
+static double *AllocateMotionBlurKernel(const int width,const double sigma)
 {
 #define KernelRank 3
 
   double
-    alpha,
-    normalize;
-
-  int
-    bias;
-
-  register long
-    i;
+    *kernel;
 
   /*
     Generate a 1-D convolution matrix.  Calculate the kernel at higher
     resolution than needed and average the results as a form of numerical
     integration to get the best accuracy.
   */
-  if (width <= 0)
-    width=3;
-  *kernel=MagickAllocateMemory(double *,width*sizeof(double));
-  if (*kernel == (double *) NULL)
-    return(0);
-  for (i=0; i < width; i++)
-    (*kernel)[i]=0.0;
-  bias=KernelRank*width;
-  for (i=0; i < bias; i++)
-  {
-    alpha=exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
-    (*kernel)[i/KernelRank]+=alpha/(MagickSQ2PI*sigma);
-  }
-  normalize=0;
-  for (i=0; i < width; i++)
-    normalize+=(*kernel)[i];
-  for (i=0; i < width; i++)
-    (*kernel)[i]/=normalize;
-  return(width);
+  kernel=MagickAllocateMemory(double *,width*sizeof(double));
+  if (kernel != (double *) NULL)
+    {
+      double
+        alpha,
+        normalize;
+      
+      int
+        bias;
+
+      register long
+        i;
+
+      for (i=0; i < width; i++)
+        kernel[i]=0.0;
+      bias=KernelRank*width;
+      for (i=0; i < bias; i++)
+        {
+          alpha=exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+          kernel[i/KernelRank]+=alpha/(MagickSQ2PI*sigma);
+        }
+      normalize=0;
+      for (i=0; i < width; i++)
+        normalize+=kernel[i];
+      for (i=0; i < width; i++)
+        kernel[i]/=normalize;
+    }
+
+  return kernel;
 }
 
+typedef struct _BlurOffsetInfo
+{
+  int
+    x,
+    y;
+} BlurOffsetInfo;
 #define MotionBlurImageText  "Motion blur image...  "
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
-  const double sigma,const double angle,ExceptionInfo *exception)
+                                    const double sigma,const double angle,
+                                    ExceptionInfo *exception)
 {
   double
     *kernel;
-
-  DoublePixelPacket
-    zero;
 
   Image
     *blur_image;
@@ -2077,49 +2084,49 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   int
     width;
 
-  long
-    y;
-
-  PointInfo
+  BlurOffsetInfo
     *offsets;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  printf("radius=%g, sigma=%g, angle=%g\n", radius,sigma,angle);
-
-  kernel=(double *) NULL;
-  if (radius > 0)
-    width=GetMotionBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
-  else
-    {
-      double
-        *last_kernel;
-
-      last_kernel=(double *) NULL;
-      width=GetMotionBlurKernel(3,sigma,&kernel);
-      while ((MaxRGB*kernel[width-1]) > 0.0)
-      {
-        if (last_kernel != (double *)NULL)
-          MagickFreeMemory(last_kernel);
-        last_kernel=kernel;
-        kernel=(double *) NULL;
-        width=GetMotionBlurKernel(width+2,sigma,&kernel);
-      }
-      if (last_kernel != (double *) NULL)
-        {
-          MagickFreeMemory(kernel);
-          width-=2;
-          kernel=last_kernel;
-        }
-    }
+  width=GetOptimalKernelWidth1D(radius,sigma);
+/*   fprintf(stderr,"radius=%g, sigma=%g, angle=%g width=%d\n", radius,sigma,angle,width); */
   if (width < 3)
     ThrowImageException3(OptionError,UnableToBlurImage,
-      KernelRadiusIsTooSmall);
-  offsets=MagickAllocateMemory(PointInfo *,width*sizeof(PointInfo));
-  if (offsets == (PointInfo *) NULL)
+                         KernelRadiusIsTooSmall);
+  kernel=AllocateMotionBlurKernel(width,sigma);
+  if (kernel == (double *) NULL)
     ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToMotionBlurImage);
+                         UnableToMotionBlurImage);
+  {
+    long
+      x;
+
+    long
+      y;
+
+    register long
+      i;
+
+    /*
+      Allocate and initialize offsets.
+    */
+    offsets=MagickAllocateMemory(BlurOffsetInfo *,width*sizeof(BlurOffsetInfo));
+    if (offsets == (BlurOffsetInfo *) NULL)
+      {
+        MagickFreeMemory(kernel);
+        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                             UnableToMotionBlurImage);
+      }
+    x=(long) (width*sin(DegreesToRadians(angle+90)));
+    y=(long) (width*cos(DegreesToRadians(angle+90)));
+    for (i=0; i < width; i++)
+      {
+        offsets[i].x=(int) (i*x/sqrt(x*x+y*y)+0.5);
+        offsets[i].y=(int) (i*y/sqrt(x*x+y*y)+0.5);
+      }
+  }
   /*
     Allocate blur image.
   */
@@ -2132,72 +2139,125 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     }
   blur_image->storage_class=DirectClass;
   {
-     register long
-       x;
+    /*
+      Motion blur image.
+    */
+    unsigned long
+      row_count=0;
+    
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
 
-     register long
-       i;
+    long
+      y;
 
-     x=(long) (width*sin(DegreesToRadians(angle)));
-     y=(long) (width*cos(DegreesToRadians(angle)));
-     for (i=0; i < width; i++)
-       {
-         offsets[i].x=i*x/sqrt(x*x+y*y);
-         offsets[i].y=i*y/sqrt(x*x+y*y);
-       }
-  }
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) image->rows; y++)
-  {
-    register PixelPacket
-      *q;
+    DoublePixelPacket
+      zero;
 
-    register long
-      x;
+    volatile MagickPassFail
+      status;
 
-    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      DoublePixelPacket
-        aggregate;
-
-      register long
-        i;
-
-      aggregate=zero;
-      for (i=0; i < width; i++)
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(blur_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
       {
-        register long
-          u,
-          v;
-        
-        PixelPacket
-          pixel;
-
-        u=x+(long) offsets[i].x;
-        v=y+(long) offsets[i].y;
-        if ((u < 0) || (u >= (long) image->columns) ||
-            (v < 0) || (v >= (long) image->rows))
-          continue;
-        pixel=AcquireOnePixel(image,u,v,exception);
-        aggregate.red+=kernel[i]*pixel.red;
-        aggregate.green+=kernel[i]*pixel.green;
-        aggregate.blue+=kernel[i]*pixel.blue;
-        aggregate.opacity+=kernel[i]*pixel.opacity;
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        MagickFreeMemory(kernel);
+        MagickFreeMemory(offsets);
+        DestroyImage(blur_image);
+        return (Image *) NULL;
       }
-      q->red=(Quantum) aggregate.red;
-      q->green=(Quantum) aggregate.green;
-      q->blue=(Quantum) aggregate.blue;
-      q->opacity=(Quantum) aggregate.opacity;
-      q++;
-    }
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(MotionBlurImageText,y,image->rows,exception))
-        break;
+
+    status=MagickPass;
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+/*     #pragma omp parallel for schedule(static,64) */
+    for (y=0; y < (long) image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        register PixelPacket
+          *q;
+
+        register long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        read_view=AccessThreadView(read_view_set);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,blur_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) image->columns; x++)
+              {
+                DoublePixelPacket
+                  aggregate;
+
+                register long
+                  i;
+
+                aggregate=zero;
+                for (i=0; i < width; i++)
+                  {
+                    const PixelPacket
+                      *p;
+
+                    long
+                      u,
+                      v;
+
+                    u=(long) x+offsets[i].x;
+                    v=(long) y+offsets[i].y;
+                    p=AcquireCacheView(read_view,u,v,1,1,exception);
+                    if (p == (const PixelPacket *) NULL)
+                      {
+                        thread_status=MagickFail;
+                        break;
+                      }
+                    aggregate.red+=kernel[i]*p->red;
+                    aggregate.green+=kernel[i]*p->green;
+                    aggregate.blue+=kernel[i]*p->blue;
+                    aggregate.opacity+=kernel[i]*p->opacity;
+                  }
+                if (thread_status == MagickFail)
+                  break;
+                q->red=(Quantum) aggregate.red;
+                q->green=(Quantum) aggregate.green;
+                q->blue=(Quantum) aggregate.blue;
+                q->opacity=(Quantum) aggregate.opacity;
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&blur_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(MotionBlurImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   MagickFreeMemory(kernel);
   MagickFreeMemory(offsets);

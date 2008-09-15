@@ -1,3 +1,9 @@
+2008-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (MotionBlurImage): Use GetOptimalKernelWidth1D()
+	to estimate a reasonable convolution kernel size.  Prepare code
+	for OpenMP but don't enable OpenMP until it runs faster.
+
 2008-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ConvertImageCommand): Provide 'convert' access
