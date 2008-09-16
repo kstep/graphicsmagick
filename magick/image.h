@@ -502,7 +502,7 @@ typedef struct _ChromaticityInfo
 # define SetCrSample(q,value) ((q)->blue=(value))
 
 # define GetCyanSample(p) ((p)->red)
-# define GetMagentSample(p) ((p)->green)
+# define GetMagentaSample(p) ((p)->green)
 # define GetYellowSample(p) ((p)->blue)
 # define GetBlackSample(p) ((p)->opacity)
 

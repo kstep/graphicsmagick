@@ -325,6 +325,19 @@ void Magick::Image::addNoise( const NoiseType noiseType_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
+void Magick::Image::addNoiseChannel( const ChannelType channel_,
+                                     const NoiseType noiseType_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    AddNoiseImageChannel ( image(),
+                           channel_,
+                           noiseType_,
+                           &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
 
 // Affine Transform image
 void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
@@ -454,6 +467,16 @@ void Magick::Image::blur( const double radius_, const double sigma_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     BlurImage( image(), radius_, sigma_, &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+void Magick::Image::blurChannel( const ChannelType channel_,
+                                 const double radius_, const double sigma_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    BlurImageChannel( image(), channel_,radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -1044,6 +1067,16 @@ void Magick::Image::gaussianBlur ( const double width_, const double sigma_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
+void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
+                                          const double width_, const double sigma_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    GaussianBlurImageChannel( image(), channel_, width_, sigma_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
 
 // Implode image
 void Magick::Image::implode ( const double factor_ )
@@ -1167,6 +1200,25 @@ void Magick::Image::modulate ( const double brightness_,
   ModulateImage( image(), modulate );
   throwImageException();
 }
+
+// Motion blur image with specified blur factor
+// The radius_ parameter specifies the radius of the Gaussian, in
+// pixels, not counting the center pixel.  The sigma_ parameter
+// specifies the standard deviation of the Laplacian, in pixels.
+// The angle_ parameter specifies the angle the object appears
+// to be comming from (zero degrees is from the right).
+void            Magick::Image::motionBlur ( const double radius_,
+                                            const double sigma_,
+                                            const double angle_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    MotionBlurImage( image(), radius_, sigma_, angle_, &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+    
 
 // Negate image.  Set grayscale_ to true to effect grayscale values
 // only
@@ -1295,6 +1347,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  modifyImage();
   QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
   throwException( exceptionInfo );
 }
@@ -1307,6 +1360,7 @@ void Magick::Image::quantumOperator ( const int x_,const int y_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  modifyImage();
   QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
                               operator_, rvalue_, &exceptionInfo);
   throwException( exceptionInfo );
@@ -1323,6 +1377,33 @@ void Magick::Image::raise ( const Geometry &geometry_ ,
   throwImageException();
 }
 
+// Random threshold image.
+//
+// Changes the value of individual pixels based on the intensity
+// of each pixel compared to a random threshold.  The result is a
+// low-contrast, two color image.  The thresholds_ argument is a
+// geometry containing LOWxHIGH thresholds.  If the string
+// contains 2x2, 3x3, or 4x4, then an ordered dither of order 2,
+// 3, or 4 will be performed instead.  If a channel_ argument is
+// specified then only the specified channel is altered.  This is
+// a very fast alternative to 'quantize' based dithering.
+void Magick::Image::randomThreshold( const Geometry &thresholds_ )
+{
+  randomThresholdChannel(thresholds_,AllChannels);
+}
+void Magick::Image::randomThresholdChannel( const Geometry &thresholds_,
+                                            const ChannelType channel_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  modifyImage();
+  (void) RandomChannelThresholdImage( image(),
+                                      MagickLib::ChannelTypeToString(channel_),
+                                      static_cast<std::string>(thresholds_).c_str(),
+                                      &exceptionInfo );
+  throwImageException();
+}
+    
 // Read image into current object
 void Magick::Image::read ( const std::string &imageSpec_ )
 {
@@ -1581,6 +1662,20 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
+void Magick::Image::sharpenChannel ( const ChannelType channel_,
+                                     const double radius_, const double sigma_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    SharpenImageChannel( image(),
+                         channel_,
+                         radius_,
+                         sigma_,
+                         &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
 
 // Shave pixels from image edges.
 void Magick::Image::shave ( const Geometry &geometry_ )
@@ -1757,6 +1852,25 @@ void Magick::Image::unsharpmask ( const double radius_,
                       amount_,
                       threshold_,
                       &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
+                                         const double radius_,
+                                         const double sigma_,
+                                         const double amount_,
+                                         const double threshold_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    UnsharpMaskImageChannel( image(),
+                             channel_,
+                             radius_,
+                             sigma_,
+                             amount_,
+                             threshold_,
+                             &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }

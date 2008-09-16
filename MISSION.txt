@@ -1,9 +1,9 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-=================
-Mission Statement
-=================
+================================
+GraphicsMagick Mission Statement
+================================
 
 In November, 2002, the GraphicsMagick project was formed as a branch from
 ImageMagick 5.5.2. The project was formed in order to develop a more

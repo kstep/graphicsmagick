@@ -2,7 +2,7 @@
 .. See http://docutils.sourceforge.net/rst.html for details.
 
 =========================
-Welcome to GraphicsMagick
+Installing GraphicsMagick
 =========================
 
 .. contents::

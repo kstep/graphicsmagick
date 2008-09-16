@@ -246,7 +246,7 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 8, 2008</p>
+<p>This file was last updated on September 16, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -377,10 +377,20 @@ image files.</li>
 <li>Divide</li>
 </ul>
 </li>
+<li>Added -motion-blur to motion blur the image.</li>
 <li>Mogrify and convert now support -black-threshold and -white-threshold.</li>
 <li>MAT: Now supports reading compressed files.</li>
 <li>DCRAW: Coder proxy module allows reading digital camera files as if
 they were natively supported.</li>
+<li>New C API functions:<ul>
+<li>AddNoiseImageChannel(), add noise to an image channel.</li>
+<li>BlurImageChannel(), blur an image channel.</li>
+<li>GaussianBlurImageChannel(), gaussian blur an image channel.</li>
+<li>ImportImageChannelsMasked(), import selected image channels.</li>
+<li>SharpenImageChannel(), sharpen an image channel.</li>
+<li>UnsharpMaskImageChannel(), unsharpmask an image channel.</li>
+</ul>
+</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -1044,7 +1054,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-09-12 21:38 UTC.
+Generated on: 2008-09-16 18:29 UTC.
 
 </div>
 </body>

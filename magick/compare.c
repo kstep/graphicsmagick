@@ -117,7 +117,7 @@ DifferenceImagePixels(void *mutable_data,                  /* User provided muta
               (GetCyanSample(&reference_pixels[i]) != GetCyanSample(&compare_pixels[i])))
             change=MagickTrue;
           if (MagickChannelEnabled(channels,MagentaChannel) &&
-              (GetMagentSample(&reference_pixels[i]) != GetMagentSample(&compare_pixels[i])))
+              (GetMagentaSample(&reference_pixels[i]) != GetMagentaSample(&compare_pixels[i])))
             change=MagickTrue;
           if (MagickChannelEnabled(channels,YellowChannel) &&
               (GetYellowSample(&reference_pixels[i]) != GetYellowSample(&compare_pixels[i])))

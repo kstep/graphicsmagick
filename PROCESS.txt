@@ -1,9 +1,9 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-===================
-Development Process
-===================
+==================================
+GraphicsMagick Development Process
+==================================
 
 In order to ensure an orderly development process, and assure the highest
 quality releases, a development process has been established for

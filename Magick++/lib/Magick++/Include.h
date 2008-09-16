@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2008
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -94,6 +94,12 @@ namespace MagickLib
 #  pragma warning(disable : 4996) /* function deprecation warnings */
 #endif
 
+#if defined(MAGICK_IMPLEMENTATION)
+namespace MagickLib
+{
+#  include "magick/enum_strings.h"
+}
+#endif
 
 //
 // Import GraphicsMagick symbols and types which are used as part of the
@@ -319,13 +325,26 @@ namespace Magick
   // Arithmetic and bitwise operators
   using MagickLib::AddQuantumOp;
   using MagickLib::AndQuantumOp;
+  using MagickLib::AssignQuantumOp;
   using MagickLib::DivideQuantumOp;
   using MagickLib::LShiftQuantumOp;
   using MagickLib::MultiplyQuantumOp;
   using MagickLib::OrQuantumOp;
   using MagickLib::RShiftQuantumOp;
   using MagickLib::SubtractQuantumOp;
+  using MagickLib::ThresholdQuantumOp;
+  using MagickLib::ThresholdBlackQuantumOp;
+  using MagickLib::ThresholdWhiteQuantumOp;
   using MagickLib::XorQuantumOp;
+  using MagickLib::NoiseGaussianQuantumOp;
+  using MagickLib::NoiseImpulseQuantumOp;
+  using MagickLib::NoiseLaplacianQuantumOp;
+  using MagickLib::NoiseMultiplicativeQuantumOp;
+  using MagickLib::NoisePoissonQuantumOp;
+  using MagickLib::NoiseUniformQuantumOp;
+  using MagickLib::NegateQuantumOp;
+  using MagickLib::GammaQuantumOp;
+  using MagickLib::DepthQuantumOp;
   using MagickLib::QuantumOperator;
 
   // Preview types.  Not currently used by Magick++
@@ -804,6 +823,16 @@ namespace Magick
   using MagickLib::YNegative;
   using MagickLib::YValue;
   using MagickLib::ZoomImage;
+
+  using MagickLib::AddNoiseImageChannel;
+  using MagickLib::BlurImageChannel;
+  using MagickLib::GaussianBlurImageChannel;
+  using MagickLib::MotionBlurImage;
+  using MagickLib::RandomChannelThresholdImage;
+  using MagickLib::SharpenImageChannel;
+  using MagickLib::UnsharpMaskImageChannel;
+
+
 #endif // MAGICK_IMPLEMENTATION
 
 }

@@ -1,3 +1,19 @@
+2008-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (addNoiseChannel): New method to add noise to a
+	specified channel.
+	(blurChannel): New method to blur a specified channel.
+	(gaussianBlurChannel): New method to gaussian blur a specified
+	channel.
+	(motionBlur): New method to motion blur the image.
+	(randomThresholdChannel): New method to apply random thresholding
+	or ordered dithering to the image.
+	(randomThresholdChannel): New method to apply random thresholding
+	or ordered dithering to the specified image channels.
+	(sharpenChannel): New method to sharpen a specified image channel.
+	(unsharpmaskChannel): New method to unsharpmask a specified image
+	channel.
+
 2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantize): Error measurement support was being

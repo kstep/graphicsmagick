@@ -1,8 +1,24 @@
+2008-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/channel.c (ImportImageChannelsMasked): New function to
+	import all the channels from an image except for the channels
+	specified.
+	* magick/effect.c (AddNoiseImageChannel): New function to add
+	noise to an image channel.
+	(BlurImageChannel): New function to blur one image channel.
+	(GaussianBlurImageChannel): New function to gaussian blur an image
+	channel.
+	(UnsharpMaskImageChannel): New function to unsharpmask an image
+	channel.
+	(SharpenImageChannel): New function to sharpen an image channel.
+
 2008-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (MotionBlurImage): Use GetOptimalKernelWidth1D()
 	to estimate a reasonable convolution kernel size.  Prepare code
 	for OpenMP but don't enable OpenMP until it runs faster.
+	(AddNoiseImageChannel): New function to apply noise to a specified
+	image channel.
 
 2008-09-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

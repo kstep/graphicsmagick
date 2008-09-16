@@ -119,6 +119,8 @@ namespace Magick
 
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
+    void            addNoiseChannel ( const ChannelType channel_,
+                                      const NoiseType noiseType_);
 
     // Transform image by specified affine (or free transform) matrix.
     void            affineTransform ( const DrawableAffine &affine );
@@ -163,7 +165,10 @@ namespace Magick
     // specifies the standard deviation of the Laplacian, in pixels.
     void            blur ( const double radius_ = 0.0,
                            const double sigma_ = 1.0  );
-    
+    void            blurChannel ( const ChannelType channel_,
+                                  const double radius_ = 0.0,
+                                  const double sigma_ = 1.0  );
+
     // Border image (add border to image)
     void            border ( const Geometry &geometry_
                              = borderGeometryDefault );
@@ -340,6 +345,8 @@ namespace Magick
     // mask is specified by 'width_'. The standard deviation of the
     // gaussian bell curve is specified by 'sigma_'.
     void            gaussianBlur ( const double width_, const double sigma_ );
+    void            gaussianBlurChannel ( const ChannelType channel_,
+                                          const double width_, const double sigma_ );
     
     // Implode image (special effect)
     void            implode ( const double factor_ );
@@ -407,6 +414,16 @@ namespace Magick
     void            modulate ( const double brightness_,
 			       const double saturation_,
 			       const double hue_ );
+
+    // Motion blur image with specified blur factor
+    // The radius_ parameter specifies the radius of the Gaussian, in
+    // pixels, not counting the center pixel.  The sigma_ parameter
+    // specifies the standard deviation of the Laplacian, in pixels.
+    // The angle_ parameter specifies the angle the object appears
+    // to be comming from (zero degrees is from the right).
+    void            motionBlur ( const double radius_,
+                                 const double sigma_,
+                                 const double angle_ );
     
     // Negate colors in image.  Set grayscale to only negate grayscale
     // values in image.
@@ -470,6 +487,20 @@ namespace Magick
     // 3-D raised or lowered effect)
     void            raise ( const Geometry &geometry_ = raiseGeometryDefault,
 			    const bool raisedFlag_ = false );
+
+    // Random threshold image.
+    //
+    // Changes the value of individual pixels based on the intensity
+    // of each pixel compared to a random threshold.  The result is a
+    // low-contrast, two color image.  The thresholds_ argument is a
+    // geometry containing LOWxHIGH thresholds.  If the string
+    // contains 2x2, 3x3, or 4x4, then an ordered dither of order 2,
+    // 3, or 4 will be performed instead.  If a channel_ argument is
+    // specified then only the specified channel is altered.  This is
+    // a very fast alternative to 'quantize' based dithering.
+    void            randomThreshold( const Geometry &thresholds_ );
+    void            randomThresholdChannel( const Geometry &thresholds_,
+                                            const ChannelType channel_ );
     
     // Read single image frame into current object
     void            read ( const std::string &imageSpec_ );
@@ -550,6 +581,9 @@ namespace Magick
     // specifies the standard deviation of the Laplacian, in pixels.
     void            sharpen ( const double radius_ = 0.0,
                               const double sigma_ = 1.0 );
+    void            sharpenChannel ( const ChannelType channel_,
+                                     const double radius_ = 0.0,
+                                     const double sigma_ = 1.0 );
 
     // Shave pixels from image edges.
     void            shave ( const Geometry &geometry_ );
@@ -619,6 +653,11 @@ namespace Magick
                                   const double sigma_,
                                   const double amount_,
                                   const double threshold_ );
+    void            unsharpmaskChannel ( const ChannelType channel_,
+                                         const double radius_,
+                                         const double sigma_,
+                                         const double amount_,
+                                         const double threshold_ );
 
     // Map image pixels to a sine wave
     void            wave ( const double amplitude_ = 25.0,

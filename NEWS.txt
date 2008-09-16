@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 8, 2008
+This file was last updated on September 16, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -153,12 +153,23 @@ New Features:
     - CopyYellow
     - Divide
 
+  * Added -motion-blur to motion blur the image.
+
   * Mogrify and convert now support -black-threshold and -white-threshold.
 
   * MAT: Now supports reading compressed files.
 
   * DCRAW: Coder proxy module allows reading digital camera files as if
     they were natively supported.
+
+  * New C API functions:
+
+    - AddNoiseImageChannel(), add noise to an image channel.
+    - BlurImageChannel(), blur an image channel.
+    - GaussianBlurImageChannel(), gaussian blur an image channel.
+    - ImportImageChannelsMasked(), import selected image channels.
+    - SharpenImageChannel(), sharpen an image channel.
+    - UnsharpMaskImageChannel(), unsharpmask an image channel.
 
 Feature improvements:
 

@@ -1,6 +1,10 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
+======================================
+GraphicsMagick Copyrights and Licenses
+======================================
+
 This file is part of the GraphicsMagick software distributed by the
 GraphicsMagick Group.
 

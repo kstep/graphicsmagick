@@ -36,6 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
@@ -278,121 +279,87 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %
 %
 */
-static inline Quantum
-GenerateQuantumNoise(const Quantum quantum,const NoiseType noise_type,
-                     const double factor,unsigned int *seed)
+MagickExport Image *
+AddNoiseImage(const Image *image,const NoiseType noise_type,
+              ExceptionInfo *exception)
 {
-  double
-    value;
-
-  value = (double) quantum+
-    factor*GenerateDifferentialNoise((double) quantum,noise_type,seed);
-  return RoundDoubleToQuantum(value);
+  return AddNoiseImageChannel(image,AllChannels,noise_type,exception);
 }
-static MagickPassFail
-AddNoiseImagePixels(void *mutable_data,                /* User provided mutable data */
-                    const void *immutable_data,        /* User provided immutable data */
-                    const Image *source_image,         /* Source image */
-                    const PixelPacket *source_pixels,  /* Pixel row in source image */
-                    const IndexPacket *source_indexes, /* Pixel row indexes in source image */
-                    Image *new_image,                  /* New image */
-                    PixelPacket *new_pixels,           /* Pixel row in new image */
-                    IndexPacket *new_indexes,          /* Pixel row indexes in new image */
-                    const long npixels,                /* Number of pixels in row */
-                    ExceptionInfo *exception           /* Exception report */
-                    )
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     A d d N o i s e I m a g e C h a n n e l                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AddNoiseImageChannel() adds random noise to one image channel.
+%
+%  The format of the AddNoiseImageChannel method is:
+%
+%      Image *AddNoiseImageChannel(const Image *image,
+%         const ChannelType channel, const NoiseType noise_type,
+%         ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o channel: The image channel to apply noise to.
+%
+%    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
+%      Impulse, Laplacian, or Poisson.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *
+AddNoiseImageChannel(const Image *image,const ChannelType channel,
+                     const NoiseType noise_type,
+                     ExceptionInfo *exception)
 {
-  /*
-    Add noise to image pixle.
-  */
-  const NoiseType
-    noise_type = *((const NoiseType *) immutable_data);
-
-  unsigned int
-    seed;
-
-  double
-    factor;
-
-  register long
-    i;
+  QuantumOperator
+    quantum_operator;
   
-  ARG_NOT_USED(mutable_data);
-  ARG_NOT_USED(source_indexes);
-  ARG_NOT_USED(new_image);
-  ARG_NOT_USED(new_indexes);
-  ARG_NOT_USED(exception);
-
-  seed=MagickRandNewSeed();
-  factor=1.0;
-  if (source_image->is_grayscale)
-    {
-      /*
-        Intensity noise
-      */
-      for (i=0; i < npixels; i++)
-        {
-          new_pixels[i].red=new_pixels[i].green=new_pixels[i].blue=
-            GenerateQuantumNoise(PixelIntensityToQuantum(&source_pixels[i]),noise_type,factor,&seed);
-          if (source_image->matte && new_image->matte)
-            new_pixels[i].opacity=source_pixels[i].opacity;
-          else
-            new_pixels[i].opacity=OpaqueOpacity;
-        }
-    }
-  else
-    {
-      /*
-        Noise across RGB channels
-      */
-      for (i=0; i < npixels; i++)
-        {
-          new_pixels[i].red=GenerateQuantumNoise(source_pixels[i].red,noise_type,factor,&seed);
-          new_pixels[i].green=GenerateQuantumNoise(source_pixels[i].green,noise_type,factor,&seed);
-          new_pixels[i].blue=GenerateQuantumNoise(source_pixels[i].blue,noise_type,factor,&seed);
-          if (source_image->matte && new_image->matte)
-            new_pixels[i].opacity=source_pixels[i].opacity;
-          else
-            new_pixels[i].opacity=OpaqueOpacity;
-        }
-    }
-
-  return MagickPass;
-}
-
-#define AddNoiseImageText  "Add noise to the image...  "
-MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
-  ExceptionInfo *exception)
-{
-  NoiseType noise = noise_type;
-
   Image
     *noise_image;
 
-  unsigned int
-   is_grayscale;
-
-  /*
-    Initialize noise image attributes.
-  */
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  noise_image=CloneImage(image,image->columns,image->rows,True,exception);
+  noise_image=CloneImage(image,0,0,True,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
-  is_grayscale=IsGrayImage(image,exception);
-  noise_image->storage_class=DirectClass;
-  /*
-    Add noise in each row.
-  */
-  (void) PixelIterateDualNew(AddNoiseImagePixels,NULL,
-                             AddNoiseImageText,NULL,&noise,
-                             image->columns,image->rows,image,0,0,
-                             noise_image,0,0,&noise_image->exception);
-  noise_image->is_grayscale=is_grayscale;
-  return(noise_image);
+
+  switch (noise_type)
+    {
+    case GaussianNoise:
+      quantum_operator=NoiseGaussianQuantumOp;
+      break;
+    case ImpulseNoise:
+      quantum_operator=NoiseImpulseQuantumOp;
+      break;
+    case LaplacianNoise:
+      quantum_operator=NoiseLaplacianQuantumOp;
+      break;
+    case MultiplicativeGaussianNoise:
+      quantum_operator=NoiseMultiplicativeQuantumOp;
+      break;
+    case PoissonNoise:
+      quantum_operator=NoisePoissonQuantumOp;
+      break;
+    case UniformNoise:
+      quantum_operator=NoiseUniformQuantumOp;
+      break;
+    default:
+      quantum_operator=UndefinedQuantumOp;
+      break;
+    }
+
+  (void) QuantumOperatorImage(noise_image,channel,quantum_operator,
+                              MaxRGBDouble,exception);
+  return noise_image;
 }
 
 /*
@@ -743,8 +710,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   return status;
 }
 
-MagickExport Image *BlurImage(const Image *original_image,const double radius,
-                              const double sigma,ExceptionInfo *exception)
+MagickExport Image *
+BlurImage(const Image *original_image,const double radius,
+          const double sigma,ExceptionInfo *exception)
 {
 
   double
@@ -825,6 +793,55 @@ MagickExport Image *BlurImage(const Image *original_image,const double radius,
   MagickFreeMemory(kernel);
   blur_image->is_grayscale=original_image->is_grayscale;
   return(blur_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     B l u r I m a g e C h a n n e l                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BlurImageChannel() blurs the specified image channel.  We convolve the
+%  image channel with a Gaussian operator of the given radius and standard
+%  deviation (sigma).  For reasonable results, the radius should be larger
+%  than sigma.  Use a radius of 0 and BlurImageChannel() selects a suitable
+%  radius for you.
+%
+%  The format of the BlurImageChannel method is:
+%
+%      Image *BlurImageChannel(const Image *image,const ChannelType channel,
+%        const double radius,const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o channel: The channel to blur.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *
+BlurImageChannel(const Image *image,const ChannelType channel,
+                 const double radius,const double sigma,
+                 ExceptionInfo *exception)
+{
+  Image
+    *blur_image;
+
+  blur_image=BlurImage(image,radius,sigma,exception);
+  if (blur_image != (Image *) NULL)
+    (void) ImportImageChannelsMasked(image,blur_image,channel);
+
+  return blur_image;
 }
 
 /*
@@ -1559,7 +1576,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %  For reasonable results, the radius should be larger than sigma.  Use a
 %  radius of 0 and GaussianBlurImage() selects a suitable radius for you
 %
-%  The format of the BlurImage method is:
+%  The format of the GaussianBlurImage method is:
 %
 %      Image *GaussianBlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
@@ -1569,6 +1586,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %    o blur_image: Method GaussianBlurImage returns a pointer to the image
 %      after it is blur.  A null image is returned if there is a memory
 %      shortage.
+%
+%    o image: Image to blur.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -1623,6 +1642,61 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   MagickFreeMemory(kernel);
   blur_image->is_grayscale=image->is_grayscale;
   return(blur_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     G a u s s i a n B l u r I m a g e C h a n n e l                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GaussianBlurImageChannel() blurs an image channel.  We convolve the image
+%  with a Gaussian operator of the given radius and standard deviation
+%  (sigma).  For reasonable results, the radius should be larger than sigma.
+%  Use a radius of 0 and GaussianBlurImage() selects a suitable radius for
+%  you.
+%
+%  The format of the GaussianBlurImageChannel method is:
+%
+%      Image *GaussianBlurImageChannel(const Image *image,
+%        const ChannelType channel,const double radius,
+%        const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o blur_image: Method GaussianBlurImage returns a pointer to the image
+%      after it is blur.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o image: Image to blur.
+%
+%    o channel: Channel to blur in image.
+%
+%    o radius: the radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: the standard deviation of the Gaussian, in pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *GaussianBlurImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  ExceptionInfo *exception)
+{
+  Image
+    *blur_image;
+
+  blur_image=GaussianBlurImage(image,radius,sigma,exception);
+  if (blur_image != (Image *) NULL)
+    (void) ImportImageChannelsMasked(image,blur_image,channel);
+
+  return blur_image;
 }
 
 /*
@@ -3236,6 +3310,54 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     S h a r p e n I m a g e C h a n n e l                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SharpenImageChannel() sharpens an image channel.  We convolve the image
+%  channel with a Gaussian operator of the given radius and standard
+%  deviation (sigma). For reasonable results, radius should be larger than
+%  sigma.  Use a radius of 0 and SharpenImage() selects a suitable radius
+%  for you.
+%
+%  The format of the SharpenImageChannel method is:
+%
+%    Image *SharpenImage(const Image *image,const double radius,
+%      const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Laplacian, in pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *SharpenImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  ExceptionInfo *exception)
+{
+  Image
+    *sharp_image;
+
+  sharp_image=SharpenImage(image,radius,sigma,exception);
+  if (sharp_image != (Image *) NULL)
+    (void) ImportImageChannelsMasked(image,sharp_image,channel);
+
+  return sharp_image;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     S p r e a d I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -3682,6 +3804,63 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
                                 0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     U n s h a r p M a s k I m a g e C h a n n e l                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnsharpMaskImageChannel() sharpens an image channel.  We convolve the
+%  image channel with a Gaussian operator of the given radius and standard
+%  deviation (sigma). For reasonable results, radius should be larger than
+%  sigma.  Use a radius of 0 and UnsharpMaskImage() selects a suitable
+%  radius for you.
+%
+%  The format of the UnsharpMaskImageChannel method is:
+%
+%    Image *UnsharpMaskImageChannel(const Image *image,
+%      const ChannelType channel,const double radius,const double sigma,
+%      const double amount,const double threshold,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o channel: The channel to sharpen.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%    o amount: The percentage of the difference between the original and the
+%      blur image that is added back into the original.
+%
+%    o threshold: The threshold in pixels needed to apply the diffence amount.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *UnsharpMaskImageChannel(const Image *image,
+  const ChannelType channel,const double radius,const double sigma,
+  const double amount,const double threshold,
+  ExceptionInfo *exception)
+{
+  Image
+    *sharp_image;
+
+  sharp_image=UnsharpMaskImage(image,radius,sigma,amount,threshold,exception);
+  if (sharp_image != (Image *) NULL)
+    (void) ImportImageChannelsMasked(image,sharp_image,channel);
+
+  return sharp_image;
 }
 
 /*

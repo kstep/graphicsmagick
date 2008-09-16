@@ -8,18 +8,560 @@
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
+		A:link { color: #00B04F }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
 </HEAD>
-<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Magick++ ChangeLog</font></font></font></b></td>
+<td BGCOLOR="#ffffff"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
+<b><font face="Helvetica, Arial"><font color="#00B04F"><font size="+1">Magick++ ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2008-09-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (ImportImageChannelsMasked): New function to
+        import all the channels from an image except for the channels
+        specified.<BR>
+  <LI> magick/effect.c (AddNoiseImageChannel): New function to add
+        noise to an image channel.<BR>
+        (BlurImageChannel): New function to blur one image channel.
+        (GaussianBlurImageChannel): New function to gaussian blur an image
+        channel.<BR>
+        (UnsharpMaskImageChannel): New function to unsharpmask an image
+        channel.<BR>
+        (SharpenImageChannel): New function to sharpen an image channel.
+
+</UL>
+<p>
+2008-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (MotionBlurImage): Use GetOptimalKernelWidth1D()
+        to estimate a reasonable convolution kernel size.  Prepare code
+        for OpenMP but don't enable OpenMP until it runs faster.
+        (AddNoiseImageChannel): New function to apply noise to a specified
+        image channel.
+
+</UL>
+<p>
+2008-09-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (ConvertImageCommand): Provide 'convert' access
+        to MotionBlurImage() via -motion-blur option.
+        (MogrifyImageCommand): Provide 'mogrify' access to
+        MotionBlurImage() via -motion-blur option.
+
+</UL>
+<p>
+2008-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (SpreadImage): Accelerate using OpenMP.
+  <LI> coders/msl.c: Applied MSL patch from graphicsmagick-bugs list to
+        correct handling of geometry x,y values by setting gravity
+        attribute to ForgetGravity.
+
+</UL>
+<p>
+2008-09-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ShadeImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (RandomChannelThresholdImage): Accelerate using
+        OpenMP.  Support individual thresholding of the color channels.
+        (BlurImage): Blur was failing for PseudoClass images.  This bug
+        was added on 2008-09-08.<BR>
+  <LI> magick/pixel_cache.c (AcquireOneCacheViewPixel): New function to
+        return just one pixel from a cache view.
+
+</UL>
+<p>
+2008-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (EnhanceImage): Accelerate using OpenMP.
+        (BlurImageScanlines): Added optimizations.
+  <LI> magick/shear.c (IntegralRotateImage): Add missing progress
+        indication for 90 and 270 degrees rotation.
+  <LI> www/perl.html: Fix formatting of examples.  Should address
+        SourceForge issue [ 2100339 ] "Wrong format in example script on
+        web page".
+
+</UL>
+<p>
+2008-09-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (BlurImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-09-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/fx.c (ColorizeImage): Re-implement using pixel iterators.
+        (MorphImages): Re-implement using pixel iterators.
+        (OilPaintImage): Accelerate using OpenMP.
+        (SolarizeImage): Re-implement using pixel iterators.
+
+</UL>
+<p>
+2008-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/fx.c (ConvolveImage): Accelerate using OpenMP.
+  <LI> magick/effect.c (AdaptiveThresholdImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-09-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c: Exhuastive study of the pixel cache code
+        reveals that it is inscrutable and not implemented in a fashion
+        which enables useful multi-threading.  Therefore, the cache view
+        interfaces are now made OpenMP-safe via a global critical section.
+
+</UL>
+<p>
+2008-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_iterator.c: Reduce use of critical sections around
+        pixel cache to the bare minimum based on analysis and testing.
+        Unfortunately, testing shows that the pixel cache views are still
+        not 100% thread safe so the extra locking is still required.
+  <LI> magick/pixel_cache.c (ModifyCache): Make implementation thread
+        safe.  This required removing a thread-unsafe optimization from
+        Bill Radcliffe.<BR>
+  <LI> magick/command.c (BenchmarkImageCommand): Restore original
+        client name for each loop so that it is not extended further for
+        each iteration.<BR>
+  <LI> magick/semaphore.c (UnlockSemaphoreInfo): Decrement lock depth
+        under protection of the lock.
+
+</UL>
+<p>
+2008-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (AddNoiseImagePixels): Update to pass per-thread
+        'seed' value for more performance.
+
+</UL>
+<p>
+2008-08-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/gem.c (GenerateDifferentialNoise): Use
+        MagickRandReentrant(). Added a 'seed' argument so that we can pass
+        a per-thread 'seed' value.<BR>
+  <LI> magick/utility.c (MagickRandNewSeed): New function to produce a
+        semi-random 'seed' value.<BR>
+        (MagickRandReentrant): New function which works like rand() but
+        attempts to be re-entrant if possible by allowing a seed value to
+        be passed.
+
+</UL>
+<p>
+2008-08-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (SetImageChannelDepth): Re-implement using
+        QuantumOperatorImage().<BR>
+  <LI> magick/image.c (SetImageDepth): Re-implement using
+        QuantumOperatorImage().<BR>
+  <LI> magick/operator.h (QuantumOperator): Added DepthQuantumOp for
+        setting the channel depth.<BR>
+  <LI> magick/command.c (BenchmarkImageCommand): Add CPU-based
+        iteration rate metric to benchmark output.
+  <LI> magick/resource.c (ListMagickResourceInfo): Include quantum
+        depth, bits per pixel, and process address size in resource
+        output so that output is more complete.
+
+</UL>
+<p>
+2008-08-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SyncImage): Re-implement using pixel iterators.
+        (SortColormapByIntensity): Re-implement using pixel iterators.
+        (ClipPathImage): Re-implement using pixel iterators.
+        (CycleColormapImage): Re-implement using pixel iterators.
+        (GetImageDepth): Re-implement using pixel iterators.
+        (GradientImage): Parallize inner loop for speedup with larger
+        images.<BR>
+        (ReplaceImageColormap): Re-implement using pixel iterators.
+        (SetImage): Re-implement using pixel iterators.
+
+</UL>
+<p>
+2008-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/operator.c (QuantumGamma): Removed unnecessary OpenMP
+        request on inner loops.<BR>
+  <LI> magick/enhance.c (EqualizeImage,NormalizeImage): Execute
+        histogram generation pixel iterator with just one thread to
+        decrease contention for the histogram array.
+  <LI> magick/pixel_iterator.c (InitializePixelIteratorOptions): New
+        function to initialize PixelIteratorOptions with defaults.
+  <LI> magick/pixel_iterator.h (PixelIteratorOptions): New structure to
+        support passing pixel iterator execution options.
+
+</UL>
+<p>
+2008-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> NEWS.txt: Updated for changes to date in 1.3 development code.
+  <LI> magick/pixel_iterator.c: Execute pixel iterators in parallel via
+        OpenMP.<BR>
+  <LI> magick/pixel_cache.c (OpenCacheView): Ensure that pixel cache is
+        open.<BR>
+        (GetCacheInfo): Allocate semaphore immediately.
+
+</UL>
+<p>
+2008-08-16  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c Writer now creates valid images according to
+        http://fits.gsfc.nasa.gov/fits_verify.html
+        Fixed problems: 1, zeros in HDU.
+                        2, wrong padding.
+                        3, possible strlen overflow.
+
+</UL>
+<p>
+2008-08-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/{compare.c, channel.c, enhance.c, image.c, operator.c}:
+        Update existing pixel iterator callback functions so that they are
+        OpenMP safe.
+
+</UL>
+<p>
+2008-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/compare.c (InitializeDifferenceImageOptions): Renamed
+        from DifferenceImageOptionsDefaults().
+        (InitializeDifferenceStatistics): New function to initialize
+        DifferenceStatistics.<BR>
+        (ComputeAbsoluteError, ComputePeakAbsoluteError,
+        ComputeSquaredError): Use local totalizing structure on stack and
+        update cumulative statistics when the loop terminates.
+
+</UL>
+<p>
+2008-08-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www: Convert HTML pages to use a vibrant green theme rather than
+        colors stolen from old GIMP web site.
+
+</UL>
+<p>
+2008-08-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/{compare.imdoc, options.imdoc}: Added documentation for
+        'compare'.<BR>
+  <LI> magick/compare.h (enum HighlightStyle): Added
+        AssignHighlightStyle for simple color assignment.  'Annotate' is
+        now 'Tint'.<BR>
+  <LI> magick/command.c (CompareImageCommand): Useful options are now
+        -metric, -highlight-color, and -hightlight-style.
+
+</UL>
+<p>
+2008-08-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/compare.c (DifferenceImagePixels): Fixed 'Annotate'
+        difference annotation algorithm.  Added 'Threshold' and 'Xor'
+        difference annotation algorithms.
+        (GetImageChannelDifference): New function for computing
+        statistical image error using various metrics.  Inspired by
+        'imgcmp' from Jasper.<BR>
+        (GetImageChannelDistortion): New function for obtaining
+        statistical image error using various metrics for a specified
+        image channel.  Signature is compatible with similar ImageMagick
+        function.<BR>
+        (GetImageDistortion): New function for obtaining statistical image
+        error using various metrics for all the active channels in the
+        image.  Signature is compatible with similar ImageMagick function.
+  <LI> magick/command.c (CompareImageCommand): Added a 'compare'
+        subcommand which compares two images using various metrics, and/or
+        generates a difference image using various difference annotation
+        algorithms.  Documentation not yet updated.
+
+</UL>
+<p>
+2008-08-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_iterator.c: Split user context in all pixel
+        iterator APIs into a mutable data part, and an immutable data
+        part.  This required modification to all modules using the pixel
+        iterator methods.
+
+</UL>
+<p>
+2008-07-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c (MagickCompareImageChannels): Use
+        DifferenceImage().<BR>
+        (MagickCompareImages): Implement by calling
+        MagickCompareImageChannels().<BR>
+  <LI> magick/compare.c (DifferenceImage): The ImageMagick-compatible
+        CompareImages() function signature was clearly an example of bad
+        design so rename CompareImages() to DifferenceImage() with a
+        signature which does not unnecessarily mix functionality and
+        allows for ease of future expansion.
+
+</UL>
+<p>
+2008-07-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/Makefile.am (WAND_TESTS): Added Wand drawtest and wandtest
+        to automated test suite.
+
+</UL>
+<p>
+2008-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ThresholdImage): Don't read uninitialized pixel
+        indexes (valgrind gripe).<BR>
+  <LI> coders/tiff.c (CompressionSupported): Use
+        TIFFIsCODECConfigured() to test if a codec is supported.
+  <LI> tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than
+        DestroyImage().<BR>
+  <LI> coders/psd.c (RegisterPSDImage): Fix module registration memory leak.
+  <LI> coders/jpeg.c (RegisterJPEGImage): Fix module registration memory leak.
+
+</UL>
+<p>
+2008-07-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (DestroyBlob, DestroyBlobInfo): Implementation is
+        a bit more robust.
+
+</UL>
+<p>
+2008-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (ReadJPEGImage): Remove over-write of
+        image-&gt;client_data.  Resolves SourceForge issue [ 2018974 ]
+        client_data is not passed to streamhandler.
+  <LI> coders/png.c (WriteOnePNGImage): Fix crash when writing PNG
+        images with transparency and either type Optimize is requested, or
+        the image is colormapped.
+
+</UL>
+<p>
+2008-07-12  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c Fixed problem: "In this case, the referenced
+        images had previously been deallocated but are still being used.
+        Since they are overwritten, their signatures are invalid.
+
+</UL>
+<p>
+2008-07-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dcm.c (ReadDCMImage): Report actual image depth.
+  <LI> magick/resource.c (InitializeMagickResources): Set default
+        maximum memory limit to physical memory rather than 2X physical
+        memory.  This decision is made since the system paging device is
+        often slower than files in the filesystem, and so memory mapping
+        is likely faster.<BR>
+  <LI> magick/blob.c (OpenBlob): The MAGICK_IO_FSYNC environment
+        variable causes output files to be synchronized to disk when set
+        to TRUE.
+
+</UL>
+<p>
+2008-07-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/GraphicsMagick.html: Improved formatting of documentation.
+
+</UL>
+<p>
+2008-07-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Make use of the new
+        'extension_treatment' field.<BR>
+  <LI> coders/dcraw.c (ReadDCRAWImage): Added a coder module to proxy
+        from various common RAW camera format extensions to the 'dcraw'
+        delegate.<BR>
+  <LI> magick/magick.h (MagickInfo): Add an extension_treatment member
+        to indicate how file extensions should be treated for this coder.
+
+</UL>
+<p>
+2008-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/{animate.c,quantize.c}: Replace !ColorMatch() with
+        NotColorMatch().<BR>
+  <LI> utilities/Makefile.am (install-exec-local-utilities): Add back
+        in support for --enable-magick-compat which was accidentally
+        dropped in the new makefiles for GraphicsMagick 1.2.  Resolves
+        SourceForge bug 2005883.<BR>
+  <LI> magick/color.h (NotColorMatch): New macro for testing that two
+        colors are not the same.  Opposite from existing ColorMatch().
+  <LI> magick/command.c: Replaced the many duplicate enum conversion
+        code fragments with calls to functions in enum_strings.c.
+  <LI> magick/enum_strings.c: Absorbed the many "ToString" and
+        "StringTo" functions from other source modules.
+  <LI> magick/effect.c (ThresholdImage): Optimize for larger images.
+  <LI> magick/constitute.c (ConstituteTextureImage): New function to
+        return a texture canvas image based on a tile image.  Similar to
+        existing TextureImage() except better optimized for creating new
+        images and inherits tile image properties.
+  <LI> magick/color.h (IsBlackPixel): New macro to test if a pixel is
+        black.<BR>
+        (IsWhitePixel): New macro to test if a pixel is white.
+  <LI> coders/tile.c (ReadTILEImage): Use new ConstituteTextureImage()
+        function rather than TextureImage().  Also allow the user to
+        request a particular image type.
+  <LI> coders/pdf.c (Huffman2DEncodeImage): Explicitly request a strip
+        per page when writing Group4 TIFF.
+  <LI> coders/tiff.c (WriteTIFFImage): Place a generous default limit
+        on rows-per-strip when using Group3 or Group4 FAX compression.
+        The default limit is added since it is observed that the Group4
+        compressor fails with extremely huge strips.  Added a define
+        "tiff:rows-per-strip" to allow the user to explicitly set the rows
+        per strip.  Added a define "tiff:strip-per-page=true" to allow the
+        user to force one strip per page no matter what.  Added progress
+        monitor support to tile writer.
+
+</UL>
+<p>
+2008-06-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/configure/configure.cpp: The MAT coder now depends
+        on zlib so add explicit dependencies for it.
+  <LI> wand/magick_wand.c (MagickNegateImage): Implemented previously
+        unimplemented Wand method.<BR>
+        (MagickGammaImageChannel): Implemented previously unimplemented
+        Wand method.<BR>
+  <LI> magick/operator.h (enum QuantumOperator): Added GammaQuantumOp
+        and "gamma" operator.  Renamed InvertQuantumOp to NegateQuantumOp.
+
+</UL>
+<p>
+2008-06-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/operator.h (enum QuantumOperator): Added InvertQuantumOp
+        and "invert" operator.<BR>
+  <LI> coders/xcf.c (GIMPBlendModeToCompositeOperator): For XCF format,
+        we do support GIMP_DIVIDE_MODE composition now. Disable progress
+        monitor during tile composition.
+  <LI> magick/composite.c (DivideCompositePixels): New Divide composite
+        operator contributed by Michael Burian &lt;michael.burian@sbg.at&gt;.
+  <LI> magick/image.h (enum CompositeOperator): Added DivideCompositeOp.
+  <LI> magick/enum_strings.c (CompositeOperatorToString): New function
+        to convert a composite operator to a string.
+        (StringToCompositeOperator): New function to convert a string to a
+        composite operator.
+
+</UL>
+<p>
+2008-06-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c (MagickThresholdImageChannel): Implement
+        previously unimplemented Wand function.
+        (MagickGetImageExtrema): Implement previously unimplemented Wand
+        function.<BR>
+        (MagickGetImageChannelExtrema): Implement previously unimplemented
+        Wand function.<BR>
+        (MagickQueryFonts): Implement previously unimplemented Wand
+        function.
+
+</UL>
+<p>
+2008-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> scripts/format_c_api_docs: Scan compare.c for API definitions.
+  <LI> wand/magick_wand.c (MagickCompareImageChannels): Enable use of
+        this function.<BR>
+        (MagickCompareImages): Enable use of this function.
+  <LI> magick/compare.c: New source file.
+        (IsImagesEqual): Move here from magick/image.c.
+        (CompareImageChannels): Initial implementation of function roughly
+        similar to the one in ImageMagick.
+        (CompareImages): Initial implementation of function roughly
+        similar to the one in ImageMagick.
+  <LI> magick/pixel_iterator.c (PixelIterateTripleModify): New pixel
+        iterator function to access two images as read-only and one as
+        read-write for updating existing pixels.
+        (PixelIterateTripleNew): New pixel iterator function to access two
+        images as read-only and one as read-write for creating new pixels.
+
+</UL>
+<p>
+2008-06-22  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> mat.c Added CloseBlob().
+
+</UL>
+<p>
+2008-06-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c (MagickSetImageFormat): Add method to support
+        setting the image format.
+
+</UL>
+<p>
+2008-06-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/profile.c (ProfileImage): Convert to use pixel iterators.
+
+</UL>
+<p>
+2008-06-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/channel.c (ImportImageChannel): Convert to use pixel
+        iterators.<BR>
+        (SetImageChannelDepth): Convert to use pixel
+        iterators.<BR>
+  <LI> Magick++/lib/Image.cpp (quantize): Error measurement support was
+        being performed incorrectly.  SyncImage() is not needed here.
+
+</UL>
 <p>
 2008-06-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
@@ -1163,5 +1705,5 @@ package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 <hr>
 <P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P></BODY>
+GraphicsMagick Group 2002 - 2008</FONT></P></BODY>
 </HTML>

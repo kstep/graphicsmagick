@@ -697,6 +697,129 @@ MagickPassFail ImportImageChannel(const Image *source_image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     I m p o r t I m a g e C h a n n e l s M a s k e d                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ImportImageChannelsMasked() imports all the channels from a source
+%  image to an update image, except for the channels specified.
+%
+%  The format of the ImportImageChannelsMasked method is:
+%
+%      MagickPassFail ImportImageChannelsMasked(const Image *source_image,
+%                                        Image *update_image,
+%                                        const ChannelType channels)
+%
+%  A description of each parameter follows:
+%
+%    o source_image: The image from which to extract the replacement channels.
+%
+%    o update_image: The image to import the channels into.
+%
+%    o channel: The image channel to import
+%
+%
+*/
+static MagickPassFail
+ImportImageChannelsMaskedPixels(void *mutable_data,                /* User provided mutable data */
+                                const void *immutable_data,        /* User provided immutable data */
+                                const Image *source_image,         /* Source image */
+                                const PixelPacket *source_pixels,  /* Pixel row in source image */
+                                const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                                Image *update_image,               /* Update image */
+                                PixelPacket *update_pixels,        /* Pixel row in update image */
+                                IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                                const long npixels,                /* Number of pixels in row */
+                                ExceptionInfo *exception           /* Exception report */
+                                )
+{
+  ChannelType
+    channels = *((const ChannelType *) immutable_data);
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(source_image);
+  ARG_NOT_USED(exception);
+
+  if (IsCMYKColorspace(update_image->colorspace))
+    {
+      if (!MagickChannelEnabled(channels,CyanChannel))
+        for (i=0 ; i < npixels; i++)
+          SetCyanSample(&update_pixels[i],GetCyanSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,MagentaChannel))
+        for (i=0 ; i < npixels; i++)
+          SetMagentaSample(&update_pixels[i],GetMagentaSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,YellowChannel))
+        for (i=0 ; i < npixels; i++)
+          SetYellowSample(&update_pixels[i],GetYellowSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,BlackChannel))
+        for (i=0 ; i < npixels; i++)
+          SetBlackSample(&update_pixels[i],GetBlackSample(&source_pixels[i]));
+      if ((update_image->matte) &&
+          (!MagickChannelEnabled(channels,OpacityChannel)) &&
+          (source_indexes != (const IndexPacket *) NULL) &&
+          (update_indexes != (IndexPacket *) NULL))
+        (void) memcpy(update_indexes,source_indexes,npixels*sizeof(IndexPacket));
+    }
+  else
+    {
+      if (!MagickChannelEnabled(channels,RedChannel))
+        for (i=0 ; i < npixels; i++)
+          SetRedSample(&update_pixels[i],GetRedSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,GreenChannel))
+        for (i=0 ; i < npixels; i++)
+          SetGreenSample(&update_pixels[i],GetGreenSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,BlueChannel))
+        for (i=0 ; i < npixels; i++)
+          SetBlueSample(&update_pixels[i],GetBlueSample(&source_pixels[i]));
+      if (!MagickChannelEnabled(channels,OpacityChannel))
+        for (i=0 ; i < npixels; i++)
+          SetOpacitySample(&update_pixels[i],GetOpacitySample(&source_pixels[i]));
+    }
+
+  return MagickPass;
+}
+
+#define ImportImageChannelsMaskedText  "Import channels into the image...  "
+MagickPassFail ImportImageChannelsMasked(const Image *source_image,
+                                         Image *update_image,
+                                         const ChannelType channels)
+{
+  ChannelType
+    channel_type = channels;
+  
+  MagickPassFail
+    status=MagickPass;
+  
+  assert(update_image != (Image *) NULL);
+  assert(update_image->signature == MagickSignature);
+  assert(source_image != (Image *) NULL);
+  assert(source_image->signature == MagickSignature);
+
+  if ((AllChannels != channel_type) || (GrayChannel != channel_type))
+    {
+      update_image->storage_class=DirectClass;
+      status=PixelIterateDualModify(ImportImageChannelsMaskedPixels,
+                                    NULL,
+                                    ImportImageChannelsMaskedText,
+                                    NULL,&channel_type,
+                                    source_image->columns,source_image->rows,
+                                    source_image,0,0,
+                                    update_image,0,0,
+                                    &update_image->exception);
+    }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e C h a n n e l D e p t h                                   %
 %                                                                             %
 %                                                                             %
