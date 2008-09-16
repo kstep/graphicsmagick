@@ -53,7 +53,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a g i c k C o m m a n d                                               %
++   M a g i c k X M a g i c k C o m m a n d                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -379,7 +379,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X A n i m a t e B a c k g r o u n d I m a g e                             %
+%   M a g i c k X A n i m a t e B a c k g r o u n d I m a g e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -886,7 +886,7 @@ MagickExport void MagickXAnimateBackgroundImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X A n i m a t e I m a g e                                                 %
+%   M a g i c k X A n i m a t e I m a g e s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %

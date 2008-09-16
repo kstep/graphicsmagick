@@ -201,7 +201,7 @@ static int MagickShmDt(void *shmaddr)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D e s t r o y X 1 1 R e s o u r c e s                                   %
+%   M a g i c k X D e s t r o y X 1 1 R e s o u r c e s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -234,7 +234,7 @@ MagickExport void MagickXDestroyX11Resources(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D e s t r o y X W i n d o w s                                           %
+%   M a g i c k X D e s t r o y X W i n d o w s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -341,7 +341,7 @@ MagickExport void MagickXDestroyXWindows(MagickXWindows *windows)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   XD e s t r o y X W i n d o w I n f o                                      %
+%   M a g i c k X D e s t r o y X W i n d o w I n f o                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -455,7 +455,7 @@ MagickExport void MagickXDestroyXWindowInfo(Display *display,MagickXWindowInfo *
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s T r u e                                                               %
+%   M a g i c k I s T r u e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -495,7 +495,7 @@ MagickExport unsigned int MagickIsTrue(const char *reason)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X A n n o t a t e I m a g e                                               %
+%   M a g i c k X A n n o t a t e I m a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -751,7 +751,7 @@ MagickExport unsigned int MagickXAnnotateImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X B e s t F o n t                                                         %
+%   M a g i c k X B e s t F o n t                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -913,7 +913,7 @@ MagickExport XFontStruct *MagickXBestFont(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X B e s t I c o n S i z e                                                 %
+%   M a g i c k X B e s t I c o n S i z e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1031,7 +1031,7 @@ MagickExport void MagickXBestIconSize(Display *display,MagickXWindowInfo *window
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X B e s t P i x e l                                                       %
+%   M a g i c k X B e s t P i x e l                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1142,7 +1142,7 @@ MagickExport void MagickXBestPixel(Display *display,const Colormap colormap,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X B e s t V i s u a l I n f o                                             %
+%   M a g i c k X B e s t V i s u a l I n f o                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1456,7 +1456,7 @@ MagickExport XVisualInfo *MagickXBestVisualInfo(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X C h e c k R e f r e s h W i n d o w s                                   %
+%   M a g i c k X C h e c k R e f r e s h W i n d o w s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1502,7 +1502,7 @@ MagickExport void MagickXCheckRefreshWindows(Display *display,MagickXWindows *wi
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X C l i e n t M e s s a g e                                               %
+%   M a g i c k X C l i e n t M e s s a g e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1551,7 +1551,7 @@ MagickExport void MagickXClientMessage(Display *display,const Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C l i e n t W i n d o w                                                 %
++   M a g i c k X C l i e n t W i n d o w                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1618,7 +1618,7 @@ static Window MagickXClientWindow(Display *display,Window target_window)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X C o n f i g u r e I m a g e C o l o r m a p                             %
+%   M a g i c k X C o n f i g u r e I m a g e C o l o r m a p                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1676,7 +1676,7 @@ MagickExport void MagickXConfigureImageColormap(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X C o n s t r a i n W i n d o w P o s i t i o n                           %
+%   M a g i c k X C o n s t r a i n W i n d o w P o s i t i o n               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1725,7 +1725,7 @@ MagickExport void MagickXConstrainWindowPosition(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D e l a y                                                               %
+%   M a g i c k X D e l a y                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1777,7 +1777,7 @@ MagickExport void MagickXDelay(Display *display,const unsigned long milliseconds
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D e s t r o y R e s o u r c e I n f o                                   %
+%   M a g i c k X D e s t r o y R e s o u r c e I n f o                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1819,7 +1819,7 @@ MagickExport void MagickXDestroyResourceInfo(MagickXResourceInfo *resource_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D e s t r o y W i n d o w C o l o r s                                   %
+%   M a g i c k X D e s t r o y W i n d o w C o l o r s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1886,7 +1886,7 @@ MagickExport void MagickXDestroyWindowColors(Display *display,Window window)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D i s p l a y I m a g e I n f o                                         %
+%   M a g i c k X D i s p l a y I m a g e I n f o                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2048,7 +2048,7 @@ MagickExport void MagickXDisplayImageInfo(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     X D i t h e r I m a g e                                                 %
++     M a g i c k X D i t h e r I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2217,7 +2217,7 @@ static void MagickXDitherImage(Image *image,XImage *ximage)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D r a w I m a g e                                                       %
+%   M a g i c k X D r a w I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2564,7 +2564,7 @@ MagickExport unsigned int MagickXDrawImage(Display *display,const MagickXPixelIn
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X E r r o r                                                               %
+%   M a g i c k X E r r o r                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2632,7 +2632,7 @@ MagickExport int MagickXError(Display *display,XErrorEvent *error)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X F r e e R e s o u r c e s                                               %
+%   M a g i c k X F r e e R e s o u r c e s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2729,7 +2729,7 @@ MagickExport void MagickXFreeResources(Display *display,XVisualInfo *visual_info
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X F r e e S t a n d a r d C o l o r m a p                                 %
+%   M a g i c k X F r e e S t a n d a r d C o l o r m a p                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2793,7 +2793,7 @@ MagickExport void MagickXFreeStandardColormap(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t A n n o t a t e I n f o                                           %
+%   M a g i c k X G e t A n n o t a t e I n f o                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2837,7 +2837,7 @@ MagickExport void MagickXGetAnnotateInfo(MagickXAnnotateInfo *annotate_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t M a p I n f o                                                     %
+%   M a g i c k X G e t M a p I n f o                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2902,7 +2902,7 @@ MagickExport void MagickXGetMapInfo(const XVisualInfo *visual_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t I m a g e I n f o                                                 %
+%   M a g i c k X G e t I m a g e I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2935,7 +2935,7 @@ MagickExport void MagickXGetImportInfo(MagickXImportInfo *ximage_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t P i x e l I n f o                                                 %
+%   M a g i c k X G e t P i x e l I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3185,7 +3185,7 @@ MagickExport void MagickXGetPixelPacket(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t R e s o u r c e C l a s s                                         %
+%   M a g i c k X G e t R e s o u r c e C l a s s                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3282,7 +3282,7 @@ MagickExport char *MagickXGetResourceClass(XrmDatabase database,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t R e s o u r c e D a t a b a s e                                   %
+%   M a g i c k X G e t R e s o u r c e D a t a b a s e                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3385,7 +3385,7 @@ MagickExport XrmDatabase MagickXGetResourceDatabase(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t R e s o u r c e I n f o                                           %
+%   M a g i c k X G e t R e s o u r c e I n f o                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3602,7 +3602,7 @@ MagickExport void MagickXGetResourceInfo(XrmDatabase database,char *client_name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t R e s o u r c e I n s t a n c e                                   %
+%   M a g i c k X G e t R e s o u r c e I n s t a n c e                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3666,7 +3666,7 @@ MagickExport char *MagickXGetResourceInstance(XrmDatabase database,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t S c r e e n D e n s i t y                                         %
+%   M a g i c k X G e t S c r e e n D e n s i t y                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3714,7 +3714,7 @@ MagickExport char *MagickXGetScreenDensity(Display *display)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X G e t S u b w i n d o w                                                 %
++   M a g i c k X G e t S u b w i n d o w                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3784,7 +3784,7 @@ static Window MagickXGetSubwindow(Display *display,Window window,int x,int y)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t W i n d o w C o l o r                                             %
+%   M a g i c k X G e t W i n d o w C o l o r                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3903,7 +3903,7 @@ MagickExport unsigned int MagickXGetWindowColor(Display *display,MagickXWindows 
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X G e t W i n d o w I m a g e                                             %
++   M a g i c k X G e t W i n d o w I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4495,7 +4495,7 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X G e t W i n d o w I n f o                                               %
+%   M a g i c k X G e t W i n d o w I n f o                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4641,7 +4641,7 @@ MagickExport void MagickXGetWindowInfo(Display *display,XVisualInfo *visual_info
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X H i g h l i g h t E l l i p s e                                         %
+%   M a g i c k X H i g h l i g h t E l l i p s e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4691,7 +4691,7 @@ MagickExport void MagickXHighlightEllipse(Display *display,Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X H i g h l i g h t L i n e                                               %
+%   M a g i c k X H i g h l i g h t L i n e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4735,7 +4735,7 @@ MagickExport void MagickXHighlightLine(Display *display,Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X H i g h l i g h t R e c t a n g l e                                     %
+%   M a g i c k X H i g h l i g h t R e c t a n g l e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4785,7 +4785,7 @@ MagickExport void MagickXHighlightRectangle(Display *display,Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X I m p o r t I m a g e                                                   %
+%   M a g i c k X I m p o r t I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5049,7 +5049,7 @@ MagickExport Image *MagickXImportImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X I n i t i a l i z e W i n d o w s                                       %
+%   M a g i c k X I n i t i a l i z e W i n d o w s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5241,7 +5241,7 @@ MagickExport MagickXWindows *MagickXInitializeWindows(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e C u r s o r                                                     %
+%   M a g i c k X M a k e C u r s o r                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5336,7 +5336,7 @@ MagickExport Cursor MagickXMakeCursor(Display *display,Window window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e I m a g e                                                       %
+%   M a g i c k X M a k e I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5794,7 +5794,7 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a k e I m a g e L S B F i r s t                                       %
++   M a g i c k X M a k e I m a g e L S B F i r s t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6358,7 +6358,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a k e I m a g e M S B F i r s t                                       %
++   M a g i c k X M a k e I m a g e M S B F i r s t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6920,7 +6920,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e M a g n i f y I m a g e                                         %
+%   M a g i c k X M a k e M a g n i f y I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7358,7 +7358,7 @@ MagickExport void MagickXMakeMagnifyImage(Display *display,MagickXWindows *windo
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e P i x m a p                                                     %
+%   M a g i c k X M a k e P i x m a p                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7456,7 +7456,7 @@ static unsigned int MagickXMakePixmap(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e S t a n d a r d C o l o r m a p                                 %
+%   M a g i c k X M a k e S t a n d a r d C o l o r m a p                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8073,7 +8073,7 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X M a k e W i n d o w                                                     %
+%   M a g i c k X M a k e W i n d o w                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8325,7 +8325,7 @@ MagickExport void MagickXMakeWindow(Display *display,Window parent,char **argv,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X P r o g r e s s M o n i t o r                                           %
+%   M a g i c k X P r o g r e s s M o n i t o r                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8371,7 +8371,7 @@ MagickExport unsigned int MagickXMagickMonitor(const char *task,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X Q u e r y C o l o r D a t a b a s e                                     %
+%   M a g i c k X Q u e r y C o l o r D a t a b a s e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8449,7 +8449,7 @@ MagickExport unsigned int MagickXQueryColorDatabase(const char *target,XColor *c
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X Q u e r y P o s i t i o n                                               %
+%   M a g i c k X Q u e r y P o s i t i o n                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8501,7 +8501,7 @@ MagickExport void MagickXQueryPosition(Display *display,const Window window,int 
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X R e f r e s h W i n d o w                                               %
+%   M a g i c k X R e f r e s h W i n d o w                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8606,7 +8606,7 @@ MagickExport void MagickXRefreshWindow(Display *display,const MagickXWindowInfo 
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X R e m o t e C o m m a n d                                               %
+%   M a g i c k X R e m o t e C o m m a n d                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8685,7 +8685,7 @@ MagickExport unsigned int MagickXRemoteCommand(Display *display,const char *wind
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X R e t a i n W i n d o w C o l o r s                                     %
+%   M a g i c k X R e t a i n W i n d o w C o l o r s                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8742,7 +8742,7 @@ MagickExport void MagickXRetainWindowColors(Display *display,const Window window
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X S e l e c t W i n d o w                                                 %
+%   M a g i c k X S e l e c t W i n d o w                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8919,7 +8919,7 @@ static Window MagickXSelectWindow(Display *display,RectangleInfo *crop_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X S i g n a l H a n d l e r                                               %
+%   M a g i c k X S i g n a l H a n d l e r                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8954,7 +8954,7 @@ MagickExport void MagickXSignalHandler(int status)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X S e t C u r s o r S t a t e                                             %
+%   M a g i c k X S e t C u r s o r S t a t e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9011,7 +9011,7 @@ MagickExport void MagickXSetCursorState(Display *display,MagickXWindows *windows
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X S e t W i n d o w s                                                     %
+%   M a g i c k X S e t W i n d o w s                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9049,7 +9049,7 @@ MagickExport MagickXWindows *MagickXSetWindows(MagickXWindows *windows_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X U s e r P r e f e r e n c e s                                           %
+%   M a g i c k X U s e r P r e f e r e n c e s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9124,7 +9124,7 @@ MagickExport void MagickXUserPreferences(MagickXResourceInfo *resource_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X V i s u a l C l a s s N a m e                                           %
+%   M a g i c k X V i s u a l C l a s s N a m e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9165,7 +9165,7 @@ static char *MagickXVisualClassName(const int visual_class)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X W a r n i n g                                                           %
+%   M a g i c k X W a r n i n g                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9211,7 +9211,7 @@ MagickExport void MagickXWarning(const ExceptionType ARGUNUSED(warning),
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X W i n d o w B y I D                                                     %
+%   M a g i c k X W i n d o w B y I D                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9282,7 +9282,7 @@ MagickExport Window MagickXWindowByID(Display *display,const Window root_window,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X W i n d o w B y N a m e                                                 %
+%   M a g i c k X W i n d o w B y N a m e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9355,7 +9355,7 @@ MagickExport Window MagickXWindowByName(Display *display,const Window root_windo
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X W i n d o w B y P r o p e r y                                           %
+%   M a g i c k X W i n d o w B y P r o p e r y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

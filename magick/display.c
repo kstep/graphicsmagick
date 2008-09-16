@@ -74,7 +74,7 @@ static const int
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X A n n o t a t e E d i t I m a g e                                       %
++   M a g i c k X A n n o t a t e E d i t I m a g e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1037,7 +1037,7 @@ static unsigned int MagickXAnnotateEditImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X B a c k g r o u n d I m a g e                                           %
++   M a g i c k X B a c k g r o u n d I m a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1114,7 +1114,7 @@ static unsigned int MagickXBackgroundImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C h o p I m a g e                                                       %
++   M a g i c k X C h o p I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1537,7 +1537,7 @@ static unsigned int MagickXChopImage(Display *display,MagickXResourceInfo *resou
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C o l o r E d i t I m a g e                                             %
++   M a g i c k X C o l o r E d i t I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2133,7 +2133,7 @@ static unsigned int MagickXColorEditImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C o m p o s i t e I m a g e                                             %
++   M a g i c k X C o m p o s i t e I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2672,7 +2672,7 @@ static unsigned int MagickXCompositeImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C o n f i g u r e I m a g e                                             %
++   M a g i c k X C o n f i g u r e I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2846,7 +2846,7 @@ static unsigned int MagickXConfigureImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X C r o p I m a g e                                                       %
++   M a g i c k X C r o p I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3603,7 +3603,7 @@ static unsigned int MagickXCropImage(Display *display,MagickXResourceInfo *resou
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X D r a w I m a g e                                                       %
++   M a g i c k X D r a w I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4552,7 +4552,7 @@ static unsigned int MagickXDrawEditImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X D r a w P a n R e c t a n g l e                                         %
++   M a g i c k X D r a w P a n R e c t a n g l e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4605,7 +4605,7 @@ static void MagickXDrawPanRectangle(Display *display,MagickXWindows *windows)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X I m a g e C a c h e                                                     %
++   M a g i c k X I m a g e C a c h e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4870,7 +4870,7 @@ static void MagickXImageCache(Display *display,MagickXResourceInfo *resource_inf
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X I m a g e W i n d o w C o m m a n d                                     %
++   M a g i c k X I m a g e W i n d o w C o m m a n d                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5273,7 +5273,7 @@ static CommandType MagickXImageWindowCommand(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a g i c k C o m m a n d                                               %
++   M a g i c k X M a g i c k C o m m a n d                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7131,7 +7131,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a g n i f y I m a g e                                                 %
++   M a g i c k X M a g n i f y I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7254,7 +7254,7 @@ static void MagickXMagnifyImage(Display *display,MagickXWindows *windows,XEvent 
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a g n i f y W i n d o w C o m m a n d                                 %
++   M a g i c k X M a g n i f y W i n d o w C o m m a n d                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7376,7 +7376,7 @@ static void MagickXMagnifyWindowCommand(Display *display,MagickXWindows *windows
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a k e P a n I m a g e                                                 %
++   M a g i c k X M a k e P a n I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7437,7 +7437,7 @@ static void MagickXMakePanImage(Display *display,MagickXResourceInfo *resource_i
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a t t a E d i t I m a g e                                             %
++   M a g i c k X M a t t a E d i t I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -7992,7 +7992,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X O p e n I m a g e                                                       %
++   M a g i c k X O p e n I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8194,7 +8194,7 @@ static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_in
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X P a n I m a g e                                                         %
++   M a g i c k X P a n I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8360,7 +8360,7 @@ static void MagickXPanImage(Display *display,MagickXWindows *windows,XEvent *eve
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X P a s t e I m a g e                                                     %
++   M a g i c k X P a s t e I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8745,7 +8745,7 @@ static unsigned int MagickXPasteImage(Display *display,MagickXResourceInfo *reso
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X P r i n t I m a g e                                                     %
++   M a g i c k X P r i n t I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8846,7 +8846,7 @@ static unsigned int MagickXPrintImage(Display *display,MagickXResourceInfo *reso
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X R O I I m a g e                                                         %
++   M a g i c k X R O I I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9706,7 +9706,7 @@ static unsigned int MagickXROIImage(Display *display,MagickXResourceInfo *resour
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X R o t a t e I m a g e                                                   %
++   M a g i c k X R o t a t e I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10221,7 +10221,7 @@ static unsigned int MagickXRotateImage(Display *display,MagickXResourceInfo *res
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X S a v e I m a g e                                                       %
++   M a g i c k X S a v e I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10364,7 +10364,7 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X S c r e e n E v e n t                                                   %
++   M a g i c k X S c r e e n E v e n t                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10637,7 +10637,7 @@ static void MagickXScreenEvent(Display *display,MagickXWindows *windows,XEvent *
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X S e t C r o p G e o m e t r y                                           %
++   M a g i c k X S e t C r o p G e o m e t r y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -10726,7 +10726,7 @@ static void MagickXSetCropGeometry(Display *display,MagickXWindows *windows,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X T i l e I m a g e                                                       %
++   M a g i c k X T i l e I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11005,7 +11005,7 @@ static Image *MagickXTileImage(Display *display,MagickXResourceInfo *resource_in
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X T r a n s l a t e I m a g e                                             %
++   M a g i c k X T r a n s l a t e I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11127,7 +11127,7 @@ static void MagickXTranslateImage(Display *display,MagickXWindows *windows,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X T r i m I m a g e                                                       %
++   M a g i c k X T r i m I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11267,7 +11267,7 @@ static unsigned int MagickXTrimImage(Display *display,MagickXResourceInfo *resou
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X V i s u a l D i r e c t o r y I m a g e                                 %
++   M a g i c k X V i s u a l D i r e c t o r y I m a g e                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11465,7 +11465,7 @@ static Image *MagickXVisualDirectoryImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D i s p l a y B a c k g r o u n d I m a g e                             %
+%   M a g i c k X D i s p l a y B a c k g r o u n d I m a g e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -11737,7 +11737,7 @@ MagickExport unsigned int MagickXDisplayBackgroundImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X D i s p l a y I m a g e                                                 %
+%   M a g i c k X D i s p l a y I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
