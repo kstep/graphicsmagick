@@ -96,6 +96,7 @@ const unsigned long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %   A c c e s s D e f i n i t i o n                                           %
 %                                                                             %
 %                                                                             %
@@ -138,6 +139,7 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %   A d d D e f i n i t i o n s                                               %
@@ -4052,6 +4054,7 @@ MagickExport Image *ReferenceImage(Image *image)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %   R e m o v e D e f i n i t i o n s                                         %
