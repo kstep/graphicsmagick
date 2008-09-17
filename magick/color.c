@@ -777,7 +777,7 @@ MagickExport HistogramColorPacket *GetColorHistogram(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t C o l o r l i s t                                                   %
+%   G e t C o l o r L i s t                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
