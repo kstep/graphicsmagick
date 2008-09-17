@@ -1096,7 +1096,7 @@ PixelIterateTripleModify(PixelIteratorTripleModifyCallback call_back,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P i x e l I t e r a t e D u a l N e w                                     %
+%   P i x e l I t e r a t e T r i p l e N e w                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %

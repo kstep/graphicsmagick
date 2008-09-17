@@ -3319,8 +3319,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %  SharpenImageChannel() sharpens an image channel.  We convolve the image
 %  channel with a Gaussian operator of the given radius and standard
 %  deviation (sigma). For reasonable results, radius should be larger than
-%  sigma.  Use a radius of 0 and SharpenImage() selects a suitable radius
-%  for you.
+%  sigma.  Use a radius of 0 and SharpenImageChannel() selects a suitable
+%  radius for you.
 %
 %  The format of the SharpenImageChannel method is:
 %

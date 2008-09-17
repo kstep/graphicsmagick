@@ -184,7 +184,7 @@ MagickExport void DestroyMagickRegistry(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e F r o m M a g i c k R e g i s t y                         %
+%   G e t I m a g e F r o m M a g i c k R e g i s t r y                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
