@@ -4812,8 +4812,8 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
 %  an even number of values. To remove an existing dash array, pass a zero
-%  num_elems argument and null dasharray.
-%  A typical strokeDashArray_ array might contain the members 5 3 2.
+%  num_elems argument and null dasharray. A typical stroke dash array might
+%  contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %

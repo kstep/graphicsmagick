@@ -3324,12 +3324,14 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %  The format of the SharpenImageChannel method is:
 %
-%    Image *SharpenImage(const Image *image,const double radius,
-%      const double sigma,ExceptionInfo *exception)
+%    Image *SharpenImageChannel(const Image *image, const ChannelType channel,
+%       const double radius,const double sigma, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
+%
+%    o channel: The channel to sharpen.
 %
 %    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
