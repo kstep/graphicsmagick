@@ -1,3 +1,8 @@
+2008-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageComman):
+	Accept -gaussian-blur as a synonym for -gaussian.
+
 2008-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (ImportImageChannelsMasked): New function to

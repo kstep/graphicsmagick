@@ -4077,7 +4077,7 @@ MagickExport Image *ReferenceImage(Image *image)
 %    o image_info: The image info.
 %
 %    o keys: List of keys to remove from the definitions map. The
-%      format of the string is "key1,key2,...". A special key, *, removes
+%      format of the string is "key1,key2,...". A special key, '*', removes
 %      all the key/value pairs in the definitions map. This key always
 %      succeeds.
 %

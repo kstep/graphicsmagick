@@ -4155,7 +4155,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
-        if (LocaleCompare("gaussian",option+1) == 0)
+        if ((LocaleCompare("gaussian",option+1) == 0) ||
+            (LocaleCompare("gaussian-blur",option+1) == 0))
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
@@ -8522,7 +8523,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) GammaImage(*image,argv[++i]);
             continue;
           }
-        if (LocaleCompare("gaussian",option+1) == 0)
+        if ((LocaleCompare("gaussian",option+1) == 0) ||
+            (LocaleCompare("gaussian-blur",option+1) == 0))
           {
             double
               radius,
@@ -11009,7 +11011,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
-        if (LocaleCompare("gaussian",option+1) == 0)
+        if ((LocaleCompare("gaussian",option+1) == 0) ||
+            (LocaleCompare("gaussian-blur",option+1) == 0))
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
