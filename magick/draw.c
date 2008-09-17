@@ -2477,9 +2477,7 @@ MagickExport void DrawLine(DrawContext context,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawMatte() paints on the image's opacity channel in order to set effected
-%  pixels to transparent.
-%  to influence the opacity of pixels. The available paint
-%  methods are:
+%  pixels to transparent.  The available paint methods are:
 %
 %    PointMethod: Select the target pixel
 %    ReplaceMethod: Select any pixel that matches the target pixel.
