@@ -2769,10 +2769,28 @@ times.</pp>
 
 <!-- ------------ -magnify ------------------------------------------ -->
 
+<utils apps=convert,mogrify>
+<opt>-magnify</opt>
+
+<abs>magnify the image</abs>
+
+<pp>
+The image size is doubled using linear interpolation.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -magnify ------------------------------------------ -->
+
 <utils apps=display>
 <opt>-magnify <factor></opt>
 
 <abs>magnify the image</abs>
+
+<pp>
+The displayed image is magnified by <s>factor</s>.</pp>
 
 </utils>
 
@@ -2914,6 +2932,21 @@ option.</pp>
 <opt>-median <radius></opt>
 
 <abs>apply a median filter to the image</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -minify ------------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<opt>-minify <factor></opt>
+
+<abs>minify the image</abs>
+
+<pp>
+The image size is halved using linear interpolation.</pp>
 
 </utils>
 

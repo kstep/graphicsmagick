@@ -456,34 +456,20 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 {
-#define Minify(weight) \
-  total.red+=(weight)*(r->red); \
-  total.green+=(weight)*(r->green); \
-  total.blue+=(weight)*(r->blue); \
-  total.opacity+=(weight)*(r->opacity); \
+#define Minify(weight)                          \
+  total.red+=(weight)*(r->red);                 \
+  total.green+=(weight)*(r->green);             \
+  total.blue+=(weight)*(r->blue);               \
+  total.opacity+=(weight)*(r->opacity);         \
   r++;
 #define MinifyImageText  "  Minify image...  "
-
-  DoublePixelPacket
-    total,
-    zero;
 
   Image
     *minify_image;
 
   long
     y;
-
-  register const PixelPacket
-    *p,
-    *r;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
+ 
   /*
     Initialize minified image.
   */
@@ -493,51 +479,120 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
 
   minify_image=CloneImage(image,Max(image->columns/2,1),Max(image->rows/2,1),
-    True,exception);
+                          True,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
 
   (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-    "Minifying image of size %lux%lu to %lux%lu",
-    image->columns,image->rows,minify_image->columns,minify_image->rows);
+                        "Minifying image of size %lux%lu to %lux%lu",
+                        image->columns,image->rows,
+                        minify_image->columns,minify_image->rows);
 
   minify_image->storage_class=DirectClass;
   /*
     Reduce each row.
   */
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < (long) minify_image->rows; y++)
   {
-    p=AcquireImagePixels(image,-2,2*(y-1),image->columns+4,4,exception);
-    q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) minify_image->columns; x++)
-    {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      total=zero;
-      r=p;
-      Minify(3.0); Minify(7.0);  Minify(7.0);  Minify(3.0);
-      r=p+(image->columns+4);
-      Minify(7.0); Minify(15.0); Minify(15.0); Minify(7.0);
-      r=p+2*(image->columns+4);
-      Minify(7.0); Minify(15.0); Minify(15.0); Minify(7.0);
-      r=p+3*(image->columns+4);
-      Minify(3.0); Minify(7.0);  Minify(7.0);  Minify(3.0);
-      q->red=(Quantum) (total.red/128.0+0.5);
-      q->green=(Quantum) (total.green/128.0+0.5);
-      q->blue=(Quantum) (total.blue/128.0+0.5);
-      q->opacity=(Quantum) (total.opacity/128.0+0.5);
-      p+=2;
-      q++;
-    }
-    if (!SyncImagePixels(minify_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(MinifyImageText,y,minify_image->rows,exception))
-        break;
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *read_view_set,
+      *write_view_set;
+
+    DoublePixelPacket
+      zero;
+
+    volatile MagickPassFail
+      status=MagickPass;
+
+    read_view_set=AllocateThreadViewSet((Image *) image,exception);
+    write_view_set=AllocateThreadViewSet(minify_image,exception);
+    if ((read_view_set == (ThreadViewSet *) NULL) ||
+        (write_view_set == (ThreadViewSet *) NULL))
+      {
+        DestroyThreadViewSet(read_view_set);
+        DestroyThreadViewSet(write_view_set);
+        DestroyImage(minify_image);
+        return (Image *) NULL;
+      }
+
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+#pragma omp parallel for schedule(static,64)
+    for (y=0; y < (long) minify_image->rows; y++)
+      {
+        ViewInfo
+          *read_view,
+          *write_view;
+
+        DoublePixelPacket
+          total;
+
+        register const PixelPacket
+          *p,
+          *r;
+
+        register long
+          x;
+
+        register PixelPacket
+          *q;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        read_view=AccessThreadView(read_view_set);
+        p=AcquireCacheView(read_view,-2,2*(y-1),image->columns+4,4,exception);
+        write_view=AccessThreadView(write_view_set);
+        q=SetCacheView(write_view,0,y,minify_image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) minify_image->columns; x++)
+              {
+                /*
+                  Compute weighted average of target pixel color components.
+                */
+                total=zero;
+                r=p;
+                Minify(3.0); Minify(7.0);  Minify(7.0);  Minify(3.0);
+                r=p+(image->columns+4);
+                Minify(7.0); Minify(15.0); Minify(15.0); Minify(7.0);
+                r=p+2*(image->columns+4);
+                Minify(7.0); Minify(15.0); Minify(15.0); Minify(7.0);
+                r=p+3*(image->columns+4);
+                Minify(3.0); Minify(7.0);  Minify(7.0);  Minify(3.0);
+                q->red=(Quantum) (total.red/128.0+0.5);
+                q->green=(Quantum) (total.green/128.0+0.5);
+                q->blue=(Quantum) (total.blue/128.0+0.5);
+                q->opacity=(Quantum) (total.opacity/128.0+0.5);
+                p+=2;
+                q++;
+              }
+            if (!SyncCacheView(write_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&minify_image->exception);
+              }
+          }
+#pragma omp critical
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitor(MinifyImageText,row_count,image->rows,exception))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+    DestroyThreadViewSet(write_view_set);
+    DestroyThreadViewSet(read_view_set);
   }
   minify_image->is_grayscale=image->is_grayscale;
   return(minify_image);
@@ -1249,19 +1304,6 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   PixelPacket
     *pixels;
 
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes,
-    *sample_indexes;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
   /*
     Initialize sampled image attributes.
   */
@@ -1298,16 +1340,34 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   /*
     Initialize pixel offsets.
   */
-  for (x=0; x < (long) sample_image->columns; x++)
-    x_offset[x]=(double) x*image->columns/(double) sample_image->columns;
-  for (y=0; y < (long) sample_image->rows; y++)
-    y_offset[y]=(double) y*image->rows/(double) sample_image->rows;
+  {
+    long
+      x;
+
+    for (x=0; x < (long) sample_image->columns; x++)
+      x_offset[x]=(double) x*image->columns/(double) sample_image->columns;
+    for (y=0; y < (long) sample_image->rows; y++)
+      y_offset[y]=(double) y*image->rows/(double) sample_image->rows;
+  }
   /*
     Sample each row.
   */
   j=(-1);
   for (y=0; y < (long) sample_image->rows; y++)
   {
+    register const PixelPacket
+      *p;
+
+    register PixelPacket
+      *q;
+
+    register IndexPacket
+      *indexes,
+      *sample_indexes;
+
+    register long
+      x;
+
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;

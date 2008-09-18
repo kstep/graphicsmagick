@@ -365,6 +365,10 @@
 <lopt>-loop <iterations></opt>
 <abs>add Netscape loop extension to your GIF animation</abs>
 </utils>
+<utils apps=convert,mogrify>
+<opt>-magnify</opt>
+<abs>magnify the image</abs>
+</utils>
 <utils apps=display>
 <opt>-magnify <factor></opt>
 <abs>magnify the image</abs>
@@ -392,6 +396,10 @@
 <utils apps=convert,mogrify>
 <opt>-median <radius></opt>
 <abs>apply a median filter to the image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-minify <factor></opt>
+<abs>minify the image</abs>
 </utils>
 <utils apps=montage>
 <opt>-mode <value></opt>

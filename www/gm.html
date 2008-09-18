@@ -2856,9 +2856,24 @@ times.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    -magnify
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image size is doubled using linear interpolation.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     -magnify <i>&lt;factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The displayed image is magnified by <strong>factor</strong>.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2977,6 +2992,19 @@ width=15><b><font face="Helvetica, Arial"
     -median <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -minify <i>&lt;factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>minify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image size is halved using linear interpolation.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3226,7 +3254,7 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Invert</strong>, <strong>LShift</strong>,
+<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>, <strong>LShift</strong>,
 <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>,
 <strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
 <strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
@@ -3262,16 +3290,16 @@ stored in the specified number of bits without additional loss.
 <dt>Gamma</dt>
 <dd>Result is channel value gamma adjusted by rvalue.
 </dd>
-<dt>Invert</dt>
-<dd>Result is inverse of channel value (like a film negative). An rvalue
-must be supplied but is currently not used. Inverting the image twice
-results in the original image.
-</dd>
 <dt>LShift</dt>
 <dd>Result is channel value bitwise left shifted by rvalue bits.
 </dd>
 <dt>Multiply</dt>
 <dd>Result is channel value multiplied by rvalue.
+</dd>
+<dt>Negate</dt>
+<dd>Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
 </dd>
 <dt>Or</dt>
 <dd>Result is the logical OR of rvalue with channel value.
@@ -8074,6 +8102,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    -magnify
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-map">-map</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>choose a particular set of colors from this image</td></tr></table>
@@ -8121,6 +8160,17 @@ width=15><b><font face="Helvetica, Arial"
     -median <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -minify <i>&lt;factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>minify the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -13927,6 +13977,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    -magnify
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-map">-map</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>choose a particular set of colors from this image</td></tr></table>
@@ -13974,6 +14035,17 @@ width=15><b><font face="Helvetica, Arial"
     -median <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -minify <i>&lt;factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>minify the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

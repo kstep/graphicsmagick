@@ -1,4 +1,4 @@
-.TH gm 1 "2008/09/13" "GraphicsMagick"
+.TH gm 1 "2008/09/17" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2275,8 +2275,15 @@ A value other than zero forces the animation to repeat itself up to
 \fIiterations\fP
 times.
 .TP
+.B "-magnify"
+\fRmagnify the image
+
+The image size is doubled using linear interpolation.
+.TP
 .B "-magnify \fI<factor>"\fP
 \fRmagnify the image
+
+The displayed image is magnified by \fBfactor\fP.
 .TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
@@ -2346,6 +2353,11 @@ option.
 .TP
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
+.TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
+
+The image size is halved using linear interpolation.
 .TP
 .B "-mode \fI<value>"\fP
 \fRmode of operation
@@ -2482,7 +2494,7 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
-\fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBInvert\fP, \fBLShift\fP,
+\fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBNegate\fP, \fBLShift\fP,
 \fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP,
 \fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
 \fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
@@ -2550,16 +2562,6 @@ Result is channel value gamma adjusted by rvalue.
 
 .in 15
 .in 15
-.B "Invert"
-.in 20
- \fR
-.in 20
-Result is inverse of channel value (like a film negative). An rvalue
-must be supplied but is currently not used. Inverting the image twice
-results in the original image.
-
-.in 15
-.in 15
 .B "LShift"
 .in 20
  \fR
@@ -2573,6 +2575,16 @@ Result is channel value bitwise left shifted by rvalue bits.
  \fR
 .in 20
 Result is channel value multiplied by rvalue.
+
+.in 15
+.in 15
+.B "Negate"
+.in 20
+ \fR
+.in 20
+Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
 
 .in 15
 .in 15
@@ -5262,6 +5274,9 @@ Options, above.
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
 .TP
+.B "-magnify"
+\fRmagnify the image
+.TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
 .TP
@@ -5276,6 +5291,9 @@ Options, above.
 .TP
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
+.TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
 .TP
 .B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
@@ -8152,6 +8170,9 @@ Options, above.
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
 .TP
+.B "-magnify"
+\fRmagnify the image
+.TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
 .TP
@@ -8166,6 +8187,9 @@ Options, above.
 .TP
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
+.TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
 .TP
 .B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image

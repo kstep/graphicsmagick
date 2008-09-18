@@ -35,7 +35,8 @@ extern MagickExport void
 
 /* #define MagickAllocateMemory(type,size) ((type) MagickMalloc((size_t) (size))) */
 #define MagickAllocateMemory(type,size) \
-  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : ((type) MagickMalloc((size_t) (size))))
+  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : \
+   ((type) MagickMalloc((size_t) (size))))
 
 #define MagickAllocateArray(type,count,size) \
   ( (type) MagickMallocArray(count,size) )

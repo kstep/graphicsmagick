@@ -1,7 +1,12 @@
 2008-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/command.c (ConvertImageCommand, MogrifyImageComman):
+	* magick/resize.c (MinifyImage): Accelerate using OpenMP.
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand):
 	Accept -gaussian-blur as a synonym for -gaussian.
+	(ConvertImageCommand, MogrifyImageCommand): Provide access to
+	MinifyImage() via -minify.
+	(ConvertImageCommand, MogrifyImageCommand): Provide access to
+	Magnifyimage() via -magnify.
 
 2008-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

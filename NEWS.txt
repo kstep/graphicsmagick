@@ -97,6 +97,7 @@ Performance Improvements:
     - Gamma adjust (-gamma, -operator gamma)
     - Levels adjust image (-level)
     - Local adaptive threshold (-lat)
+    - Minify image (-minify)
     - Modulate image (-modulate)
     - Morph image (-morph)
     - Negate image (-negate)
@@ -175,6 +176,8 @@ Feature improvements:
 
   * -ordered-dither and -random-threshold may now be used to individually
     dither any named channel.
+  * Mogrify and convert now support -minify to halve the image size.
+  * Mogrify and convert now support -magnify to double the image size.
 
 1.2 (April 29, 2008)
 ====================

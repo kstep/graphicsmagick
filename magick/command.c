@@ -4483,6 +4483,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             if (*option == '-')
@@ -4528,6 +4530,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("minify",option+1) == 0)
+          break;
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '-')
@@ -5365,10 +5369,12 @@ static void ConvertUsage(void)
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-log format          format of debugging information",
       "-loop iterations     add Netscape loop extension to your GIF animation",
+      "-magnify             interpolate image to double size",
       "-map filename        transform image colors to match this set of colors",
       "-mask filename       set the image clip mask",
       "-matte               store matte channel if the image has one",
       "-median radius       apply a median filter to the image",
+      "-minify              interpolate the image to half size",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
@@ -8737,6 +8743,21 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          {
+            Image
+              *magnify_image;
+
+            /*
+              Magnify image.
+            */
+            magnify_image=MagnifyImage(*image,&(*image)->exception);
+            if (magnify_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=magnify_image;
+            continue;
+          }
         if (LocaleCompare("map",option+1) == 0)
           {
             /*
@@ -8829,6 +8850,21 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             DestroyImage(*image);
             *image=median_image;
+            continue;
+          }
+        if (LocaleCompare("minify",option+1) == 0)
+          {
+            Image
+              *minify_image;
+
+            /*
+              Minify image.
+            */
+            minify_image=MinifyImage(*image,&(*image)->exception);
+            if (minify_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=minify_image;
             continue;
           }
         if (LocaleCompare("modulate",option+1) == 0)
@@ -11312,6 +11348,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("magnify",option+1) == 0)
+          break;
         if (LocaleCompare("map",option+1) == 0)
           {
             global_colormap=(*option == '+');
@@ -11370,6 +11408,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("minify",option+1) == 0)
+          break;
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
@@ -12127,10 +12167,12 @@ static void MogrifyUsage(void)
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-log format          format of debugging information",
       "-loop iterations     add Netscape loop extension to your GIF animation",
+      "-magnify             interpolate image to double size",
       "-map filename        transform image colors to match this set of colors",
       "-mask filename       set the image clip mask",
       "-matte               store matte channel if the image has one",
       "-median radius       apply a median filter to the image",
+      "-minify              interpolate the image to half size",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
