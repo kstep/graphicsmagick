@@ -596,6 +596,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   ThreadViewSet
     *view_set;
 
+  ThreadViewDataSet
+    *data_set;
+
   MagickBool
     is_grayscale;
 
@@ -603,17 +606,21 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
     status=MagickPass;
 
   is_grayscale=image->is_grayscale;
-  view_set=AllocateThreadViewSet((Image *) image,exception);
+  view_set=AllocateThreadViewSet(image,exception);
   if (view_set == (ThreadViewSet *) NULL)
     status=MagickFail;
 
-  if (status != MagickFail)
+  data_set=AllocateThreadViewDataSet(image,exception);
+  if (data_set == (ThreadViewDataSet *) NULL)
+    status=MagickFail;
+
+  if (data_set != (ThreadViewDataSet *) NULL)
     {
       unsigned int
         i,
         views;
 
-      views=GetThreadViewSetAllocatedViews(view_set);
+      views=GetThreadViewDataSetAllocatedViews(data_set);
       for (i=0; i < views; i++)
         {
           void
@@ -629,7 +636,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
             }
           else
             {
-              AssignThreadViewData(view_set,i,scanline);
+              AssignThreadViewData(data_set,i,scanline);
             }
         }
     }
@@ -661,7 +668,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
           if (thread_status == MagickFail)
             continue;
   
-          scanline=AccessThreadViewData(view_set);
+          scanline=AccessThreadViewData(data_set);
           view=AccessThreadView(view_set);
           q=GetCacheView(view,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -705,6 +712,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
     }
 
   DestroyThreadViewSet(view_set);
+  DestroyThreadViewDataSet(data_set);
   image->is_grayscale=is_grayscale;
 
   return status;

@@ -213,6 +213,18 @@ extern "C" {
     nviews;
   } ThreadViewSet;
 
+  typedef struct _ThreadViewDataSet
+  { 
+    ViewInfo
+    *views;
+
+    void
+    **view_data;
+    
+    unsigned int
+    nviews;
+  } ThreadViewDataSet;
+
   extern MagickExport void
   DestroyThreadViewSet(ThreadViewSet *view_set);
   
@@ -222,14 +234,25 @@ extern "C" {
   extern MagickExport ViewInfo
   *AccessThreadView(ThreadViewSet *view_set);
 
-  extern MagickExport void
-  *AccessThreadViewData(ThreadViewSet *view_set);
-
-  extern MagickExport void
-  AssignThreadViewData(ThreadViewSet *view_set, unsigned int index, void *data);
-
   extern MagickExport unsigned int
   GetThreadViewSetAllocatedViews(ThreadViewSet *view_set);
+
+
+  extern MagickExport void
+  DestroyThreadViewDataSet(ThreadViewDataSet *data_set);
+  
+  extern MagickExport ThreadViewDataSet
+  *AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception);
+
+  extern MagickExport unsigned int
+  GetThreadViewDataSetAllocatedViews(ThreadViewDataSet *data_set);
+
+  extern MagickExport void
+  *AccessThreadViewData(ThreadViewDataSet *data_set);
+
+  extern MagickExport void
+  AssignThreadViewData(ThreadViewDataSet *data_set, unsigned int index, void *data);
+
 
   /*
     Stream interfaces (not thread/OpenMP safe).

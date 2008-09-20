@@ -801,16 +801,20 @@ static double Triangle(const double x,const double ARGUNUSED(support))
   return(0.0);
 }
 
-static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
-  const double x_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const size_t span,unsigned long *quantum,
-  ExceptionInfo *exception)
+static MagickPassFail
+HorizontalFilter(const Image *source,Image *destination,
+                 const double x_factor,const FilterInfo *filter_info,
+                 const double blur,ThreadViewDataSet *view_data_set,
+                 const size_t span,unsigned long *quantum,
+                 ExceptionInfo *exception)
 {
 #define ResizeImageText  "  Resize image...  "
 
+  ThreadViewSet
+    *destination_view_set,
+    *source_view_set;
+  
   double
-    center,
-    density,
     scale,
     support;
 
@@ -818,30 +822,24 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
     zero;
 
   long
-    n,
-    start,
-    stop,
-    y;
-
-  unsigned long
     x;
 
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes,
-    *source_indexes;
-
-  register long
-    i;
-
-  register PixelPacket
-    *q;
+  volatile MagickPassFail
+    status=MagickPass;
 
   /*
     Apply filter to resize horizontally from source to destination.
   */
+  source_view_set=AllocateThreadViewSet((Image *) source,exception);
+  destination_view_set=AllocateThreadViewSet(destination,exception);
+  if ((source_view_set ==  (ThreadViewSet *) NULL) ||
+      (destination_view_set == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(source_view_set);
+      DestroyThreadViewSet(destination_view_set);
+      return MagickFail;
+    }
+
   scale=blur*Max(1.0/x_factor,1.0);
   support=scale*filter_info->support;
   destination->storage_class=source->storage_class;
@@ -857,109 +855,177 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (x=0; x < destination->columns; x++)
-  {
-    center=(double) (x+0.5)/x_factor;
-    start=(long) Max(center-support+0.5,0);
-    stop=(long) Min(center+support+0.5,source->columns);
-    density=0.0;
-    for (n=0; n < (stop-start); n++)
+#pragma omp parallel for
+  for (x=0; x < (long) destination->columns; x++)
     {
-      contribution[n].pixel=start+n;
-      contribution[n].weight=
-        filter_info->function(scale*(start+n-center+0.5),filter_info->support);
-      density+=contribution[n].weight;
-    }
-    if ((density != 0.0) && (density != 1.0))
-      {
-        /*
-          Normalize.
-        */
-        density=1.0/density;
-        for (i=0; i < n; i++)
-          contribution[i].weight*=density;
-      }
-    p=AcquireImagePixels(source,contribution[0].pixel,0,
-      contribution[n-1].pixel-contribution[0].pixel+1,source->rows,exception);
-    q=SetImagePixels(destination,x,0,1,destination->rows);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    source_indexes=GetIndexes(source);
-    indexes=GetIndexes(destination);
-#pragma omp parallel for private(i)
-    for (y=0; y < (long) destination->rows; y++)
-    {
-      double
-        weight;
+      ViewInfo
+        *destination_view,
+        *source_view;
 
-      DoublePixelPacket
-        pixel;
+      double
+        center,
+        density;
+
+      ContributionInfo
+        *contribution;
+
+      register const PixelPacket
+        *p;
+
+      register PixelPacket
+        *q;
+
+      IndexPacket
+        *indexes,
+        *source_indexes;
 
       long
-        j;
+        n,
+        start,
+        stop,
+        y;
 
-      pixel=zero;
-      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
+      MagickBool
+        thread_status;
+    
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      contribution=AccessThreadViewData(view_data_set);
+      center=(double) (x+0.5)/x_factor;
+      start=(long) Max(center-support+0.5,0);
+      stop=(long) Min(center+support+0.5,source->columns);
+      density=0.0;
+      for (n=0; n < (stop-start); n++)
         {
-          for (i=0; i < n; i++)
-            {
-              j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-                (contribution[i].pixel-contribution[0].pixel);
-              weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-              pixel.opacity+=weight*p[j].opacity;
-            }
-          q[y].red=RoundDoubleToQuantum(pixel.red);
-          q[y].green=RoundDoubleToQuantum(pixel.green);
-          q[y].blue=RoundDoubleToQuantum(pixel.blue);
-          q[y].opacity=RoundDoubleToQuantum(pixel.opacity);
+          contribution[n].pixel=start+n;
+          contribution[n].weight=
+            filter_info->function(scale*(start+n-center+0.5),filter_info->support);
+          density+=contribution[n].weight;
         }
-      else
+      if ((density != 0.0) && (density != 1.0))
         {
+          /*
+            Normalize.
+          */
+          long
+            i;
+
+          density=1.0/density;
           for (i=0; i < n; i++)
-            {
-              j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-                (contribution[i].pixel-contribution[0].pixel);
-              weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-            }
-          q[y].red=RoundDoubleToQuantum(pixel.red);
-          q[y].green=RoundDoubleToQuantum(pixel.green);
-          q[y].blue=RoundDoubleToQuantum(pixel.blue);
-          q[y].opacity=OpaqueOpacity;
+            contribution[i].weight*=density;
         }
 
-      if ((indexes != (IndexPacket *) NULL) &&
-          (source_indexes != (IndexPacket *) NULL))
+      destination_view=AccessThreadView(destination_view_set);
+      source_view=AccessThreadView(source_view_set);
+
+      p=AcquireCacheView(source_view,contribution[0].pixel,0,
+                         contribution[n-1].pixel-contribution[0].pixel+1,source->rows,exception);
+      q=SetCacheView(destination_view,x,0,1,destination->rows);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
         {
-          i=Min(Max((long) (center+0.5),start),stop-1);
-          j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-            (contribution[i-start].pixel-contribution[0].pixel);
-          indexes[y]=source_indexes[j];
+          source_indexes=GetCacheViewIndexes(source_view);
+          indexes=GetCacheViewIndexes(destination_view);
+          for (y=0; y < (long) destination->rows; y++)
+            {
+              double
+                weight;
+
+              DoublePixelPacket
+                pixel;
+
+              long
+                j;
+
+              register long
+                i;
+
+              pixel=zero;
+              if ((destination->matte) || (destination->colorspace == CMYKColorspace))
+                {
+                  for (i=0; i < n; i++)
+                    {
+                      j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                        (contribution[i].pixel-contribution[0].pixel);
+                      weight=contribution[i].weight;
+                      pixel.red+=weight*p[j].red;
+                      pixel.green+=weight*p[j].green;
+                      pixel.blue+=weight*p[j].blue;
+                      pixel.opacity+=weight*p[j].opacity;
+                    }
+                  q[y].red=RoundDoubleToQuantum(pixel.red);
+                  q[y].green=RoundDoubleToQuantum(pixel.green);
+                  q[y].blue=RoundDoubleToQuantum(pixel.blue);
+                  q[y].opacity=RoundDoubleToQuantum(pixel.opacity);
+                }
+              else
+                {
+                  for (i=0; i < n; i++)
+                    {
+                      j=(long) (y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                                (contribution[i].pixel-contribution[0].pixel));
+                      weight=contribution[i].weight;
+                      pixel.red+=weight*p[j].red;
+                      pixel.green+=weight*p[j].green;
+                      pixel.blue+=weight*p[j].blue;
+                    }
+                  q[y].red=RoundDoubleToQuantum(pixel.red);
+                  q[y].green=RoundDoubleToQuantum(pixel.green);
+                  q[y].blue=RoundDoubleToQuantum(pixel.blue);
+                  q[y].opacity=OpaqueOpacity;
+                }
+
+              if ((indexes != (IndexPacket *) NULL) &&
+                  (source_indexes != (IndexPacket *) NULL))
+                {
+                  i=Min(Max((long) (center+0.5),start),stop-1);
+                  j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+                    (contribution[i-start].pixel-contribution[0].pixel);
+                  indexes[y]=source_indexes[j];
+                }
+            }
+            if (!SyncCacheView(destination_view))
+              {
+                thread_status=MagickFail;
+                CopyException(exception,&destination->exception);
+              }
+        }
+
+#pragma omp critical
+        {
+          if (QuantumTick(*quantum,span))
+            if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+              thread_status=MagickFail;
+
+          (*quantum)++;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
         }
     }
-    if (!SyncImagePixels(destination))
-      break;
-    if (QuantumTick(*quantum,span))
-      if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
-        break;
-    (*quantum)++;
-  }
-  return(x == destination->columns);
+
+  DestroyThreadViewSet(source_view_set);
+  DestroyThreadViewSet(destination_view_set);
+
+  return (status != MagickFail);
 }
 
-static MagickPassFail VerticalFilter(const Image *source,Image *destination,
-  const double y_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const size_t span,unsigned long *quantum,
-  ExceptionInfo *exception)
+static MagickPassFail
+VerticalFilter(const Image *source,Image *destination,
+               const double y_factor,const FilterInfo *filter_info,
+               const double blur,ThreadViewDataSet *view_data_set,
+               const size_t span,unsigned long *quantum,
+               ExceptionInfo *exception)
 {
+  ThreadViewSet
+    *destination_view_set,
+    *source_view_set;
+
   double
-    center,
-    density,
     scale,
     support;
 
@@ -967,30 +1033,24 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     zero;
 
   long
-    n,
-    start,
-    stop,
-    x;
-
-  unsigned long
     y;
 
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes,
-    *source_indexes;
-
-  register long
-    i;
-
-  register PixelPacket
-    *q;
+  volatile MagickPassFail
+    status=MagickPass;
 
   /*
     Apply filter to resize vertically from source to destination.
   */
+  source_view_set=AllocateThreadViewSet((Image *) source,exception);
+  destination_view_set=AllocateThreadViewSet(destination,exception);
+  if ((source_view_set ==  (ThreadViewSet *) NULL) ||
+      (destination_view_set == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(source_view_set);
+      DestroyThreadViewSet(destination_view_set);
+      return MagickFail;
+    }
+
   scale=blur*Max(1.0/y_factor,1.0);
   support=scale*filter_info->support;
   destination->storage_class=source->storage_class;
@@ -1006,107 +1066,171 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  for (y=0; y < destination->rows; y++)
-  {
-    center=(double) (y+0.5)/y_factor;
-    start=(long) Max(center-support+0.5,0);
-    stop=(long) Min(center+support+0.5,source->rows);
-    density=0.0;
-    for (n=0; n < (stop-start); n++)
+#pragma omp parallel for schedule(static,64)
+  for (y=0; y < (long) destination->rows; y++)
     {
-      contribution[n].pixel=start+n;
-      contribution[n].weight=
-        filter_info->function(scale*(start+n-center+0.5),filter_info->support);
-      density+=contribution[n].weight;
-    }
-    if ((density != 0.0) && (density != 1.0))
-      {
-        /*
-          Normalize.
-        */
-        density=1.0/density;
-        for (i=0; i < n; i++)
-          contribution[i].weight*=density;
-      }
-    p=AcquireImagePixels(source,0,contribution[0].pixel,source->columns,
-      contribution[n-1].pixel-contribution[0].pixel+1,exception);
-    q=SetImagePixels(destination,0,y,destination->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    source_indexes=GetIndexes(source);
-    indexes=GetIndexes(destination);
-#pragma omp parallel for private(i)
-    for (x=0; x < (long) destination->columns; x++)
-    {
-      double
-        weight;
+      ViewInfo
+        *destination_view,
+        *source_view;
 
-      DoublePixelPacket
-        pixel;
+      double
+        center,
+        density;
+
+      ContributionInfo
+        *contribution;
+
+      register const PixelPacket
+        *p;
+    
+      register PixelPacket
+        *q;
+
+      register IndexPacket
+        *indexes,
+        *source_indexes;
 
       long
-        j;
+        n,
+        start,
+        stop,
+        x;
 
-      pixel=zero;
-      if ((source->matte) || (source->colorspace == CMYKColorspace))
+      MagickBool
+        thread_status;
+    
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      contribution=AccessThreadViewData(view_data_set);
+      center=(double) (y+0.5)/y_factor;
+      start=(long) Max(center-support+0.5,0);
+      stop=(long) Min(center+support+0.5,source->rows);
+      density=0.0;
+      for (n=0; n < (stop-start); n++)
         {
-          for (i=0; i < n; i++)
-            {
-              j=(long) ((contribution[i].pixel-contribution[0].pixel)*
-                        source->columns+x);
-              weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-              pixel.opacity+=weight*p[j].opacity;
-            }
-          q[x].red=RoundDoubleToQuantum(pixel.red);
-          q[x].green=RoundDoubleToQuantum(pixel.green);
-          q[x].blue=RoundDoubleToQuantum(pixel.blue);
-          q[x].opacity=RoundDoubleToQuantum(pixel.opacity);
+          contribution[n].pixel=start+n;
+          contribution[n].weight=
+            filter_info->function(scale*(start+n-center+0.5),filter_info->support);
+          density+=contribution[n].weight;
         }
-      else
+      if ((density != 0.0) && (density != 1.0))
         {
+          /*
+            Normalize.
+          */
+          long
+            i;
+
+          density=1.0/density;
           for (i=0; i < n; i++)
-            {
-              j=(long) ((contribution[i].pixel-contribution[0].pixel)*
-                        source->columns+x);
-              weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-            }
-          q[x].red=RoundDoubleToQuantum(pixel.red);
-          q[x].green=RoundDoubleToQuantum(pixel.green);
-          q[x].blue=RoundDoubleToQuantum(pixel.blue);
-          q[x].opacity=OpaqueOpacity;
+            contribution[i].weight*=density;
         }
 
-      if ((indexes != (IndexPacket *) NULL) &&
-          (source_indexes != (IndexPacket *) NULL))
+      destination_view=AccessThreadView(destination_view_set);
+      source_view=AccessThreadView(source_view_set);
+
+      p=AcquireCacheView(source_view,0,contribution[0].pixel,source->columns,
+                         contribution[n-1].pixel-contribution[0].pixel+1,
+                         exception);
+      q=SetCacheView(destination_view,0,y,destination->columns,1);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
         {
-          i=Min(Max((long) (center+0.5),start),stop-1);
-          j=(long) ((contribution[i-start].pixel-contribution[0].pixel)*
-            source->columns+x);
-          indexes[x]=source_indexes[j];
+          source_indexes=GetCacheViewIndexes(source_view);
+          indexes=GetCacheViewIndexes(destination_view);
+          for (x=0; x < (long) destination->columns; x++)
+            {
+              double
+                weight;
+
+              DoublePixelPacket
+                pixel;
+
+              long
+                j;
+
+              register long
+                i;
+
+              pixel=zero;
+              if ((source->matte) || (source->colorspace == CMYKColorspace))
+                {
+                  for (i=0; i < n; i++)
+                    {
+                      j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                                source->columns+x);
+                      weight=contribution[i].weight;
+                      pixel.red+=weight*p[j].red;
+                      pixel.green+=weight*p[j].green;
+                      pixel.blue+=weight*p[j].blue;
+                      pixel.opacity+=weight*p[j].opacity;
+                    }
+                  q[x].red=RoundDoubleToQuantum(pixel.red);
+                  q[x].green=RoundDoubleToQuantum(pixel.green);
+                  q[x].blue=RoundDoubleToQuantum(pixel.blue);
+                  q[x].opacity=RoundDoubleToQuantum(pixel.opacity);
+                }
+              else
+                {
+                  for (i=0; i < n; i++)
+                    {
+                      j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+                                source->columns+x);
+                      weight=contribution[i].weight;
+                      pixel.red+=weight*p[j].red;
+                      pixel.green+=weight*p[j].green;
+                      pixel.blue+=weight*p[j].blue;
+                    }
+                  q[x].red=RoundDoubleToQuantum(pixel.red);
+                  q[x].green=RoundDoubleToQuantum(pixel.green);
+                  q[x].blue=RoundDoubleToQuantum(pixel.blue);
+                  q[x].opacity=OpaqueOpacity;
+                }
+
+              if ((indexes != (IndexPacket *) NULL) &&
+                  (source_indexes != (IndexPacket *) NULL))
+                {
+                  i=Min(Max((long) (center+0.5),start),stop-1);
+                  j=(long) ((contribution[i-start].pixel-contribution[0].pixel)*
+                            source->columns+x);
+                  indexes[x]=source_indexes[j];
+                }
+            }
+          if (!SyncCacheView(destination_view))
+            {
+              thread_status=MagickFail;
+              CopyException(exception,&destination->exception);
+            }
         }
+#pragma omp critical
+      {
+        if (QuantumTick(*quantum,span))
+          if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+            thread_status=MagickFail;
+        
+        (*quantum)++;
+        
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
     }
-    if (!SyncImagePixels(destination))
-      break;
-    if (QuantumTick(*quantum,span))
-      if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
-        break;
-    (*quantum)++;
-  }
-  return(y == destination->rows);
+
+  DestroyThreadViewSet(source_view_set);
+  DestroyThreadViewSet(destination_view_set);
+
+  return (status != MagickFail);
 }
 
 MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,const FilterTypes filter,const double blur,
-  ExceptionInfo *exception)
+                                const unsigned long rows,const FilterTypes filter,
+                                const double blur,
+                                ExceptionInfo *exception)
 {
-  ContributionInfo
-    *contribution;
+  ThreadViewDataSet
+    *view_data_set;
 
   double
     support,
@@ -1147,10 +1271,13 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     span;
 
   MagickPassFail
-    status = MagickPass;
+    status;
 
   unsigned long
     quantum;
+
+  MagickBool
+    order;
 
   /*
     Initialize resize image attributes.
@@ -1166,10 +1293,29 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
                           MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
     }
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
-    return(CloneImage(image,0,0,True,exception));
+    return (CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);
   if (resize_image == (Image *) NULL)
-    return((Image *) NULL);
+    return ((Image *) NULL);
+
+  order=(((double) columns*(image->rows+rows)) >
+         ((double) rows*(image->columns+columns)));
+  if (order)
+    source_image=CloneImage(resize_image,columns,image->rows,True,exception);
+  else
+    source_image=CloneImage(resize_image,image->columns,rows,True,exception);
+  if (source_image == (Image *) NULL)
+    return ((Image *) NULL);
+
+  view_data_set=AllocateThreadViewDataSet(image,exception);
+  if (view_data_set == (ThreadViewDataSet *) NULL)
+    {
+      DestroyThreadViewDataSet(view_data_set);
+      DestroyImage(resize_image);
+      DestroyImage(source_image);
+      return (Image *) NULL;
+    }
+
   /*
     Allocate filter contribution info.
   */
@@ -1195,54 +1341,59 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   support=Max(x_support,y_support);
   if (support < filters[i].support)
     support=filters[i].support;
-  contribution=MagickAllocateMemory(ContributionInfo *,
-    (size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
-  if (contribution == (ContributionInfo *) NULL)
-    {
-      DestroyImage(resize_image);
-      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToResizeImage)
-    }
+
+  {
+    unsigned int
+      i,
+      views;
+    
+    views=GetThreadViewDataSetAllocatedViews(view_data_set);
+    for (i=0; i < views; i++)
+      {
+        ContributionInfo
+          *contribution;
+        
+        contribution=MagickAllocateMemory(ContributionInfo *,
+                                          (size_t) (2.0*Max(support,0.5)+3)*
+                                          sizeof(ContributionInfo));
+        if (contribution == (ContributionInfo *) NULL)
+          {
+            DestroyThreadViewDataSet(view_data_set);
+            DestroyImage(resize_image);
+            DestroyImage(source_image);
+            ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                                 UnableToResizeImage);
+          }
+
+        AssignThreadViewData(view_data_set,i,contribution);
+      }
+  }
 
   /*
     Resize image.
   */
+  status=MagickPass;
   quantum=0;
-  if (((double) columns*(image->rows+rows)) >
-      ((double) rows*(image->columns+columns)))
+  if (order)
     {
-      source_image=CloneImage(resize_image,columns,image->rows,True,exception);
-      if (source_image == (Image *) NULL)
-        {
-          MagickFreeMemory(contribution);
-          DestroyImage(resize_image);
-          return((Image *) NULL);
-        }
       span=source_image->columns+resize_image->rows;
-      status=HorizontalFilter(image,source_image,x_factor,&filters[i],blur,
-        contribution,span,&quantum,exception);
-      status|=VerticalFilter(source_image,resize_image,y_factor,&filters[i],
-        blur,contribution,span,&quantum,exception);
+      status &= HorizontalFilter(image,source_image,x_factor,&filters[i],blur,
+                                 view_data_set,span,&quantum,exception);
+      status &= VerticalFilter(source_image,resize_image,y_factor,&filters[i],
+                               blur,view_data_set,span,&quantum,exception);
     }
   else
     {
-      source_image=CloneImage(resize_image,image->columns,rows,True,exception);
-      if (source_image == (Image *) NULL)
-        {
-          MagickFreeMemory(contribution);
-          DestroyImage(resize_image);
-          return((Image *) NULL);
-        }
       span=resize_image->columns+source_image->rows;
-      status=VerticalFilter(image,source_image,y_factor,&filters[i],blur,
-        contribution,span,&quantum,exception);
-      status|=HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
-        blur,contribution,span,&quantum,exception);
+      status &= VerticalFilter(image,source_image,y_factor,&filters[i],blur,
+                               view_data_set,span,&quantum,exception);
+      status &= HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
+                                 blur,view_data_set,span,&quantum,exception);
     }
   /*
     Free allocated memory.
   */
-  MagickFreeMemory(contribution);
+  DestroyThreadViewDataSet(view_data_set);
   DestroyImage(source_image);
   if (status == MagickFail)
     {
