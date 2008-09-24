@@ -1,3 +1,7 @@
+2008-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantumOperator): Add missing modifyImage().
+
 2008-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantize): Error measurement support was being

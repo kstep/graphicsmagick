@@ -1295,6 +1295,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  modifyImage();
   QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
   throwException( exceptionInfo );
 }
@@ -1307,6 +1308,7 @@ void Magick::Image::quantumOperator ( const int x_,const int y_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  modifyImage();
   QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
                               operator_, rvalue_, &exceptionInfo);
   throwException( exceptionInfo );

@@ -21,6 +21,127 @@
 </tr>
 </table>
 <p>
+2008-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/msl.c: Applied MSL patch from graphicsmagick-bugs list to
+        correct handling of geometry x,y values by setting gravity
+        attribute to ForgetGravity.
+
+</UL>
+<p>
+2008-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (IntegralRotateImage): Add missing progress
+        indication for 90 and 270 degrees rotation.
+  <LI> www/perl.html: Fix formatting of examples.  Should address
+        SourceForge issue [ 2100339 ] "Wrong format in example script on
+        web page".
+
+</UL>
+<p>
+2008-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (BenchmarkImageCommand): Restore original
+        client name for each loop so that it is not extended further for
+        each iteration.
+
+</UL>
+<p>
+2008-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/semaphore.c (UnlockSemaphoreInfo): Decrement lock depth
+        under protection of the lock.
+
+</UL>
+<p>
+2008-08-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resource.c (ListMagickResourceInfo): Include quantum
+        depth, bits per pixel, and process address size in resource
+        output so that output is more complete.
+
+</UL>
+<p>
+2008-07-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: GraphicsMagick 1.2.5 released.
+  <LI> NEWS.txt: Updated news for release.
+
+</UL>
+<p>
+2008-07-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/Makefile.am (WAND_TESTS): Added Wand drawtest and wandtest
+        to automated test suite.
+
+</UL>
+<p>
+2008-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ThresholdImage): Backport implementation from
+<STRONG>HEAD.</STRONG><BR>
+  <LI> coders/tiff.c (CompressionSupported): Use
+        TIFFIsCODECConfigured() to test if a codec is supported.
+  <LI> tests/{rwblob.c, rwfile.c}: use DestroyImageList() rather than
+        DestroyImage().
+
+</UL>
+<p>
+2008-07-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (DestroyBlob, DestroyBlobInfo): Implementation is
+        a bit more robust.
+
+</UL>
+<p>
+2008-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (ReadJPEGImage): Remove over-write of
+        image-&gt;client_data.  Resolves SourceForge issue [ 2018974 ]
+        client_data is not passed to streamhandler.
+  <LI> coders/png.c (WriteOnePNGImage): Fix crash when writing PNG
+        images with transparency and either type Optimize is requested, or
+        the image is colormapped.
+
+</UL>
+<p>
+2008-07-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dcraw.c: Added 'dcraw' delegate proxy support so that
+        many common RAW camera formats will be correctly read by default.
+
+</UL>
+<p>
+2008-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh: GraphicsMagick 1.2.4 released.
+  <LI> utilities/Makefile.am (install-exec-local-utilities): Add back
+        in support for --enable-magick-compat which was accidentally
+        dropped in the new makefiles for GraphicsMagick 1.2.  Resolves
+        SourceForge bug 2005883.
+
+</UL>
+<p>
+2008-06-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Magick++/lib/Image.cpp (quantize): Error measurement support was
+        being performed incorrectly.  SyncImage() is not needed here.
+
+</UL>
+<p>
 2008-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

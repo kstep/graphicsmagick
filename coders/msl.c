@@ -545,9 +545,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (char *) name);
           break;
         }
-        /*
-        NOTE: blur can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -615,9 +612,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (char *) name);
           break;
         }
-        /*
-        NOTE: border can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -719,9 +713,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: charcoal can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1290,9 +1281,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: edge can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1347,9 +1335,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: emboss can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1529,9 +1514,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: frame can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1736,6 +1718,8 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         (void) GammaImage ( msl_info->image[n], gamma );
       }
+
+      break;
     }
       else if (LocaleCompare((char *) name,"get") == 0)
         {
@@ -2872,9 +2856,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: sharpen can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
