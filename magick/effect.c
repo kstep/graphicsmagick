@@ -171,10 +171,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           continue;
 
         read_view=AccessThreadView(read_view_set);
-        p=AcquireCacheView(read_view,-(long) width/2,y-height/2,image->columns+width,
-                           height,exception);
+        p=AcquireCacheViewPixels(read_view,-(long) width/2,y-height/2,
+                                 image->columns+width,height,exception);
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,threshold_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,threshold_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
 
@@ -218,11 +218,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
                 p++;
                 q++;
               }
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&threshold_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -670,7 +667,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   
           scanline=AccessThreadViewData(data_set);
           view=AccessThreadView(view_set);
-          q=GetCacheView(view,0,y,image->columns,1);
+          q=GetCacheViewPixels(view,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             thread_status=MagickFail;
 
@@ -691,11 +688,8 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                 {
                   (void) memcpy(&scanline[i],&q[i],(image->columns-i)*sizeof(PixelPacket));
                   BlurScanline(kernel,width,scanline,q,image->columns);
-                  if (!SyncCacheView(view))
-                    {
-                      thread_status=MagickFail;
-                      CopyException(exception,&image->exception);
-                    }
+                  if (!SyncCacheViewPixels(view,exception))
+                    thread_status=MagickFail;
                 }
             }
 #pragma omp critical
@@ -1488,9 +1482,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
           Read another scan line.
         */
         read_view=AccessThreadView(read_view_set);
-        p=AcquireCacheView(read_view,0,y-2,image->columns,5,exception);
+        p=AcquireCacheViewPixels(read_view,0,y-2,image->columns,5,exception);
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,enhance_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,enhance_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -1545,11 +1539,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             p++;
             *q++=(*p++);
             *q++=(*p++);
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&enhance_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -2277,7 +2268,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
         read_view=AccessThreadView(read_view_set);
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,blur_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,blur_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -2302,7 +2293,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
                     u=(long) x+offsets[i].x;
                     v=(long) y+offsets[i].y;
-                    p=AcquireCacheView(read_view,u,v,1,1,exception);
+                    p=AcquireCacheViewPixels(read_view,u,v,1,1,exception);
                     if (p == (const PixelPacket *) NULL)
                       {
                         thread_status=MagickFail;
@@ -2321,11 +2312,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
                 q->opacity=(Quantum) aggregate.opacity;
                 q++;
               }
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&blur_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -2564,7 +2552,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
 
         seed=MagickRandNewSeed();
         view=AccessThreadView(view_set);
-        q=GetCacheView(view,0,y,image->columns,1);
+        q=GetCacheViewPixels(view,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -2815,11 +2803,8 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                   }
               }
 
-            if (!SyncCacheView(view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&image->exception);
-              }
+            if (!SyncCacheViewPixels(view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -3144,9 +3129,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
 
         read_view=AccessThreadView(read_view_set);
-        p=AcquireCacheView(read_view,-1,y-1,image->columns+2,3,exception);
+        p=AcquireCacheViewPixels(read_view,-1,y-1,image->columns+2,3,exception);
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,shade_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,shade_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         /*
@@ -3205,11 +3190,8 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
                 s2++;
                 q++;
               }
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&shade_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -3502,7 +3484,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 
         offsets_index=(y*image->columns) % OFFSETS_ENTRIES;
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,spread_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,spread_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (radius > (unsigned int) y)
@@ -3516,7 +3498,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
           y_max=y+radius;
 
         read_view=AccessThreadView(read_view_set);
-        neighbors=AcquireCacheView(read_view,0,y_min,image->columns,y_max-y_min,exception);
+        neighbors=AcquireCacheViewPixels(read_view,0,y_min,image->columns,y_max-y_min,exception);
         if (neighbors == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -3540,11 +3522,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
                 *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));
                 q++;
               }
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&spread_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {

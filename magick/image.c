@@ -290,6 +290,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->is_monochrome=MagickTrue;
   allocate_image->is_grayscale=MagickTrue;
   allocate_image->reference_count=1;
+  allocate_image->semaphore=AllocateSemaphoreInfo();
   allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
@@ -1127,7 +1128,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->iterations=image->iterations;
   clone_image->total_colors=image->total_colors;
   clone_image->error=image->error;
-  clone_image->semaphore=0;
+  clone_image->semaphore=AllocateSemaphoreInfo();
   clone_image->logging=image->logging;
   clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);

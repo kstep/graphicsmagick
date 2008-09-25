@@ -19,12 +19,16 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#acquirecacheview">AcquireCacheView</a></li>
 		<li><a href="#acquirememory">AcquireMemory</a></li>
 		<li><a href="#clonememory">CloneMemory</a></li>
+		<li><a href="#getcacheview">GetCacheView</a></li>
 		<li><a href="#liberatememory">LiberateMemory</a></li>
 		<li><a href="#popimagepixels">PopImagePixels</a></li>
 		<li><a href="#pushimagepixels">PushImagePixels</a></li>
 		<li><a href="#reacquirememory">ReacquireMemory</a></li>
+		<li><a href="#setcacheview">SetCacheView</a></li>
+		<li><a href="#synccacheview">SyncCacheView</a></li>
 	</ul>
 
 </ul>
@@ -39,16 +43,52 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>const PixelPacket * <strong>AcquireCacheView</strong>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>void * <strong>AcquireMemory</strong>( const size_t size );</P>
 <P>void * <strong>CloneMemory</strong>( void *destination, const void *source, const size_t size );</P>
+<P>PixelPacket * <strong>GetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>void  <strong>LiberateMemory</strong>( void ** memory );</P>
 <P>unsigned int  <strong>PopImagePixels</strong>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
 <P>unsigned int  <strong>PushImagePixels</strong>( Image *image, const QuantumType quantum_type, const unsigned char *source );</P>
 <P>void  <strong>ReacquireMemory</strong>( void ** memory, const size_t size );</P>
+<P>PixelPacket * <strong>SetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
+<P>MagickPassFail  <strong>SyncCacheView</strong>( ViewInfo *view );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="acquirecacheview">AcquireCacheView</a></h2>
+<P>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters for read-only access.  A pointer to the pixels is returned if the pixels are transferred, otherwise NULL is returned.</P>
+<P>The format of the AcquireCacheView method is:</P>
+<blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireCacheView ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong>
+
+<DD>
+<P>Method AcquireCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_view_3a">view:</a></strong>
+
+<DD>
+<P>The address of a structure of type ViewInfo.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_x_2cy_2ccolumns_2crows_3a">x,y,columns,rows:</a></strong>
+
+<DD>
+<P>These values define the perimeter of a region of pixels.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
 <P>
 </P>
 <h2><a name="acquirememory">AcquireMemory</a></h2>
@@ -72,6 +112,31 @@
 
 <DD>
 <P>The size of the memory in bytes to allocate.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="getcacheview">GetCacheView</a></h2>
+<blockquote>GetCacheView() gets writeable pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the GetCacheView method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>pixels:</strong>
+
+<DD>
+<P>Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.</P>
+</dd>
+</li>
+<dt><strong>view:</strong>
+
+<DD>
+<P>The address of a structure of type ViewInfo.</P>
+</dd>
+</li>
+<dt><strong>x,y,columns,rows:</strong>
+
+<DD>
+<P>These values define the perimeter of a region of pixels.</P>
 </dd>
 </li>
 </dl>
@@ -166,6 +231,38 @@
 
 <DD>
 <P>The new size of the allocated memory.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="setcacheview">SetCacheView</a></h2>
+<blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the SetCacheView method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *SetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong>
+
+<DD>
+<P>The address of a structure of type ViewInfo.</P>
+</dd>
+</li>
+<dt><strong>x,y,columns,rows:</strong>
+
+<DD>
+<P>These values define the perimeter of a region of pixels.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="synccacheview">SyncCacheView</a></h2>
+<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns MagickPass if the pixel region is synced, otherwise MagickFail. </blockquote><P>The format of the SyncCacheView method is:</P>
+<blockquote>MagickPassFail SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong>
+
+<DD>
+<P>The address of a structure of type ViewInfo.</P>
 </dd>
 </dl>
 

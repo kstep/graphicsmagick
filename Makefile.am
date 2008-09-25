@@ -426,3 +426,14 @@ snapshot: distcheck
 	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)/
 	cp -p $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)/ChangeLog.txt
 	cp -p $(top_srcdir)/www/Changelog.html $(SNAPSHOT_DIRECTORY)/ChangeLog.html
+
+# Rules for a profiled build (according to Paolo Bonzini <bonzini@gnu.org>)
+#.PHONY: profile
+#profile:
+#	$(MAKE) clean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-generate"
+#	$(MAKE) check
+#	$(MAKE) mostlyclean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-use"
+#
+#CLEANFILES = *.gcda *.gcno

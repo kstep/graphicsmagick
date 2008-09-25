@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2008-09-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/deprecate.c (AcquireCacheView): Deprecate this function.
+        (GetCacheView): Deprecate this function.
+        (SetCacheView): Deprecate this function.
+        (SyncCacheView): Deprecate this function.
+  <LI> magick/pixel_cache.c (AcquireCacheViewPixels): New function to
+        replace AcquireCacheView().<BR>
+        (GetCacheViewPixels): New function to replace GetCacheView().
+        (SetCacheViewPixels): New function to replace SetCacheView().
+        (SyncCacheViewPixels): New function to replace SyncCacheView().
+  <LI> coders/msl.c: Applied patches from Max at hohenegger.eu which
+        fix a MSL parsing error related to gamma, and erroneous text
+        comments which claim that elements can't have attributes.
+
+</UL>
+<p>
 2008-09-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

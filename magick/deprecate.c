@@ -35,14 +35,59 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/color.h"
+/* #include "magick/blob.h" */
+/* #include "magick/color.h" */
 #include "magick/constitute.h"
-#include "magick/list.h"
-#include "magick/log.h"
-#include "magick/resource.h"
+/* #include "magick/list.h" */
+/* #include "magick/log.h" */
+#include "magick/pixel_cache.h"
+/* #include "magick/resource.h" */
 #include "magick/utility.h"
 #include "magick/deprecate.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e C a c h e V i e w                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireCacheView gets pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters for read-only access.   A pointer to
+%  the pixels is returned if the pixels are transferred, otherwise NULL is
+%  returned.
+%
+%  The format of the AcquireCacheView method is:
+%
+%      const PixelPacket *AcquireCacheView(const ViewInfo *view,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method AcquireCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const PixelPacket *
+AcquireCacheView(const ViewInfo *view,
+                 const long x,const long y,const unsigned long columns,
+                 const unsigned long rows,ExceptionInfo *exception)
+{
+  return AcquireCacheViewPixels(view,x,y,columns,rows,exception);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,6 +156,46 @@ MagickExport void *CloneMemory(void *destination,const void *source,
                           "Method has been deprecated");
 
   return MagickCloneMemory(destination,source,size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheView() gets writeable pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels
+%  is returned if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the GetCacheView method is:
+%
+%      PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *
+GetCacheView(ViewInfo *view,const long x,const long y,
+             const unsigned long columns,const unsigned long rows)
+{
+  return GetCacheViewPixels(view,x,y,columns,rows,
+                            &GetCacheViewImage(view)->exception);
 }
 
 /*
@@ -317,5 +402,71 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
 
   MagickReallocMemory(void*,*memory,size);
 }
-
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetCacheView() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the SetCacheView method is:
+%
+%      PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *
+SetCacheView(ViewInfo *view,const long x,const long y,
+             const unsigned long columns,const unsigned long rows)
+{
+  return SetCacheViewPixels(view,x,y,columns,rows,
+                            &GetCacheViewImage(view)->exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c C a c h e V i e w                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncCacheView() saves the view pixels to the in-memory or disk cache.
+%  The method returns MagickPass if the pixel region is synced, otherwise
+%  MagickFail.
+%
+%  The format of the SyncCacheView method is:
+%
+%      MagickPassFail SyncCacheView(ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+MagickExport MagickPassFail
+SyncCacheView(ViewInfo *view)
+{
+  return SyncCacheViewPixels(view,&GetCacheViewImage(view)->exception);
+}

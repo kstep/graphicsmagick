@@ -40,7 +40,7 @@ extern "C" {
 
   /*****
    *
-   * Default View interfaces (Not thread/OpenMP safe)
+   * Default View interfaces (Single-threaded access)
    *
    *****/
 
@@ -54,6 +54,7 @@ extern "C" {
 
   /*
     Return one pixel at the the specified (x,y) location.
+    Similar function as GetOnePixel();
   */
   extern MagickExport PixelPacket
   AcquireOnePixel(const Image *image,const long x,const long y,
@@ -89,6 +90,7 @@ extern "C" {
 
   /*
     GetOnePixel() returns a single pixel at the specified (x,y) location.
+    Similar to AcquireOnePixel().
   */
   extern MagickExport PixelPacket
   GetOnePixel(Image *image,const long x,const long y);
@@ -140,7 +142,7 @@ extern "C" {
 
   /****
    *
-   * Cache view interfaces (OpenMP safe).
+   * Cache view interfaces (Thread safe for multiple access).
    *
    ****/
 
@@ -157,19 +159,20 @@ extern "C" {
   CloseCacheView(ViewInfo *view);
 
   /*
-    GetCacheView() obtains a pixel region from a cache view for read/write access.
-  */
-  extern MagickExport PixelPacket
-  *GetCacheView(ViewInfo *view,const long x,const long y,
-                const unsigned long columns,const unsigned long rows);
-
-  /*
-    AcquireCacheView() obtains a pixel region from a cache view for read-only access.
+    AcquireCacheViewPixels() obtains a pixel region from a cache view
+    for read-only access.
   */
   extern MagickExport const PixelPacket
-  *AcquireCacheView(const ViewInfo *view,
-                    const long x,const long y,const unsigned long columns,
-                    const unsigned long rows,ExceptionInfo *exception);
+  *AcquireCacheViewPixels(const ViewInfo *view,
+                          const long x,const long y,const unsigned long columns,
+                          const unsigned long rows,ExceptionInfo *exception);
+
+  /*
+    AcquireCacheViewIndexes() returns read-only indexes associated
+    with a cache view.
+  */
+  extern MagickExport const IndexPacket
+  *AcquireCacheViewIndexes(const ViewInfo *view);
 
   /*
     AcquireOneCacheViewPixel() returns one pixel from a cache view.
@@ -179,23 +182,34 @@ extern "C" {
                            ExceptionInfo *exception);
 
   /*
+    GetCacheViewPixels() obtains a pixel region from a cache view for
+    read/write access.
+  */
+  extern MagickExport PixelPacket
+  *GetCacheViewPixels(ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
+
+  /*
     GetCacheViewIndexes() returns the indexes associated with a cache view.
   */
   extern MagickExport IndexPacket
   *GetCacheViewIndexes(const ViewInfo *view);
 
   /*
-    SetCacheView() gets blank pixels from the pixel cache view.
+    SetCacheViewPixels() gets blank writeable pixels from the pixel
+    cache view.
   */
   extern MagickExport PixelPacket
-  *SetCacheView(ViewInfo *view,const long x,const long y,
-                const unsigned long columns,const unsigned long rows);
+  *SetCacheViewPixels(ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
 
   /*
-    SyncCacheView() saves any changes to the pixel cache view.
+    SyncCacheViewPixels() saves any changes to the pixel cache view.
   */
   extern MagickExport MagickPassFail
-  SyncCacheView(ViewInfo *view);
+  SyncCacheViewPixels(ViewInfo *view,ExceptionInfo *exception);
 
   /*
     Simplified support for OpenMP thread view sets.
@@ -205,25 +219,11 @@ extern "C" {
   { 
     ViewInfo
     *views;
-
-    void
-    **view_data;
     
     unsigned int
     nviews;
   } ThreadViewSet;
 
-  typedef struct _ThreadViewDataSet
-  { 
-    ViewInfo
-    *views;
-
-    void
-    **view_data;
-    
-    unsigned int
-    nviews;
-  } ThreadViewDataSet;
 
   extern MagickExport void
   DestroyThreadViewSet(ThreadViewSet *view_set);
@@ -237,6 +237,18 @@ extern "C" {
   extern MagickExport unsigned int
   GetThreadViewSetAllocatedViews(ThreadViewSet *view_set);
 
+  /*
+    Simplified support for OpenMP thread-specific data
+    These interfaces are subject to change.
+  */
+  typedef struct _ThreadViewDataSet
+  {
+    void
+    **view_data;
+    
+    unsigned int
+    nviews;
+  } ThreadViewDataSet;
 
   extern MagickExport void
   DestroyThreadViewDataSet(ThreadViewDataSet *data_set);
@@ -253,6 +265,61 @@ extern "C" {
   extern MagickExport void
   AssignThreadViewData(ThreadViewDataSet *data_set, unsigned int index, void *data);
 
+#if 0
+  /*
+    AcquireThreadViewPixels() obtains a read-only pixel region
+    from a cache thread view.
+  */
+  extern MagickExport const PixelPacket
+  *AcquireThreadViewPixels(const ThreadViewSet *view_set,
+                           const long x,const long y,const unsigned long columns,
+                           const unsigned long rows,ExceptionInfo *exception);
+
+  /*
+    AcquireThreadViewViewIndexes() returns the read-only indexes
+    associated with a cache thread view.
+  */
+  extern MagickExport const IndexPacket
+  *AcquireThreadViewIndexes(const ThreadViewSet *view_set,ExceptionInfo *exception);
+
+  /*
+    AcquireOneThreadViewPixel() returns one pixel from a cache thread view.
+  */
+  extern MagickExport PixelPacket
+  AcquireOneThreadViewPixel(const ThreadViewSet *view_set,const long x,const long y,
+                            ExceptionInfo *exception);
+
+  /*
+    GetThreadViewPixels() obtains a writeable pixel region from a cache
+    thread view.
+  */
+  extern MagickExport PixelPacket
+  *GetThreadViewPixels(const ThreadViewSet *view_set,const long x,const long y,
+                       const unsigned long columns,const unsigned long rows,
+                       ExceptionInfo *exception);
+
+  /*
+    GetThreadViewIndexes() returns the writeable indexes
+    associated with a cache thread view.
+  */
+  extern MagickExport IndexPacket
+  *GetThreadViewIndexes(const ThreadViewSet *view_set,ExceptionInfo *exception);
+
+  /*
+    SetThreadViewPixels() gets blank writeable pixels from the pixel cache view.
+  */
+  extern MagickExport PixelPacket
+  *SetThreadViewPixels(const ThreadViewSet *view_set,const long x,const long y,
+                       const unsigned long columns,const unsigned long rows,
+                       ExceptionInfo *exception);
+
+  /*
+    SyncThreadViewPixels() saves any changes to the pixel cache view.
+  */
+  extern MagickExport MagickPassFail
+  SyncThreadViewPixels(const ThreadViewSet *view_set,
+                       ExceptionInfo *exception);
+#endif
 
   /*
     Stream interfaces (not thread/OpenMP safe).
@@ -311,6 +378,14 @@ extern "C" {
   */
   extern void
   GetCacheInfo(Cache *cache);
+
+  /*
+    GetCacheViewImage() obtains the image used to allocate the cache view.
+
+    Used by deprecated view interfaces.
+  */
+  extern Image *
+  GetCacheViewImage(const ViewInfo *view);
 
   /*
     GetPixelCachePresent() tests to see the pixel cache is present

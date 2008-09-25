@@ -21,7 +21,7 @@
 
 		<li><a href="#getcolorinfoarray">GetColorInfoArray</a></li>
 		<li><a href="#getcolorhistogram">GetColorHistogram</a></li>
-		<li><a href="#getcolorlist">GetColorlist</a></li>
+		<li><a href="#getcolorlist">GetColorList</a></li>
 		<li><a href="#getnumbercolors">GetNumberColors</a></li>
 		<li><a href="#isgrayimage">IsGrayImage</a></li>
 		<li><a href="#ismonochromeimage">IsMonochromeImage</a></li>
@@ -46,6 +46,7 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>HistogramColorPacket * <strong>GetColorHistogram</strong>( const Image *, unsigned long *colors, ExceptionInfo *);</P>
 <P>ColorInfo **  <strong>GetColorInfoArray</strong>( ExceptionInfo *exception );</P>
+<P>filelist= <strong>GetColorList</strong>( const char *pattern, unsigned long *number_colors );</P>
 <P>unsigned long  <strong>GetNumberColors</strong>( const Image *image, FILE *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>IsGrayImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>IsMonochromeImage</strong>( const Image *image, ExceptionInfo *exception );</P>
@@ -99,12 +100,10 @@
 </dl>
 <P>
 </P>
-<h2><a name="getcolorlist">GetColorlist</a></h2>
+<h2><a name="getcolorlist">GetColorList</a></h2>
 <P>Method GetColorList returns any colors that match the specified pattern and color standard.</P>
 <P>The format of the GetColorList function is:</P>
-<pre>
-    filelist=GetColorList(const char *pattern,unsigned long *number_colors)</pre>
-<P>A description of each parameter follows:</P>
+<blockquote>filelist=GetColorList ( const char *pattern, unsigned long *number_colors ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_filelist_3a">filelist:</a></strong>
 

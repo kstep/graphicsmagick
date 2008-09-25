@@ -26,7 +26,7 @@
 		<li><a href="#pixeliteratedualmodify">PixelIterateDualModify</a></li>
 		<li><a href="#pixeliteratedualnew">PixelIterateDualNew</a></li>
 		<li><a href="#pixeliteratetriplemodify">PixelIterateTripleModify</a></li>
-		<li><a href="#pixeliteratedualnew">PixelIterateDualNew</a></li>
+		<li><a href="#pixeliteratetriplenew">PixelIterateTripleNew</a></li>
 	</ul>
 
 </ul>
@@ -44,11 +44,11 @@
 <P>void  <strong>InitializePixelIteratorOptions</strong>( PixelIteratorOptions *options, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateDualModify</strong>( PixelIteratorDualModifyCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>PixelIterateDualNew</strong>( PixelIteratorDualNewCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateDualRead</strong>( PixelIteratorDualReadCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *first_image, const long first_x, const long first_y, const Image *second_image, const long second_x, const long second_y, ExceptionInfo *exception );;</P>
 <P>MagickPassFail  <strong>PixelIterateMonoModify</strong>( PixelIteratorMonoModifyCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, Image *image, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateMonoRead</strong>( PixelIteratorMonoReadCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const long x, const long y, const unsigned long columns, const unsigned long rows, const Image *image, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>PixelIterateTripleModify</strong>( PixelIteratorTripleModifyCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source1_image, const Image *source2_image, const long source_x, const long source_y, Image *update_image, const long update_x, const long update_y, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>PixelIterateTripleNew</strong>( PixelIteratorTripleNewCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const Image *source1_image, const Image *source2_image, const long source_x, const long source_y, Image *new_image, const long new_x, const long new_y, ExceptionInfo *exception );</P>
 <P>
 </P>
 <hr />
@@ -590,27 +590,9 @@
 </dl>
 <P>
 </P>
-<h2><a name="pixeliteratedualnew">PixelIterateDualNew</a></h2>
-<P><code>PixelIterateTripleNew()</code> iterates through pixel regions of three images and invokes a user-provided callback function (of type PixelIteratorTripleNewCallback) for each row of pixels.  The first two images are read-only, while the third image is read-write for update.  Access of the first two images is done lock-step using the same coordinates.  This is used if a new output image is created based on two input images.  The difference from <code>PixelIterateTripleModify()</code> is that the output pixels are not initialized so it is more efficient when outputting a new image.</P>
-<P>The format of the PixelIterateTripleNew method is:</P>
-<pre>
-    MagickPassFail PixelIterateTripleNew(
-                              PixelIteratorTripleNewCallback call_back,
-                               const PixelIteratorOptions *options,
-                              const char *description,
-                              void *mutable_data,
-                              const void *immutable_data,
-                              const unsigned long columns,
-                              const unsigned long rows,
-                              const Image *source1_image,
-                              const Image *source2_image,
-                              const long source_x,
-                              const long source_y,
-                              Image *new_image,
-                              const long new_x,
-                              const long new_y,
-                              ExceptionInfo *exception)</pre>
-<P>A description of each parameter follows:</P>
+<h2><a name="pixeliteratetriplenew">PixelIterateTripleNew</a></h2>
+<blockquote>PixelIterateTripleNew() iterates through pixel regions of three images and invokes a user-provided callback function ( of type PixelIteratorTripleNewCallback ) for each row of pixels. The first two images are read-only, while the third image is read-write for update. Access of the first two images is done lock-step using the same coordinates. This is used if a new output image is created based on two input images. The difference from PixelIterateTripleModify ( ) is that the output pixels are not initialized so it is more efficient when outputting a new image. </blockquote><P>The format of the PixelIterateTripleNew method is:</P>
+<blockquote>MagickPassFail PixelIterateTripleNew ( PixelIteratorTripleNewCallback call_back, const PixelIteratorOptions *options, const char *description, void *mutable_data, const void *immutable_data, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#Image">Image</A> *source1_image, const <A HREF="types.html#Image">Image</A> *source2_image, const long source_x, const long source_y, <A HREF="types.html#Image">Image</A> *new_image, const long new_x, const long new_y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>call_back:</strong>
 

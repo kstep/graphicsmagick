@@ -170,10 +170,10 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
         continue;
 
       view=AccessThreadView(view_set);
-      pixels=AcquireCacheView(view,x, row, columns, 1, exception);
+      pixels=AcquireCacheViewPixels(view,x, row, columns, 1, exception);
       if (!pixels)
         thread_status=MagickFail;
-      indexes=GetCacheViewIndexes(view);
+      indexes=AcquireCacheViewIndexes(view);
 
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
@@ -310,7 +310,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         continue;
 
       view=AccessThreadView(view_set);
-      pixels=GetCacheView(view, x, row, columns, 1);
+      pixels=GetCacheViewPixels(view, x, row, columns, 1, exception);
       if (!pixels)
         thread_status=MagickFail;
       indexes=GetCacheViewIndexes(view);
@@ -319,11 +319,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
 
       if (thread_status != MagickFail)
-        if (!SyncCacheView(view))
-          {
-            thread_status=MagickFail;
-            CopyException(exception,&image->exception);
-          }
+        if (!SyncCacheViewPixels(view,exception))
+          thread_status=MagickFail;
 
 #pragma omp critical
       {
@@ -486,13 +483,15 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       second_row=second_y+row;
 
       first_view=AccessThreadView(first_view_set);
-      first_pixels=AcquireCacheView(first_view, first_x, first_row, columns, 1, exception);
+      first_pixels=AcquireCacheViewPixels(first_view, first_x, first_row,
+                                          columns, 1, exception);
       if (!first_pixels)
         thread_status=MagickFail;
       first_indexes=GetCacheViewIndexes(first_view);
 
       second_view=AccessThreadView(second_view_set);
-      second_pixels=AcquireCacheView(second_view, second_x, second_row, columns, 1, exception);
+      second_pixels=AcquireCacheViewPixels(second_view, second_x, second_row,
+                                           columns, 1, exception);
       if (!second_pixels)
         thread_status=MagickFail;
       second_indexes=GetCacheViewIndexes(second_view);
@@ -670,17 +669,19 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       update_row=update_y+row;
 
       source_view=AccessThreadView(source_view_set);
-      source_pixels=AcquireCacheView(source_view, source_x, source_row,
-                                     columns, 1, exception);
+      source_pixels=AcquireCacheViewPixels(source_view, source_x, source_row,
+                                           columns, 1, exception);
       if (!source_pixels)
         thread_status=MagickFail;
       source_indexes=GetCacheViewIndexes(source_view);
       
       update_view=AccessThreadView(update_view_set);
       if (set)
-        update_pixels=SetCacheView(update_view, update_x, update_row, columns, 1);
+        update_pixels=SetCacheViewPixels(update_view, update_x, update_row,
+                                         columns, 1, exception);
       else
-        update_pixels=GetCacheView(update_view, update_x, update_row, columns, 1);
+        update_pixels=GetCacheViewPixels(update_view, update_x, update_row,
+                                         columns, 1, exception);
       if (!update_pixels)
         {
           thread_status=MagickFail;
@@ -695,11 +696,8 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
                                   columns,exception);
       
       if (thread_status != MagickFail)
-        if (!SyncCacheView(update_view))
-          {
-            thread_status=MagickFail;
-            CopyException(exception,&update_image->exception);
-          }
+        if (!SyncCacheViewPixels(update_view,exception))
+          thread_status=MagickFail;
 
 #pragma omp critical
       {
@@ -999,8 +997,8 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
         First image (read only).
       */
       source1_view=AccessThreadView(source1_view_set);
-      source1_pixels=AcquireCacheView(source1_view, source_x, source_row,
-                                      columns, 1, exception);
+      source1_pixels=AcquireCacheViewPixels(source1_view, source_x, source_row,
+                                            columns, 1, exception);
       if (!source1_pixels)
         thread_status=MagickFail;
       source1_indexes=GetCacheViewIndexes(source1_view);
@@ -1009,8 +1007,8 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
         Second image (read only).
       */
       source2_view=AccessThreadView(source2_view_set);
-      source2_pixels=AcquireCacheView(source2_view, source_x, source_row,
-                                      columns, 1, exception);
+      source2_pixels=AcquireCacheViewPixels(source2_view, source_x, source_row,
+                                            columns, 1, exception);
       if (!source2_pixels)
         thread_status=MagickFail;
       source2_indexes=GetCacheViewIndexes(source2_view);
@@ -1020,9 +1018,11 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       */
       update_view=AccessThreadView(update_view_set);
       if (set)
-        update_pixels=SetCacheView(update_view, update_x, update_row, columns, 1);
+        update_pixels=SetCacheViewPixels(update_view, update_x, update_row,
+                                         columns, 1, exception);
       else
-        update_pixels=GetCacheView(update_view, update_x, update_row, columns, 1);
+        update_pixels=GetCacheViewPixels(update_view, update_x, update_row,
+                                         columns, 1, exception);
       if (!update_pixels)
         {
           thread_status=MagickFail;
@@ -1037,14 +1037,8 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
                            update_image,update_pixels,update_indexes,
                            columns,exception);
       
-      if (!SyncCacheView(update_view))
-        {
-          if (thread_status != MagickFail)
-            {
-              thread_status=MagickFail;
-              CopyException(exception,&update_image->exception);
-            }
-        }
+      if (!SyncCacheViewPixels(update_view,exception))
+        thread_status=MagickFail;
 
 #pragma omp critical
       {

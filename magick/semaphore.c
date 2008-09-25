@@ -230,10 +230,11 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         errno=status;
         return((SemaphoreInfo *) NULL);
       }
-
+#if 0
 #if defined(PTHREAD_MUTEX_RECURSIVE)
     (void) pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
 #endif /* PTHREAD_MUTEX_RECURSIVE */
+#endif
 
     if ((status=pthread_mutex_init(&semaphore_info->mutex,&mutexattr)) != 0)
       {
@@ -461,7 +462,7 @@ MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
         (semaphore_info->owner_thread_id == self))
       {
         fprintf(stderr,
-                "Warning: recursive semaphore lock detected (depth=%ld p=%p)!\n",
+                "Warning: recursive semaphore lock detected (depth=%u p=%p)!\n",
                 semaphore_info->lock_depth,semaphore_info);
         fflush(stderr);
       }
@@ -530,6 +531,8 @@ MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 #if defined(HAVE_PTHREAD)
   /* Enforce that unlocking thread is the same as the locking thread */
   assert(pthread_equal(semaphore_info->owner_thread_id,pthread_self()));
+  if (semaphore_info->lock_depth == 0)
+    semaphore_info->owner_thread_id=-1;
   if (pthread_mutex_unlock(&semaphore_info->mutex))
     return(MagickFail);
 #endif

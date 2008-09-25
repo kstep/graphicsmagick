@@ -546,9 +546,9 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
           continue;
 
         read_view=AccessThreadView(read_view_set);
-        p=AcquireCacheView(read_view,-2,2*(y-1),image->columns+4,4,exception);
+        p=AcquireCacheViewPixels(read_view,-2,2*(y-1),image->columns+4,4,exception);
         write_view=AccessThreadView(write_view_set);
-        q=SetCacheView(write_view,0,y,minify_image->columns,1);
+        q=SetCacheViewPixels(write_view,0,y,minify_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -574,11 +574,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
                 p+=2;
                 q++;
               }
-            if (!SyncCacheView(write_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&minify_image->exception);
-              }
+            if (!SyncCacheViewPixels(write_view,exception))
+              thread_status=MagickFail;
           }
 #pragma omp critical
         {
@@ -827,6 +824,10 @@ HorizontalFilter(const Image *source,Image *destination,
   volatile MagickPassFail
     status=MagickPass;
 
+  if (IsEventLogging())
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                          "Enter HorizontalFilter() ...");
+
   /*
     Apply filter to resize horizontally from source to destination.
   */
@@ -893,6 +894,7 @@ HorizontalFilter(const Image *source,Image *destination,
         continue;
 
       contribution=AccessThreadViewData(view_data_set);
+      /* fprintf(stderr,"Thread %d contribution %p\n",omp_get_thread_num(),contribution); */
       center=(double) (x+0.5)/x_factor;
       start=(long) Max(center-support+0.5,0);
       stop=(long) Min(center+support+0.5,source->columns);
@@ -920,9 +922,10 @@ HorizontalFilter(const Image *source,Image *destination,
       destination_view=AccessThreadView(destination_view_set);
       source_view=AccessThreadView(source_view_set);
 
-      p=AcquireCacheView(source_view,contribution[0].pixel,0,
-                         contribution[n-1].pixel-contribution[0].pixel+1,source->rows,exception);
-      q=SetCacheView(destination_view,x,0,1,destination->rows);
+      p=AcquireCacheViewPixels(source_view,contribution[0].pixel,0,
+                               contribution[n-1].pixel-contribution[0].pixel+1,
+                               source->rows,exception);
+      q=SetCacheViewPixels(destination_view,x,0,1,destination->rows,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
@@ -988,28 +991,29 @@ HorizontalFilter(const Image *source,Image *destination,
                   indexes[y]=source_indexes[j];
                 }
             }
-            if (!SyncCacheView(destination_view))
-              {
-                thread_status=MagickFail;
-                CopyException(exception,&destination->exception);
-              }
+          if (!SyncCacheViewPixels(destination_view,exception))
+            thread_status=MagickFail;
         }
 
 #pragma omp critical
-        {
-          if (QuantumTick(*quantum,span))
-            if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
-              thread_status=MagickFail;
+      {
+        if (QuantumTick(*quantum,span))
+          if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+            thread_status=MagickFail;
 
-          (*quantum)++;
+        (*quantum)++;
           
-          if (thread_status == MagickFail)
-            status=MagickFail;
-        }
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
     }
 
   DestroyThreadViewSet(source_view_set);
   DestroyThreadViewSet(destination_view_set);
+
+  if (IsEventLogging())
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                          "Normal exit HorizontalFilter()");
 
   return (status != MagickFail);
 }
@@ -1037,6 +1041,10 @@ VerticalFilter(const Image *source,Image *destination,
 
   volatile MagickPassFail
     status=MagickPass;
+
+  if (IsEventLogging())
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                          "Enter VerticalFilter() ...");
 
   /*
     Apply filter to resize vertically from source to destination.
@@ -1066,7 +1074,7 @@ VerticalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#pragma omp parallel for
   for (y=0; y < (long) destination->rows; y++)
     {
       ViewInfo
@@ -1131,10 +1139,10 @@ VerticalFilter(const Image *source,Image *destination,
       destination_view=AccessThreadView(destination_view_set);
       source_view=AccessThreadView(source_view_set);
 
-      p=AcquireCacheView(source_view,0,contribution[0].pixel,source->columns,
-                         contribution[n-1].pixel-contribution[0].pixel+1,
-                         exception);
-      q=SetCacheView(destination_view,0,y,destination->columns,1);
+      p=AcquireCacheViewPixels(source_view,0,contribution[0].pixel,source->columns,
+                               contribution[n-1].pixel-contribution[0].pixel+1,
+                               exception);
+      q=SetCacheViewPixels(destination_view,0,y,destination->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
       if (thread_status != MagickFail)
@@ -1199,11 +1207,8 @@ VerticalFilter(const Image *source,Image *destination,
                   indexes[x]=source_indexes[j];
                 }
             }
-          if (!SyncCacheView(destination_view))
-            {
-              thread_status=MagickFail;
-              CopyException(exception,&destination->exception);
-            }
+          if (!SyncCacheViewPixels(destination_view,exception))
+            thread_status=MagickFail;
         }
 #pragma omp critical
       {
@@ -1220,6 +1225,10 @@ VerticalFilter(const Image *source,Image *destination,
 
   DestroyThreadViewSet(source_view_set);
   DestroyThreadViewSet(destination_view_set);
+
+  if (IsEventLogging())
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                          "Normal exit VerticalFilter()");
 
   return (status != MagickFail);
 }

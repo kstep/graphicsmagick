@@ -21,23 +21,28 @@
 
 		<li><a href="#adaptivethresholdimage">AdaptiveThresholdImage</a></li>
 		<li><a href="#addnoiseimage">AddNoiseImage</a></li>
+		<li><a href="#addnoiseimagechannel">AddNoiseImageChannel</a></li>
 		<li><a href="#blackthresholdimage">BlackThresholdImage</a></li>
 		<li><a href="#blurimage">BlurImage</a></li>
+		<li><a href="#blurimagechannel">BlurImageChannel</a></li>
 		<li><a href="#channelthresholdimage">ChannelThresholdImage</a></li>
 		<li><a href="#despeckleimage">DespeckleImage</a></li>
 		<li><a href="#edgeimage">EdgeImage</a></li>
 		<li><a href="#embossimage">EmbossImage</a></li>
 		<li><a href="#enhanceimage">EnhanceImage</a></li>
 		<li><a href="#gaussianblurimage">GaussianBlurImage</a></li>
+		<li><a href="#gaussianblurimagechannel">GaussianBlurImageChannel</a></li>
 		<li><a href="#medianfilterimage">MedianFilterImage</a></li>
 		<li><a href="#motionblurimage">MotionBlurImage</a></li>
 		<li><a href="#randomchannelthresholdimage">RandomChannelThresholdImage</a></li>
 		<li><a href="#reducenoiseimage">ReduceNoiseImage</a></li>
 		<li><a href="#shadeimage">ShadeImage</a></li>
 		<li><a href="#sharpenimage">SharpenImage</a></li>
+		<li><a href="#sharpenimagechannel">SharpenImageChannel</a></li>
 		<li><a href="#spreadimage">SpreadImage</a></li>
 		<li><a href="#thresholdimage">ThresholdImage</a></li>
 		<li><a href="#unsharpmaskimage">UnsharpMaskImage</a></li>
+		<li><a href="#unsharpmaskimagechannel">UnsharpMaskImageChannel</a></li>
 		<li><a href="#whitethresholdimage">WhiteThresholdImage</a></li>
 	</ul>
 
@@ -55,23 +60,28 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</P>
 <P>Image * <strong>AddNoiseImage</strong>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
+<P>Image * <strong>AddNoiseImageChannel</strong>( const Image *image, const ChannelType channel, const NoiseType noise_type, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>BlackThresholdImage</strong>( Image *image, const char *thresholds );</P>
 <P>Image * <strong>BlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <strong>BlurImageChannel</strong>( const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</P>
 <P>Image * <strong>DespeckleImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <strong>EdgeImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <strong>EmbossImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <strong>EnhanceImage</strong>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <strong>GaussianBlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <strong>GaussianBlurImageChannel</strong>( const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <strong>MedianFilterImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <strong>MotionBlurImage</strong>( const Image *image, const double radius, const double sigma, const double angle, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>RandomChannelThresholdImage</strong>( Image *image, const char *channel, const char *thresholds, ExceptionInfo *exception );</P>
 <P>Image * <strong>ReduceNoiseImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <strong>ShadeImage</strong>( const Image *image, const unsigned int gray, double azimuth, double elevation, ExceptionInfo *exception );</P>
 <P>Image * <strong>SharpenImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <strong>SharpenImageChannel</strong>( const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <strong>SpreadImage</strong>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ThresholdImage</strong>( Image *image, const double threshold );</P>
 <P>Image * <strong>UnsharpMaskImage</strong>( const Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
+<P>Image * <strong>UnsharpMaskImageChannel</strong>( const Image *image, const ChannelType channel, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>WhiteThresholdImage</strong>( Image *image, const char *thresholds );</P>
 <P>
 </P>
@@ -141,6 +151,37 @@
 </dl>
 <P>
 </P>
+<h2><a name="addnoiseimagechannel">AddNoiseImageChannel</a></h2>
+<blockquote>AddNoiseImageChannel() adds random noise to one image channel. </blockquote><P>The format of the AddNoiseImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *AddNoiseImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const <A HREF="types.html#NoiseType">NoiseType</A> noise_type, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong><a name="item_o_channel_3a">channel:</a></strong>
+
+<DD>
+<P>The image channel to apply noise to.</P>
+</dd>
+</li>
+<dt><strong>noise_type:</strong>
+
+<DD>
+<P>The type of noise: Uniform, Gaussian, Multiplicative, Impulse, Laplacian, or Poisson.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
 <h2><a name="blackthresholdimage">BlackThresholdImage</a></h2>
 <blockquote>BlackThresholdImage() adjusts the levels of image channels such that values below a specified threshold are set to the minimum value ( black ) while the remaining pixels are unchanged. </blockquote><P>The format of the BlackThresholdImage method is:</P>
 <blockquote>MagickPassFail BlackThresholdImage ( <A HREF="types.html#Image">Image</A> *image, const char *thresholds ); </blockquote><P>A description of each parameter follows:</P>
@@ -171,6 +212,37 @@
 </dd>
 </li>
 <dt><strong><a name="item_o_sigma_3a">sigma:</a></strong>
+
+<DD>
+<P>The standard deviation of the Gaussian, in pixels.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="blurimagechannel">BlurImageChannel</a></h2>
+<blockquote>BlurImageChannel() blurs the specified image channel. We convolve the image channel with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and BlurImageChannel ( ) selects a suitable radius for you. </blockquote><P>The format of the BlurImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *BlurImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double radius, const double sigma, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>The channel to blur.</P>
+</dd>
+</li>
+<dt><strong>radius:</strong>
+
+<DD>
+<P>The radius of the Gaussian, in pixels, not counting the center pixel.</P>
+</dd>
+</li>
+<dt><strong>sigma:</strong>
 
 <DD>
 <P>The standard deviation of the Gaussian, in pixels.</P>
@@ -295,13 +367,62 @@
 <P>
 </P>
 <h2><a name="gaussianblurimage">GaussianBlurImage</a></h2>
-<blockquote>GaussianBlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you </blockquote><P>The format of the BlurImage method is:</P>
+<blockquote>GaussianBlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you </blockquote><P>The format of the GaussianBlurImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *GaussianBlurImage ( const <A HREF="types.html#Image">Image</A> *image, const double radius, const double sigma, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_blur_image_3a">blur_image:</a></strong>
 
 <DD>
 <P>Method GaussianBlurImage returns a pointer to the image after it is blur.  A null image is returned if there is a memory shortage.</P>
+</dd>
+</li>
+<dt><strong>image:</strong>
+
+<DD>
+<P>Image to blur.</P>
+</dd>
+</li>
+<dt><strong>radius:</strong>
+
+<DD>
+<P>the radius of the Gaussian, in pixels, not counting the center pixel.</P>
+</dd>
+</li>
+<dt><strong>sigma:</strong>
+
+<DD>
+<P>the standard deviation of the Gaussian, in pixels.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="gaussianblurimagechannel">GaussianBlurImageChannel</a></h2>
+<blockquote>GaussianBlurImageChannel() blurs an image channel. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you. </blockquote><P>The format of the GaussianBlurImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *GaussianBlurImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double radius, const double sigma, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>blur_image:</strong>
+
+<DD>
+<P>Method GaussianBlurImage returns a pointer to the image after it is blur.  A null image is returned if there is a memory shortage.</P>
+</dd>
+</li>
+<dt><strong>image:</strong>
+
+<DD>
+<P>Image to blur.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>Channel to blur in image.</P>
 </dd>
 </li>
 <dt><strong>radius:</strong>
@@ -399,7 +520,7 @@
 <P>The image.</P>
 </dd>
 </li>
-<dt><strong><a name="item_o_channel_3a">channel:</a></strong>
+<dt><strong>channel:</strong>
 
 <DD>
 <P>The channel or channels to be thresholded.</P>
@@ -507,6 +628,43 @@
 </dl>
 <P>
 </P>
+<h2><a name="sharpenimagechannel">SharpenImageChannel</a></h2>
+<blockquote>SharpenImageChannel() sharpens an image channel. We convolve the image channel with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImageChannel ( ) selects a suitable radius for you. </blockquote><P>The format of the SharpenImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *SharpenImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double radius, const double sigma, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>The channel to sharpen.</P>
+</dd>
+</li>
+<dt><strong>radius:</strong>
+
+<DD>
+<P>The radius of the Gaussian, in pixels, not counting the center pixel.</P>
+</dd>
+</li>
+<dt><strong>sigma:</strong>
+
+<DD>
+<P>The standard deviation of the Laplacian, in pixels.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
 <h2><a name="spreadimage">SpreadImage</a></h2>
 <blockquote>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter. </blockquote><P>The format of the SpreadImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *SpreadImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned int radius, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
@@ -574,6 +732,55 @@
 </dd>
 </li>
 <dt><strong><a name="item_o_amount_3a">amount:</a></strong>
+
+<DD>
+<P>The percentage of the difference between the original and the blur image that is added back into the original.</P>
+</dd>
+</li>
+<dt><strong>threshold:</strong>
+
+<DD>
+<P>The threshold in pixels needed to apply the diffence amount.</P>
+</dd>
+</li>
+<dt><strong>exception:</strong>
+
+<DD>
+<P>Return any errors or warnings in this structure.</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="unsharpmaskimagechannel">UnsharpMaskImageChannel</a></h2>
+<blockquote>UnsharpMaskImageChannel() sharpens an image channel. We convolve the image channel with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and UnsharpMaskImage ( ) selects a suitable radius for you. </blockquote><P>The format of the UnsharpMaskImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *UnsharpMaskImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong>
+
+<DD>
+<P>The image.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>The channel to sharpen.</P>
+</dd>
+</li>
+<dt><strong>radius:</strong>
+
+<DD>
+<P>The radius of the Gaussian, in pixels, not counting the center pixel.</P>
+</dd>
+</li>
+<dt><strong>sigma:</strong>
+
+<DD>
+<P>The standard deviation of the Gaussian, in pixels.</P>
+</dd>
+</li>
+<dt><strong>amount:</strong>
 
 <DD>
 <P>The percentage of the difference between the original and the blur image that is added back into the original.</P>

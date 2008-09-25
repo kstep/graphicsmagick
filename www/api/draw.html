@@ -1096,7 +1096,7 @@
 <P>
 </P>
 <h2><a name="drawmatte">DrawMatte</a></h2>
-<blockquote>DrawMatte() paints on the image's opacity channel in order to set effected pixels to transparent. to influence the opacity of pixels. The available paint methods are: </blockquote><pre>
+<blockquote>DrawMatte() paints on the image's opacity channel in order to set effected pixels to transparent. The available paint methods are: </blockquote><pre>
   PointMethod: Select the target pixel
   ReplaceMethod: Select any pixel that matches the target pixel.
   FloodfillMethod: Select the target pixel and matching neighbors.
@@ -2295,7 +2295,7 @@
 </P>
 <h2><a name="drawsetstrokedasharray">DrawSetStrokeDashArray</a></h2>
 <P>*/</P>
-<blockquote>DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. To remove an existing dash array, pass a zero num_elems argument and null dasharray. A typical strokeDashArray_ array might contain the members 5 3 2. </blockquote><P>The format of the DrawSetStrokeDashArray method is:</P>
+<blockquote>DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. To remove an existing dash array, pass a zero num_elems argument and null dasharray. A typical stroke dash array might contain the members 5 3 2. </blockquote><P>The format of the DrawSetStrokeDashArray method is:</P>
 <blockquote>void DrawSetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_elems, const double *dasharray ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>context:</strong>

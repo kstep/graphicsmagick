@@ -20,7 +20,7 @@
 	<ul>
 
 		<li><a href="#deletemagickregistry">DeleteMagickRegistry</a></li>
-		<li><a href="#getimagefrommagickregisty">GetImageFromMagickRegisty</a></li>
+		<li><a href="#getimagefrommagickregistry">GetImageFromMagickRegistry</a></li>
 		<li><a href="#getmagickregistry">GetMagickRegistry</a></li>
 		<li><a href="#setmagickregistry">SetMagickRegistry</a></li>
 	</ul>
@@ -38,6 +38,7 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <P>unsigned int  <strong>DeleteMagickRegistry</strong>( const long id );</P>
+<P>Image * <strong>GetImageFromMagickRegistry</strong>( const char *name, long *id, ExceptionInfo *exception );</P>
 <P>const void * <strong>GetMagickRegistry</strong>( const long id, RegistryType *type, size_t *length, ExceptionInfo *exception );</P>
 <P>long  <strong>SetMagickRegistry</strong>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>
@@ -59,13 +60,9 @@
 </dl>
 <P>
 </P>
-<h2><a name="getimagefrommagickregisty">GetImageFromMagickRegisty</a></h2>
-<P><code>GetImageFromMagickRegistry()</code> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, NULL is returned.</P>
-<P>The format of the GetImageFromMagickRegistry method is:</P>
-<pre>
-    Image *GetImageFromMagickRegistry(const char *name,long *id,
-      ExceptionInfo *exception)</pre>
-<P>A description of each parameter follows:</P>
+<h2><a name="getimagefrommagickregistry">GetImageFromMagickRegistry</a></h2>
+<blockquote>GetImageFromMagickRegistry() gets an image from the registry as defined by its name. If the blob that matches the name is not found, NULL is returned. </blockquote><P>The format of the GetImageFromMagickRegistry method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *GetImageFromMagickRegistry ( const char *name, long *id, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_name_3a">name:</a></strong>
 

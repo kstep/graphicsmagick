@@ -1546,6 +1546,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
     {
     case IndexQuantum:
       {
+        assert(indexes != (const IndexPacket *) NULL);
         assert(image->colors <= MaxColormapSize);
         if (sample_type == UnsignedQuantumSampleType)
           {

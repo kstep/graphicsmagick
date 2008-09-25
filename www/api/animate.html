@@ -19,8 +19,8 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#xanimatebackgroundimage">XAnimateBackgroundImage</a></li>
-		<li><a href="#xanimateimage">XAnimateImage</a></li>
+		<li><a href="#magickxanimatebackgroundimage">MagickXAnimateBackgroundImage</a></li>
+		<li><a href="#magickxanimateimages">MagickXAnimateImages</a></li>
 	</ul>
 
 </ul>
@@ -35,14 +35,15 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>void Magick <strong>XAnimateBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *images );</P>
+<P>void  <strong>MagickXAnimateBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *images );</P>
+<P>Image * <strong>MagickXAnimateImages</strong>( Display *display, MagickXResourceInfo *resource_info, char ** argv, const int argc, Image *images );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
 </P>
-<h2><a name="xanimatebackgroundimage">XAnimateBackgroundImage</a></h2>
+<h2><a name="magickxanimatebackgroundimage">MagickXAnimateBackgroundImage</a></h2>
 <blockquote>MagickXAnimateBackgroundImage() animates an image sequence in the background of a window. </blockquote><P>The format of the MagickXAnimateBackgroundImage method is:</P>
 <blockquote>void MagickXAnimateBackgroundImage ( Display *display, MagickXResourceInfo *resource_info, <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -67,13 +68,9 @@
 </dl>
 <P>
 </P>
-<h2><a name="xanimateimage">XAnimateImage</a></h2>
-<P><code>MagickXAnimateImages()</code> displays an image via X11.</P>
-<P>The format of the MagickXAnimateImages method is:</P>
-<pre>
-    Image *MagickXAnimateImages(Display *display,MagickXResourceInfo *resource_info,
-      char **argv,const int argc,Image *images)</pre>
-<P>A description of each parameter follows:</P>
+<h2><a name="magickxanimateimages">MagickXAnimateImages</a></h2>
+<blockquote>MagickXAnimateImages() displays an image via X11. </blockquote><P>The format of the MagickXAnimateImages method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *MagickXAnimateImages ( Display *display, MagickXResourceInfo *resource_info, char **argv, const int argc, <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong>
 

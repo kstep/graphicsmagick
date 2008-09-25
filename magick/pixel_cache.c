@@ -103,32 +103,31 @@ typedef IndexPacket
   *(*GetIndexesFromHandler)(const Image *);
 
 typedef const PixelPacket
-  *(*AcquirePixelHandler)(const Image *,const long,const long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
+  *(*AcquirePixelHandler)(const Image *image,const long x,
+    const long y,const unsigned long columns,const unsigned long rows,
+    ExceptionInfo *exception);
 
 typedef PixelPacket
-  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
-    ExceptionInfo *);
+  (*AcquireOnePixelFromHandler)(const Image *image,const long x,
+  const long y,ExceptionInfo *exception);
 
 typedef PixelPacket
-  (*GetOnePixelFromHandler)(Image *,const long,const long);
-
-typedef PixelPacket
-  *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+  *(*GetPixelHandler)(Image *image,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
 
 typedef PixelPacket
   *(*GetPixelsFromHandler)(const Image *);
 
 typedef PixelPacket
   *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+    const unsigned long,ExceptionInfo *exception);
 
 typedef MagickPassFail
-  (*SyncPixelHandler)(Image *);
+  (*SyncPixelHandler)(Image *,ExceptionInfo *exception);
 
 typedef void
-  (*DestroyPixelHandler)(Image *);
+  (*DestroyPixelHandler)(Image *,ExceptionInfo *exception);
 
 typedef struct _CacheMethods
 {
@@ -143,9 +142,6 @@ typedef struct _CacheMethods
 
   GetIndexesFromHandler
     get_indexes_from_handler;
-
-  GetOnePixelFromHandler
-    get_one_pixel_from_handler;
 
   GetPixelHandler
     get_pixel_handler;
@@ -225,8 +221,8 @@ typedef struct _CacheInfo
     file;
 
   char
-    filename[MaxTextExtent],
-    cache_filename[MaxTextExtent];
+    filename[MaxTextExtent],       /* image file name in form "filename[index]" */
+    cache_filename[MaxTextExtent]; /* pixel cache file name */
 
   CacheMethods
     methods;
@@ -236,6 +232,12 @@ typedef struct _CacheInfo
 
   SemaphoreInfo
     *reference_semaphore;
+
+  SemaphoreInfo
+    *access_semaphore;
+
+  SemaphoreInfo
+    *file_semaphore;
 
   unsigned long
     signature;
@@ -257,35 +259,37 @@ static const PixelPacket
     ExceptionInfo *exception);
 
 static IndexPacket
-  *GetIndexesFromCache(const Image *),
+  *GetIndexesFromCache(const Image *image),
   *GetNexusIndexes(const Cache cache,const unsigned long nexus);
 
 static PixelPacket
-  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
+  AcquireOnePixelFromCache(const Image *image,const long x,
+    const long y,ExceptionInfo *exception),
   *GetNexusPixels(const Cache cache,const unsigned long nexus),
-  GetOnePixelFromCache(Image *,const long,const long),
-  *GetPixelCache(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  *GetPixelsFromCache(const Image *),
-  *SetPixelCache(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+  *GetPixelCache(Image *image,const long x,const long y,
+                 const unsigned long columns,const unsigned long rows,
+                 ExceptionInfo *exception),
+  *GetPixelsFromCache(const Image *image),
+  *SetPixelCache(Image *image,const long x,const long y,
+     const unsigned long columns,const unsigned long rows,
+     ExceptionInfo *exception);
 
 static MagickPassFail
-  OpenCache(Image *image,const MapMode mode),
-  SyncCacheNexus(Image *image,const unsigned long nexus),
-  SyncPixelCache(Image *);
+  OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception),
+  SyncCacheNexus(Image *image,const unsigned long nexus,ExceptionInfo *exception),
+  SyncPixelCache(Image *image,ExceptionInfo *exception);
 
 static unsigned long
   GetNexus(Cache cache);
 
 static void
   DestroyCacheNexus(Cache cache,const unsigned long nexus),
-  DestroyPixelCache(Image *),
+  DestroyPixelCache(Image *image,ExceptionInfo *exception),
   SetPixelCacheMethods(Cache cache,AcquirePixelHandler acquire_pixel,
     GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
     GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
     AcquireOnePixelFromHandler acquire_one_pixel_from,
-    GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel);
+    DestroyPixelHandler destroy_pixel);
 
 /*
   Cache view interfaces.
@@ -322,45 +326,50 @@ static inline MagickPassFail
 static PixelPacket
   *GetCacheNexus(Image *image,const long x,const long y,
     const unsigned long columns,const unsigned long rows,
-    const unsigned long nexus),
+    const unsigned long nexus,ExceptionInfo *exception),
   *SetCacheNexus(Image *image,const long x,const long y,
     const unsigned long columns,const unsigned long rows,
-    const unsigned long nexus),
-  *SetNexus(const Image *,const RectangleInfo *,const unsigned long);
+    const unsigned long nexus,ExceptionInfo *exception),
+  *SetNexus(const Image *image,const RectangleInfo *region,
+    const unsigned long nexus,ExceptionInfo *exception);
 
 static MagickPassFail
-  ReadCacheIndexes(const Cache,const unsigned long),
-  ReadCachePixels(const Cache,const unsigned long),
-  SyncCache(Image *),
-  WriteCacheIndexes(Cache,const unsigned long),
-  WriteCachePixels(Cache,const unsigned long);
+  ReadCacheIndexes(const Cache cache,const unsigned long nexus,ExceptionInfo *exception),
+  ReadCachePixels(const Cache cache,const unsigned long nexus,ExceptionInfo *exception),
+  SyncCache(Image *image,ExceptionInfo *exception),
+  WriteCacheIndexes(Cache cache,const unsigned long nexus),
+  WriteCachePixels(Cache cache,const unsigned long nexus);
 
 static const PixelPacket
-  *AcquirePixelStream(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+  *AcquirePixelStream(const Image *image,const long x,
+    const long y,const unsigned long columns,const unsigned long rows,
+    ExceptionInfo *exception);
 
 static IndexPacket
-  *GetIndexesFromStream(const Image *);
+  *GetIndexesFromStream(const Image *image);
 
 static PixelPacket
-  AcquireOnePixelFromStream(const Image *,const long,const long,
-    ExceptionInfo *),
-  GetOnePixelFromStream(Image *,const long,const long),
-  *GetPixelStream(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  *GetPixelsFromStream(const Image *),
-  *SetPixelStream(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+  AcquireOnePixelFromStream(const Image *image,const long x,
+    const long y,ExceptionInfo *exception),
+  *GetPixelStream(Image *image,const long x,const long y,
+     const unsigned long columns,const unsigned long rows,
+     ExceptionInfo *exception),
+  *GetPixelsFromStream(const Image *image),
+  *SetPixelStream(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    ExceptionInfo *exception);
 
 static MagickPassFail
-  SyncPixelStream(Image *);
+  ModifyCache(Image *image, ExceptionInfo *exception),
+  SyncPixelStream(Image *image,ExceptionInfo *exception);
 
 static void
-  DestroyPixelStream(Image *);
+  DestroyPixelStream(Image *image,ExceptionInfo *exception);
 
 
 
-MagickExport void DestroyThreadViewSet(ThreadViewSet *view_set)
+MagickExport void
+DestroyThreadViewSet(ThreadViewSet *view_set)
 {
   unsigned int
     i;
@@ -383,7 +392,8 @@ MagickExport void DestroyThreadViewSet(ThreadViewSet *view_set)
       MagickFreeMemory(view_set);
     }
 }
-MagickExport ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
+MagickExport ThreadViewSet *
+AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
 {
   ThreadViewSet
     *view_set;
@@ -433,7 +443,8 @@ MagickExport ThreadViewSet *AllocateThreadViewSet(Image *image,ExceptionInfo *ex
 
   return view_set;
 }
-MagickExport ViewInfo *AccessThreadView(ThreadViewSet *view_set)
+MagickExport ViewInfo *
+AccessThreadView(ThreadViewSet *view_set)
 {
   ViewInfo
     *view;
@@ -456,7 +467,8 @@ GetThreadViewSetAllocatedViews(ThreadViewSet *view_set)
 }
 
 
-MagickExport void DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
+MagickExport void
+DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
 {
   unsigned int
     i;
@@ -475,7 +487,8 @@ MagickExport void DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
       MagickFreeMemory(data_set);
     }
 }
-MagickExport ThreadViewDataSet *AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception)
+MagickExport ThreadViewDataSet *
+AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception)
 {
   ThreadViewDataSet
     *data_set;
@@ -508,7 +521,8 @@ MagickExport ThreadViewDataSet *AllocateThreadViewDataSet(const Image *image,Exc
   return data_set;
 }
 
-MagickExport void *AccessThreadViewData(ThreadViewDataSet *data_set)
+MagickExport void *
+AccessThreadViewData(ThreadViewDataSet *data_set)
 {
   unsigned int
     thread_num=0;
@@ -518,7 +532,8 @@ MagickExport void *AccessThreadViewData(ThreadViewDataSet *data_set)
   return data_set->view_data[thread_num];
 }
 
-MagickExport void AssignThreadViewData(ThreadViewDataSet *data_set, unsigned int index, void *data)
+MagickExport void AssignThreadViewData
+(ThreadViewDataSet *data_set, unsigned int index, void *data)
 {
   assert(index < data_set->nviews);
   MagickFreeMemory(data_set->view_data[index]);
@@ -527,7 +542,8 @@ MagickExport void AssignThreadViewData(ThreadViewDataSet *data_set, unsigned int
 
 
 MagickExport unsigned int
-GetThreadViewDataSetAllocatedViews(ThreadViewDataSet *data_set)
+GetThreadViewDataSetAllocatedViews
+(ThreadViewDataSet *data_set)
 {
   return data_set->nviews;
 }
@@ -542,8 +558,8 @@ GetThreadViewDataSetAllocatedViews(ThreadViewDataSet *data_set)
   signals.
 
 */
-static inline ssize_t FilePositionRead(int file, void *buffer, size_t length,
-  magick_off_t offset)
+static inline ssize_t
+FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
 {
   register ssize_t
     count=0;
@@ -560,7 +576,7 @@ static inline ssize_t FilePositionRead(int file, void *buffer, size_t length,
     {
 #if HAVE_PREAD
       count=pread(file,(char *) buffer+total_count,length-total_count,
-        offset+total_count);
+                  offset+total_count);
 #else
       count=read(file,(char *) buffer+total_count,length-total_count);
 #endif
@@ -579,8 +595,8 @@ static inline ssize_t FilePositionRead(int file, void *buffer, size_t length,
   by signals.
 
 */
-static inline ssize_t FilePositionWrite(int file, const void *buffer,
-  size_t length,magick_off_t offset)
+static inline ssize_t
+FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset)
 {
   register ssize_t
     count=0;
@@ -596,7 +612,7 @@ static inline ssize_t FilePositionWrite(int file, const void *buffer,
     {
 #if HAVE_PWRITE
       count=pwrite(file,(char *) buffer+total_count,length-total_count,
-        offset+total_count);
+                   offset+total_count);
 #else
       count=write(file,(char *) buffer+total_count,length-total_count);
 #endif
@@ -631,12 +647,14 @@ static inline ssize_t FilePositionWrite(int file, const void *buffer,
 %    o status: IsNexusInCore() returns MagickPass if the pixels are
 %      non-strided and in core, otherwise False.
 %
+%    o cache: Specifies the pixel cache to use.
+%
 %    o nexus: specifies which cache nexus to return the pixels.
 %
 %
 */
-static inline MagickPassFail IsNexusInCore(const Cache cache,
-  const unsigned long nexus)
+static inline MagickPassFail
+IsNexusInCore(const Cache cache,const unsigned long nexus)
 {
   MagickPassFail
     status=MagickFail;
@@ -645,19 +663,19 @@ static inline MagickPassFail IsNexusInCore(const Cache cache,
     *cache_info=(CacheInfo *) cache;
 
   if (cache_info && (cache_info->storage_class != UndefinedClass))
-  {
-    register NexusInfo
-      *nexus_info;
+    {
+      register NexusInfo
+        *nexus_info;
 
-    magick_off_t
-      offset;
+      magick_off_t
+        offset;
 
-    assert(cache_info->signature == MagickSignature);
-    nexus_info=cache_info->nexus_info+nexus;
-    offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
-    if (nexus_info->pixels == (cache_info->pixels+offset))
-      status=MagickPass;
-  }
+      assert(cache_info->signature == MagickSignature);
+      nexus_info=cache_info->nexus_info+nexus;
+      offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
+      if (nexus_info->pixels == (cache_info->pixels+offset))
+        status=MagickPass;
+    }
   return(status);
 }
 
@@ -711,9 +729,11 @@ static inline MagickPassFail IsNexusInCore(const Cache cache,
 #define TileY(y) (((y) >= 0) ? ((y) % (long) cache_info->rows) : \
   (long) cache_info->rows-(-(y) % (long) cache_info->rows))
 
-static const PixelPacket *AcquireCacheNexus(const Image *image,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
+static const PixelPacket *
+AcquireCacheNexus(const Image *image,
+                  const long x,const long y,const unsigned long columns,
+                  const unsigned long rows,const unsigned long nexus,
+                  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -767,7 +787,7 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  pixels=SetNexus(image,&region,nexus);
+  pixels=SetNexus(image,&region,nexus,exception);
   offset=region.y*(magick_off_t) cache_info->columns+region.x;
   length=(region.height-1)*cache_info->columns+region.width-1;
   number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
@@ -783,14 +803,14 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
         */
         if (IsNexusInCore(cache_info,nexus))
           return(pixels);
-        status=ReadCachePixels(cache_info,nexus);
+        status=ReadCachePixels(cache_info,nexus,exception);
         if ((image->storage_class == PseudoClass) ||
             (image->colorspace == CMYKColorspace))
-          status|=ReadCacheIndexes(cache_info,nexus);
+          status&=ReadCacheIndexes(cache_info,nexus,exception);
         if (status == MagickFail)
           {
             ThrowException(exception,CacheError,UnableToReadPixelCache,
-              image->filename);
+                           image->filename);
             return((const PixelPacket *) NULL);
           }
         return(pixels);
@@ -803,80 +823,80 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
   if (image_nexus == 0)
     {
       ThrowException(exception,CacheError,UnableToGetCacheNexus,
-        image->filename);
+                     image->filename);
       return((const PixelPacket *) NULL);
     }
   cache_info->virtual_pixel=image->background_color;
   q=pixels;
   for (v=0; v < (long) rows; v++)
-  {
-    for (u=0; u < (long) columns; u+=length)
     {
-      length=Min(cache_info->columns-(x+u),columns-u);
-      if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
-          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (length == 0))
+      for (u=0; u < (long) columns; u+=length)
         {
+          length=Min(cache_info->columns-(x+u),columns-u);
+          if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
+              (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (length == 0))
+            {
+              /*
+                Transfer a single pixel.
+              */
+              length=1;
+              switch (cache_info->virtual_pixel_method)
+                {
+                case ConstantVirtualPixelMethod:
+                  {
+                    (void) AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,
+                                             image_nexus,exception);
+                    p=(&cache_info->virtual_pixel);
+                    break;
+                  }
+                case EdgeVirtualPixelMethod:
+                default:
+                  {
+                    p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
+                                        exception);
+                    break;
+                  }
+                case MirrorVirtualPixelMethod:
+                  {
+                    p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
+                                        image_nexus,exception);
+                    break;
+                  }
+                case TileVirtualPixelMethod:
+                  {
+                    p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
+                                        exception);
+                    break;
+                  }
+                }
+              if (p == (const PixelPacket *) NULL)
+                break;
+              *q++=(*p);
+              if (indexes == (IndexPacket *) NULL)
+                continue;
+              nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
+              if (nexus_indexes == (IndexPacket *) NULL)
+                continue;
+              *indexes++=(*nexus_indexes);
+              continue;
+            }
           /*
-            Transfer a single pixel.
+            Transfer a run of pixels.
           */
-          length=1;
-          switch (cache_info->virtual_pixel_method)
-          {
-            case ConstantVirtualPixelMethod:
-            {
-              (void) AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,
-                image_nexus,exception);
-              p=(&cache_info->virtual_pixel);
-              break;
-            }
-            case EdgeVirtualPixelMethod:
-            default:
-            {
-              p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
-                exception);
-              break;
-            }
-            case MirrorVirtualPixelMethod:
-            {
-              p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
-                image_nexus,exception);
-              break;
-            }
-            case TileVirtualPixelMethod:
-            {
-              p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
-                exception);
-              break;
-            }
-          }
+          p=AcquireCacheNexus(image,x+u,y+v,length,1,image_nexus,exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          *q++=(*p);
+          (void) memcpy(q,p,length*sizeof(PixelPacket));
+          q+=length;
           if (indexes == (IndexPacket *) NULL)
             continue;
           nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
           if (nexus_indexes == (IndexPacket *) NULL)
             continue;
-          *indexes++=(*nexus_indexes);
-          continue;
+          (void) memcpy(indexes,nexus_indexes,length*sizeof(IndexPacket));
+          indexes+=length;
         }
-      /*
-        Transfer a run of pixels.
-      */
-      p=AcquireCacheNexus(image,x+u,y+v,length,1,image_nexus,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      (void) memcpy(q,p,length*sizeof(PixelPacket));
-      q+=length;
-      if (indexes == (IndexPacket *) NULL)
-        continue;
-      nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
-      if (nexus_indexes == (IndexPacket *) NULL)
-        continue;
-      (void) memcpy(indexes,nexus_indexes,length*sizeof(IndexPacket));
-      indexes+=length;
     }
-  }
   DestroyCacheNexus(cache_info,image_nexus);
   return(pixels);
 }
@@ -886,26 +906,26 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e C a c h e V i e w                                           %
+%   A c q u i r e C a c h e V i e w P i x e l s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireCacheView gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters for read-only access.   A pointer to
-%  the pixels is returned if the pixels are transferred, otherwise NULL is
-%  returned.
+%  Method AcquireCacheViewPixels gets pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters for read-only access.   A
+%  pointer to the pixels is returned if the pixels are transferred, otherwise
+%  NULL is returned.
 %
-%  The format of the AcquireCacheView method is:
+%  The format of the AcquireCacheViewPixels method is:
 %
-%      const PixelPacket *AcquireCacheView(const ViewInfo *view,const long x,
-%        const long y,const unsigned long columns,const unsigned long rows,
-%        ExceptionInfo *exception)
+%      const PixelPacket *AcquireCacheViewPixels(const ViewInfo *view,
+%        const long x,const long y,const unsigned long columns,
+%        const unsigned long rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetCacheView returns a null pointer if an error
+%    o pixels: Method AcquireCacheViewPixels returns a null pointer if an error
 %      occurs, otherwise a pointer to the view pixels.
 %
 %    o view: The address of a structure of type ViewInfo.
@@ -917,23 +937,68 @@ static const PixelPacket *AcquireCacheNexus(const Image *image,
 %
 %
 */
-MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport const PixelPacket *
+AcquireCacheViewPixels(const ViewInfo *view,
+                       const long x,const long y,const unsigned long columns,
+                       const unsigned long rows,ExceptionInfo *exception)
+{
+  const View
+    *view_info = (const View *) view;
+  
+  const PixelPacket
+    *pixels;
+  
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  pixels=AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,
+                           exception);
+  return pixels;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e C a c h e V i e w I n d e x e s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireCacheViewIndexes returns read-only indexes associated with
+%  the specified view.
+%
+%  The format of the AcquireCacheViewIndexes method is:
+%
+%      const IndexPacket *AcquireCacheViewIndexes(const ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method AcquireCacheViewIndexes returns the indexes
+%      associated with the specified view.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+MagickExport const IndexPacket *
+AcquireCacheViewIndexes(const ViewInfo *view)
 {
   const View
     *view_info = (const View *) view;
 
-  const PixelPacket
-    *pixels;
+  CacheInfo
+    *cache_info;
+
+  const IndexPacket
+    *indexes;
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
-  {
-    pixels=AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception);
-  }
-  return pixels;
+  cache_info=(CacheInfo *) view_info->image->cache;
+  indexes=GetNexusIndexes(view_info->image->cache,view_info->id);
+  return indexes;
 }
 
 /*
@@ -983,9 +1048,10 @@ MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
 %
 %
 */
-MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
-  const long x,const long y,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport const PixelPacket *
+AcquireImagePixels(const Image *image,
+                   const long x,const long y,const unsigned long columns,
+                   const unsigned long rows,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -1035,8 +1101,9 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %
 %
 */
-MagickExport PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
-  const long x,const long y,ExceptionInfo *exception)
+MagickExport PixelPacket
+AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
+                         ExceptionInfo *exception)
 {
   const View
     *view_info = (const View *) view;
@@ -1046,10 +1113,7 @@ MagickExport PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
-  {
-    pixel=AcquireCacheNexus(view_info->image,x,y,1,1,view_info->id,exception);
-  }
+  pixel=AcquireCacheNexus(view_info->image,x,y,1,1,view_info->id,exception);
   if (pixel != (const PixelPacket *) NULL)
     return *pixel;
 
@@ -1088,9 +1152,10 @@ MagickExport PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
 %
 %
 */
-static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
-  ExceptionInfo *exception)
+static const PixelPacket *
+AcquirePixelCache(const Image *image,const long x,const long y,
+                  const unsigned long columns,const unsigned long rows,
+                  ExceptionInfo *exception)
 {
   return(AcquireCacheNexus(image,x,y,columns,rows,0,exception));
 }
@@ -1107,9 +1172,9 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AcquireOnePixel() returns a single pixel at the specified (x,y) location.
-%  The image background color is returned if an error occurs.  If you plan to
-%  modify the pixel, use GetOnePixel() instead. This function is convenient
-%  but performance will be poor if it is used too often.
+%  The image background color is returned if an error occurs.  If errors
+%  are to be returned to the image, use GetOnePixel() instead. This function
+%  is convenient but performance will be poor if it is used too often.
 %
 %  The format of the AcquireOnePixel() method is:
 %
@@ -1129,8 +1194,9 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %
 */
-MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
-  const long y,ExceptionInfo *exception)
+MagickExport PixelPacket
+AcquireOnePixel(const Image *image,const long x,const long y,
+                ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -1182,8 +1248,9 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 %
 */
-static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
-  const long y,ExceptionInfo *exception)
+static PixelPacket
+AcquireOnePixelFromCache(const Image *image,const long x,const long y,
+                         ExceptionInfo *exception)
 {
   register const PixelPacket
     *pixel;
@@ -1217,7 +1284,7 @@ static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
+%    o pixels: Method AcquireOnePixelFromStream returns a pixel at the specified
 %      (x,y) location.
 %
 %    o image: The image.
@@ -1228,8 +1295,9 @@ static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
 %
 %
 */
-static PixelPacket AcquireOnePixelFromStream(const Image *image,const long x,
-  const long y,ExceptionInfo *exception)
+static PixelPacket
+AcquireOnePixelFromStream(const Image *image,const long x,const long y,
+                          ExceptionInfo *exception)
 {
   register const PixelPacket
     *pixel;
@@ -1278,9 +1346,10 @@ static PixelPacket AcquireOnePixelFromStream(const Image *image,const long x,
 %
 %
 */
-static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
-  ExceptionInfo *exception)
+static const PixelPacket *
+AcquirePixelStream(const Image *image,const long x,const long y,
+                   const unsigned long columns,const unsigned long rows,
+                   ExceptionInfo *exception)
 {
   size_t
     length;
@@ -1299,7 +1368,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException3(exception,StreamError,UnableToAcquirePixelStream,
-        ImageDoesNotContainTheStreamGeometry);
+                      ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -1307,7 +1376,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if (stream_info->type == UndefinedCache)
     {
       ThrowException(exception,StreamError,PixelCacheIsNotOpen,
-        image->filename);
+                     image->filename);
       return((PixelPacket *) NULL);
     }
   /*
@@ -1325,7 +1394,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
       MagickReallocMemory(void *,stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateCacheInfo);
+                      UnableToAllocateCacheInfo);
   stream_info->length=length;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
@@ -1364,7 +1433,8 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
 %
 %
 */
-static MagickPassFail ClipCacheNexus(Image *image,const unsigned long nexus)
+static MagickPassFail
+ClipCacheNexus(Image *image,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -1401,28 +1471,28 @@ static MagickPassFail ClipCacheNexus(Image *image,const unsigned long nexus)
   cache_info=(CacheInfo *) image->cache;
   nexus_info=cache_info->nexus_info+nexus;
   p=GetCacheNexus(image,nexus_info->x,nexus_info->y,nexus_info->columns,
-    nexus_info->rows,image_nexus);
+                  nexus_info->rows,image_nexus,&image->exception);
   q=nexus_info->pixels;
   r=AcquireCacheNexus(image->clip_mask,nexus_info->x,nexus_info->y,
-    nexus_info->columns,nexus_info->rows,mask_nexus,&image->exception);
+                      nexus_info->columns,nexus_info->rows,mask_nexus,&image->exception);
   if ((p != (PixelPacket *) NULL) && (r != (const PixelPacket *) NULL))
     for (y=0; y < (long) nexus_info->rows; y++)
-    {
-      for (x=0; x < (long) nexus_info->columns; x++)
       {
-        if (r->red == TransparentOpacity)
-          q->red=p->red;
-        if (r->green == TransparentOpacity)
-          q->green=p->green;
-        if (r->blue == TransparentOpacity)
-          q->blue=p->blue;
-        if (r->opacity == TransparentOpacity)
-          q->opacity=p->opacity;
-        p++;
-        q++;
-        r++;
+        for (x=0; x < (long) nexus_info->columns; x++)
+          {
+            if (r->red == TransparentOpacity)
+              q->red=p->red;
+            if (r->green == TransparentOpacity)
+              q->green=p->green;
+            if (r->blue == TransparentOpacity)
+              q->blue=p->blue;
+            if (r->opacity == TransparentOpacity)
+              q->opacity=p->opacity;
+            p++;
+            q++;
+            r++;
+          }
       }
-    }
   DestroyCacheNexus(image->cache,image_nexus);
   DestroyCacheNexus(image->clip_mask->cache,mask_nexus);
   return((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL));
@@ -1453,7 +1523,8 @@ static MagickPassFail ClipCacheNexus(Image *image,const unsigned long nexus)
 %
 %
 */
-static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
+static MagickPassFail
+ClonePixelCache(Image *image,Image *clone_image,ExceptionInfo *exception)
 {
 #define MaxBufferSize  65541
 
@@ -1477,6 +1548,9 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
   size_t
     length;
 
+  MagickPassFail
+    status;
+
   cache_info=(CacheInfo *) image->cache;
   clone_info=(CacheInfo *) clone_image->cache;
   if (cache_info->length != clone_info->length)
@@ -1484,15 +1558,21 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
       Image
         *clip_mask;
 
+      ViewInfo
+        *clone_view,
+        *image_view;
+
       long
         y;
 
       register const PixelPacket
         *p;
 
-      register IndexPacket
-        *clone_indexes,
+      register const IndexPacket
         *indexes;
+
+      register IndexPacket
+        *clone_indexes;
 
       register PixelPacket
         *q;
@@ -1504,22 +1584,31 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
       clip_mask=clone_image->clip_mask;
       clone_image->clip_mask=(Image *) NULL;
       length=Min(image->columns,clone_image->columns);
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-        q=SetImagePixels(clone_image,0,y,image->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,length*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        clone_indexes=GetIndexes(clone_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (clone_indexes != (IndexPacket *) NULL))
-          (void) memcpy(clone_indexes,indexes,length*sizeof(IndexPacket));
-        if (!SyncImagePixels(clone_image))
-          break;
-      }
+      y=0;
+      image_view=OpenCacheView(image);
+      clone_view=OpenCacheView(clone_image);
+      if ((image_view != (ViewInfo *) NULL) &&
+          (clone_view != (ViewInfo *) NULL))
+        {
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireCacheViewPixels(image_view,0,y,image->columns,1,exception);
+              q=SetCacheViewPixels(clone_view,0,y,image->columns,1,exception);
+              if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+                break;
+              (void) memcpy(q,p,length*sizeof(PixelPacket));
+              indexes=AcquireCacheViewIndexes(image_view);
+              clone_indexes=GetCacheViewIndexes(clone_view);
+              if ((indexes != (const IndexPacket *) NULL) &&
+                  (clone_indexes != (IndexPacket *) NULL))
+                (void) memcpy(clone_indexes,indexes,length*sizeof(IndexPacket));
+              if (!SyncCacheViewPixels(clone_view,exception))
+                break;
+            }
+        }
       clone_image->clip_mask=clip_mask;
+      CloseCacheView(image_view);
+      CloseCacheView(clone_view);
       return(y == (long) image->rows);
     }
   /*
@@ -1529,9 +1618,12 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
     {
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => memory");
       (void) memcpy(clone_info->pixels,cache_info->pixels,
-        (size_t) cache_info->length);
+                    (size_t) cache_info->length);
       return(MagickPass);
     }
+  LockSemaphoreInfo(cache_info->file_semaphore);
+  LockSemaphoreInfo(clone_info->file_semaphore);
+  status=MagickPass;
   cache_file=cache_info->file;
   if (cache_info->type == DiskCache)
     {
@@ -1539,26 +1631,34 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
         {
           cache_file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
           if (cache_file == -1)
-            ThrowBinaryException(FileOpenError,UnableToOpenFile,
-              cache_info->cache_filename);
+            {
+              status=MagickFail;
+              ThrowException(exception,FileOpenError,UnableToOpenFile,
+                             cache_info->cache_filename);
+              goto clone_pixel_cache_done;
+            }
         }
       (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
       if (clone_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
           for (offset=0; offset < cache_info->length; offset+=count)
-          {
-            count=read(cache_file,(char *) clone_info->pixels+offset,
-              (size_t) (cache_info->length-offset));
-            if (count <= 0)
-              break;
-          }
+            {
+              count=read(cache_file,(char *) clone_info->pixels+offset,
+                         (size_t) (cache_info->length-offset));
+              if (count <= 0)
+                break;
+            }
           if (cache_info->file == -1)
             (void) close(cache_file);
           if (offset < cache_info->length)
-            ThrowBinaryException(CacheError,UnableToCloneCache,
-              image->filename);
-          return(MagickPass);
+            {
+              status=MagickFail;
+              ThrowException(exception,CacheError,UnableToCloneCache,
+                             image->filename);
+              goto clone_pixel_cache_done;
+            }
+          goto clone_pixel_cache_done;
         }
     }
   clone_file=clone_info->file;
@@ -1567,16 +1667,18 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
       if (clone_info->file == -1)
         {
           clone_file=open(clone_info->cache_filename,O_WRONLY | O_BINARY |
-            O_EXCL,S_MODE);
+                          O_EXCL,S_MODE);
           if (clone_file == -1)
             clone_file=open(clone_info->cache_filename,O_WRONLY | O_BINARY,
-              S_MODE);
+                            S_MODE);
           if (clone_file == -1)
             {
               if (cache_info->file == -1)
                 (void) close(cache_file);
-              ThrowBinaryException(FileOpenError,UnableToOpenFile,
-                                   clone_info->cache_filename);
+              status=MagickFail;
+              ThrowException(exception,FileOpenError,UnableToOpenFile,
+                             clone_info->cache_filename);
+              goto clone_pixel_cache_done;
             }
         }
       (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
@@ -1584,18 +1686,21 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
           for (offset=0L; offset < clone_info->length; offset+=count)
-          {
-            count=write(clone_file,(char *) cache_info->pixels+offset,
-              (size_t) (clone_info->length-offset));
-            if (count <= 0)
-              break;
-          }
+            {
+              count=write(clone_file,(char *) cache_info->pixels+offset,
+                          (size_t) (clone_info->length-offset));
+              if (count <= 0)
+                break;
+            }
           if (clone_info->file == -1)
             (void) close(clone_file);
           if (offset < clone_info->length)
-            ThrowBinaryException(CacheError,UnableToCloneCache,
-              image->filename);
-          return(MagickPass);
+            {
+              status=MagickFail;
+              ThrowException(exception,CacheError,UnableToCloneCache,
+                             image->filename);
+            }
+          goto clone_pixel_cache_done;
         }
     }
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
@@ -1606,32 +1711,42 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
         (void) close(cache_file);
       if (clone_info->file == -1)
         (void) close(clone_file);
-      ThrowBinaryException3(ResourceLimitFatalError,MemoryAllocationFailed,
-                            UnableToCloneImage);
+      status=MagickFail;
+      ThrowException3(exception,ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToCloneImage);
+      goto clone_pixel_cache_done;
     }
   (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
   (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
 
   for (offset=0, length=0; (count=read(cache_file,buffer,MaxBufferSize)) > 0; )
-  {
-    length=(size_t) count;
-    for (offset=0; offset < (magick_off_t) length; offset+=count)
     {
-      count=write(clone_file,buffer+offset,length-offset);
-      if (count <= 0)
+      length=(size_t) count;
+      for (offset=0; offset < (magick_off_t) length; offset+=count)
+        {
+          count=write(clone_file,buffer+offset,length-offset);
+          if (count <= 0)
+            break;
+        }
+      if (offset < (magick_off_t) length)
         break;
     }
-    if (offset < (magick_off_t) length)
-      break;
-  }
   if (cache_info->file == -1)
     (void) close(cache_file);
   if (clone_info->file == -1)
     (void) close(clone_file);
+
   MagickFreeMemory(buffer);
   if (offset < (magick_off_t) length)
-    ThrowBinaryException(CacheError,UnableToCloneCache,image->filename);
-  return(MagickPass);
+    {
+      status=MagickFail;
+      ThrowException(exception,CacheError,UnableToCloneCache,image->filename);
+      goto  clone_pixel_cache_done;
+    }
+ clone_pixel_cache_done:
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+  UnlockSemaphoreInfo(clone_info->file_semaphore);
+  return status;
 }
 
 /*
@@ -1660,7 +1775,8 @@ static MagickPassFail ClonePixelCache(Image *image,Image *clone_image)
 %
 %
 */
-void ClonePixelCacheMethods(Cache clone_info,const Cache cache_info)
+void
+ClonePixelCacheMethods(Cache clone_info,const Cache cache_info)
 {
   assert(clone_info != (Cache) NULL);
   assert(clone_info->signature == MagickSignature);
@@ -1692,15 +1808,18 @@ void ClonePixelCacheMethods(Cache clone_info,const Cache cache_info)
 %    o view: The address of a structure of type ViewInfo.
 %
 */
-MagickExport void CloseCacheView(ViewInfo *view)
+MagickExport void
+CloseCacheView(ViewInfo *view)
 {
   View
     *view_info = (View *) view;
 
-  assert(view_info != (View *) NULL);
-  assert(view_info->signature == MagickSignature);
-  DestroyCacheNexus(view_info->image->cache,view_info->id);
-  MagickFreeMemory(view_info);
+  if (view_info != (View *) NULL)
+    {
+      assert(view_info->signature == MagickSignature);
+      DestroyCacheNexus(view_info->image->cache,view_info->id);
+      MagickFreeMemory(view_info);
+    }
 }
 
 /*
@@ -1726,7 +1845,8 @@ MagickExport void CloseCacheView(ViewInfo *view)
 %
 %
 */
-void DestroyCacheInfo(Cache cache_info)
+void
+DestroyCacheInfo(Cache cache_info)
 {
   assert(cache_info != (Cache) NULL);
   assert(cache_info->signature == MagickSignature);
@@ -1743,39 +1863,39 @@ void DestroyCacheInfo(Cache cache_info)
     }
   UnlockSemaphoreInfo(cache_info->reference_semaphore);
   switch (cache_info->type)
-  {
+    {
     default:
-    {
-      if (cache_info->pixels == (PixelPacket *) NULL)
-        break;
-    }
+      {
+        if (cache_info->pixels == (PixelPacket *) NULL)
+          break;
+      }
     case MemoryCache:
-    {
-      MagickFreeMemory(cache_info->pixels);
-      LiberateMagickResource(MemoryResource,cache_info->length);
-      break;
-    }
+      {
+        MagickFreeMemory(cache_info->pixels);
+        LiberateMagickResource(MemoryResource,cache_info->length);
+        break;
+      }
     case MapCache:
-    {
-      (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
-      LiberateMagickResource(MapResource,cache_info->length);
-    }
+      {
+        (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+        LiberateMagickResource(MapResource,cache_info->length);
+      }
     case DiskCache:
-    {
-      if (cache_info->file != -1)
-        {
-          (void) close(cache_info->file);
-          LiberateMagickResource(FileResource,1);
-        }
-      cache_info->file=(-1);
-      (void) LiberateTemporaryFile(cache_info->cache_filename);
-      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-        "remove %.1024s (%.1024s)",cache_info->filename,
-        cache_info->cache_filename);
-      LiberateMagickResource(DiskResource,cache_info->length);
-      break;
+      {
+        if (cache_info->file != -1)
+          {
+            (void) close(cache_info->file);
+            LiberateMagickResource(FileResource,1);
+          }
+        cache_info->file=(-1);
+        (void) LiberateTemporaryFile(cache_info->cache_filename);
+        (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                              "remove %.1024s (%.1024s)",cache_info->filename,
+                              cache_info->cache_filename);
+        LiberateMagickResource(DiskResource,cache_info->length);
+        break;
+      }
     }
-  }
   if (cache_info->type != UndefinedCache)
     {
       register long
@@ -1785,10 +1905,15 @@ void DestroyCacheInfo(Cache cache_info)
         DestroyCacheNexus(cache_info,id);
       MagickFreeMemory(cache_info->nexus_info);
     }
+  if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&cache_info->file_semaphore);
+  if (cache_info->access_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&cache_info->access_semaphore);
   if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->reference_semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
-     cache_info->filename);
+                        cache_info->filename);
+  cache_info->signature=0;
   MagickFreeMemory(cache_info);
 }
 
@@ -1818,7 +1943,8 @@ void DestroyCacheInfo(Cache cache_info)
 %
 %
 */
-static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
+static void
+DestroyCacheNexus(Cache cache,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -1829,7 +1955,7 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache_nexus)
+  LockSemaphoreInfo(cache_info->access_semaphore);
   {
     nexus_info=cache_info->nexus_info+nexus;
     if (nexus_info->staging != (PixelPacket *) NULL)
@@ -1837,6 +1963,7 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
     (void) memset(nexus_info,0,sizeof(NexusInfo));
     nexus_info->available=MagickTrue;
   }
+  UnlockSemaphoreInfo(cache_info->access_semaphore);
 }
 
 /*
@@ -1862,7 +1989,8 @@ static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
 %
 %
 */
-MagickExport void DestroyImagePixels(Image *image)
+MagickExport void
+DestroyImagePixels(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -1873,7 +2001,7 @@ MagickExport void DestroyImagePixels(Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.destroy_pixel_handler != (DestroyPixelHandler) NULL)
-    cache_info->methods.destroy_pixel_handler(image);
+    cache_info->methods.destroy_pixel_handler(image,&image->exception);
 }
 
 /*
@@ -1899,10 +2027,12 @@ MagickExport void DestroyImagePixels(Image *image)
 %
 %
 */
-static void DestroyPixelCache(Image *image)
+static void
+DestroyPixelCache(Image *image,ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  ARG_NOT_USED(exception);
   if (image->cache != (void *) NULL)
     DestroyCacheInfo(image->cache);
   image->cache=(Cache) NULL;
@@ -1932,13 +2062,15 @@ static void DestroyPixelCache(Image *image)
 %
 %
 */
-static void DestroyPixelStream(Image *image)
+static void
+DestroyPixelStream(Image *image,ExceptionInfo *exception)
 {
   StreamInfo
     *stream_info;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  ARG_NOT_USED(exception);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
   LockSemaphoreInfo(stream_info->reference_semaphore);
@@ -1981,7 +2113,8 @@ static void DestroyPixelStream(Image *image)
 %
 %
 */
-static ClassType GetCacheClass(const Cache cache)
+static ClassType
+GetCacheClass(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -2017,7 +2150,8 @@ static ClassType GetCacheClass(const Cache cache)
 %
 %
 */
-static ColorspaceType GetCacheColorspace(const Cache cache)
+static ColorspaceType
+GetCacheColorspace(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -2051,7 +2185,8 @@ static ColorspaceType GetCacheColorspace(const Cache cache)
 %
 %
 */
-void GetCacheInfo(Cache *cache)
+void
+GetCacheInfo(Cache *cache)
 {
   CacheInfo
     *cache_info;
@@ -2060,7 +2195,7 @@ void GetCacheInfo(Cache *cache)
   cache_info=MagickAllocateMemory(CacheInfo *,sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateCacheInfo);
+                      UnableToAllocateCacheInfo);
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
@@ -2069,10 +2204,18 @@ void GetCacheInfo(Cache *cache)
   if (cache_info->reference_semaphore == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheInfo);
+  cache_info->access_semaphore=AllocateSemaphoreInfo();
+  if (cache_info->access_semaphore == (SemaphoreInfo *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToAllocateCacheInfo);
+  cache_info->file_semaphore=AllocateSemaphoreInfo();
+  if (cache_info->file_semaphore == (SemaphoreInfo *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToAllocateCacheInfo);
   cache_info->signature=MagickSignature;
   SetPixelCacheMethods(cache_info,AcquirePixelCache,GetPixelCache,
-    SetPixelCache,SyncPixelCache,GetPixelsFromCache,GetIndexesFromCache,
-    AcquireOnePixelFromCache,GetOnePixelFromCache,DestroyPixelCache);
+                       SetPixelCache,SyncPixelCache,GetPixelsFromCache,GetIndexesFromCache,
+                       AcquireOnePixelFromCache,DestroyPixelCache);
   *cache=cache_info;
 }
 
@@ -2110,9 +2253,10 @@ void GetCacheInfo(Cache *cache)
 %
 %
 */
-static PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows,
-  const unsigned long nexus)
+static PixelPacket *
+GetCacheNexus(Image *image,const long x,const long y,
+              const unsigned long columns,const unsigned long rows,
+              const unsigned long nexus,ExceptionInfo *exception)
 {
   PixelPacket
     *pixels;
@@ -2125,19 +2269,19 @@ static PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  pixels=SetCacheNexus(image,x,y,columns,rows,nexus);
+  pixels=SetCacheNexus(image,x,y,columns,rows,nexus,exception);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
   if (IsNexusInCore(image->cache,nexus))
     return(pixels);
-  status=ReadCachePixels(image->cache,nexus);
+  status=ReadCachePixels(image->cache,nexus,exception);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    status|=ReadCacheIndexes(image->cache,nexus);
+    status&=ReadCacheIndexes(image->cache,nexus,exception);
   if (status == MagickFail)
     {
-      ThrowException(&image->exception,CacheError,UnableToGetPixelsFromCache,
-        image->filename);
+      ThrowException(exception,CacheError,UnableToGetPixelsFromCache,
+                     image->filename);
       return((PixelPacket *) NULL);
     }
   return(pixels);
@@ -2148,24 +2292,25 @@ static PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t C a c h e V i e w                                                   %
+%   G e t C a c h e V i e w P i x e l s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetCacheView() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
+%  GetCacheViewPixels() gets writeable pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels
+%  is returned if the pixels are transferred, otherwise a NULL is returned.
 %
-%  The format of the GetCacheView method is:
+%  The format of the GetCacheViewPixels method is:
 %
-%      PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows)
+%      PixelPacket *GetCacheViewPixels(ViewInfo *view,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetCacheView returns a null pointer if an error
+%    o pixels: Method GetCacheViewPixels returns a null pointer if an error
 %      occurs, otherwise a pointer to the view pixels.
 %
 %    o view: The address of a structure of type ViewInfo.
@@ -2173,10 +2318,13 @@ static PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
 %
+%    o exception: Any errors are reported here.
 %
 */
-MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *
+GetCacheViewPixels(ViewInfo *view,const long x,const long y,
+                   const unsigned long columns,const unsigned long rows,
+                   ExceptionInfo *exception)
 {
   View
     *view_info = (View *) view;
@@ -2189,13 +2337,47 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-
-#pragma omp critical (pixel_cache)
-  {
-    cache_info=(CacheInfo *) view_info->image->cache;
-    pixels=GetCacheNexus(view_info->image,x,y,columns,rows,view_info->id);
-  }
+  cache_info=(CacheInfo *) view_info->image->cache;
+  pixels=GetCacheNexus(view_info->image,x,y,columns,rows,view_info->id,
+                       exception);
   return pixels;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t C a c h e V i e w I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheViewImage returns the image used when allocating the view.
+%
+%  The format of the GetCacheViewImage method is:
+%
+%      Image *GetCacheViewImage(const ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o iamge: Method GetCacheViewImage returns the image associated with
+%      the specified view.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+extern Image *
+GetCacheViewImage(const ViewInfo *view)
+{
+  const View
+    *view_info = (const View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return view_info->image;
 }
 
 /*
@@ -2209,8 +2391,8 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheViewIndexes returns the indexes associated with the specified
-%  view.
+%  Method GetCacheViewIndexes returns writeable indexes associated with
+%  the specified view.
 %
 %  The format of the GetCacheViewIndexes method is:
 %
@@ -2225,7 +2407,8 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
 %
 %
 */
-MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
+MagickExport IndexPacket *
+GetCacheViewIndexes(const ViewInfo *view)
 {
   const View
     *view_info = (const View *) view;
@@ -2238,11 +2421,8 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
-  {
-    cache_info=(CacheInfo *) view_info->image->cache;
-    indexes=GetNexusIndexes(view_info->image->cache,view_info->id);
-  }
+  cache_info=(CacheInfo *) view_info->image->cache;
+  indexes=GetNexusIndexes(view_info->image->cache,view_info->id);
   return indexes;
 }
 
@@ -2292,8 +2472,9 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %
 %
 */
-MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *
+GetImagePixels(Image *image,const long x,const long y,
+               const unsigned long columns,const unsigned long rows)
 {
   CacheInfo
     *cache_info;
@@ -2308,7 +2489,8 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
   assert(cache_info->signature == MagickSignature);
   /* printf("GetImagePixels %ldx%ld+%ld+%ld\n",columns,rows,x,y); */
   if (cache_info->methods.get_pixel_handler != (GetPixelHandler) NULL)
-    pixels=cache_info->methods.get_pixel_handler(image,x,y,columns,rows);
+    pixels=cache_info->methods.get_pixel_handler(image,x,y,columns,rows,
+                                                 &image->exception);
   return pixels;
 }
 
@@ -2337,7 +2519,8 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
+MagickExport VirtualPixelMethod
+GetImageVirtualPixelMethod(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2378,7 +2561,8 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %
 */
-MagickExport IndexPacket *GetIndexes(const Image *image)
+MagickExport IndexPacket *
+GetIndexes(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2389,7 +2573,7 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.get_indexes_from_handler ==
-       (GetIndexesFromHandler) NULL)
+      (GetIndexesFromHandler) NULL)
     return((IndexPacket *) NULL);
   return(cache_info->methods.get_indexes_from_handler(image));
 }
@@ -2421,7 +2605,8 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
 %
 %
 */
-static IndexPacket *GetIndexesFromCache(const Image *image)
+static IndexPacket *
+GetIndexesFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2456,7 +2641,8 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %
 %
 */
-static IndexPacket *GetIndexesFromStream(const Image *image)
+static IndexPacket *
+GetIndexesFromStream(const Image *image)
 {
   StreamInfo
     *stream_info;
@@ -2494,7 +2680,8 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %
 %
 */
-static unsigned long GetNexus(Cache cache)
+static unsigned long
+GetNexus(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -2509,7 +2696,7 @@ static unsigned long GetNexus(Cache cache)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   assert(cache_info->nexus_info != (NexusInfo *) NULL);
-#pragma omp critical (pixel_cache_nexus)
+  LockSemaphoreInfo(cache_info->access_semaphore);
   {
     for (id=1; id < (long) MaxCacheViews; id++)
       if (cache_info->nexus_info[id].available)
@@ -2521,6 +2708,7 @@ static unsigned long GetNexus(Cache cache)
     if (MagickFail == status)
       id=0;
   }
+  UnlockSemaphoreInfo(cache_info->access_semaphore);
   return(id);
 }
 
@@ -2553,8 +2741,9 @@ static unsigned long GetNexus(Cache cache)
 %
 %
 */
-static IndexPacket *GetNexusIndexes(const Cache cache,
-  const unsigned long nexus)
+static IndexPacket *
+GetNexusIndexes(const Cache cache,
+                const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -2605,8 +2794,8 @@ static IndexPacket *GetNexusIndexes(const Cache cache,
 %
 %
 */
-static PixelPacket *GetNexusPixels(const Cache cache,
-  const unsigned long nexus)
+static PixelPacket *
+GetNexusPixels(const Cache cache,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -2656,7 +2845,8 @@ static PixelPacket *GetNexusPixels(const Cache cache,
 %    o x,y:  These values define the location of the pixel to return.
 %
 */
-MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
+MagickExport PixelPacket
+GetOnePixel(Image *image,const long x,const long y)
 {
   CacheInfo
     *cache_info;
@@ -2669,94 +2859,11 @@ MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->methods.get_one_pixel_from_handler !=
-      (GetOnePixelFromHandler) NULL)
-    pixel=cache_info->methods.get_one_pixel_from_handler(image,x,y);
+  if (cache_info->methods.acquire_one_pixel_from_handler !=
+      (AcquireOnePixelFromHandler) NULL)
+    pixel=cache_info->methods.acquire_one_pixel_from_handler(image,x,y,
+                                                             &image->exception);
   return pixel;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t O n e P i x e l F r o m C a c h e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetOnePixelFromCache() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.
-%
-%  The format of the GetOnePixelFromCache() method is:
-%
-%      PixelPacket GetOnePixelFromCache(const Image image,const long x,
-%        const long y)
-%
-%  A description of each parameter follows:
-%
-%    o pixels: GetOnePixelFromCache returns a pixel at the specified (x,y)
-%      location.
-%
-%    o image: The image.
-%
-%    o x,y:  These values define the location of the pixel to return.
-%
-*/
-static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
-{
-  register PixelPacket
-    *pixel;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  pixel=GetPixelCache(image,x,y,1,1);
-  if (pixel == (PixelPacket *) NULL)
-    pixel=&image->background_color;
-  return *pixel;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t O n e P i x e l F r o m S t r e a m                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetOnePixelFromStream() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.
-%
-%  The format of the GetOnePixelFromStream() method is:
-%
-%      PixelPacket *GetOnePixelFromStream(const Image image,const long x,
-%        const long y)
-%
-%  A description of each parameter follows:
-%
-%    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
-%      (x,y) location.
-%
-%    o image: The image.
-%
-%    o x,y:  These values define the location of the pixel to return.
-%
-*/
-static PixelPacket GetOnePixelFromStream(Image *image,const long x,const long y)
-{
-  register PixelPacket
-    *pixel = (PixelPacket *) NULL;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  pixel=GetPixelStream(image,x,y,1,1);
-  if (pixel == (PixelPacket *) NULL)
-    pixel=&image->background_color;
-  return(*pixel);
 }
 
 /*
@@ -2787,7 +2894,8 @@ static PixelPacket GetOnePixelFromStream(Image *image,const long x,const long y)
 %
 %
 */
-MagickExport PixelPacket *GetPixels(const Image *image)
+MagickExport PixelPacket *
+GetPixels(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2830,12 +2938,16 @@ MagickExport PixelPacket *GetPixels(const Image *image)
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
 %
+%    o exception: Errors are reported here.
+%
 %
 */
-static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+static PixelPacket *
+GetPixelCache(Image *image,const long x,const long y,
+              const unsigned long columns,const unsigned long rows,
+              ExceptionInfo *exception)
 {
-  return(GetCacheNexus(image,x,y,columns,rows,0));
+  return(GetCacheNexus(image,x,y,columns,rows,0,exception));
 }
 
 /*
@@ -2862,7 +2974,8 @@ static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport magick_off_t GetPixelCacheArea(const Image *image)
+MagickExport magick_off_t
+GetPixelCacheArea(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2905,7 +3018,8 @@ MagickExport magick_off_t GetPixelCacheArea(const Image *image)
 %
 %
 */
-extern MagickBool GetPixelCachePresent(const Image *image)
+extern MagickBool
+GetPixelCachePresent(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -2958,15 +3072,17 @@ extern MagickBool GetPixelCachePresent(const Image *image)
 %
 %
 */
-static PixelPacket *GetPixelStream(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+static PixelPacket *
+GetPixelStream(Image *image,const long x,const long y,
+               const unsigned long columns,const unsigned long rows,
+               ExceptionInfo *exception)
 {
   PixelPacket
     *pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  pixels=SetPixelStream(image,x,y,columns,rows);
+  pixels=SetPixelStream(image,x,y,columns,rows,exception);
   return(pixels);
 }
 
@@ -2997,7 +3113,8 @@ static PixelPacket *GetPixelStream(Image *image,const long x,const long y,
 %
 %
 */
-static PixelPacket *GetPixelsFromCache(const Image *image)
+static PixelPacket *
+GetPixelsFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3032,7 +3149,8 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %
 %
 */
-static PixelPacket *GetPixelsFromStream(const Image *image)
+static PixelPacket *
+GetPixelsFromStream(const Image *image)
 {
   StreamInfo
     *stream_info;
@@ -3057,22 +3175,25 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %  ModifyCache() ensures that there is only a single reference to the pixel
 %  cache to be modified, updating the provided cache pointer to point to
-%  a clone of the original pixel cache if necessary.
+%  a clone of the original pixel cache if necessary.  This is used to
+%  implement copy on write.
 %
 %  The format of the ModifyCache method is:
 %
-%      MagickPassFail ModifyCache(Image *image)
+%      MagickPassFail ModifyCache(Image *image, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o exception: Errors are reported here.
 %
 */
-static MagickPassFail ModifyCache(Image *image)
+static MagickPassFail
+ModifyCache(Image *image, ExceptionInfo *exception)
 {
   CacheInfo
-    *original_cache_info;
+    *cache_info;
 
   MagickPassFail
     status;
@@ -3082,27 +3203,28 @@ static MagickPassFail ModifyCache(Image *image)
   assert(image->cache != (Cache) NULL);
   status=MagickPass;
 
-  original_cache_info=(CacheInfo *) image->cache;
   /*
     Note that this function is normally executed for each and every
     scanline which is read/updated so it represents constant locking
     overhead.
   */
-  LockSemaphoreInfo(original_cache_info->reference_semaphore);
-  if (original_cache_info->reference_count > 1)
+  LockSemaphoreInfo(image->semaphore);
+  {
+    cache_info=(CacheInfo *) image->cache;
+
+    LockSemaphoreInfo(cache_info->reference_semaphore);
     {
-      Image
-        modify_image;
-
-      modify_image=(*image);
-
-      GetCacheInfo(&modify_image.cache);
-      if (AcquireImagePixels(image,0,0,image->columns,1,&image->exception)
-          == (PixelPacket *) NULL)
-        status=MagickFail;
-      if (status != MagickFail)
+      if (cache_info->reference_count > 1)
         {
-          status=OpenCache(&modify_image,IOMode);
+          Image
+            clone_image;
+
+          /* fprintf(stderr,"ModifyCache: Thread %d enters (cache_info = %p)\n",omp_get_thread_num(),image->cache); */
+          clone_image=(*image);
+
+          GetCacheInfo(&clone_image.cache);
+
+          status=OpenCache(&clone_image,IOMode,exception);
           if (status != MagickFail)
             {
               NexusInfo
@@ -3111,23 +3233,23 @@ static MagickPassFail ModifyCache(Image *image)
               /*
                 More than one reference, clone the pixel cache.
               */
-              nexus_info=(*original_cache_info->nexus_info);
-              status=ClonePixelCache(image,&modify_image);
-              if (status != MagickFail)
-                {
-                  if ((nexus_info.columns != 0) && (nexus_info.rows != 0))
-                    if (AcquireImagePixels(&modify_image,nexus_info.x,nexus_info.y,
-                                           nexus_info.columns,nexus_info.rows,
-                                           &image->exception)
-                        == (PixelPacket *) NULL)
-                      status=MagickFail;
-                }
+              nexus_info=(*cache_info->nexus_info);
+              status=ClonePixelCache(image,&clone_image,exception);
             }
+          if (status != MagickFail)
+            {
+              cache_info->reference_count--;
+              image->cache=clone_image.cache;
+            }
+          if (status == MagickFail)
+            fprintf(stderr,"ModifyCache failed!\n");
+          /* fprintf(stderr,"ModifyCache: Thread %d exits (cache_info = %p)\n",omp_get_thread_num(),image->cache); */
         }
-      original_cache_info->reference_count--;
-      image->cache=modify_image.cache;
     }
-  UnlockSemaphoreInfo(original_cache_info->reference_semaphore);
+    UnlockSemaphoreInfo(cache_info->reference_semaphore);
+  }
+  UnlockSemaphoreInfo(image->semaphore);
+
   return(status);
 }
 
@@ -3149,7 +3271,8 @@ static MagickPassFail ModifyCache(Image *image)
 %
 %  The format of the OpenCache() method is:
 %
-%      MagickPass int OpenCache(Image *image,const MapMode mode)
+%      MagickPass int OpenCache(Image *image,const MapMode mode,
+%                               ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3160,10 +3283,13 @@ static MagickPassFail ModifyCache(Image *image)
 %
 %    o mode: ReadMode, WriteMode, or IOMode.
 %
+%    o exception: Errors are reported here.
+%
 %
 */
 
-static MagickPassFail ExtendCache(int file,magick_off_t length)
+static MagickPassFail
+ExtendCache(int file,magick_off_t length)
 {
   ssize_t
     count;
@@ -3185,27 +3311,8 @@ static MagickPassFail ExtendCache(int file,magick_off_t length)
   return(MagickPass);
 }
 
-#if defined(SIGBUS)
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-/* static void CacheSignalHandler(int signum) */
-/* { */
-/*   MagickFatalError3(CacheFatalError,UnableToExtendPixelCache, */
-/*     DiskAllocationFailed); */
-/*   DestroyMagick(); */
-/*   Exit(signum); */
-/* } */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-#endif /* defined(SIGBUS) */
-
-static MagickPassFail OpenCache(Image *image,const MapMode mode)
+static MagickPassFail
+OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
 {
   char
     format[MaxTextExtent];
@@ -3232,8 +3339,11 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowBinaryException(ResourceLimitError,NoPixelsDefinedInCache,
-                         image->filename);
+    {
+      ThrowException(exception,ResourceLimitError,NoPixelsDefinedInCache,
+                     image->filename);
+      return MagickFail;
+    }
   /*
     Ensure that maximum image size meets criteria.
   */
@@ -3242,8 +3352,9 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
   if (AcquireMagickResource(PixelsResource,image->columns*image->rows)
       != MagickPass)
     {
-      ThrowBinaryException(ResourceLimitError,ImagePixelLimitExceeded,
+      ThrowException(exception,ResourceLimitError,ImagePixelLimitExceeded,
                      image->filename);
+      return MagickFail;
     }
 
   cache_info=(CacheInfo *) image->cache;
@@ -3308,8 +3419,11 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
     packet_size+=sizeof(IndexPacket);
   offset=number_pixels*packet_size;
   if (cache_info->columns != (offset/cache_info->rows/packet_size))
-    ThrowBinaryException(ResourceLimitError,PixelCacheAllocationFailed,
-                         image->filename);
+    {
+      ThrowException(exception,ResourceLimitError,PixelCacheAllocationFailed,
+                     image->filename);
+      return MagickFail;
+    }
   cache_info->length=offset;
   /*
     Assure that there is sufficient address space available to contain
@@ -3357,14 +3471,18 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
     Create pixel cache on disk.
   */
   if (!AcquireMagickResource(DiskResource,cache_info->length))
-    ThrowBinaryException(ResourceLimitError,CacheResourcesExhausted,
-                         image->filename);
+    {
+      ThrowException(exception,ResourceLimitError,CacheResourcesExhausted,
+                     image->filename);
+      return MagickFail;
+    }
   if (*cache_info->cache_filename == '\0')
     if(!AcquireTemporaryFileName(cache_info->cache_filename))
       {
         LiberateMagickResource(DiskResource,cache_info->length);
-        ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
-                             cache_info->cache_filename);
+        ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
+                       cache_info->cache_filename);
+        return MagickFail;
       }
   switch (mode)
     {
@@ -3395,7 +3513,8 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
   if (file == -1)
     {
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,UnableToOpenCache,image->filename);
+      ThrowException(exception,CacheError,UnableToOpenCache,image->filename);
+      return MagickFail;
     }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
@@ -3405,7 +3524,8 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
                             "remove %.1024s (%.1024s)",cache_info->filename,
                             cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,UnableToExtendCache,image->filename);
+      ThrowException(exception,CacheError,UnableToExtendCache,image->filename);
+      return MagickFail;
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
@@ -3440,7 +3560,7 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
         (void) close(file);
     }
 #if defined(SIGBUS)
-/*   (void) signal(SIGBUS,CacheSignalHandler); */
+  /*   (void) signal(SIGBUS,CacheSignalHandler); */
 #endif
   FormatSize(cache_info->length,format);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -3475,7 +3595,8 @@ static MagickPassFail OpenCache(Image *image,const MapMode mode)
 %
 %
 */
-MagickExport ViewInfo *OpenCacheView(Image *image)
+MagickExport ViewInfo *
+OpenCacheView(Image *image)
 {
   View
     *view;
@@ -3486,13 +3607,29 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  /*
-    Make sure that cache is open.
-  */
   cache_info=(CacheInfo *) image->cache;
-  if (!cache_info->nexus_info)
-    if (!OpenCache(image,IOMode))
+
+  /*
+    Make sure that cache is synchronized and open.
+  */
+#if 0
+  /* This version causes a crash because it changes the image storage
+     type. */
+  if (!SyncCache(image,&image->exception))
+    return ((ViewInfo *) NULL);
+#else
+  {
+    MagickPassFail
+      status;
+
+    LockSemaphoreInfo(cache_info->access_semaphore);
+    status=((cache_info->nexus_info != (NexusInfo *) NULL) ||
+            (OpenCache(image,IOMode,&image->exception)));
+    UnlockSemaphoreInfo(cache_info->access_semaphore);
+    if (status == MagickFail)
       return ((ViewInfo *) NULL);
+  }
+#endif
 
   /*
     Allocate a user view handle and find an available cache nexus.
@@ -3500,7 +3637,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   view=MagickAllocateMemory(View *,sizeof(View));
   if (view == (View *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateCacheView);
+                      UnableToAllocateCacheView);
   (void) memset(view,0,sizeof(View));
   view->id=GetNexus(image->cache);
   view->image=image;
@@ -3552,9 +3689,10 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 %
 %
 */
-MagickExport unsigned int PersistCache(Image *image,const char *filename,
-  const MagickBool attach,magick_off_t *offset,
-  ExceptionInfo *exception)
+MagickExport unsigned int
+PersistCache(Image *image,const char *filename,
+             const MagickBool attach,magick_off_t *offset,
+             ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -3562,9 +3700,6 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   Image
     *clone_image;
 
-  IndexPacket
-    *clone_indexes,
-    *indexes;
 
   long
     pagesize,
@@ -3594,7 +3729,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       (void) strlcpy(cache_info->cache_filename,filename,MaxTextExtent);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (!OpenCache(image,ReadMode))
+      if (!OpenCache(image,ReadMode,exception))
         return(MagickFail);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -3617,7 +3752,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
           cache_info=(CacheInfo*) ReferenceCache(cache_info);
           *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-            "Usurp resident persistent cache");
+                                "Usurp resident persistent cache");
           return(MagickPass);
         }
     }
@@ -3632,22 +3767,43 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   (void) strlcpy(cache_info->cache_filename,filename,MaxTextExtent);
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
-  if (!OpenCache(clone_image,IOMode))
+  if (!OpenCache(clone_image,IOMode,exception))
     return(MagickFail);
-  for (y=0; y < (long) image->rows; y++)
+  y=0;
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-    clone_indexes=GetIndexes(clone_image);
-    indexes=GetIndexes(image);
-    if ((clone_indexes != (IndexPacket *) NULL) &&
-        (indexes != (IndexPacket *) NULL))
-      (void) memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
-    if (!SyncImagePixels(clone_image))
-      break;
+    ViewInfo
+      *clone_view,
+      *image_view;
+
+    const IndexPacket
+      *indexes;
+
+    IndexPacket
+      *clone_indexes;
+
+    image_view=OpenCacheView(image);
+    clone_view=OpenCacheView(clone_image);
+    if ((image_view != (ViewInfo *) NULL) &&
+        (clone_view != (ViewInfo *) NULL))
+      {
+        for (y=0; y < (long) image->rows; y++)
+          {
+            p=AcquireCacheViewPixels(image_view,0,y,image->columns,1,exception);
+            q=SetCacheViewPixels(clone_view,0,y,clone_image->columns,1,exception);
+            if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              break;
+            (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+            clone_indexes=GetCacheViewIndexes(clone_view);
+            indexes=AcquireCacheViewIndexes(image_view);
+            if ((clone_indexes != (IndexPacket *) NULL) &&
+                (indexes != (const IndexPacket *) NULL))
+              (void) memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+            if (!SyncCacheViewPixels(clone_view,exception))
+              break;
+          }
+      }
+    CloseCacheView(image_view);
+    CloseCacheView(clone_view);
   }
   cache_info=(CacheInfo*) ReferenceCache(cache_info);
   DestroyImage(clone_image);
@@ -3688,8 +3844,9 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
 %
 %
 */
-static MagickPassFail ReadCacheIndexes(const Cache cache,
-  const unsigned long nexus)
+static MagickPassFail
+ReadCacheIndexes(const Cache cache,const unsigned long nexus,
+                 ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -3718,6 +3875,7 @@ static MagickPassFail ReadCacheIndexes(const Cache cache,
   unsigned long
     rows;
 
+  ARG_NOT_USED(exception);
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -3744,37 +3902,43 @@ static MagickPassFail ReadCacheIndexes(const Cache cache,
         Read indexes from memory.
       */
       for (y=0; y < (long) rows; y++)
-      {
-        (void) memcpy(indexes,cache_info->indexes+offset,length);
-        indexes+=nexus_info->columns;
-        offset+=cache_info->columns;
-      }
+        {
+          (void) memcpy(indexes,cache_info->indexes+offset,length);
+          indexes+=nexus_info->columns;
+          offset+=cache_info->columns;
+        }
       return(MagickPass);
     }
   /*
     Read indexes from disk.
   */
-  file=cache_info->file;
-  if (cache_info->file == -1)
-    {
-      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
-      if (file == -1)
-        return(MagickFail);
-    }
-  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
-  for (y=0; y < (long) rows; y++)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   {
-    if ((FilePositionRead(file,indexes,length,cache_info->offset+
-          number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) <= 0)
-      break;
-    indexes+=nexus_info->columns;
-    offset+=cache_info->columns;
+    file=(cache_info->file != -1 ? cache_info->file :
+          open(cache_info->cache_filename,O_RDONLY | O_BINARY));
+    if (file != -1)
+      {
+        number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
+        for (y=0; y < (long) rows; y++)
+          {
+            if ((FilePositionRead(file,indexes,length,cache_info->offset+
+                                  number_pixels*sizeof(PixelPacket)+offset*
+                                  sizeof(IndexPacket))) <= 0)
+              break;
+            indexes+=nexus_info->columns;
+            offset+=cache_info->columns;
+          }
+        if (cache_info->file == -1)
+          (void) close(file);
+        if (QuantumTick(nexus_info->y,cache_info->rows))
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+                                nexus_info->columns,nexus_info->rows,
+                                nexus_info->x,nexus_info->y);
+      }
   }
-  if (cache_info->file == -1)
-    (void) close(file);
-  if (QuantumTick(nexus_info->y,cache_info->rows))
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
-      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+  if (file == -1)
+    return(MagickFail);
   return(y == (long) rows);
 }
 
@@ -3806,7 +3970,9 @@ static MagickPassFail ReadCacheIndexes(const Cache cache,
 %
 %
 */
-static MagickPassFail ReadCachePixels(const Cache cache,const unsigned long nexus)
+static MagickPassFail
+ReadCachePixels(const Cache cache,const unsigned long nexus,
+                ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -3835,6 +4001,7 @@ static MagickPassFail ReadCachePixels(const Cache cache,const unsigned long nexu
   unsigned long
     rows;
 
+  ARG_NOT_USED(exception);
   assert(cache != (Cache) NULL);
   /* printf("ReadCachePixels\n"); */
   cache_info=(CacheInfo *) cache;
@@ -3859,36 +4026,42 @@ static MagickPassFail ReadCachePixels(const Cache cache,const unsigned long nexu
         Read pixels from memory.
       */
       for (y=0; y < (long) rows; y++)
-      {
-        (void) memcpy(pixels,cache_info->pixels+offset,length);
-        pixels+=nexus_info->columns;
-        offset+=cache_info->columns;
-      }
+        {
+          (void) memcpy(pixels,cache_info->pixels+offset,length);
+          pixels+=nexus_info->columns;
+          offset+=cache_info->columns;
+        }
       return(MagickPass);
     }
   /*
     Read pixels from disk.
   */
-  file=cache_info->file;
-  if (cache_info->file == -1)
-    {
-      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
-      if (file == -1)
-        return(MagickFail);
-    }
-  for (y=0; y < (long) rows; y++)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   {
-    if ((FilePositionRead(file,pixels,length,
-       cache_info->offset+offset*sizeof(PixelPacket))) < (ssize_t) length)
-      break;
-    pixels+=nexus_info->columns;
-    offset+=cache_info->columns;
+    file=(cache_info->file != -1 ? cache_info->file :
+          open(cache_info->cache_filename,O_RDONLY | O_BINARY));
+    if (file != -1)
+      {
+        for (y=0; y < (long) rows; y++)
+          {
+            if ((FilePositionRead(file,pixels,length,
+                                  cache_info->offset+offset*
+                                  sizeof(PixelPacket))) < (ssize_t) length)
+              break;
+            pixels+=nexus_info->columns;
+            offset+=cache_info->columns;
+          }
+        if (cache_info->file == -1)
+          (void) close(file);
+        if (QuantumTick(nexus_info->y,cache_info->rows))
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+                                nexus_info->columns,nexus_info->rows,
+                                nexus_info->x,nexus_info->y);
+      }
   }
-  if (cache_info->file == -1)
-    (void) close(file);
-  if (QuantumTick(nexus_info->y,cache_info->rows))
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
-      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+  if (file == -1)
+    return(MagickFail);
   return(y == (long) rows);
 }
 
@@ -3922,8 +4095,9 @@ static MagickPassFail ReadCachePixels(const Cache cache,const unsigned long nexu
 %
 %
 */
-MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
-  ExceptionInfo *exception)
+MagickExport Image *
+ReadStream(const ImageInfo *image_info,StreamHandler stream,
+           ExceptionInfo *exception)
 {
   Image
     *image;
@@ -3941,8 +4115,9 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   clone_info=CloneImageInfo(image_info);
   GetCacheInfo(&clone_info->cache);
   SetPixelCacheMethods(clone_info->cache,AcquirePixelStream,GetPixelStream,
-    SetPixelStream,SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
-    AcquireOnePixelFromStream,GetOnePixelFromStream,DestroyPixelStream);
+                       SetPixelStream,SyncPixelStream,GetPixelsFromStream,
+                       GetIndexesFromStream,AcquireOnePixelFromStream,
+                       DestroyPixelStream);
   clone_info->stream=stream;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
@@ -3973,7 +4148,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 %
 %
 */
-Cache ReferenceCache(Cache cache_info)
+Cache
+ReferenceCache(Cache cache_info)
 {
   assert(cache_info != (_CacheInfoPtr_) NULL);
   assert(cache_info->signature == MagickSignature);
@@ -4023,9 +4199,10 @@ Cache ReferenceCache(Cache cache_info)
 %
 %
 */
-static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows,
-  const unsigned long nexus)
+static PixelPacket *
+SetCacheNexus(Image *image,const long x,const long y,
+              const unsigned long columns,const unsigned long rows,
+              const unsigned long nexus,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4042,9 +4219,9 @@ static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
-  if (ModifyCache(image) == MagickFail)
+  if (ModifyCache(image,exception) == MagickFail)
     return((PixelPacket *) NULL);
-  if (SyncCache(image) == MagickFail)
+  if (SyncCache(image,exception) == MagickFail)
     return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
@@ -4064,7 +4241,7 @@ static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetNexus(image,&region,nexus));
+  return(SetNexus(image,&region,nexus,exception));
 }
 
 /*
@@ -4072,20 +4249,20 @@ static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t C a c h e V i e w                                                   %
+%   S e t C a c h e V i e w P i x e l s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetCacheView() gets pixels from the in-memory or disk pixel cache as
+%  SetCacheViewPixels() gets pixels from the in-memory or disk pixel cache as
 %  defined by the geometry parameters.   A pointer to the pixels is returned
 %  if the pixels are transferred, otherwise a NULL is returned.
 %
-%  The format of the SetCacheView method is:
+%  The format of the SetCacheViewPixels method is:
 %
-%      PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows)
+%      PixelPacket *SetCacheViewPixels(ViewInfo *view,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
 %
@@ -4094,10 +4271,13 @@ static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
 %
+%    o exception: Any errors are reported here.
 %
 */
-MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *
+SetCacheViewPixels(ViewInfo *view,const long x,const long y,
+                   const unsigned long columns,const unsigned long rows,
+                   ExceptionInfo *exception)
 {
   View
     *view_info = (View *) view;
@@ -4110,11 +4290,9 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
-  {
-    cache_info=(CacheInfo *) view_info->image->cache;
-    pixels=SetCacheNexus(view_info->image,x,y,columns,rows,view_info->id);
-  }
+  cache_info=(CacheInfo *) view_info->image->cache;
+  pixels=SetCacheNexus(view_info->image,x,y,columns,rows,view_info->id,
+                       exception);
   return pixels;
 }
 
@@ -4174,8 +4352,9 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
 %
 %
 */
-MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+MagickExport PixelPacket *
+SetImagePixels(Image *image,const long x,const long y,
+               const unsigned long columns,const unsigned long rows)
 {
   CacheInfo
     *cache_info;
@@ -4188,7 +4367,8 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.set_pixel_handler == (SetPixelHandler) NULL)
     return((PixelPacket *) NULL);
-  return(cache_info->methods.set_pixel_handler(image,x,y,columns,rows));
+  return(cache_info->methods.set_pixel_handler(image,x,y,columns,rows,
+                                               &image->exception));
 }
 
 /*
@@ -4231,8 +4411,9 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport MagickPassFail SetImageVirtualPixelMethod(const Image *image,
-  const VirtualPixelMethod method)
+MagickExport MagickPassFail
+SetImageVirtualPixelMethod(const Image *image,
+                           const VirtualPixelMethod method)
 {
   CacheInfo
     *cache_info;
@@ -4278,8 +4459,9 @@ MagickExport MagickPassFail SetImageVirtualPixelMethod(const Image *image,
 %
 %
 */
-static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
-  const unsigned long nexus)
+static PixelPacket *
+SetNexus(const Image *image,const RectangleInfo *region,
+         const unsigned long nexus,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4296,10 +4478,12 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   size_t
     length;
 
+  ARG_NOT_USED(exception);
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  cache_info->id=nexus;
+  if (nexus == 0)
+    cache_info->id=nexus;  /* FIXME, does not work for multi-threaded views */
   nexus_info=cache_info->nexus_info+nexus;
   nexus_info->columns=region->width;
   nexus_info->rows=region->height;
@@ -4312,8 +4496,9 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
       if ((offset >= 0) && (((magick_uint64_t) offset+length) < number_pixels))
         if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
-            (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
-            ((nexus_info->columns % cache_info->columns) == 0)))
+             (nexus_info->rows == 1)) ||
+            ((nexus_info->x == 0) &&
+             ((nexus_info->columns % cache_info->columns) == 0)))
           {
             /*
               Pixels are accessed directly from memory.
@@ -4348,7 +4533,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       }
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateCacheInfo);
+                      UnableToAllocateCacheInfo);
 #if 1
   /*
     Initialize region to zero to ensure consistent behavior.
@@ -4398,10 +4583,12 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
 %
 %
 */
-static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+static PixelPacket *
+SetPixelCache(Image *image,const long x,const long y,
+              const unsigned long columns,const unsigned long rows,
+              ExceptionInfo *exception)
 {
-  return(SetCacheNexus(image,x,y,columns,rows,0));
+  return(SetCacheNexus(image,x,y,columns,rows,0,exception));
 }
 
 /*
@@ -4424,7 +4611,6 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 %        SyncPixelHandler sync_pixel,GetPixelsFromHandler get_pixels_from,
 %        GetIndexesFromHandler get_indexes_from,
 %        AcquireOnePixelFromHandler acquire_one_pixel_from,
-%        GetOnePixelFromHandler get_one_pixel_from,
 %        ClosePixelHandler close_pixel,DestroyPixelHandler destroy_pixel)
 %
 %  A description of each parameter follows:
@@ -4433,12 +4619,16 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 %
 %
 */
-static void SetPixelCacheMethods(Cache cache,
-  AcquirePixelHandler acquire_pixel,GetPixelHandler get_pixel,
-  SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
-  GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
-  AcquireOnePixelFromHandler acquire_one_pixel_from,
-  GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel)
+static void
+SetPixelCacheMethods(Cache cache,
+                     AcquirePixelHandler acquire_pixel,
+                     GetPixelHandler get_pixel,
+                     SetPixelHandler set_pixel,
+                     SyncPixelHandler sync_pixel,
+                     GetPixelsFromHandler get_pixels_from,
+                     GetIndexesFromHandler get_indexes_from,
+                     AcquireOnePixelFromHandler acquire_one_pixel_from,
+                     DestroyPixelHandler destroy_pixel)
 {
   CacheInfo
     *cache_info;
@@ -4456,7 +4646,6 @@ static void SetPixelCacheMethods(Cache cache,
   assert(get_pixels_from != (GetPixelsFromHandler) NULL);
   assert(get_indexes_from != (GetIndexesFromHandler) NULL);
   assert(acquire_one_pixel_from != (AcquireOnePixelFromHandler) NULL);
-  assert(get_one_pixel_from != (GetOnePixelFromHandler) NULL);
   assert(destroy_pixel != (DestroyPixelHandler) NULL);
   cache_info->methods.acquire_pixel_handler=acquire_pixel;
   cache_info->methods.get_pixel_handler=get_pixel;
@@ -4465,7 +4654,6 @@ static void SetPixelCacheMethods(Cache cache,
   cache_info->methods.get_pixels_from_handler=get_pixels_from;
   cache_info->methods.get_indexes_from_handler=get_indexes_from;
   cache_info->methods.acquire_one_pixel_from_handler=acquire_one_pixel_from;
-  cache_info->methods.get_one_pixel_from_handler=get_one_pixel_from;
   cache_info->methods.destroy_pixel_handler=destroy_pixel;
 }
 
@@ -4489,7 +4677,8 @@ static void SetPixelCacheMethods(Cache cache,
 %  The format of the SetPixelStream() method is:
 %
 %      PixelPacket *SetPixelStream(Image *image,const long x,const long y,
-%        const unsigned long columns,const unsigned long rows)
+%        const unsigned long columns,const unsigned long rows,
+%        Exception *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4501,10 +4690,13 @@ static void SetPixelCacheMethods(Cache cache,
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
 %
+%    o exception: Errors are reported here.
 %
 */
-static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
-  const unsigned long columns,const unsigned long rows)
+static PixelPacket *
+SetPixelStream(Image *image,const long x,const long y,
+               const unsigned long columns,const unsigned long rows,
+               ExceptionInfo *exception)
 {
   size_t
     length;
@@ -4525,15 +4717,15 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
-        ImageDoesNotContainTheStreamGeometry);
+      ThrowException3(exception,StreamError,UnableToSetPixelStream,
+                      ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
   stream=GetBlobStreamHandler(image);
   if (stream == (const StreamHandler) NULL)
     {
-      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
-        NoStreamHandlerIsDefined);
+      ThrowException3(exception,StreamError,UnableToSetPixelStream,
+                      NoStreamHandlerIsDefined);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -4572,7 +4764,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       }
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateImagePixels);
+                      UnableToAllocateImagePixels);
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -4606,21 +4798,39 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
 %
 %
 */
-static MagickPassFail SyncCache(Image *image)
+static MagickPassFail
+SyncCache(Image *image,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
+
+  MagickPassFail
+    status;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  LockSemaphoreInfo(cache_info->access_semaphore);
+  {
+    status=(((image->storage_class == cache_info->storage_class) &&
+             (image->colorspace == cache_info->colorspace) &&
+             (cache_info->nexus_info != (NexusInfo *) NULL)) ||
+            (OpenCache(image,IOMode,exception)));
+  }
+  UnlockSemaphoreInfo(cache_info->access_semaphore);
+#if 0
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
   if ((image->storage_class != cache_info->storage_class) ||
-      (image->colorspace != cache_info->colorspace))
-    if (!OpenCache(image,IOMode))
+      (image->colorspace != cache_info->colorspace) ||
+      (cache_info->nexus_info == (NexusInfo *) NULL))
+    if (!OpenCache(image,IOMode,exception))
       return(MagickFail);
   return(MagickPass);
+#endif
+  return status;
 }
 
 /*
@@ -4653,7 +4863,9 @@ static MagickPassFail SyncCache(Image *image)
 %
 %
 */
-static MagickPassFail SyncCacheNexus(Image *image,const unsigned long nexus)
+static MagickPassFail
+SyncCacheNexus(Image *image,const unsigned long nexus,
+               ExceptionInfo *exception)
 {
   MagickPassFail
     status;
@@ -4664,7 +4876,10 @@ static MagickPassFail SyncCacheNexus(Image *image,const unsigned long nexus)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheError,PixelCacheIsNotOpen,image->filename);
+    {
+      ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
+      return MagickFail;
+    }
   image->taint=MagickPass;
   image->is_grayscale=MagickFalse;
   image->is_monochrome=MagickFalse;
@@ -4676,9 +4891,12 @@ static MagickPassFail SyncCacheNexus(Image *image,const unsigned long nexus)
   status=WriteCachePixels(image->cache,nexus);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    status|=WriteCacheIndexes(image->cache,nexus);
+    status&=WriteCacheIndexes(image->cache,nexus);
   if (status == MagickFail)
-    ThrowBinaryException(CacheError,UnableToSyncCache,image->filename);
+    {
+      ThrowException(exception,CacheError,UnableToSyncCache,image->filename);
+      return MagickFail;
+    }
   return(status);
 }
 
@@ -4687,27 +4905,30 @@ static MagickPassFail SyncCacheNexus(Image *image,const unsigned long nexus)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c C a c h e V i e w                                                 %
+%   S y n c C a c h e V i e w P i x e l s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncCacheView() saves the view pixels to the in-memory or disk cache.
+%  SyncCacheViewPixels() saves the view pixels to the in-memory or disk cache.
 %  The method returns MagickPass if the pixel region is synced, otherwise
 %  MagickFail.
 %
-%  The format of the SyncCacheView method is:
+%  The format of the SyncCacheViewPixels method is:
 %
-%      MagickPassFail SyncCacheView(ViewInfo *view)
+%      MagickPassFail SyncCacheViewPixels(ViewInfo *view,
+%                                         ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o view: The address of a structure of type ViewInfo.
 %
+%    o exception: Any errors are reported here.
 %
 */
-MagickExport MagickPassFail SyncCacheView(ViewInfo *view)
+MagickExport MagickPassFail
+SyncCacheViewPixels(ViewInfo *view,ExceptionInfo *exception)
 {
   View
     *view_info = (View *) view;
@@ -4720,11 +4941,8 @@ MagickExport MagickPassFail SyncCacheView(ViewInfo *view)
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-#pragma omp critical (pixel_cache)
-  {
-    cache_info=(CacheInfo *) view_info->image->cache;
-    status=SyncCacheNexus(view_info->image,view_info->id);
-  }
+  cache_info=(CacheInfo *) view_info->image->cache;
+  status=SyncCacheNexus(view_info->image,view_info->id,exception);
   return status;
 }
 
@@ -4754,7 +4972,8 @@ MagickExport MagickPassFail SyncCacheView(ViewInfo *view)
 %    o image: The image.
 %
 */
-MagickExport MagickPassFail SyncImagePixels(Image *image)
+MagickExport MagickPassFail
+SyncImagePixels(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -4766,7 +4985,7 @@ MagickExport MagickPassFail SyncImagePixels(Image *image)
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.sync_pixel_handler == (SyncPixelHandler) NULL)
     return(MagickFail);
-  return(cache_info->methods.sync_pixel_handler(image));
+  return(cache_info->methods.sync_pixel_handler(image,&image->exception));
 }
 
 /*
@@ -4794,9 +5013,10 @@ MagickExport MagickPassFail SyncImagePixels(Image *image)
 %
 %
 */
-static MagickPassFail SyncPixelCache(Image *image)
+static MagickPassFail
+SyncPixelCache(Image *image,ExceptionInfo *exception)
 {
-  return(SyncCacheNexus(image,0));
+  return(SyncCacheNexus(image,0,exception));
 }
 
 /*
@@ -4826,7 +5046,8 @@ static MagickPassFail SyncPixelCache(Image *image)
 %
 %
 */
-static MagickPassFail SyncPixelStream(Image *image)
+static MagickPassFail
+SyncPixelStream(Image *image,ExceptionInfo *exception)
 {
   StreamInfo
     *stream_info;
@@ -4841,8 +5062,8 @@ static MagickPassFail SyncPixelStream(Image *image)
   stream=GetBlobStreamHandler(image);
   if (stream == (StreamHandler) NULL)
     {
-      ThrowException3(&image->exception,StreamError,UnableToSyncPixelStream,
-        NoStreamHandlerIsDefined);
+      ThrowException3(exception,StreamError,UnableToSyncPixelStream,
+                      NoStreamHandlerIsDefined);
       return(MagickFail);
     }
   return(stream(image,stream_info->pixels,stream_info->columns));
@@ -4877,7 +5098,8 @@ static MagickPassFail SyncPixelStream(Image *image)
 %
 %
 */
-static MagickPassFail WriteCacheIndexes(Cache cache,const unsigned long nexus)
+static MagickPassFail
+WriteCacheIndexes(Cache cache,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -4932,40 +5154,48 @@ static MagickPassFail WriteCacheIndexes(Cache cache,const unsigned long nexus)
         Write indexes to memory.
       */
       for (y=0; y < (long) rows; y++)
-      {
-        (void) memcpy(cache_info->indexes+offset,indexes,length);
-        indexes+=nexus_info->columns;
-        offset+=cache_info->columns;
-      }
+        {
+          (void) memcpy(cache_info->indexes+offset,indexes,length);
+          indexes+=nexus_info->columns;
+          offset+=cache_info->columns;
+        }
       return(MagickPass);
     }
   /*
     Write indexes to disk.
   */
-  file=cache_info->file;
-  if (cache_info->file == -1)
-    {
-      file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
-      if (file == -1)
-        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
-      if (file == -1)
-        return(MagickFail);
-    }
-  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
-  for (y=0; y < (long) rows; y++)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   {
-    if ((FilePositionWrite(file,indexes,length,cache_info->offset+
-       number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) <
-        (long) length)
-       break;
-    indexes+=nexus_info->columns;
-    offset+=cache_info->columns;
+    file=cache_info->file;
+    if (cache_info->file == -1)
+      {
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
+        if (file == -1)
+          file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+      }
+    if (file != -1)
+      {
+        number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
+        for (y=0; y < (long) rows; y++)
+          {
+            if ((FilePositionWrite(file,indexes,length,cache_info->offset+
+                                   number_pixels*sizeof(PixelPacket)+offset
+                                   *sizeof(IndexPacket))) < (long) length)
+              break;
+            indexes+=nexus_info->columns;
+            offset+=cache_info->columns;
+          }
+        if (cache_info->file == -1)
+          (void) close(file);
+        if (QuantumTick(nexus_info->y,cache_info->rows))
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+                                nexus_info->columns,nexus_info->rows,
+                                nexus_info->x,nexus_info->y);
+      }
   }
-  if (cache_info->file == -1)
-    (void) close(file);
-  if (QuantumTick(nexus_info->y,cache_info->rows))
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
-      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+  if (file == -1)
+    return MagickFail;
   return(y == (long) rows);
 }
 
@@ -4998,7 +5228,8 @@ static MagickPassFail WriteCacheIndexes(Cache cache,const unsigned long nexus)
 %
 %
 */
-static MagickPassFail WriteCachePixels(Cache cache,const unsigned long nexus)
+static MagickPassFail
+WriteCachePixels(Cache cache,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -5050,38 +5281,47 @@ static MagickPassFail WriteCachePixels(Cache cache,const unsigned long nexus)
         Write pixels to memory.
       */
       for (y=0; y < (long) rows; y++)
-      {
-        (void) memcpy(cache_info->pixels+offset,pixels,length);
-        pixels+=nexus_info->columns;
-        offset+=cache_info->columns;
-      }
+        {
+          (void) memcpy(cache_info->pixels+offset,pixels,length);
+          pixels+=nexus_info->columns;
+          offset+=cache_info->columns;
+        }
       return(MagickPass);
     }
   /*
     Write pixels to disk.
   */
-  file=cache_info->file;
-  if (cache_info->file == -1)
-    {
-      file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
-      if (file == -1)
-        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
-      if (file == -1)
-        return(MagickFail);
-    }
-  for (y=0; y < (long) rows; y++)
+  LockSemaphoreInfo(cache_info->file_semaphore);
   {
-    if ((FilePositionWrite(file,pixels,length,
-        cache_info->offset+offset*sizeof(PixelPacket))) < (long) length)
-       break;
-    pixels+=nexus_info->columns;
-    offset+=cache_info->columns;
+    file=cache_info->file;
+    if (cache_info->file == -1)
+      {
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
+        if (file == -1)
+          file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+      }
+    if (file != -1)
+      {
+        for (y=0; y < (long) rows; y++)
+          {
+            if ((FilePositionWrite(file,pixels,length,
+                                   cache_info->offset+offset*
+                                   sizeof(PixelPacket))) < (long) length)
+              break;
+            pixels+=nexus_info->columns;
+            offset+=cache_info->columns;
+          }
+        if (cache_info->file == -1)
+          (void) close(file);
+        if (QuantumTick(nexus_info->y,cache_info->rows))
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+                                nexus_info->columns,nexus_info->rows,
+                                nexus_info->x,nexus_info->y);
+      }
   }
-  if (cache_info->file == -1)
-    (void) close(file);
-  if (QuantumTick(nexus_info->y,cache_info->rows))
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
-      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
+  if (file == -1)
+    return(MagickFail);
   return(y == (long) rows);
 }
 
@@ -5113,8 +5353,8 @@ static MagickPassFail WriteCachePixels(Cache cache,const unsigned long nexus)
 %
 %
 */
-MagickExport MagickPassFail WriteStream(const ImageInfo *image_info,Image *image,
-  StreamHandler stream)
+MagickExport MagickPassFail
+WriteStream(const ImageInfo *image_info,Image *image,StreamHandler stream)
 {
   ImageInfo
     *clone_info;

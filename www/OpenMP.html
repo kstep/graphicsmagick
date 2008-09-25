@@ -275,7 +275,7 @@ speed-up due to the number of cores. For example, a two core system
 executes the algorithm twice as fast, and a four core system executes the
 algorithm four times as fast. Memory-bound algorithms scale based on the
 memory bandwith available to the cores. For example, memory-bound
-algorithms scale up to almost 2X on my four core Opteron system due to
+algorithms scale up to almost 3X on my four core Opteron system due to
 its NUMA architecture. Some systems/CPUs are able to immediately context
 switch to another thread if the core would be blocked waiting for memory,
 allowing multiple memory accesses to be pending at once, and thereby
@@ -292,17 +292,13 @@ strategy will be to recognize design patterns and build frameworks which
 support those patterns. Sometimes algorithms are special/exotic enough
 that it is much easier to instrument the code for OpenMP rather than to
 attempt to fit the algorithm into a framework.</p>
-<p>Since OpenMP is based on multi-threading, multiple threads attempt to
-access the underlying storage at once. The interface to this underlying
-storage is called the &quot;pixel cache&quot;. Unfortunately, the existing pixel
-cache code was written with only one thread per image in mind. It is not
-feasable to make it optimized for multiple threads per image without a
-total re-write. Due to this, a sort of &quot;global lock&quot; has been applied to
-the pixel cache to make it safe for use with OpenMP. This potentially
-results in a performance penalty since if the pixels are in memory, it
-should be possible for the threads to access the memory with no locking
-at all. Testing shows that the pixel cache locking is not noticeable with
-medium and large images, but may be noticeable with thumbnail-sized images.</p>
+<p>Since OpenMP is based on multi-threading, multiple threads access the
+underlying pixel storage at once. The interface to this underlying
+storage is called the &quot;pixel cache&quot;. The original pixel cache code
+(derived from ImageMagick) was thread safe only to the extent that it
+allowed one thread per image. This code has now been updated so that
+multiple threads may safely and efficiently work on the pixels in one
+image.</p>
 <p>The following is an example of per-core speed-up due to OpenMP on a
 four-core system.  All the pixel quantum values are divided by 2:</p>
 <pre class="literal-block">
@@ -311,10 +307,10 @@ do
   env OMP_NUM_THREADS=$threads gm benchmark -duration 10 convert \
     -size 2048x1080 -type truecolor 'xc:#f00' -operator all divide 2.0 null:
 done
-Results: 252 iter 10.02s user 10.01s total 25.17 iter/s (25.15 iter/s cpu)
-Results: 442 iter 18.75s user 10.00s total 44.20 iter/s (23.57 iter/s cpu)
-Results: 607 iter 26.92s user 10.01s total 60.64 iter/s (22.55 iter/s cpu)
-Results: 755 iter 33.78s user 10.01s total 75.42 iter/s (22.35 iter/s cpu)
+Results: 211 iter 9.99s user 10.00s total 21.10 iter/s (21.12 iter/s cpu)
+Results: 372 iter 18.69s user 10.02s total 37.13 iter/s (19.90 iter/s cpu)
+Results: 512 iter 26.62s user 10.00s total 51.20 iter/s (19.23 iter/s cpu)
+Results: 582 iter 30.63s user 10.00s total 58.20 iter/s (19.00 iter/s cpu)
 </pre>
 <p>Note that the &quot;iter/s cpu&quot; value is a measure of the number of iterations
 given the amount of reported CPU time consumed. It is an effective
@@ -329,7 +325,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-09-07 16:34 UTC.
+Generated on: 2008-09-25 20:51 UTC.
 
 </div>
 </body>

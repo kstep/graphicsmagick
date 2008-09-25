@@ -19,8 +19,8 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
-		<li><a href="#xdisplaybackgroundimage">XDisplayBackgroundImage</a></li>
-		<li><a href="#xdisplayimage">XDisplayImage</a></li>
+		<li><a href="#magickxdisplaybackgroundimage">MagickXDisplayBackgroundImage</a></li>
+		<li><a href="#magickxdisplayimage">MagickXDisplayImage</a></li>
 	</ul>
 
 </ul>
@@ -35,15 +35,15 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int Magick <strong>XDisplayBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *image );</P>
-<P>Image *Magick <strong>XDisplayImage</strong>( Display *display, MagickXResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
+<P>unsigned int  <strong>MagickXDisplayBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *image );</P>
+<P>Image * <strong>MagickXDisplayImage</strong>( Display *display, MagickXResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
 </P>
-<h2><a name="xdisplaybackgroundimage">XDisplayBackgroundImage</a></h2>
+<h2><a name="magickxdisplaybackgroundimage">MagickXDisplayBackgroundImage</a></h2>
 <blockquote>MagickXDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the MagickXDisplayBackgroundImage method is:</P>
 <blockquote>unsigned int MagickXDisplayBackgroundImage ( Display *display, MagickXResourceInfo *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -68,7 +68,7 @@
 </dl>
 <P>
 </P>
-<h2><a name="xdisplayimage">XDisplayImage</a></h2>
+<h2><a name="magickxdisplayimage">MagickXDisplayImage</a></h2>
 <blockquote>MagickXDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the MagickXDisplayImage method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *MagickXDisplayImage ( Display *display, MagickXResourceInfo *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>A description of each parameter follows:</P>
 <dl>

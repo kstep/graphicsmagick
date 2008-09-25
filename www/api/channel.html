@@ -23,6 +23,7 @@
 		<li><a href="#exportimagechannel">ExportImageChannel</a></li>
 		<li><a href="#getimagechanneldepth">GetImageChannelDepth</a></li>
 		<li><a href="#importimagechannel">ImportImageChannel</a></li>
+		<li><a href="#importimagechannelsmasked">ImportImageChannelsMasked</a></li>
 		<li><a href="#setimagechanneldepth">SetImageChannelDepth</a></li>
 	</ul>
 
@@ -42,6 +43,7 @@
 <P>Image * <strong>ExportImageChannel</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
 <P>unsigned long  <strong>GetImageChannelDepth</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
 <P>MagickPassFail  <strong>ImportImageChannel</strong>( const Image *source_image, Image *update_image, const ChannelType channel );</P>
+<P>MagickPassFail  <strong>ImportImageChannelsMasked</strong>( const Image *source_image, Image *update_image, const ChannelType channels );</P>
 <P>MagickPassFail  <strong>SetImageChannelDepth</strong>( Image *image, const ChannelType channel, const unsigned int depth );</P>
 <P>
 </P>
@@ -133,6 +135,31 @@
 
 <DD>
 <P>The image to import the channel into.</P>
+</dd>
+</li>
+<dt><strong>channel:</strong>
+
+<DD>
+<P>The image channel to import</P>
+</dd>
+</li>
+</dl>
+<P>
+</P>
+<h2><a name="importimagechannelsmasked">ImportImageChannelsMasked</a></h2>
+<blockquote>ImportImageChannelsMasked() imports all the channels from a source image to an update image, except for the channels specified. </blockquote><P>The format of the ImportImageChannelsMasked method is:</P>
+<blockquote>MagickPassFail ImportImageChannelsMasked ( const <A HREF="types.html#Image">Image</A> *source_image, <A HREF="types.html#Image">Image</A> *update_image, const <A HREF="types.html#ChannelType">ChannelType</A> channels ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>source_image:</strong>
+
+<DD>
+<P>The image from which to extract the replacement channels.</P>
+</dd>
+</li>
+<dt><strong>update_image:</strong>
+
+<DD>
+<P>The image to import the channels into.</P>
 </dd>
 </li>
 <dt><strong>channel:</strong>

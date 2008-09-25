@@ -57,6 +57,7 @@
 <P>void  <strong>MagickWarning</strong>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <strong>SetErrorHandler</strong>( ErrorHandler handler );</P>
 <P><strong>SetExceptionInfo</strong>( ExceptionInfo *exception, ExceptionType severity );</P>
+<P>FatalErrorHandler  <strong>SetFatalErrorHandler</strong>( FatalErrorHandler handler );</P>
 <P>ErrorHandler  <strong>SetWarningHandler</strong>( ErrorHandler handler );</P>
 <P>void  <strong>ThrowException</strong>( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description );</P>
 <P>void  <strong>ThrowLoggedException</strong>( ExceptionInfo *exception, const ExceptionType severity, const char *reason, const char *description, const char *module, const char *function, const unsigned long line;</P>
@@ -253,10 +254,8 @@
 <P>
 </P>
 <h2><a name="setfatalerrorhandler">SetFatalErrorHandler</a></h2>
-<blockquote>SetFatalErrorHandler() sets the fatal error handler to the specified method and returns the previous fatal error handler. </blockquote><P>The format of the SetErrorHandler method is:</P>
-<pre>
-    ErrorHandler SetErrorHandler(ErrorHandler handler)</pre>
-<P>A description of each parameter follows:</P>
+<blockquote>SetFatalErrorHandler() sets the fatal error handler to the specified method and returns the previous fatal error handler. </blockquote><P>The format of the SetFatalErrorHandler method is:</P>
+<blockquote>FatalErrorHandler SetFatalErrorHandler ( FatalErrorHandler handler ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>handler:</strong>
 
