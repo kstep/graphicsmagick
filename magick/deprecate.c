@@ -35,13 +35,8 @@
   Include declarations.
 */
 #include "magick/studio.h"
-/* #include "magick/blob.h" */
-/* #include "magick/color.h" */
 #include "magick/constitute.h"
-/* #include "magick/list.h" */
-/* #include "magick/log.h" */
 #include "magick/pixel_cache.h"
-/* #include "magick/resource.h" */
 #include "magick/utility.h"
 #include "magick/deprecate.h"
 

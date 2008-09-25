@@ -1,5 +1,7 @@
 2008-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/pixel_cache.c: Pixel cache is believed to be thread safe
+	now.
 	* magick/deprecate.c (AcquireCacheView): Deprecate this function.
 	(GetCacheView): Deprecate this function.
 	(SetCacheView): Deprecate this function.
