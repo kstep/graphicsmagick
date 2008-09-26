@@ -1762,7 +1762,7 @@ typedef struct _MedianPixelList
 } MedianPixelList;
 
 static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
-  unsigned long color)
+                              unsigned long color)
 {
   register long
     level;
@@ -1785,20 +1785,20 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   */
   search=65536L;
   for (level=list->level; level >= 0; level--)
-  {
-    while (list->nodes[search].next[level] < color)
-      search=list->nodes[search].next[level];
-    update[level]=search;
-  }
+    {
+      while (list->nodes[search].next[level] < color)
+        search=list->nodes[search].next[level];
+      update[level]=search;
+    }
   /*
     Generate a pseudo-random level for this node.
   */
   for (level=0; ; level++)
-  {
-    pixel_list->seed=(pixel_list->seed*42893621L)+1L;
-    if ((pixel_list->seed & 0x300) != 0x300)
-      break;
-  }
+    {
+      pixel_list->seed=(pixel_list->seed*42893621L)+1L;
+      if ((pixel_list->seed & 0x300) != 0x300)
+        break;
+    }
   if (level > 8)
     level=8;
   if (level > (list->level+2))
@@ -1807,18 +1807,18 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
     If we're raising the list's level, link back to the root node.
   */
   while (level > list->level)
-  {
-    list->level++;
-    update[list->level]=65536L;
-  }
+    {
+      list->level++;
+      update[list->level]=65536L;
+    }
   /*
     Link the node into the skip-list.
   */
   do
-  {
-    list->nodes[color].next[level]=list->nodes[update[level]].next[level];
-    list->nodes[update[level]].next[level]=color;
-  }
+    {
+      list->nodes[color].next[level]=list->nodes[update[level]].next[level];
+      list->nodes[update[level]].next[level]=color;
+    }
   while (level-- > 0);
 }
 
@@ -1844,18 +1844,18 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   */
   center=pixel_list->center;
   for (channel=0; channel < 4; channel++)
-  {
-    list=pixel_list->lists+channel;
-    color=65536L;
-    count=0;
-    do
     {
-      color=list->nodes[color].next[0];
-      count+=list->nodes[color].count;
+      list=pixel_list->lists+channel;
+      color=65536L;
+      count=0;
+      do
+        {
+          color=list->nodes[color].next[0];
+          count+=list->nodes[color].count;
+        }
+      while (count <= center);
+      channels[channel]=color;
     }
-    while (count <= center);
-    channels[channel]=color;
-  }
   pixel.red=ScaleShortToQuantum(channels[0]);
   pixel.green=ScaleShortToQuantum(channels[1]);
   pixel.blue=ScaleShortToQuantum(channels[2]);
@@ -1866,33 +1866,35 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
 static int InitializeMedianList(MedianPixelList *pixel_list,long width)
 {
   register int i;
+  (void) memset(pixel_list,0,sizeof(MedianPixelList));
   pixel_list->center=width*width/2;
   pixel_list->signature=MagickSignature;
-  (void) memset((void *) pixel_list->lists,0,4*sizeof(MedianSkipList));
-  for(i=0;i<4;i++)
-  {
-    pixel_list->lists[i].nodes = MagickAllocateMemory(MedianListNode *,65537 * sizeof(MedianListNode));
-	if(!pixel_list->lists[i].nodes)
+  for (i=0; i < 4; i++)
+    {
+      pixel_list->lists[i].nodes =
+        MagickAllocateMemory(MedianListNode *,65537*sizeof(MedianListNode));
+      if (!pixel_list->lists[i].nodes)
 	{
 	  assert(0);
 	  return (False);
 	}
-  }
+      (void) memset(pixel_list->lists[i].nodes,0,65537*sizeof(MedianListNode));
+    }
   return (True);
 }
 
 static void CleanMedianList(MedianPixelList *pixel_list)
 {
   register int i;
-  for(i=0;i<4;i++)
-  {
-	if(pixel_list->lists[i].nodes)
-	  MagickFreeMemory(pixel_list->lists[i].nodes);
-  }
+  for (i=0; i < 4; i++)
+    {
+      if (pixel_list->lists[i].nodes)
+        MagickFreeMemory(pixel_list->lists[i].nodes);
+    }
 }
 
 static inline void InsertMedianList(MedianPixelList *pixel_list,
-  const PixelPacket *pixel)
+                                    const PixelPacket *pixel)
 {
   unsigned long
     signature;
@@ -1950,18 +1952,18 @@ static void ResetMedianList(MedianPixelList *pixel_list)
     Reset the skip-list.
   */
   for (channel=0; channel < 4; channel++)
-  {
-    list=pixel_list->lists+channel;
-    root=list->nodes+65536L;
-    list->level=0;
-    for (level=0; level < 9; level++)
-      root->next[level]=65536L;
-  }
+    {
+      list=pixel_list->lists+channel;
+      root=list->nodes+65536L;
+      list->level=0;
+      for (level=0; level < 9; level++)
+        root->next[level]=65536L;
+    }
   pixel_list->seed=pixel_list->signature++;
 }
 
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+                                      ExceptionInfo *exception)
 {
 #define MedianFilterImageText  "  Filter image with neighborhood ranking...  "
 
@@ -1997,7 +1999,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException3(OptionError,UnableToFilterImage,
-      ImageSmallerThanRadius);
+                         ImageSmallerThanRadius);
   median_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2010,44 +2012,44 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     {
       DestroyImage(median_image);
       ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToMedianFilterImage)
+                           UnableToMedianFilterImage);
     }
   /*
     Median filter each image row.
   */
-  if(!InitializeMedianList(skiplist,width))
-  {
-    DestroyImage(median_image);
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-	  UnableToMedianFilterImage)
-  }
+  if (!InitializeMedianList(skiplist,width))
+    {
+      DestroyImage(median_image);
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                           UnableToMedianFilterImage);
+    }
 
   for (y=0; y < (long) median_image->rows; y++)
-  {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
-      exception);
-    q=SetImagePixels(median_image,0,y,median_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) median_image->columns; x++)
     {
-      r=p;
-      ResetMedianList(skiplist);
-      for (v=0; v < width; v++)
-      {
-        for (u=0; u < width; u++)
-          InsertMedianList(skiplist,r+u);
-        r+=image->columns+width;
-      }
-      *q++=GetMedianList(skiplist);
-      p++;
-    }
-    if (!SyncImagePixels(median_image))
-      break;
-    if (QuantumTick(y,median_image->rows))
-      if (!MagickMonitor(MedianFilterImageText,y,median_image->rows,exception))
+      p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
+                           exception);
+      q=SetImagePixels(median_image,0,y,median_image->columns,1);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-  }
+      for (x=0; x < (long) median_image->columns; x++)
+        {
+          r=p;
+          ResetMedianList(skiplist);
+          for (v=0; v < width; v++)
+            {
+              for (u=0; u < width; u++)
+                InsertMedianList(skiplist,r+u);
+              r+=image->columns+width;
+            }
+          *q++=GetMedianList(skiplist);
+          p++;
+        }
+      if (!SyncImagePixels(median_image))
+        break;
+      if (QuantumTick(y,median_image->rows))
+        if (!MagickMonitor(MedianFilterImageText,y,median_image->rows,exception))
+          break;
+    }
   CleanMedianList(skiplist);
   MagickFreeMemory(skiplist);
   median_image->is_grayscale=image->is_grayscale;
@@ -3054,7 +3056,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
     light;
 
   volatile MagickPassFail
-    status;
+    status=MagickPass;
 
   /*
     Initialize shaded image attributes.
