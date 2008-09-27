@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2005 GraphicsMagick Group
+% Copyright (C) 2003 - 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in

@@ -1,3 +1,12 @@
+2008-09-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (MotionBlurImage): Enable OpenMP now that pixel
+	cache is re-entrant.
+	* magick/pixel_iterator.c: Updated to use thread view convenience
+	inline methods as proof of principle.
+	* magick/pixel_cache.h: Added convenience inline methods to make
+	use of thread views a bit more pleasant.
+
 2008-09-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ShadeImage): Fix valgrind gripe.

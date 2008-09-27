@@ -2166,7 +2166,6 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   width=GetOptimalKernelWidth1D(radius,sigma);
-/*   fprintf(stderr,"radius=%g, sigma=%g, angle=%g width=%d\n", radius,sigma,angle,width); */
   if (width < 3)
     ThrowImageException3(OptionError,UnableToBlurImage,
                          KernelRadiusIsTooSmall);
@@ -2248,7 +2247,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-/*     #pragma omp parallel for schedule(static,64) */
+#pragma omp parallel for schedule(static,64)
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
