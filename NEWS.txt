@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 16, 2008
+This file was last updated on September 27, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -100,6 +100,7 @@ Performance Improvements:
     - Minify image (-minify)
     - Modulate image (-modulate)
     - Morph image (-morph)
+    - Motion blur (-motion-blur)
     - Negate image (-negate)
     - Normalize image (-normalize)
     - Oil Paint (-paint)
@@ -171,6 +172,13 @@ New Features:
     - ImportImageChannelsMasked(), import selected image channels.
     - SharpenImageChannel(), sharpen an image channel.
     - UnsharpMaskImageChannel(), unsharpmask an image channel.
+    - New cache view interfaces to correct shortcommings of original
+      ones.  New interfaces are AcquireCacheViewPixels(),
+      AcquireOneCacheViewPixel(), AcquireCacheViewIndexes(),
+      GetCacheViewPixels(), SetCacheViewPixels(), and
+      SyncCacheViewPixels(). The deprecated functions are
+      AcquireCacheView(), GetCacheView(), SetCacheView(), and
+      SyncCacheView().
 
 Feature improvements:
 

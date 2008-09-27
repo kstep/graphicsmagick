@@ -246,7 +246,7 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 16, 2008</p>
+<p>This file was last updated on September 27, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -325,6 +325,7 @@ had stopped working.</li>
 <li>Minify image (-minify)</li>
 <li>Modulate image (-modulate)</li>
 <li>Morph image (-morph)</li>
+<li>Motion blur (-motion-blur)</li>
 <li>Negate image (-negate)</li>
 <li>Normalize image (-normalize)</li>
 <li>Oil Paint (-paint)</li>
@@ -390,6 +391,13 @@ they were natively supported.</li>
 <li>ImportImageChannelsMasked(), import selected image channels.</li>
 <li>SharpenImageChannel(), sharpen an image channel.</li>
 <li>UnsharpMaskImageChannel(), unsharpmask an image channel.</li>
+<li>New cache view interfaces to correct shortcommings of original
+ones.  New interfaces are AcquireCacheViewPixels(),
+AcquireOneCacheViewPixel(), AcquireCacheViewIndexes(),
+GetCacheViewPixels(), SetCacheViewPixels(), and
+SyncCacheViewPixels(). The deprecated functions are
+AcquireCacheView(), GetCacheView(), SetCacheView(), and
+SyncCacheView().</li>
 </ul>
 </li>
 </ul>
@@ -1057,7 +1065,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-09-18 02:25 UTC.
+Generated on: 2008-09-27 21:39 UTC.
 
 </div>
 </body>
