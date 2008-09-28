@@ -1240,6 +1240,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
+            /* FIXME: OpenMP */
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
               if ((ceil(point.y+y-0.5) < 0) ||

@@ -1690,6 +1690,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
             colormap_index[i]=-1;
 
           image->colors=0;
+          /* FIXME: OpenMP */
           for (y=0; y < (long) image->rows; y++)
             {
               q=GetImagePixels(image,0,y,image->columns,1);
@@ -1723,6 +1724,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           /*
             Use fast-cut linear colormap method.
           */
+          /* FIXME: OpenMP */
           for (y=0; y < (long) image->rows; y++)
             {
               q=GetImagePixels(image,0,y,image->columns,1);
@@ -1812,6 +1814,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
       /*
         Reassign image colormap indexes
       */
+      /* FIXME: OpenMP */
       for (y=0; y < (long) image->rows; y++)
         {
           q=GetImagePixels(image,0,y,image->columns,1);

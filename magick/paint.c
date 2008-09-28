@@ -633,6 +633,7 @@ MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
       /*
         Make DirectClass image opaque.
       */
+      /* FIXME: OpenMP */
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -743,6 +744,7 @@ MagickExport MagickPassFail TransparentImage(Image *image,
   assert(image->signature == MagickSignature);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
+  /* FIXME: OpenMP */
   for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);

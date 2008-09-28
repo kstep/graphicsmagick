@@ -1,3 +1,12 @@
+2008-09-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c (IntegralRotateImage): Accelerate rotation by 0
+	and 180 degrees using OpenMP.
+	(XShearImage): Accellerate using OpenMP (accellerates -rotate and
+	-shear).
+	(YShearImage): Accellerate using OpenMP (accellerates -rotate and
+	-shear).
+
 2008-09-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (MotionBlurImage): Enable OpenMP now that pixel

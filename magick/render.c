@@ -1064,6 +1064,7 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     edge.y1=0.0;
   if (edge.y2 >= image->rows)
     edge.y2=image->rows-1;
+  /* FIXME: OpenMP */
   for (y=(long) ceil(edge.y1-0.5); y <= (long) floor(edge.y2+0.5); y++)
   {
     inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
@@ -3306,6 +3307,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       */
       start=(long) ceil(bounds.x1-0.5);
       stop=(long) floor(bounds.x2+0.5);
+      /* FIXME: OpenMP */
       for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
       {
         x=start;
@@ -3331,6 +3333,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   */
   start=(long) ceil(bounds.x1-0.5);
   stop=(long) floor(bounds.x2+0.5);
+  /* FIXME: OpenMP */
   for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
   {
     x=start;
