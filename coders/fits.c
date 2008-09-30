@@ -53,22 +53,15 @@ static unsigned int
   WriteFITSImage(const ImageInfo *,Image *);
 
 
-static void FixSignedValues16(magick_uint16_t *data, int size)
+static void FixSignedMSBValues(unsigned char *data, int size, unsigned step)
 {
   while(size-->0)
   {
-    *data++ ^= 0x0080;    
+    *data ^= 0x80;
+    data += step;
   }
 }
 
-
-static void FixSignedValues32(magick_uint32_t *data, int size)
-{
-  while(size-->0)
-  {
-    *data++ ^= 0x00008000;    
-  }
-}
 
 
 /*
@@ -807,8 +800,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (p == (const PixelPacket *) NULL)
       break;
     (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,&export_options,0);
-    if(depth==16) FixSignedValues16(pixels, image->columns);
-    if(depth==32) FixSignedValues32(pixels, image->columns);
+    if(depth==16) FixSignedMSBValues(pixels, image->columns, 2);
+    if(depth==32) FixSignedMSBValues(pixels, image->columns, 4);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {
