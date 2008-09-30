@@ -147,6 +147,7 @@ elements and their attributes:</p>
 
 <dl>
 <dt><image></dt>
+<dd>background, color, id, size</dd>
 <dd>
 Define a new image object.  <s></image></s> destroys it. Because of
 this, if you wish to reference multiple "subimages" (aka pages or
@@ -206,6 +207,7 @@ life of the group:
 
 
 <dt><read></dt>
+    <dd>filename</dd>
 <dd>
 Read a new image from a disk file.
 </dd>
@@ -224,6 +226,7 @@ To read two images use
 </pre>
 </dd>
 <dt><write></dt>
+    <dd>filename</dd>
 <dd>Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
 </dd>
@@ -258,22 +261,56 @@ PerlMagick's GetAttribute().</dd>
     <dd>geometry, height, width, x, y</dd>
 <dt><crop></dt>
     <dd>geometry, height, width, x, y</dd>
+<dt><composite></dt>
+    <dd>compose, geometry, gravity, image, x, y</dd>
+<dd>
+<pre>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <group>
+        <image id="image_01">
+            <read filename="cloud3.gif"/>
+            <resize geometry="250x90"/>
+        </image>
+        <image id="image_02">
+            <read filename="cloud4.gif"/>
+            <resize geometry="190x100"/>
+        </image>
+        <image>
+            <read filename="background.jpg"/>
+            <composite image="image_01" geometry="+740+470"/>
+            <composite image="image_02" geometry="+390+415"/>
+        </image>
+        <write filename="result.png"/>
+    </group>
+</pre>
+</dd>
 <dt><despeckle></dt>
 <dt><emboss></dt>
     <dd>radius, sigma</dd>
 <dt><enhance></dt>
 <dt><equalize></dt>
+<dt><edge></dt>
+    <dd>radius</dd>
 <dt><flip></dt>
 <dt><flop></dt>
 <dt><frame></dt>
     <dd>fill, geometry, height, width, x, y, inner, outer</dd>
+<dt><flatten></dt>
 <dt><get></dt>
     <dd>height, width</dd>
+<dt><gamma></dt>
+    <dd>red, green, blue</dd>
 <dt><image></dt>
     <dd>background, color, id, size</dd>
+<dt><implode></dt>
+    <dd>amount</dd>
 <dt><magnify></dt>
 <dt><minify></dt>
+<dt><medianfilter></dt>
+    <dd>radius</dd>
 <dt><normalize></dt>
+<dt><oilpaint></dt>
+    <dd>radius</dd>
 <dt><print></dt>
     <dd>output</dd>
 <dt><read></dt>
@@ -283,6 +320,8 @@ PerlMagick's GetAttribute().</dd>
     <dd>geometry, x, y</dd>
 <dt><rotate></dt>
     <dd>degrees</dd>
+<dt><reducenoise></dt>
+    <dd>radius</dd>
 <dt><sample></dt>
     <dd>geometry, height, width</dd>
 <dt><scale></dt>

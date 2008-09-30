@@ -1,4 +1,4 @@
-.TH gm 1 "2008/07/03" "GraphicsMagick"
+.TH gm 1 "2008/09/30" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -4202,6 +4202,9 @@ elements and their attributes:
 .in 20
  \fR
 .in 20
+background, color, id, size
+.in 15
+.in 20
 
 Define a new image object.  \fB</image>\fP destroys it. Because of
 this, if you wish to reference multiple "subimages" (aka pages or
@@ -4270,6 +4273,9 @@ life of the group:
 .in 20
  \fR
 .in 20
+    filename
+.in 15
+.in 20
 
 Read a new image from a disk file.
 
@@ -4296,6 +4302,9 @@ To read two images use
 .B "<write>"
 .in 20
  \fR
+.in 20
+    filename
+.in 15
 .in 20
 Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
@@ -4366,6 +4375,35 @@ PerlMagick's GetAttribute().
     geometry, height, width, x, y
 .in 15
 .in 15
+.B "<composite>"
+.in 20
+ \fR
+.in 20
+    compose, geometry, gravity, image, x, y
+.in 15
+.in 20
+
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <group>
+        <image id="image_01">
+            <read filename="cloud3.gif"/>
+            <resize geometry="250x90"/>
+        </image>
+        <image id="image_02">
+            <read filename="cloud4.gif"/>
+            <resize geometry="190x100"/>
+        </image>
+        <image>
+            <read filename="background.jpg"/>
+            <composite image="image_01" geometry="+740+470"/>
+            <composite image="image_02" geometry="+390+415"/>
+        </image>
+        <write filename="result.png"/>
+    </group>
+
+.in 15
+.in 15
 .B "<despeckle>"
 .in 20
  \fR
@@ -4385,6 +4423,13 @@ PerlMagick's GetAttribute().
 .in 20
  \fR
 .in 15
+.B "<edge>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
+.in 15
 .B "<flip>"
 .in 20
  \fR
@@ -4400,6 +4445,10 @@ PerlMagick's GetAttribute().
     fill, geometry, height, width, x, y, inner, outer
 .in 15
 .in 15
+.B "<flatten>"
+.in 20
+ \fR
+.in 15
 .B "<get>"
 .in 20
  \fR
@@ -4407,11 +4456,25 @@ PerlMagick's GetAttribute().
     height, width
 .in 15
 .in 15
+.B "<gamma>"
+.in 20
+ \fR
+.in 20
+    red, green, blue
+.in 15
+.in 15
 .B "<image>"
 .in 20
  \fR
 .in 20
     background, color, id, size
+.in 15
+.in 15
+.B "<implode>"
+.in 20
+ \fR
+.in 20
+    amount
 .in 15
 .in 15
 .B "<magnify>"
@@ -4422,9 +4485,23 @@ PerlMagick's GetAttribute().
 .in 20
  \fR
 .in 15
+.B "<medianfilter>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
+.in 15
 .B "<normalize>"
 .in 20
  \fR
+.in 15
+.B "<oilpaint>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
 .in 15
 .B "<print>"
 .in 20
@@ -4456,6 +4533,13 @@ PerlMagick's GetAttribute().
  \fR
 .in 20
     degrees
+.in 15
+.in 15
+.B "<reducenoise>"
+.in 20
+ \fR
+.in 20
+    radius
 .in 15
 .in 15
 .B "<sample>"
