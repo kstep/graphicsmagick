@@ -1,3 +1,8 @@
+2008-09-30  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c Fixed 16 bit fits writer that wrote wrongly
+	shaped unsigned ints.
+
 2008-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/conjure.imdoc: Applied patches from Max at hohenegger.eu to

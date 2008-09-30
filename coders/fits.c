@@ -52,6 +52,25 @@
 static unsigned int
   WriteFITSImage(const ImageInfo *,Image *);
 
+
+static void FixSignedValues16(magick_uint16_t *data, int size)
+{
+  while(size-->0)
+  {
+    *data++ ^= 0x0080;    
+  }
+}
+
+
+static void FixSignedValues32(magick_uint32_t *data, int size)
+{
+  while(size-->0)
+  {
+    *data++ ^= 0x00008000;    
+  }
+}
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -709,6 +728,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   unsigned long
     packet_size;
 
+  ExportPixelAreaOptions export_options;
+
   /*
     Open output image file.
   */
@@ -720,18 +741,30 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
-  if (image->depth > 8)
+
+  ExportPixelAreaOptionsInit(&export_options);
+  export_options.endian = MSBEndian;
+  export_options.sample_type = UnsignedQuantumSampleType;
+
+  if (image->depth <= 8)
+  {
+    quantum_size=8;
+    depth=8;    
+  }
+  else if (image->depth <= 16)
+  {
     depth=16;
+    quantum_size=16;
+  }
   else
-    depth=8;
+  {
+    depth=32;
+    quantum_size=32;
+  }
+
   /*
     Allocate image memory.
-  */
-  if (depth <= 8)
-    quantum_size=8;
-  else
-    quantum_size=16;
-
+  */  
   packet_size=quantum_size/8;
   fits_info=MagickAllocateMemory(char *,2880);
   pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
@@ -755,6 +788,11 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   y = InsertRowHDU(fits_info, buffer, y);    
   FormatString(buffer,        "DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));  
   y = InsertRowHDU(fits_info, buffer, y);
+  if(depth>8)
+  {
+    FormatString(buffer,      "BZERO   =           %10u", (depth<=16)?32768:2147483648);
+    y = InsertRowHDU(fits_info, buffer, y);
+  }
   (void) strcpy(buffer,       "HISTORY Created by GraphicsMagick.");
   y = InsertRowHDU(fits_info, buffer, y);
   y = InsertRowHDU(fits_info, "END", y);        
@@ -768,7 +806,9 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,0,0);
+    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,&export_options,0);
+    if(depth==16) FixSignedValues16(pixels, image->columns);
+    if(depth==32) FixSignedValues32(pixels, image->columns);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {
