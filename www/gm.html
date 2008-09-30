@@ -7044,6 +7044,7 @@ The Magick Scripting Language (MSL) presently defines the following
 elements and their attributes:
 <dl>
 <dt>&lt;image&gt;</dt>
+<dd>background, color, id, size</dd>
 <dd>
 Define a new image object.  <strong>&lt;/image&gt;</strong> destroys it. Because of
 this, if you wish to reference multiple "subimages" (aka pages or
@@ -7096,6 +7097,7 @@ life of the group:
 </pre>
 </dd>
 <dt>&lt;read&gt;</dt>
+    <dd>filename</dd>
 <dd>
 Read a new image from a disk file.
 </dd>
@@ -7114,6 +7116,7 @@ To read two images use
 </pre>
 </dd>
 <dt>&lt;write&gt;</dt>
+    <dd>filename</dd>
 <dd>Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
 </dd>
@@ -7145,22 +7148,56 @@ PerlMagick's GetAttribute().</dd>
     <dd>geometry, height, width, x, y</dd>
 <dt>&lt;crop&gt;</dt>
     <dd>geometry, height, width, x, y</dd>
+<dt>&lt;composite&gt;</dt>
+    <dd>compose, geometry, gravity, image, x, y</dd>
+<dd>
+<pre>
+    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;group&gt;
+        &lt;image id="image_01"&gt;
+            &lt;read filename="cloud3.gif"/&gt;
+            &lt;resize geometry="250x90"/&gt;
+        &lt;/image&gt;
+        &lt;image id="image_02"&gt;
+            &lt;read filename="cloud4.gif"/&gt;
+            &lt;resize geometry="190x100"/&gt;
+        &lt;/image&gt;
+        &lt;image&gt;
+            &lt;read filename="background.jpg"/&gt;
+            &lt;composite image="image_01" geometry="+740+470"/&gt;
+            &lt;composite image="image_02" geometry="+390+415"/&gt;
+        &lt;/image&gt;
+        &lt;write filename="result.png"/&gt;
+    &lt;/group&gt;
+</pre>
+</dd>
 <dt>&lt;despeckle&gt;</dt>
 <dt>&lt;emboss&gt;</dt>
     <dd>radius, sigma</dd>
 <dt>&lt;enhance&gt;</dt>
 <dt>&lt;equalize&gt;</dt>
+<dt>&lt;edge&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;flip&gt;</dt>
 <dt>&lt;flop&gt;</dt>
 <dt>&lt;frame&gt;</dt>
     <dd>fill, geometry, height, width, x, y, inner, outer</dd>
+<dt>&lt;flatten&gt;</dt>
 <dt>&lt;get&gt;</dt>
     <dd>height, width</dd>
+<dt>&lt;gamma&gt;</dt>
+    <dd>red, green, blue</dd>
 <dt>&lt;image&gt;</dt>
     <dd>background, color, id, size</dd>
+<dt>&lt;implode&gt;</dt>
+    <dd>amount</dd>
 <dt>&lt;magnify&gt;</dt>
 <dt>&lt;minify&gt;</dt>
+<dt>&lt;medianfilter&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;normalize&gt;</dt>
+<dt>&lt;oilpaint&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;print&gt;</dt>
     <dd>output</dd>
 <dt>&lt;read&gt;</dt>
@@ -7170,6 +7207,8 @@ PerlMagick's GetAttribute().</dd>
     <dd>geometry, x, y</dd>
 <dt>&lt;rotate&gt;</dt>
     <dd>degrees</dd>
+<dt>&lt;reducenoise&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;sample&gt;</dt>
     <dd>geometry, height, width</dd>
 <dt>&lt;scale&gt;</dt>

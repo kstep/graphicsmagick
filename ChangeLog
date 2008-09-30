@@ -1,3 +1,9 @@
+2008-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/conjure.imdoc: Applied patches from Max at hohenegger.eu to
+	mention previously undocumented elements and to provide a
+	composition example.
+
 2008-09-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Accelerate rotation by 0
