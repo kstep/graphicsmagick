@@ -63,6 +63,10 @@ static void FixSignedMSBValues(unsigned char *data, int size, unsigned step)
 }
 
 
+/* Calculate minimum and maximum from a given block of data */
+void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max);
+
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,54 +165,30 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     value[MaxTextExtent];
 
   double
-    exponential[2048],
-    pixel,
-    scale,
-    scaled_pixel;
+    exponential[2048];
 
   FITSInfo
     fits_info;
 
   Image
-    *image;
-
-  IndexPacket
-    index;
+    *image; 
 
   int
-    c,
-    quantum;
+    c;   
 
   long
-    exponent,
-    j,
-    k,
-    l,
     packet_size,
     scene,
     y;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
 
   register PixelPacket
     *q;
 
   register long
-    i;
-
-  register unsigned char
-    *p;
-
-  size_t
-    row_octets;
+    i;  
 
   unsigned char
-    *fits_pixels,
-    long_quantum[8];
+    *fits_pixels;    
 
   unsigned int
     status,
@@ -216,6 +196,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
   unsigned long
     number_pixels;
+
+  ImportPixelAreaOptions import_options;
 
   /*
     Open image file.
@@ -241,6 +223,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   fits_info.max_data=0.0;
   fits_info.zero=0.0;
   fits_info.scale=1.0;
+
+
+  ImportPixelAreaOptionsInit(&import_options);
+  import_options.endian = MSBEndian;
+
   /*
     Decode image header.
   */
@@ -280,6 +267,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (value_expected == False)
           continue;
         p=value;
+        if (c == '\'')
+          c=ReadBlobByte(image);
+
         while (isalnum(c) || (c == '-') || (c == '+') || (c == '.'))
         {
           if ((p-value) < (MaxTextExtent-1))
@@ -294,7 +284,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"SIMPLE") == 0)
           fits_info.simple=(*value == 'T') || (*value == 't');
         if (LocaleCompare(keyword,"BITPIX") == 0)
+        {
           fits_info.bits_per_pixel=atoi(value);
+	  if(fits_info.bits_per_pixel>0)
+            import_options.sample_type = UnsignedQuantumSampleType;
+	  if(fits_info.bits_per_pixel<0)          
+            import_options.sample_type = FloatQuantumSampleType;
+        }
         if (LocaleCompare(keyword,"NAXIS") == 0)
           fits_info.number_axes=atoi(value);
         if (LocaleCompare(keyword,"NAXIS1") == 0)
@@ -311,6 +307,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           fits_info.zero=atof(value);
         if (LocaleCompare(keyword,"BSCALE") == 0)
           fits_info.scale=atof(value);
+        if (LocaleCompare(keyword,"XENDIAN") == 0)
+        {
+	  if (LocaleCompare(keyword,"BIG") == 0)
+	    import_options.endian = MSBEndian;
+          else
+	    import_options.endian = LSBEndian;          
+	}
       }
     while ((TellBlob(image) % 80) != 0)
       if ((c=ReadBlobByte(image)) == EOF)
@@ -344,6 +347,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (i=1074; i >= 0; i--)
         exponential[i]=exponential[i+1]/2.0;
     }
+
   for (scene=0; scene < (long) fits_info.number_scenes; scene++)
   {
     /*
@@ -351,205 +355,80 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     image->columns=fits_info.columns;
     image->rows=fits_info.rows;
-    image->depth=fits_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
-    image->storage_class=PseudoClass;
+    if(fits_info.bits_per_pixel>=0)
+      image->depth = Min(QuantumDepth,fits_info.bits_per_pixel);
+    else
+      image->depth = QuantumDepth;		/* double type cell */
+    //image->storage_class=PseudoClass;
     image->scene=scene;
-    if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    image->is_grayscale = 1;
+
+    if (image->depth<=8)
+      if (!AllocateImageColormap(image,1 << image->depth))
+        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
     /*
       Initialize image structure.
     */
     packet_size=fits_info.bits_per_pixel/8;
-    if (packet_size < 0)
-      packet_size=(-packet_size);
-    number_pixels=image->columns*image->rows;
+    if (packet_size < 0) packet_size = -packet_size;
+        
+    number_pixels = image->columns*image->rows;
     if ((number_pixels / image->columns) != image->rows)
       ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,image);
-    fits_pixels=MagickAllocateArray(unsigned char *,number_pixels,packet_size);
+
+    fits_pixels=MagickAllocateArray(unsigned char *, image->columns, packet_size);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+
     /*
-      Convert FITS pixels to pixel packets.
-    */
-    row_octets=packet_size*number_pixels;
-    if (ReadBlob(image,row_octets,fits_pixels) != row_octets)
-      ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,
-        image);
+      Recover minimum and maximum from data if not present in HDU
+    */     
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
-      {
-        /*
-          Determine minimum and maximum intensity.
-        */
-        p=fits_pixels;
-        long_quantum[0]=(*p);
-        quantum=(*p++);
-        for (j=1; j <= (packet_size-1); j++)
-        {
-          long_quantum[j]=(*p);
-          quantum=(quantum << 8U) | (*p++);
-        }
-        pixel=(double) quantum;
-        if (fits_info.bits_per_pixel == 16)
-          if (pixel > 32767)
-            pixel-=65536L;
-        if (fits_info.bits_per_pixel == -32)
-          {
-            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-               (long) long_quantum[3];
-            k=(int) *long_quantum;
-            exponent=((k & 127) << 1) | (j >> 23);
-            *(float *) long_quantum=
-              exponential[exponent]*(float) (j | 0x800000);
-            if ((exponent | j) == 0)
-              *(float *) long_quantum=0.0;
-            if (k & 128)
-              *(float *) long_quantum=(-(*(float *) long_quantum));
-            pixel=(double) (*((float *) long_quantum));
-          }
-        if (fits_info.bits_per_pixel == -64)
-          {
-            j=((long) long_quantum[1] << 24) |
-              ((long) long_quantum[2] << 16) |
-              ((long) long_quantum[3] << 8) |
-               (long) long_quantum[4];
-            k=(int) *long_quantum;
-            l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
-               (int) long_quantum[7];
-            exponent=((k & 127) << 4) | (j >> 28);
-            *(double *) long_quantum=exponential[exponent]*(16777216.0*
-              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-            if ((exponent | j | l) == 0)
-              *(double *) long_quantum=0.0;
-            if (k & 128)
-              *(double *)long_quantum=(-(*(double *) long_quantum));
-            pixel=(double) (*((double *) long_quantum));
-          }
-        fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
-        fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
-        for (i=1; i < (long) number_pixels; i++)
-        {
-          long_quantum[0]=(*p);
-          quantum=(*p++);
-          for (j=1; j <= (packet_size-1); j++)
-          {
-            long_quantum[j]=(*p);
-            quantum=(quantum << 8) | (*p++);
-          }
-          pixel=(double) quantum;
-          if (fits_info.bits_per_pixel == 16)
-            if (pixel > 32767)
-              pixel-=65536L;
-          if (fits_info.bits_per_pixel == -32)
-            {
-              j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-                 (long) long_quantum[3];
-              k=(int) *long_quantum;
-              exponent=((k & 127) << 1) | (j >> 23);
-              *(float *) long_quantum=
-                exponential[exponent]*(float) (j | 0x800000);
-              if ((exponent | j) == 0)
-                *(float *) long_quantum=0.0;
-              if (k & 128)
-                *(float *) long_quantum=(-(*(float *) long_quantum));
-              pixel=(double) (*((float *) long_quantum));
-            }
-          if (fits_info.bits_per_pixel == -64)
-            {
-              j=((long) long_quantum[1] << 24) |
-                ((long) long_quantum[2] << 16) |
-                ((long) long_quantum[3] << 8) |
-                 (long) long_quantum[4];
-              k=(int) *long_quantum;
-              l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
-                 (int) long_quantum[7];
-              exponent=((k & 127) << 4) | (j >> 28);
-              *(double *) long_quantum=exponential[exponent]*(16777216.0*
-                (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-              if ((exponent | j | l) == 0)
-                *(double *) long_quantum=0.0;
-              if (k & 128)
-                *(double *)long_quantum=(-(*(double *) long_quantum));
-              pixel=(double) (*((double *) long_quantum));
-            }
-          scaled_pixel=pixel*fits_info.scale-fits_info.zero;
-          if (scaled_pixel < fits_info.min_data)
-            fits_info.min_data=scaled_pixel;
-          if (scaled_pixel > fits_info.max_data)
-            fits_info.max_data=scaled_pixel;
-        }
-      }
+    {  /*  Determine minimum and maximum intensity. */
+      if(fits_info.bits_per_pixel==-32)
+        CalcMinMax(image, import_options.endian, image->columns, image->rows, 7, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+      if(fits_info.bits_per_pixel==-64)
+        CalcMinMax(image, import_options.endian, image->columns, image->rows, 9, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+    }
+    else
+    {
+      import_options.double_maxvalue = fits_info.max_data;
+      import_options.double_minvalue = fits_info.min_data;
+    }
+
     /*
       Convert FITS pixels to pixel packets.
     */
-    scale=1.0;
-    if ((fits_info.bits_per_pixel < 0) ||
-        ((fits_info.max_data-fits_info.min_data) > ((1 << image->depth)-1)))
-      scale=((1 << image->depth)-1)/(fits_info.max_data-fits_info.min_data);
-    p=fits_pixels;
+
     for (y=(long) image->rows-1; y >= 0; y--)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
-      for (x=0; x < (long) image->columns; x++)
+
+      if(ReadBlob(image, packet_size*image->columns, fits_pixels) != (size_t)packet_size*image->columns)
       {
-        long_quantum[0]=(*p);
-        quantum=(*p++);
-        for (j=1; j <= (packet_size-1); j++)
-        {
-          long_quantum[j]=(*p);
-          quantum=(quantum << 8) | (*p++);
-        }
-        pixel=(double) quantum;
-        if (fits_info.bits_per_pixel == 16)
-          if (pixel > 32767)
-            pixel-=65536L;
-        if (fits_info.bits_per_pixel == -32)
-          {
-            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-               (long) long_quantum[3];
-            k=(int) *long_quantum;
-            exponent=((k & 127) << 1) | (j >> 23);
-            *(float *) long_quantum=
-              exponential[exponent]*(float) (j | 0x800000);
-            if ((exponent | j) == 0)
-              *(float *) long_quantum=0.0;
-            if (k & 128)
-              *(float *) long_quantum=(-(*(float *) long_quantum));
-            pixel=(double) (*((float *) long_quantum));
-          }
-        if (fits_info.bits_per_pixel == -64)
-          {
-            j=((long) long_quantum[1] << 24) |
-              ((long) long_quantum[2] << 16) |
-              ((long) long_quantum[3] << 8) |
-               (long) long_quantum[4];
-            k=(int) *long_quantum;
-            l=((long) long_quantum[5] << 16) | ((long) long_quantum[6] << 8) |
-               (long) long_quantum[7];
-            exponent=((k & 127) << 4) | (j >> 28);
-            *(double *) long_quantum=exponential[exponent]*(16777216.0*
-              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-            if ((exponent | j | l) == 0)
-              *(double *) long_quantum=0.0;
-            if (k & 128)
-              *(double *)long_quantum=(-(*(double *) long_quantum));
-            pixel=(double) (*((double *) long_quantum));
-          }
-        scaled_pixel=scale*
-          (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
-        index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
-          (scaled_pixel > ((1 << image->depth)-1)) ? ((1 << image->depth)-1) :
-          scaled_pixel+0.5);
-        index=(IndexPacket) (index);
-        VerifyColormapIndex(image,index);
-        indexes[x]=index;
-        *q++=image->colormap[index];
+	//if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+        //  "  fits cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
+	break; //goto ExitLoop;
       }
+
+      if(fits_info.bits_per_pixel==16) FixSignedMSBValues(fits_pixels, image->columns, 2);
+      if(fits_info.bits_per_pixel==32) FixSignedMSBValues(fits_pixels, image->columns, 4);
+
+      if(ImportImagePixelArea(image, GrayQuantum, packet_size*8, fits_pixels, &import_options,0) == MagickFail)
+      {
+//ImportImagePixelAreaFailed:
+//     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+//              "  fits failed to ImportImagePixelArea for a row %u", (unsigned)y);
+	    break;
+      }
+
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
@@ -563,6 +442,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           image->filename);
         break;
       }
+
     /*
       Proceed to next image.
     */
@@ -713,8 +593,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  unsigned int
-    depth,
+  unsigned int    
     quantum_size,
     status;
 
@@ -741,17 +620,14 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 
   if (image->depth <= 8)
   {
-    quantum_size=8;
-    depth=8;    
+    quantum_size=8;    
   }
   else if (image->depth <= 16)
-  {
-    depth=16;
+  {    
     quantum_size=16;
   }
   else
-  {
-    depth=32;
+  {   
     quantum_size=32;
   }
 
@@ -770,7 +646,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   memset(fits_info,' ',2880);
   y = 0;
   y = InsertRowHDU(fits_info, "SIMPLE  =                    T", y);
-  FormatString(buffer,        "BITPIX  =                    %u",depth);
+  FormatString(buffer,        "BITPIX  =                    %u",quantum_size);
   y = InsertRowHDU(fits_info, buffer, y);
   y = InsertRowHDU(fits_info, "NAXIS   =                    2", y);
   FormatString(buffer,        "NAXIS1  =           %10lu",image->columns);
@@ -779,11 +655,11 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   y = InsertRowHDU(fits_info, buffer, y);  
   FormatString(buffer,        "DATAMIN =           %10u",0);
   y = InsertRowHDU(fits_info, buffer, y);    
-  FormatString(buffer,        "DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));  
+  FormatString(buffer,        "DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(quantum_size));
   y = InsertRowHDU(fits_info, buffer, y);
-  if(depth>8)
+  if(quantum_size>8)
   {
-    FormatString(buffer,      "BZERO   =           %10u", (depth<=16)?32768:2147483648);
+    FormatString(buffer,      "BZERO   =           %10u", (quantum_size<=16)?32768:2147483648);
     y = InsertRowHDU(fits_info, buffer, y);
   }
   (void) strcpy(buffer,       "HISTORY Created by GraphicsMagick.");
@@ -800,8 +676,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (p == (const PixelPacket *) NULL)
       break;
     (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,&export_options,0);
-    if(depth==16) FixSignedMSBValues(pixels, image->columns, 2);
-    if(depth==32) FixSignedMSBValues(pixels, image->columns, 4);
+    if(quantum_size==16) FixSignedMSBValues(pixels, image->columns, 2);
+    if(quantum_size==32) FixSignedMSBValues(pixels, image->columns, 4);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {

@@ -301,7 +301,7 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, MATHeader *MATLAB_HDR, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 magick_off_t filepos;
 int i, x;
@@ -310,7 +310,7 @@ void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
 double *dblrow;
 float *fltrow;
 
-  if (!strncmp(MATLAB_HDR->EndianIndicator, "IM", 2))
+  if (endian_indicator == LSBEndian)
   {    
     ReadBlobDoublesXXX = ReadBlobDoublesLSB;
     ReadBlobFloatsXXX = ReadBlobFloatsLSB;   
@@ -322,7 +322,7 @@ float *fltrow;
   }
 
   filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
-  for (i = 0; i < (long) MATLAB_HDR->SizeY; i++)
+  for (i = 0; i < SizeY; i++)
   {
     if (CellType==miDOUBLE)
     {
@@ -332,7 +332,7 @@ float *fltrow;
       {
         *Min = *Max = *dblrow;
       }
-      for (x = 0; x < (long) MATLAB_HDR->SizeX; x++)
+      for (x = 0; x < SizeX; x++)
       {
         if (*Min > *dblrow)
           *Min = *dblrow;
@@ -349,7 +349,7 @@ float *fltrow;
       {
         *Min = *Max = *fltrow;
       }
-    for (x = 0; x < (long) MATLAB_HDR->SizeX; x++)
+    for (x = 0; x < SizeX; x++)
       {
         if (*Min > *fltrow)
           *Min = *fltrow;
@@ -807,7 +807,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     MaxVal = 0;
     if (CellType==miDOUBLE || CellType==miSINGLE)        /* Find Min and Max Values for floats */
     {
-      CalcMinMax(image2, &MATLAB_HDR, CellType, ldblk, BImgBuff, &import_options.double_minvalue, &import_options.double_maxvalue);
+      CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, CellType, ldblk, BImgBuff, &import_options.double_minvalue, &import_options.double_maxvalue);
     }
 
     /* Main loop for reading all scanlines */
@@ -870,7 +870,7 @@ ExitLoop:
 
       if (CellType==miDOUBLE || CellType==miSINGLE)
       {
-        CalcMinMax(image2, &MATLAB_HDR, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);      
+        CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);
       }
 
       if (CellType==miDOUBLE)

@@ -1,3 +1,8 @@
+2008-10-04  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c coders/mat.c Used a same piece of code to calculate
+	min and max data value.
+
 2008-09-30  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c Fixed 16 bit fits writer that wrote wrongly
