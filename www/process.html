@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick Development Process</title>
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="graphicsmagick-development-process">
+<h1 class="title">GraphicsMagick Development Process</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>In order to ensure an orderly development process, and assure the highest
+quality releases, a development process has been established for
+GraphicsMagick.</p>
+<div class="section">
+<h1><a id="phases-of-development" name="phases-of-development">Phases of Development</a></h1>
+<p>Four major development phases have been identified. These are the feature
+development phase, snapshot phase, beta phase, and release phase. The
+descriptions of these phases are as follows:</p>
+<div class="section">
+<h2><a id="feature-development-phase" name="feature-development-phase">Feature Development Phase</a></h2>
+<blockquote>
+<p>The feature development phase is a time of rapid development. Work is
+normally done on the CVS trunk. Work which may temporarily destabilize
+the ability to build or execute the software is done on a separate
+development branch, which is merged into the CVS trunk once the work
+has been completed. During the feature development phase, CVS is the
+only way to access the work in progress. Before updates are committed
+to CVS, they should be proven to compile on at least one architecture.</p>
+<p>Entry Criteria: Changes from any release branch are merged into CVS trunk.</p>
+<p>Exit Criteria: Interfaces are stable, and code compiles and runs on multiple architectures.</p>
+</blockquote>
+</div>
+<div class="section">
+<h2><a id="snapshot-phase" name="snapshot-phase">Snapshot Phase</a></h2>
+<blockquote>
+<p>The snapshot phase is entered when it is decided that the work is
+stable enough for non-developers to test. API and user interfaces
+should be stable before the snapshot phase begins in order to avoid
+confusion. Snapshot development is done on the CVS trunk. Snapshot
+packages are identified by the date of the snapshot, and no CVS
+branching or tagging is performed to support the snapshot.</p>
+<p>Entry Criteria: Interfaces are stable, and code compiles and runs on
+multiple architectures.</p>
+<p>Exit Criteria: Code is considered ready for release. The test suite
+must show 100% completion for Q:8 and Q:16 quantum depths on at least
+three operating environments.</p>
+</blockquote>
+</div>
+<div class="section">
+<h2><a id="beta-phase" name="beta-phase">Beta Phase</a></h2>
+<blockquote>
+<p>The Beta phase is entered when the work is feature complete, the
+package passes all tests, and it is considered time for versioned
+releases. As the first step of entering the beta phase, a release
+branch is created off of the trunk to support all development targeting
+the release. The purpose of the beta phase is to wring out any
+remaining bugs prior to release. When a beta package is prepared, a
+release tag is applied to the associated release branch in CVS.</p>
+<p>Entry Criteria: Code is considered ready for release. The test suite
+must show 100% completion for Q:8 and Q:16 quantum depths on at least
+three operating environments.</p>
+<p>Exit Criteria: The test suite must show 100% completion for Q:8, Q:16,
+and Q:32 quantum depths on at least three operating environments. The
+current beta package is determined to be sufficiently flawless for a
+final release.</p>
+</blockquote>
+</div>
+<div class="section">
+<h2><a id="release-phase" name="release-phase">Release Phase</a></h2>
+<blockquote>
+<p>The release phase is entered when the most recent Beta is considered to
+be of acceptable quality for a release or bug-fixes have been prepared
+based on a previous release. At this time, a formal release tag is
+applied to the release branch, and release packages are created. Once a
+release tag has been applied to a release branch, that release branch
+is considered to be in release state and may only be used to prepare
+additional releases intended to correct bugs found in preceding
+releases. The initial release on a release branch has a two-digit (i.e.
+X.X) release designation. Bug-fix releases have a three-digit (i.e.
+X.X.X) release designation. A release designation may only be used
+once. If a problem is discovered with the release package, a new
+release number is assigned to support the corrected release package.</p>
+<p>Entry Criteria: The test suite must show 100% completion for Q:8, Q:16,
+and Q:32 quantum depths on at least three operating environments. The
+current beta package is determined to be sufficiently flawless for a
+final release.</p>
+<p>Exit Criteria: None</p>
+</blockquote>
+</div>
+</div>
+<div class="section">
+<h1><a id="test-configurations" name="test-configurations">Test Configurations</a></h1>
+<p>Verification testing is vital to ensure the correct operation of the
+package. GraphicsMagick is compiled, and its test suite is executed, in
+the following environments:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="8%" />
+<col width="9%" />
+<col width="27%" />
+<col width="4%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">OS</th>
+<th class="head">Version</th>
+<th class="head">CPU</th>
+<th class="head">Tripplet</th>
+<th class="head">Bits</th>
+<th class="head">Compiler</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>AIX</td>
+<td>4.3.3</td>
+<td>PowerPC</td>
+<td>powerpc-ibm-aix4.3.3.0</td>
+<td>32</td>
+<td>C for AIX version 6.0.0</td>
+</tr>
+<tr><td>AIX</td>
+<td>5.1</td>
+<td>PowerPC</td>
+<td>powerpc-ibm-aix5.1.0.0</td>
+<td>32</td>
+<td>IBM XL C/C++ Enterprise Edition V8.0</td>
+</tr>
+<tr><td>AIX</td>
+<td>5.2</td>
+<td>PowerPC</td>
+<td>powerpc-ibm-aix5.2.0.0</td>
+<td>32</td>
+<td>IBM XL C/C++ Enterprise Edition V8.0</td>
+</tr>
+<tr><td>AIX</td>
+<td>5.3</td>
+<td>POWER5+</td>
+<td>powerpc-ibm-aix5.3.0.0</td>
+<td>32</td>
+<td>IBM XL C/C++ Enterprise Edition V8.0</td>
+</tr>
+<tr><td>FreeBSD</td>
+<td>5.4</td>
+<td>i686</td>
+<td>i386-unknown-freebsd5.4</td>
+<td>32</td>
+<td>GCC 3.4.2</td>
+</tr>
+<tr><td>HP-UX</td>
+<td>10.20</td>
+<td>PA-RISC</td>
+<td>hppa2.0-hp-hpux10.20</td>
+<td>32</td>
+<td>HP92453-01 A.10.32.30</td>
+</tr>
+<tr><td>HP-UX</td>
+<td>11.00</td>
+<td>PA-RISC</td>
+<td>hppa2.0w-hp-hpux11.00</td>
+<td>32</td>
+<td>HP92453-01 B.11.X.35098-35101.GP</td>
+</tr>
+<tr><td>HP-UX</td>
+<td>11.11</td>
+<td>PA-RISC</td>
+<td>hppa2.0w-hp-hpux11.11</td>
+<td>32</td>
+<td>HP92453-01 B.11.X.35098-35101.GP</td>
+</tr>
+<tr><td>HP-UX</td>
+<td>11.23</td>
+<td>Itanium2</td>
+<td>ia64-hp-hpux11.23</td>
+<td>32</td>
+<td>HP C/aC++ B3910B A.06.13</td>
+</tr>
+<tr><td>HP-UX</td>
+<td>11.23</td>
+<td>PA-RISC</td>
+<td>hppa2.0w-hp-hpux11.23</td>
+<td>32</td>
+<td>HP92453-01 B.11.X.35098-35101.GP</td>
+</tr>
+<tr><td>IRIX</td>
+<td>6.5</td>
+<td>MIPS</td>
+<td>mips-sgi-irix6.5</td>
+<td>32</td>
+<td>MIPSpro Compilers: Version 7.4.4m</td>
+</tr>
+<tr><td>OS X</td>
+<td>Leopard</td>
+<td>G5</td>
+<td>powerpc-apple-darwin9.1.0</td>
+<td>32</td>
+<td>GCC 4.0.1</td>
+</tr>
+<tr><td>OS X</td>
+<td>Leopard</td>
+<td>G5</td>
+<td>powerpc-apple-darwin9.1.0</td>
+<td>64</td>
+<td>GCC 4.0.1</td>
+</tr>
+<tr><td>RHEL</td>
+<td>2.1</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 2.96</td>
+</tr>
+<tr><td>RHEL</td>
+<td>3</td>
+<td>AMD64</td>
+<td>x86_64-unknown-linux-gnu</td>
+<td>64</td>
+<td>GCC 3.2.3</td>
+</tr>
+<tr><td>RHEL</td>
+<td>3</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 3.2.3</td>
+</tr>
+<tr><td>RHEL</td>
+<td>4</td>
+<td>AMD64</td>
+<td>x86_64-unknown-linux-gnu</td>
+<td>64</td>
+<td>GCC 3.4.6</td>
+</tr>
+<tr><td>RHEL</td>
+<td>4</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 3.4.6</td>
+</tr>
+<tr><td>RHEL</td>
+<td>5</td>
+<td>AMD64</td>
+<td>x86_64-unknown-linux-gnu</td>
+<td>64</td>
+<td>GCC 4.1.1</td>
+</tr>
+<tr><td>RHEL</td>
+<td>5</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 4.1.1</td>
+</tr>
+<tr><td>Redhat Linux</td>
+<td>7.1</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 2.96</td>
+</tr>
+<tr><td>Redhat Linux</td>
+<td>9</td>
+<td>i686</td>
+<td>i686-pc-linux-gnu</td>
+<td>32</td>
+<td>GCC 3.2.2</td>
+</tr>
+<tr><td>Solaris</td>
+<td>10</td>
+<td>AMD64</td>
+<td>i386-pc-solaris2.10</td>
+<td>32</td>
+<td>GCC 4.2.1</td>
+</tr>
+<tr><td>Solaris</td>
+<td>10</td>
+<td>AMD64</td>
+<td>i386-pc-solaris2.10</td>
+<td>64</td>
+<td>GCC 4.2.1</td>
+</tr>
+<tr><td>Solaris</td>
+<td>10</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.10</td>
+<td>32</td>
+<td>Sun C 5.8 Patch 121015-04</td>
+</tr>
+<tr><td>Solaris</td>
+<td>10</td>
+<td>i386</td>
+<td>i386-pc-solaris2.10</td>
+<td>32</td>
+<td>Sun C 5.8 Patch 121016-05</td>
+</tr>
+<tr><td>Solaris</td>
+<td>2.6</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.6</td>
+<td>32</td>
+<td>Sun C 5.3 Patch 111679-14</td>
+</tr>
+<tr><td>Solaris</td>
+<td>7</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.7</td>
+<td>32</td>
+<td>Vendor (Sun)</td>
+</tr>
+<tr><td>Solaris</td>
+<td>8</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.8</td>
+<td>32</td>
+<td>Sun C 5.8 Patch 121015-04</td>
+</tr>
+<tr><td>Solaris</td>
+<td>9</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.9</td>
+<td>32</td>
+<td>GCC 4.2.1</td>
+</tr>
+<tr><td>Solaris</td>
+<td>9</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.9</td>
+<td>32</td>
+<td>Sun C 5.8 Patch 121015-04</td>
+</tr>
+<tr><td>Solaris</td>
+<td>9</td>
+<td>SPARC</td>
+<td>sparc-sun-solaris2.9</td>
+<td>64</td>
+<td>GCC 4.2.1</td>
+</tr>
+<tr><td>Tru64 UNIX</td>
+<td>4.0D</td>
+<td>Alpha</td>
+<td>alphaev5-dec-osf4.0d</td>
+<td>64</td>
+<td>Compaq C V6.5-207 (dtk)</td>
+</tr>
+<tr><td>Tru64 UNIX</td>
+<td>5.1</td>
+<td>Alpha</td>
+<td>alphaev67-dec-osf5.1</td>
+<td>64</td>
+<td>Compaq C V6.5-303 (dtk)</td>
+</tr>
+<tr><td>Windows XP</td>
+<td>SP2</td>
+<td>i686</td>
+<td>N/A</td>
+<td>32</td>
+<td>Visual C++ 6.0</td>
+</tr>
+<tr><td>Windows XP</td>
+<td>SP2</td>
+<td>i686</td>
+<td>N/A</td>
+<td>32</td>
+<td>Visual Studio 2003</td>
+</tr>
+<tr><td>Windows XP</td>
+<td>SP2</td>
+<td>i686</td>
+<td>i686-pc-cygwin</td>
+<td>32</td>
+<td>Cygwin 1.5.24-2 / GCC 3.4.4</td>
+</tr>
+<tr><td>Windows XP</td>
+<td>SP2</td>
+<td>i686</td>
+<td>i686-pc-mingw32</td>
+<td>32</td>
+<td>MinGW / GCC 3.2.3</td>
+</tr>
+</tbody>
+</table>
+<p>The output of any tests which do not support self-validation (e.g. the
+Magick++ demos) is visually inspected for correctness.</p>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2002 - 2008 GraphicsMagick Group</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-06 00:42 UTC.
+
+</div>
+</body>
+</html>

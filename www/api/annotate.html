@@ -1,104 +1,146 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>annotate - Annotate an image with text</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>annotate</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#annotateimage">AnnotateImage</a></li>
-		<li><a href="#gettypemetrics">GetTypeMetrics</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>annotate - Annotate an image with text</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>AnnotateImage</strong>( Image *image, DrawInfo *draw_info );</P>
-<P>unsigned int  <strong>GetTypeMetrics</strong>( Image *image, const DrawInfo *draw_info, TypeMetric *metrics );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="annotateimage">AnnotateImage</a></h2>
-<blockquote>AnnotateImage() annotates an image with text. Optionally you can include any of the following bits of information about the image by embedding the appropriate special characters: </blockquote><P>The format of the AnnotateImage method is:</P>
-<blockquote>unsigned int AnnotateImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong>
-
-<DD>
-<P>Method AnnotateImage returns True if the image is annotated otherwise False.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="annotate">
+<h1 class="title">annotate</h1>
+<h2 class="subtitle" id="annotate-an-image-with-text">Annotate an image with text</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#annotateimage" id="id3" name="id3">AnnotateImage</a></li>
+<li><a class="reference" href="#gettypemetrics" id="id4" name="id4">GetTypeMetrics</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="annotateimage" name="annotateimage">AnnotateImage</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AnnotateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>AnnotateImage() annotates an image with text.  Optionally you can include
+any of the following bits of information about the image by embedding
+the appropriate special characters:</p>
+<p>%b   file size in bytes.
+%c   comment.
+%d   directory in which the image resides.
+%e   extension of the image file.
+%f   original filename of the image.
+%h   height of image.
+%i   filename of the image.
+%k   number of unique colors.
+%l   image label.
+%m   image file format.
+%n   number of images in a image sequence.
+%o   output image filename.
+%p   page number of the image.
+%q   image depth (8 or 16).
+%p   page number of the image.
+%q   image depth (8 or 16).
+%s   image scene number.
+%t   image filename without any extension.
+%u   a unique temporary filename.
+%w   image width.
+%x   x resolution of the image.
+%y   y resolution of the image.</p>
+<p>The format of the AnnotateImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AnnotateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Method AnnotateImage returns True if the image is annotated
+otherwise False.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="gettypemetrics">GetTypeMetrics</a></h2>
-<blockquote>GetTypeMetrics() returns the following information for the specified font and text: </blockquote><dl>
-<dt><strong><a name="item_o">o</a></strong>
-
-<DD>
-<P>character width o character height o ascent o descent o text width o text height o maximum horizontal advance o underline position o underline thickness</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="gettypemetrics" name="gettypemetrics">GetTypeMetrics</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">GetTypeMetrics(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">TypeMetric</span> <span class="pre">*metrics</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>GetTypeMetrics() returns the following information for the specified font
+and text:</p>
+<p>o character width
+o character height
+o ascent
+o descent
+o text width
+o text height
+o maximum horizontal advance
+o underline position
+o underline thickness</p>
+<p>The format of the GetTypeMetrics method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">GetTypeMetrics(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">TypeMetric</span> <span class="pre">*metrics</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
+<dt>metrics:</dt>
+<dd>Return the font metrics in this structure.</dd>
 </dl>
-<P>The format of the GetTypeMetrics method is:</P>
-<blockquote>unsigned int GetTypeMetrics ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, <A HREF="types.html#TypeMetric">TypeMetric</A> *metrics ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-04 21:26 UTC.
 
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>draw_info:</strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_metrics_3a">metrics:</a></strong>
-
-<DD>
-<P>Return the font metrics in this structure.</P>
-</dd>
-</dl>
-
+</div>
 </body>
-
 </html>

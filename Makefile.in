@@ -90,6 +90,24 @@
 # Makefile for building Wand library
 #
 
+# Copyright (C) 2008 GraphicsMagick Group
+
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building HTML files
+#
+
+# Copyright (C) 2008 GraphicsMagick Group
+
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building API HTML files
+#
+
 # Copyright (C) 2004 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
@@ -145,7 +163,8 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(srcdir)/filters/Makefile.am $(srcdir)/ltdl/Makefile.inc \
 	$(srcdir)/magick/Makefile.am $(srcdir)/rungm.sh.in \
 	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
-	$(srcdir)/wand/Makefile.am \
+	$(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am \
+	$(srcdir)/www/api/Makefile.am \
 	$(top_srcdir)/Magick++/bin/GraphicsMagick++-config.in \
 	$(top_srcdir)/Magick++/lib/GraphicsMagick++.pc.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
@@ -1996,23 +2015,13 @@ CHANGELOGS = \
 	ChangeLog.2007
 
 TOP_EXTRA_DIST = \
-	AUTHORS.txt \
-	BENCHMARKS.txt \
-	BUGS.txt \
-	CONTRIBUTE.txt \
 	$(CHANGELOGS) \
 	Copyright.txt \
-	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
-	MISSION.txt \
 	NEWS.txt \
-	OpenMP.txt \
-	PLATFORMS.txt \
-	PROCESS.txt \
 	README.txt \
 	TODO.txt \
-	index.html \
 	lndir.sh \
 	version.sh \
 	winpath.sh
@@ -2022,8 +2031,9 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	$(MAGICK_EXTRA_DIST) $(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) $(WAND_EXTRA_DIST) \
-	ltdl/lt__dirent.c ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README \
-	ltdl/argz_.h ltdl/argz.c
+	$(WWWW_EXTRA_DIST) $(WWWAPI_EXTRA_DIST) ltdl/lt__dirent.c \
+	ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README ltdl/argz_.h \
+	ltdl/argz.c
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
 AM_LDFLAGS = -no-undefined
@@ -4321,6 +4331,215 @@ WAND_TESTS = \
 WAND_CLEANFILES = \
         wand/*_out.*
 
+WWWDIR = $(top_srcdir)/www
+
+# Install HTML files
+DOCDIRS = www www/api www/images www/Magick++
+HTML_INSTALL_DATA_TARGETS = install-data-html
+
+# Uninstall HTML files
+HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
+RST2HTML_TARGETS = \
+	$(WWWDIR)/CVS.html \
+	$(WWWDIR)/Copyright.html \
+	$(WWWDIR)/FAQ.html \
+	$(WWWDIR)/formats.html \
+	$(WWWDIR)/INSTALL-unix.html \
+	$(WWWDIR)/INSTALL-windows.html \
+	$(WWWDIR)/NEWS.html \
+	$(WWWDIR)/OpenMP.html \
+	$(WWWDIR)/README.html \
+	$(WWWDIR)/authors.html \
+	$(WWWDIR)/benchmarks.html \
+	$(WWWDIR)/bugs.html \
+	$(WWWDIR)/contribute.html \
+	$(WWWDIR)/download.html \
+	$(WWWDIR)/index.html \
+	$(WWWDIR)/links.html \
+	$(WWWDIR)/miff.html \
+	$(WWWDIR)/mission.html \
+	$(WWWDIR)/motion-picture.html \
+	$(WWWDIR)/perl.html \
+	$(WWWDIR)/platforms.html \
+	$(WWWDIR)/process.html \
+	$(WWWDIR)/programming.html \
+	$(WWWDIR)/quantize.html \
+	$(WWWDIR)/tools.html \
+	$(WWWDIR)/utilities.html
+
+WWW_RST_FILES = \
+	www/CVS.rst \
+	www/FAQ.rst \
+	www/formats.rst \
+	www/OpenMP.rst \
+	www/authors.rst \
+	www/benchmarks.rst \
+	www/bugs.rst \
+	www/contribute.rst \
+	www/download.rst \
+	www/index.rst \
+	www/links.rst \
+	www/miff.rst \
+	www/mission.rst \
+	www/motion-picture.rst \
+	www/perl.rst \
+	www/platforms.rst \
+	www/process.rst \
+	www/programming.rst \
+	www/quantize.rst \
+	www/tools.rst \
+	www/utilities.rst
+
+WWW_HTML_FILES = \
+	www/CVS.html \
+	www/Changelog.html \
+	www/Copyright.html \
+	www/FAQ.html \
+	www/GraphicsMagick.html \
+	www/INSTALL-unix.html \
+	www/INSTALL-windows.html \
+	www/ImageMagickObject.html \
+	www/NEWS.html \
+	www/OpenMP.html \
+	www/README.html \
+	www/animate.html \
+	www/authors.html \
+	www/benchmarks.html \
+	www/bugs.html \
+	www/color.html \
+	www/compare.html \
+	www/composite.html \
+	www/conjure.html \
+	www/contribute.html \
+	www/convert.html \
+	www/display.html \
+	www/download.html \
+	www/formats.html \
+	www/gm.html \
+	www/identify.html \
+	www/import.html \
+	www/index.html \
+	www/links.html \
+	www/miff.html \
+	www/mission.html \
+	www/mogrify.html \
+	www/montage.html \
+	www/motion-picture.html \
+	www/perl.html \
+	www/platforms.html \
+	www/process.html \
+	www/programming.html \
+	www/quantize.html \
+	www/tools.html \
+	www/utilities.html
+
+WWWW_EXTRA_DIST = $(WWW_HTML_FILES) $(WWW_RST_FILES)
+WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color.html
+@MAINTAINER_MODE_TRUE@NAMED_COLORS = $(top_srcdir)/scripts/named_colors.py
+@MAINTAINER_MODE_TRUE@RST2HTMLDECO = $(top_srcdir)/scripts/rst2htmldeco.py
+@MAINTAINER_MODE_TRUE@RELPATH = $(top_srcdir)/scripts/relpath.py
+@MAINTAINER_MODE_TRUE@RST2HTML_COMMAND = $(RST2HTMLDECO) --link-stylesheet=docutils-articles.css
+
+# txt2html requires perl.
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/Changelog.html
+
+wwwapidir = $(htmldir)/api
+WWWAPIDIR = $(top_srcdir)/www/api
+WWWAPI_HTML_TARGETS = \
+	$(WWWAPIDIR)/api.html \
+	$(WWWAPIDIR)/animate.html \
+	$(WWWAPIDIR)/annotate.html \
+	$(WWWAPIDIR)/attribute.html \
+	$(WWWAPIDIR)/blob.html \
+	$(WWWAPIDIR)/channel.html \
+	$(WWWAPIDIR)/color.html \
+	$(WWWAPIDIR)/compare.html \
+	$(WWWAPIDIR)/composite.html \
+	$(WWWAPIDIR)/constitute.html \
+	$(WWWAPIDIR)/decorate.html \
+	$(WWWAPIDIR)/deprecate.html \
+	$(WWWAPIDIR)/display.html \
+	$(WWWAPIDIR)/draw.html \
+	$(WWWAPIDIR)/effect.html \
+	$(WWWAPIDIR)/enhance.html \
+	$(WWWAPIDIR)/error.html \
+	$(WWWAPIDIR)/fx.html \
+	$(WWWAPIDIR)/image.html \
+	$(WWWAPIDIR)/list.html \
+	$(WWWAPIDIR)/magick.html \
+	$(WWWAPIDIR)/memory.html \
+	$(WWWAPIDIR)/monitor.html \
+	$(WWWAPIDIR)/montage.html \
+	$(WWWAPIDIR)/operator.html \
+	$(WWWAPIDIR)/paint.html \
+	$(WWWAPIDIR)/pixel_cache.html \
+	$(WWWAPIDIR)/pixel_iterator.html \
+	$(WWWAPIDIR)/profile.html \
+	$(WWWAPIDIR)/quantize.html \
+	$(WWWAPIDIR)/registry.html \
+	$(WWWAPIDIR)/render.html \
+	$(WWWAPIDIR)/resize.html \
+	$(WWWAPIDIR)/resource.html \
+	$(WWWAPIDIR)/segment.html \
+	$(WWWAPIDIR)/shear.html \
+	$(WWWAPIDIR)/signature.html \
+	$(WWWAPIDIR)/transform.html \
+	$(WWWAPIDIR)/types.html \
+	$(WWWAPIDIR)/widget.html
+
+WWWWAPI_FILES = \
+	www/api/animate.html \
+	www/api/annotate.html \
+	www/api/api.html \
+	www/api/api.rst \
+	www/api/attribute.html \
+	www/api/blob.html \
+	www/api/channel.html \
+	www/api/color.html \
+	www/api/compare.html \
+	www/api/composite.html \
+	www/api/constitute.html \
+	www/api/decorate.html \
+	www/api/deprecate.html \
+	www/api/display.html \
+	www/api/draw.html \
+	www/api/effect.html \
+	www/api/enhance.html \
+	www/api/error.html \
+	www/api/fx.html \
+	www/api/image.html \
+	www/api/list.html \
+	www/api/magick.html \
+	www/api/memory.html \
+	www/api/monitor.html \
+	www/api/montage.html \
+	www/api/operator.html \
+	www/api/paint.html \
+	www/api/pixel_cache.html \
+	www/api/pixel_iterator.html \
+	www/api/profile.html \
+	www/api/quantize.html \
+	www/api/registry.html \
+	www/api/render.html \
+	www/api/resize.html \
+	www/api/resource.html \
+	www/api/segment.html \
+	www/api/shear.html \
+	www/api/signature.html \
+	www/api/transform.html \
+	www/api/types.html \
+	www/api/widget.html
+
+WWWAPI_EXTRA_DIST = \
+	$(WWWWAPI_FILES)
+
+WWWAPI_MAINTAINER_TARGETS = $(WWWAPI_HTML_TARGETS)
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@APIWHATIS = $(top_srcdir)/scripts/whatis.txt
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@FORMATCAPI = $(top_srcdir)/scripts/format_c_api_doc.py
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@APIRST2HTML_COMMAND = $(RST2HTMLDECO) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@  --link-stylesheet=../docutils-articles.css`
+
 UTILITIES_PGMS = \
 	utilities/gm
 
@@ -4448,43 +4667,14 @@ doc_DATA = \
 	$(CHANGELOGS) \
 	NEWS.txt
 
-@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
+@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
+@MAINTAINER_MODE_TRUE@	magick-version \
+@MAINTAINER_MODE_TRUE@	$(WWW_MAINTAINER_TARGETS) \
+@MAINTAINER_MODE_TRUE@	$(WWWAPI_MAINTAINER_TARGETS)
+
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
-
-#
-# Additional install rules
-#
-
-# Install HTML files
-DOCDIRS = images www www/api www/Magick++
-HTML_INSTALL_DATA_TARGETS = install-data-html
-
-# Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
-@HasRST2HTML_TRUE@RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
-@HasRST2HTML_TRUE@RST2HTML_TARGETS = \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/AUTHORS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/BENCHMARKS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/BUGS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/Copyright.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/FAQ.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/NEWS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/OpenMP.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/PLATFORMS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/README.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/contribute.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/development.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/mission.html
-
-
-# txt2html requires perl.
-@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
-@WITH_PERL_TRUE@	$(top_srcdir)/www/Changelog.html
-
 @HAS_ZIP_FALSE@DIST_WINDOWS_SRC_ZIP = 
 
 #
@@ -4520,7 +4710,7 @@ all: $(BUILT_SOURCES)
 .SUFFIXES: .c .cpp .lo .o .obj
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -9606,6 +9796,58 @@ generate-tests-scripts:
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+#	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
+install-data-html:
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	@for dir in $(DOCDIRS) ; do \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
+	  for file in $(srcdir)/$$dir/*.* ; do \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+	  done ; \
+	done
+#	rm -f $(DESTDIR)$(htmldir)/index.html
+uninstall-data-html:
+	for dir in $(DOCDIRS) ; do \
+	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
+	done
+
+@MAINTAINER_MODE_TRUE@$(RST2HTML_TARGETS) : \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/html_fragments.py \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/rst2htmldeco.py \
+@MAINTAINER_MODE_TRUE@	$(WWWDIR)/Makefile.am
+
+# Build HTML version of RST file
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/%.txt
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/%.html: $(top_srcdir)/%.rst
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+# Build HTML version of ChangeLog
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog > \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/www/Changelog.html
+
+# Build color.html
+@MAINTAINER_MODE_TRUE@$(WWWDIR)/color.html : $(NAMED_COLORS)
+@MAINTAINER_MODE_TRUE@	$(NAMED_COLORS) > $@
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.apirst : $(top_srcdir)/magick/%.c
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(FORMATCAPI) --whatis-file $(APIWHATIS) $< $@
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.html : $(WWWAPIDIR)/%.apirst
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-api.css \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
 @MAGICK_COMPAT_TRUE@install-exec-local-utilities:
 @MAGICK_COMPAT_TRUE@	$(mkdir_p) $(DESTDIR)$(bindir)
 @MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
@@ -9727,26 +9969,15 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)
-install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
-	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
-	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
-	  done ; \
-	done
-uninstall-data-html:
-	rm -f $(DESTDIR)$(htmldir)/index.html
-	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
-	done
+
+#
+# Additional install rules
+#
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
@@ -9765,70 +9996,6 @@ magick-version: magick/version.h
 magick/version.h: $(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-
-# Build HTML version of AUTHORS.txt
-$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/AUTHORS.txt $(top_srcdir)/www/AUTHORS.html
-
-# Build HTML version of BUGS.txt
-$(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
-
-# Build HTML version of BENCHMARKS.txt
-$(top_srcdir)/www/BENCHMARKS.html: $(top_srcdir)/BENCHMARKS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BENCHMARKS.txt $(top_srcdir)/www/BENCHMARKS.html
-
-# Build HTML version of CONTRIBUTE.txt
-$(top_srcdir)/www/contribute.html: $(top_srcdir)/CONTRIBUTE.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/CONTRIBUTE.txt $(top_srcdir)/www/contribute.html
-
-# Build HTML version of Copyright.txt
-$(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
-
-# Build HTML version of PROCESS.txt
-$(top_srcdir)/www/development.html: $(top_srcdir)/PROCESS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PROCESS.txt $(top_srcdir)/www/development.html
-
-# Build HTML version of FAQ.txt
-$(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
-
-# Build HTML version of ChangeLog
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of INSTALL-unix.txt
-$(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-unix.txt $(top_srcdir)/www/INSTALL-unix.html
-
-# Build HTML version of INSTALL-windows.txt
-$(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
-
-# Build HTML version of mission
-$(top_srcdir)/www/mission.html: $(top_srcdir)/MISSION.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/MISSION.txt $(top_srcdir)/www/mission.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/NEWS.txt $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of PLATFORMS
-$(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PLATFORMS.txt $(top_srcdir)/www/PLATFORMS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
-
-# Build HTML version of OpenMP.txt
-$(top_srcdir)/www/OpenMP.html: $(top_srcdir)/OpenMP.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/OpenMP.txt $(top_srcdir)/www/OpenMP.html
-
-# Format C API documentation
-format_c_api_docs:
-	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \

@@ -1,892 +1,988 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>image - Miscellaneous image methods</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>image</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#accessdefinition">AccessDefinition</a></li>
-		<li><a href="#adddefinitions">AddDefinitions</a></li>
-		<li><a href="#allocateimage">AllocateImage</a></li>
-		<li><a href="#allocateimagecolormap">AllocateImageColormap</a></li>
-		<li><a href="#allocatenextimage">AllocateNextImage</a></li>
-		<li><a href="#animateimages">AnimateImages</a></li>
-		<li><a href="#appendimages">AppendImages</a></li>
-		<li><a href="#averageimages">AverageImages</a></li>
-		<li><a href="#catchimageexception">CatchImageException</a></li>
-		<li><a href="#clippathimage">ClipPathImage</a></li>
-		<li><a href="#cloneimage">CloneImage</a></li>
-		<li><a href="#cloneimageinfo">CloneImageInfo</a></li>
-		<li><a href="#cyclecolormapimage">CycleColormapImage</a></li>
-		<li><a href="#describeimage">DescribeImage</a></li>
-		<li><a href="#destroyimage">DestroyImage</a></li>
-		<li><a href="#destroyimageinfo">DestroyImageInfo</a></li>
-		<li><a href="#displayimages">DisplayImages</a></li>
-		<li><a href="#getimageclipmask">GetImageClipMask</a></li>
-		<li><a href="#getimagedepth">GetImageDepth</a></li>
-		<li><a href="#getimageexception">GetImageException</a></li>
-		<li><a href="#getimagecharacteristics">GetImageCharacteristics</a></li>
-		<li><a href="#getimagegeometry">GetImageGeometry</a></li>
-		<li><a href="#getimageinfo">GetImageInfo</a></li>
-		<li><a href="#getimagestatistics">GetImageStatistics</a></li>
-		<li><a href="#getimagetype">GetImageType</a></li>
-		<li><a href="#istaintimage">IsTaintImage</a></li>
-		<li><a href="#modifyimage">ModifyImage</a></li>
-		<li><a href="#plasmaimage">PlasmaImage</a></li>
-		<li><a href="#referenceimage">ReferenceImage</a></li>
-		<li><a href="#removedefinitions">RemoveDefinitions</a></li>
-		<li><a href="#replaceimagecolormap">ReplaceImageColormap</a></li>
-		<li><a href="#setimage">SetImage</a></li>
-		<li><a href="#setimageclipmask">SetImageClipMask</a></li>
-		<li><a href="#setimagedepth">SetImageDepth</a></li>
-		<li><a href="#setimageopacity">SetImageOpacity</a></li>
-		<li><a href="#setimagetype">SetImageType</a></li>
-		<li><a href="#textureimage">TextureImage</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>image - Miscellaneous image methods</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>const char * <strong>AccessDefinition</strong>( const ImageInfo *image_info, const char *magick, const char *key );</P>
-<P>void  <strong>AddDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
-<P>Image * <strong>AllocateImage</strong>( const ImageInfo *image_info );</P>
-<P>unsigned int  <strong>AllocateImageColormap</strong>( Image *image, const unsigned long colors );</P>
-<P>void  <strong>AllocateNextImage</strong>( const ImageInfo *image_info, Image *image );</P>
-<P>unsigned int  <strong>AnimateImages</strong>( const ImageInfo *image_info, Image *image );</P>
-<P>Image * <strong>AppendImages</strong>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
-<P>Image * <strong>AverageImages</strong>( Image *image, ExceptionInfo *exception );</P>
-<P>ExceptionType  <strong>CatchImageException</strong>( Image *image );</P>
-<P>unsigned int  <strong>ClipPathImage</strong>( Image *image, const char *pathname, const unsigned int inside );</P>
-<P>Image * <strong>CloneImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
-<P>ImageInfo * <strong>CloneImageInfo</strong>( const ImageInfo *image_info );</P>
-<P><strong>CycleColormapImage</strong>( Image *image, const int amount );</P>
-<P>void  <strong>DescribeImage</strong>( Image *image, FILE *file, const unsigned int verbose );</P>
-<P>void  <strong>DestroyImage</strong>( Image *image );</P>
-<P>void  <strong>DestroyImageInfo</strong>( ImageInfo *image_info );</P>
-<P>unsigned int  <strong>DisplayImages</strong>( const ImageInfo *image_info, Image *image );</P>
-<P>MagickPassFail  <strong>GetImageCharacteristics</strong>( const Image *image, ImageCharacteristics *characteristics, MagickBool optimize, ExceptionInfo *exception );</P>
-<P>Image * <strong>GetImageClipMask</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned long  <strong>GetImageDepth</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>void  <strong>GetImageException</strong>( Image *image, ExceptionInfo *exception );</P>
-<P>int  <strong>GetImageGeometry</strong>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
-<P>void  <strong>GetImageInfo</strong>( ImageInfo *image_info );</P>
-<P>MagickPassFail  <strong>GetImageStatistics</strong>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
-<P>ImageType  <strong>GetImageType</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsTaintImage</strong>( const Image *image );</P>
-<P><strong>ModifyImage</strong>( Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>PlasmaImage</strong>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
-<P>Image * <strong>ReferenceImage</strong>( Image *image );</P>
-<P>void  <strong>RemoveDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
-<P>MagickPassFail  <strong>ReplaceImageColormap</strong>( Image *image, const PixelPacket *colormap, const unsigned int colors );</P>
-<P>void  <strong>SetImage</strong>( Image *image, const Quantum opacity );</P>
-<P>unsigned int  <strong>SetImageClipMask</strong>( Image *image, const Image *clip_mask );</P>
-<P>unsigned int  <strong>SetImageDepth</strong>( Image *image, const unsigned long depth );</P>
-<P>void  <strong>SetImageOpacity</strong>( Image *image, const unsigned int opacity );</P>
-<P>( void ) <strong>SetImageType</strong>( Image *image, const ImageType image_type );</P>
-<P>unsigned int  <strong>TextureImage</strong>( Image *image, const Image *texture );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="accessdefinition">AccessDefinition</a></h2>
-<blockquote>AccessDefinition() searches the definitions for an entry matching the specified magick and key. NULL is returned if no matching entry is found. </blockquote><P>The format of the AccessDefinition method is:</P>
-<blockquote>const char *AccessDefinition ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *magick, const char *key ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_magick_3a">magick:</a></strong>
-
-<DD>
-<P>Format ID.  This is usually the same as the coder name.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_key_3a">key:</a></strong>
-
-<DD>
-<P>Key to search for.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="image">
+<h1 class="title">image</h1>
+<h2 class="subtitle" id="miscellaneous-image-methods">Miscellaneous image methods</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#accessdefinition" id="id73" name="id73">AccessDefinition</a></li>
+<li><a class="reference" href="#adddefinitions" id="id74" name="id74">AddDefinitions</a></li>
+<li><a class="reference" href="#allocateimage" id="id75" name="id75">AllocateImage</a></li>
+<li><a class="reference" href="#allocateimagecolormap" id="id76" name="id76">AllocateImageColormap</a></li>
+<li><a class="reference" href="#allocatenextimage" id="id77" name="id77">AllocateNextImage</a></li>
+<li><a class="reference" href="#animateimages" id="id78" name="id78">AnimateImages</a></li>
+<li><a class="reference" href="#appendimages" id="id79" name="id79">AppendImages</a></li>
+<li><a class="reference" href="#averageimages" id="id80" name="id80">AverageImages</a></li>
+<li><a class="reference" href="#catchimageexception" id="id81" name="id81">CatchImageException</a></li>
+<li><a class="reference" href="#clippathimage" id="id82" name="id82">ClipPathImage</a></li>
+<li><a class="reference" href="#cloneimage" id="id83" name="id83">CloneImage</a></li>
+<li><a class="reference" href="#cloneimageinfo" id="id84" name="id84">CloneImageInfo</a></li>
+<li><a class="reference" href="#cyclecolormapimage" id="id85" name="id85">CycleColormapImage</a></li>
+<li><a class="reference" href="#describeimage" id="id86" name="id86">DescribeImage</a></li>
+<li><a class="reference" href="#destroyimage" id="id87" name="id87">DestroyImage</a></li>
+<li><a class="reference" href="#destroyimageinfo" id="id88" name="id88">DestroyImageInfo</a></li>
+<li><a class="reference" href="#displayimages" id="id89" name="id89">DisplayImages</a></li>
+<li><a class="reference" href="#getimageclipmask" id="id90" name="id90">GetImageClipMask</a></li>
+<li><a class="reference" href="#getimagedepth" id="id91" name="id91">GetImageDepth</a></li>
+<li><a class="reference" href="#getimageexception" id="id92" name="id92">GetImageException</a></li>
+<li><a class="reference" href="#getimagecharacteristics" id="id93" name="id93">GetImageCharacteristics</a></li>
+<li><a class="reference" href="#getimagegeometry" id="id94" name="id94">GetImageGeometry</a></li>
+<li><a class="reference" href="#getimageinfo" id="id95" name="id95">GetImageInfo</a></li>
+<li><a class="reference" href="#getimagestatistics" id="id96" name="id96">GetImageStatistics</a></li>
+<li><a class="reference" href="#getimagetype" id="id97" name="id97">GetImageType</a></li>
+<li><a class="reference" href="#istaintimage" id="id98" name="id98">IsTaintImage</a></li>
+<li><a class="reference" href="#modifyimage" id="id99" name="id99">ModifyImage</a></li>
+<li><a class="reference" href="#plasmaimage" id="id100" name="id100">PlasmaImage</a></li>
+<li><a class="reference" href="#referenceimage" id="id101" name="id101">ReferenceImage</a></li>
+<li><a class="reference" href="#removedefinitions" id="id102" name="id102">RemoveDefinitions</a></li>
+<li><a class="reference" href="#replaceimagecolormap" id="id103" name="id103">ReplaceImageColormap</a></li>
+<li><a class="reference" href="#setimage" id="id104" name="id104">SetImage</a></li>
+<li><a class="reference" href="#setimageclipmask" id="id105" name="id105">SetImageClipMask</a></li>
+<li><a class="reference" href="#setimagedepth" id="id106" name="id106">SetImageDepth</a></li>
+<li><a class="reference" href="#setimageopacity" id="id107" name="id107">SetImageOpacity</a></li>
+<li><a class="reference" href="#setimagetype" id="id108" name="id108">SetImageType</a></li>
+<li><a class="reference" href="#textureimage" id="id109" name="id109">TextureImage</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id73" id="accessdefinition" name="accessdefinition">AccessDefinition</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*AccessDefinition(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*magick,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>AccessDefinition() searches the definitions for an entry matching the
+specified magick and key. NULL is returned if no matching entry is found.</p>
+<p>The format of the AccessDefinition method is:</p>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*AccessDefinition(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*magick,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>magick:</dt>
+<dd>Format ID. This is usually the same as the coder name.</dd>
+<dt>key:</dt>
+<dd>Key to search for.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="adddefinitions">AddDefinitions</a></h2>
-<blockquote>AddDefinitions() adds definitions from a key/value based string to the current map of definitions in ImageInfo. Definitions may be used by coders/decoders that read and write images. </blockquote><P>The format of the AddDefinitions method is:</P>
-<blockquote>void AddDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_options_3a">options:</a></strong>
-
-<DD>
-<P>List of key/value pairs to put in the definitions map.  The format of the string is ``key1[=[value1]],key2[=[value2]],...''. A missing value argument (with or without the equal sign) inserts an empty, zero length string as value for a key.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Errors result in updates to this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id74" id="adddefinitions" name="adddefinitions">AddDefinitions</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">AddDefinitions(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*options</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>AddDefinitions() adds definitions from a key/value based string to the current
+map of definitions in ImageInfo. Definitions may be used by coders/decoders
+that read and write images.</p>
+<p>The format of the AddDefinitions method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">AddDefinitions(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*options</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>options:</dt>
+<dd>List of key/value pairs to put in the definitions map. The
+format of the string is &quot;key1[=[value1]],key2[=[value2]],...&quot;. A missing
+value argument (with or without the equal sign) inserts an empty, zero
+length string as value for a key.</dd>
+<dt>exception:</dt>
+<dd>Errors result in updates to this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="allocateimage">AllocateImage</a></h2>
-<blockquote>AllocateImage() returns a pointer to an image structure initialized to default values. </blockquote><P>The format of the AllocateImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AllocateImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id75" id="allocateimage" name="allocateimage">AllocateImage</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AllocateImage(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>AllocateImage() returns a pointer to an image structure initialized to
+default values.</p>
+<p>The format of the AllocateImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AllocateImage(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>Many of the image default values are set from this
+structure.  For example, filename, compression, depth, background color,
+and others.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="allocateimagecolormap">AllocateImageColormap</a></h2>
-<blockquote>AllocateImageColormap() allocates an image colormap and initializes it to a linear gray colorspace with increasing intensity. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory. </blockquote><P>The format of the AllocateImageColormap method is:</P>
-<blockquote>unsigned int AllocateImageColormap ( <A HREF="types.html#Image">Image</A> *image, const unsigned long colors ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_colors_3a">colors:</a></strong>
-
-<DD>
-<P>The number of colors in the image colormap.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id76" id="allocateimagecolormap" name="allocateimagecolormap">AllocateImageColormap</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AllocateImageColormap(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">colors</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>AllocateImageColormap() allocates an image colormap and initializes
+it to a linear gray colorspace with increasing intensity.  If the image
+already has a colormap, it is replaced.  AllocateImageColormap() returns
+True if successful, otherwise False if there is not enough memory.</p>
+<p>The format of the AllocateImageColormap method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AllocateImageColormap(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">colors</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>colors:</dt>
+<dd>The number of colors in the image colormap.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="allocatenextimage">AllocateNextImage</a></h2>
-<blockquote>Use AllocateNextImage() to initialize the next image in a sequence to default values. The next member of image points to the newly allocated image. If there is a memory shortage, next is assigned NULL. </blockquote><P>The format of the AllocateNextImage method is:</P>
-<blockquote>void AllocateNextImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id77" id="allocatenextimage" name="allocatenextimage">AllocateNextImage</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">AllocateNextImage(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>Use AllocateNextImage() to initialize the next image in a sequence to
+default values.  The next member of image points to the newly allocated
+image.  If there is a memory shortage, next is assigned NULL.</p>
+<p>The format of the AllocateNextImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">AllocateNextImage(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>Many of the image default values are set from this
+structure.  For example, filename, compression, depth, background color,
+and others.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="animateimages">AnimateImages</a></h2>
-<blockquote>AnimateImages() repeatedly displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the AnimateImages method is:</P>
-<blockquote>unsigned int AnimateImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id78" id="animateimages" name="animateimages">AnimateImages</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AnimateImages(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>AnimateImages() repeatedly displays an image sequence to any X window
+screen.  It returns a value other than 0 if successful.  Check the
+exception member of image to determine the reason for any failure.</p>
+<p>The format of the AnimateImages method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">AnimateImages(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="appendimages">AppendImages</a></h2>
-<blockquote>The AppendImages() method takes a set of images and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right. </blockquote><P>The format of the AppendImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AppendImages ( const <A HREF="types.html#Image">Image</A> *image, const unsigned int stack, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image sequence.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_stack_3a">stack:</a></strong>
-
-<DD>
-<P>A value other than 0 stacks the images top-to-bottom.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id79" id="appendimages" name="appendimages">AppendImages</a></h1>
+<div class="section">
+<h2><a id="id11" name="id11">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AppendImages(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">stack,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id12" name="id12">Description</a></h2>
+<p>The AppendImages() method takes a set of images and appends them to each
+other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
+<p>The format of the AppendImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AppendImages(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">stack,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image sequence.</dd>
+<dt>stack:</dt>
+<dd>A value other than 0 stacks the images top-to-bottom.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="averageimages">AverageImages</a></h2>
-<P>The <code>Average()</code> method takes a set of images and averages them together.  Each image in the set must have the same width and height.  <code>Average()</code> returns a single image with each corresponding pixel component of each image averaged.  On failure, a NULL image is returned and exception describes the reason for the failure.</P>
-<P>The format of the AverageImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AverageImages ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image sequence.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id80" id="averageimages" name="averageimages">AverageImages</a></h1>
+<div class="section">
+<h2><a id="id13" name="id13">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AverageImages(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id14" name="id14">Description</a></h2>
+<p>The Average() method takes a set of images and averages them together.
+Each image in the set must have the same width and height.  Average()
+returns a single image with each corresponding pixel component of
+each image averaged.   On failure, a NULL image is returned and
+exception describes the reason for the failure.</p>
+<p>The format of the AverageImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AverageImages(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image sequence.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="catchimageexception">CatchImageException</a></h2>
-<blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
-<blockquote><A HREF="types.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>An image sequence.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id81" id="catchimageexception" name="catchimageexception">CatchImageException</a></h1>
+<div class="section">
+<h2><a id="id15" name="id15">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">ExceptionType</span> <span class="pre">CatchImageException(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id16" name="id16">Description</a></h2>
+<p>CatchImageException() returns if no exceptions are found in the image
+sequence, otherwise it determines the most severe exception and reports
+it as a warning or error depending on the severity.</p>
+<p>The format of the CatchImageException method is:</p>
+<p><tt class="docutils literal"><span class="pre">ExceptionType</span> <span class="pre">CatchImageException(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>An image sequence.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="clippathimage">ClipPathImage</a></h2>
-<blockquote>ClipPathImage() sets the image clip mask based any clipping path information if it exists. </blockquote><P>The format of the ClipPathImage method is:</P>
-<blockquote>unsigned int ClipPathImage ( <A HREF="types.html#Image">Image</A> *image, const char *pathname, const unsigned int inside ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_pathname_3a">pathname:</a></strong>
-
-<DD>
-<P>name of clipping path resource.  If name is preceded by #, use clipping path numbered by name.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_inside_3a">inside:</a></strong>
-
-<DD>
-<P>if non-zero, later operations take effect inside clipping path.  Otherwise later operations take effect outside clipping path.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id82" id="clippathimage" name="clippathimage">ClipPathImage</a></h1>
+<div class="section">
+<h2><a id="id17" name="id17">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ClipPathImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pathname,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">inside</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id18" name="id18">Description</a></h2>
+<p>ClipPathImage() sets the image clip mask based any clipping path information
+if it exists.</p>
+<p>The format of the ClipPathImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ClipPathImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pathname,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">inside</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>pathname:</dt>
+<dd>name of clipping path resource. If name is preceded by #, use
+clipping path numbered by name.</dd>
+<dt>inside:</dt>
+<dd>if non-zero, later operations take effect inside clipping path.
+Otherwise later operations take effect outside clipping path.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="cloneimage">CloneImage</a></h2>
-<blockquote>CloneImage() copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the SetImagePixels ( ) and SyncImagePixels ( ) methods. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the CloneImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *CloneImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_columns_3a">columns:</a></strong>
-
-<DD>
-<P>The number of columns in the cloned image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_rows_3a">rows:</a></strong>
-
-<DD>
-<P>The number of rows in the cloned image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_orphan_3a">orphan:</a></strong>
-
-<DD>
-<P>With a value other than 0, the cloned image is an orphan.  An orphan is a stand-alone image that is not assocated with an image list.  In effect, the next and previous members of the cloned image is set to NULL.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id83" id="cloneimage" name="cloneimage">CloneImage</a></h1>
+<div class="section">
+<h2><a id="id19" name="id19">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*CloneImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">orphan,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id20" name="id20">Description</a></h2>
+<p>CloneImage() copies an image and returns the copy as a new image object.
+If the specified columns and rows is 0, an exact copy of the image is
+returned, otherwise the pixel data is undefined and must be initialized
+with the SetImagePixels() and SyncImagePixels() methods.  On failure,
+a NULL image is returned and exception describes the reason for the
+failure.</p>
+<p>The format of the CloneImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*CloneImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">orphan,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>columns:</dt>
+<dd>The number of columns in the cloned image.</dd>
+<dt>rows:</dt>
+<dd>The number of rows in the cloned image.</dd>
+<dt>orphan:</dt>
+<dd>With a value other than 0, the cloned image is an orphan.  An
+orphan is a stand-alone image that is not assocated with an image list.
+In effect, the next and previous members of the cloned image is set to
+NULL.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="cloneimageinfo">CloneImageInfo</a></h2>
-<blockquote>CloneImageInfo() makes a copy of the given image info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneImageInfo method is:</P>
-<blockquote><A HREF="types.html#ImageInfo">ImageInfo</A> *CloneImageInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id84" id="cloneimageinfo" name="cloneimageinfo">CloneImageInfo</a></h1>
+<div class="section">
+<h2><a id="id21" name="id21">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">ImageInfo</span> <span class="pre">*CloneImageInfo(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id22" name="id22">Description</a></h2>
+<p>CloneImageInfo() makes a copy of the given image info structure.  If
+NULL is specified, a new image info structure is created initialized to
+default values.</p>
+<p>The format of the CloneImageInfo method is:</p>
+<p><tt class="docutils literal"><span class="pre">ImageInfo</span> <span class="pre">*CloneImageInfo(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="cyclecolormapimage">CycleColormapImage</a></h2>
-<P><code>CycleColormap()</code> displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</P>
-<P>The format of the CycleColormapImage method is:</P>
-<blockquote>CycleColormapImage ( <A HREF="types.html#Image">Image</A> *image, const int amount ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_amount_3a">amount:</a></strong>
-
-<DD>
-<P>Offset the colormap this much.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id85" id="cyclecolormapimage" name="cyclecolormapimage">CycleColormapImage</a></h1>
+<div class="section">
+<h2><a id="id23" name="id23">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">CycleColormapImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">amount</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id24" name="id24">Description</a></h2>
+<p>CycleColormap() displaces an image's colormap by a given number of
+positions.  If you cycle the colormap a number of times you can produce
+a psychodelic effect.</p>
+<p>The format of the CycleColormapImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">CycleColormapImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">amount</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>amount:</dt>
+<dd>Offset the colormap this much.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="describeimage">DescribeImage</a></h2>
-<blockquote>DescribeImage() describes an image by printing its attributes to the file. Attributes include the image width, height, size, and others. </blockquote><P>The format of the DescribeImage method is:</P>
-<blockquote>void DescribeImage ( <A HREF="types.html#Image">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_file_3a">file:</a></strong>
-
-<DD>
-<P>The file, typically stdout.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_verbose_3a">verbose:</a></strong>
-
-<DD>
-<P>A value other than zero prints more detailed information about the image.  Values greater than one enable counting the number of colors in the image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id86" id="describeimage" name="describeimage">DescribeImage</a></h1>
+<div class="section">
+<h2><a id="id25" name="id25">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DescribeImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">FILE</span> <span class="pre">*file,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">verbose</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id26" name="id26">Description</a></h2>
+<p>DescribeImage() describes an image by printing its attributes to the file.
+Attributes include the image width, height, size, and others.</p>
+<p>The format of the DescribeImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DescribeImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">FILE</span> <span class="pre">*file,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">verbose</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>file:</dt>
+<dd>The file, typically stdout.</dd>
+<dt>verbose:</dt>
+<dd>A value other than zero prints more detailed information
+about the image. Values greater than one enable counting the number of
+colors in the image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="destroyimage">DestroyImage</a></h2>
-<blockquote>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero. </blockquote><P>The format of the DestroyImage method is:</P>
-<blockquote>void DestroyImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id87" id="destroyimage" name="destroyimage">DestroyImage</a></h1>
+<div class="section">
+<h2><a id="id27" name="id27">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id28" name="id28">Description</a></h2>
+<p>DestroyImage() dereferences an image, deallocating memory associated with
+the image if the reference count becomes zero.</p>
+<p>The format of the DestroyImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="destroyimageinfo">DestroyImageInfo</a></h2>
-<blockquote>DestroyImageInfo() deallocates memory associated with a <A HREF="types.html#ImageInfo">ImageInfo</A> structure. </blockquote><P>The format of the DestroyImageInfo method is:</P>
-<blockquote>void DestroyImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id88" id="destroyimageinfo" name="destroyimageinfo">DestroyImageInfo</a></h1>
+<div class="section">
+<h2><a id="id29" name="id29">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyImageInfo(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id30" name="id30">Description</a></h2>
+<p>DestroyImageInfo() deallocates memory associated with a ImageInfo
+structure.</p>
+<p>The format of the DestroyImageInfo method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyImageInfo(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="displayimages">DisplayImages</a></h2>
-<blockquote>DisplayImages() displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the DisplayImages method is:</P>
-<blockquote>unsigned int DisplayImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id89" id="displayimages" name="displayimages">DisplayImages</a></h1>
+<div class="section">
+<h2><a id="id31" name="id31">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DisplayImages(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id32" name="id32">Description</a></h2>
+<p>DisplayImages() displays an image sequence to any X window screen.  It
+returns a value other than 0 if successful.  Check the exception member
+of image to determine the reason for any failure.</p>
+<p>The format of the DisplayImages method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DisplayImages(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimageclipmask">GetImageClipMask</a></h2>
-<P>GetImageClipMask returns a reference-counted copy of the current image clip mask.  This copy must be deallocated using <code>DestroyImage()</code> once it is no longer needed.  If the image does not have an associated clip mask, then NULL is returned.  Use <code>SetImageClipMask()</code> to add a clip mask to an image, or remove a clip mask.</P>
-<P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <code>SyncImagePixels()</code> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
-<P>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes from modification.  The clip mask does *not* protect the image colormap since the image colormap is globally shared by all pixels in a PseudoClass image.</P>
-<P>The format of the GetImageClipMask method is</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetImageClipMask ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A descripton of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Reason for failure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id90" id="getimageclipmask" name="getimageclipmask">GetImageClipMask</a></h1>
+<div class="section">
+<h2><a id="id33" name="id33">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*GetImageClipMask(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id34" name="id34">Description</a></h2>
+<p>GetImageClipMask returns a reference-counted copy of the current image
+clip mask. This copy must be deallocated using DestroyImage() once it is
+no longer needed.  If the image does not have an associated clip mask,
+then NULL is returned.  Use SetImageClipMask() to add a clip mask to an
+image, or remove a clip mask.</p>
+<p>If a component of the clip mask is set to TransparentOpacity (maximum
+value) then the corresponding image pixel component will not be updated
+when SyncImagePixels() is applied. The clip mask may be used to constrain
+the results of an image processing operation to a region of the image.
+Regions outside those allowed by the clip mask may be processed, but only
+pixel quantums allowed by the clip mask will actually be updated.</p>
+<p>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes
+from modification. The clip mask does <em>not</em> protect the image colormap since
+the image colormap is globally shared by all pixels in a PseudoClass image.</p>
+<p>The format of the GetImageClipMask method is</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*GetImageClipMask(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A descripton of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Reason for failure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagedepth">GetImageDepth</a></h2>
-<blockquote>GetImageDepth() returns the minimum bit depth of the image required to ensure that data is not lost in the red, green, blue, and opacity, channels. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a black and white image since only one bit of resolution is required to represent a black and white image. </blockquote><P>The format of the GetImageDepth method is:</P>
-<blockquote>unsigned long GetImageDepth ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id91" id="getimagedepth" name="getimagedepth">GetImageDepth</a></h1>
+<div class="section">
+<h2><a id="id35" name="id35">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">GetImageDepth(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id36" name="id36">Description</a></h2>
+<p>GetImageDepth() returns the minimum bit depth of the image required to
+ensure that data is not lost in the red, green, blue, and opacity, channels.
+Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
+depending on the QuantumDepth value set when the software is compiled.
+GetImageDepth() returns the smallest modulus storage size which supports
+the scale of the pixel within the range (i.e. no information is lost).
+As an example, the value one is returned for a black and white image
+since only one bit of resolution is required to represent a black and white
+image.</p>
+<p>The format of the GetImageDepth method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">GetImageDepth(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimageexception">GetImageException</a></h2>
-<blockquote>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter. </blockquote><P>The format of the GetImageException method is:</P>
-<blockquote>void GetImageException ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>Specifies a pointer to a list of one or more images.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>return the highest severity exception.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id92" id="getimageexception" name="getimageexception">GetImageException</a></h1>
+<div class="section">
+<h2><a id="id37" name="id37">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">GetImageException(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id38" name="id38">Description</a></h2>
+<p>GetImageException() traverses an image sequence and returns any
+error more severe than noted by the exception parameter.</p>
+<p>The format of the GetImageException method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">GetImageException(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>Specifies a pointer to a list of one or more images.</dd>
+<dt>exception:</dt>
+<dd>return the highest severity exception.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagecharacteristics">GetImageCharacteristics</a></h2>
-<P>GetImageCharacteristics obtains the basic characteristics of the image and stores the characterisistics in the user provided ImageCharacteristics structure.  If optimize is set to MagickTrue, then exhaustive testing of the image pixels is performed (as required). MagickPass is returned if this method executes without error.</P>
-<P>The format of the GetImageCharacteristics method is:</P>
-<blockquote>MagickPassFail GetImageCharacteristics ( const <A HREF="types.html#Image">Image</A> *image, ImageCharacteristics *characteristics, MagickBool optimize, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_characteristics_3a">characteristics:</a></strong>
-
-<DD>
-<P>An ImageCharacteristics structure to update.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_optimize_3a">optimize:</a></strong>
-
-<DD>
-<P>Inspect image pixels (if required)</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Any errors are reported here.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id93" id="getimagecharacteristics" name="getimagecharacteristics">GetImageCharacteristics</a></h1>
+<div class="section">
+<h2><a id="id39" name="id39">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageCharacteristics(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ImageCharacteristics</span> <span class="pre">*characteristics,</span> <span class="pre">MagickBool</span> <span class="pre">optimize,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id40" name="id40">Description</a></h2>
+<p>GetImageCharacteristics obtains the basic characteristics of the image
+and stores the characterisistics in the user provided
+ImageCharacteristics structure.  If optimize is set to MagickTrue, then
+exhaustive testing of the image pixels is performed (as required).
+MagickPass is returned if this method executes without error.</p>
+<p>The format of the GetImageCharacteristics method is:</p>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageCharacteristics(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ImageCharacteristics</span> <span class="pre">*characteristics,</span> <span class="pre">MagickBool</span> <span class="pre">optimize,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>characteristics:</dt>
+<dd>An ImageCharacteristics structure to update.</dd>
+<dt>optimize:</dt>
+<dd>Inspect image pixels (if required)</dd>
+<dt>exception:</dt>
+<dd>Any errors are reported here.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagegeometry">GetImageGeometry</a></h2>
-<blockquote>GetImageGeometry() returns a region as defined by the geometry string with respect to the image and its gravity. </blockquote><P>The format of the GetImageGeometry method is:</P>
-<blockquote>int GetImageGeometry ( const <A HREF="types.html#Image">Image</A> *image, const char *geometry, const unsigned int size_to_fit, <A HREF="types.html#RectangleInfo">RectangleInfo</A> *region_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_flags_3a">flags:</a></strong>
-
-<DD>
-<P>Method GetImageGeometry returns a bitmask that indicates which of the four values were located in the geometry string.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_geometry_3a">geometry:</a></strong>
-
-<DD>
-<P>The geometry (e.g.  100x100+10+10).</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_size_to_fit_3a">size_to_fit:</a></strong>
-
-<DD>
-<P>A value other than 0 means to scale the region so it fits within the specified width and height.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_region_info_3a">region_info:</a></strong>
-
-<DD>
-<P>The region as defined by the geometry string with respect to the image and its gravity.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id94" id="getimagegeometry" name="getimagegeometry">GetImageGeometry</a></h1>
+<div class="section">
+<h2><a id="id41" name="id41">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">int</span> <span class="pre">GetImageGeometry(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*geometry,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">size_to_fit,</span> <span class="pre">RectangleInfo</span> <span class="pre">*region_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id42" name="id42">Description</a></h2>
+<p>GetImageGeometry() returns a region as defined by the geometry string with
+respect to the image and its gravity.</p>
+<p>The format of the GetImageGeometry method is:</p>
+<p><tt class="docutils literal"><span class="pre">int</span> <span class="pre">GetImageGeometry(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*geometry,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">size_to_fit,</span> <span class="pre">RectangleInfo</span> <span class="pre">*region_info</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>flags:</dt>
+<dd>Method GetImageGeometry returns a bitmask that indicates
+which of the four values were located in the geometry string.</dd>
+<dt>geometry:</dt>
+<dd>The geometry (e.g. 100x100+10+10).</dd>
+<dt>size_to_fit:</dt>
+<dd>A value other than 0 means to scale the region so it
+fits within the specified width and height.</dd>
+<dt>region_info:</dt>
+<dd>The region as defined by the geometry string with
+respect to the image and its gravity.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimageinfo">GetImageInfo</a></h2>
-<blockquote>GetImageInfo() initializes image_info to default values. </blockquote><P>The format of the GetImageInfo method is:</P>
-<blockquote>void GetImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id95" id="getimageinfo" name="getimageinfo">GetImageInfo</a></h1>
+<div class="section">
+<h2><a id="id43" name="id43">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">GetImageInfo(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id44" name="id44">Description</a></h2>
+<p>GetImageInfo() initializes image_info to default values.</p>
+<p>The format of the GetImageInfo method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">GetImageInfo(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagestatistics">GetImageStatistics</a></h2>
-<P>GetImageStatistics computes common statistics (currently maximum, minimum, mean and standard deviation) for the available image channels.  The per-channel values are returned in an ImageStatistics structure.  Statistics are normalized to the range 0.0 to 1.0.  Multiply values by MaxRGB to obtain the statistics in quantum units.  Statistics for non-existent channels are set to zero.</P>
-<P>The format of the GetImageStatistics method is:</P>
-<blockquote>MagickPassFail GetImageStatistics ( const <A HREF="types.html#Image">Image</A> *image, ImageStatistics *statistics <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_statistics_3a">statistics:</a></strong>
-
-<DD>
-<P>An ImageStatistics structure to update with statistics.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Any errors are reported here.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id96" id="getimagestatistics" name="getimagestatistics">GetImageStatistics</a></h1>
+<div class="section">
+<h2><a id="id45" name="id45">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageStatistics(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ImageStatistics</span> <span class="pre">*statistics</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id46" name="id46">Description</a></h2>
+<p>GetImageStatistics computes common statistics (currently maximum, minimum,
+mean and standard deviation) for the available image channels. The
+per-channel values are returned in an ImageStatistics structure. Statistics
+are normalized to the range 0.0 to 1.0.  Multiply values by MaxRGB to obtain
+the statistics in quantum units. Statistics for non-existent channels are
+set to zero.</p>
+<p>The format of the GetImageStatistics method is:</p>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageStatistics(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ImageStatistics</span> <span class="pre">*statistics</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>statistics:</dt>
+<dd>An ImageStatistics structure to update with statistics.</dd>
+<dt>exception:</dt>
+<dd>Any errors are reported here.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagetype">GetImageType</a></h2>
-<blockquote>GetImageType() returns the type of image: </blockquote><pre>
-      Bilevel        Grayscale       GrayscaleMatte
-      Palette        PaletteMatte    TrueColor
-      TrueColorMatte ColorSeparation ColorSeparationMatte</pre>
-<P>The format of the GetImageType method is:</P>
-<blockquote><A HREF="types.html#ImageType">ImageType</A> GetImageType ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id97" id="getimagetype" name="getimagetype">GetImageType</a></h1>
+<div class="section">
+<h2><a id="id47" name="id47">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">ImageType</span> <span class="pre">GetImageType(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id48" name="id48">Description</a></h2>
+<p>GetImageType() returns the type of image:</p>
+<p>Bilevel        Grayscale       GrayscaleMatte
+Palette        PaletteMatte    TrueColor
+TrueColorMatte ColorSeparation ColorSeparationMatte</p>
+<p>The format of the GetImageType method is:</p>
+<p><tt class="docutils literal"><span class="pre">ImageType</span> <span class="pre">GetImageType(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="istaintimage">IsTaintImage</a></h2>
-<blockquote>IsTaintImage() returns a value other than 0 if any pixel in the image has been altered since it was first constituted. </blockquote><P>The format of the IsTaintImage method is:</P>
-<blockquote>unsigned int IsTaintImage ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id98" id="istaintimage" name="istaintimage">IsTaintImage</a></h1>
+<div class="section">
+<h2><a id="id49" name="id49">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">IsTaintImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id50" name="id50">Description</a></h2>
+<p>IsTaintImage() returns a value other than 0 if any pixel in the image
+has been altered since it was first constituted.</p>
+<p>The format of the IsTaintImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">IsTaintImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="modifyimage">ModifyImage</a></h2>
-<blockquote>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary. </blockquote><P>The format of the ModifyImage method is:</P>
-<blockquote>ModifyImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id99" id="modifyimage" name="modifyimage">ModifyImage</a></h1>
+<div class="section">
+<h2><a id="id51" name="id51">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">ModifyImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id52" name="id52">Description</a></h2>
+<p>ModifyImage() ensures that there is only a single reference to the image
+to be modified, updating the provided image pointer to point to a clone of
+the original image if necessary.</p>
+<p>The format of the ModifyImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">ModifyImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="plasmaimage">PlasmaImage</a></h2>
-<blockquote>PlasmaImage() initializes an image with plasma fractal values. The image must be initialized with a base color and the random number generator seeded before this method is called. </blockquote><P>The format of the PlasmaImage method is:</P>
-<blockquote>unsigned int PlasmaImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#SegmentInfo">SegmentInfo</A> *segment, unsigned long attenuate, unsigned long depth ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_segment_3a">segment:</a></strong>
-
-<DD>
-<P>Define the region to apply plasma fractals values.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_attenuate_3a">attenuate:</a></strong>
-
-<DD>
-<P>Define the plasma attenuation factor.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_depth_3a">depth:</a></strong>
-
-<DD>
-<P>Limit the plasma recursion depth.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id100" id="plasmaimage" name="plasmaimage">PlasmaImage</a></h1>
+<div class="section">
+<h2><a id="id53" name="id53">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">PlasmaImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">SegmentInfo</span> <span class="pre">*segment,</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">attenuate,</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">depth</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id54" name="id54">Description</a></h2>
+<p>PlasmaImage() initializes an image with plasma fractal values.  The image
+must be initialized with a base color and the random number generator
+seeded before this method is called.</p>
+<p>The format of the PlasmaImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">PlasmaImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">SegmentInfo</span> <span class="pre">*segment,</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">attenuate,</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">depth</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>segment:</dt>
+<dd>Define the region to apply plasma fractals values.</dd>
+<dt>attenuate:</dt>
+<dd>Define the plasma attenuation factor.</dd>
+<dt>depth:</dt>
+<dd>Limit the plasma recursion depth.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="referenceimage">ReferenceImage</a></h2>
-<blockquote>ReferenceImage() increments the reference count associated with an image returning a pointer to the image. </blockquote><P>The format of the ReferenceImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *ReferenceImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id101" id="referenceimage" name="referenceimage">ReferenceImage</a></h1>
+<div class="section">
+<h2><a id="id55" name="id55">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*ReferenceImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id56" name="id56">Description</a></h2>
+<p>ReferenceImage() increments the reference count associated with an image
+returning a pointer to the image.</p>
+<p>The format of the ReferenceImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*ReferenceImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="removedefinitions">RemoveDefinitions</a></h2>
-<blockquote>RemoveDefinitions() removes definitions from the current map of definitions in ImageInfo. Definitions may be used by coders/decoders that read and write images. RemoveDefinitions ( ) returns true only if the specified keys are present in the map and are actually removed. </blockquote><P>The format of the RemoveDefinitions method is:</P>
-<blockquote>void RemoveDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image_info:</strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_keys_3a">keys:</a></strong>
-
-<DD>
-<P>List of keys to remove from the definitions map.  The format of the string is ``key1,key2,...''. A special key, '*', removes all the key/value pairs in the definitions map.  This key always succeeds.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Errors result in updates to this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id102" id="removedefinitions" name="removedefinitions">RemoveDefinitions</a></h1>
+<div class="section">
+<h2><a id="id57" name="id57">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">RemoveDefinitions(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*options</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id58" name="id58">Description</a></h2>
+<p>RemoveDefinitions() removes definitions from the current map of definitions
+in ImageInfo. Definitions may be used by coders/decoders that read and
+write images. RemoveDefinitions() returns true only if the specified keys
+are present in the map and are actually removed.</p>
+<p>The format of the RemoveDefinitions method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">RemoveDefinitions(</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*options</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>keys:</dt>
+<dd>List of keys to remove from the definitions map. The
+format of the string is &quot;key1,key2,...&quot;. A special key, '*', removes
+all the key/value pairs in the definitions map. This key always
+succeeds.</dd>
+<dt>exception:</dt>
+<dd>Errors result in updates to this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="replaceimagecolormap">ReplaceImageColormap</a></h2>
-<blockquote>ReplaceImageColormap() replaces an existing image colormap with a new image colormap. The new image colormap is expected to contain all of the colors from the existing colormap. The existing colormap indexes are adjusted to conform with positions in the new colormap. If the new colormap contains duplicate entries, then the associated colormap index will point to the first entry found in the colormap and other matching entries will not be used. MagickPass is returned if the operation is successful, otherwise MagickFail is returned, and image->exception is updated with the cause of the failure. </blockquote><P>This function is useful in case colormap entries need to match across multiple images or otherwise occupy specific locations.</P>
-<P>The format of the ReplaceImageColormap method is:</P>
-<blockquote>MagickPassFail ReplaceImageColormap ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> *colormap, const unsigned int colors ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>image in which to replace colormap.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_colormap_3a">colormap:</a></strong>
-
-<DD>
-<P>new colormap.</P>
-</dd>
-</li>
-<dt><strong>colors:</strong>
-
-<DD>
-<P>number of colors in new colormap.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id103" id="replaceimagecolormap" name="replaceimagecolormap">ReplaceImageColormap</a></h1>
+<div class="section">
+<h2><a id="id59" name="id59">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">ReplaceImageColormap(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">PixelPacket</span> <span class="pre">*colormap,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">colors</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id60" name="id60">Description</a></h2>
+<p>ReplaceImageColormap() replaces an existing image colormap with a new
+image colormap. The new image colormap is expected to contain all of the
+colors from the existing colormap. The existing colormap indexes are
+adjusted to conform with positions in the new colormap. If the new
+colormap contains duplicate entries, then the associated colormap index
+will point to the first entry found in the colormap and other matching
+entries will not be used. MagickPass is returned if the operation is
+successful, otherwise MagickFail is returned, and image-&gt;exception is
+updated with the cause of the failure.</p>
+<p>This function is useful in case colormap entries need to match across
+multiple images or otherwise occupy specific locations.</p>
+<p>The format of the ReplaceImageColormap method is:</p>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">ReplaceImageColormap(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">PixelPacket</span> <span class="pre">*colormap,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">colors</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>image in which to replace colormap.</dd>
+<dt>colormap:</dt>
+<dd>new colormap.</dd>
+<dt>colors:</dt>
+<dd>number of colors in new colormap.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimage">SetImage</a></h2>
-<blockquote>SetImage() sets the red, green, and blue components of each pixel to the image background color and the opacity component to the specified level of transparency. The background color is defined by the background_color member of the image. </blockquote><P>The format of the SetImage method is:</P>
-<blockquote>void SetImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Quantum">Quantum</A> opacity ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_opacity_3a">opacity:</a></strong>
-
-<DD>
-<P>Set each pixel to this level of transparency.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id104" id="setimage" name="setimage">SetImage</a></h1>
+<div class="section">
+<h2><a id="id61" name="id61">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">SetImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Quantum</span> <span class="pre">opacity</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id62" name="id62">Description</a></h2>
+<p>SetImage() sets the red, green, and blue components of each pixel to
+the image background color and the opacity component to the specified
+level of transparency.  The background color is defined by the
+background_color member of the image.</p>
+<p>The format of the SetImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">SetImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Quantum</span> <span class="pre">opacity</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>opacity:</dt>
+<dd>Set each pixel to this level of transparency.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimageclipmask">SetImageClipMask</a></h2>
-<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. </blockquote><P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <code>SyncImagePixels()</code> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
-<P>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes from modification.  The clip mask does *not* protect the image colormap since the image colormap is globally shared by all pixels in a PseudoClass image.</P>
-<P>The format of the SetImageClipMask method is:</P>
-<blockquote>unsigned int SetImageClipMask ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *clip_mask ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_clip_mask_3a">clip_mask:</a></strong>
-
-<DD>
-<P>The image clip mask.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id105" id="setimageclipmask" name="setimageclipmask">SetImageClipMask</a></h1>
+<div class="section">
+<h2><a id="id63" name="id63">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageClipMask(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*clip_mask</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id64" name="id64">Description</a></h2>
+<p>SetImageClipMask() associates a clip mask with the image.  The clip mask
+must be the same dimensions as the image.</p>
+<p>If a component of the clip mask is set to TransparentOpacity (maximum
+value) then the corresponding image pixel component will not be updated
+when SyncImagePixels() is applied. The clip mask may be used to constrain
+the results of an image processing operation to a region of the image.
+Regions outside those allowed by the clip mask may be processed, but only
+pixel quantums allowed by the clip mask will actually be updated.</p>
+<p>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes
+from modification. The clip mask does <em>not</em> protect the image colormap since
+the image colormap is globally shared by all pixels in a PseudoClass image.</p>
+<p>The format of the SetImageClipMask method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageClipMask(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*clip_mask</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>clip_mask:</dt>
+<dd>The image clip mask.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimagedepth">SetImageDepth</a></h2>
-<blockquote>SetImageDepth() translates the pixel quantums across all of the channels so that if they are later divided to fit within the specified bit depth, that no additional information is lost ( i.e. no remainder will result from the division ) . Note that any subsequent image processing is likely to increase the effective depth of the image channels. A non-zero value is returned if the operation is successful. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageDepth method is:</P>
-<blockquote>unsigned int SetImageDepth ( <A HREF="types.html#Image">Image</A> *image, const unsigned long depth ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image to update.</P>
-</dd>
-</li>
-<dt><strong>depth:</strong>
-
-<DD>
-<P>Desired image depth (range 1 to QuantumDepth)</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id106" id="setimagedepth" name="setimagedepth">SetImageDepth</a></h1>
+<div class="section">
+<h2><a id="id65" name="id65">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageDepth(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">depth</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id66" name="id66">Description</a></h2>
+<p>SetImageDepth() translates the pixel quantums across all of the channels
+so that if they are later divided to fit within the specified bit
+depth, that no additional information is lost (i.e. no remainder will
+result from the division).  Note that any subsequent image processing is
+likely to increase the effective depth of the image channels. A non-zero
+value is returned if the operation is successful. Check the exception
+member of image to determine the cause for any failure.</p>
+<p>The format of the SetImageDepth method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageDepth(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">depth</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image to update.</dd>
+<dt>depth:</dt>
+<dd>Desired image depth (range 1 to QuantumDepth)</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimageopacity">SetImageOpacity</a></h2>
-<blockquote>SetImageOpacity() attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel opacity values are blended with the supplied transparency value. </blockquote><P>The format of the SetImageOpacity method is:</P>
-<blockquote>void SetImageOpacity ( <A HREF="types.html#Image">Image</A> *image, const unsigned int opacity ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>opacity:</strong>
-
-<DD>
-<P>The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id107" id="setimageopacity" name="setimageopacity">SetImageOpacity</a></h1>
+<div class="section">
+<h2><a id="id67" name="id67">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">SetImageOpacity(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">opacity</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id68" name="id68">Description</a></h2>
+<p>SetImageOpacity() attenuates the opacity channel of an image.  If the
+image pixels are opaque, they are set to the specified opacity level.
+Otherwise, the pixel opacity values are blended with the supplied
+transparency value.</p>
+<p>The format of the SetImageOpacity method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">SetImageOpacity(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">opacity</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>opacity:</dt>
+<dd>The level of transparency: 0 is fully opaque and MaxRGB is
+fully transparent.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimagetype">SetImageType</a></h2>
-<blockquote>( void ) SetImageType() sets the type of image. Choose from these types: </blockquote><pre>
-      Bilevel        Grayscale       GrayscaleMatte
-      Palette        PaletteMatte    TrueColor
-      TrueColorMatte ColorSeparation ColorSeparationMatte
-      OptimizeType</pre>
-<P>The format of the (void) SetImageType method is:</P>
-<blockquote>( void ) SetImageType ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ImageType">ImageType</A> image_type ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_image_type_3a">image_type:</a></strong>
-
-<DD>
-<P>Image type.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id108" id="setimagetype" name="setimagetype">SetImageType</a></h1>
+<div class="section">
+<h2><a id="id69" name="id69">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">(</span> <span class="pre">void</span> <span class="pre">)SetImageType(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">ImageType</span> <span class="pre">image_type</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id70" name="id70">Description</a></h2>
+<p>(void) SetImageType() sets the type of image.  Choose from these types:</p>
+<p>Bilevel        Grayscale       GrayscaleMatte
+Palette        PaletteMatte    TrueColor
+TrueColorMatte ColorSeparation ColorSeparationMatte
+OptimizeType</p>
+<p>The format of the (void) SetImageType method is:</p>
+<p><tt class="docutils literal"><span class="pre">(</span> <span class="pre">void</span> <span class="pre">)SetImageType(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">ImageType</span> <span class="pre">image_type</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>image_type:</dt>
+<dd>Image type.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="textureimage">TextureImage</a></h2>
-<blockquote>TextureImage() repeatedly tiles the texture image across and down the image canvas. If the image canvas includes a matte channel, then the tile is alpha-composited "under" the image. MagickFail is returned if an error is encountered. </blockquote><P>The format of the TextureImage method is:</P>
-<blockquote>unsigned int TextureImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *texture ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_texture_3a">texture:</a></strong>
-
-<DD>
-<P>This image is the texture to layer on the background.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id109" id="textureimage" name="textureimage">TextureImage</a></h1>
+<div class="section">
+<h2><a id="id71" name="id71">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">TextureImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*texture</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id72" name="id72">Description</a></h2>
+<p>TextureImage() repeatedly tiles the texture image across and down the image
+canvas. If the image canvas includes a matte channel, then the tile is
+alpha-composited &quot;under&quot; the image. MagickFail is returned if an error is
+encountered.</p>
+<p>The format of the TextureImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">TextureImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*texture</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>texture:</dt>
+<dd>This image is the texture to layer on the background.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-04 21:26 UTC.
 
+</div>
 </body>
-
 </html>

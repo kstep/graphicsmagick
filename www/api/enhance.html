@@ -1,200 +1,261 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>enhance - Methods to enhance or adjust an image</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>enhance</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#contrastimage">ContrastImage</a></li>
-		<li><a href="#equalizeimage">EqualizeImage</a></li>
-		<li><a href="#gammaimage">GammaImage</a></li>
-		<li><a href="#levelimage">LevelImage</a></li>
-		<li><a href="#levelimagechannel">LevelImageChannel</a></li>
-		<li><a href="#modulateimage">ModulateImage</a></li>
-		<li><a href="#negateimage">NegateImage</a></li>
-		<li><a href="#normalizeimage">NormalizeImage</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>enhance - Methods to enhance or adjust an image</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>ContrastImage</strong>( Image *image, const unsigned int sharpen );</P>
-<P>unsigned int  <strong>EqualizeImage</strong>( Image *image );</P>
-<P>unsigned int  <strong>GammaImage</strong>( Image *image, const char *level );</P>
-<P>unsigned int  <strong>LevelImage</strong>( Image *image, const char *level );</P>
-<P>unsigned int  <strong>LevelImageChannel</strong>( Image *image, const char *level, const ChannelType channel, const double black_point, const double mid_point, const double white_point );</P>
-<P>unsigned int  <strong>ModulateImage</strong>( Image *image, const char *modulate );</P>
-<P>unsigned int  <strong>NegateImage</strong>( Image *image, const unsigned int grayscale );</P>
-<P>unsigned int  <strong>NormalizeImage</strong>( Image *image );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="contrastimage">ContrastImage</a></h2>
-<blockquote>ContrastImage() enhances the intensity differences between the lighter and darker elements of the image. Set sharpen to a value other than 0 to increase the image contrast otherwise the contrast is reduced. </blockquote><P>The format of the ContrastImage method is:</P>
-<blockquote>unsigned int ContrastImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned int sharpen ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_sharpen_3a">sharpen:</a></strong>
-
-<DD>
-<P>Increase or decrease image contrast.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="enhance">
+<h1 class="title">enhance</h1>
+<h2 class="subtitle" id="methods-to-enhance-or-adjust-an-image">Methods to enhance or adjust an image</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#contrastimage" id="id15" name="id15">ContrastImage</a></li>
+<li><a class="reference" href="#equalizeimage" id="id16" name="id16">EqualizeImage</a></li>
+<li><a class="reference" href="#gammaimage" id="id17" name="id17">GammaImage</a></li>
+<li><a class="reference" href="#levelimage" id="id18" name="id18">LevelImage</a></li>
+<li><a class="reference" href="#levelimagechannel" id="id19" name="id19">LevelImageChannel</a></li>
+<li><a class="reference" href="#modulateimage" id="id20" name="id20">ModulateImage</a></li>
+<li><a class="reference" href="#negateimage" id="id21" name="id21">NegateImage</a></li>
+<li><a class="reference" href="#normalizeimage" id="id22" name="id22">NormalizeImage</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id15" id="contrastimage" name="contrastimage">ContrastImage</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ContrastImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">sharpen</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>ContrastImage() enhances the intensity differences between the lighter and
+darker elements of the image.  Set sharpen to a value other than 0 to
+increase the image contrast otherwise the contrast is reduced.</p>
+<p>The format of the ContrastImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ContrastImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">sharpen</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>sharpen:</dt>
+<dd>Increase or decrease image contrast.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="equalizeimage">EqualizeImage</a></h2>
-<blockquote>EqualizeImage() applies a histogram equalization to the image. </blockquote><P>The format of the EqualizeImage method is:</P>
-<blockquote>unsigned int EqualizeImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id16" id="equalizeimage" name="equalizeimage">EqualizeImage</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">EqualizeImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>EqualizeImage() applies a histogram equalization to the image.</p>
+<p>The format of the EqualizeImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">EqualizeImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="gammaimage">GammaImage</a></h2>
-<blockquote>Use GammaImage() to gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3. </blockquote><P>You can also reduce the influence of a particular channel with a gamma value of 0.</P>
-<P>The format of the GammaImage method is:</P>
-<blockquote>unsigned int GammaImage ( <A HREF="types.html#Image">Image</A> *image, const char *level ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_level_3a">level:</a></strong>
-
-<DD>
-<P>Define the level of gamma correction.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id17" id="gammaimage" name="gammaimage">GammaImage</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">GammaImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>Use GammaImage() to gamma-correct an image.  The same image viewed on
+different devices will have perceptual differences in the way the
+image's intensities are represented on the screen.  Specify individual
+gamma levels for the red, green, and blue channels, or adjust all three
+with the gamma parameter.  Values typically range from 0.8 to 2.3.</p>
+<p>You can also reduce the influence of a particular channel with a gamma
+value of 0.</p>
+<p>The format of the GammaImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">GammaImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>level:</dt>
+<dd>Define the level of gamma correction.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="levelimage">LevelImage</a></h2>
-<blockquote>LevelImage() adjusts the levels of an image by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid ( gamma ), and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
-<blockquote>unsigned int LevelImage ( <A HREF="types.html#Image">Image</A> *image, const char *level ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_levels_3a">levels:</a></strong>
-
-<DD>
-<P>Specify the levels as a string of the form ``black/mid/white'' (e.g.  ``10,1.0,65000) where black and white have the range of 0-MaxRGB, and mid has the range 0-10.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id18" id="levelimage" name="levelimage">LevelImage</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">LevelImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>LevelImage() adjusts the levels of an image by scaling the colors falling
+between specified white and black points to the full available quantum
+range. The parameters provided represent the black, mid (gamma), and white
+points. The black point specifies the darkest color in the image. Colors
+darker than the black point are set to zero. Mid point specifies a gamma
+correction to apply to the image.  White point specifies the lightest color
+in the image. Colors brighter than the white point are set to the maximum
+quantum value.</p>
+<p>The format of the LevelImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">LevelImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>levels:</dt>
+<dd>Specify the levels as a string of the form &quot;black/mid/white&quot;
+(e.g. &quot;10,1.0,65000) where black and white have the range of 0-MaxRGB,
+and mid has the range 0-10.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="levelimagechannel">LevelImageChannel</a></h2>
-<blockquote>LevelImageChannel() adjusts the levels of one or more channels by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid ( gamma ), and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
-<blockquote>unsigned int LevelImageChannel ( <A HREF="types.html#Image">Image</A> *image, const char *level, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double black_point, const double mid_point, const double white_point ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_channel_3a">channel:</a></strong>
-
-<DD>
-<P>Identify which channel to level: Red, Cyan, Green, Magenta, Blue, Yellow, Opacity, or All.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_black_point_2c_mid_point_2c_white_point_3a">black_point, mid_point, white_point:</a></strong>
-
-<DD>
-<P>Specify the levels where the black and white points have the range of 0-MaxRGB, and mid has the range 0-10.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id19" id="levelimagechannel" name="levelimagechannel">LevelImageChannel</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">LevelImageChannel(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level,</span> <span class="pre">const</span> <span class="pre">ChannelType</span> <span class="pre">channel,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">black_point,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">mid_point,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">white_point</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>LevelImageChannel() adjusts the levels of one or more channels by
+scaling the colors falling between specified white and black points to
+the full available quantum range. The parameters provided represent the
+black, mid (gamma), and white points.  The black point specifies the
+darkest color in the image. Colors darker than the black point are set to
+zero. Mid point specifies a gamma correction to apply to the image.
+White point specifies the lightest color in the image.  Colors brighter
+than the white point are set to the maximum quantum value.</p>
+<p>The format of the LevelImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">LevelImageChannel(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*level,</span> <span class="pre">const</span> <span class="pre">ChannelType</span> <span class="pre">channel,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">black_point,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">mid_point,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">white_point</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>channel:</dt>
+<dd>Identify which channel to level: Red, Cyan, Green, Magenta,
+Blue, Yellow, Opacity, or All.</dd>
+<dt>black_point, mid_point, white_point:</dt>
+<dd>Specify the levels where the black
+and white points have the range of 0-MaxRGB, and mid has the range 0-10.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="modulateimage">ModulateImage</a></h2>
-<blockquote>ModulateImage() lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hue as one parameter ( e.g. 90, 150, 100 ) . </blockquote><P>The format of the ModulateImage method is:</P>
-<blockquote>unsigned int ModulateImage ( <A HREF="types.html#Image">Image</A> *image, const char *modulate ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_modulate_3a">modulate:</a></strong>
-
-<DD>
-<P>Define the percent change in brightness, saturation, and hue.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id20" id="modulateimage" name="modulateimage">ModulateImage</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ModulateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*modulate</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>ModulateImage() lets you control the brightness, saturation, and hue
+of an image.  Modulate represents the brightness, saturation, and hue
+as one parameter (e.g. 90,150,100).</p>
+<p>The format of the ModulateImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">ModulateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*modulate</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>modulate:</dt>
+<dd>Define the percent change in brightness, saturation, and
+hue.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="negateimage">NegateImage</a></h2>
-<P>Method NegateImage negates the colors in the reference image.  The Grayscale option means that only grayscale values within the image are negated.</P>
-<P>The format of the NegateImage method is:</P>
-<blockquote>unsigned int NegateImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned int grayscale ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id21" id="negateimage" name="negateimage">NegateImage</a></h1>
+<div class="section">
+<h2><a id="id11" name="id11">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">NegateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">grayscale</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id12" name="id12">Description</a></h2>
+<p>Method NegateImage negates the colors in the reference image.  The
+Grayscale option means that only grayscale values within the image are
+negated.</p>
+<p>The format of the NegateImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">NegateImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">grayscale</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="normalizeimage">NormalizeImage</a></h2>
-<blockquote>The NormalizeImage() method enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available. </blockquote><P>The format of the NormalizeImage method is:</P>
-<blockquote>unsigned int NormalizeImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id22" id="normalizeimage" name="normalizeimage">NormalizeImage</a></h1>
+<div class="section">
+<h2><a id="id13" name="id13">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">NormalizeImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id14" name="id14">Description</a></h2>
+<p>The NormalizeImage() method enhances the contrast of a color image by
+adjusting the pixels color to span the entire range of colors available.</p>
+<p>The format of the NormalizeImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">NormalizeImage(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-04 21:26 UTC.
 
+</div>
 </body>
-
 </html>

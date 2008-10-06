@@ -1,187 +1,205 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>render - Low-level methods to draw on an image</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>render</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#clonedrawinfo">CloneDrawInfo</a></li>
-		<li><a href="#destroydrawinfo">DestroyDrawInfo</a></li>
-		<li><a href="#drawaffineimage">DrawAffineImage</a></li>
-		<li><a href="#drawclippath">DrawClipPath</a></li>
-		<li><a href="#drawimage">DrawImage</a></li>
-		<li><a href="#drawpatternpath">DrawPatternPath</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>render - Low-level methods to draw on an image</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>DrawInfo * <strong>CloneDrawInfo</strong>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
-<P>void  <strong>DestroyDrawInfo</strong>( DrawInfo *draw_info );</P>
-<P>unsigned int  <strong>DrawAffineImage</strong>( Image *image, const Image *composite, const AffineMatrix *affine );</P>
-<P>unsigned int  <strong>DrawClipPath</strong>( Image *image, const DrawInfo *draw_info, const char *name );</P>
-<P>unsigned int  <strong>DrawImage</strong>( Image *image, const DrawInfo *draw_info );</P>
-<P>unsigned int  <strong>DrawPatternPath</strong>( Image *image, const DrawInfo *draw_info, const char *name, Image ** pattern );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="clonedrawinfo">CloneDrawInfo</a></h2>
-<blockquote>CloneDrawInfo() makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneDrawInfo method is:</P>
-<blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong>
-
-<DD>
-<P>The image info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="render">
+<h1 class="title">render</h1>
+<h2 class="subtitle" id="low-level-methods-to-draw-on-an-image">Low-level methods to draw on an image</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#clonedrawinfo" id="id11" name="id11">CloneDrawInfo</a></li>
+<li><a class="reference" href="#destroydrawinfo" id="id12" name="id12">DestroyDrawInfo</a></li>
+<li><a class="reference" href="#drawaffineimage" id="id13" name="id13">DrawAffineImage</a></li>
+<li><a class="reference" href="#drawclippath" id="id14" name="id14">DrawClipPath</a></li>
+<li><a class="reference" href="#drawimage" id="id15" name="id15">DrawImage</a></li>
+<li><a class="reference" href="#drawpatternpath" id="id16" name="id16">DrawPatternPath</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id11" id="clonedrawinfo" name="clonedrawinfo">CloneDrawInfo</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">DrawInfo</span> <span class="pre">*CloneDrawInfo(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>CloneDrawInfo() makes a copy of the given draw info structure.  If NULL
+is specified, a new image info structure is created initialized to
+default values.</p>
+<p>The format of the CloneDrawInfo method is:</p>
+<p><tt class="docutils literal"><span class="pre">DrawInfo</span> <span class="pre">*CloneDrawInfo(</span> <span class="pre">const</span> <span class="pre">ImageInfo</span> <span class="pre">*image_info,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="destroydrawinfo">DestroyDrawInfo</a></h2>
-<blockquote>DestroyDrawInfo() deallocates memory associated with an <A HREF="types.html#DrawInfo">DrawInfo</A> structure. </blockquote><P>The format of the DestroyDrawInfo method is:</P>
-<blockquote>void DestroyDrawInfo ( <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>draw_info:</strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="destroydrawinfo" name="destroydrawinfo">DestroyDrawInfo</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyDrawInfo(</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>DestroyDrawInfo() deallocates memory associated with an DrawInfo
+structure.</p>
+<p>The format of the DestroyDrawInfo method is:</p>
+<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">DestroyDrawInfo(</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="drawaffineimage">DrawAffineImage</a></h2>
-<blockquote>DrawAffineImage() composites the source over the destination image as dictated by the affine transform. </blockquote><P>The format of the DrawAffineImage method is:</P>
-<blockquote>unsigned int DrawAffineImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *composite, const <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The composite image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_affine_3a">affine:</a></strong>
-
-<DD>
-<P>The affine transform.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id13" id="drawaffineimage" name="drawaffineimage">DrawAffineImage</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawAffineImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*composite,</span> <span class="pre">const</span> <span class="pre">AffineMatrix</span> <span class="pre">*affine</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>DrawAffineImage() composites the source over the destination image as
+dictated by the affine transform.</p>
+<p>The format of the DrawAffineImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawAffineImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*composite,</span> <span class="pre">const</span> <span class="pre">AffineMatrix</span> <span class="pre">*affine</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>image:</dt>
+<dd>The composite image.</dd>
+<dt>affine:</dt>
+<dd>The affine transform.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="drawclippath">DrawClipPath</a></h2>
-<blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
-<blockquote>unsigned int DrawClipPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>draw_info:</strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_name_3a">name:</a></strong>
-
-<DD>
-<P>The name of the clip path.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id14" id="drawclippath" name="drawclippath">DrawClipPath</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawClipPath(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*name</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>DrawClipPath() draws the clip path on the image mask.</p>
+<p>The format of the DrawClipPath method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawClipPath(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*name</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
+<dt>name:</dt>
+<dd>The name of the clip path.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="drawimage">DrawImage</a></h2>
-<blockquote>Use DrawImage() to draw a graphic primitive on your image. The primitive may be represented as a string or filename. Precede the filename with an "at" sign ( @ ) and the contents of the file are drawn on the image. You can affect how text is drawn by setting one or more members of the draw info structure. </blockquote><P>Note that this is a legacy interface.  Authors of new code should consider using the Draw* methods defined by magick/draw.h since they are better documented and less error prone.</P>
-<P>The format of the DrawImage method is:</P>
-<blockquote>unsigned int DrawImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>draw_info:</strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id15" id="drawimage" name="drawimage">DrawImage</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>Use DrawImage() to draw a graphic primitive on your image.  The primitive
+may be represented as a string or filename.  Precede the filename with an
+&quot;at&quot; sign (&#64;) and the contents of the file are drawn on the image.  You
+can affect how text is drawn by setting one or more members of the draw
+info structure.</p>
+<p>Note that this is a legacy interface. Authors of new code should consider
+using the Draw* methods defined by magick/draw.h since they are better
+documented and less error prone.</p>
+<p>The format of the DrawImage method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="drawpatternpath">DrawPatternPath</a></h2>
-<blockquote>DrawPatternPath() draws a pattern. </blockquote><P>The format of the DrawPatternPath method is:</P>
-<blockquote>unsigned int DrawPatternPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name, <A HREF="types.html#Image">Image</A> **pattern ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>draw_info:</strong>
-
-<DD>
-<P>The draw info.</P>
-</dd>
-</li>
-<dt><strong>name:</strong>
-
-<DD>
-<P>The pattern name.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id16" id="drawpatternpath" name="drawpatternpath">DrawPatternPath</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawPatternPath(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*name,</span> <span class="pre">Image</span> <span class="pre">**</span> <span class="pre">pattern</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>DrawPatternPath() draws a pattern.</p>
+<p>The format of the DrawPatternPath method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">DrawPatternPath(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">DrawInfo</span> <span class="pre">*draw_info,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*name,</span> <span class="pre">Image</span> <span class="pre">**</span> <span class="pre">pattern</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>draw_info:</dt>
+<dd>The draw info.</dd>
+<dt>name:</dt>
+<dd>The pattern name.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-04 21:26 UTC.
 
+</div>
 </body>
-
 </html>

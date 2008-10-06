@@ -87,23 +87,13 @@ CHANGELOGS = \
 	ChangeLog.2007
 
 TOP_EXTRA_DIST = \
-	AUTHORS.txt \
-	BENCHMARKS.txt \
-	BUGS.txt \
-	CONTRIBUTE.txt \
 	$(CHANGELOGS) \
 	Copyright.txt \
-	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
-	MISSION.txt \
 	NEWS.txt \
-	OpenMP.txt \
-	PLATFORMS.txt \
-	PROCESS.txt \
 	README.txt \
 	TODO.txt \
-	index.html \
 	lndir.sh \
 	version.sh \
 	winpath.sh
@@ -117,7 +107,9 @@ EXTRA_DIST = \
 	$(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) \
 	$(UTILITIES_EXTRA_DIST) \
-	$(WAND_EXTRA_DIST)
+	$(WAND_EXTRA_DIST) \
+	$(WWWW_EXTRA_DIST) \
+	$(WWWAPI_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
 
@@ -140,6 +132,8 @@ include filters/Makefile.am
 include Magick++/Makefile.am
 include tests/Makefile.am
 include wand/Makefile.am
+include www/Makefile.am
+include www/api/Makefile.am
 include utilities/Makefile.am
 include PerlMagick/Makefile.am
 
@@ -166,7 +160,10 @@ doc_DATA = \
 	NEWS.txt
 
 if MAINTAINER_MODE
-MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
+MAINTAINER_TARGETS = \
+	magick-version \
+	$(WWW_MAINTAINER_TARGETS) \
+	$(WWWAPI_MAINTAINER_TARGETS)
 endif
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) \
@@ -203,7 +200,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
@@ -212,28 +209,6 @@ dist-hook:
 #
 # Additional install rules
 #
-
-# Install HTML files
-DOCDIRS = images www www/api www/Magick++
-HTML_INSTALL_DATA_TARGETS = install-data-html
-install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
-	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
-	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
-	  done ; \
-	done
-
-# Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
-uninstall-data-html:
-	rm -f $(DESTDIR)$(htmldir)/index.html
-	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
-	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
@@ -251,99 +226,11 @@ magick-version: magick/version.h
 
 magick/version.h: $(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 
-if HasRST2HTML
-RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
-RST2HTML_TARGETS = \
-	$(top_srcdir)/www/AUTHORS.html \
-	$(top_srcdir)/www/BENCHMARKS.html \
-	$(top_srcdir)/www/BUGS.html \
-	$(top_srcdir)/www/Copyright.html \
-	$(top_srcdir)/www/FAQ.html \
-	$(top_srcdir)/www/INSTALL-unix.html \
-	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/NEWS.html \
-	$(top_srcdir)/www/OpenMP.html \
-	$(top_srcdir)/www/PLATFORMS.html \
-	$(top_srcdir)/www/README.html \
-	$(top_srcdir)/www/contribute.html \
-	$(top_srcdir)/www/development.html \
-	$(top_srcdir)/www/mission.html
-endif # HasRST2HTML
-
-if WITH_PERL
-# txt2html requires perl.
-TXT2HTML_TARGETS = \
-	$(top_srcdir)/www/Changelog.html
-endif # WITH_PERL
 
 # Automatically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-
-# Build HTML version of AUTHORS.txt
-$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/AUTHORS.txt $(top_srcdir)/www/AUTHORS.html
-
-# Build HTML version of BUGS.txt
-$(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
-
-# Build HTML version of BENCHMARKS.txt
-$(top_srcdir)/www/BENCHMARKS.html: $(top_srcdir)/BENCHMARKS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BENCHMARKS.txt $(top_srcdir)/www/BENCHMARKS.html
-
-# Build HTML version of CONTRIBUTE.txt
-$(top_srcdir)/www/contribute.html: $(top_srcdir)/CONTRIBUTE.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/CONTRIBUTE.txt $(top_srcdir)/www/contribute.html
-
-# Build HTML version of Copyright.txt
-$(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
-
-# Build HTML version of PROCESS.txt
-$(top_srcdir)/www/development.html: $(top_srcdir)/PROCESS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PROCESS.txt $(top_srcdir)/www/development.html
-
-# Build HTML version of FAQ.txt
-$(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
-
-# Build HTML version of ChangeLog
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of INSTALL-unix.txt
-$(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-unix.txt $(top_srcdir)/www/INSTALL-unix.html
-
-# Build HTML version of INSTALL-windows.txt
-$(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
-
-# Build HTML version of mission
-$(top_srcdir)/www/mission.html: $(top_srcdir)/MISSION.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/MISSION.txt $(top_srcdir)/www/mission.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/NEWS.txt $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of PLATFORMS
-$(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PLATFORMS.txt $(top_srcdir)/www/PLATFORMS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
-
-# Build HTML version of OpenMP.txt
-$(top_srcdir)/www/OpenMP.html: $(top_srcdir)/OpenMP.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/OpenMP.txt $(top_srcdir)/www/OpenMP.html
-
-# Format C API documentation
-format_c_api_docs:
-	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 
 #
 # Build Windows source Zip and 7Zip balls

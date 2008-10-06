@@ -1,3 +1,7 @@
+2008-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www: Adopted improved web page design by Mark Mitchell.
+
 2008-10-04  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c coders/mat.c Used a same piece of code to calculate

@@ -1,142 +1,181 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>attribute - Access key,value image attributes</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>attribute</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#cloneimageattributes">CloneImageAttributes</a></li>
-		<li><a href="#destroyimageattributes">DestroyImageAttributes</a></li>
-		<li><a href="#getimageattribute">GetImageAttribute</a></li>
-		<li><a href="#getimageclippingpathattribute">GetImageClippingPathAttribute</a></li>
-		<li><a href="#setimageattribute">SetImageAttribute</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>attribute - Access key,value image attributes</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>MagickPassFail  <strong>CloneImageAttributes</strong>( Image *clone_image, const Image *original_image );</P>
-<P><strong>DestroyImageAttributes</strong>( Image *image );</P>
-<P>const ImageAttribute * <strong>GetImageAttribute</strong>( const Image *image, const char *key );</P>
-<P>const ImageAttribute * <strong>GetImageClippingPathAttribute</strong>( const Image *image );</P>
-<P>unsigned int  <strong>SetImageAttribute</strong>( Image *image, const char *key, const char *value );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="cloneimageattributes">CloneImageAttributes</a></h2>
-<blockquote>CloneImageAttributes() copies the text attibutes from one image to another. Any text attributes in the destination image are preserved. CloneImageAttributes returns MagickPass if all of the attribututes are successfully cloned or MagickFail if there is a memory allocation error. </blockquote><P>The format of the CloneImageAttributes method is:</P>
-<blockquote>MagickPassFail CloneImageAttributes ( <A HREF="types.html#Image">Image</A> *clone_image, const <A HREF="types.html#Image">Image</A> *original_image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_clone_image_3a">clone_image:</a></strong>
-
-<DD>
-<P>The destination image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_original_image_3a">original_image:</a></strong>
-
-<DD>
-<P>The source image.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="attribute">
+<h1 class="title">attribute</h1>
+<h2 class="subtitle" id="access-key-value-image-attributes">Access key,value image attributes</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#cloneimageattributes" id="id9" name="id9">CloneImageAttributes</a></li>
+<li><a class="reference" href="#destroyimageattributes" id="id10" name="id10">DestroyImageAttributes</a></li>
+<li><a class="reference" href="#getimageattribute" id="id11" name="id11">GetImageAttribute</a></li>
+<li><a class="reference" href="#getimageclippingpathattribute" id="id12" name="id12">GetImageClippingPathAttribute</a></li>
+<li><a class="reference" href="#setimageattribute" id="id13" name="id13">SetImageAttribute</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id9" id="cloneimageattributes" name="cloneimageattributes">CloneImageAttributes</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">CloneImageAttributes(</span> <span class="pre">Image</span> <span class="pre">*clone_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*original_image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>CloneImageAttributes() copies the text attibutes from one image to another.
+Any text attributes in the destination image are preserved.
+CloneImageAttributes returns MagickPass if all of the attribututes are
+successfully cloned or MagickFail if there is a memory allocation error.</p>
+<p>The format of the CloneImageAttributes method is:</p>
+<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">CloneImageAttributes(</span> <span class="pre">Image</span> <span class="pre">*clone_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*original_image</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>clone_image:</dt>
+<dd>The destination image.</dd>
+<dt>original_image:</dt>
+<dd>The source image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="destroyimageattributes">DestroyImageAttributes</a></h2>
-<blockquote>DestroyImageAttributes() deallocates memory associated with the image attribute list. </blockquote><P>The format of the DestroyImageAttributes method is:</P>
-<blockquote>DestroyImageAttributes ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id10" id="destroyimageattributes" name="destroyimageattributes">DestroyImageAttributes</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">DestroyImageAttributes(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>DestroyImageAttributes() deallocates memory associated with the image
+attribute list.</p>
+<p>The format of the DestroyImageAttributes method is:</p>
+<p><tt class="docutils literal"><span class="pre">DestroyImageAttributes(</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimageattribute">GetImageAttribute</a></h2>
-<blockquote>GetImageAttribute() searches the list of image attributes and returns a pointer to the attribute if it exists otherwise NULL. </blockquote><P>The format of the GetImageAttribute method is:</P>
-<blockquote>const ImageAttribute *GetImageAttribute ( const <A HREF="types.html#Image">Image</A> *image, const char *key ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_key_3a">key:</a></strong>
-
-<DD>
-<P>These character strings are the name of an image attribute to return.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id11" id="getimageattribute" name="getimageattribute">GetImageAttribute</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">ImageAttribute</span> <span class="pre">*GetImageAttribute(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>GetImageAttribute() searches the list of image attributes and returns
+a pointer to the attribute if it exists otherwise NULL.</p>
+<p>The format of the GetImageAttribute method is:</p>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">ImageAttribute</span> <span class="pre">*GetImageAttribute(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>key:</dt>
+<dd>These character strings are the name of an image attribute to
+return.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimageclippingpathattribute">GetImageClippingPathAttribute</a></h2>
-<P>Method GetImageClippingPathAttribute searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise NULL.</P>
-<P>The format of the GetImageClippingPathAttribute method is:</P>
-<blockquote>const ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_attribute_3a">attribute:</a></strong>
-
-<DD>
-<P>Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise NULL.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="getimageclippingpathattribute" name="getimageclippingpathattribute">GetImageClippingPathAttribute</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">ImageAttribute</span> <span class="pre">*GetImageClippingPathAttribute(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>Method GetImageClippingPathAttribute searches the list of image attributes
+and returns a pointer to a clipping path if it exists otherwise NULL.</p>
+<p>The format of the GetImageClippingPathAttribute method is:</p>
+<p><tt class="docutils literal"><span class="pre">const</span> <span class="pre">ImageAttribute</span> <span class="pre">*GetImageClippingPathAttribute(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image</span> <span class="pre">);</span></tt></p>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>attribute:</dt>
+<dd>Method GetImageClippingPathAttribute returns the clipping
+path if it exists otherwise NULL.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimageattribute">SetImageAttribute</a></h2>
-<blockquote>SetImageAttribute() searches the list of image attributes and replaces the attribute value. If it is not found in the list, the attribute name and value is added to the list. If the attribute exists in the list, the value is concatenated to the attribute. SetImageAttribute returns True if the attribute is successfully concatenated or added to the list, otherwise False. If the value is NULL, the matching key is deleted from the list. </blockquote><P>The format of the SetImageAttribute method is:</P>
-<blockquote>unsigned int SetImageAttribute ( <A HREF="types.html#Image">Image</A> *image, const char *key, const char *value ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_key_2cvalue_3a">key,value:</a></strong>
-
-<DD>
-<P>These character strings are the name and value of an image attribute to replace or add to the list.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id13" id="setimageattribute" name="setimageattribute">SetImageAttribute</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageAttribute(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*value</span> <span class="pre">);</span></tt></p>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>SetImageAttribute() searches the list of image attributes and replaces the
+attribute value.  If it is not found in the list, the attribute name
+and value is added to the list.   If the attribute exists in the list,
+the value is concatenated to the attribute.  SetImageAttribute returns
+True if the attribute is successfully concatenated or added to the list,
+otherwise False.  If the value is NULL, the matching key is deleted
+from the list.</p>
+<p>The format of the SetImageAttribute method is:</p>
+<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">SetImageAttribute(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*key,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*value</span> <span class="pre">);</span></tt></p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>key,value:</dt>
+<dd>These character strings are the name and value of an image
+attribute to replace or add to the list.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-04 21:26 UTC.
 
+</div>
 </body>
-
 </html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick Bugs</title>
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="graphicsmagick-bugs">
+<h1 class="title">GraphicsMagick Bugs</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>The following bugs are known to exist in GraphicsMagick. Please report
+any additional bugs to the GraphicsMagick <a class="reference" href="http://sourceforge.net/tracker/?group_id=73485">bug tracker</a> at SourceForge.</p>
+<blockquote>
+<ul class="simple">
+<li>BMP reader is not working for some obscure low-color packed files.</li>
+<li>DPX reader/writer does not properly handle subformats where row
+samples spill over the storage word boundary. This means that
+single-channel/grayscale 10-bit DPX files will only work for widths
+evenly divisible by three. (SF 1533184)</li>
+<li>MPC &quot;format&quot; severely misbehaves when converting to another MPC file
+or when outputting to a format which requires that the pixels or
+colormap be modified (which would want to modify the read-only MPC
+input file).</li>
+<li>PSD reader is not working for some files. Can fix by extracting the
+already rendered image from the PSD file rather than the layers.</li>
+<li>Scitex reader is not working for some files.</li>
+<li>SVG writer works only if you are particularly luckly.</li>
+<li>SVG reader mishandles basic units and many other syntax elements (SF
+1231547, 1298606).</li>
+<li>BlobToImage ignores the value of the 'magick' parameter. I don't know
+how to fix this due to how things work. (SF 1839932).</li>
+<li>Text annotation options do not work perfectly (SF 1539050, 1539052, 1539059)</li>
+<li>Due to long-standing design decision, Magick++ Color class may not be
+used to assign color to transparent black since it is considered to be
+an invalid color.</li>
+</ul>
+</blockquote>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-10-06 00:42 UTC.
+
+</div>
+</body>
+</html>

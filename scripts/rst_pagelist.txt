@@ -1,0 +1,27 @@
+# reStructuredText files in the GraphicsMagick source tree, which get
+# converted to HTML files in the www/ subdirectory.
+
+# rst_file           html_file                stylesheet_url         url_prefix
+AUTHORS.txt          www/AUTHORS.html         docutils-articles.css  ../
+BENCHMARKS.txt       www/BENCHMARKS.html      docutils-articles.css  ../
+BUGS.txt             www/BUGS.html            docutils-articles.css  ../
+CONTRIBUTE.txt       www/CONTRIBUTE.html      docutils-articles.css  ../
+CVS.txt              www/CVS.html             docutils-articles.css  ../
+Copyright.txt        www/Copyright.html       docutils-articles.css  ../
+DOWNLOAD.txt         www/DOWNLOAD.html        docutils-articles.css  ../
+FAQ.txt              www/FAQ.html             docutils-articles.css  ../
+INSTALL-unix.txt     www/INSTALL-unix.html    docutils-articles.css  ../
+INSTALL-windows.txt  www/INSTALL-windows.html docutils-articles.css  ../
+LINKS.txt            www/LINKS.html           docutils-articles.css  ../
+MISSION.txt          www/MISSION.html         docutils-articles.css  ../
+NEWS.txt             www/NEWS.html            docutils-articles.css  ../
+OpenMP.txt           www/OpenMP.html          docutils-articles.css  ../
+PLATFORMS.txt        www/PLATFORMS.html       docutils-articles.css  ../
+PROCESS.txt          www/PROCESS.html         docutils-articles.css  ../
+PROGRAMMING.txt      www/PROGRAMMING.html     docutils-articles.css  ../
+README.txt           www/README.html          docutils-articles.css  ../
+UTILITIES.txt        www/UTILITIES.html       docutils-articles.css  ../
+index-topdir.rst     index.html               www/docutils-articles.css         ./
+index-wwwdir.rst     www/index.html           docutils-articles.css  ../
+www/api.rst          www/api.html             docutils-articles.css  ../
+www/perl.rst         www/perl.html            docutils-articles.css  ../
