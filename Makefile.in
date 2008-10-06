@@ -4413,6 +4413,8 @@ WWW_HTML_FILES = \
 	www/contribute.html \
 	www/convert.html \
 	www/display.html \
+	www/docutils-api.css \
+	www/docutils-articles.css \
 	www/download.html \
 	www/formats.html \
 	www/gm.html \
@@ -9938,6 +9940,10 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
+# Target to build just the web pages.
+@MAINTAINER_MODE_TRUE@.PHONY: www
+@MAINTAINER_MODE_TRUE@www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+
 all-local: $(MAGICKPP_LOCAL_TARGETS) \
 	$(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
 
@@ -10008,7 +10014,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @HAS_P7ZIP_TRUE@	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_P7ZIP_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
-@HAS_RPM_TRUE@PHONY: srpm
+@HAS_RPM_TRUE@.PHONY: srpm
 @HAS_RPM_TRUE@$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 @HAS_RPM_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
 @HAS_RPM_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
@@ -10016,7 +10022,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @HAS_RPM_TRUE@	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 @HAS_RPM_TRUE@	@echo ==============================================================
 
-@HAS_RPM_TRUE@PHONY: rpm
+@HAS_RPM_TRUE@.PHONY: rpm
 @HAS_RPM_TRUE@rpm:
 @HAS_RPM_TRUE@	rm -rf $(RPMDIR)
 @HAS_RPM_TRUE@	mkdir $(RPMDIR)

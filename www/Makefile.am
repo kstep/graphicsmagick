@@ -105,6 +105,8 @@ WWW_HTML_FILES = \
 	www/contribute.html \
 	www/convert.html \
 	www/display.html \
+	www/docutils-api.css \
+	www/docutils-articles.css \
 	www/download.html \
 	www/formats.html \
 	www/gm.html \

@@ -164,6 +164,11 @@ MAINTAINER_TARGETS = \
 	magick-version \
 	$(WWW_MAINTAINER_TARGETS) \
 	$(WWWAPI_MAINTAINER_TARGETS)
+
+# Target to build just the web pages.
+.PHONY: www
+www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+
 endif
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) \
@@ -268,7 +273,7 @@ endif # HAS_P7ZIP
 if HAS_RPM
 
 DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
-PHONY: srpm
+.PHONY: srpm
 $(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 	rm -f $(DIST_ARCHIVE_SRPM)
 	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
@@ -286,7 +291,7 @@ DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
 
-PHONY: rpm
+.PHONY: rpm
 rpm:
 	rm -rf $(RPMDIR)
 	mkdir $(RPMDIR)
