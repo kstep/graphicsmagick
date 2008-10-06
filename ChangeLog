@@ -1,3 +1,8 @@
+2008-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Bootstrap with autoconf 2.63.  Require autoconf
+	2.62 to bootstrap.
+
 2008-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www: Adopted improved web page design by Mark Mitchell.

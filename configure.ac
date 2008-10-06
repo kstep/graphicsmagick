@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.61)
+AC_PREREQ(2.62)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
