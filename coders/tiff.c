@@ -1853,7 +1853,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename))
                       break;
               }
             MagickFreeMemory(scanline);
@@ -2023,7 +2024,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
-                        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                    LoadImageText,image->filename))
                           {
                             status=MagickFail;
                             break;
@@ -2241,7 +2243,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
-                        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                    LoadImageText,image->filename))
                           {
                             status=MagickFail;
                             break;
@@ -2335,7 +2338,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename))
                       {
                         status=MagickFail;
                         break;
@@ -2493,7 +2497,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename))
                       {
                         status=MagickFail;
                         break;
@@ -2588,7 +2593,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename))
                       {
                         status=MagickFail;
                         break;
@@ -2630,8 +2636,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   return((Image *) NULL);
                 }
               image=SyncNextImageInList(image);
-              status=MagickMonitor(LoadImageText,image->scene-1,image->scene,
-                                   &image->exception);
+              status=MagickMonitorFormatted(image->scene-1,image->scene,
+                                            &image->exception,
+                                            LoadImageText,image->filename);
             }
         }
       
@@ -4212,8 +4219,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
-                        if ((status &= MagickMonitor(SaveImageText,y,image->rows,
-                                                     &image->exception))
+                        if ((status &= MagickMonitorFormatted(y,image->rows,
+                                                              &image->exception,
+                                                              SaveImageText,
+                                                              image->filename))
                             == MagickFail)
                           break;
                   }
@@ -4449,8 +4458,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   Progress indicator.
                 */
                 if (image->previous == (Image *) NULL)
-                  if (MagickMonitor(SaveImageText,y,image->rows,
-                                    &image->exception) == MagickFail)
+                  if (MagickMonitorFormatted(y,image->rows,&image->exception,
+                                             SaveImageText,image->filename) == MagickFail)
                     status=MagickFail;
                 
                 if (status == MagickFail)
@@ -4461,8 +4470,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               Ensure 100% progress indication when done.
             */
             if (image->previous == (Image *) NULL)
-              (void) MagickMonitor(SaveImageText,image->rows-1,image->rows,
-                                   &image->exception);
+              (void) MagickMonitorFormatted(image->rows-1,image->rows,
+                                            &image->exception,SaveImageText,
+                                            image->filename);
 
             MagickFreeMemory(tile);
             break;
@@ -4475,9 +4485,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      if ((status &= MagickMonitor(SaveImagesText,scene++,
-                                   GetImageListLength(image),
-                                   &image->exception)) == MagickFail)
+      if ((status &= MagickMonitorFormatted(scene++,
+                                            GetImageListLength(image),
+                                            &image->exception,
+                                            SaveImagesText,
+                                            image->filename)) == MagickFail)
         break;
     } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)

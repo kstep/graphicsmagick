@@ -176,7 +176,7 @@ static void Upsample(const unsigned long width,const unsigned long height,
 %
 */
 #define IsSync  ((sum & 0xffffff00) == 0xfffffe00)
-#define DecodeImageText  "  PCD decode image...  "
+#define DecodeImageText  "[%s] PCD decode image..."
 #define PCDGetBits(n) \
 {  \
   sum=(sum << n) & 0xffffffff; \
@@ -349,7 +349,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
         }
         length=pcd_length[plane];
         if (QuantumTick(row,image->rows))
-          if (!MagickMonitor(DecodeImageText,row,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(row,image->rows,&image->exception,
+                                      DecodeImageText,image->filename))
             break;
         continue;
       }
@@ -708,7 +709,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image=SyncNextImageInList(image);
           }
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitor(LoadImageText,j-1,number_images,&image->exception))
+        if (!MagickMonitorFormatted(j-1,number_images,&image->exception,
+                                    LoadImageText,image->filename))
           break;
       }
       MagickFreeMemory(chroma2);
@@ -795,7 +797,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         break;
   }
   MagickFreeMemory(chroma2);
@@ -1044,7 +1047,8 @@ static unsigned int WritePCDTile(const ImageInfo *ARGUNUSED(image_info),
       q++;
     }
     if (QuantumTick(y,tile_image->rows))
-      if (!MagickMonitor(SaveImageText,y,tile_image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,tile_image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   for (i=0; i < 0x800; i++)

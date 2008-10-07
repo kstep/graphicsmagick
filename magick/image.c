@@ -78,13 +78,13 @@ const char
   *DefaultTileLabel = "%f\n%wx%h\n%b",
   *ForegroundColor = "#000000000000",  /* black */
   *HighlightColor = "#f1f100001e1e", /* light red */
-  *LoadImageText = "  Loading image...  ",
-  *LoadImagesText = "  Loading images...  ",
+  *LoadImageText = "[%s] Loading image...  ",
+  *LoadImagesText = "Loading images...  ",
   *MatteColor = "#bdbdbdbdbdbd",  /* gray */
   *PSDensityGeometry = "72.0x72.0",
   *PSPageGeometry = "612x792>",
-  *SaveImageText = "  Saving image...  ",
-  *SaveImagesText = "  Saving images...  ";
+  *SaveImageText = "[%s] Saving image...  ",
+  *SaveImagesText = "Saving images...  ";
 
 const unsigned long
   DefaultCompressionQuality = 75;
@@ -581,7 +581,7 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
 MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   ExceptionInfo *exception)
 {
-#define AppendImageText  "  Append image sequence...  "
+#define AppendImageText  "[%s]Append image sequence..."
 
   Image
     *append_image;
@@ -646,8 +646,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           (void) SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        status=MagickMonitor(AppendImageText,scene,GetImageListLength(image),
-          exception);
+        status=MagickMonitorFormatted(scene,GetImageListLength(image),
+                                      exception,AppendImageText,
+                                      image->filename);
         if (status == False)
           break;
         scene++;
@@ -664,8 +665,9 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       (void) SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     x+=next->columns;
-    status=MagickMonitor(AppendImageText,scene++,GetImageListLength(image),
-      exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  exception,AppendImageText,
+                                  image->filename);
     if (status == False)
       break;
   }
@@ -700,7 +702,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
 %
 %
 */
-#define AverageImageText  "  Average image sequence...  "
+#define AverageImageText  "[%s] Average image sequence..."
 MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 {
 
@@ -813,7 +815,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(average_image))
       break;
     if (QuantumTick(y,average_image->rows))
-      if (!MagickMonitor(AverageImageText,y,average_image->rows,exception))
+      if (!MagickMonitorFormatted(y,average_image->rows,exception,
+                                  AverageImageText,image->filename))
         break;
   }
   MagickFreeMemory(pixels_array);
@@ -895,7 +898,7 @@ MagickExport MagickPassFail ClipImage(Image *image)
   return(ClipPathImage(image,"#1",True));
 }
 
-#define ClipPathImageText  "Creating image clip mask ..."
+#define ClipPathImageText  "[%s] Creating image clip mask..."
 static MagickPassFail
 ClipPathImageCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -1308,7 +1311,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-#define CycleColormapImageText "Cycle image colormap...  "
+#define CycleColormapImageText "[%s] Cycle image colormap..."
 static MagickPassFail
 CycleColormapCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -2489,7 +2492,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %
 */
-#define GetImageBoundingBoxText "  Get image bounding box...  "
+#define GetImageBoundingBoxText "[%s] Get image bounding box..."
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
@@ -2557,7 +2560,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         p++;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(GetImageBoundingBoxText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  GetImageBoundingBoxText,image->filename))
         break;
   }
   if ((bounds.width != 0) || (bounds.height != 0))
@@ -2686,7 +2690,7 @@ static magick_uint8_t* AllocateDepthMap(void)
   return map;
 }
 #endif /* MaxMap == MaxRGB */
-#define GetImageDepthText "Get image depth...  "
+#define GetImageDepthText "[%s] Get image depth..."
 
 static MagickPassFail
 GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data */
@@ -2905,7 +2909,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 %    o exception: Any errors are reported here.
 %
 */
-#define AnalyzeImageText "  Analyze image...  "
+#define AnalyzeImageText "[%s] Analyze image...  "
 MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                                                     ImageCharacteristics *characteristics,
                                                     const MagickBool optimize,
@@ -2983,7 +2987,8 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                     !opaque)
                   break;
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(AnalyzeImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              AnalyzeImageText,image->filename))
                     break;
               }
             break;
@@ -3029,7 +3034,8 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                     if (!opaque)
                       break;
                     if (QuantumTick(y,image->rows))
-                      if (!MagickMonitor(AnalyzeImageText,y,image->rows,exception))
+                      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                  AnalyzeImageText,image->filename))
                         break;
                   }
               }
@@ -3054,7 +3060,8 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
     Force progress indication to 100%
   */
   if (broke_loop)
-    (void) MagickMonitor(AnalyzeImageText,image->rows-1,image->rows,exception);
+    (void) MagickMonitorFormatted(image->rows-1,image->rows,exception,
+                                  AnalyzeImageText,image->filename);
 /*   printf("status=%s, cmyk=%u, grayscale=%u, monochrome=%u, opaque=%u, palette=%u\n", */
 /*          (status == MagickFail ? "Fail" : "Pass"),characteristics->cmyk,characteristics->grayscale, */
 /*          characteristics->monochrome,characteristics->opaque,characteristics->palette); */
@@ -3448,7 +3455,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   */
   status = PixelIterateMonoRead(GetImageStatisticsMean,
                                 NULL,
-                                "Compute image mean, max, min ...",
+                                "[%s] Compute image mean, max, min...",
                                 statistics,&context,0,0,image->columns,
                                 image->rows,image,exception);
   /*
@@ -3457,7 +3464,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   if (status == MagickPass)
     status = PixelIterateMonoRead(GetImageStatisticsVariance,
                                   NULL,
-                                  "Compute image variance ...",
+                                  "[%s] Compute image variance...",
                                   statistics,&context,0,0,image->columns,
                                   image->rows,image,exception);
   /*
@@ -3609,7 +3616,7 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 */
 
-#define GradientImageText "Gradient image...  "
+#define GradientImageText "[%s] Gradient image..."
 MagickExport MagickPassFail GradientImage(Image *image,
                                           const PixelPacket *start_color,
                                           const PixelPacket *stop_color)
@@ -3661,7 +3668,8 @@ MagickExport MagickPassFail GradientImage(Image *image,
           break;
         }
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(GradientImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    GradientImageText,image->filename))
           break;
     }
   return(status);
@@ -4174,7 +4182,7 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
 %    o colors: number of colors in new colormap.
 %
 */
-#define ReplaceImageColormapText "Replacing image colormap ..."
+#define ReplaceImageColormapText "[%s] Replacing image colormap..."
 static MagickPassFail
 ReplaceImageColormapCallBack(void *mutable_data,         /* User provided mutable data */
                              const void *immutable_data, /* User provided immutable data */
@@ -4315,7 +4323,7 @@ ReplaceImageColormap(Image *image,
 %
 %
 */
-#define SetImageColorText "Set image color...  "
+#define SetImageColorText "[%s] Set image color..."
 static MagickPassFail
 SetImageColorCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -4861,7 +4869,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 %
 %
 */
-#define SetImageOpacityText "  Set image opacity...  "
+#define SetImageOpacityText "[%s] Set image opacity...  "
 MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 {
   unsigned long
@@ -4917,7 +4925,8 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SetImageOpacityText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SetImageOpacityText,image->filename))
               break;
         }
     }
@@ -4949,7 +4958,8 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SetImageOpacityText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SetImageOpacityText,image->filename))
               break;
         }
     }
@@ -5271,7 +5281,7 @@ static int InverseIntensityCompare(const void *x,const void *y)
 }
 #endif
 
-#define SortColormapByIntensityText "Sorting colormap by intensity...  "
+#define SortColormapByIntensityText "[%s] Sorting colormap by intensity...  "
 static MagickPassFail
 SortColormapByIntensityCallBack(void *mutable_data,         /* User provided mutable data */
                                 const void *immutable_data, /* User provided immutable data */
@@ -5377,7 +5387,7 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 %
 %
 */
-#define SyncImageText "Synchronizing DirectClass pixels to colormap...  "
+#define SyncImageText "[%s] Synchronizing DirectClass pixels..."
 static MagickPassFail
 SyncImageCallBack(void *mutable_data,         /* User provided mutable data */
                   const void *immutable_data, /* User provided immutable data */
@@ -5483,7 +5493,7 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %
 */
 
-#define TextureImageText  "Apply image texture...  "
+#define TextureImageText  "[%s] Apply image texture...  "
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
 
@@ -5576,7 +5586,8 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
           break;
         }
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    TextureImageText,image->filename))
           {
             status=MagickFail;
             break;

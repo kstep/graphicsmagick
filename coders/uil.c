@@ -327,7 +327,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       (y == (long) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   CloseBlob(image);

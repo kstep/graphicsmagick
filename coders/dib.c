@@ -238,7 +238,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
         }
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  LoadImageText,image->filename))
         break;
   }
   (void) ReadBlobByte(image);  /* end of line */
@@ -327,7 +328,8 @@ static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
     *q++=0x00;
     *q++=0x00;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   /*
@@ -630,8 +632,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -675,8 +678,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -711,8 +715,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -759,8 +764,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -793,8 +799,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -1067,7 +1074,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
          *q++=0x00;
        if (image->previous == (Image *) NULL)
          if (QuantumTick(y,image->rows))
-           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+           if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                       SaveImageText,image->filename))
              break;
       }
       break;
@@ -1094,7 +1102,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
          *q++=0x00;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename))
               break;
       }
       break;
@@ -1129,7 +1138,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
           }
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename))
                break;
       }
       break;

@@ -186,7 +186,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
           j++;
       }
     }
-    if (!MagickMonitor(LoadImagesText,i,QuantumDepth,&image->exception))
+    if (!MagickMonitorFormatted(i,QuantumDepth,&image->exception,
+                                LoadImagesText,image->filename))
       break;
   }
   DestroyImage(watermark);

@@ -187,7 +187,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,
+                                      LoadImageText,image->filename))
             break;
     }
     image->is_grayscale=MagickTrue;
@@ -219,7 +220,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   } while (count != 0);
@@ -470,14 +472,16 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,packet_size*image->columns,scanline);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
     }
     MagickFreeMemory(scanline);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    if (!MagickMonitorFormatted(scene++,GetImageListLength(image),&image->exception,
+                                SaveImagesText,image->filename))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

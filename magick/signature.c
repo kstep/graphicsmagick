@@ -167,7 +167,7 @@ MagickExport void GetSignatureInfo(SignatureInfo *signature_info)
 %
 %
 */
-#define SignatureImageText "  Compute image SHA-256 signature...  "
+#define SignatureImageText "[%s] Compute image SHA-256 signature..."
 MagickExport unsigned int SignatureImage(Image *image)
 {
   char
@@ -270,7 +270,8 @@ MagickExport unsigned int SignatureImage(Image *image)
     }
     UpdateSignature(&signature_info,message,q-message);
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SignatureImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SignatureImageText,image->filename))
         break;
   }
   FinalizeSignature(&signature_info);

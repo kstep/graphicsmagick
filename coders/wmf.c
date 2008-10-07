@@ -265,7 +265,9 @@ static int magick_progress_callback (void* context,float quantum)
     status = 0;
 
   image=(Image *) context;
-  if (MagickMonitor((char*)context,(ExtendedSignedIntegralType)floor(quantum*100),100,&image->exception) == False)
+  if (MagickMonitorFormatted((ExtendedSignedIntegralType)floor(quantum*100),100,
+                             &image->exception,(char*)context,
+                             image->filename) == False)
     status = 1;
   return status;
 }
@@ -2393,7 +2395,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
   /* Register progress monitor */
-  wmf_status_function(API,(void*)"  Parsing vectors...  ", magick_progress_callback);
+  wmf_status_function(API,(void*)"[%s] Parsing vectors...", magick_progress_callback);
 
   ddata = WMF_MAGICK_GetData(API);
   ddata->image = image;

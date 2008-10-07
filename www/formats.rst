@@ -14,31 +14,37 @@ GraphicsMagick Formats
 .. _montage : montage.html
 
 .. _AVI : http://www.jmcgowan.com/avi.html
+.. _color : color.html
 .. _DICOM : http://dicom.nema.org/
 .. _DICONDE : http://www.geinspectiontechnologies.com/en/products/software/diconde.html
 .. _DPX : motion-picture.html
+.. _FIG : foo.bar
 .. _FITS : http://www.cv.nrao.edu/fits/
 .. _Ghostscript : http://www.cs.wisc.edu/~ghost/
 .. _JNG : http://www.libmng.com/
+.. _JPEG : http://www.jpeg.org/
 .. _M2V : http://www.mpeg.org/
 .. _MIFF : miff.html
 .. _MNG : http://www.libmng.com/
 .. _MPEG : http://www.mpeg.org/
 .. _MathWorks : http://www.mathworks.com/
 .. _PWP : http://www.photoworks.com/
+.. _Radiance : http://radsite.lbl.gov/radiance/HOME.html
 .. _README : README.html
 .. _SANE : http://www.mostang.com/sane/
-.. _SCT : foo.bar
+.. _SCT : http://oreilly.com/www/centers/gff/formats/scitex/
 .. _SFW : http://www.photoworks.com/
 .. _SMPTE : http://www.smpte.org/
 .. _SVG : http://www.w3.org/Graphics/SVG/
+.. _TIFF : http://www.remotesensing.org/libtiff/
 .. _WBMP : http://www.openmobilealliance.org/Technical/wapindex.aspx
 .. _freetype2 : http://www.freetype.org/
-.. _gnuplot : foo.bar
-.. _hp2xx : foo.bar
+.. _Gnuplot : http://gnuplot.sourceforge.net/
+.. _hp2xx : http://www.gnu.org/software/hp2xx/hp2xx.html
 .. _html2ps : http://user.it.uu.se/~jan/
-.. _jasper : http://www.ece.ubc.ca/~mdadams/jasper/
-.. _jbigkit : foo.bar
+.. _jasper : http://www.ece.uvic.ca/~mdadams/jasper/
+.. _jbigkit : http://www.cl.cam.ac.uk/~mgk25/jbigkit/
+.. _JBIG : http://www.jpeg.org/
 .. _libxml2 : http://xmlsoft.org/
 .. _mpeg2vidcodec : foo.bar
 .. _ralcgm : http://www.agocg.ac.uk/train/cgm/ralcgm.htm
@@ -64,14 +70,14 @@ image formats.
    | ART          | R    | PFS: 1st Publisher        | (MacPaint?) and later used for PFS: 1st          |
    |              |      |                           | Publisher clip art.                              |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | AVI          | R    | Microsoft Audio/Visual    |                                                  |
+   | AVI_         | R    | Microsoft Audio/Visual    |                                                  |
    |              |      | Interleaved               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | AVS          | RW   | AVS X image               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | BMP          | RW   | Microsoft Windows bitmap  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | CGM          | R    | Computer Graphics         | Requires ralcgm to render CGM files.             |
+   | CGM          | R    | Computer Graphics         | Requires ralcgm_ to render CGM files.            |
    |              |      | Metafile                  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | CMYK         | RW   | Raw cyan, magenta,        | Set -size and -depth to specify the image width, |
@@ -82,9 +88,9 @@ image formats.
    | CUT          | R    | DR Halo                   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Digital Imaging and       | Used by the medical community for images like    |
-   | DCM          | R    | Communications in         | X-rays. See the NEMA DICOM web site for more     |
-   |              |      | Medicine (DICOM) image    | information. DICOM is the basis for the DICONDE  |
-   |              |      |                           | format.                                          |
+   | DCM          | R    | Communications in         | X-rays. See the NEMA DICOM_ web site for more    |
+   |              |      | Medicine (DICOM_) image   | information. DICOM_ is the basis for the         |
+   |              |      |                           | DICONDE_ format.                                 |
    +--------------+------+---------------------------+--------------------------------------------------+
    | DCX          | RW   | ZSoft IBM PC multi-page   |                                                  |
    |              |      | Paintbrush image          |                                                  |
@@ -94,13 +100,13 @@ image formats.
    |              |      |                           | like WMF.                                        |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | RGB and grayscale are fully supported at 1, 8,   |
-   |              |      |                           | 10, 12, and 16 bits as per the SMPTE 268M-2003   |
+   |              |      |                           | 10, 12, and 16 bits as per the SMPTE_ 268M-2003  |
    |              |      |                           | (V2.0) specification. This includes support for  |
-   | DPX          | RW   | Digital Moving Picture    | images stored in a planar (multi-element)        |
+   | DPX_         | RW   | Digital Moving Picture    | images stored in a planar (multi-element)        |
    |              |      | Exchange                  | configuration and Cineon Log RGB. Rec. 601 and   |
    |              |      |                           | 709 YCbCr are fully supported with 4:4:4 and     |
-   |              |      |                           | 4:2:2 subsampling. DPX is commonly used to store |
-   |              |      |                           | image frames in film and HDTV production.        |
+   |              |      |                           | 4:2:2 subsampling. DPX_ is commonly used to      |
+   |              |      |                           | store image frames in film and HDTV production.  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | EMF          | R    | Microsoft Enhanced        | Only available under Microsoft Windows.          |
    |              |      | Metafile (32-bit)         |                                                  |
@@ -109,40 +115,40 @@ image formats.
    |              |      | Document Format           |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Adobe Encapsulated        |                                                  |
-   | EPI          | RW   | PostScript Interchange    | Requires Ghostscript to read.                    |
+   | EPI          | RW   | PostScript Interchange    | Requires Ghostscript_ to read.                   |
    |              |      | format                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | EPS          | RW   | Adobe Encapsulated        | Requires Ghostscript to read.                    |
+   | EPS          | RW   | Adobe Encapsulated        | Requires Ghostscript_ to read.                   |
    |              |      | PostScript                |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | EPS2         | W    | Adobe Level II            | Requires Ghostscript to read.                    |
+   | EPS2         | W    | Adobe Level II            | Requires Ghostscript_ to read.                   |
    |              |      | Encapsulated PostScript   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | EPS3         | W    | Adobe Level III           | Requires Ghostscript to read.                    |
+   | EPS3         | W    | Adobe Level III           | Requires Ghostscript_ to read.                   |
    |              |      | Encapsulated PostScript   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | EPSF         | RW   | Adobe Encapsulated        | Requires Ghostscript to read.                    |
+   | EPSF         | RW   | Adobe Encapsulated        | Requires Ghostscript_ to read.                   |
    |              |      | PostScript                |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Adobe Encapsulated        |                                                  |
-   | EPSI         | RW   | PostScript Interchange    | Requires Ghostscript to read.                    |
+   | EPSI         | RW   | PostScript Interchange    | Requires Ghostscript_ to read.                   |
    |              |      | format                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Adobe Encapsulated        |                                                  |
-   | EPT          | RW   | PostScript Interchange    | Requires Ghostscript to read.                    |
-   |              |      | format with TIFF preview  |                                                  |
+   | EPT          | RW   | PostScript Interchange    | Requires Ghostscript_ to read.                   |
+   |              |      | format with TIFF_ preview |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | Note that FAX machines use non-square pixels     |
    |              |      |                           | which are 1.5 times wider than they are tall but |
    |              |      |                           | computer displays use square pixels, so FAX      |
-   | FAX          | RW   | Group 3 TIFF              | images may appear to be narrow unless they are   |
+   | FAX          | RW   | Group 3 FAX               | images may appear to be narrow unless they are   |
    |              |      |                           | explicitly resized using a resize specification  |
    |              |      |                           | of "150x100%". Please note that this is *not* a  |
-   |              |      |                           | TIFF format.                                     |
+   |              |      |                           | TIFF_ format.                                    |
    +--------------+------+---------------------------+--------------------------------------------------+
    | FIG          | R    | FIG graphics format       | Requires TransFig.                               |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | FITS         | RW   | Flexible Image Transport  |                                                  |
+   | FITS_        | RW   | Flexible Image Transport  |                                                  |
    |              |      | System                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | FPX          | RW   | FlashPix Format           | Requires FlashPix SDK.                           |
@@ -155,12 +161,12 @@ image formats.
    |              |      |                           | features to GIF. Consider using PNG format       |
    |              |      |                           | rather than GIF if clients are able to read PNG. |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | GPLT         | R    | Gnuplot plot files        | Requires gnuplot3.5.tar.Z or later.              |
+   | GPLT         | R    | Gnuplot_ plot files       | Requires Gnuplot_ 3.5 or later.                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | GRAY         | RW   | Raw gray samples          | Use -size and -depth to specify the image width, |
    |              |      |                           | height, and depth.                               |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | HPGL         | R    | HP-GL plotter language    | Requires hp2xx-3.2.0.tar.gz                      |
+   | HPGL         | R    | HP-GL plotter language    | Requires hp2xx_ 3.2.0 or later                   |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Hypertext Markup Language |                                                  |
    | HTML         | RW   | with a client-side image  | Also known as "HTM". Requires html2ps to read.   |
@@ -169,33 +175,33 @@ image formats.
    | ICO          | R    | Microsoft icon            | Also known as "ICON".                            |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Joint Bi-level Image      | Also known as "BIE" and "JBG". Requires          |
-   | JBIG         | RW   | experts Group file        | jbigkit-1.0.tar.gz.                              |
+   | JBIG_        | RW   | experts Group file        | jbigkit_ 1.0 or later                            |
    |              |      | interchange format        |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | JPEG in a PNG-style wrapper with transparency.   |
-   | JNG          | RW   | JPEG Network Graphics     | Requires libjpeg and libpng-1.0.2 or later,      |
+   |              |      |                           | JPEG_ in a PNG-style wrapper with transparency.  |
+   | JNG_         | RW   | JPEG_ Network Graphics    | Requires libjpeg and libpng-1.0.2 or later,      |
    |              |      |                           | libpng-1.2.5 or later recommended.               |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | JP2          | RW   | JPEG-2000 JP2 File Format | Requires jasper-1.600.0.zip                      |
+   | JP2          | RW   | JPEG-2000 JP2 File Format | Requires jasper_ 1.600.0 or later                |
    |              |      | Syntax                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | JPC          | RW   | JPEG-2000 Code Stream     | Requires jasper-1.600.0.zip                      |
+   | JPC          | RW   | JPEG-2000 Code Stream     | Requires jasper_ 1.600.0 or later                |
    |              |      | Syntax                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | JPEG         | RW   | Joint Photographic        | Requires jpegsrc.v6b.tar.gz                      |
+   | JPEG_        | RW   | Joint Photographic        | Requires jpegsrc.v6b.tar.gz                      |
    |              |      | Experts Group JFIF format |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | MAN          | R    | Unix reference manual     | Requires that GNU groff and Ghostcript are       |
    |              |      | pages                     | installed.                                       |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Coming from MATHWORKS for storing matrices.      |
+   |              |      |                           | Coming from MathWorks_ for storing matrices.     |
    |              |      |                           | Currently supported types are 2D matrices: byte, |
    | MAT          | RW   | MATLAB image format       | word, double, complex and 3D matrices containing |
    |              |      |                           | RGB [x*y*3] byte, word. Not supported are        |
    |              |      |                           | compressed matrices from Matlab >7.1.            |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | ImageMagick's own lossless image format (with    |
-   | MIFF         | RW   | Magick image file format  | ASCII header) which ensures that no image        |
+   |              |      |                           | ImageMagick's lossless image format (with        |
+   | MIFF_        | RW   | Magick image file format  | ASCII header) which ensures that no image        |
    |              |      |                           | attributes understood by ImageMagick or          |
    |              |      |                           | GraphicsMagick are lost.                         |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -203,15 +209,15 @@ image formats.
    | MONO         | RW   | least-significant-byte    |                                                  |
    |              |      | first order               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | MNG          | RW   | Multiple-image Network    | Requires libpng-1.0.2 or later, libpng-1.2.5 or  |
+   | MNG_         | RW   | Multiple-image Network    | Requires libpng-1.0.2 or later, libpng-1.2.5 or  |
    |              |      | Graphics                  | later recommended.                               |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Motion Picture Experts    |                                                  |
-   | MPEG         | RW   | Group file interchange    | Requires mpeg2vidcodec_v12.tar.gz.               |
+   | MPEG_        | RW   | Group file interchange    | Requires mpeg2vidcodec_v12.tar.gz.               |
    |              |      | format (version 1)        |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Motion Picture Experts    |                                                  |
-   | M2V          | RW   | Group file interchange    | Requires mpeg2vidcodec_v12.tar.gz.               |
+   | M2V_         | RW   | Group file interchange    | Requires mpeg2vidcodec_v12.tar.gz.               |
    |              |      | format (version 2)        |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | The native "in-memory" GraphicsMagick            |
@@ -266,7 +272,7 @@ image formats.
    | PDB          | RW   | Palm Database ImageViewer |                                                  |
    |              |      | Format                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PDF          | RW   | Portable Document Format  | Requires Ghostscript to read.                    |
+   | PDF          | RW   | Portable Document Format  | Requires Ghostscript_ to read.                   |
    +--------------+------+---------------------------+--------------------------------------------------+
    | PFA          | R    | Postscript Type 1 font    | Opening as file returns a preview image.         |
    |              |      | (ASCII)                   |                                                  |
@@ -303,26 +309,26 @@ image formats.
    | PPM          | RW   | Portable pixmap format    |                                                  |
    |              |      | (color)                   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PS           | RW   | Adobe PostScript file     | Requires Ghostscript to read.                    |
+   | PS           | RW   | Adobe PostScript file     | Requires Ghostscript_ to read.                   |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PS2          | RW   | Adobe Level II PostScript | Requires Ghostscript to read.                    |
+   | PS2          | RW   | Adobe Level II PostScript | Requires Ghostscript_ to read.                   |
    |              |      | file                      |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PS3          | RW   | Adobe Level III           | Requires Ghostscript to read.                    |
+   | PS3          | RW   | Adobe Level III           | Requires Ghostscript_ to read.                   |
    |              |      | PostScript file           |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | PSD          | RW   | Adobe Photoshop bitmap    |                                                  |
    |              |      | file                      |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Multi-resolution TIFF containing successively    |
-   | PTIF         | RW   | Pyramid encoded TIFF      | smaller versions of the image down to the size   |
+   |              |      |                           | Multi-resolution TIFF_ containing successively   |
+   | PTIF         | RW   | Pyramid encoded TIFF_     | smaller versions of the image down to the size   |
    |              |      |                           | of an icon. The desired sub-image size may be    |
    |              |      |                           | specified when reading via the -size option.     |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PWP          | R    | Seattle File Works        |                                                  |
+   | PWP_         | R    | Seattle File Works        |                                                  |
    |              |      | multi-image file          |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | RAD          | R    | Radiance image file       | Requires that ra_ppm from the Radiance software  |
+   | RAD          | R    | Radiance_ image file      | Requires that ra_ppm from the Radiance_ software |
    |              |      |                           | package be installed.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
    | RGB          | RW   | Raw red, green, and blue  | Use -size and -depth to specify the image width, |
@@ -337,34 +343,34 @@ image formats.
    | RLE          | R    | Utah Run length encoded   |                                                  |
    |              |      | image file                |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | SCT          | R    | Scitex Continuous Tone    |                                                  |
+   | SCT_         | R    | Scitex Continuous Tone    |                                                  |
    |              |      | Picture                   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | SFW          | R    | Seattle File Works image  |                                                  |
+   | SFW_         | R    | Seattle File Works image  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | SGI          | RW   | Irix RGB image            |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Hypertext Markup Language | Used to write HTML clickable image maps based on |
    | SHTML        | W    | client-side image map     | a the output of montage or a format which        |
-   |              |      |                           | supports tiled images such as MIFF.              |
+   |              |      |                           | supports tiled images such as MIFF_.             |
    +--------------+------+---------------------------+--------------------------------------------------+
    | SUN          | RW   | SUN Rasterfile            |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Requires libxml2 and freetype-2. Note that SVG   |
-   | SVG          | RW   | Scalable Vector Graphics  | is a very complex specification so support is    |
+   |              |      |                           | Requires libxml2_ and freetype2_. Note that SVG_ |
+   | SVG_         | RW   | Scalable Vector Graphics  | is a very complex specification so support is    |
    |              |      |                           | still not complete.                              |
    +--------------+------+---------------------------+--------------------------------------------------+
    | TGA          | RW   | Truevision Targa image    | Also known as formats "ICB", "VDA", and "VST".   |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | Also known as "TIF". Requires tiff-v3.5.4.tar.gz |
    |              |      |                           | or later. Note that since the Unisys LZW patent  |
-   | TIFF         | RW   | Tagged Image File Format  | recently expired, libtiff may still require a    |
+   | TIFF_        | RW   | Tagged Image File Format  | recently expired, libtiff may still require a    |
    |              |      |                           | separate LZW patch in order to support LZW. LZW  |
    |              |      |                           | is included in libtiff by default since v3.7.0.  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | TIM          | R    | PSX TIM file              |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | TTF          | R    | TrueType font file        | Requires freetype 2. Opening as file returns a   |
+   | TTF          | R    | TrueType font file        | Requires freetype2_. Opening as file returns a   |
    |              |      |                           | preview image.                                   |
    +--------------+------+---------------------------+--------------------------------------------------+
    | TXT          | RW   | Raw text file             |                                                  |
@@ -379,7 +385,7 @@ image formats.
    | VIFF         | RW   | Khoros Visualization      |                                                  |
    |              |      | Image File Format         |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | WBMP         | RW   | Wireless bitmap           | Support for uncompressed monochrome only.        |
+   | WBMP_        | RW   | Wireless bitmap           | Support for uncompressed monochrome only.        |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | Requires libwmf. By default, renders WMF files   |
    |              |      |                           | using the dimensions specified by the metafile   |
@@ -387,7 +393,7 @@ image formats.
    |              |      |                           | output resolution, and thereby adjust the ouput  |
    | WMF          |      | Windows Metafile          | size. The default output resolution is 72DPI so  |
    |              |      |                           | "-density 144" results in an image twice as      |
-   |              |      |                           | large as the default. Use -background color to   |
+   |              |      |                           | large as the default. Use -background color_ to  |
    |              |      |                           | specify the WMF background color (default white) |
    |              |      |                           | or -texture filename to specify a background     |
    |              |      |                           | texture image.                                   |
@@ -432,7 +438,7 @@ following table lists these pseudo image formats:
    |              |      |                           | "gradient:red-blue"or "gradient:#F00-#00F").     |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | Generate an RGB histogram of the input image.    |
-   |              |      |                           | The output format is always ImageMagick MIFF     |
+   |              |      |                           | The output format is always ImageMagick MIFF_    |
    | HISTOGRAM    | W    | Histogram of the image    | (regardless of file extension). For example:     |
    |              |      |                           |                                                  |
    |              |      |                           | gm convert file.tiff histogram:file.miff         |
@@ -460,7 +466,7 @@ following table lists these pseudo image formats:
    |              |      |                           | with parameter selection. Specify the desired    |
    |              |      |                           | preview type via the -preview option). The       |
    |              |      | Show a preview an image   | output file is always written in the             |
-   | PREVIEW      | W    | enhancement, effect, or   | ImageMagick MIFF format.                         |
+   | PREVIEW      | W    | enhancement, effect, or   | ImageMagick MIFF_ format.                        |
    |              |      | f/x                       |                                                  |
    |              |      |                           | For example:                                     |
    |              |      |                           |                                                  |
@@ -471,7 +477,7 @@ following table lists these pseudo image formats:
    | PRINT        | W    | computer printer          | LPDEST (for 'lpr') environment variables to      |
    |              |      |                           | select the desired printer.                      |
    +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Import image from a       | Requires SANE Specify the device name and path   |
+   |              |      | Import image from a       | Requires SANE_ Specify the device name and path  |
    | SCAN         | R    | scanner device            | as the filename (e.g. "scan:mustek:/dev/         |
    |              |      |                           | scanner").                                       |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -486,7 +492,7 @@ following table lists these pseudo image formats:
    |              |      |                           | Used to create a thumbnailed directory (tiled    |
    | VID          | RW   | Visual Image Directory    | thumbnails) of a set of images which may be      |
    |              |      |                           | used to select images to view via the display    |
-   |              |      |                           | program, or saved to a MIFF or SHTML file.       |
+   |              |      |                           | program, or saved to a MIFF_ or SHTML file.      |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Select image from or      |                                                  |
    | WIN          | RW   | display image to your     | Only supported under Microsoft Windows.          |
@@ -500,7 +506,8 @@ following table lists these pseudo image formats:
    |              |      | Canvas image of           | Use -size and -depth to specify the image        |
    | XC           | R    | specified color           | width, height, and depth. Example XC color       |
    |              |      |                           | specifications include "XC:red" and "XC:#        |
-   |              |      |                           | FF0000".                                         |
+   |              |      |                           | FF0000".  See the color_ reference for the       |
+   |              |      |                           | numeric values used for named colors.            |
    +--------------+------+---------------------------+--------------------------------------------------+
 
 
@@ -695,7 +702,7 @@ images with those names.
 GraphicsMagick provides a number of format identifiers which are used to
 add, remove, and save embedded profiles for images which can support
 embedded profiles. Image types which may contain embedded profiles are
-TIFF, JPEG, and PDF.
+TIFF_, JPEG_, and PDF.
 
 
 .. table:: Supported Embedded Profile Formats
@@ -712,7 +719,7 @@ TIFF, JPEG, and PDF.
    | APP1              | RW   | Raw application            |                                                 |
    |                   |      | information                |                                                 |
    +-------------------+------+----------------------------+-------------------------------------------------+
-   | APP1JPEG          | RW   | Raw JPEG binary data       | Profile in JPEG wrapper.                        |
+   | APP1JPEG          | RW   | Raw JPEG_ binary data      | Profile in JPEG_ wrapper.                       |
    +-------------------+------+----------------------------+-------------------------------------------------+
    | ICC               | RW   | International Color        | Also known as "ICM". To read, use -profile with |
    |                   |      | Consortium color profile   | convert.                                        |

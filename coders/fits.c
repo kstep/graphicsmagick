@@ -432,7 +432,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                    LoadImageText,image->filename))
           break;
     }
     MagickFreeMemory(fits_pixels);
@@ -461,7 +462,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   }
@@ -681,8 +683,9 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {
-        status=MagickMonitor(SaveImageText,image->rows-y-1,image->rows,
-          &image->exception);
+        status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                      &image->exception,SaveImageText,
+                                      image->filename);
         if (status == False)
           break;
       }

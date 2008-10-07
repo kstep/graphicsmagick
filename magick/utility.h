@@ -147,7 +147,7 @@ extern MagickExport void
   SetGeometry(const Image *,RectangleInfo *);
 
 extern MagickExport void
-  FormatString(char *,const char *,...) __attribute__((format (printf,2,3))),
+  FormatString(char *string,const char *format,...) __attribute__((format (printf,2,3))),
   FormatStringList(char *string,const char *format,va_list operands);
 
 extern MagickExport magick_int64_t

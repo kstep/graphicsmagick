@@ -185,7 +185,7 @@ ChannelImagePixels(void *mutable_data,         /* User provided mutable data */
 }
 MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 {
-#define ChannelImageText  "Extract a channel from the image...  "
+#define ChannelImageText  "[%s] Extract channel from image...  "
 
   ChannelType
     channel_type = channel;
@@ -340,7 +340,7 @@ ExportImageChannelPixels(void *mutable_data,                /* User provided mut
   
   return MagickPass;
 }
-#define ExportImageChannelText "Export image channel...  "
+#define ExportImageChannelText "[%s] Export image channel...  "
 MagickExport Image *ExportImageChannel(const Image *source_image,
                                        const ChannelType channel,
                                        ExceptionInfo *exception)
@@ -412,7 +412,7 @@ MagickExport Image *ExportImageChannel(const Image *source_image,
 %
 %
 */
-#define ComputeChannelDepthText "Get image channel depth...  "
+#define ComputeChannelDepthText "[%s] Get image channel depth..."
 
 #define CHANNEL_DEPTH(parameter)                                \
   {                                                             \
@@ -664,7 +664,7 @@ ImportImageChannelPixels(void *mutable_data,                /* User provided mut
   return MagickPass;
 }
 
-#define ImportImageChannelText  "Import a channel into the image...  "
+#define ImportImageChannelText  "[%s] Import a channel into the image..."
 MagickPassFail ImportImageChannel(const Image *source_image,
                                   Image *update_image,
                                   const ChannelType channel)
@@ -784,7 +784,7 @@ ImportImageChannelsMaskedPixels(void *mutable_data,                /* User provi
   return MagickPass;
 }
 
-#define ImportImageChannelsMaskedText  "Import channels into the image...  "
+#define ImportImageChannelsMaskedText  "[%s] Import channels into the image...  "
 MagickPassFail ImportImageChannelsMasked(const Image *source_image,
                                          Image *update_image,
                                          const ChannelType channels)

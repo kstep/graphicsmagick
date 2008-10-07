@@ -347,7 +347,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                         "Transform colorspace from %s to %s",
                         ColorspaceTypeToString(image->colorspace),
                         ColorspaceTypeToString(colorspace));
-  FormatString(progress_message,"  Transform colorspace from %s to %s...  ",
+  FormatString(progress_message,"[%%s] Transform colorspace from %s to %s...",
                ColorspaceTypeToString(image->colorspace),
                ColorspaceTypeToString(colorspace));
 
@@ -1413,7 +1413,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                         "Transform colorspace from %s to RGB",
                         ColorspaceTypeToString(image->colorspace));
 
-  FormatString(progress_message,"  Transform colorspace from %s to RGB...  ",
+  FormatString(progress_message,"[%%s] Transform colorspace from %s to RGB...",
                ColorspaceTypeToString(image->colorspace));
 
   if (image->colorspace == CMYKColorspace)

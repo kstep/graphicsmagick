@@ -1128,7 +1128,8 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
           (void) ExportImagePixelArea(image,z2qtype[z],8,pixels,0,0);
           (void) WriteBlob(image,image->rows,pixels);
           if (QuantumTick(progress_quantum,progress_span))
-            if (!MagickMonitor(SaveImageText,progress_quantum,progress_span,&image->exception))
+            if (!MagickMonitorFormatted(progress_quantum,progress_span,&image->exception,
+                                        SaveImageText,image->filename))
               goto BreakAll;
 	}    
       } while(z-- >= 2);

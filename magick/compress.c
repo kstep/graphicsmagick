@@ -608,7 +608,8 @@ MagickExport MagickPassFail HuffmanDecodeImage(Image *image)
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  "[%s] Huffman decode image...",image->filename))
         {
           status=MagickFail;
           break;
@@ -835,7 +836,8 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
     q=scanline;
     if (huffman_image->previous == (Image *) NULL)
       if (QuantumTick(y,huffman_image->rows))
-        if (!MagickMonitor(SaveImageText,y,huffman_image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,huffman_image->rows,&image->exception,
+                                    "[%s] Huffman encode image...",image->filename))
           {
             status=MagickFail;
             break;

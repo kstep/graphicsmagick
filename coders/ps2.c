@@ -833,8 +833,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(SaveImageText,y,image->rows,
-                      &image->exception);
+                    status=MagickMonitorFormatted(y,image->rows,
+                                                  &image->exception,
+                                                  SaveImageText,
+                                                  image->filename);
                     if (status == False)
                       break;
                   }
@@ -872,8 +874,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(SaveImageText,y,image->rows,
-                      &image->exception);
+                    status=MagickMonitorFormatted(y,image->rows,
+                                                  &image->exception,
+                                                  SaveImageText,
+                                                  image->filename);
                     if (status == False)
                       break;
                   }
@@ -960,8 +964,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     {
-                      status=MagickMonitor(SaveImageText,y,image->rows,
-                        &image->exception);
+                      status=MagickMonitorFormatted(y,image->rows,
+                                                    &image->exception,
+                                                    SaveImageText,
+                                                    image->filename);
                       if (status == False)
                         break;
                     }
@@ -1017,8 +1023,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     {
-                      status=MagickMonitor(SaveImageText,y,image->rows,
-                        &image->exception);
+                      status=MagickMonitorFormatted(y,image->rows,
+                                                    &image->exception,
+                                                    SaveImageText,
+                                                    image->filename);
                       if (status == False)
                         break;
                     }
@@ -1079,8 +1087,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     {
-                      status=MagickMonitor(SaveImageText,y,image->rows,
-                        &image->exception);
+                      status=MagickMonitorFormatted(y,image->rows,
+                                                    &image->exception,
+                                                    SaveImageText,
+                                                    image->filename);
                       if (status == False)
                         break;
                     }
@@ -1115,8 +1125,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     {
-                      status=MagickMonitor(SaveImageText,y,image->rows,
-                        &image->exception);
+                      status=MagickMonitorFormatted(y,image->rows,
+                                                    &image->exception,
+                                                    SaveImageText,
+                                                    image->filename);
                       if (status == False)
                         break;
                     }
@@ -1141,8 +1153,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

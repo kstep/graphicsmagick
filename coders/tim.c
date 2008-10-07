@@ -250,8 +250,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -276,8 +277,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -308,8 +310,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -338,8 +341,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (QuantumTick(y,image->rows))
             {
-              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                exception);
+              status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                            exception,LoadImageText,
+                                            image->filename);
               if (status == False)
                 break;
             }
@@ -374,8 +378,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
-          exception);
+        status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename);
         if (status == False)
           break;
       }

@@ -2256,7 +2256,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
         if (image->previous == (Image *) NULL)
-          if (!MagickMonitor(LoadImageTag,pass,num_passes,exception))
+          if (!MagickMonitorFormatted(pass,num_passes,exception,
+                                      LoadImageTag,image->filename))
             break;
       }
   else /* image->storage_class != DirectClass */
@@ -2416,7 +2417,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
           }
         if (image->previous == (Image *) NULL)
-          if (!MagickMonitor(LoadImageTag,pass,num_passes,exception))
+          if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
+                                      image->filename))
             break;
         MagickFreeMemory(quantum_scanline);
       }
@@ -2881,8 +2883,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         Read a new JNG chunk.
       */
 
-      if (!MagickMonitor(LoadImagesTag,TellBlob(image),2*GetBlobSize(image),
-                         exception))
+      if (!MagickMonitorFormatted(TellBlob(image),2*GetBlobSize(image),
+                                  exception,LoadImagesTag,image->filename))
         break;
 
       type[0]='\0';
@@ -3358,8 +3360,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   image->page.x=mng_info->x_off[mng_info->object_id];
   image->page.y=mng_info->y_off[mng_info->object_id];
   mng_info->image_found++;
-  (void) MagickMonitor(LoadImagesTag,2*GetBlobSize(image),2*GetBlobSize(image),
-                       exception);
+  (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
+                                exception,LoadImagesTag,image->filename);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOneJNGImage()");
@@ -4730,8 +4732,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image=SyncNextImageInList(image);
             }
           mng_info->image=image;
-          if (!MagickMonitor(LoadImagesTag,TellBlob(image),GetBlobSize(image),
-                             exception))
+          if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesTag,image->filename))
             break;
           if (term_chunk_found)
             {
@@ -7068,9 +7070,11 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               *(png_pixels+i)=(*(png_pixels+i) > 128) ? 255 : 0;
             png_write_row(ping,png_pixels);
             if (image->previous == (Image *) NULL)
-              if (!MagickMonitor(SaveImageTag,(magick_uint64_t) y*(pass+1),
-                                 (magick_uint64_t) image->rows*num_passes,
-                                 &image->exception))
+              if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                          (magick_uint64_t) image->rows*num_passes,
+                                          &image->exception,
+                                          SaveImageTag,
+                                          image->filename))
                 break;
 
           }
@@ -7108,9 +7112,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                   }
                 png_write_row(ping,png_pixels);
                 if (image->previous == (Image *) NULL)
-                  if (!MagickMonitor(SaveImageTag,(magick_uint64_t) y*(pass+1),
-                                     (magick_uint64_t) image->rows*num_passes,
-                                     &image->exception))
+                  if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                              (magick_uint64_t) image->rows*num_passes,
+                                              &image->exception,SaveImageTag,
+                                              image->filename))
                     break;
               }
           }
@@ -7154,9 +7159,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                         }
                       png_write_row(ping,png_pixels);
                       if (image->previous == (Image *) NULL)
-                        if (!MagickMonitor(SaveImageTag,(magick_uint64_t) y*(pass+1),
-                                           (magick_uint64_t) image->rows*num_passes,
-                                           &image->exception))
+                        if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                                    (magick_uint64_t) image->rows*num_passes,
+                                                    &image->exception,SaveImageTag,
+                                                    image->filename))
                           break;
                     }
                   if (logging)
@@ -7184,9 +7190,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                                                     quantum_size,png_pixels,0,0);
                       png_write_row(ping,png_pixels);
                       if (image->previous == (Image *) NULL)
-                        if (!MagickMonitor(SaveImageTag,(magick_uint64_t) y*(pass+1),
-                                           (magick_uint64_t) image->rows*num_passes,
-                                           &image->exception))
+                        if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                                    (magick_uint64_t) image->rows*num_passes,
+                                                    &image->exception,SaveImageTag,
+                                                    image->filename))
                           break;
                     }
                 }
@@ -8760,8 +8767,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      if (!MagickMonitor(SaveImagesTag,scene++,GetImageListLength(image),
-                         &image->exception))
+      if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesTag,
+                                  image->filename))
         break;
     } while (mng_info->adjoin);
   if (write_mng)

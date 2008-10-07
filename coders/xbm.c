@@ -345,7 +345,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  LoadImageText,image->filename))
          break;
   }
   MagickFreeMemory(data);
@@ -562,7 +563,8 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
         byte=0;
       };
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   (void) strcpy(buffer,"};\n");

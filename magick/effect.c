@@ -87,7 +87,7 @@
 %
 %
 */
-#define AdaptiveThresholdImageText  "Adaptive threshold the image...  "
+#define AdaptiveThresholdImageText  "[%s] Adaptive threshold image..."
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
                                            const unsigned long width,
                                            const unsigned long height,
@@ -225,7 +225,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(AdaptiveThresholdImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        AdaptiveThresholdImageText,
+                                        image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -423,8 +425,8 @@ MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresho
 %
 %
 */
-#define BlurImageColumnsText  "Blur image columns...  "
-#define BlurImageRowsText  "Blur image rows...  "
+#define BlurImageColumnsText  "[%s] Blur image columns..."
+#define BlurImageRowsText  "[%s] Blur image rows...  "
 static void BlurScanline(const double *kernel,const unsigned long width,
   const PixelPacket *source,PixelPacket *destination,
   const unsigned long columns)
@@ -587,7 +589,7 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
 
 static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                                          const unsigned long width,
-                                         const char *text,
+                                         const char *format,
                                          ExceptionInfo *exception)
 {
   ThreadViewSet
@@ -696,7 +698,8 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
           {
             row_count++;
             if (QuantumTick(row_count,image->rows))
-              if (!MagickMonitor(text,row_count,image->rows,exception))
+              if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                          format,image->filename))
                 thread_status=MagickFail;
           
             if (thread_status == MagickFail)
@@ -934,7 +937,7 @@ ChannelThresholdPixels(void *mutable_data,         /* User provided mutable data
   return MagickPass;
 }
 
-#define ChannelThresholdImageText  "Channel threshold the image...  "
+#define ChannelThresholdImageText  "[%s] Channel threshold the image..."
 MagickExport MagickPassFail ChannelThresholdImage(Image *image,
   const char *threshold)
 {
@@ -1057,7 +1060,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 */
 MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 {
-#define DespeckleImageText  "Despeckle image...  "
+#define DespeckleImageText  "[%s] Despeckle image..."
 
   Image
     *despeckle_image;
@@ -1153,7 +1156,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) memset(buffer,0,length);
     for (i=0; i < 4; i++)
     {
-      if (!MagickMonitor(DespeckleImageText,4*layer+i,15,exception))
+      if (!MagickMonitorFormatted(4*layer+i,15,exception,
+                                  DespeckleImageText,despeckle_image->filename))
         break;
       Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,1);
       Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,1);
@@ -1403,7 +1407,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
       total_weight+=(weight);                                           \
     }                                                                   \
   r++;
-#define EnhanceImageText  "Enhance image...  "
+#define EnhanceImageText  "[%s] Enhance image...  "
 
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
@@ -1546,7 +1550,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(EnhanceImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        EnhanceImageText,image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -1965,7 +1970,7 @@ static void ResetMedianList(MedianPixelList *pixel_list)
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
                                       ExceptionInfo *exception)
 {
-#define MedianFilterImageText  "  Filter image with neighborhood ranking...  "
+#define MedianFilterImageText  "[%s] Filter image with neighborhood ranking..."
 
   Image
     *median_image;
@@ -2047,7 +2052,9 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       if (!SyncImagePixels(median_image))
         break;
       if (QuantumTick(y,median_image->rows))
-        if (!MagickMonitor(MedianFilterImageText,y,median_image->rows,exception))
+        if (!MagickMonitorFormatted(y,median_image->rows,exception,
+                                    MedianFilterImageText,
+                                    median_image->filename))
           break;
     }
   CleanMedianList(skiplist);
@@ -2145,7 +2152,7 @@ typedef struct _BlurOffsetInfo
     x,
     y;
 } BlurOffsetInfo;
-#define MotionBlurImageText  "Motion blur image...  "
+#define MotionBlurImageText  "[%s] Motion blur image..."
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
                                     const double sigma,const double angle,
                                     ExceptionInfo *exception)
@@ -2320,7 +2327,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(MotionBlurImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        MotionBlurImageText,image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -2373,7 +2381,7 @@ MagickExport MagickPassFail
 RandomChannelThresholdImage(Image *image,const char *channel,
                             const char *thresholds,ExceptionInfo *exception)
 {
-#define RandomChannelThresholdImageText  "Random-channel threshold image...  "
+#define RandomChannelThresholdImageText  "[%s] Random-channel threshold image...  "
 
   const double
     o2[4]={0.2,0.6,0.8,0.4};
@@ -2811,7 +2819,9 @@ RandomChannelThresholdImage(Image *image,const char *channel,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(RandomChannelThresholdImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        RandomChannelThresholdImageText,
+                                        image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -2914,7 +2924,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
 MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
-#define ReduceNoiseImageText  "Reduce the image noise...  "
+#define ReduceNoiseImageText  "[%s] Reduce the image noise...  "
 
   Image
     *noise_image;
@@ -2998,7 +3008,9 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,noise_image->rows))
-      if (!MagickMonitor(ReduceNoiseImageText,y,noise_image->rows,exception))
+      if (!MagickMonitorFormatted(y,noise_image->rows,exception,
+                                  ReduceNoiseImageText,
+                                  noise_image->filename))
         break;
   }
   CleanMedianList(skiplist);
@@ -3043,7 +3055,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
                                double azimuth,double elevation,ExceptionInfo *exception)
 {
-#define ShadeImageText  "Shade image...  "
+#define ShadeImageText  "[%s] Shade image..."
 
   Image
     *shade_image;
@@ -3198,7 +3210,8 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(ShadeImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        ShadeImageText,image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -3378,7 +3391,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
 MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
                                 ExceptionInfo *exception)
 {
-#define SpreadImageText  "Spread image...  "
+#define SpreadImageText  "[%s] Spread image..."
 #define OFFSETS_ENTRIES 5000U
 
   Image
@@ -3530,7 +3543,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(EnhanceImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        EnhanceImageText,image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -3576,7 +3590,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 */
 MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 {
-#define ThresholdImageText  "Threshold the image...  "
+#define ThresholdImageText  "[%s] Threshold image..."
 
   register IndexPacket
     index;
@@ -3660,7 +3674,8 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
         if (!SyncImagePixels(image))
           break;
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    ThresholdImageText,image->filename))
           break;
     }
   image->is_monochrome=MagickTrue;
@@ -3769,7 +3784,7 @@ UnsharpMaskPixels(void *mutable_data,                /* User provided mutable da
   return MagickPass;
 }
 
-#define SharpenImageText  "Sharpen image...  "
+#define SharpenImageText  "[%s] Sharpen image..."
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)

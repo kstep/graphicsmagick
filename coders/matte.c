@@ -189,7 +189,8 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   (void) FormatString(matte_image->filename,"MIFF:%.1024s",image->filename);

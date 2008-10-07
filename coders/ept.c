@@ -129,7 +129,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
-#define RenderPostscriptText  "  Rendering postscript...  "
+#define RenderPostscriptText  "[%s] Rendering postscript..."
 
   char
     density[MaxTextExtent],
@@ -342,7 +342,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   FormatString(command,delegate_info->commands,antialias,
     antialias,geometry,density,options,image_info->filename,
     postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
+  (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
@@ -361,7 +362,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
                             "Returned from Postscript delegate (status=%d) ...", status);
     }
   (void) LiberateTemporaryFile(postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
+  (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*

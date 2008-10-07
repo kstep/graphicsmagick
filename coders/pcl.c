@@ -288,7 +288,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,buffer);
           }
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
       }
       (void) WriteBlobString(image,"\033*rB");  /* end graphics */
@@ -340,7 +341,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         (void) WriteBlob(image,3*image->columns,pixels);
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
       }
       (void) WriteBlobString(image,"\033*r0C");  /* end graphics */

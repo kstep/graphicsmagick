@@ -1504,7 +1504,7 @@ static inline unsigned int IsPoint(const char *point)
 
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
-#define RenderImageText  "  Render image...  "
+#define RenderImageText  "[%s] Render image..."
 
   AffineMatrix
     affine,
@@ -2880,8 +2880,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_info->text != (char *) NULL)
       MagickFreeMemory(primitive_info->text);
-    status=MagickMonitor(RenderImageText,q-primitive,
-      (magick_uint64_t) primitive_extent,&image->exception);
+    status=MagickMonitorFormatted(q-primitive,
+                                  (magick_uint64_t) primitive_extent,
+                                  &image->exception,
+                                  RenderImageText,image->filename);
     if (status == False)
       break;
   }

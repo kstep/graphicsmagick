@@ -130,7 +130,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
-#define RenderPostscriptText  "  Rendering postscript...  "
+#define RenderPostscriptText  "[%s] Rendering postscript..."
 
   char
     command[MaxTextExtent],
@@ -326,7 +326,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info->commands,antialias,
     antialias,geometry,density,options,image_info->filename,
     postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
+  (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
@@ -344,7 +345,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
   (void) LiberateTemporaryFile(postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
+  (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
@@ -1234,8 +1236,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,
-                                     &image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
             } 
             if (bp != buffer)
@@ -1306,8 +1308,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 };
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,
-                                     &image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
             }
             if (bp != buffer)
@@ -1372,7 +1374,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 WriteRunlengthPacket(image,bp,pixel,length,p);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                                SaveImageText,image->filename))
                       break;
               }
               if (bp != buffer)
@@ -1417,7 +1420,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                                SaveImageText,image->filename))
                       break;
               }
               if (bp != buffer)
@@ -1501,7 +1505,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 bp=AppendHexVal(bp,Min(length,0xff));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                                SaveImageText,image->filename))
                       break;
               }
               if (bp != buffer)
@@ -1541,7 +1546,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                                SaveImageText,image->filename))
                       break;
               }
               if (bp != buffer)
@@ -1560,7 +1566,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    if (!MagickMonitorFormatted(scene++,GetImageListLength(image),&image->exception,
+                                SaveImagesText,image->filename))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

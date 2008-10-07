@@ -38,6 +38,7 @@
 */
 #include "magick/studio.h"
 #include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Global declarations.
@@ -63,9 +64,61 @@ static MonitorHandler
 %
 %  The format of the MagickMonitor method is:
 %
-%      unsigned int MagickMonitor(const char *text,
+%      MagickPassFail MagickMonitor(const char *text,
 %        const magick_int64_t quantum,const magick_uint64_t span,
 %        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o text: Description of the task being performed.
+%
+%    o quantum: The position relative to the span parameter which represents
+%      how much progress has been made toward completing a task.
+%
+%    o span: The span relative to completing a task.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickPassFail
+MagickMonitor(const char *text,
+              const magick_int64_t quantum,
+              const magick_uint64_t span,
+              ExceptionInfo *exception)
+{
+  MagickPassFail
+    status;
+
+  assert(text != (const char *) NULL);
+  ProcessPendingEvents(text);
+  status=MagickPass;
+  if (monitor_handler != (MonitorHandler) NULL)
+    status=(*monitor_handler)(text,quantum,span,exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k M o n i t o r F o r m a t t e d                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMonitorFormatted() calls the monitor handler method with a
+%  printf type format specification and variable argument list.  Also
+%  passed are quantum and span values which provide a measure of
+%  completion.  The method returns True on success otherwise False if
+%  an error is encountered, e.g. if there was a user interrupt.
+%
+%  The format of the MagickMonitorFormatted method is:
+%
+%      MagickPassFail MagickMonitorFormatted(const magick_int64_t quantum,
+%                       const magick_uint64_t span,ExceptionInfo *exception,
+%                       const char *format,...)
 %
 %  A description of each parameter follows:
 %
@@ -76,20 +129,35 @@ static MonitorHandler
 %
 %    o exception: Return any errors or warnings in this structure.
 %
+%    o format:  A string describing the format to use to write the remaining
+%      arguments.
+%
 */
-MagickExport unsigned int MagickMonitor(const char *text,
-  const magick_int64_t quantum,const magick_uint64_t span,
-  ExceptionInfo *exception)
+MagickExport MagickPassFail
+MagickMonitorFormatted(const magick_int64_t quantum,
+                       const magick_uint64_t span,
+                       ExceptionInfo *exception,
+                       const char *format,...)
 {
-  unsigned int
+  MagickPassFail
     status;
 
-  assert(text != (const char *) NULL);
-  ProcessPendingEvents(text);
-  status=True;
+
+  status=MagickPass;
   if (monitor_handler != (MonitorHandler) NULL)
-    status=(*monitor_handler)(text,quantum,span,exception);
-  return(status);
+    {
+      va_list
+        operands;
+
+      char
+        text[MaxTextExtent];
+
+      va_start(operands,format);
+      FormatStringList(text,format,operands);
+      va_end(operands);
+      status=MagickMonitor(text,quantum,span,exception);
+    }
+  return status;
 }
 
 /*
@@ -116,7 +184,8 @@ MagickExport unsigned int MagickMonitor(const char *text,
 %
 %
 */
-MagickExport MonitorHandler SetMonitorHandler(MonitorHandler handler)
+MagickExport MonitorHandler
+SetMonitorHandler(MonitorHandler handler)
 {
   MonitorHandler
     previous_handler;

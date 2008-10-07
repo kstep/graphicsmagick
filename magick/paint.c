@@ -603,7 +603,7 @@ MagickExport MagickPassFail MatteFloodfillImage(Image *image,
 MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
   const PixelPacket fill)
 {
-#define OpaqueImageText  "  Setting opaque color in the image...  "
+#define OpaqueImageText  "[%s] Setting opaque color in image..."
 
   long
     y;
@@ -654,7 +654,8 @@ MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
             break;
           }
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(OpaqueImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      OpaqueImageText,image->filename))
             {
               status=MagickFail;
               break;
@@ -673,7 +674,8 @@ MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
         if (FuzzyColorMatch(&image->colormap[i],&target,image->fuzz))
           image->colormap[i]=fill;
         if (QuantumTick(i,image->colors))
-          if (!MagickMonitor(OpaqueImageText,i,image->colors,&image->exception))
+          if (!MagickMonitorFormatted(i,image->colors,&image->exception,
+                                      OpaqueImageText,image->filename))
             {
               status=MagickFail;
               break;
@@ -723,7 +725,7 @@ MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
 MagickExport MagickPassFail TransparentImage(Image *image,
   const PixelPacket target,const unsigned int opacity)
 {
-#define TransparentImageText  "  Setting transparent color in the image...  "
+#define TransparentImageText  "[%s] Setting transparent color in image...  "
 
   long
     y;
@@ -777,7 +779,8 @@ MagickExport MagickPassFail TransparentImage(Image *image,
           break;
         }
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(TransparentImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    TransparentImageText,image->filename))
           {
             status=MagickFail;
             break;

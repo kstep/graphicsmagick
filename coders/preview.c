@@ -173,7 +173,7 @@ ModuleExport void UnregisterPREVIEWImage(void)
 static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
-#define PreviewImageText  "  Creating image preview...  "
+#define PreviewImageText  "[%s] Creating image preview..."
 
   char
     factor[MaxTextExtent],
@@ -608,7 +608,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     (void) SetImageAttribute(preview_image,"label",label);
     (void) SetMonitorHandler(handler);
     AppendImageToList(&images,preview_image);
-    if (!MagickMonitor(PreviewImageText,i,NumberTiles,&image->exception))
+    if (!MagickMonitorFormatted(i,NumberTiles,&image->exception,
+                                PreviewImageText,image->filename))
       break;
   }
   DestroyImage(master_image);

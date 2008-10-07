@@ -177,7 +177,8 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       {
         row_count++;
         if (QuantumTick(row_count,rows))
-          if (!MagickMonitor(description,row_count,rows,exception))
+          if (!MagickMonitorFormatted(row_count,rows,exception,
+                                      description,image->filename))
             thread_status=MagickFail;
 
         if (thread_status == MagickFail)
@@ -317,7 +318,8 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
       {
         row_count++;
         if (QuantumTick(row_count,rows))
-          if (!MagickMonitor(description,row_count,rows,exception))
+          if (!MagickMonitorFormatted(row_count,rows,exception,
+                                      description,image->filename))
             thread_status=MagickFail;
 
         if (thread_status == MagickFail)
@@ -491,7 +493,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       {
         row_count++;
         if (QuantumTick(row_count,rows))
-          if (!MagickMonitor(description,row_count,rows,exception))
+          if (!MagickMonitorFormatted(row_count,rows,exception,
+                                      description,first_image->filename,
+                                      second_image->filename))
             thread_status=MagickFail;
 
         if (thread_status == MagickFail)
@@ -679,7 +683,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       {
         row_count++;
         if (QuantumTick(row_count,rows))
-          if (!MagickMonitor(description,row_count,rows,exception))
+          if (!MagickMonitorFormatted(row_count,rows,exception,
+                                      description,source_image->filename,
+                                      update_image->filename))
             thread_status=MagickFail;
 
         if (thread_status == MagickFail)
@@ -1011,7 +1017,10 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       {
         row_count++;
         if (QuantumTick(row_count,rows))
-          if (!MagickMonitor(description,row_count,rows,exception))
+          if (!MagickMonitorFormatted(row_count,rows,exception,description,
+                                      source1_image->filename,
+                                      source2_image->filename,
+                                      update_image->filename))
             thread_status=MagickFail;
 
         if (thread_status == MagickFail)

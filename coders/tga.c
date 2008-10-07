@@ -530,7 +530,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->is_grayscale=is_grayscale;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
         }
       if (EOFBlob(image))
@@ -566,7 +567,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               return((Image *) NULL);
             }
           image=SyncNextImageInList(image);
-          if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename))
             break;
         }
     } while (status == True);
@@ -979,14 +982,17 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
       MagickFreeMemory(targa_pixels);
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+      if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename))
         break;
     } while (image_info->adjoin);
   if (image_info->adjoin)

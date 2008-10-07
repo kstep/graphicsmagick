@@ -193,7 +193,8 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
         if (number_files <= 5)
           continue;
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+        if (!MagickMonitorFormatted(i,number_files,&image->exception,
+                                    LoadImageText,image->filename))
           break;
       }
       DestroyExceptionInfo(&exception);

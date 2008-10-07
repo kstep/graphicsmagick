@@ -92,7 +92,7 @@ static void PlasmaPixel(Image *image,double x,double y)
 static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define PlasmaImageText  "  Applying image plasma...  "
+#define PlasmaImageText  "[%s] Applying image plasma..."
 
   Image
     *image;
@@ -168,7 +168,8 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
     i>>=1;
   for (depth=1; ; depth++)
   {
-    if (!MagickMonitor(PlasmaImageText,depth,max_depth,&image->exception))
+    if (!MagickMonitorFormatted(depth,max_depth,&image->exception,
+                                PlasmaImageText,image->filename))
       break;
     if (PlasmaImage(image,&segment_info,0,depth))
       break;

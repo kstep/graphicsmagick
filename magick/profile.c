@@ -464,7 +464,7 @@ ProfileImagePixels(void *mutable_data,         /* User provided mutable data */
 }
 #endif /* defined(HasLCMS) */
 
-#define ProfileImageText "Color Transform Pixels ..."
+#define ProfileImageText "[%s] Color Transform Pixels..."
 MagickExport MagickPassFail
 ProfileImage(Image *image,const char *name,unsigned char *profile,
              const size_t length,MagickBool clone)

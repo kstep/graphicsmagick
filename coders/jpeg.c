@@ -1090,7 +1090,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         {
           status=MagickFail;
           break;
@@ -2019,7 +2020,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }
@@ -2045,7 +2047,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
               }
           }
@@ -2073,7 +2076,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
               }
           }
@@ -2108,7 +2112,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
           }
       }
@@ -2134,7 +2139,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }
@@ -2162,7 +2168,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }

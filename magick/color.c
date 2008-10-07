@@ -197,9 +197,10 @@ MagickConstrainColormapIndex(Image *image, unsigned int index)
 %
 %
 */
-static CubeInfo *ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
+static CubeInfo *
+ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
 {
-#define ComputeImageColorsText  "  Compute image colors...  "
+#define ComputeImageColorsText  "[%s] Compute image colors..."
 
   CubeInfo
     *cube_info;
@@ -231,68 +232,72 @@ static CubeInfo *ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
   if (cube_info == (CubeInfo *) NULL)
     {
       ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
-        UnableToDetermineTheNumberOfImageColors);
+                      UnableToDetermineTheNumberOfImageColors);
       return(0);
     }
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      return(0);
-    for (x=0; x < (long) image->columns; x++)
     {
-      /*
-        Start at the root and proceed level by level.
-      */
-      node_info=cube_info->root;
-      index=MaxTreeDepth-1;
-      for (level=1; level <= MaxTreeDepth; level++)
-      {
-        id=ColorToNodeId(p->red,p->green,p->blue,index);
-        if (node_info->child[id] == (NodeInfo *) NULL)
-          {
-            node_info->child[id]=GetNodeInfo(cube_info,level);
-            if (node_info->child[id] == (NodeInfo *) NULL)
-              {
-                ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
-                  UnableToDetermineTheNumberOfImageColors);
-                return(0);
-              }
-          }
-        node_info=node_info->child[id];
-        index--;
-        if (level != MaxTreeDepth)
-          continue;
-        for (i=0; i < (long) node_info->number_unique; i++)
-          if (ColorMatch(p,&node_info->list[i].pixel))
-            break;
-        if (i < (long) node_info->number_unique)
-          {
-            node_info->list[i].count++;
-            continue;
-          }
-        if (node_info->number_unique == 0)
-          node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
-        else
-          MagickReallocMemory(ColorPacket *,node_info->list,
-            (i+1)*sizeof(ColorPacket));
-        if (node_info->list == (ColorPacket *) NULL)
-          {
-            ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
-              UnableToDetermineTheNumberOfImageColors);
-            return(0);
-          }
-        node_info->list[i].pixel=(*p);
-        node_info->list[i].count=1;
-        node_info->number_unique++;
-        cube_info->colors++;
-      }
-      p++;
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        return(0);
+      for (x=0; x < (long) image->columns; x++)
+        {
+          /*
+            Start at the root and proceed level by level.
+          */
+          node_info=cube_info->root;
+          index=MaxTreeDepth-1;
+          for (level=1; level <= MaxTreeDepth; level++)
+            {
+              id=ColorToNodeId(p->red,p->green,p->blue,index);
+              if (node_info->child[id] == (NodeInfo *) NULL)
+                {
+                  node_info->child[id]=GetNodeInfo(cube_info,level);
+                  if (node_info->child[id] == (NodeInfo *) NULL)
+                    {
+                      ThrowException3(exception,ResourceLimitError,
+                                      MemoryAllocationFailed,
+                                      UnableToDetermineTheNumberOfImageColors);
+                      return(0);
+                    }
+                }
+              node_info=node_info->child[id];
+              index--;
+              if (level != MaxTreeDepth)
+                continue;
+              for (i=0; i < (long) node_info->number_unique; i++)
+                if (ColorMatch(p,&node_info->list[i].pixel))
+                  break;
+              if (i < (long) node_info->number_unique)
+                {
+                  node_info->list[i].count++;
+                  continue;
+                }
+              if (node_info->number_unique == 0)
+                node_info->list=MagickAllocateMemory(ColorPacket *,
+                                                     sizeof(ColorPacket));
+              else
+                MagickReallocMemory(ColorPacket *,node_info->list,
+                                    (i+1)*sizeof(ColorPacket));
+              if (node_info->list == (ColorPacket *) NULL)
+                {
+                  ThrowException3(exception,ResourceLimitError,
+                                  MemoryAllocationFailed,
+                                  UnableToDetermineTheNumberOfImageColors);
+                  return(0);
+                }
+              node_info->list[i].pixel=(*p);
+              node_info->list[i].count=1;
+              node_info->number_unique++;
+              cube_info->colors++;
+            }
+          p++;
+        }
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                    ComputeImageColorsText,image->filename))
+          break;
     }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ComputeImageColorsText,y,image->rows,exception))
-        break;
-  }
   return (cube_info);
 }
 
@@ -1124,10 +1129,12 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
 %
 %
 */
-static void HistogramToFile(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info,FILE *file,ExceptionInfo *exception)
+static void
+HistogramToFile(const Image *image,CubeInfo *cube_info,
+                const NodeInfo *node_info,FILE *file,
+                ExceptionInfo *exception)
 {
-#define HistogramToFileImageText  "  Compute image histogram...  "
+#define HistogramToFileImageText  "[%s] Compute image histogram..."
 
   register unsigned int
     id;
@@ -1152,18 +1159,20 @@ static void HistogramToFile(const Image *image,CubeInfo *cube_info,
 
       p=node_info->list;
       for (i=0; i < (long) node_info->number_unique; i++)
-      {
-        GetColorTuple(&p->pixel,image->depth,image->matte,False,tuple);
-        (void) fprintf(file,"%10lu: %.1024s  ",p->count,tuple);
-        (void) fprintf(file,"  ");
-        (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
-        (void) fprintf(file,"%.1024s",name);
-        (void) fprintf(file,"\n");
-        p++;
-      }
+        {
+          GetColorTuple(&p->pixel,image->depth,image->matte,False,tuple);
+          (void) fprintf(file,"%10lu: %.1024s  ",p->count,tuple);
+          (void) fprintf(file,"  ");
+          (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
+          (void) fprintf(file,"%.1024s",name);
+          (void) fprintf(file,"\n");
+          p++;
+        }
       if (QuantumTick(cube_info->progress,cube_info->colors))
-        (void) MagickMonitor(HistogramToFileImageText,cube_info->progress,
-          cube_info->colors,exception);
+        (void) MagickMonitorFormatted(cube_info->progress,
+                                      cube_info->colors,exception,
+                                      HistogramToFileImageText,
+                                      image->filename);
       cube_info->progress++;
     }
 }
@@ -1196,7 +1205,7 @@ static void HistogramToFile(const Image *image,CubeInfo *cube_info,
 %
 %
 */
-#define AnalyzeGrayImageText "  Analyze for gray image...  "
+#define AnalyzeGrayImageText "[%s] Analyze image for gray..."
 MagickExport MagickBool IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1244,7 +1253,9 @@ MagickExport MagickBool IsGrayImage(const Image *image,
         if (!is_grayscale)
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(AnalyzeGrayImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,
+                                      exception,AnalyzeGrayImageText,
+                                      image->filename))
             break;
       }
       break;
@@ -1269,7 +1280,8 @@ MagickExport MagickBool IsGrayImage(const Image *image,
     Force progress indication to 100%
   */
   if (!is_grayscale)
-    (void) MagickMonitor(AnalyzeGrayImageText,image->rows-1,image->rows,exception);
+    (void) MagickMonitorFormatted(image->rows-1,image->rows,exception,
+                                  AnalyzeGrayImageText,image->filename);
 
   ((Image *)image)->is_grayscale=is_grayscale;
   return(is_grayscale);
@@ -1302,7 +1314,7 @@ MagickExport MagickBool IsGrayImage(const Image *image,
 %
 %
 */
-#define AnalyzeBilevelImageText "  Analyze for bilevel image...  "
+#define AnalyzeBilevelImageText "[%s] Analyze image for bilevel..."
 MagickExport MagickBool IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1351,7 +1363,8 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
         if (!is_monochrome)
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(AnalyzeBilevelImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,
+                                      AnalyzeBilevelImageText,image->filename))
             break;
       }
       break;
@@ -1377,7 +1390,8 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
     Force progress indication to 100%
   */
   if (!is_monochrome)
-    (void) MagickMonitor(AnalyzeBilevelImageText,image->rows-1,image->rows,exception);
+    (void) MagickMonitorFormatted(image->rows-1,image->rows,exception,
+                                  AnalyzeBilevelImageText,image->filename);
 
   ((Image *)image)->is_monochrome=is_monochrome;
   return(is_monochrome);
@@ -1411,7 +1425,7 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
 %
 %
 */
-#define AnalyzeOpaqueImageText "  Analyze for opaque image...  "
+#define AnalyzeOpaqueImageText "[%s] Analyze image for opacity..."
 MagickExport MagickBool IsOpaqueImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1454,7 +1468,8 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
       if (!is_opaque)
         break;
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(AnalyzeOpaqueImageText,y,image->rows,exception))
+        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                    AnalyzeOpaqueImageText,image->filename))
           break;
     }
 
@@ -1462,7 +1477,8 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
     Force progress indication to 100%
   */
   if (!is_opaque)
-    (void) MagickMonitor(AnalyzeOpaqueImageText,image->rows-1,image->rows,exception);
+    (void) MagickMonitorFormatted(image->rows-1,image->rows,exception,
+                                  AnalyzeOpaqueImageText,image->filename);
 
   return(is_opaque);
 }
@@ -1496,7 +1512,7 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
 %
 %
 */
-#define AnalyzePaletteImageText "  Analyze for palette image...  "
+#define AnalyzePaletteImageText "[%s] Analyze image for palette..."
 MagickExport MagickBool IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1610,7 +1626,9 @@ MagickExport MagickBool IsPaletteImage(const Image *image,
       p++;
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(AnalyzePaletteImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  AnalyzePaletteImageText,
+                                  image->filename))
         break;
   }
   DestroyCubeInfo(cube_info);

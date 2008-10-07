@@ -673,7 +673,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           }
@@ -700,7 +701,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
                   break;
           }
       }
@@ -735,7 +737,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           }
@@ -757,7 +760,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
                   break;
           }
         (void) SyncImage(image);
@@ -788,7 +792,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   } while (iris_info.magic == 0x01DA);
@@ -1086,7 +1091,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       }
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
     }
     if (image_info->compression == NoCompression)
@@ -1174,7 +1180,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                &image->exception,SaveImagesText,
+                                image->filename))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

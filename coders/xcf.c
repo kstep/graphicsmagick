@@ -853,8 +853,9 @@ static MagickPassFail load_level (Image* image,
       /* read in the offset of the next tile */
       offset = ReadBlobMSBLong(image);
       if (offset != 0)
-        if (!MagickMonitor(LoadImageText,offset,inDocInfo->file_size,
-                           &image->exception))
+        if (!MagickMonitorFormatted(offset,inDocInfo->file_size,
+                                    &image->exception,LoadImageText,
+                                    image->filename))
           break;
     }
 
@@ -864,8 +865,9 @@ static MagickPassFail load_level (Image* image,
     }
   else
     {
-      (void) MagickMonitor(LoadImageText,inDocInfo->file_size,
-                           inDocInfo->file_size+1,&image->exception);
+      (void) MagickMonitorFormatted(inDocInfo->file_size,
+                                    inDocInfo->file_size+1,&image->exception,
+                                    LoadImageText,image->filename);
     }
 
   return MagickPass;

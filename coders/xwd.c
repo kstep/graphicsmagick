@@ -386,7 +386,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!SyncImagePixels(image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                           LoadImageText,image->filename))
                 break;
           }
         else
@@ -409,7 +410,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!SyncImagePixels(image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
           }
         break;
@@ -444,7 +446,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+            if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                        image->filename))
               break;
         }
         break;
@@ -734,7 +737,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,(size_t) (q-pixels),(char *) pixels);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   MagickFreeMemory(pixels);

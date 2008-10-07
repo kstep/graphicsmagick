@@ -199,7 +199,7 @@ ColorizeImagePixelsCB(void *mutable_data,                /* User provided mutabl
 MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
-#define ColorizeImageText  "Colorize the image...  "
+#define ColorizeImageText  "[%s] Colorize the image..."
 
   ColorizeImagePixelsOptions
     options;
@@ -288,7 +288,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 %
 %
 */
-#define ConvolveImageText  "Convolving image...  "
+#define ConvolveImageText  "[%s] Convolving image..."
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
@@ -497,7 +497,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(ConvolveImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        ConvolveImageText,
+                                        convolve_image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -557,7 +559,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 MagickExport Image *ImplodeImage(const Image *image,const double amount,
                                  ExceptionInfo *exception)
 {
-#define ImplodeImageText  "Implode image...  "
+#define ImplodeImageText  "[%s] Implode image..."
 
   double
     distance,
@@ -646,7 +648,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     if (!SyncImagePixels(implode_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ImplodeImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  ImplodeImageText,implode_image->filename))
         break;
   }
   implode_image->is_grayscale=image->is_grayscale;
@@ -731,7 +734,7 @@ MorphImagePixelsCB(void *mutable_data,                /* User provided mutable d
 MagickExport Image *MorphImages(const Image *image,
   const unsigned long number_frames,ExceptionInfo *exception)
 {
-#define MorphImageText  "Morph image sequence...  "
+#define MorphImageText  "[%s] Morph image sequence..."
 
   MorphImagePixelsOptions
     options;
@@ -778,7 +781,8 @@ MagickExport Image *MorphImages(const Image *image,
           }
         morph_images->next->previous=morph_images;
         morph_images=morph_images->next;
-        if (!MagickMonitor(MorphImageText,i,number_frames,exception))
+        if (!MagickMonitorFormatted(i,number_frames,exception,
+                                    MorphImageText,image->filename))
           break;
       }
       while (morph_images->previous != (Image *) NULL)
@@ -833,7 +837,8 @@ MagickExport Image *MorphImages(const Image *image,
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitor(MorphImageText,scene,GetImageListLength(image),exception))
+    if (!MagickMonitorFormatted(scene,GetImageListLength(image),exception,
+                                MorphImageText,image->filename))
       break;
     scene++;
   }
@@ -880,7 +885,7 @@ MagickExport Image *MorphImages(const Image *image,
 MagickExport Image *OilPaintImage(const Image *image,const double radius,
                                   ExceptionInfo *exception)
 {
-#define OilPaintImageTag  "OilPaint/Image"
+#define OilPaintImageText  "[%s] OilPaint image..."
 
   Image
     *paint_image;
@@ -1020,7 +1025,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       {
         row_count++;
         if (QuantumTick(row_count,image->rows))
-          if (!MagickMonitor(OilPaintImageTag,row_count,image->rows,exception))
+          if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                      OilPaintImageText,image->filename))
             thread_status=MagickFail;
           
         if (thread_status == MagickFail)
@@ -1098,7 +1104,7 @@ SolarizeImagePixelsCB(void *mutable_data,         /* User provided mutable data 
 }
 MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 {
-#define SolarizeImageText  "  Solarize the image colors...  "
+#define SolarizeImageText  "[%s] Solarize the image colors..."
 
   unsigned int
     is_grayscale;
@@ -1178,7 +1184,7 @@ MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 #define GetBit(a,i) (((a) >> (i)) & 0x01)
 #define SetBit(a,i,set) \
   a=(Quantum) ((set) ? (a) | (1UL << (i)) : (a) & ~(1UL << (i)))
-#define SteganoImageText  "  Hide image...  "
+#define SteganoImageText  "[%s] Stegano image..."
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
@@ -1268,7 +1274,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
       }
     }
     if (QuantumTick(i,QuantumDepth))
-      if (!MagickMonitor(SteganoImageText,i,QuantumDepth,exception))
+      if (!MagickMonitorFormatted(i,QuantumDepth,exception,
+                                  SteganoImageText,image->filename))
         break;
   }
   if (stegano_image->storage_class == PseudoClass)
@@ -1313,7 +1320,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   ExceptionInfo *exception)
 {
-#define StereoImageText  "  Stereo image...  "
+#define StereoImageText  "[%s] Stereo image..."
 
   Image
     *stereo_image;
@@ -1371,7 +1378,8 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
     if (!SyncImagePixels(stereo_image))
       break;
     if (QuantumTick(y,stereo_image->rows))
-      if (!MagickMonitor(StereoImageText,y,stereo_image->rows,exception))
+      if (!MagickMonitorFormatted(y,stereo_image->rows,exception,
+                                  StereoImageText,image->filename))
         break;
   }
   return(stereo_image);
@@ -1409,7 +1417,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
 MagickExport Image *SwirlImage(const Image *image,double degrees,
   ExceptionInfo *exception)
 {
-#define SwirlImageText  "  Swirl image...  "
+#define SwirlImageText  "[%s] Swirl image..."
 
   double
     cosine,
@@ -1497,7 +1505,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     if (!SyncImagePixels(swirl_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SwirlImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  SwirlImageText,image->filename))
         break;
   }
   swirl_image->is_grayscale=image->is_grayscale;
@@ -1537,7 +1546,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 MagickExport Image *WaveImage(const Image *image,const double amplitude,
                               const double wave_length,ExceptionInfo *exception)
 {
-#define WaveImageText  "  Wave image...  "
+#define WaveImageText  "[%s] Wave image..."
 
   double
     *sine_map;
@@ -1609,7 +1618,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     if (!SyncImagePixels(wave_image))
       break;
     if (QuantumTick(y,wave_image->rows))
-      if (!MagickMonitor(WaveImageText,y,wave_image->rows,exception))
+      if (!MagickMonitorFormatted(y,wave_image->rows,exception,
+                                  WaveImageText,image->filename))
         break;
   }
   (void) SetImageVirtualPixelMethod(image,virtual_pixel_method);

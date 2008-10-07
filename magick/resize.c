@@ -272,7 +272,7 @@ static double BesselOrderOne(double x)
 */
 MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 {
-#define MagnifyImageText  "  Magnify image...  "
+#define MagnifyImageText  "[%s] Magnify image...  "
 
   const PixelPacket
     *pixels;
@@ -411,7 +411,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(MagnifyImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  MagnifyImageText,image->filename))
         break;
   }
   p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
@@ -462,7 +463,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   total.blue+=(weight)*(r->blue);               \
   total.opacity+=(weight)*(r->opacity);         \
   r++;
-#define MinifyImageText  "  Minify image...  "
+#define MinifyImageText  "[%s] Minify image..."
 
   Image
     *minify_image;
@@ -581,7 +582,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitor(MinifyImageText,row_count,image->rows,exception))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        MinifyImageText,image->filename))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -805,7 +807,7 @@ HorizontalFilter(const Image *source,Image *destination,
                  const size_t span,unsigned long *quantum,
                  ExceptionInfo *exception)
 {
-#define ResizeImageText  "  Resize image...  "
+#define ResizeImageText  "[%s] Resize image..."
 
   ThreadViewSet
     *destination_view_set,
@@ -998,7 +1000,8 @@ HorizontalFilter(const Image *source,Image *destination,
 #pragma omp critical
       {
         if (QuantumTick(*quantum,span))
-          if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+          if (!MagickMonitorFormatted(*quantum,span,exception,
+                                      ResizeImageText,source->filename))
             thread_status=MagickFail;
 
         (*quantum)++;
@@ -1213,7 +1216,8 @@ VerticalFilter(const Image *source,Image *destination,
 #pragma omp critical
       {
         if (QuantumTick(*quantum,span))
-          if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+          if (!MagickMonitorFormatted(*quantum,span,exception,
+                                      ResizeImageText,source->filename))
             thread_status=MagickFail;
         
         (*quantum)++;
@@ -1445,10 +1449,11 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
 %
 %
 */
-MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport Image *
+SampleImage(const Image *image,const unsigned long columns,
+            const unsigned long rows,ExceptionInfo *exception)
 {
-#define SampleImageText  "  Sample image...  "
+#define SampleImageText  "[%s] Sample image..."
 
   double
     *x_offset,
@@ -1556,7 +1561,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
-      if (!MagickMonitor(SampleImageText,y,sample_image->rows,exception))
+      if (!MagickMonitorFormatted(y,sample_image->rows,exception,
+                                  SampleImageText,image->filename))
         break;
   }
   MagickFreeMemory(y_offset);
@@ -1603,7 +1609,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   const unsigned long rows,ExceptionInfo *exception)
 {
-#define ScaleImageText  "  Scale image...  "
+#define ScaleImageText  "[%s] Scale image..."
 
   double
     x_scale,
@@ -1892,7 +1898,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     if (!SyncImagePixels(scale_image))
       break;
     if (QuantumTick(y,scale_image->rows))
-      if (!MagickMonitor(ScaleImageText,y,scale_image->rows,exception))
+      if (!MagickMonitorFormatted(y,scale_image->rows,exception,
+                                  ScaleImageText,image->filename))
         break;
   }
   /*

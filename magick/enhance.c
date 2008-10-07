@@ -101,8 +101,8 @@ ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
 
   return MagickPass;
 }
-#define DullContrastImageText  "Dulling image contrast...  "
-#define SharpenContrastImageText  "Sharpening image contrast...  "
+#define DullContrastImageText  "[%s] Dulling image contrast..."
+#define SharpenContrastImageText  "[%s] Sharpening image contrast..."
 MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpen)
 {
   int
@@ -306,7 +306,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     options.max_threads=1;
     status=PixelIterateMonoRead(BuildHistogram,
                                 &options,
-                                "Building image histogram ...",
+                                "[%s] Building image histogram...",
                                 histogram,NULL,
                                 0,0,image->columns,image->rows,
                                 image,&image->exception);
@@ -362,7 +362,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     NULL,
-                                    "Applying histogram equalization ...",
+                                    "[%s] Applying histogram equalization...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
@@ -480,7 +480,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     NULL,
-                                    "Applying gamma correction ...",
+                                    "[%s] Applying gamma correction...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
@@ -739,7 +739,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     NULL,
-                                    "Leveling image ...",
+                                    "[%s] Leveling image...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
@@ -817,7 +817,7 @@ ModulateImagePixels(void *mutable_data,         /* User provided mutable data */
   return MagickPass;
 }
 
-#define ModulateImageText  "Modulating image...  "
+#define ModulateImageText  "[%s] Modulating image..."
 MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 {
 
@@ -943,7 +943,7 @@ NegateImagePixels(void *mutable_data,         /* User provided mutable data */
   return MagickPass;
 }
 
-#define NegateImageText  "Negating the image colors...  "
+#define NegateImageText  "[%s] Negating the image colors..."
 MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscale)
 {
   unsigned int
@@ -1051,7 +1051,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     options.max_threads=1;
     status=PixelIterateMonoRead(BuildHistogram,
                                 &options,
-                                "Building image histogram ...",
+                                "[%s] Building image histogram...",
                                 histogram,NULL,
                                 0,0,image->columns,image->rows,
                                 image,&image->exception);
@@ -1270,7 +1270,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     NULL,
-                                    "Applying histogram normalization ...",
+                                    "[%s] Applying histogram normalization...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,

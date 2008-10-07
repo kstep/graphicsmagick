@@ -258,8 +258,8 @@ static int SceneCompare(const void *x,const void *y)
 MagickExport Image *MontageImages(const Image *images,
   const MontageInfo *montage_info,ExceptionInfo *exception)
 {
-#define MontageImageText  "  Create visual image directory...  "
-#define TileImageText  "  Create image tiles...  "
+#define MontageImageText  "[%s] Create visual image directory..."
+#define TileImageText  "[%s] Create image tiles..."
 
   char
     tile_geometry[MaxTextExtent],
@@ -372,7 +372,8 @@ MagickExport Image *MontageImages(const Image *images,
       break;
     image_list[i]=thumbnail;
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitor(TileImageText,i,number_images,&image->exception))
+    if (!MagickMonitorFormatted(i,number_images,&image->exception,
+                                TileImageText,image->filename))
       break;
   }
   if (i < (long) number_images)
@@ -750,7 +751,8 @@ MagickExport Image *MontageImages(const Image *images,
       DestroyImage(image);
       DestroyImage(image_list[tile]);
       (void) SetMonitorHandler(handler);
-      if (!MagickMonitor(MontageImageText,tiles,total_tiles,&image->exception))
+      if (!MagickMonitorFormatted(tiles,total_tiles,&image->exception,
+                                  MontageImageText,image->filename))
         break;
       tiles++;
     }

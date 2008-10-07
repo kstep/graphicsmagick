@@ -357,7 +357,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         unsigned long
           row_count=0;
 
-        (void) strlcpy(message,"Rotate image 0 degrees...",sizeof(message));
+        (void) strlcpy(message,"[%s] Rotate image 0 degrees...",sizeof(message));
         image_view=AllocateThreadViewSet((Image *) image,exception);
         rotate_image_view=AllocateThreadViewSet(rotate_image,exception);
         if ((image_view != (ThreadViewSet *) NULL) &&
@@ -406,7 +406,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 {
                   row_count++;
                   if (QuantumTick(row_count,image->rows))
-                    if (!MagickMonitor(message,row_count,image->rows,exception))
+                    if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                                message,image->filename))
                       thread_status=MagickFail;
                   
                   if (thread_status == MagickFail)
@@ -432,9 +433,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         long
           tile_y;
 
-        (void) strlcpy(message,"Rotate image 90 degrees...",sizeof(message));
+        (void) strlcpy(message,"[%s] Rotate image 90 degrees...",sizeof(message));
         total_tiles=(((image->rows/tile_height_max)+1)*
-                     ((image->columns/tile_width_max)+1));
+                     ((image->columns/tile_width_max)+1));        
         tile=0;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -457,7 +458,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 long
                   y;
 
-                tile++;
                 /*
                   Compute image region corresponding to tile.
                 */
@@ -555,7 +555,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 
                 tile++;
                 if (QuantumTick(tile,total_tiles))
-                  if (!MagickMonitor(message,tile,total_tiles,exception))
+                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                              message,image->filename))
                     status=MagickFail;
  
                 if (status == MagickFail)
@@ -582,7 +583,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         unsigned long
           row_count=0;
 
-        (void) strlcpy(message,"Rotate image 180 degrees...",sizeof(message));
+        (void) strlcpy(message,"[%s] Rotate image 180 degrees...",sizeof(message));
         image_view=AllocateThreadViewSet((Image *) image,exception);
         rotate_image_view=AllocateThreadViewSet(rotate_image,exception);
         if ((image_view != (ThreadViewSet *) NULL) &&
@@ -636,7 +637,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 {
                   row_count++;
                   if (QuantumTick(row_count,image->rows))
-                    if (!MagickMonitor(message,row_count,image->rows,exception))
+                    if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                                message,image->filename))
                       thread_status=MagickFail;
                   
                   if (thread_status == MagickFail)
@@ -665,7 +667,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         long
           tile_y;
 
-        (void) strlcpy(message,"Rotate image 270 degrees...",sizeof(message));
+        (void) strlcpy(message,"[%s] Rotate image 270 degrees...",sizeof(message));
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));
         tile=0;
@@ -786,7 +788,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                       }
                   }
                 if (QuantumTick(tile,total_tiles))
-                  if (!MagickMonitor(message,tile,total_tiles,exception))
+                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                              message,image->filename))
                     status=MagickFail;
                 if (status == MagickFail)
                   break;
@@ -845,7 +848,7 @@ static void XShearImage(Image *image,const double degrees,
                         const unsigned long width,const unsigned long height,
                         const long x_offset,long y_offset)
 {
-#define XShearImageText  "X Shear image...  "
+#define XShearImageText  "[%s] X Shear image...  "
 
   ThreadViewSet
     *image_view;
@@ -969,7 +972,8 @@ static void XShearImage(Image *image,const double degrees,
           {
             row_count++;
             if (QuantumTick(row_count,height))
-              if (!MagickMonitor(XShearImageText,row_count,height,&image->exception))
+              if (!MagickMonitorFormatted(row_count,height,&image->exception,
+                                          XShearImageText,image->filename))
                 thread_status=MagickFail;
             
             if (thread_status == MagickFail)
@@ -1051,7 +1055,8 @@ static void XShearImage(Image *image,const double degrees,
       {
         row_count++;
         if (QuantumTick(row_count,height))
-          if (!MagickMonitor(XShearImageText,row_count,height,&image->exception))
+          if (!MagickMonitorFormatted(row_count,height,&image->exception,
+                                      XShearImageText,image->filename))
             thread_status=MagickFail;
         
         if (thread_status == MagickFail)
@@ -1101,7 +1106,7 @@ static void YShearImage(Image *image,const double degrees,
                         const unsigned long width,const unsigned long height,long x_offset,
                         const long y_offset)
 {
-#define YShearImageText  "Y Shear image...  "
+#define YShearImageText  "[%s] Y Shear image..."
 
   ThreadViewSet
     *image_view;
@@ -1225,7 +1230,8 @@ static void YShearImage(Image *image,const double degrees,
           {
             row_count++;
             if (QuantumTick(row_count,width))
-              if (!MagickMonitor(YShearImageText,row_count,width,&image->exception))
+              if (!MagickMonitorFormatted(row_count,width,&image->exception,
+                                          YShearImageText,image->filename))
                 thread_status=MagickFail;
             
             if (thread_status == MagickFail)
@@ -1307,7 +1313,8 @@ static void YShearImage(Image *image,const double degrees,
       {
         row_count++;
         if (QuantumTick(row_count,width))
-          if (!MagickMonitor(YShearImageText,row_count,width,&image->exception))
+          if (!MagickMonitorFormatted(row_count,width,&image->exception,
+                                      YShearImageText,image->filename))
             thread_status=MagickFail;
         
         if (thread_status == MagickFail)

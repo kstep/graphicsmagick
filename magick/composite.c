@@ -2207,7 +2207,7 @@ CompositeImage(Image *canvas_image,
             char
               description[MaxTextExtent];
 
-            FormatString(description,"Composite %s image pixels ...",
+            FormatString(description,"[%%s] Composite %s image pixels ...",
                          CompositeOperatorToString(compose));
                          
             status=PixelIterateDualModify(call_back,              /* Callback */

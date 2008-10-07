@@ -838,7 +838,7 @@ MagickExport void DestroyConstitute(void)
 %    o exceptions: Any errors are reported here.
 %
 */
-#define ConstituteTextureImageText  "Generate image texture...  "
+#define ConstituteTextureImageText  "[%s] Generate image texture...  "
 MagickExport Image *ConstituteTextureImage(const unsigned long columns,
                                            const unsigned long rows,
                                            const Image *texture_image,
@@ -923,7 +923,9 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
           break;
         }
       if (QuantumTick(y,canvas_image->rows))
-        if (!MagickMonitor(ConstituteTextureImageText,y,canvas_image->rows,exception))
+        if (!MagickMonitorFormatted(y,canvas_image->rows,exception,
+                                    ConstituteTextureImageText,
+                                    texture_image->filename))
           {
             status=MagickFail;
             break;

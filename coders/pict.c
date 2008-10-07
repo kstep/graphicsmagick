@@ -1151,7 +1151,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 p+=(pixmap.component_count-1)*tile_image->columns;
               if (destination.bottom == (long) image->rows)
                 if (QuantumTick(y,tile_image->rows))
-                  if (!MagickMonitor(LoadImageText,y,tile_image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,tile_image->rows,&image->exception,
+                                              LoadImageText,image->filename))
                     break;
             }
             MagickFreeMemory(pixels);
@@ -1162,7 +1163,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                    destination.left,destination.top);
                 DestroyImage(tile_image);
             if (destination.bottom != (long) image->rows)
-              if (!MagickMonitor(LoadImageText,destination.bottom,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(destination.bottom,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
             break;
           }
@@ -1781,7 +1783,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
     }
   else
@@ -1829,7 +1832,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           }
           count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,packed_scanline);
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename))
               break;
         }
       }

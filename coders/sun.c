@@ -429,7 +429,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+            if (!MagickMonitorFormatted(y,image->rows,exception,
+                                        LoadImageText,image->filename))
               break;
       }
     else
@@ -453,7 +454,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
                   break;
           }
 	}
@@ -499,7 +501,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
                   break;
           }
 	}
@@ -531,7 +534,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                    exception,LoadImagesText,
+                                    image->filename))
           break;
       }
   } while (sun_info.magic == 0x59a66a95);
@@ -815,7 +820,8 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
         MagickFreeMemory(pixels);
@@ -865,7 +871,8 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
           }
         }
@@ -898,14 +905,17 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
           }
         }
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                &image->exception,SaveImagesText,
+                                image->filename))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

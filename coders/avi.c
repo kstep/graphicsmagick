@@ -274,7 +274,8 @@ static MagickPassFail DecodeImage(Image *image,const unsigned int compression,
         }
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  LoadImageText,image->filename))
         break;
   }
   if (ReadBlobByte(image) == EOF)  /* end of line */
@@ -548,8 +549,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -593,8 +595,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -628,8 +631,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -666,8 +670,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -701,8 +706,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -727,8 +733,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 return((Image *) NULL);
               }
             image=SyncNextImageInList(image);
-            status=MagickMonitor(LoadImagesText,TellBlob(image),
-              GetBlobSize(image),exception);
+            status=MagickMonitorFormatted(TellBlob(image),
+                                          GetBlobSize(image),exception,
+                                          LoadImagesText,image->filename);
             if (status == False)
               break;
           }

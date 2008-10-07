@@ -138,7 +138,7 @@ MagickExport Image *BorderImage(const Image *image,
 MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   ExceptionInfo *exception)
 {
-#define FrameImageText  "  Add frame to image...  "
+#define FrameImageText  "[%s] Add frame to image..."
 
   Image
     *frame_image;
@@ -309,7 +309,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     if (!SyncImagePixels(frame_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(FrameImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  FrameImageText,image->filename))
         break;
   }
   /*
@@ -403,7 +404,7 @@ MagickExport unsigned int RaiseImage(Image *image,
 #define AccentuateFactor  ScaleCharToQuantum(135)
 #define HighlightFactor  ScaleCharToQuantum(190)
 #define ShadowFactor  ScaleCharToQuantum(190)
-#define RaiseImageText  "  Raise image...  "
+#define RaiseImageText  "[%s] Raise image..."
 #define TroughFactor  ScaleCharToQuantum(135)
 
   Quantum
@@ -476,7 +477,8 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  RaiseImageText,image->filename))
         break;
   }
   for ( ; y < (long) (image->rows-raise_info->height); y++)
@@ -509,7 +511,8 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  RaiseImageText,image->filename))
         break;
   }
   for ( ; y < (long) image->rows; y++)
@@ -550,7 +553,8 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  RaiseImageText,image->filename))
         break;
   }
   image->is_grayscale=is_grayscale;

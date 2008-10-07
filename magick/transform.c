@@ -78,7 +78,7 @@
 MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   ExceptionInfo *exception)
 {
-#define ChopImageText  "  Chop image...  "
+#define ChopImageText  "[%s] Chop image..."
 
   Image
     *chop_image;
@@ -168,7 +168,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ChopImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  ChopImageText,image->filename))
         break;
   }
   /*
@@ -198,7 +199,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(i,image->rows))
-      if (!MagickMonitor(ChopImageText,i,image->rows,exception))
+      if (!MagickMonitorFormatted(i,image->rows,exception,
+                                  ChopImageText,image->filename))
         break;
   }
   chop_image->is_grayscale=image->is_grayscale;
@@ -341,7 +343,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   ExceptionInfo *exception)
 {
-#define CropImageText  "  Crop image...  "
+#define CropImageText  "[%s] Crop image..."
 
   Image
     *crop_image;
@@ -450,7 +452,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
-      if (!MagickMonitor(CropImageText,y,crop_image->rows-1,exception))
+      if (!MagickMonitorFormatted(y,crop_image->rows-1,exception,
+                                  CropImageText,crop_image->filename))
         break;
   }
   if (y < (long) crop_image->rows)
@@ -739,7 +742,7 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 {
-#define FlipImageText  "  Flip image...  "
+#define FlipImageText  "[%s] Flip image..."
 
   Image
     *flip_image;
@@ -790,7 +793,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flip_image->rows))
-      if (!MagickMonitor(FlipImageText,y,flip_image->rows,exception))
+      if (!MagickMonitorFormatted(y,flip_image->rows,exception,
+                                  FlipImageText,image->filename))
         break;
   }
   flip_image->is_grayscale=image->is_grayscale;
@@ -825,7 +829,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 {
-#define FlopImageText  "  Flop image...  "
+#define FlopImageText  "[%s] Flop image..."
 
   Image
     *flop_image;
@@ -884,7 +888,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flop_image->rows))
-      if (!MagickMonitor(FlopImageText,y,flop_image->rows,exception))
+      if (!MagickMonitorFormatted(y,flop_image->rows,exception,
+                                  FlopImageText,image->filename))
         break;
   }
   flop_image->is_grayscale=image->is_grayscale;
@@ -920,7 +925,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 {
-#define MosaicImageText  "  Create an image mosaic...  "
+#define MosaicImageText  "[%s] Create image mosaic..."
 
   Image
     *mosaic_image;
@@ -979,8 +984,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
-    status=MagickMonitor(MosaicImageText,scene++,GetImageListLength(image),
-      exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  exception,MosaicImageText,image->filename);
     if (status == False)
       break;
   }
@@ -1020,7 +1025,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 MagickExport Image *RollImage(const Image *image,const long x_offset,
   const long y_offset,ExceptionInfo *exception)
 {
-#define RollImageText  "  Roll image...  "
+#define RollImageText  "[%s] Roll image..."
 
   Image
     *roll_image;
@@ -1092,7 +1097,8 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
         break;
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RollImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  RollImageText,image->filename))
         break;
   }
   roll_image->is_grayscale=image->is_grayscale;
