@@ -557,7 +557,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                      image->filename))
             break;
     }
   if (number_components == 1)
@@ -652,6 +653,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=(DecoderHandler) ReadJP2Image;
   entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPC");
@@ -665,6 +667,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=(DecoderHandler) ReadJP2Image;
   entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PGX");
@@ -678,6 +681,7 @@ ModuleExport void RegisterJP2Image(void)
   /* Don't set an encoder since PGX is not a standard format */
   entry->decoder=(DecoderHandler) ReadJP2Image;
 #endif
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   /*
@@ -958,7 +962,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
       }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   (void) strlcpy(magick,image_info->magick,MaxTextExtent);
