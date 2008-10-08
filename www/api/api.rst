@@ -37,6 +37,7 @@ GraphicsMagick C API
 .. _Shear : shear.html
 .. _Signature : signature.html
 .. _Transform : transform.html
+.. _types: types.html
 
 GraphicsMagick has a number of functions that allow you to read, manipulate,
 write, or display an image. These functions are accessible through the various
@@ -47,7 +48,8 @@ favorite language while making calls to the Magick image functions and link
 with libGraphicsMagick.a, libGraphicsMagick.so, or GraphicsMagick.dll depending
 on your system.
 
-The API is divided into a number of categories:
+The API is divided into a number of categories. While reading this
+documentation, please reference the types_ documentation as required:
 
   * Animate_: Interactively animate an image sequence
   * Annotate_: Annotate an image with text

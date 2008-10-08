@@ -1,3 +1,8 @@
+2008-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/api/types.rst: Convert types.html to reStructured text
+	format.
+
 2008-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/monitor.c (MagickMonitorFormatted): New method to support

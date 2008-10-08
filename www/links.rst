@@ -151,6 +151,11 @@ site by Jack James dedicated to the digital intermediate industry.
 `Digital Cinema Initiatives <http://www.dcimovies.com/>`_,
 DCI offers the first complete specification for digital cinema delivery.
 
+Video Topics
+=============
+
+`Video Codecs and Pixel Formats <http://www.fourcc.org/>`_, offers a summary of YUV encoding formats.
+
 Other Software Packages
 ========================
 
