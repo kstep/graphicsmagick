@@ -258,12 +258,11 @@ MagickExport void *MagickRealloc(void *memory,const size_t size)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickFree() frees memory that has already been allocated.  A NULL
-%  argument is ignored.  The function always returns NULL so that the
-%  return value may be used to set the memory pointer to null.
+%  argument is ignored.
 %
 %  The format of the MagickFree method is:
 %
-%      void *MagickFree(void *memory)
+%      void MagickFree(void *memory)
 %
 %  A description of each parameter follows:
 %
@@ -271,10 +270,8 @@ MagickExport void *MagickRealloc(void *memory,const size_t size)
 %
 %
 */
-MagickExport void *MagickFree(void *memory)
+MagickExport void MagickFree(void *memory)
 {
   if (memory != (void *) NULL)
     (FreeFunc)(memory);
-
-  return (void *) NULL;
 }

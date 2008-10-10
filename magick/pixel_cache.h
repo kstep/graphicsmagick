@@ -248,6 +248,9 @@ extern "C" {
   {
     void
     **view_data;
+
+    MagickFreeFunc
+    destructor;
     
     unsigned int
     nviews;
@@ -257,7 +260,9 @@ extern "C" {
   DestroyThreadViewDataSet(ThreadViewDataSet *data_set);
   
   extern MagickExport ThreadViewDataSet
-  *AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception);
+  *AllocateThreadViewDataSet(const MagickFreeFunc destructor,
+                             const Image *image,
+                             ExceptionInfo *exception);
 
   extern MagickExport unsigned int
   GetThreadViewDataSetAllocatedViews(ThreadViewDataSet *data_set);

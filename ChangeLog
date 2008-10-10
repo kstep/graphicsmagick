@@ -1,5 +1,10 @@
 2008-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/pixel_cache.c (AllocateThreadViewDataSet): Add a
+	destructor function in case data should not be destroyed, or needs
+	something other than MagickFree().
+	(AllocateThreadViewDataSet): Use user-provided destructor to free
+	user data.
 	* scripts/format_c_api_doc.py: Improvements from Mark Mitchell to
 	perform keyword/target substitions and wrap function prototypes.
 	* coders/dpx.c (ReadDPXImage): Accellerate reader using OpenMP.

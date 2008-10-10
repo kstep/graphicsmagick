@@ -2071,7 +2071,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickPassFail
       alloc_status=MagickFail;
 
-    samples_set=AllocateThreadViewDataSet(image,exception);
+    samples_set=AllocateThreadViewDataSet(MagickFree,image,exception);
     if (samples_set != (ThreadViewDataSet *) NULL)
       {
         unsigned int
@@ -2111,7 +2111,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickPassFail
       alloc_status=MagickFail;
 
-    scanline_set=AllocateThreadViewDataSet(image,exception);
+    scanline_set=AllocateThreadViewDataSet(MagickFree,image,exception);
     if (scanline_set != (ThreadViewDataSet *) NULL)
       {
         unsigned int

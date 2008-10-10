@@ -477,9 +477,13 @@ DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
     {
       if (data_set->view_data != (void *) NULL)
         {
-          for (i=0; i < data_set->nviews; i++)
+          if (data_set->destructor != (MagickFreeFunc) NULL)
             {
-              MagickFreeMemory(data_set->view_data[i]);
+              for (i=0; i < data_set->nviews; i++)
+                {
+                  (data_set->destructor)(data_set->view_data[i]);
+                  data_set->view_data[i]=(void *) NULL;
+                }
             }
           MagickFreeMemory(data_set->view_data);
         }
@@ -488,7 +492,9 @@ DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
     }
 }
 MagickExport ThreadViewDataSet *
-AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception)
+AllocateThreadViewDataSet(const MagickFreeFunc destructor,
+                          const Image *image,
+                          ExceptionInfo *exception)
 {
   ThreadViewDataSet
     *data_set;
@@ -500,6 +506,7 @@ AllocateThreadViewDataSet(const Image *image,ExceptionInfo *exception)
   if (data_set == (ThreadViewDataSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
+  data_set->destructor=destructor;
   data_set->nviews=omp_get_max_threads();
   data_set->view_data=MagickAllocateMemory(void *,data_set->nviews*sizeof(void *));
   if (data_set->view_data == (void *) NULL)

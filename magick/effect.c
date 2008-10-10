@@ -609,7 +609,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   if (view_set == (ThreadViewSet *) NULL)
     status=MagickFail;
 
-  data_set=AllocateThreadViewDataSet(image,exception);
+  data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
   if (data_set == (ThreadViewDataSet *) NULL)
     status=MagickFail;
 

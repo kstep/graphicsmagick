@@ -1320,7 +1320,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (source_image == (Image *) NULL)
     return ((Image *) NULL);
 
-  view_data_set=AllocateThreadViewDataSet(image,exception);
+  view_data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
   if (view_data_set == (ThreadViewDataSet *) NULL)
     {
       DestroyThreadViewDataSet(view_data_set);
