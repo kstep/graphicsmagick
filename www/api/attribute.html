@@ -66,8 +66,8 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail CloneImageAttributes( <a class="reference" href="types.html#Image">Image</a> *clone_image,
-                                     const <a class="reference" href="types.html#Image">Image</a> *original_image );
+MagickPassFail CloneImageAttributes( <a class="reference" href="types.html#image">Image</a> *clone_image,
+                                     const <a class="reference" href="types.html#image">Image</a> *original_image );
 </pre>
 </div>
 <div class="section">
@@ -78,8 +78,8 @@ CloneImageAttributes returns MagickPass if all of the attribututes are
 successfully cloned or MagickFail if there is a memory allocation error.</p>
 <p>The format of the CloneImageAttributes method is:</p>
 <pre class="literal-block">
-MagickPassFail CloneImageAttributes( <a class="reference" href="types.html#Image">Image</a> *clone_image,
-                                     const <a class="reference" href="types.html#Image">Image</a> *original_image );
+MagickPassFail CloneImageAttributes( <a class="reference" href="types.html#image">Image</a> *clone_image,
+                                     const <a class="reference" href="types.html#image">Image</a> *original_image );
 </pre>
 <dl class="docutils">
 <dt>clone_image:</dt>
@@ -94,7 +94,7 @@ MagickPassFail CloneImageAttributes( <a class="reference" href="types.html#Image
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-DestroyImageAttributes( <a class="reference" href="types.html#Image">Image</a> *image );
+DestroyImageAttributes( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -103,7 +103,7 @@ DestroyImageAttributes( <a class="reference" href="types.html#Image">Image</a> *
 attribute list.</p>
 <p>The format of the DestroyImageAttributes method is:</p>
 <pre class="literal-block">
-DestroyImageAttributes( <a class="reference" href="types.html#Image">Image</a> *image );
+DestroyImageAttributes( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -117,7 +117,7 @@ DestroyImageAttributes( <a class="reference" href="types.html#Image">Image</a> *
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-const ImageAttribute *GetImageAttribute( const <a class="reference" href="types.html#Image">Image</a> *image, const char *key );
+const ImageAttribute *GetImageAttribute( const <a class="reference" href="types.html#image">Image</a> *image, const char *key );
 </pre>
 </div>
 <div class="section">
@@ -126,7 +126,7 @@ const ImageAttribute *GetImageAttribute( const <a class="reference" href="types.
 a pointer to the attribute if it exists otherwise NULL.</p>
 <p>The format of the GetImageAttribute method is:</p>
 <pre class="literal-block">
-const ImageAttribute *GetImageAttribute( const <a class="reference" href="types.html#Image">Image</a> *image, const char *key );
+const ImageAttribute *GetImageAttribute( const <a class="reference" href="types.html#image">Image</a> *image, const char *key );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -142,7 +142,7 @@ return.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-const ImageAttribute *GetImageClippingPathAttribute( const <a class="reference" href="types.html#Image">Image</a> *image );
+const ImageAttribute *GetImageClippingPathAttribute( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -151,7 +151,7 @@ const ImageAttribute *GetImageClippingPathAttribute( const <a class="reference" 
 and returns a pointer to a clipping path if it exists otherwise NULL.</p>
 <p>The format of the GetImageClippingPathAttribute method is:</p>
 <pre class="literal-block">
-const ImageAttribute *GetImageClippingPathAttribute( const <a class="reference" href="types.html#Image">Image</a> *image );
+const ImageAttribute *GetImageClippingPathAttribute( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -168,7 +168,7 @@ path if it exists otherwise NULL.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SetImageAttribute( <a class="reference" href="types.html#Image">Image</a> *image, const char *key, const char *value );
+unsigned int SetImageAttribute( <a class="reference" href="types.html#image">Image</a> *image, const char *key, const char *value );
 </pre>
 </div>
 <div class="section">
@@ -182,7 +182,7 @@ otherwise False.  If the value is NULL, the matching key is deleted
 from the list.</p>
 <p>The format of the SetImageAttribute method is:</p>
 <pre class="literal-block">
-unsigned int SetImageAttribute( <a class="reference" href="types.html#Image">Image</a> *image, const char *key, const char *value );
+unsigned int SetImageAttribute( <a class="reference" href="types.html#image">Image</a> *image, const char *key, const char *value );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -196,7 +196,7 @@ attribute to replace or add to the list.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

@@ -170,7 +170,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawAnnotation( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
+void DrawAnnotation( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
                      const unsigned char *text );
 </pre>
 </div>
@@ -179,7 +179,7 @@ void DrawAnnotation( <a class="reference" href="types.html#DrawContext">DrawCont
 <p>DrawAnnotation() draws text on the image.</p>
 <p>The format of the DrawAnnotation method is:</p>
 <pre class="literal-block">
-void DrawAnnotation( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
+void DrawAnnotation( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
                      const unsigned char *text );
 </pre>
 <dl class="docutils">
@@ -199,7 +199,7 @@ void DrawAnnotation( <a class="reference" href="types.html#DrawContext">DrawCont
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawAffine( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#AffineMatrix">AffineMatrix</a> *affine );
+void DrawAffine( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#affinematrix">AffineMatrix</a> *affine );
 </pre>
 </div>
 <div class="section">
@@ -209,7 +209,7 @@ the specified affine transformation matrix. Note that the current affine
 transform is adjusted rather than replaced.</p>
 <p>The format of the DrawAffine method is:</p>
 <pre class="literal-block">
-void DrawAffine( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#AffineMatrix">AffineMatrix</a> *affine );
+void DrawAffine( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#affinematrix">AffineMatrix</a> *affine );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -225,7 +225,7 @@ void DrawAffine( <a class="reference" href="types.html#DrawContext">DrawContext<
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#DrawContext">DrawContext</a> DrawAllocateContext( const <a class="reference" href="types.html#DrawInfo">DrawInfo</a> *draw_info, <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#drawcontext">DrawContext</a> DrawAllocateContext( const <a class="reference" href="types.html#drawinfo">DrawInfo</a> *draw_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -234,7 +234,7 @@ void DrawAffine( <a class="reference" href="types.html#DrawContext">DrawContext<
 opaque handle required by the remaining drawing methods.</p>
 <p>The format of the DrawAllocateContext method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#DrawContext">DrawContext</a> DrawAllocateContext( const <a class="reference" href="types.html#DrawInfo">DrawInfo</a> *draw_info, <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#drawcontext">DrawContext</a> DrawAllocateContext( const <a class="reference" href="types.html#drawinfo">DrawInfo</a> *draw_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <dl class="docutils">
 <dt>draw_info:</dt>
@@ -250,7 +250,7 @@ GraphicsMagick defaults.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawArc( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double sx, const double sy, const double ex,
+void DrawArc( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double sx, const double sy, const double ex,
               const double ey, const double sd, const double ed );
 </pre>
 </div>
@@ -260,7 +260,7 @@ void DrawArc( <a class="reference" href="types.html#DrawContext">DrawContext</a>
 image.</p>
 <p>The format of the DrawArc method is:</p>
 <pre class="literal-block">
-void DrawArc( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double sx, const double sy, const double ex,
+void DrawArc( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double sx, const double sy, const double ex,
               const double ey, const double sd, const double ed );
 </pre>
 <dl class="docutils">
@@ -286,8 +286,8 @@ void DrawArc( <a class="reference" href="types.html#DrawContext">DrawContext</a>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawBezier( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                 const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawBezier( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                 const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 </div>
 <div class="section">
@@ -295,8 +295,8 @@ void DrawBezier( <a class="reference" href="types.html#DrawContext">DrawContext<
 <p>DrawBezier() draws a bezier curve through a set of points on the image.</p>
 <p>The format of the DrawBezier method is:</p>
 <pre class="literal-block">
-void DrawBezier( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                 const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawBezier( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                 const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -313,7 +313,7 @@ void DrawBezier( <a class="reference" href="types.html#DrawContext">DrawContext<
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawCircle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double ox, const double oy, const double px,
+void DrawCircle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double ox, const double oy, const double px,
                  const double py );
 </pre>
 </div>
@@ -322,7 +322,7 @@ void DrawCircle( <a class="reference" href="types.html#DrawContext">DrawContext<
 <p>DrawCircle() draws a circle on the image.</p>
 <p>The format of the DrawCircle method is:</p>
 <pre class="literal-block">
-void DrawCircle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double ox, const double oy, const double px,
+void DrawCircle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double ox, const double oy, const double px,
                  const double py );
 </pre>
 <dl class="docutils">
@@ -344,7 +344,7 @@ void DrawCircle( <a class="reference" href="types.html#DrawContext">DrawContext<
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-char *DrawGetClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -353,7 +353,7 @@ char *DrawGetClipPath( <a class="reference" href="types.html#DrawContext">DrawCo
 must be deallocated by the user when it is no longer needed.</p>
 <p>The format of the DrawGetClipPath method is:</p>
 <pre class="literal-block">
-char *DrawGetClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -367,7 +367,7 @@ char *DrawGetClipPath( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *clip_path );
+void DrawSetClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *clip_path );
 </pre>
 </div>
 <div class="section">
@@ -377,7 +377,7 @@ the areas drawn on by the clipping path will be modified as long as it
 remains in effect.</p>
 <p>The format of the DrawSetClipPath method is:</p>
 <pre class="literal-block">
-void DrawSetClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *clip_path );
+void DrawSetClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *clip_path );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -393,7 +393,7 @@ void DrawSetClipPath( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#FillRule">FillRule</a> DrawGetClipRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#fillrule">FillRule</a> DrawGetClipRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -402,7 +402,7 @@ void DrawSetClipPath( <a class="reference" href="types.html#DrawContext">DrawCon
 clipping path.</p>
 <p>The format of the DrawGetClipRule method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#FillRule">FillRule</a> DrawGetClipRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#fillrule">FillRule</a> DrawGetClipRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -416,7 +416,7 @@ clipping path.</p>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#FillRule">FillRule</a> fill_rule );
+void DrawSetClipRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#fillrule">FillRule</a> fill_rule );
 </pre>
 </div>
 <div class="section">
@@ -424,7 +424,7 @@ void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawSetClipRule() set the polygon fill rule to be used by the clipping path.</p>
 <p>The format of the DrawSetClipRule method is:</p>
 <pre class="literal-block">
-void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#FillRule">FillRule</a> fill_rule );
+void DrawSetClipRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#fillrule">FillRule</a> fill_rule );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -439,7 +439,7 @@ void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ClipPathUnits">ClipPathUnits</a> DrawGetClipUnits( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#clippathunits">ClipPathUnits</a> DrawGetClipUnits( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -447,7 +447,7 @@ void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawGetClipUnits() returns the interpretation of clip path units.</p>
 <p>The format of the DrawGetClipUnits method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ClipPathUnits">ClipPathUnits</a> DrawGetClipUnits( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#clippathunits">ClipPathUnits</a> DrawGetClipUnits( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -461,7 +461,7 @@ void DrawSetClipRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetClipUnits( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#ClipPathUnits">ClipPathUnits</a> clip_units );
+void DrawSetClipUnits( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#clippathunits">ClipPathUnits</a> clip_units );
 </pre>
 </div>
 <div class="section">
@@ -469,7 +469,7 @@ void DrawSetClipUnits( <a class="reference" href="types.html#DrawContext">DrawCo
 <p>DrawSetClipUnits() sets the interpretation of clip path units.</p>
 <p>The format of the DrawSetClipUnits method is:</p>
 <pre class="literal-block">
-void DrawSetClipUnits( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#ClipPathUnits">ClipPathUnits</a> clip_units );
+void DrawSetClipUnits( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#clippathunits">ClipPathUnits</a> clip_units );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -484,8 +484,8 @@ void DrawSetClipUnits( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
-                const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> paintMethod );
+void DrawColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
+                const <a class="reference" href="types.html#paintmethod">PaintMethod</a> paintMethod );
 </pre>
 </div>
 <div class="section">
@@ -500,8 +500,8 @@ FillToBorderMethod: Recolor target pixels and neighbors not matching border colo
 ResetMethod: Recolor all pixels.</p>
 <p>The format of the DrawColor method is:</p>
 <pre class="literal-block">
-void DrawColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
-                const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> paintMethod );
+void DrawColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
+                const <a class="reference" href="types.html#paintmethod">PaintMethod</a> paintMethod );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -520,7 +520,7 @@ void DrawColor( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawComment( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *comment );
+void DrawComment( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *comment );
 </pre>
 </div>
 <div class="section">
@@ -528,7 +528,7 @@ void DrawComment( <a class="reference" href="types.html#DrawContext">DrawContext
 <p>DrawComment() adds a comment to a vector output stream.</p>
 <p>The format of the DrawComment method is:</p>
 <pre class="literal-block">
-void DrawComment( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *comment );
+void DrawComment( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *comment );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -544,7 +544,7 @@ void DrawComment( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id27" name="id27">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawDestroyContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawDestroyContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -554,7 +554,7 @@ context. Once the drawing context has been freed, it should not be used
 any further unless it re-allocated.</p>
 <p>The format of the DrawDestroyContext method is:</p>
 <pre class="literal-block">
-void DrawDestroyContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawDestroyContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -568,7 +568,7 @@ void DrawDestroyContext( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id29" name="id29">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double ox, const double oy, const double rx,
+void DrawEllipse( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double ox, const double oy, const double rx,
                   const double ry, const double start, const double end );
 </pre>
 </div>
@@ -577,7 +577,7 @@ void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext
 <p>DrawEllipse() draws an ellipse on the image.</p>
 <p>The format of the DrawEllipse method is:</p>
 <pre class="literal-block">
-void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double ox, const double oy, const double rx,
+void DrawEllipse( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double ox, const double oy, const double rx,
                   const double ry, const double start, const double end );
 </pre>
 <dl class="docutils">
@@ -603,7 +603,7 @@ void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id31" name="id31">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetFillColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetFillColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -611,7 +611,7 @@ void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext
 <p>DrawGetFillColor() returns the fill color used for drawing filled objects.</p>
 <p>The format of the DrawGetFillColor method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetFillColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetFillColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -625,7 +625,7 @@ void DrawEllipse( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id33" name="id33">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFillColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *fill_color );
+void DrawSetFillColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *fill_color );
 </pre>
 </div>
 <div class="section">
@@ -633,7 +633,7 @@ void DrawSetFillColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <p>DrawSetFillColor() sets the fill color to be used for drawing filled objects.</p>
 <p>The format of the DrawSetFillColor method is:</p>
 <pre class="literal-block">
-void DrawSetFillColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *fill_color );
+void DrawSetFillColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *fill_color );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -648,7 +648,7 @@ void DrawSetFillColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id35" name="id35">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFillColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *fill_color );
+void DrawSetFillColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *fill_color );
 </pre>
 </div>
 <div class="section">
@@ -657,7 +657,7 @@ void DrawSetFillColorString( <a class="reference" href="types.html#DrawContext">
 objects.</p>
 <p>The format of the DrawSetFillColorString method is:</p>
 <pre class="literal-block">
-void DrawSetFillColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *fill_color );
+void DrawSetFillColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *fill_color );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -673,7 +673,7 @@ void DrawSetFillColorString( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id37" name="id37">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFillPatternURL( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *fill_url );
+void DrawSetFillPatternURL( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *fill_url );
 </pre>
 </div>
 <div class="section">
@@ -684,7 +684,7 @@ local URLs are normally created by defining a named fill pattern with
 DrawPushPattern/DrawPopPattern.</p>
 <p>The format of the DrawSetFillPatternURL method is:</p>
 <pre class="literal-block">
-void DrawSetFillPatternURL( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *fill_url );
+void DrawSetFillPatternURL( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *fill_url );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -700,7 +700,7 @@ void DrawSetFillPatternURL( <a class="reference" href="types.html#DrawContext">D
 <div class="section">
 <h2><a id="id39" name="id39">Synopsis</a></h2>
 <pre class="literal-block">
-double DrawGetFillOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetFillOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -709,7 +709,7 @@ double DrawGetFillOpacity( <a class="reference" href="types.html#DrawContext">Dr
 color or fill texture.  Fully opaque is 1.0.</p>
 <p>The format of the DrawGetFillOpacity method is:</p>
 <pre class="literal-block">
-double DrawGetFillOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetFillOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -723,7 +723,7 @@ double DrawGetFillOpacity( <a class="reference" href="types.html#DrawContext">Dr
 <div class="section">
 <h2><a id="id41" name="id41">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double fill_opacity );
+void DrawSetFillOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double fill_opacity );
 </pre>
 </div>
 <div class="section">
@@ -732,7 +732,7 @@ void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">Draw
 color or fill texture.  Fully opaque is 1.0.</p>
 <p>The format of the DrawSetFillOpacity method is:</p>
 <pre class="literal-block">
-void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double fill_opacity );
+void DrawSetFillOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double fill_opacity );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -748,7 +748,7 @@ void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id43" name="id43">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#FillRule">FillRule</a> DrawGetFillRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#fillrule">FillRule</a> DrawGetFillRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -756,7 +756,7 @@ void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">Draw
 <p>DrawGetFillRule() returns the fill rule used while drawing polygons.</p>
 <p>The format of the DrawGetFillRule method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#FillRule">FillRule</a> DrawGetFillRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#fillrule">FillRule</a> DrawGetFillRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -770,7 +770,7 @@ void DrawSetFillOpacity( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id45" name="id45">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFillRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#FillRule">FillRule</a> fill_rule );
+void DrawSetFillRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#fillrule">FillRule</a> fill_rule );
 </pre>
 </div>
 <div class="section">
@@ -778,7 +778,7 @@ void DrawSetFillRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawSetFillRule() sets the fill rule to use while drawing polygons.</p>
 <p>The format of the DrawSetFillRule method is:</p>
 <pre class="literal-block">
-void DrawSetFillRule( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#FillRule">FillRule</a> fill_rule );
+void DrawSetFillRule( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#fillrule">FillRule</a> fill_rule );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -794,7 +794,7 @@ void DrawSetFillRule( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id47" name="id47">Synopsis</a></h2>
 <pre class="literal-block">
-char *DrawGetFont( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetFont( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -804,7 +804,7 @@ when annotating with text. The value returned must be freed by the user
 when no longer needed.</p>
 <p>The format of the DrawGetFont method is:</p>
 <pre class="literal-block">
-char *DrawGetFont( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetFont( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -818,7 +818,7 @@ char *DrawGetFont( <a class="reference" href="types.html#DrawContext">DrawContex
 <div class="section">
 <h2><a id="id49" name="id49">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFont( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *font_name );
+void DrawSetFont( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *font_name );
 </pre>
 </div>
 <div class="section">
@@ -827,7 +827,7 @@ void DrawSetFont( <a class="reference" href="types.html#DrawContext">DrawContext
 text.</p>
 <p>The format of the DrawSetFont method is:</p>
 <pre class="literal-block">
-void DrawSetFont( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *font_name );
+void DrawSetFont( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *font_name );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -843,7 +843,7 @@ void DrawSetFont( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id51" name="id51">Synopsis</a></h2>
 <pre class="literal-block">
-char *DrawGetFontFamily( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetFontFamily( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -852,7 +852,7 @@ char *DrawGetFontFamily( <a class="reference" href="types.html#DrawContext">Draw
 The value returned must be freed by the user when it is no longer needed.</p>
 <p>The format of the DrawGetFontFamily method is:</p>
 <pre class="literal-block">
-char *DrawGetFontFamily( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetFontFamily( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -866,7 +866,7 @@ char *DrawGetFontFamily( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id53" name="id53">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFontFamily( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *font_family );
+void DrawSetFontFamily( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *font_family );
 </pre>
 </div>
 <div class="section">
@@ -874,7 +874,7 @@ void DrawSetFontFamily( <a class="reference" href="types.html#DrawContext">DrawC
 <p>DrawSetFontFamily() sets the font family to use when annotating with text.</p>
 <p>The format of the DrawSetFontFamily method is:</p>
 <pre class="literal-block">
-void DrawSetFontFamily( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *font_family );
+void DrawSetFontFamily( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *font_family );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -890,7 +890,7 @@ void DrawSetFontFamily( <a class="reference" href="types.html#DrawContext">DrawC
 <div class="section">
 <h2><a id="id55" name="id55">Synopsis</a></h2>
 <pre class="literal-block">
-double DrawGetFontSize( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetFontSize( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -898,7 +898,7 @@ double DrawGetFontSize( <a class="reference" href="types.html#DrawContext">DrawC
 <p>DrawGetFontSize() returns the font pointsize used when annotating with text.</p>
 <p>The format of the DrawGetFontSize method is:</p>
 <pre class="literal-block">
-double DrawGetFontSize( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetFontSize( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -912,7 +912,7 @@ double DrawGetFontSize( <a class="reference" href="types.html#DrawContext">DrawC
 <div class="section">
 <h2><a id="id57" name="id57">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double pointsize );
+void DrawSetFontSize( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double pointsize );
 </pre>
 </div>
 <div class="section">
@@ -920,7 +920,7 @@ void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawSetFontSize() sets the font pointsize to use when annotating with text.</p>
 <p>The format of the DrawSetFontSize method is:</p>
 <pre class="literal-block">
-void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double pointsize );
+void DrawSetFontSize( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double pointsize );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -936,7 +936,7 @@ void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id59" name="id59">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#StretchType">StretchType</a> DrawGetFontStretch( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#stretchtype">StretchType</a> DrawGetFontStretch( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -944,7 +944,7 @@ void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawGetFontStretch() returns the font stretch used when annotating with text.</p>
 <p>The format of the DrawGetFontStretch method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#StretchType">StretchType</a> DrawGetFontStretch( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#stretchtype">StretchType</a> DrawGetFontStretch( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -958,7 +958,7 @@ void DrawSetFontSize( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id61" name="id61">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFontStretch( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#StretchType">StretchType</a> font_stretch );
+void DrawSetFontStretch( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#stretchtype">StretchType</a> font_stretch );
 </pre>
 </div>
 <div class="section">
@@ -967,7 +967,7 @@ void DrawSetFontStretch( <a class="reference" href="types.html#DrawContext">Draw
 The AnyStretch enumeration acts as a wild-card &quot;don't care&quot; option.</p>
 <p>The format of the DrawSetFontStretch method is:</p>
 <pre class="literal-block">
-void DrawSetFontStretch( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#StretchType">StretchType</a> font_stretch );
+void DrawSetFontStretch( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#stretchtype">StretchType</a> font_stretch );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -985,7 +985,7 @@ ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)</dd>
 <div class="section">
 <h2><a id="id63" name="id63">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#StyleType">StyleType</a> DrawGetFontStyle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#styletype">StyleType</a> DrawGetFontStyle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -993,7 +993,7 @@ ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)</dd>
 <p>DrawGetFontStyle() returns the font style used when annotating with text.</p>
 <p>The format of the DrawGetFontStyle method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#StyleType">StyleType</a> DrawGetFontStyle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#styletype">StyleType</a> DrawGetFontStyle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1007,7 +1007,7 @@ ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)</dd>
 <div class="section">
 <h2><a id="id65" name="id65">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFontStyle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#StyleType">StyleType</a> style );
+void DrawSetFontStyle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#styletype">StyleType</a> style );
 </pre>
 </div>
 <div class="section">
@@ -1016,7 +1016,7 @@ void DrawSetFontStyle( <a class="reference" href="types.html#DrawContext">DrawCo
 The AnyStyle enumeration acts as a wild-card &quot;don't care&quot; option.</p>
 <p>The format of the DrawSetFontStyle method is:</p>
 <pre class="literal-block">
-void DrawSetFontStyle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#StyleType">StyleType</a> style );
+void DrawSetFontStyle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#styletype">StyleType</a> style );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1032,7 +1032,7 @@ void DrawSetFontStyle( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id67" name="id67">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned long DrawGetFontWeight( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned long DrawGetFontWeight( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1040,7 +1040,7 @@ unsigned long DrawGetFontWeight( <a class="reference" href="types.html#DrawConte
 <p>DrawGetFontWeight() returns the font weight used when annotating with text.</p>
 <p>The format of the DrawGetFontWeight method is:</p>
 <pre class="literal-block">
-unsigned long DrawGetFontWeight( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned long DrawGetFontWeight( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1054,7 +1054,7 @@ unsigned long DrawGetFontWeight( <a class="reference" href="types.html#DrawConte
 <div class="section">
 <h2><a id="id69" name="id69">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetFontWeight( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long font_weight );
+void DrawSetFontWeight( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long font_weight );
 </pre>
 </div>
 <div class="section">
@@ -1062,7 +1062,7 @@ void DrawSetFontWeight( <a class="reference" href="types.html#DrawContext">DrawC
 <p>DrawSetFontWeight() sets the font weight to use when annotating with text.</p>
 <p>The format of the DrawSetFontWeight method is:</p>
 <pre class="literal-block">
-void DrawSetFontWeight( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long font_weight );
+void DrawSetFontWeight( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long font_weight );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1077,7 +1077,7 @@ void DrawSetFontWeight( <a class="reference" href="types.html#DrawContext">DrawC
 <div class="section">
 <h2><a id="id71" name="id71">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#GravityType">GravityType</a> DrawGetGravity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#gravitytype">GravityType</a> DrawGetGravity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1086,7 +1086,7 @@ void DrawSetFontWeight( <a class="reference" href="types.html#DrawContext">DrawC
 with text.</p>
 <p>The format of the DrawGetGravity method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#GravityType">GravityType</a> DrawGetGravity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#gravitytype">GravityType</a> DrawGetGravity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1100,7 +1100,7 @@ with text.</p>
 <div class="section">
 <h2><a id="id73" name="id73">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetGravity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#GravityType">GravityType</a> gravity );
+void DrawSetGravity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#gravitytype">GravityType</a> gravity );
 </pre>
 </div>
 <div class="section">
@@ -1109,7 +1109,7 @@ void DrawSetGravity( <a class="reference" href="types.html#DrawContext">DrawCont
 with text.</p>
 <p>The format of the DrawSetGravity method is:</p>
 <pre class="literal-block">
-void DrawSetGravity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#GravityType">GravityType</a> gravity );
+void DrawSetGravity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#gravitytype">GravityType</a> gravity );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1128,9 +1128,9 @@ SouthEastGravity)</dd>
 <div class="section">
 <h2><a id="id75" name="id75">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawComposite( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#CompositeOperator">CompositeOperator</a> composite_operator,
+void DrawComposite( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#compositeoperator">CompositeOperator</a> composite_operator,
                     const double x, const double y, const double width, const double height,
-                    const <a class="reference" href="types.html#Image">Image</a> *image );
+                    const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -1140,9 +1140,9 @@ specified composition operator, specified position, and at the specified
 size.</p>
 <p>The format of the DrawComposite method is:</p>
 <pre class="literal-block">
-void DrawComposite( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#CompositeOperator">CompositeOperator</a> composite_operator,
+void DrawComposite( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#compositeoperator">CompositeOperator</a> composite_operator,
                     const double x, const double y, const double width, const double height,
-                    const <a class="reference" href="types.html#Image">Image</a> *image );
+                    const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1169,7 +1169,7 @@ to use existing height.</dd>
 <div class="section">
 <h2><a id="id77" name="id77">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawLine( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double sx, const double sy, const double ex,
+void DrawLine( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double sx, const double sy, const double ex,
                const double ey );
 </pre>
 </div>
@@ -1179,7 +1179,7 @@ void DrawLine( <a class="reference" href="types.html#DrawContext">DrawContext</a
 stroke opacity, and stroke width.</p>
 <p>The format of the DrawLine method is:</p>
 <pre class="literal-block">
-void DrawLine( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double sx, const double sy, const double ex,
+void DrawLine( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double sx, const double sy, const double ex,
                const double ey );
 </pre>
 <dl class="docutils">
@@ -1201,8 +1201,8 @@ void DrawLine( <a class="reference" href="types.html#DrawContext">DrawContext</a
 <div class="section">
 <h2><a id="id79" name="id79">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawMatte( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
-                const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> paint_method );
+void DrawMatte( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
+                const <a class="reference" href="types.html#paintmethod">PaintMethod</a> paint_method );
 </pre>
 </div>
 <div class="section">
@@ -1217,8 +1217,8 @@ border color.
 ResetMethod: Select all pixels.</p>
 <p>The format of the DrawMatte method is:</p>
 <pre class="literal-block">
-void DrawMatte( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y,
-                const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> paint_method );
+void DrawMatte( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y,
+                const <a class="reference" href="types.html#paintmethod">PaintMethod</a> paint_method );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1236,7 +1236,7 @@ void DrawMatte( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id81" name="id81">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathClose( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathClose( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1247,7 +1247,7 @@ current subpath's most recent starting point (usually, the most recent
 moveto point).</p>
 <p>The format of the DrawPathClose method is:</p>
 <pre class="literal-block">
-void DrawPathClose( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathClose( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1261,7 +1261,7 @@ void DrawPathClose( <a class="reference" href="types.html#DrawContext">DrawConte
 <div class="section">
 <h2><a id="id83" name="id83">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathCurveToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1,
+void DrawPathCurveToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1,
                               const double x2, const double y2, const double x,
                               const double y );
 </pre>
@@ -1275,7 +1275,7 @@ absolute coordinates. At the end of the command, the new current point
 becomes the final (x,y) coordinate pair used in the polybezier.</p>
 <p>The format of the DrawPathCurveToAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathCurveToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1,
+void DrawPathCurveToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1,
                               const double x2, const double y2, const double x,
                               const double y );
 </pre>
@@ -1302,7 +1302,7 @@ void DrawPathCurveToAbsolute( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id85" name="id85">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathCurveToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1,
+void DrawPathCurveToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1,
                               const double x2, const double y2, const double x,
                               const double y );
 </pre>
@@ -1316,7 +1316,7 @@ relative coordinates. At the end of the command, the new current point
 becomes the final (x,y) coordinate pair used in the polybezier.</p>
 <p>The format of the DrawPathCurveToRelative method is:</p>
 <pre class="literal-block">
-void DrawPathCurveToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1,
+void DrawPathCurveToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1,
                               const double x2, const double y2, const double x,
                               const double y );
 </pre>
@@ -1343,7 +1343,7 @@ void DrawPathCurveToRelative( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id87" name="id87">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathCurveToSmoothAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x2, const double y2,
+void DrawPathCurveToSmoothAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x2, const double y2,
                                     const double x, const double y );
 </pre>
 </div>
@@ -1362,7 +1362,7 @@ curve). At the end of the command, the new current point becomes the
 final (x,y) coordinate pair used in the polybezier.</p>
 <p>The format of the DrawPathCurveToSmoothAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathCurveToSmoothAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x2, const double y2,
+void DrawPathCurveToSmoothAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x2, const double y2,
                                     const double x, const double y );
 </pre>
 <dl class="docutils">
@@ -1384,7 +1384,7 @@ void DrawPathCurveToSmoothAbsolute( <a class="reference" href="types.html#DrawCo
 <div class="section">
 <h2><a id="id89" name="id89">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathCurveToSmoothRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x2, const double y2,
+void DrawPathCurveToSmoothRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x2, const double y2,
                                     const double x, const double y );
 </pre>
 </div>
@@ -1403,7 +1403,7 @@ curve). At the end of the command, the new current point becomes the
 final (x,y) coordinate pair used in the polybezier.</p>
 <p>The format of the DrawPathCurveToSmoothRelative method is:</p>
 <pre class="literal-block">
-void DrawPathCurveToSmoothRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x2, const double y2,
+void DrawPathCurveToSmoothRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x2, const double y2,
                                     const double x, const double y );
 </pre>
 <dl class="docutils">
@@ -1425,7 +1425,7 @@ void DrawPathCurveToSmoothRelative( <a class="reference" href="types.html#DrawCo
 <div class="section">
 <h2><a id="id91" name="id91">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathEllipticArcAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double rx, const double ry,
+void DrawPathEllipticArcAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double rx, const double ry,
                                   const double x_axis_rotation,
                                   unsigned int large_arc_flag, unsigned int sweep_flag,
                                   const double x, const double y );
@@ -1445,7 +1445,7 @@ largeArcFlag is true then draw the larger of the available arcs. If
 sweepFlag is true, then draw the arc matching a clock-wise rotation.</p>
 <p>The format of the DrawPathEllipticArcAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathEllipticArcAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double rx, const double ry,
+void DrawPathEllipticArcAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double rx, const double ry,
                                   const double x_axis_rotation,
                                   unsigned int large_arc_flag, unsigned int sweep_flag,
                                   const double x, const double y );
@@ -1474,7 +1474,7 @@ clock-wise rotation</dd>
 <div class="section">
 <h2><a id="id93" name="id93">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathEllipticArcRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double rx, const double ry,
+void DrawPathEllipticArcRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double rx, const double ry,
                                   const double x_axis_rotation,
                                   unsigned int large_arc_flag, unsigned int sweep_flag,
                                   const double x, const double y );
@@ -1494,7 +1494,7 @@ largeArcFlag is true then draw the larger of the available arcs. If
 sweepFlag is true, then draw the arc matching a clock-wise rotation.</p>
 <p>The format of the DrawPathEllipticArcRelative method is:</p>
 <pre class="literal-block">
-void DrawPathEllipticArcRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double rx, const double ry,
+void DrawPathEllipticArcRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double rx, const double ry,
                                   const double x_axis_rotation,
                                   unsigned int large_arc_flag, unsigned int sweep_flag,
                                   const double x, const double y );
@@ -1523,7 +1523,7 @@ clock-wise rotation</dd>
 <div class="section">
 <h2><a id="id95" name="id95">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathFinish( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathFinish( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1531,7 +1531,7 @@ void DrawPathFinish( <a class="reference" href="types.html#DrawContext">DrawCont
 <p>DrawPathFinish() terminates the current path.</p>
 <p>The format of the DrawPathFinish method is:</p>
 <pre class="literal-block">
-void DrawPathFinish( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathFinish( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1545,7 +1545,7 @@ void DrawPathFinish( <a class="reference" href="types.html#DrawContext">DrawCont
 <div class="section">
 <h2><a id="id97" name="id97">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathLineToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1555,7 +1555,7 @@ given coordinate using absolute coordinates. The coordinate then becomes
 the new current point.</p>
 <p>The format of the DrawPathLineToAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathLineToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathLineToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1572,7 +1572,7 @@ void DrawPathLineToAbsolute( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id99" name="id99">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathLineToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1582,7 +1582,7 @@ given coordinate using relative coordinates. The coordinate then becomes
 the new current point.</p>
 <p>The format of the DrawPathLineToRelative method is:</p>
 <pre class="literal-block">
-void DrawPathLineToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathLineToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1599,7 +1599,7 @@ void DrawPathLineToRelative( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id101" name="id101">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToHorizontalAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x );
+void DrawPathLineToHorizontalAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x );
 </pre>
 </div>
 <div class="section">
@@ -1609,7 +1609,7 @@ current point to the target point using absolute coordinates.  The target
 point then becomes the new current point.</p>
 <p>The format of the DrawPathLineToHorizontalAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathLineToHorizontalAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x );
+void DrawPathLineToHorizontalAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1624,7 +1624,7 @@ void DrawPathLineToHorizontalAbsolute( <a class="reference" href="types.html#Dra
 <div class="section">
 <h2><a id="id103" name="id103">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToHorizontalRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x );
+void DrawPathLineToHorizontalRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x );
 </pre>
 </div>
 <div class="section">
@@ -1634,7 +1634,7 @@ current point to the target point using relative coordinates.  The target
 point then becomes the new current point.</p>
 <p>The format of the DrawPathLineToHorizontalRelative method is:</p>
 <pre class="literal-block">
-void DrawPathLineToHorizontalRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x );
+void DrawPathLineToHorizontalRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1650,7 +1650,7 @@ void DrawPathLineToHorizontalRelative( <a class="reference" href="types.html#Dra
 <div class="section">
 <h2><a id="id105" name="id105">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToVerticalAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double y );
+void DrawPathLineToVerticalAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1660,7 +1660,7 @@ current point to the target point using absolute coordinates.  The target
 point then becomes the new current point.</p>
 <p>The format of the DrawPathLineToVerticalAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathLineToVerticalAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double y );
+void DrawPathLineToVerticalAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1675,7 +1675,7 @@ void DrawPathLineToVerticalAbsolute( <a class="reference" href="types.html#DrawC
 <div class="section">
 <h2><a id="id107" name="id107">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathLineToVerticalRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double y );
+void DrawPathLineToVerticalRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1685,7 +1685,7 @@ current point to the target point using relative coordinates.  The target
 point then becomes the new current point.</p>
 <p>The format of the DrawPathLineToVerticalRelative method is:</p>
 <pre class="literal-block">
-void DrawPathLineToVerticalRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double y );
+void DrawPathLineToVerticalRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1700,7 +1700,7 @@ void DrawPathLineToVerticalRelative( <a class="reference" href="types.html#DrawC
 <div class="section">
 <h2><a id="id109" name="id109">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathMoveToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathMoveToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1710,7 +1710,7 @@ using absolute coordinates. The current point then becomes the
 specified coordinate.</p>
 <p>The format of the DrawPathMoveToAbsolute method is:</p>
 <pre class="literal-block">
-void DrawPathMoveToAbsolute( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathMoveToAbsolute( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1727,7 +1727,7 @@ void DrawPathMoveToAbsolute( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id111" name="id111">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathMoveToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathMoveToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1737,7 +1737,7 @@ using relative coordinates. The current point then becomes the
 specified coordinate.</p>
 <p>The format of the DrawPathMoveToRelative method is:</p>
 <pre class="literal-block">
-void DrawPathMoveToRelative( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPathMoveToRelative( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1754,7 +1754,7 @@ void DrawPathMoveToRelative( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id113" name="id113">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPathStart( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathStart( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1766,7 +1766,7 @@ is because path drawing commands are subordinate commands and they do not
 function by themselves.</p>
 <p>The format of the DrawPathStart method is:</p>
 <pre class="literal-block">
-void DrawPathStart( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPathStart( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1780,7 +1780,7 @@ void DrawPathStart( <a class="reference" href="types.html#DrawContext">DrawConte
 <div class="section">
 <h2><a id="id115" name="id115">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#DrawInfo">DrawInfo</a> *DrawPeekGraphicContext( const <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#drawinfo">DrawInfo</a> *DrawPeekGraphicContext( const <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1790,7 +1790,7 @@ the head of the drawing context stack. The user is responsible for
 deallocating the returned object using DestroyDrawInfo.</p>
 <p>The format of the DrawPeekGraphicContext method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#DrawInfo">DrawInfo</a> *DrawPeekGraphicContext( const <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#drawinfo">DrawInfo</a> *DrawPeekGraphicContext( const <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1804,7 +1804,7 @@ deallocating the returned object using DestroyDrawInfo.</p>
 <div class="section">
 <h2><a id="id117" name="id117">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPoint( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPoint( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -1813,7 +1813,7 @@ void DrawPoint( <a class="reference" href="types.html#DrawContext">DrawContext</
 thickness at the specified coordinates.</p>
 <p>The format of the DrawPoint method is:</p>
 <pre class="literal-block">
-void DrawPoint( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawPoint( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1831,8 +1831,8 @@ void DrawPoint( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id119" name="id119">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPolygon( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                  const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawPolygon( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                  const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 </div>
 <div class="section">
@@ -1841,8 +1841,8 @@ void DrawPolygon( <a class="reference" href="types.html#DrawContext">DrawContext
 fill color or texture, using the specified array of coordinates.</p>
 <p>The format of the DrawPolygon method is:</p>
 <pre class="literal-block">
-void DrawPolygon( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                  const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawPolygon( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                  const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1859,8 +1859,8 @@ void DrawPolygon( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id121" name="id121">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPolyline( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                   const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawPolyline( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                   const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 </div>
 <div class="section">
@@ -1869,8 +1869,8 @@ void DrawPolyline( <a class="reference" href="types.html#DrawContext">DrawContex
 fill color or texture, using the specified array of coordinates.</p>
 <p>The format of the DrawPolyline method is:</p>
 <pre class="literal-block">
-void DrawPolyline( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_coords,
-                   const <a class="reference" href="types.html#PointInfo">PointInfo</a> *coordinates );
+void DrawPolyline( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_coords,
+                   const <a class="reference" href="types.html#pointinfo">PointInfo</a> *coordinates );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -1887,7 +1887,7 @@ void DrawPolyline( <a class="reference" href="types.html#DrawContext">DrawContex
 <div class="section">
 <h2><a id="id123" name="id123">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPopClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1895,7 +1895,7 @@ void DrawPopClipPath( <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawPopClipPath() terminates a clip path definition.</p>
 <p>The format of the DrawPopClipPath method is:</p>
 <pre class="literal-block">
-void DrawPopClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1909,7 +1909,7 @@ void DrawPopClipPath( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id125" name="id125">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPopDefs( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopDefs( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1917,7 +1917,7 @@ void DrawPopDefs( <a class="reference" href="types.html#DrawContext">DrawContext
 <p>DrawPopDefs() terminates a definition list</p>
 <p>The format of the DrawPopDefs method is:</p>
 <pre class="literal-block">
-void DrawPopDefs( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopDefs( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1931,7 +1931,7 @@ void DrawPopDefs( <a class="reference" href="types.html#DrawContext">DrawContext
 <div class="section">
 <h2><a id="id127" name="id127">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPopGraphicContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopGraphicContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1942,7 +1942,7 @@ to attempt to pop more contexts than have been pushed, and it is proper
 form to pop all contexts which have been pushed.</p>
 <p>The format of the DrawPopGraphicContext method is:</p>
 <pre class="literal-block">
-void DrawPopGraphicContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopGraphicContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1956,7 +1956,7 @@ void DrawPopGraphicContext( <a class="reference" href="types.html#DrawContext">D
 <div class="section">
 <h2><a id="id129" name="id129">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPopPattern( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopPattern( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -1964,7 +1964,7 @@ void DrawPopPattern( <a class="reference" href="types.html#DrawContext">DrawCont
 <p>DrawPopPattern() terminates a pattern definition.</p>
 <p>The format of the DrawPopPattern method is:</p>
 <pre class="literal-block">
-void DrawPopPattern( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPopPattern( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1978,7 +1978,7 @@ void DrawPopPattern( <a class="reference" href="types.html#DrawContext">DrawCont
 <div class="section">
 <h2><a id="id131" name="id131">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPushClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *clip_path_id );
+void DrawPushClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *clip_path_id );
 </pre>
 </div>
 <div class="section">
@@ -1988,7 +1988,7 @@ any number of drawing commands and terminated by a DrawPopClipPath()
 command.</p>
 <p>The format of the DrawPushClipPath method is:</p>
 <pre class="literal-block">
-void DrawPushClipPath( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *clip_path_id );
+void DrawPushClipPath( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *clip_path_id );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2005,7 +2005,7 @@ later use.</dd>
 <div class="section">
 <h2><a id="id133" name="id133">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPushDefs( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPushDefs( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2015,7 +2015,7 @@ command create named elements (e.g. clip-paths, textures, etc.) which
 may safely be processed earlier for the sake of efficiency.</p>
 <p>The format of the DrawPushDefs method is:</p>
 <pre class="literal-block">
-void DrawPushDefs( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPushDefs( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2029,7 +2029,7 @@ void DrawPushDefs( <a class="reference" href="types.html#DrawContext">DrawContex
 <div class="section">
 <h2><a id="id135" name="id135">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPushGraphicContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPushGraphicContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2040,7 +2040,7 @@ by invoking DrawPopGraphicContext().  The contexts are stored on a context
 stack.  For every Pop there must have already been an equivalent Push.</p>
 <p>The format of the DrawPushGraphicContext method is:</p>
 <pre class="literal-block">
-void DrawPushGraphicContext( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+void DrawPushGraphicContext( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2054,7 +2054,7 @@ void DrawPushGraphicContext( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id137" name="id137">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawPushPattern( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *pattern_id, const double x,
+void DrawPushPattern( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *pattern_id, const double x,
                       const double y, const double width, const double height );
 </pre>
 </div>
@@ -2068,7 +2068,7 @@ be drawn may be used in a pattern definition.
 Named patterns may be used as stroke or brush definitions.</p>
 <p>The format of the DrawPushPattern method is:</p>
 <pre class="literal-block">
-void DrawPushPattern( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *pattern_id, const double x,
+void DrawPushPattern( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *pattern_id, const double x,
                       const double y, const double width, const double height );
 </pre>
 <dl class="docutils">
@@ -2092,7 +2092,7 @@ void DrawPushPattern( <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id139" name="id139">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawRectangle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1, const double x2,
+void DrawRectangle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1, const double x2,
                     const double y2 );
 </pre>
 </div>
@@ -2102,7 +2102,7 @@ void DrawRectangle( <a class="reference" href="types.html#DrawContext">DrawConte
 the current stroke, stroke width, and fill settings.</p>
 <p>The format of the DrawRectangle method is:</p>
 <pre class="literal-block">
-void DrawRectangle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x1, const double y1, const double x2,
+void DrawRectangle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x1, const double y1, const double x2,
                     const double y2 );
 </pre>
 <dl class="docutils">
@@ -2122,7 +2122,7 @@ void DrawRectangle( <a class="reference" href="types.html#DrawContext">DrawConte
 <div class="section">
 <h2><a id="id141" name="id141">Synopsis</a></h2>
 <pre class="literal-block">
-int DrawRender( const <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+int DrawRender( const <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2130,7 +2130,7 @@ int DrawRender( const <a class="reference" href="types.html#DrawContext">DrawCon
 <p>DrawRender() renders all preceding drawing commands onto the image.</p>
 <p>The format of the DrawRender method is:</p>
 <pre class="literal-block">
-int DrawRender( const <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+int DrawRender( const <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2144,7 +2144,7 @@ int DrawRender( const <a class="reference" href="types.html#DrawContext">DrawCon
 <div class="section">
 <h2><a id="id143" name="id143">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawRotate( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawRotate( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 </div>
 <div class="section">
@@ -2153,7 +2153,7 @@ void DrawRotate( <a class="reference" href="types.html#DrawContext">DrawContext<
 space.</p>
 <p>The format of the DrawRotate method is:</p>
 <pre class="literal-block">
-void DrawRotate( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawRotate( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2169,7 +2169,7 @@ void DrawRotate( <a class="reference" href="types.html#DrawContext">DrawContext<
 <div class="section">
 <h2><a id="id145" name="id145">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawRoundRectangle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, double x1, double y1, double x2, double y2,
+void DrawRoundRectangle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, double x1, double y1, double x2, double y2,
                          double rx, double ry );
 </pre>
 </div>
@@ -2180,7 +2180,7 @@ x &amp; y corner radiuses and using the current stroke, stroke width,
 and fill settings.</p>
 <p>The format of the DrawRoundRectangle method is:</p>
 <pre class="literal-block">
-void DrawRoundRectangle( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, double x1, double y1, double x2, double y2,
+void DrawRoundRectangle( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, double x1, double y1, double x2, double y2,
                          double rx, double ry );
 </pre>
 <dl class="docutils">
@@ -2206,7 +2206,7 @@ void DrawRoundRectangle( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id147" name="id147">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawScale( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawScale( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -2215,7 +2215,7 @@ void DrawScale( <a class="reference" href="types.html#DrawContext">DrawContext</
 vertical directions to the current coordinate space.</p>
 <p>The format of the DrawScale method is:</p>
 <pre class="literal-block">
-void DrawScale( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawScale( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2233,7 +2233,7 @@ void DrawScale( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id149" name="id149">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSkewX( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawSkewX( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 </div>
 <div class="section">
@@ -2242,7 +2242,7 @@ void DrawSkewX( <a class="reference" href="types.html#DrawContext">DrawContext</
 direction.</p>
 <p>The format of the DrawSkewX method is:</p>
 <pre class="literal-block">
-void DrawSkewX( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawSkewX( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2258,7 +2258,7 @@ void DrawSkewX( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id151" name="id151">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSkewY( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawSkewY( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 </div>
 <div class="section">
@@ -2267,7 +2267,7 @@ void DrawSkewY( <a class="reference" href="types.html#DrawContext">DrawContext</
 direction.</p>
 <p>The format of the DrawSkewY method is:</p>
 <pre class="literal-block">
-void DrawSkewY( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double degrees );
+void DrawSkewY( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double degrees );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2283,7 +2283,7 @@ void DrawSkewY( <a class="reference" href="types.html#DrawContext">DrawContext</
 <div class="section">
 <h2><a id="id153" name="id153">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *stop_color,
+void DrawSetStopColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *stop_color,
                        const double offset );
 </pre>
 </div>
@@ -2292,7 +2292,7 @@ void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <p>DrawSetStopColor() sets the stop color and offset for gradients</p>
 <p>The format of the DrawSetStopColor method is:</p>
 <pre class="literal-block">
-void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *stop_color,
+void DrawSetStopColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *stop_color,
                        const double offset );
 </pre>
 <dl class="docutils">
@@ -2308,7 +2308,7 @@ void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id155" name="id155">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetStrokeColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetStrokeColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2316,7 +2316,7 @@ void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <p>DrawGetStrokeColor() returns the color used for stroking object outlines.</p>
 <p>The format of the DrawGetStrokeColor method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetStrokeColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetStrokeColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2330,7 +2330,7 @@ void DrawSetStopColor( <a class="reference" href="types.html#DrawContext">DrawCo
 <div class="section">
 <h2><a id="id157" name="id157">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *stroke_color );
+void DrawSetStrokeColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *stroke_color );
 </pre>
 </div>
 <div class="section">
@@ -2338,7 +2338,7 @@ void DrawSetStrokeColor( <a class="reference" href="types.html#DrawContext">Draw
 <p>DrawSetStrokeColor() sets the color used for stroking object outlines.</p>
 <p>The format of the DrawSetStrokeColor method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *stroke_color );
+void DrawSetStrokeColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *stroke_color );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2353,7 +2353,7 @@ void DrawSetStrokeColor( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id159" name="id159">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *stroke_color );
+void DrawSetStrokeColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *stroke_color );
 </pre>
 </div>
 <div class="section">
@@ -2361,7 +2361,7 @@ void DrawSetStrokeColorString( <a class="reference" href="types.html#DrawContext
 <p>DrawSetStrokeColorString() sets the color used for stroking object outlines.</p>
 <p>The format of the DrawSetStrokeColorString method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *stroke_color );
+void DrawSetStrokeColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *stroke_color );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2376,7 +2376,7 @@ void DrawSetStrokeColorString( <a class="reference" href="types.html#DrawContext
 <div class="section">
 <h2><a id="id161" name="id161">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokePatternURL( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *stroke_url );
+void DrawSetStrokePatternURL( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *stroke_url );
 </pre>
 </div>
 <div class="section">
@@ -2384,7 +2384,7 @@ void DrawSetStrokePatternURL( <a class="reference" href="types.html#DrawContext"
 <p>DrawSetStrokePatternURL() sets the pattern used for stroking object outlines.</p>
 <p>The format of the DrawSetStrokePatternURL method is:</p>
 <pre class="literal-block">
-void DrawSetStrokePatternURL( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *stroke_url );
+void DrawSetStrokePatternURL( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *stroke_url );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2400,7 +2400,7 @@ void DrawSetStrokePatternURL( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id163" name="id163">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int DrawGetStrokeAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned int DrawGetStrokeAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2411,7 +2411,7 @@ stroked pixels are thresholded to determine if the stroke color or
 underlying canvas color should be used.</p>
 <p>The format of the DrawGetStrokeAntialias method is:</p>
 <pre class="literal-block">
-unsigned int DrawGetStrokeAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned int DrawGetStrokeAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2425,7 +2425,7 @@ unsigned int DrawGetStrokeAntialias( <a class="reference" href="types.html#DrawC
 <div class="section">
 <h2><a id="id165" name="id165">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned int stroke_antialias );
+void DrawSetStrokeAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned int stroke_antialias );
 </pre>
 </div>
 <div class="section">
@@ -2436,7 +2436,7 @@ stroked pixels are thresholded to determine if the stroke color or
 underlying canvas color should be used.</p>
 <p>The format of the DrawSetStrokeAntialias method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned int stroke_antialias );
+void DrawSetStrokeAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned int stroke_antialias );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2451,7 +2451,7 @@ void DrawSetStrokeAntialias( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id167" name="id167">Synopsis</a></h2>
 <pre class="literal-block">
-double *DrawGetStrokeDashArray( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, unsigned long *num_elems );
+double *DrawGetStrokeDashArray( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, unsigned long *num_elems );
 </pre>
 </div>
 <div class="section">
@@ -2461,7 +2461,7 @@ dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The
 array must be freed once it is no longer required by the user.</p>
 <p>The format of the DrawGetStrokeDashArray method is:</p>
 <pre class="literal-block">
-double *DrawGetStrokeDashArray( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, unsigned long *num_elems );
+double *DrawGetStrokeDashArray( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, unsigned long *num_elems );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2477,7 +2477,7 @@ double *DrawGetStrokeDashArray( <a class="reference" href="types.html#DrawContex
 <div class="section">
 <h2><a id="id169" name="id169">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeDashArray( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_elems,
+void DrawSetStrokeDashArray( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_elems,
                              const double *dasharray );
 </pre>
 </div>
@@ -2492,7 +2492,7 @@ num_elems argument and null dasharray. A typical stroke dash array might
 contain the members 5 3 2.</p>
 <p>The format of the DrawSetStrokeDashArray method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeDashArray( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long num_elems,
+void DrawSetStrokeDashArray( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long num_elems,
                              const double *dasharray );
 </pre>
 <dl class="docutils">
@@ -2510,7 +2510,7 @@ void DrawSetStrokeDashArray( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id171" name="id171">Synopsis</a></h2>
 <pre class="literal-block">
-double DrawGetStrokeDashOffset( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeDashOffset( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2519,7 +2519,7 @@ double DrawGetStrokeDashOffset( <a class="reference" href="types.html#DrawContex
 start the dash.</p>
 <p>The format of the DrawGetStrokeDashOffset method is:</p>
 <pre class="literal-block">
-double DrawGetStrokeDashOffset( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeDashOffset( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2533,7 +2533,7 @@ double DrawGetStrokeDashOffset( <a class="reference" href="types.html#DrawContex
 <div class="section">
 <h2><a id="id173" name="id173">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeDashOffset( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double dash_offset );
+void DrawSetStrokeDashOffset( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double dash_offset );
 </pre>
 </div>
 <div class="section">
@@ -2542,7 +2542,7 @@ void DrawSetStrokeDashOffset( <a class="reference" href="types.html#DrawContext"
 start the dash.</p>
 <p>The format of the DrawSetStrokeDashOffset method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeDashOffset( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double dash_offset );
+void DrawSetStrokeDashOffset( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double dash_offset );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2557,7 +2557,7 @@ void DrawSetStrokeDashOffset( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id175" name="id175">Synopsis</a></h2>
 <pre class="literal-block">
-LineCap DrawGetStrokeLineCap( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+LineCap DrawGetStrokeLineCap( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2567,7 +2567,7 @@ open subpaths when they are stroked. Values of LineCap are
 UndefinedCap, ButtCap, RoundCap, and SquareCap.</p>
 <p>The format of the DrawGetStrokeLineCap method is:</p>
 <pre class="literal-block">
-LineCap DrawGetStrokeLineCap( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+LineCap DrawGetStrokeLineCap( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2581,7 +2581,7 @@ LineCap DrawGetStrokeLineCap( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id177" name="id177">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeLineCap( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const LineCap linecap );
+void DrawSetStrokeLineCap( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const LineCap linecap );
 </pre>
 </div>
 <div class="section">
@@ -2591,7 +2591,7 @@ open subpaths when they are stroked. Values of LineCap are
 UndefinedCap, ButtCap, RoundCap, and SquareCap.</p>
 <p>The format of the DrawSetStrokeLineCap method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeLineCap( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const LineCap linecap );
+void DrawSetStrokeLineCap( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const LineCap linecap );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2606,7 +2606,7 @@ void DrawSetStrokeLineCap( <a class="reference" href="types.html#DrawContext">Dr
 <div class="section">
 <h2><a id="id179" name="id179">Synopsis</a></h2>
 <pre class="literal-block">
-LineJoin DrawGetStrokeLineJoin( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+LineJoin DrawGetStrokeLineJoin( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2617,7 +2617,7 @@ stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin,
 and BevelJoin.</p>
 <p>The format of the DrawGetStrokeLineJoin method is:</p>
 <pre class="literal-block">
-LineJoin DrawGetStrokeLineJoin( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+LineJoin DrawGetStrokeLineJoin( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2631,7 +2631,7 @@ LineJoin DrawGetStrokeLineJoin( <a class="reference" href="types.html#DrawContex
 <div class="section">
 <h2><a id="id181" name="id181">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeLineJoin( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const LineJoin linejoin );
+void DrawSetStrokeLineJoin( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const LineJoin linejoin );
 </pre>
 </div>
 <div class="section">
@@ -2642,7 +2642,7 @@ stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin,
 and BevelJoin.</p>
 <p>The format of the DrawSetStrokeLineJoin method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeLineJoin( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const LineJoin linejoin );
+void DrawSetStrokeLineJoin( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const LineJoin linejoin );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2658,7 +2658,7 @@ void DrawSetStrokeLineJoin( <a class="reference" href="types.html#DrawContext">D
 <div class="section">
 <h2><a id="id183" name="id183">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned long DrawGetStrokeMiterLimit( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned long DrawGetStrokeMiterLimit( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2670,7 +2670,7 @@ thickness of the line stroking the path. The miterLimit' imposes a
 limit on the ratio of the miter length to the 'lineWidth'.</p>
 <p>The format of the DrawGetStrokeMiterLimit method is:</p>
 <pre class="literal-block">
-unsigned long DrawGetStrokeMiterLimit( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned long DrawGetStrokeMiterLimit( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2684,7 +2684,7 @@ unsigned long DrawGetStrokeMiterLimit( <a class="reference" href="types.html#Dra
 <div class="section">
 <h2><a id="id185" name="id185">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeMiterLimit( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long miterlimit );
+void DrawSetStrokeMiterLimit( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long miterlimit );
 </pre>
 </div>
 <div class="section">
@@ -2696,7 +2696,7 @@ thickness of the line stroking the path. The miterLimit' imposes a
 limit on the ratio of the miter length to the 'lineWidth'.</p>
 <p>The format of the DrawSetStrokeMiterLimit method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeMiterLimit( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned long miterlimit );
+void DrawSetStrokeMiterLimit( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned long miterlimit );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2711,7 +2711,7 @@ void DrawSetStrokeMiterLimit( <a class="reference" href="types.html#DrawContext"
 <div class="section">
 <h2><a id="id187" name="id187">Synopsis</a></h2>
 <pre class="literal-block">
-double DrawGetStrokeOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2719,7 +2719,7 @@ double DrawGetStrokeOpacity( <a class="reference" href="types.html#DrawContext">
 <p>DrawGetStrokeOpacity() returns the opacity of stroked object outlines.</p>
 <p>The format of the DrawGetStrokeOpacity method is:</p>
 <pre class="literal-block">
-double DrawGetStrokeOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2733,7 +2733,7 @@ double DrawGetStrokeOpacity( <a class="reference" href="types.html#DrawContext">
 <div class="section">
 <h2><a id="id189" name="id189">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double stroke_opacity );
+void DrawSetStrokeOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double stroke_opacity );
 </pre>
 </div>
 <div class="section">
@@ -2741,7 +2741,7 @@ void DrawSetStrokeOpacity( <a class="reference" href="types.html#DrawContext">Dr
 <p>DrawSetStrokeOpacity() specifies the opacity of stroked object outlines.</p>
 <p>The format of the DrawSetStrokeOpacity method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeOpacity( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double stroke_opacity );
+void DrawSetStrokeOpacity( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double stroke_opacity );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2756,7 +2756,7 @@ void DrawSetStrokeOpacity( <a class="reference" href="types.html#DrawContext">Dr
 <div class="section">
 <h2><a id="id191" name="id191">Synopsis</a></h2>
 <pre class="literal-block">
-double DrawGetStrokeWidth( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeWidth( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2765,7 +2765,7 @@ double DrawGetStrokeWidth( <a class="reference" href="types.html#DrawContext">Dr
 outlines.</p>
 <p>The format of the DrawGetStrokeWidth method is:</p>
 <pre class="literal-block">
-double DrawGetStrokeWidth( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+double DrawGetStrokeWidth( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2779,7 +2779,7 @@ double DrawGetStrokeWidth( <a class="reference" href="types.html#DrawContext">Dr
 <div class="section">
 <h2><a id="id193" name="id193">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetStrokeWidth( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double stroke_width );
+void DrawSetStrokeWidth( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double stroke_width );
 </pre>
 </div>
 <div class="section">
@@ -2788,7 +2788,7 @@ void DrawSetStrokeWidth( <a class="reference" href="types.html#DrawContext">Draw
 outlines.</p>
 <p>The format of the DrawSetStrokeWidth method is:</p>
 <pre class="literal-block">
-void DrawSetStrokeWidth( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double stroke_width );
+void DrawSetStrokeWidth( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double stroke_width );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2804,7 +2804,7 @@ void DrawSetStrokeWidth( <a class="reference" href="types.html#DrawContext">Draw
 <div class="section">
 <h2><a id="id195" name="id195">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2813,7 +2813,7 @@ unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#DrawCon
 determines whether text is antialiased.  Text is antialiased by default.</p>
 <p>The format of the DrawGetTextAntialias method is:</p>
 <pre class="literal-block">
-unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2827,7 +2827,7 @@ unsigned int DrawGetTextAntialias( <a class="reference" href="types.html#DrawCon
 <div class="section">
 <h2><a id="id197" name="id197">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetTextAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned int text_antialias );
+void DrawSetTextAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned int text_antialias );
 </pre>
 </div>
 <div class="section">
@@ -2836,7 +2836,7 @@ void DrawSetTextAntialias( <a class="reference" href="types.html#DrawContext">Dr
 antialiased by default.</p>
 <p>The format of the DrawSetTextAntialias method is:</p>
 <pre class="literal-block">
-void DrawSetTextAntialias( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const unsigned int text_antialias );
+void DrawSetTextAntialias( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const unsigned int text_antialias );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2852,7 +2852,7 @@ antialiasing.</dd>
 <div class="section">
 <h2><a id="id199" name="id199">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#DecorationType">DecorationType</a> DrawGetTextDecoration( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#decorationtype">DecorationType</a> DrawGetTextDecoration( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2861,7 +2861,7 @@ antialiasing.</dd>
 text.</p>
 <p>The format of the DrawGetTextDecoration method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#DecorationType">DecorationType</a> DrawGetTextDecoration( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#decorationtype">DecorationType</a> DrawGetTextDecoration( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2875,7 +2875,7 @@ text.</p>
 <div class="section">
 <h2><a id="id201" name="id201">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetTextDecoration( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#DecorationType">DecorationType</a> decoration );
+void DrawSetTextDecoration( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#decorationtype">DecorationType</a> decoration );
 </pre>
 </div>
 <div class="section">
@@ -2884,7 +2884,7 @@ void DrawSetTextDecoration( <a class="reference" href="types.html#DrawContext">D
 annotating with text.</p>
 <p>The format of the DrawSetTextDecoration method is:</p>
 <pre class="literal-block">
-void DrawSetTextDecoration( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#DecorationType">DecorationType</a> decoration );
+void DrawSetTextDecoration( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#decorationtype">DecorationType</a> decoration );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -2900,7 +2900,7 @@ OverlineDecoration, or LineThroughDecoration</dd>
 <div class="section">
 <h2><a id="id203" name="id203">Synopsis</a></h2>
 <pre class="literal-block">
-char *DrawGetTextEncoding( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetTextEncoding( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2910,7 +2910,7 @@ code set used for text annotations. The string must be freed by the user
 once it is no longer required.</p>
 <p>The format of the DrawGetTextEncoding method is:</p>
 <pre class="literal-block">
-char *DrawGetTextEncoding( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+char *DrawGetTextEncoding( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2924,7 +2924,7 @@ char *DrawGetTextEncoding( <a class="reference" href="types.html#DrawContext">Dr
 <div class="section">
 <h2><a id="id205" name="id205">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetTextEncoding( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *encoding );
+void DrawSetTextEncoding( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *encoding );
 </pre>
 </div>
 <div class="section">
@@ -2937,7 +2937,7 @@ default. Successful text annotation using Unicode may require fonts
 designed to support Unicode.</p>
 <p>The format of the DrawSetTextEncoding method is:</p>
 <pre class="literal-block">
-void DrawSetTextEncoding( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *encoding );
+void DrawSetTextEncoding( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *encoding );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2953,7 +2953,7 @@ void DrawSetTextEncoding( <a class="reference" href="types.html#DrawContext">Dra
 <div class="section">
 <h2><a id="id207" name="id207">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetTextUnderColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetTextUnderColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 </div>
 <div class="section">
@@ -2962,7 +2962,7 @@ void DrawSetTextEncoding( <a class="reference" href="types.html#DrawContext">Dra
 to place under text annotations.</p>
 <p>The format of the DrawGetTextUnderColor method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> DrawGetTextUnderColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> DrawGetTextUnderColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -2976,7 +2976,7 @@ to place under text annotations.</p>
 <div class="section">
 <h2><a id="id209" name="id209">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetTextUnderColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *under_color );
+void DrawSetTextUnderColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *under_color );
 </pre>
 </div>
 <div class="section">
@@ -2985,7 +2985,7 @@ void DrawSetTextUnderColor( <a class="reference" href="types.html#DrawContext">D
 to place under text annotations.</p>
 <p>The format of the DrawSetTextUnderColor method is:</p>
 <pre class="literal-block">
-void DrawSetTextUnderColor( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *under_color );
+void DrawSetTextUnderColor( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *under_color );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -3000,7 +3000,7 @@ void DrawSetTextUnderColor( <a class="reference" href="types.html#DrawContext">D
 <div class="section">
 <h2><a id="id211" name="id211">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetTextUnderColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *under_color );
+void DrawSetTextUnderColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *under_color );
 </pre>
 </div>
 <div class="section">
@@ -3009,7 +3009,7 @@ void DrawSetTextUnderColorString( <a class="reference" href="types.html#DrawCont
 to place under text annotations.</p>
 <p>The format of the DrawSetTextUnderColorString method is:</p>
 <pre class="literal-block">
-void DrawSetTextUnderColorString( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const char *under_color );
+void DrawSetTextUnderColorString( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const char *under_color );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -3024,7 +3024,7 @@ void DrawSetTextUnderColorString( <a class="reference" href="types.html#DrawCont
 <div class="section">
 <h2><a id="id213" name="id213">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawTranslate( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawTranslate( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 </div>
 <div class="section">
@@ -3034,7 +3034,7 @@ system which moves the coordinate system origin to the specified
 coordinate.</p>
 <p>The format of the DrawTranslate method is:</p>
 <pre class="literal-block">
-void DrawTranslate( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, const double x, const double y );
+void DrawTranslate( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, const double x, const double y );
 </pre>
 <dl class="docutils">
 <dt>context:</dt>
@@ -3051,7 +3051,7 @@ void DrawTranslate( <a class="reference" href="types.html#DrawContext">DrawConte
 <div class="section">
 <h2><a id="id215" name="id215">Synopsis</a></h2>
 <pre class="literal-block">
-void DrawSetViewbox( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, unsigned long x1, unsigned long y1,
+void DrawSetViewbox( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, unsigned long x1, unsigned long y1,
                      unsigned long x2, unsigned long y2 );
 </pre>
 </div>
@@ -3064,7 +3064,7 @@ formats, the viewbox is use to specify the size of the canvas image that
 a viewer will render the vector data on.</p>
 <p>The format of the DrawSetViewbox method is:</p>
 <pre class="literal-block">
-void DrawSetViewbox( <a class="reference" href="types.html#DrawContext">DrawContext</a> context, unsigned long x1, unsigned long y1,
+void DrawSetViewbox( <a class="reference" href="types.html#drawcontext">DrawContext</a> context, unsigned long x1, unsigned long y1,
                      unsigned long x2, unsigned long y2 );
 </pre>
 <dl class="docutils">
@@ -3084,7 +3084,7 @@ void DrawSetViewbox( <a class="reference" href="types.html#DrawContext">DrawCont
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

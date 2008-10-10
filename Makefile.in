@@ -4495,6 +4495,7 @@ WWWWAPI_FILES = \
 	www/api/annotate.html \
 	www/api/api.html \
 	www/api/api.rst \
+	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
 	www/api/blob.html \
 	www/api/channel.html \
@@ -9842,7 +9843,7 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@$(WWWDIR)/color.html : $(NAMED_COLORS)
 @MAINTAINER_MODE_TRUE@	$(NAMED_COLORS) > $@
 
-@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am $(top_srcdir)/www/api/api_hyperlinks.rst
 
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.apirst : $(top_srcdir)/magick/%.c
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(FORMATCAPI) --whatis-file $(APIWHATIS) $< $@

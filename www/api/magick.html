@@ -92,7 +92,7 @@ DestroyMagick( void );
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyMagickInfo( <a class="reference" href="types.html#MagickInfo">MagickInfo</a> ** magick_info );
+void DestroyMagickInfo( <a class="reference" href="types.html#magickinfo">MagickInfo</a> ** magick_info );
 </pre>
 </div>
 <div class="section">
@@ -100,7 +100,7 @@ void DestroyMagickInfo( <a class="reference" href="types.html#MagickInfo">Magick
 <p>DestroyMagickInfo() destroys a MagickInfo structure.</p>
 <p>The format of the DestroyMagickInfoList method is:</p>
 <pre class="literal-block">
-void DestroyMagickInfo( <a class="reference" href="types.html#MagickInfo">MagickInfo</a> ** magick_info );
+void DestroyMagickInfo( <a class="reference" href="types.html#magickinfo">MagickInfo</a> ** magick_info );
 </pre>
 </div>
 </div>
@@ -150,7 +150,7 @@ const char *GetImageMagick( const unsigned char *magick, const size_t length );
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-const <a class="reference" href="types.html#MagickInfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -163,7 +163,7 @@ may be altered while the list is being traversed. If the list must be
 traversed, access it via the GetMagickInfoArray function instead.</p>
 <p>The format of the GetMagickInfo method is:</p>
 <pre class="literal-block">
-const <a class="reference" href="types.html#MagickInfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -179,7 +179,7 @@ const <a class="reference" href="types.html#MagickInfo">MagickInfo</a> *GetMagic
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -194,7 +194,7 @@ should be deallocated. Do not attempt to deallocate the MagickInfo
 structures based on pointers in the array!</p>
 <p>The format of the GetMagickList method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -256,7 +256,7 @@ conflicts with a logical drive.</dd>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -264,7 +264,7 @@ MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html
 <p>ListMagickInfo() lists the image formats to a file.</p>
 <p>The format of the ListMagickInfo method is:</p>
 <pre class="literal-block">
-MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -280,7 +280,7 @@ MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="types.html
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -289,7 +289,7 @@ MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="types.html#
 format used by modules.mgk. True is returned on success.</p>
 <p>The format of the ListModuleMap method is:</p>
 <pre class="literal-block">
-MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -330,7 +330,7 @@ char *MagickToMime( const char *magick );
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="types.html#MagickInfo">MagickInfo</a> *magick_info );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="types.html#magickinfo">MagickInfo</a> *magick_info );
 </pre>
 </div>
 <div class="section">
@@ -342,7 +342,7 @@ saving of more than one frame to the same file or blob, whether the format
 supports native in-memory I/O, and a brief description of the format.</p>
 <p>The format of the RegisterMagickInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="types.html#MagickInfo">MagickInfo</a> *magick_info );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="types.html#magickinfo">MagickInfo</a> *magick_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -356,7 +356,7 @@ supports native in-memory I/O, and a brief description of the format.</p>
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> *SetMagickInfo( const char *name );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
 </pre>
 </div>
 <div class="section">
@@ -365,7 +365,7 @@ supports native in-memory I/O, and a brief description of the format.</p>
 members to default values.</p>
 <p>The format of the SetMagickInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#MagickInfo">MagickInfo</a> *SetMagickInfo( const char *name );
+<a class="reference" href="types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -409,7 +409,7 @@ looking for.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

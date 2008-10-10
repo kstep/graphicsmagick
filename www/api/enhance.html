@@ -69,7 +69,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ContrastImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int sharpen );
+unsigned int ContrastImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int sharpen );
 </pre>
 </div>
 <div class="section">
@@ -79,7 +79,7 @@ darker elements of the image.  Set sharpen to a value other than 0 to
 increase the image contrast otherwise the contrast is reduced.</p>
 <p>The format of the ContrastImage method is:</p>
 <pre class="literal-block">
-unsigned int ContrastImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int sharpen );
+unsigned int ContrastImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int sharpen );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -95,7 +95,7 @@ unsigned int ContrastImage( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int EqualizeImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int EqualizeImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -103,7 +103,7 @@ unsigned int EqualizeImage( <a class="reference" href="types.html#Image">Image</
 <p>EqualizeImage() applies a histogram equalization to the image.</p>
 <p>The format of the EqualizeImage method is:</p>
 <pre class="literal-block">
-unsigned int EqualizeImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int EqualizeImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -117,7 +117,7 @@ unsigned int EqualizeImage( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int GammaImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *level );
+unsigned int GammaImage( <a class="reference" href="types.html#image">Image</a> *image, const char *level );
 </pre>
 </div>
 <div class="section">
@@ -131,7 +131,7 @@ with the gamma parameter.  Values typically range from 0.8 to 2.3.</p>
 value of 0.</p>
 <p>The format of the GammaImage method is:</p>
 <pre class="literal-block">
-unsigned int GammaImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *level );
+unsigned int GammaImage( <a class="reference" href="types.html#image">Image</a> *image, const char *level );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -147,7 +147,7 @@ unsigned int GammaImage( <a class="reference" href="types.html#Image">Image</a> 
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int LevelImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *level );
+unsigned int LevelImage( <a class="reference" href="types.html#image">Image</a> *image, const char *level );
 </pre>
 </div>
 <div class="section">
@@ -162,7 +162,7 @@ in the image. Colors brighter than the white point are set to the maximum
 quantum value.</p>
 <p>The format of the LevelImage method is:</p>
 <pre class="literal-block">
-unsigned int LevelImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *level );
+unsigned int LevelImage( <a class="reference" href="types.html#image">Image</a> *image, const char *level );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -180,8 +180,8 @@ and mid has the range 0-10.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int LevelImageChannel( <a class="reference" href="types.html#Image">Image</a> *image, const char *level,
-                                const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel, const double black_point,
+unsigned int LevelImageChannel( <a class="reference" href="types.html#image">Image</a> *image, const char *level,
+                                const <a class="reference" href="types.html#channeltype">ChannelType</a> channel, const double black_point,
                                 const double mid_point, const double white_point );
 </pre>
 </div>
@@ -197,8 +197,8 @@ White point specifies the lightest color in the image.  Colors brighter
 than the white point are set to the maximum quantum value.</p>
 <p>The format of the LevelImage method is:</p>
 <pre class="literal-block">
-unsigned int LevelImageChannel( <a class="reference" href="types.html#Image">Image</a> *image, const char *level,
-                                const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel, const double black_point,
+unsigned int LevelImageChannel( <a class="reference" href="types.html#image">Image</a> *image, const char *level,
+                                const <a class="reference" href="types.html#channeltype">ChannelType</a> channel, const double black_point,
                                 const double mid_point, const double white_point );
 </pre>
 <dl class="docutils">
@@ -218,7 +218,7 @@ and white points have the range of 0-MaxRGB, and mid has the range 0-10.</dd>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ModulateImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *modulate );
+unsigned int ModulateImage( <a class="reference" href="types.html#image">Image</a> *image, const char *modulate );
 </pre>
 </div>
 <div class="section">
@@ -228,7 +228,7 @@ of an image.  Modulate represents the brightness, saturation, and hue
 as one parameter (e.g. 90,150,100).</p>
 <p>The format of the ModulateImage method is:</p>
 <pre class="literal-block">
-unsigned int ModulateImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *modulate );
+unsigned int ModulateImage( <a class="reference" href="types.html#image">Image</a> *image, const char *modulate );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -245,7 +245,7 @@ hue.</dd>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int NegateImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int grayscale );
+unsigned int NegateImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int grayscale );
 </pre>
 </div>
 <div class="section">
@@ -255,7 +255,7 @@ Grayscale option means that only grayscale values within the image are
 negated.</p>
 <p>The format of the NegateImage method is:</p>
 <pre class="literal-block">
-unsigned int NegateImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int grayscale );
+unsigned int NegateImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int grayscale );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -269,7 +269,7 @@ unsigned int NegateImage( <a class="reference" href="types.html#Image">Image</a>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int NormalizeImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int NormalizeImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -278,7 +278,7 @@ unsigned int NormalizeImage( <a class="reference" href="types.html#Image">Image<
 adjusting the pixels color to span the entire range of colors available.</p>
 <p>The format of the NormalizeImage method is:</p>
 <pre class="literal-block">
-unsigned int NormalizeImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int NormalizeImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -290,7 +290,7 @@ unsigned int NormalizeImage( <a class="reference" href="types.html#Image">Image<
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

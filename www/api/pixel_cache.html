@@ -85,10 +85,10 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireCacheViewPixels( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x,
-                                               const long y, const unsigned long columns,
-                                               const unsigned long rows,
-                                               <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireCacheViewPixels( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x,
+                                           const long y, const unsigned long columns,
+                                           const unsigned long rows,
+                                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -99,10 +99,10 @@ pointer to the pixels is returned if the pixels are transferred, otherwise
 NULL is returned.</p>
 <p>The format of the AcquireCacheViewPixels method is:</p>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireCacheViewPixels( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x,
-                                               const long y, const unsigned long columns,
-                                               const unsigned long rows,
-                                               <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireCacheViewPixels( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x,
+                                           const long y, const unsigned long columns,
+                                           const unsigned long rows,
+                                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -123,7 +123,7 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-const IndexPacket *AcquireCacheViewIndexes( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+const IndexPacket *AcquireCacheViewIndexes( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 </div>
 <div class="section">
@@ -132,7 +132,7 @@ const IndexPacket *AcquireCacheViewIndexes( const <a class="reference" href="typ
 the specified view.</p>
 <p>The format of the AcquireCacheViewIndexes method is:</p>
 <pre class="literal-block">
-const IndexPacket *AcquireCacheViewIndexes( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+const IndexPacket *AcquireCacheViewIndexes( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -149,10 +149,9 @@ associated with the specified view.</dd>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireImagePixels( const <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                           const unsigned long columns,
-                                           const unsigned long rows,
-                                           <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireImagePixels( const <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                                       const unsigned long columns, const unsigned long rows,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -172,10 +171,9 @@ IndexPacket) corresponding to the region.</p>
 <p>If you plan to modify the pixels, use GetImagePixels() instead.</p>
 <p>The format of the AcquireImagePixels() method is:</p>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireImagePixels( const <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                           const unsigned long columns,
-                                           const unsigned long rows,
-                                           <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireImagePixels( const <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                                       const unsigned long columns, const unsigned long rows,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>status:</dt>
@@ -196,8 +194,8 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -208,8 +206,8 @@ The image background color is returned if there is an error retrieving
 the pixel.</p>
 <p>The format of the AcquireOneCacheViewPixel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>view:</dt>
@@ -226,8 +224,8 @@ the pixel.</p>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> AcquireOnePixel( const <a class="reference" href="types.html#Image">Image</a> image, const long x, const long y,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOnePixel( const <a class="reference" href="types.html#image">Image</a> image, const long x, const long y,
+                              <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> exception );
 </pre>
 </div>
 <div class="section">
@@ -238,8 +236,8 @@ are to be returned to the image, use GetOnePixel() instead. This function
 is convenient but performance will be poor if it is used too often.</p>
 <p>The format of the AcquireOnePixel() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> AcquireOnePixel( const <a class="reference" href="types.html#Image">Image</a> image, const long x, const long y,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOnePixel( const <a class="reference" href="types.html#image">Image</a> image, const long x, const long y,
+                              <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> exception );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -259,7 +257,7 @@ location.</dd>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyCacheInfo( <a class="reference" href="types.html#Cache">Cache</a> cache );
+void DestroyCacheInfo( <a class="reference" href="types.html#cache">Cache</a> cache );
 </pre>
 </div>
 <div class="section">
@@ -267,7 +265,7 @@ void DestroyCacheInfo( <a class="reference" href="types.html#Cache">Cache</a> ca
 <p>DestroyCacheInfo() deallocates memory associated with the pixel cache.</p>
 <p>The format of the DestroyCacheInfo() method is:</p>
 <pre class="literal-block">
-void DestroyCacheInfo( <a class="reference" href="types.html#Cache">Cache</a> cache );
+void DestroyCacheInfo( <a class="reference" href="types.html#cache">Cache</a> cache );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -281,7 +279,7 @@ void DestroyCacheInfo( <a class="reference" href="types.html#Cache">Cache</a> ca
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyImagePixels( <a class="reference" href="types.html#Image">Image</a> *image );
+void DestroyImagePixels( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -289,7 +287,7 @@ void DestroyImagePixels( <a class="reference" href="types.html#Image">Image</a> 
 <p>DestroyImagePixels() deallocates memory associated with the pixel cache.</p>
 <p>The format of the DestroyImagePixels() method is:</p>
 <pre class="literal-block">
-void DestroyImagePixels( <a class="reference" href="types.html#Image">Image</a> *image );
+void DestroyImagePixels( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -303,9 +301,9 @@ void DestroyImagePixels( <a class="reference" href="types.html#Image">Image</a> 
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                     const unsigned long columns, const unsigned long rows,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                 const unsigned long columns, const unsigned long rows,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -315,9 +313,9 @@ cache as defined by the geometry parameters.   A pointer to the pixels
 is returned if the pixels are transferred, otherwise a NULL is returned.</p>
 <p>The format of the GetCacheViewPixels method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                     const unsigned long columns, const unsigned long rows,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                 const unsigned long columns, const unsigned long rows,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -338,7 +336,7 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-IndexPacket *GetCacheViewIndexes( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+IndexPacket *GetCacheViewIndexes( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 </div>
 <div class="section">
@@ -347,7 +345,7 @@ IndexPacket *GetCacheViewIndexes( const <a class="reference" href="types.html#Vi
 the specified view.</p>
 <p>The format of the GetCacheViewIndexes method is:</p>
 <pre class="literal-block">
-IndexPacket *GetCacheViewIndexes( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+IndexPacket *GetCacheViewIndexes( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -364,8 +362,8 @@ the specified view.</dd>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                 const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                             const unsigned long columns, const unsigned long rows );
 </pre>
 </div>
 <div class="section">
@@ -387,8 +385,8 @@ IndexPacket) array has been updated, the changes must be saved back to
 the underlying image using SyncPixelCache() or they may be lost.</p>
 <p>The format of the GetImagePixels() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                 const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                             const unsigned long columns, const unsigned long rows );
 </pre>
 <dl class="docutils">
 <dt>status:</dt>
@@ -407,7 +405,7 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#VirtualPixelMethod">VirtualPixelMethod</a> GetImageVirtualPixelMethod( const <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#virtualpixelmethod">VirtualPixelMethod</a> GetImageVirtualPixelMethod( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -417,7 +415,7 @@ image.  A virtual pixel is any pixel access that is outside the boundaries
 of the image cache.</p>
 <p>The format of the GetImageVirtualPixelMethod() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#VirtualPixelMethod">VirtualPixelMethod</a> GetImageVirtualPixelMethod( const <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#virtualpixelmethod">VirtualPixelMethod</a> GetImageVirtualPixelMethod( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -431,7 +429,7 @@ of the image cache.</p>
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-IndexPacket *GetIndexes( const <a class="reference" href="types.html#Image">Image</a> *image );
+IndexPacket *GetIndexes( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -441,7 +439,7 @@ SetImagePixels() or GetImagePixels(). NULL is returned if colormap indexes
 are not available.</p>
 <p>The format of the GetIndexes() method is:</p>
 <pre class="literal-block">
-IndexPacket *GetIndexes( const <a class="reference" href="types.html#Image">Image</a> *image );
+IndexPacket *GetIndexes( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -458,7 +456,7 @@ call to SetImagePixels() or GetImagePixels().</dd>
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> GetOnePixel( const <a class="reference" href="types.html#Image">Image</a> image, const long x, const long y );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> GetOnePixel( const <a class="reference" href="types.html#image">Image</a> image, const long x, const long y );
 </pre>
 </div>
 <div class="section">
@@ -468,7 +466,7 @@ The image background color is returned if an error occurs.  This function
 is convenient but performance will be poor if it is used too often.</p>
 <p>The format of the GetOnePixel() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> GetOnePixel( const <a class="reference" href="types.html#Image">Image</a> image, const long x, const long y );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> GetOnePixel( const <a class="reference" href="types.html#image">Image</a> image, const long x, const long y );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -484,7 +482,7 @@ is convenient but performance will be poor if it is used too often.</p>
 <div class="section">
 <h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetPixels( const <a class="reference" href="types.html#Image">Image</a> image );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetPixels( const <a class="reference" href="types.html#image">Image</a> image );
 </pre>
 </div>
 <div class="section">
@@ -494,7 +492,7 @@ SetImagePixels() or GetImagePixels(). This is useful in order to access
 an already selected region without passing the geometry of the region.</p>
 <p>The format of the GetPixels() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetPixels( const <a class="reference" href="types.html#Image">Image</a> image );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetPixels( const <a class="reference" href="types.html#image">Image</a> image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -511,7 +509,7 @@ to SetImagePixels() or GetImagePixels().</dd>
 <div class="section">
 <h2><a id="id27" name="id27">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ModifyCache( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ModifyCache( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -522,7 +520,7 @@ a clone of the original pixel cache if necessary.  This is used to
 implement copy on write.</p>
 <p>The format of the ModifyCache method is:</p>
 <pre class="literal-block">
-MagickPassFail ModifyCache( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail ModifyCache( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -538,7 +536,7 @@ MagickPassFail ModifyCache( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id29" name="id29">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ViewInfo">ViewInfo</a> *OpenCacheView( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#viewinfo">ViewInfo</a> *OpenCacheView( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -546,7 +544,7 @@ MagickPassFail ModifyCache( <a class="reference" href="types.html#Image">Image</
 <p>OpenCacheView() opens a view into the pixel cache.</p>
 <p>The format of the OpenCacheView method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ViewInfo">ViewInfo</a> *OpenCacheView( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#viewinfo">ViewInfo</a> *OpenCacheView( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -560,8 +558,8 @@ MagickPassFail ModifyCache( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id31" name="id31">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadStream( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#StreamHandler">StreamHandler</a> stream,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadStream( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#streamhandler">StreamHandler</a> stream,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -571,8 +569,8 @@ callback method immediately upon reading a scanline with the ReadImage()
 method.</p>
 <p>The format of the ReadStream() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadStream( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#StreamHandler">StreamHandler</a> stream,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadStream( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#streamhandler">StreamHandler</a> stream,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -589,7 +587,7 @@ method.</p>
 <div class="section">
 <h2><a id="id33" name="id33">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Cache">Cache</a> ReferenceCache( <a class="reference" href="types.html#Cache">Cache</a> cache_info );
+<a class="reference" href="types.html#cache">Cache</a> ReferenceCache( <a class="reference" href="types.html#cache">Cache</a> cache_info );
 </pre>
 </div>
 <div class="section">
@@ -598,7 +596,7 @@ method.</p>
 cache returning a pointer to the cache.</p>
 <p>The format of the ReferenceCache method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Cache">Cache</a> ReferenceCache( <a class="reference" href="types.html#Cache">Cache</a> cache_info );
+<a class="reference" href="types.html#cache">Cache</a> ReferenceCache( <a class="reference" href="types.html#cache">Cache</a> cache_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -612,8 +610,8 @@ cache returning a pointer to the cache.</p>
 <div class="section">
 <h2><a id="id35" name="id35">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                     const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                 const unsigned long columns, const unsigned long rows );
 </pre>
 </div>
 <div class="section">
@@ -623,8 +621,8 @@ defined by the geometry parameters.   A pointer to the pixels is returned
 if the pixels are transferred, otherwise a NULL is returned.</p>
 <p>The format of the SetCacheViewPixels method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                     const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                 const unsigned long columns, const unsigned long rows );
 </pre>
 <dl class="docutils">
 <dt>view:</dt>
@@ -642,8 +640,8 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id37" name="id37">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                 const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                             const unsigned long columns, const unsigned long rows );
 </pre>
 </div>
 <div class="section">
@@ -674,8 +672,8 @@ IndexPacket) array has been updated, the changes must be saved back to
 the underlying image using SyncPixelCache() or they may be lost.</p>
 <p>The format of the SetImagePixels() method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const long x, const long y,
-                                 const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const long x, const long y,
+                             const unsigned long columns, const unsigned long rows );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -694,7 +692,7 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id39" name="id39">Synopsis</a></h2>
 <pre class="literal-block">
-SetImageVirtualPixelMethod( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#VirtualPixelMethod">VirtualPixelMethod</a> method );
+SetImageVirtualPixelMethod( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#virtualpixelmethod">VirtualPixelMethod</a> method );
 </pre>
 </div>
 <div class="section">
@@ -704,7 +702,7 @@ image.  A virtual pixel is any pixel access that is outside the boundaries
 of the image cache.</p>
 <p>The format of the SetImageVirtualPixelMethod() method is:</p>
 <pre class="literal-block">
-SetImageVirtualPixelMethod( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#VirtualPixelMethod">VirtualPixelMethod</a> method );
+SetImageVirtualPixelMethod( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#virtualpixelmethod">VirtualPixelMethod</a> method );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -727,7 +725,7 @@ defines by the pixel parameter.</p>
 <div class="section">
 <h2><a id="id41" name="id41">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail SyncCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail SyncCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -737,7 +735,7 @@ The method returns MagickPass if the pixel region is synced, otherwise
 MagickFail.</p>
 <p>The format of the SyncCacheViewPixels method is:</p>
 <pre class="literal-block">
-MagickPassFail SyncCacheViewPixels( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail SyncCacheViewPixels( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>view:</dt>
@@ -752,7 +750,7 @@ MagickPassFail SyncCacheViewPixels( <a class="reference" href="types.html#ViewIn
 <div class="section">
 <h2><a id="id43" name="id43">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail SyncImagePixels( <a class="reference" href="types.html#Image">Image</a> *image );
+MagickPassFail SyncImagePixels( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -761,7 +759,7 @@ MagickPassFail SyncImagePixels( <a class="reference" href="types.html#Image">Ima
 The method returns MagickPass if the pixel region is synced, otherwise MagickFail.</p>
 <p>The format of the SyncImagePixels() method is:</p>
 <pre class="literal-block">
-MagickPassFail SyncImagePixels( <a class="reference" href="types.html#Image">Image</a> *image );
+MagickPassFail SyncImagePixels( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -778,8 +776,8 @@ transferred to the in-memory or disk cache otherwise MagickFail.</dd>
 <div class="section">
 <h2><a id="id45" name="id45">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail WriteStream( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *,
-                            <a class="reference" href="types.html#StreamHandler">StreamHandler</a> stream );
+MagickPassFail WriteStream( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *,
+                            <a class="reference" href="types.html#streamhandler">StreamHandler</a> stream );
 </pre>
 </div>
 <div class="section">
@@ -789,8 +787,8 @@ callback method immediately upon writing pixel data with the WriteImage()
 method.</p>
 <p>The format of the WriteStream() method is:</p>
 <pre class="literal-block">
-MagickPassFail WriteStream( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *,
-                            <a class="reference" href="types.html#StreamHandler">StreamHandler</a> stream );
+MagickPassFail WriteStream( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *,
+                            <a class="reference" href="types.html#streamhandler">StreamHandler</a> stream );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -803,7 +801,7 @@ MagickPassFail WriteStream( const <a class="reference" href="types.html#ImageInf
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

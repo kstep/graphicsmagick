@@ -72,8 +72,8 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CharcoalImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CharcoalImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -83,8 +83,8 @@ one with the edge highlighted.  It allocates the memory necessary for the
 new Image structure and returns a pointer to the new image.</p>
 <p>The format of the CharcoalImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CharcoalImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CharcoalImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>charcoal_image:</dt>
@@ -107,8 +107,8 @@ shortage.</dd>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ColorizeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const char *opacity,
-                          const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ColorizeImage( const <a class="reference" href="types.html#image">Image</a> *image, const char *opacity,
+                      const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -119,8 +119,8 @@ of different color components by specifying a different percentage for
 each component (e.g. 90/100/10 is 90% red, 100% green, and 10% blue).</p>
 <p>The format of the ColorizeImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ColorizeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const char *opacity,
-                          const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ColorizeImage( const <a class="reference" href="types.html#image">Image</a> *image, const char *opacity,
+                      const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -140,8 +140,8 @@ percentage.</dd>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConvolveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int order,
-                          const double *kernel, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConvolveImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int order,
+                      const double *kernel, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -149,8 +149,8 @@ percentage.</dd>
 <p>ConvolveImage() applies a custom convolution kernel to the image.</p>
 <p>The format of the ConvolveImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConvolveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int order,
-                          const double *kernel, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConvolveImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int order,
+                      const double *kernel, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -169,8 +169,8 @@ percentage.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ImplodeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double amount,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ImplodeImage( const <a class="reference" href="types.html#image">Image</a> *image, const double amount,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -181,8 +181,8 @@ allocates the memory necessary for the new Image structure and returns a
 pointer to the new image.</p>
 <p>The format of the ImplodeImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ImplodeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double amount,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ImplodeImage( const <a class="reference" href="types.html#image">Image</a> *image, const double amount,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>implode_image:</dt>
@@ -203,8 +203,8 @@ shortage.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MorphImages( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long number_frames,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MorphImages( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long number_frames,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -214,8 +214,8 @@ image is transformed into the second by a number of intervening images
 as specified by frames.</p>
 <p>The format of the MorphImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MorphImages( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long number_frames,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MorphImages( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long number_frames,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -233,8 +233,8 @@ The more in-between frames, the smoother the morph.</dd>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *OilPaintImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *OilPaintImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -244,8 +244,8 @@ painting.  Each pixel is replaced by the most frequent color occurring
 in a circular region defined by radius.</p>
 <p>The format of the OilPaintImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *OilPaintImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *OilPaintImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -262,7 +262,7 @@ in a circular region defined by radius.</p>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SolarizeImage( <a class="reference" href="types.html#Image">Image</a> *image, const double threshold );
+unsigned int SolarizeImage( <a class="reference" href="types.html#image">Image</a> *image, const double threshold );
 </pre>
 </div>
 <div class="section">
@@ -274,7 +274,7 @@ measure of the extent of the solarization. False is returned if an error
 is encountered.</p>
 <p>The format of the SolarizeImage method is:</p>
 <pre class="literal-block">
-unsigned int SolarizeImage( <a class="reference" href="types.html#Image">Image</a> *image, const double threshold );
+unsigned int SolarizeImage( <a class="reference" href="types.html#image">Image</a> *image, const double threshold );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -290,8 +290,8 @@ unsigned int SolarizeImage( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SteganoImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#Image">Image</a> *watermark,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SteganoImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#image">Image</a> *watermark,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -302,8 +302,8 @@ an image.  Offset defines the start position within the image to hide
 the watermark.</p>
 <p>The format of the SteganoImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SteganoImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#Image">Image</a> *watermark,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SteganoImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#image">Image</a> *watermark,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -320,8 +320,8 @@ the watermark.</p>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *StereoImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *offset_image,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *StereoImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *offset_image,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -331,8 +331,8 @@ composite of a left and right image of a stereo pair.  Special red-green
 stereo glasses are required to view this effect.</p>
 <p>The format of the StereoImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *StereoImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *offset_image,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *StereoImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *offset_image,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>stereo_image:</dt>
@@ -352,7 +352,7 @@ image.  A null image is returned if there is a memory shortage.</dd>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SwirlImage( const <a class="reference" href="types.html#Image">Image</a> *image, double degrees, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SwirlImage( const <a class="reference" href="types.html#image">Image</a> *image, double degrees, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -362,7 +362,7 @@ degrees indicates the sweep of the arc through which each pixel is moved.
 You get a more dramatic effect as the degrees move from 1 to 360.</p>
 <p>The format of the SwirlImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SwirlImage( const <a class="reference" href="types.html#Image">Image</a> *image, double degrees, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SwirlImage( const <a class="reference" href="types.html#image">Image</a> *image, double degrees, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -379,8 +379,8 @@ You get a more dramatic effect as the degrees move from 1 to 360.</p>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *WaveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double amplitude, const double wave_length,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *WaveImage( const <a class="reference" href="types.html#image">Image</a> *image, const double amplitude, const double wave_length,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -390,8 +390,8 @@ the pixels vertically along a sine wave whose amplitude and wavelength
 is specified by the given parameters.</p>
 <p>The format of the WaveImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *WaveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double amplitude, const double wave_length,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *WaveImage( const <a class="reference" href="types.html#image">Image</a> *image, const double amplitude, const double wave_length,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -407,7 +407,7 @@ sine wave.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

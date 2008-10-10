@@ -67,7 +67,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MagnifyImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MagnifyImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -76,7 +76,7 @@
 to twice its size.</p>
 <p>The format of the MagnifyImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MagnifyImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MagnifyImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -92,7 +92,7 @@ to twice its size.</p>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MinifyImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MinifyImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -101,7 +101,7 @@ to twice its size.</p>
 to half its size.</p>
 <p>The format of the MinifyImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MinifyImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MinifyImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -117,9 +117,9 @@ to half its size.</p>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ResizeImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns, const unsigned long rows,
-                        const <a class="reference" href="types.html#FilterTypes">FilterTypes</a> filter, const double blur,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ResizeImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns, const unsigned long rows,
+                    const <a class="reference" href="types.html#filtertypes">FilterTypes</a> filter, const double blur,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -137,9 +137,9 @@ are windowed (brought down to zero) with the Blackman filter.</p>
 <p>ResizeImage() was inspired by Paul Heckbert's zoom program.</p>
 <p>The format of the ResizeImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ResizeImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns, const unsigned long rows,
-                        const <a class="reference" href="types.html#FilterTypes">FilterTypes</a> filter, const double blur,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ResizeImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns, const unsigned long rows,
+                    const <a class="reference" href="types.html#filtertypes">FilterTypes</a> filter, const double blur,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -162,8 +162,8 @@ are windowed (brought down to zero) with the Blackman filter.</p>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SampleImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                        const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SampleImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                    const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -173,8 +173,8 @@ sampling.  Unlike other scaling methods, this method does not introduce
 any additional color into the scaled image.</p>
 <p>The format of the SampleImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SampleImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                        const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SampleImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                    const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -193,8 +193,8 @@ any additional color into the scaled image.</p>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ScaleImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                       const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ScaleImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                   const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -202,8 +202,8 @@ any additional color into the scaled image.</p>
 <p>ScaleImage() changes the size of an image to the given dimensions.</p>
 <p>The format of the ScaleImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ScaleImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                       const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ScaleImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                   const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -222,8 +222,8 @@ any additional color into the scaled image.</p>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ThumbnailImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                           const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ThumbnailImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                       const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -233,8 +233,8 @@ This method was designed by Bob Friesenhahn as a low cost thumbnail
 generator.</p>
 <p>The format of the ThumbnailImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ThumbnailImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                           const unsigned long rows, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ThumbnailImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                       const unsigned long rows, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -251,7 +251,7 @@ generator.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

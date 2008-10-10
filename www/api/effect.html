@@ -86,10 +86,9 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AdaptiveThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long width,
-                                   const unsigned long height,
-                                   const unsigned long unsigned long,
-                                   <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AdaptiveThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long width,
+                               const unsigned long height, const unsigned long unsigned long,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -100,10 +99,9 @@ allows for thresholding of an image whose global intensity histogram
 doesn't contain distinctive peaks.</p>
 <p>The format of the AdaptiveThresholdImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AdaptiveThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long width,
-                                   const unsigned long height,
-                                   const unsigned long unsigned long,
-                                   <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AdaptiveThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long width,
+                               const unsigned long height, const unsigned long unsigned long,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -124,8 +122,8 @@ doesn't contain distinctive peaks.</p>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AddNoiseImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#NoiseType">NoiseType</a> noise_type,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AddNoiseImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#noisetype">NoiseType</a> noise_type,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -133,8 +131,8 @@ doesn't contain distinctive peaks.</p>
 <p>AddNoiseImage() adds random noise to the image.</p>
 <p>The format of the AddNoiseImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AddNoiseImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#NoiseType">NoiseType</a> noise_type,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AddNoiseImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#noisetype">NoiseType</a> noise_type,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -152,9 +150,8 @@ Impulse, Laplacian, or Poisson.</dd>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AddNoiseImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                 const <a class="reference" href="types.html#NoiseType">NoiseType</a> noise_type,
-                                 <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AddNoiseImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                             const <a class="reference" href="types.html#noisetype">NoiseType</a> noise_type, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -162,9 +159,8 @@ Impulse, Laplacian, or Poisson.</dd>
 <p>AddNoiseImageChannel() adds random noise to one image channel.</p>
 <p>The format of the AddNoiseImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AddNoiseImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                 const <a class="reference" href="types.html#NoiseType">NoiseType</a> noise_type,
-                                 <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AddNoiseImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                             const <a class="reference" href="types.html#noisetype">NoiseType</a> noise_type, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -184,7 +180,7 @@ Impulse, Laplacian, or Poisson.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail BlackThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *thresholds );
+MagickPassFail BlackThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *thresholds );
 </pre>
 </div>
 <div class="section">
@@ -194,7 +190,7 @@ values below a specified threshold are set to the minimum value (black)
 while the remaining pixels are unchanged.</p>
 <p>The format of the BlackThresholdImage method is:</p>
 <pre class="literal-block">
-MagickPassFail BlackThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *thresholds );
+MagickPassFail BlackThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *thresholds );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -213,8 +209,8 @@ a percentage of MaxRGB.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *BlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *BlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -225,8 +221,8 @@ For reasonable results, the radius should be larger than sigma.  Use a
 radius of 0 and BlurImage() selects a suitable radius for you.</p>
 <p>The format of the BlurImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *BlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *BlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>radius:</dt>
@@ -244,9 +240,9 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *BlurImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                             const double radius, const double sigma,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *BlurImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                         const double radius, const double sigma,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -258,9 +254,9 @@ than sigma.  Use a radius of 0 and BlurImageChannel() selects a suitable
 radius for you.</p>
 <p>The format of the BlurImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *BlurImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                             const double radius, const double sigma,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *BlurImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                         const double radius, const double sigma,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>channel:</dt>
@@ -280,7 +276,7 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *threshold );
+MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *threshold );
 </pre>
 </div>
 <div class="section">
@@ -293,7 +289,7 @@ have threshold values automatically scaled from a percentage to MaxRGB.</p>
 <p>Invoked by the '-threshold' option.</p>
 <p>The format of the ChannelThresholdImage method is:</p>
 <pre class="literal-block">
-MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *threshold );
+MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *threshold );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -309,7 +305,7 @@ MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#Imag
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *DespeckleImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *DespeckleImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -318,7 +314,7 @@ MagickPassFail ChannelThresholdImage( <a class="reference" href="types.html#Imag
 edges of the original image.</p>
 <p>The format of the DespeckleImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *DespeckleImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *DespeckleImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -334,8 +330,8 @@ edges of the original image.</p>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EdgeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EdgeImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -345,8 +341,8 @@ convolution filter.  Use a radius of 0 and Edge() selects a suitable
 radius for you.</p>
 <p>The format of the EdgeImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EdgeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EdgeImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -363,8 +359,8 @@ radius for you.</p>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EmbossImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EmbossImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -376,8 +372,8 @@ larger than sigma.  Use a radius of 0 and Emboss() selects a suitable
 radius for you.</p>
 <p>The format of the EmbossImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EmbossImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EmbossImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -396,7 +392,7 @@ radius for you.</p>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EnhanceImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EnhanceImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -405,7 +401,7 @@ radius for you.</p>
 noisy image.</p>
 <p>The format of the EnhanceImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *EnhanceImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *EnhanceImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -421,8 +417,8 @@ noisy image.</p>
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GaussianBlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                              <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GaussianBlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -433,8 +429,8 @@ For reasonable results, the radius should be larger than sigma.  Use a
 radius of 0 and GaussianBlurImage() selects a suitable radius for you</p>
 <p>The format of the GaussianBlurImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GaussianBlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                              <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GaussianBlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>blur_image:</dt>
@@ -458,9 +454,9 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GaussianBlurImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                     const double radius, const double sigma,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GaussianBlurImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                 const double radius, const double sigma,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -472,9 +468,9 @@ Use a radius of 0 and GaussianBlurImage() selects a suitable radius for
 you.</p>
 <p>The format of the GaussianBlurImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GaussianBlurImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                     const double radius, const double sigma,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GaussianBlurImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                 const double radius, const double sigma,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>blur_image:</dt>
@@ -500,8 +496,8 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MedianFilterImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                              <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MedianFilterImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -515,8 +511,8 @@ see &quot;Skip Lists: A probabilistic Alternative to Balanced Trees&quot; by Wil
 Pugh in the June 1990 of Communications of the ACM.</p>
 <p>The format of the MedianFilterImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MedianFilterImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                              <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MedianFilterImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -533,8 +529,8 @@ Pugh in the June 1990 of Communications of the ACM.</p>
 <div class="section">
 <h2><a id="id27" name="id27">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MotionBlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                            const double angle, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MotionBlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                        const double angle, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -548,8 +544,8 @@ to be coming from).</p>
 <p>Andrew Protano contributed this effect.</p>
 <p>The format of the MotionBlurImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MotionBlurImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                            const double angle, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MotionBlurImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                        const double angle, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -571,9 +567,9 @@ the center pixel.</dd>
 <div class="section">
 <h2><a id="id29" name="id29">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int RandomChannelThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *channel,
+unsigned int RandomChannelThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *channel,
                                           const char *thresholds,
-                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -583,9 +579,9 @@ on the intensity of each pixel compared to a random threshold.  The result
 is a low-contrast, two color image.</p>
 <p>The format of the RandomChannelThresholdImage method is:</p>
 <pre class="literal-block">
-unsigned int RandomChannelThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *channel,
+unsigned int RandomChannelThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *channel,
                                           const char *thresholds,
-                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                          <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -606,8 +602,8 @@ dither of order 2, 3, or 4 will be performed instead.</dd>
 <div class="section">
 <h2><a id="id31" name="id31">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReduceNoiseImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReduceNoiseImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -618,8 +614,8 @@ neighbor closest in value.  A neighbor is defined by radius.  Use a radius
 of 0 and ReduceNoise() selects a suitable radius for you.</p>
 <p>The format of the ReduceNoiseImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReduceNoiseImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReduceNoiseImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -636,8 +632,8 @@ of 0 and ReduceNoise() selects a suitable radius for you.</p>
 <div class="section">
 <h2><a id="id33" name="id33">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ShadeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int gray, double azimuth,
-                       double elevation, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ShadeImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int gray, double azimuth,
+                   double elevation, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -648,8 +644,8 @@ azimuth and elevation; azimuth is measured in degrees off the x axis
 and elevation is measured in pixels above the Z axis.</p>
 <p>The format of the ShadeImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ShadeImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int gray, double azimuth,
-                       double elevation, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ShadeImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int gray, double azimuth,
+                   double elevation, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -668,8 +664,8 @@ and elevation is measured in pixels above the Z axis.</p>
 <div class="section">
 <h2><a id="id35" name="id35">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SharpenImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SharpenImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -680,8 +676,8 @@ For reasonable results, radius should be larger than sigma.  Use a
 radius of 0 and SharpenImage() selects a suitable radius for you.</p>
 <p>The format of the SharpenImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SharpenImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SharpenImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -701,9 +697,9 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id37" name="id37">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SharpenImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                const double radius, const double sigma,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SharpenImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                            const double radius, const double sigma,
+                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -715,9 +711,9 @@ sigma.  Use a radius of 0 and SharpenImageChannel() selects a suitable
 radius for you.</p>
 <p>The format of the SharpenImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SharpenImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                const double radius, const double sigma,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SharpenImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                            const double radius, const double sigma,
+                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -739,8 +735,8 @@ pixel.</dd>
 <div class="section">
 <h2><a id="id39" name="id39">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SpreadImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int radius,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SpreadImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int radius,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -749,8 +745,8 @@ pixel.</dd>
 pixel in a block defined by the radius parameter.</p>
 <p>The format of the SpreadImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *SpreadImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int radius,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *SpreadImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int radius,
+                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -767,7 +763,7 @@ pixel in a block defined by the radius parameter.</p>
 <div class="section">
 <h2><a id="id41" name="id41">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const double threshold );
+MagickPassFail ThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const double threshold );
 </pre>
 </div>
 <div class="section">
@@ -779,7 +775,7 @@ values equal to or below the threshold are set to the minimum quantum
 value.  The result is a high-contrast, two color image.</p>
 <p>The format of the ThresholdImage method is:</p>
 <pre class="literal-block">
-MagickPassFail ThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const double threshold );
+MagickPassFail ThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const double threshold );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -795,9 +791,9 @@ MagickPassFail ThresholdImage( <a class="reference" href="types.html#Image">Imag
 <div class="section">
 <h2><a id="id43" name="id43">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *UnsharpMaskImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                             const double amount, const double threshold,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *UnsharpMaskImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                         const double amount, const double threshold,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -808,9 +804,9 @@ For reasonable results, radius should be larger than sigma.  Use a radius
 of 0 and UnsharpMaskImage() selects a suitable radius for you.</p>
 <p>The format of the UnsharpMaskImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *UnsharpMaskImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double radius, const double sigma,
-                             const double amount, const double threshold,
-                             <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *UnsharpMaskImage( const <a class="reference" href="types.html#image">Image</a> *image, const double radius, const double sigma,
+                         const double amount, const double threshold,
+                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -835,10 +831,9 @@ blur image that is added back into the original.</dd>
 <div class="section">
 <h2><a id="id45" name="id45">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *UnsharpMaskImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                    const double radius, const double sigma,
-                                    const double amount, const double threshold,
-                                    <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *UnsharpMaskImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                const double radius, const double sigma, const double amount,
+                                const double threshold, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -850,10 +845,9 @@ sigma.  Use a radius of 0 and UnsharpMaskImage() selects a suitable
 radius for you.</p>
 <p>The format of the UnsharpMaskImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *UnsharpMaskImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                    const double radius, const double sigma,
-                                    const double amount, const double threshold,
-                                    <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *UnsharpMaskImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                const double radius, const double sigma, const double amount,
+                                const double threshold, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -880,7 +874,7 @@ blur image that is added back into the original.</dd>
 <div class="section">
 <h2><a id="id47" name="id47">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail WhiteThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *thresholds );
+MagickPassFail WhiteThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *thresholds );
 </pre>
 </div>
 <div class="section">
@@ -890,7 +884,7 @@ values above a specified threshold are set to the maximum value (white)
 while the remaining pixels are unchanged.</p>
 <p>The format of the WhiteThresholdImage method is:</p>
 <pre class="literal-block">
-MagickPassFail WhiteThresholdImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *thresholds );
+MagickPassFail WhiteThresholdImage( <a class="reference" href="types.html#image">Image</a> *image, const char *thresholds );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -907,7 +901,7 @@ a percentage of MaxRGB.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

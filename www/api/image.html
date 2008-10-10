@@ -98,8 +98,8 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-const char *AccessDefinition( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *magick,
-                               const char *key );
+const char *AccessDefinition( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *magick,
+                              const char *key );
 </pre>
 </div>
 <div class="section">
@@ -108,8 +108,8 @@ const char *AccessDefinition( const <a class="reference" href="types.html#ImageI
 specified magick and key. NULL is returned if no matching entry is found.</p>
 <p>The format of the AccessDefinition method is:</p>
 <pre class="literal-block">
-const char *AccessDefinition( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *magick,
-                               const char *key );
+const char *AccessDefinition( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *magick,
+                              const char *key );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -126,7 +126,7 @@ const char *AccessDefinition( const <a class="reference" href="types.html#ImageI
 <div class="section">
 <h2><a id="id2" name="id2">Synopsis</a></h2>
 <pre class="literal-block">
-void AddDefinitions( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *options );
+void AddDefinitions( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *options );
 </pre>
 </div>
 <div class="section">
@@ -136,7 +136,7 @@ map of definitions in ImageInfo. Definitions may be used by coders/decoders
 that read and write images.</p>
 <p>The format of the AddDefinitions method is:</p>
 <pre class="literal-block">
-void AddDefinitions( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *options );
+void AddDefinitions( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *options );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -157,7 +157,7 @@ length string as value for a key.</dd>
 <div class="section">
 <h2><a id="id4" name="id4">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AllocateImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+<a class="reference" href="types.html#image">Image</a> *AllocateImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 </div>
 <div class="section">
@@ -166,7 +166,7 @@ length string as value for a key.</dd>
 default values.</p>
 <p>The format of the AllocateImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AllocateImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+<a class="reference" href="types.html#image">Image</a> *AllocateImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -182,7 +182,7 @@ and others.</dd>
 <div class="section">
 <h2><a id="id6" name="id6">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int AllocateImageColormap( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long colors );
+unsigned int AllocateImageColormap( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long colors );
 </pre>
 </div>
 <div class="section">
@@ -193,7 +193,7 @@ already has a colormap, it is replaced.  AllocateImageColormap() returns
 True if successful, otherwise False if there is not enough memory.</p>
 <p>The format of the AllocateImageColormap method is:</p>
 <pre class="literal-block">
-unsigned int AllocateImageColormap( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long colors );
+unsigned int AllocateImageColormap( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long colors );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -208,7 +208,7 @@ unsigned int AllocateImageColormap( <a class="reference" href="types.html#Image"
 <div class="section">
 <h2><a id="id8" name="id8">Synopsis</a></h2>
 <pre class="literal-block">
-void AllocateNextImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+void AllocateNextImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -218,7 +218,7 @@ default values.  The next member of image points to the newly allocated
 image.  If there is a memory shortage, next is assigned NULL.</p>
 <p>The format of the AllocateNextImage method is:</p>
 <pre class="literal-block">
-void AllocateNextImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+void AllocateNextImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -236,7 +236,7 @@ and others.</dd>
 <div class="section">
 <h2><a id="id10" name="id10">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int AnimateImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int AnimateImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -246,7 +246,7 @@ screen.  It returns a value other than 0 if successful.  Check the
 exception member of image to determine the reason for any failure.</p>
 <p>The format of the AnimateImages method is:</p>
 <pre class="literal-block">
-unsigned int AnimateImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int AnimateImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -262,8 +262,8 @@ unsigned int AnimateImages( const <a class="reference" href="types.html#ImageInf
 <div class="section">
 <h2><a id="id12" name="id12">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AppendImages( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int stack,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AppendImages( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int stack,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -272,8 +272,8 @@ unsigned int AnimateImages( const <a class="reference" href="types.html#ImageInf
 other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 <p>The format of the AppendImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AppendImages( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int stack,
-                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AppendImages( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned int stack,
+                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -290,7 +290,7 @@ other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 <div class="section">
 <h2><a id="id14" name="id14">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AverageImages( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AverageImages( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -302,7 +302,7 @@ each image averaged.   On failure, a NULL image is returned and
 exception describes the reason for the failure.</p>
 <p>The format of the AverageImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *AverageImages( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *AverageImages( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -318,7 +318,7 @@ exception describes the reason for the failure.</p>
 <div class="section">
 <h2><a id="id16" name="id16">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ExceptionType">ExceptionType</a> CatchImageException( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#exceptiontype">ExceptionType</a> CatchImageException( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -328,7 +328,7 @@ sequence, otherwise it determines the most severe exception and reports
 it as a warning or error depending on the severity.</p>
 <p>The format of the CatchImageException method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ExceptionType">ExceptionType</a> CatchImageException( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#exceptiontype">ExceptionType</a> CatchImageException( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -342,7 +342,7 @@ it as a warning or error depending on the severity.</p>
 <div class="section">
 <h2><a id="id18" name="id18">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ClipPathImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *pathname,
+unsigned int ClipPathImage( <a class="reference" href="types.html#image">Image</a> *image, const char *pathname,
                             const unsigned int inside );
 </pre>
 </div>
@@ -352,7 +352,7 @@ unsigned int ClipPathImage( <a class="reference" href="types.html#Image">Image</
 if it exists.</p>
 <p>The format of the ClipPathImage method is:</p>
 <pre class="literal-block">
-unsigned int ClipPathImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *pathname,
+unsigned int ClipPathImage( <a class="reference" href="types.html#image">Image</a> *image, const char *pathname,
                             const unsigned int inside );
 </pre>
 <dl class="docutils">
@@ -372,9 +372,9 @@ Otherwise later operations take effect outside clipping path.</dd>
 <div class="section">
 <h2><a id="id20" name="id20">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CloneImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                       const unsigned long rows, const unsigned int orphan,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CloneImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                   const unsigned long rows, const unsigned int orphan,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -387,9 +387,9 @@ a NULL image is returned and exception describes the reason for the
 failure.</p>
 <p>The format of the CloneImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CloneImage( const <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long columns,
-                       const unsigned long rows, const unsigned int orphan,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CloneImage( const <a class="reference" href="types.html#image">Image</a> *image, const unsigned long columns,
+                   const unsigned long rows, const unsigned int orphan,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -413,7 +413,7 @@ NULL.</dd>
 <div class="section">
 <h2><a id="id22" name="id22">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ImageInfo">ImageInfo</a> *CloneImageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+<a class="reference" href="types.html#imageinfo">ImageInfo</a> *CloneImageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 </div>
 <div class="section">
@@ -423,7 +423,7 @@ NULL is specified, a new image info structure is created initialized to
 default values.</p>
 <p>The format of the CloneImageInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ImageInfo">ImageInfo</a> *CloneImageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+<a class="reference" href="types.html#imageinfo">ImageInfo</a> *CloneImageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -437,7 +437,7 @@ default values.</p>
 <div class="section">
 <h2><a id="id24" name="id24">Synopsis</a></h2>
 <pre class="literal-block">
-CycleColormapImage( <a class="reference" href="types.html#Image">Image</a> *image, const int amount );
+CycleColormapImage( <a class="reference" href="types.html#image">Image</a> *image, const int amount );
 </pre>
 </div>
 <div class="section">
@@ -447,7 +447,7 @@ positions.  If you cycle the colormap a number of times you can produce
 a psychodelic effect.</p>
 <p>The format of the CycleColormapImage method is:</p>
 <pre class="literal-block">
-CycleColormapImage( <a class="reference" href="types.html#Image">Image</a> *image, const int amount );
+CycleColormapImage( <a class="reference" href="types.html#image">Image</a> *image, const int amount );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -463,7 +463,7 @@ CycleColormapImage( <a class="reference" href="types.html#Image">Image</a> *imag
 <div class="section">
 <h2><a id="id26" name="id26">Synopsis</a></h2>
 <pre class="literal-block">
-void DescribeImage( <a class="reference" href="types.html#Image">Image</a> *image, FILE *file, const unsigned int verbose );
+void DescribeImage( <a class="reference" href="types.html#image">Image</a> *image, FILE *file, const unsigned int verbose );
 </pre>
 </div>
 <div class="section">
@@ -472,7 +472,7 @@ void DescribeImage( <a class="reference" href="types.html#Image">Image</a> *imag
 Attributes include the image width, height, size, and others.</p>
 <p>The format of the DescribeImage method is:</p>
 <pre class="literal-block">
-void DescribeImage( <a class="reference" href="types.html#Image">Image</a> *image, FILE *file, const unsigned int verbose );
+void DescribeImage( <a class="reference" href="types.html#image">Image</a> *image, FILE *file, const unsigned int verbose );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -492,7 +492,7 @@ colors in the image.</dd>
 <div class="section">
 <h2><a id="id28" name="id28">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyImage( <a class="reference" href="types.html#Image">Image</a> *image );
+void DestroyImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -501,7 +501,7 @@ void DestroyImage( <a class="reference" href="types.html#Image">Image</a> *image
 the image if the reference count becomes zero.</p>
 <p>The format of the DestroyImage method is:</p>
 <pre class="literal-block">
-void DestroyImage( <a class="reference" href="types.html#Image">Image</a> *image );
+void DestroyImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -515,7 +515,7 @@ void DestroyImage( <a class="reference" href="types.html#Image">Image</a> *image
 <div class="section">
 <h2><a id="id30" name="id30">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+void DestroyImageInfo( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 </div>
 <div class="section">
@@ -524,7 +524,7 @@ void DestroyImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInf
 structure.</p>
 <p>The format of the DestroyImageInfo method is:</p>
 <pre class="literal-block">
-void DestroyImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+void DestroyImageInfo( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -538,7 +538,7 @@ void DestroyImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInf
 <div class="section">
 <h2><a id="id32" name="id32">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int DisplayImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int DisplayImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -548,7 +548,7 @@ returns a value other than 0 if successful.  Check the exception member
 of image to determine the reason for any failure.</p>
 <p>The format of the DisplayImages method is:</p>
 <pre class="literal-block">
-unsigned int DisplayImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int DisplayImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -564,7 +564,7 @@ unsigned int DisplayImages( const <a class="reference" href="types.html#ImageInf
 <div class="section">
 <h2><a id="id34" name="id34">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GetImageClipMask( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GetImageClipMask( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -585,7 +585,7 @@ from modification. The clip mask does <em>not</em> protect the image colormap si
 the image colormap is globally shared by all pixels in a PseudoClass image.</p>
 <p>The format of the GetImageClipMask method is</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GetImageClipMask( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GetImageClipMask( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A descripton of each parameter follows:</p>
 <dl class="docutils">
@@ -601,7 +601,7 @@ the image colormap is globally shared by all pixels in a PseudoClass image.</p>
 <div class="section">
 <h2><a id="id36" name="id36">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned long GetImageDepth( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned long GetImageDepth( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -617,7 +617,7 @@ since only one bit of resolution is required to represent a black and white
 image.</p>
 <p>The format of the GetImageDepth method is:</p>
 <pre class="literal-block">
-unsigned long GetImageDepth( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned long GetImageDepth( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -633,7 +633,7 @@ unsigned long GetImageDepth( const <a class="reference" href="types.html#Image">
 <div class="section">
 <h2><a id="id38" name="id38">Synopsis</a></h2>
 <pre class="literal-block">
-void GetImageException( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+void GetImageException( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -642,7 +642,7 @@ void GetImageException( <a class="reference" href="types.html#Image">Image</a> *
 error more severe than noted by the exception parameter.</p>
 <p>The format of the GetImageException method is:</p>
 <pre class="literal-block">
-void GetImageException( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+void GetImageException( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -658,9 +658,9 @@ void GetImageException( <a class="reference" href="types.html#Image">Image</a> *
 <div class="section">
 <h2><a id="id40" name="id40">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail GetImageCharacteristics( const <a class="reference" href="types.html#Image">Image</a> *image,
+MagickPassFail GetImageCharacteristics( const <a class="reference" href="types.html#image">Image</a> *image,
                                         ImageCharacteristics *characteristics,
-                                        MagickBool optimize, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                        MagickBool optimize, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -672,9 +672,9 @@ exhaustive testing of the image pixels is performed (as required).
 MagickPass is returned if this method executes without error.</p>
 <p>The format of the GetImageCharacteristics method is:</p>
 <pre class="literal-block">
-MagickPassFail GetImageCharacteristics( const <a class="reference" href="types.html#Image">Image</a> *image,
+MagickPassFail GetImageCharacteristics( const <a class="reference" href="types.html#image">Image</a> *image,
                                         ImageCharacteristics *characteristics,
-                                        MagickBool optimize, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                        MagickBool optimize, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -693,8 +693,8 @@ MagickPassFail GetImageCharacteristics( const <a class="reference" href="types.h
 <div class="section">
 <h2><a id="id42" name="id42">Synopsis</a></h2>
 <pre class="literal-block">
-int GetImageGeometry( const <a class="reference" href="types.html#Image">Image</a> *image, const char *geometry,
-                      const unsigned int size_to_fit, <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *region_info );
+int GetImageGeometry( const <a class="reference" href="types.html#image">Image</a> *image, const char *geometry,
+                      const unsigned int size_to_fit, <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *region_info );
 </pre>
 </div>
 <div class="section">
@@ -703,8 +703,8 @@ int GetImageGeometry( const <a class="reference" href="types.html#Image">Image</
 respect to the image and its gravity.</p>
 <p>The format of the GetImageGeometry method is:</p>
 <pre class="literal-block">
-int GetImageGeometry( const <a class="reference" href="types.html#Image">Image</a> *image, const char *geometry,
-                      const unsigned int size_to_fit, <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *region_info );
+int GetImageGeometry( const <a class="reference" href="types.html#image">Image</a> *image, const char *geometry,
+                      const unsigned int size_to_fit, <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *region_info );
 </pre>
 <dl class="docutils">
 <dt>flags:</dt>
@@ -726,7 +726,7 @@ respect to the image and its gravity.</dd>
 <div class="section">
 <h2><a id="id44" name="id44">Synopsis</a></h2>
 <pre class="literal-block">
-void GetImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+void GetImageInfo( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 </div>
 <div class="section">
@@ -734,7 +734,7 @@ void GetImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a
 <p>GetImageInfo() initializes image_info to default values.</p>
 <p>The format of the GetImageInfo method is:</p>
 <pre class="literal-block">
-void GetImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info );
+void GetImageInfo( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -748,8 +748,8 @@ void GetImageInfo( <a class="reference" href="types.html#ImageInfo">ImageInfo</a
 <div class="section">
 <h2><a id="id46" name="id46">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail GetImageStatistics( const <a class="reference" href="types.html#Image">Image</a> *image,
-                                   ImageStatistics *statistics <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail GetImageStatistics( const <a class="reference" href="types.html#image">Image</a> *image,
+                                   ImageStatistics *statistics <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -762,8 +762,8 @@ the statistics in quantum units. Statistics for non-existent channels are
 set to zero.</p>
 <p>The format of the GetImageStatistics method is:</p>
 <pre class="literal-block">
-MagickPassFail GetImageStatistics( const <a class="reference" href="types.html#Image">Image</a> *image,
-                                   ImageStatistics *statistics <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+MagickPassFail GetImageStatistics( const <a class="reference" href="types.html#image">Image</a> *image,
+                                   ImageStatistics *statistics <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -780,7 +780,7 @@ MagickPassFail GetImageStatistics( const <a class="reference" href="types.html#I
 <div class="section">
 <h2><a id="id48" name="id48">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ImageType">ImageType</a> GetImageType( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#imagetype">ImageType</a> GetImageType( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -791,7 +791,7 @@ Palette        PaletteMatte    TrueColor
 TrueColorMatte ColorSeparation ColorSeparationMatte</p>
 <p>The format of the GetImageType method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ImageType">ImageType</a> GetImageType( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#imagetype">ImageType</a> GetImageType( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -807,7 +807,7 @@ TrueColorMatte ColorSeparation ColorSeparationMatte</p>
 <div class="section">
 <h2><a id="id50" name="id50">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int IsTaintImage( const <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int IsTaintImage( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -816,7 +816,7 @@ unsigned int IsTaintImage( const <a class="reference" href="types.html#Image">Im
 has been altered since it was first constituted.</p>
 <p>The format of the IsTaintImage method is:</p>
 <pre class="literal-block">
-unsigned int IsTaintImage( const <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int IsTaintImage( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -830,7 +830,7 @@ unsigned int IsTaintImage( const <a class="reference" href="types.html#Image">Im
 <div class="section">
 <h2><a id="id52" name="id52">Synopsis</a></h2>
 <pre class="literal-block">
-ModifyImage( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+ModifyImage( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -840,7 +840,7 @@ to be modified, updating the provided image pointer to point to a clone of
 the original image if necessary.</p>
 <p>The format of the ModifyImage method is:</p>
 <pre class="literal-block">
-ModifyImage( <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+ModifyImage( <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -856,7 +856,7 @@ ModifyImage( <a class="reference" href="types.html#Image">Image</a> *image, <a c
 <div class="section">
 <h2><a id="id54" name="id54">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int PlasmaImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#SegmentInfo">SegmentInfo</a> *segment,
+unsigned int PlasmaImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#segmentinfo">SegmentInfo</a> *segment,
                           unsigned long attenuate, unsigned long depth );
 </pre>
 </div>
@@ -867,7 +867,7 @@ must be initialized with a base color and the random number generator
 seeded before this method is called.</p>
 <p>The format of the PlasmaImage method is:</p>
 <pre class="literal-block">
-unsigned int PlasmaImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#SegmentInfo">SegmentInfo</a> *segment,
+unsigned int PlasmaImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#segmentinfo">SegmentInfo</a> *segment,
                           unsigned long attenuate, unsigned long depth );
 </pre>
 <dl class="docutils">
@@ -887,7 +887,7 @@ unsigned int PlasmaImage( <a class="reference" href="types.html#Image">Image</a>
 <div class="section">
 <h2><a id="id56" name="id56">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReferenceImage( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#image">Image</a> *ReferenceImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -896,7 +896,7 @@ unsigned int PlasmaImage( <a class="reference" href="types.html#Image">Image</a>
 returning a pointer to the image.</p>
 <p>The format of the ReferenceImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReferenceImage( <a class="reference" href="types.html#Image">Image</a> *image );
+<a class="reference" href="types.html#image">Image</a> *ReferenceImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -910,7 +910,7 @@ returning a pointer to the image.</p>
 <div class="section">
 <h2><a id="id58" name="id58">Synopsis</a></h2>
 <pre class="literal-block">
-void RemoveDefinitions( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *options );
+void RemoveDefinitions( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *options );
 </pre>
 </div>
 <div class="section">
@@ -921,7 +921,7 @@ write images. RemoveDefinitions() returns true only if the specified keys
 are present in the map and are actually removed.</p>
 <p>The format of the RemoveDefinitions method is:</p>
 <pre class="literal-block">
-void RemoveDefinitions( <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *options );
+void RemoveDefinitions( <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *options );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -942,7 +942,7 @@ succeeds.</dd>
 <div class="section">
 <h2><a id="id60" name="id60">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ReplaceImageColormap( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *colormap,
+MagickPassFail ReplaceImageColormap( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *colormap,
                                      const unsigned int colors );
 </pre>
 </div>
@@ -961,7 +961,7 @@ updated with the cause of the failure.</p>
 multiple images or otherwise occupy specific locations.</p>
 <p>The format of the ReplaceImageColormap method is:</p>
 <pre class="literal-block">
-MagickPassFail ReplaceImageColormap( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *colormap,
+MagickPassFail ReplaceImageColormap( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *colormap,
                                      const unsigned int colors );
 </pre>
 <dl class="docutils">
@@ -979,7 +979,7 @@ MagickPassFail ReplaceImageColormap( <a class="reference" href="types.html#Image
 <div class="section">
 <h2><a id="id62" name="id62">Synopsis</a></h2>
 <pre class="literal-block">
-void SetImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Quantum">Quantum</a> opacity );
+void SetImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantum">Quantum</a> opacity );
 </pre>
 </div>
 <div class="section">
@@ -990,7 +990,7 @@ level of transparency.  The background color is defined by the
 background_color member of the image.</p>
 <p>The format of the SetImage method is:</p>
 <pre class="literal-block">
-void SetImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Quantum">Quantum</a> opacity );
+void SetImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantum">Quantum</a> opacity );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1006,7 +1006,7 @@ void SetImage( <a class="reference" href="types.html#Image">Image</a> *image, co
 <div class="section">
 <h2><a id="id64" name="id64">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SetImageClipMask( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *clip_mask );
+unsigned int SetImageClipMask( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *clip_mask );
 </pre>
 </div>
 <div class="section">
@@ -1024,7 +1024,7 @@ from modification. The clip mask does <em>not</em> protect the image colormap si
 the image colormap is globally shared by all pixels in a PseudoClass image.</p>
 <p>The format of the SetImageClipMask method is:</p>
 <pre class="literal-block">
-unsigned int SetImageClipMask( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *clip_mask );
+unsigned int SetImageClipMask( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *clip_mask );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1040,7 +1040,7 @@ unsigned int SetImageClipMask( <a class="reference" href="types.html#Image">Imag
 <div class="section">
 <h2><a id="id66" name="id66">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SetImageDepth( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long depth );
+unsigned int SetImageDepth( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long depth );
 </pre>
 </div>
 <div class="section">
@@ -1054,7 +1054,7 @@ value is returned if the operation is successful. Check the exception
 member of image to determine the cause for any failure.</p>
 <p>The format of the SetImageDepth method is:</p>
 <pre class="literal-block">
-unsigned int SetImageDepth( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned long depth );
+unsigned int SetImageDepth( <a class="reference" href="types.html#image">Image</a> *image, const unsigned long depth );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1070,7 +1070,7 @@ unsigned int SetImageDepth( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id68" name="id68">Synopsis</a></h2>
 <pre class="literal-block">
-void SetImageOpacity( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int opacity );
+void SetImageOpacity( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int opacity );
 </pre>
 </div>
 <div class="section">
@@ -1081,7 +1081,7 @@ Otherwise, the pixel opacity values are blended with the supplied
 transparency value.</p>
 <p>The format of the SetImageOpacity method is:</p>
 <pre class="literal-block">
-void SetImageOpacity( <a class="reference" href="types.html#Image">Image</a> *image, const unsigned int opacity );
+void SetImageOpacity( <a class="reference" href="types.html#image">Image</a> *image, const unsigned int opacity );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1098,7 +1098,7 @@ fully transparent.</dd>
 <div class="section">
 <h2><a id="id70" name="id70">Synopsis</a></h2>
 <pre class="literal-block">
-( void )SetImageType( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ImageType">ImageType</a> image_type );
+( void )SetImageType( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#imagetype">ImageType</a> image_type );
 </pre>
 </div>
 <div class="section">
@@ -1110,7 +1110,7 @@ TrueColorMatte ColorSeparation ColorSeparationMatte
 OptimizeType</p>
 <p>The format of the (void) SetImageType method is:</p>
 <pre class="literal-block">
-( void )SetImageType( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ImageType">ImageType</a> image_type );
+( void )SetImageType( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#imagetype">ImageType</a> image_type );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1126,7 +1126,7 @@ OptimizeType</p>
 <div class="section">
 <h2><a id="id72" name="id72">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int TextureImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *texture );
+unsigned int TextureImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *texture );
 </pre>
 </div>
 <div class="section">
@@ -1137,7 +1137,7 @@ alpha-composited &quot;under&quot; the image. MagickFail is returned if an error
 encountered.</p>
 <p>The format of the TextureImage method is:</p>
 <pre class="literal-block">
-unsigned int TextureImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *texture );
+unsigned int TextureImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *texture );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -1151,7 +1151,7 @@ unsigned int TextureImage( <a class="reference" href="types.html#Image">Image</a
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

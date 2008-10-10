@@ -71,9 +71,9 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireCacheView( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                         const unsigned long columns, const unsigned long rows,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireCacheView( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                     const unsigned long columns, const unsigned long rows,
+                                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -84,9 +84,9 @@ the pixels is returned if the pixels are transferred, otherwise NULL is
 returned.</p>
 <p>The format of the AcquireCacheView method is:</p>
 <pre class="literal-block">
-const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> *AcquireCacheView( const <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                                         const unsigned long columns, const unsigned long rows,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *AcquireCacheView( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                                     const unsigned long columns, const unsigned long rows,
+                                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -155,8 +155,8 @@ void *CloneMemory( void *destination, const void *source, const size_t size );
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                               const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                           const unsigned long columns, const unsigned long rows );
 </pre>
 </div>
 <div class="section">
@@ -166,8 +166,8 @@ cache as defined by the geometry parameters.   A pointer to the pixels
 is returned if the pixels are transferred, otherwise a NULL is returned.</p>
 <p>The format of the GetCacheView method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *GetCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                               const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *GetCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                           const unsigned long columns, const unsigned long rows );
 </pre>
 <dl class="docutils">
 <dt>pixels:</dt>
@@ -209,7 +209,7 @@ void LiberateMemory( void ** memory );
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int PopImagePixels( const <a class="reference" href="types.html#Image">Image</a> *, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum,
+unsigned int PopImagePixels( const <a class="reference" href="types.html#image">Image</a> *, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum,
                              unsigned char *destination );
 </pre>
 </div>
@@ -220,7 +220,7 @@ cache to a user supplied buffer.   True is returned if the pixels are
 successfully transferred, otherwise False.</p>
 <p>The format of the PopImagePixels method is:</p>
 <pre class="literal-block">
-unsigned int PopImagePixels( const <a class="reference" href="types.html#Image">Image</a> *, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum,
+unsigned int PopImagePixels( const <a class="reference" href="types.html#image">Image</a> *, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum,
                              unsigned char *destination );
 </pre>
 <dl class="docutils">
@@ -241,7 +241,7 @@ successfully transferred, otherwise False.</dd>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int PushImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+unsigned int PushImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                               const unsigned char *source );
 </pre>
 </div>
@@ -252,7 +252,7 @@ supplied buffer into the image pixel cache of an image.  It returns True if
 the pixels are successfully transferred, otherwise False.</p>
 <p>The format of the PushImagePixels method is:</p>
 <pre class="literal-block">
-unsigned int PushImagePixels( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+unsigned int PushImagePixels( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                               const unsigned char *source );
 </pre>
 <dl class="docutils">
@@ -301,8 +301,8 @@ may change but the contents of the original allocation will not.</dd>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                               const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                           const unsigned long columns, const unsigned long rows );
 </pre>
 </div>
 <div class="section">
@@ -312,8 +312,8 @@ defined by the geometry parameters.   A pointer to the pixels is returned
 if the pixels are transferred, otherwise a NULL is returned.</p>
 <p>The format of the SetCacheView method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#PixelPacket">PixelPacket</a> *SetCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view, const long x, const long y,
-                               const unsigned long columns, const unsigned long rows );
+<a class="reference" href="types.html#pixelpacket">PixelPacket</a> *SetCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
+                           const unsigned long columns, const unsigned long rows );
 </pre>
 <dl class="docutils">
 <dt>view:</dt>
@@ -329,7 +329,7 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail SyncCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+MagickPassFail SyncCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 </div>
 <div class="section">
@@ -339,7 +339,7 @@ The method returns MagickPass if the pixel region is synced, otherwise
 MagickFail.</p>
 <p>The format of the SyncCacheView method is:</p>
 <pre class="literal-block">
-MagickPassFail SyncCacheView( <a class="reference" href="types.html#ViewInfo">ViewInfo</a> *view );
+MagickPassFail SyncCacheView( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -351,7 +351,7 @@ MagickPassFail SyncCacheView( <a class="reference" href="types.html#ViewInfo">Vi
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

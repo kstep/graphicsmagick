@@ -59,6 +59,7 @@ WWWWAPI_FILES = \
 	www/api/annotate.html \
 	www/api/api.html \
 	www/api/api.rst \
+	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
 	www/api/blob.html \
 	www/api/channel.html \
@@ -111,7 +112,7 @@ FORMATCAPI = $(top_srcdir)/scripts/format_c_api_doc.py
 APIRST2HTML_COMMAND = $(RST2HTMLDECO) \
   --link-stylesheet=../docutils-articles.css`
 
-$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am
+$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am $(top_srcdir)/www/api/api_hyperlinks.rst
 
 $(WWWAPIDIR)/%.apirst : $(top_srcdir)/magick/%.c
 	$(FORMATCAPI) --whatis-file $(APIWHATIS) $< $@

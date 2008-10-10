@@ -65,8 +65,8 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#MontageInfo">MontageInfo</a> *CloneMontageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info,
-                                   const <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+<a class="reference" href="types.html#montageinfo">MontageInfo</a> *CloneMontageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info,
+                               const <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 </div>
 <div class="section">
@@ -76,8 +76,8 @@ NULL is specified, a new image info structure is created initialized to
 default values.</p>
 <p>The format of the CloneMontageInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#MontageInfo">MontageInfo</a> *CloneMontageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info,
-                                   const <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+<a class="reference" href="types.html#montageinfo">MontageInfo</a> *CloneMontageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info,
+                               const <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -92,7 +92,7 @@ default values.</p>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyMontageInfo( <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+void DestroyMontageInfo( <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 </div>
 <div class="section">
@@ -100,7 +100,7 @@ void DestroyMontageInfo( <a class="reference" href="types.html#MontageInfo">Mont
 <p>DestroyMontageInfo() deallocates memory associated with montage_info.</p>
 <p>The format of the DestroyMontageInfo method is:</p>
 <pre class="literal-block">
-void DestroyMontageInfo( <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+void DestroyMontageInfo( <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -114,7 +114,7 @@ void DestroyMontageInfo( <a class="reference" href="types.html#MontageInfo">Mont
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-void GetMontageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+void GetMontageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 </div>
 <div class="section">
@@ -122,7 +122,7 @@ void GetMontageInfo( const <a class="reference" href="types.html#ImageInfo">Imag
 <p>GetMontageInfo() initializes montage_info to default values.</p>
 <p>The format of the GetMontageInfo method is:</p>
 <pre class="literal-block">
-void GetMontageInfo( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info );
+void GetMontageInfo( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -137,8 +137,8 @@ void GetMontageInfo( const <a class="reference" href="types.html#ImageInfo">Imag
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MontageImages( const <a class="reference" href="types.html#Image">Image</a> *images, const <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MontageImages( const <a class="reference" href="types.html#image">Image</a> *images, const <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -147,8 +147,8 @@ void GetMontageInfo( const <a class="reference" href="types.html#ImageInfo">Imag
 thumbnails across an image canvas.</p>
 <p>The format of the MontageImages method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MontageImages( const <a class="reference" href="types.html#Image">Image</a> *images, const <a class="reference" href="types.html#MontageInfo">MontageInfo</a> *montage_info,
-                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MontageImages( const <a class="reference" href="types.html#image">Image</a> *images, const <a class="reference" href="types.html#montageinfo">MontageInfo</a> *montage_info,
+                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>images:</dt>
@@ -163,7 +163,7 @@ thumbnails across an image canvas.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

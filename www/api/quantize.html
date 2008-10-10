@@ -72,7 +72,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *CloneQuantizeInfo( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+<a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *CloneQuantizeInfo( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 </div>
 <div class="section">
@@ -81,7 +81,7 @@
 or if quantize info is NULL, a new one.</p>
 <p>The format of the CloneQuantizeInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *CloneQuantizeInfo( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+<a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *CloneQuantizeInfo( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -98,7 +98,7 @@ quantize info, or if image info is NULL a new one.</dd>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-void CompressImageColormap( <a class="reference" href="types.html#Image">Image</a> *image );
+void CompressImageColormap( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -107,7 +107,7 @@ void CompressImageColormap( <a class="reference" href="types.html#Image">Image</
 duplicate or unused color entries.</p>
 <p>The format of the CompressImageColormap method is:</p>
 <pre class="literal-block">
-void CompressImageColormap( <a class="reference" href="types.html#Image">Image</a> *image );
+void CompressImageColormap( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -121,7 +121,7 @@ void CompressImageColormap( <a class="reference" href="types.html#Image">Image</
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-DestroyQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+DestroyQuantizeInfo( <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 </div>
 <div class="section">
@@ -130,7 +130,7 @@ DestroyQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">Quantiz
 structure.</p>
 <p>The format of the DestroyQuantizeInfo method is:</p>
 <pre class="literal-block">
-DestroyQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+DestroyQuantizeInfo( <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -144,7 +144,7 @@ DestroyQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">Quantiz
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int GetImageQuantizeError( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int GetImageQuantizeError( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -166,7 +166,7 @@ distance measure is normalized to a range between 0 and 1.  It is
 independent of the range of red, green, and blue values in your image.</p>
 <p>The format of the GetImageQuantizeError method is:</p>
 <pre class="literal-block">
-unsigned int GetImageQuantizeError( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int GetImageQuantizeError( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -181,7 +181,7 @@ ReadImage.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-GetQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+GetQuantizeInfo( <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 </div>
 <div class="section">
@@ -189,7 +189,7 @@ GetQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInf
 <p>GetQuantizeInfo() initializes the QuantizeInfo structure.</p>
 <p>The format of the GetQuantizeInfo method is:</p>
 <pre class="literal-block">
-GetQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info );
+GetQuantizeInfo( <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -203,7 +203,7 @@ GetQuantizeInfo( <a class="reference" href="types.html#QuantizeInfo">QuantizeInf
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-void GrayscalePseudoClassImage( <a class="reference" href="types.html#Image">Image</a> *image );
+void GrayscalePseudoClassImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -213,7 +213,7 @@ grayscale representation with an (optionally) compressed and sorted
 colormap. Colormap is ordered by increasing intensity.</p>
 <p>The format of the GrayscalePseudoClassImage method is:</p>
 <pre class="literal-block">
-void GrayscalePseudoClassImage( <a class="reference" href="types.html#Image">Image</a> *image );
+void GrayscalePseudoClassImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -229,7 +229,7 @@ void GrayscalePseudoClassImage( <a class="reference" href="types.html#Image">Ima
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int MapImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *map_image,
+unsigned int MapImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *map_image,
                        const unsigned int dither );
 </pre>
 </div>
@@ -239,7 +239,7 @@ unsigned int MapImage( <a class="reference" href="types.html#Image">Image</a> *i
 reference image.</p>
 <p>The format of the MapImage method is:</p>
 <pre class="literal-block">
-unsigned int MapImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *map_image,
+unsigned int MapImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#image">Image</a> *map_image,
                        const unsigned int dither );
 </pre>
 <dl class="docutils">
@@ -259,7 +259,7 @@ dither the quantized image.</dd>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int MapImages( <a class="reference" href="types.html#Image">Image</a> *images, <a class="reference" href="types.html#Image">Image</a> *map_image, const unsigned int dither );
+unsigned int MapImages( <a class="reference" href="types.html#image">Image</a> *images, <a class="reference" href="types.html#image">Image</a> *map_image, const unsigned int dither );
 </pre>
 </div>
 <div class="section">
@@ -273,7 +273,7 @@ match the reference image, then the ReplaceImageColormap() function may be
 used after invoking MapImages() in order to apply the reference colormap.</p>
 <p>The format of the MapImage method is:</p>
 <pre class="literal-block">
-unsigned int MapImages( <a class="reference" href="types.html#Image">Image</a> *images, <a class="reference" href="types.html#Image">Image</a> *map_image, const unsigned int dither );
+unsigned int MapImages( <a class="reference" href="types.html#image">Image</a> *images, <a class="reference" href="types.html#image">Image</a> *map_image, const unsigned int dither );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -292,7 +292,7 @@ dither the quantized image.</dd>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int OrderedDitherImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int OrderedDitherImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -302,7 +302,7 @@ images to monochrome using positional information to retain as much
 information as possible.</p>
 <p>The format of the OrderedDitherImage method is:</p>
 <pre class="literal-block">
-unsigned int OrderedDitherImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int OrderedDitherImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -317,7 +317,7 @@ ReadImage.</dd>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int QuantizeImage( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int QuantizeImage( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -328,7 +328,7 @@ is to minimize the color difference between the input and output image while
 minimizing the processing time.</p>
 <p>The format of the QuantizeImage method is:</p>
 <pre class="literal-block">
-unsigned int QuantizeImage( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int QuantizeImage( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <dl class="docutils">
 <dt>quantize_info:</dt>
@@ -343,7 +343,7 @@ unsigned int QuantizeImage( const <a class="reference" href="types.html#Quantize
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int QuantizeImages( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#Image">Image</a> *images );
+unsigned int QuantizeImages( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#image">Image</a> *images );
 </pre>
 </div>
 <div class="section">
@@ -354,7 +354,7 @@ algorithm is to minimize the color difference between the input and output
 images while minimizing the processing time.</p>
 <p>The format of the QuantizeImages method is:</p>
 <pre class="literal-block">
-unsigned int QuantizeImages( const <a class="reference" href="types.html#QuantizeInfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#Image">Image</a> *images );
+unsigned int QuantizeImages( const <a class="reference" href="types.html#quantizeinfo">QuantizeInfo</a> *quantize_info, <a class="reference" href="types.html#image">Image</a> *images );
 </pre>
 <dl class="docutils">
 <dt>quantize_info:</dt>
@@ -367,7 +367,7 @@ unsigned int QuantizeImages( const <a class="reference" href="types.html#Quantiz
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

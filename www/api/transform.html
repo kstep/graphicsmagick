@@ -72,8 +72,8 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ChopImage( const <a class="reference" href="types.html#Image">Image</a> *image,
-                      const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *chop_info <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ChopImage( const <a class="reference" href="types.html#image">Image</a> *image,
+                  const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *chop_info <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -82,8 +82,8 @@
 removed portion.</p>
 <p>The format of the ChopImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ChopImage( const <a class="reference" href="types.html#Image">Image</a> *image,
-                      const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *chop_info <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ChopImage( const <a class="reference" href="types.html#image">Image</a> *image,
+                  const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *chop_info <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -100,7 +100,7 @@ removed portion.</p>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CoalesceImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CoalesceImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -113,7 +113,7 @@ where each image in the sequence is the same size as the first and
 composited with the next image in the sequence.</p>
 <p>The format of the CoalesceImages method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CoalesceImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CoalesceImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -129,8 +129,8 @@ composited with the next image in the sequence.</p>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CropImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *geometry,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CropImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *geometry,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -141,8 +141,8 @@ is passed, GetImageBoundingBox() is used to locate the edges of the
 image and the image is cropped (&quot;trimmed&quot;) to that boundary.</p>
 <p>The format of the CropImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *CropImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *geometry,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *CropImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *geometry,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -160,7 +160,7 @@ x, y, width, and height.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *DeconstructImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *DeconstructImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -169,7 +169,7 @@ x, y, width, and height.</dd>
 returns the maximum bounding region of any pixel differences it discovers.</p>
 <p>The format of the DeconstructImages method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *DeconstructImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *DeconstructImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -185,7 +185,7 @@ returns the maximum bounding region of any pixel differences it discovers.</p>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlattenImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlattenImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -194,7 +194,7 @@ returns the maximum bounding region of any pixel differences it discovers.</p>
 combining Photoshop layers into a single image.</p>
 <p>The format of the FlattenImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlattenImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlattenImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -210,7 +210,7 @@ combining Photoshop layers into a single image.</p>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlipImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlipImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -219,7 +219,7 @@ combining Photoshop layers into a single image.</p>
 around the central x-axis.</p>
 <p>The format of the FlipImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlipImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlipImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -235,7 +235,7 @@ around the central x-axis.</p>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlopImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlopImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -244,7 +244,7 @@ around the central x-axis.</p>
 around the central y-axis.</p>
 <p>The format of the FlopImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *FlopImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *FlopImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -260,7 +260,7 @@ around the central y-axis.</p>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MosaicImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MosaicImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -270,7 +270,7 @@ It returns a single image with each image in the sequence composited at
 the location defined by the page member of the image structure.</p>
 <p>The format of the MosaicImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *MosaicImages( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *MosaicImages( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -286,8 +286,8 @@ the location defined by the page member of the image structure.</p>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *RollImage( const <a class="reference" href="types.html#Image">Image</a> *image, const long x_offset, const long y_offset,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *RollImage( const <a class="reference" href="types.html#image">Image</a> *image, const long x_offset, const long y_offset,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -295,8 +295,8 @@ the location defined by the page member of the image structure.</p>
 <p>RollImage() offsets an image as defined by x_offset and y_offset.</p>
 <p>The format of the RollImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *RollImage( const <a class="reference" href="types.html#Image">Image</a> *image, const long x_offset, const long y_offset,
-                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *RollImage( const <a class="reference" href="types.html#image">Image</a> *image, const long x_offset, const long y_offset,
+                  <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -315,8 +315,8 @@ the location defined by the page member of the image structure.</p>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ShaveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *shave_info,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ShaveImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *shave_info,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -326,8 +326,8 @@ memory necessary for the new Image structure and returns a pointer to the
 new image.</p>
 <p>The format of the ShaveImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ShaveImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *shave_info,
-                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ShaveImage( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#rectangleinfo">RectangleInfo</a> *shave_info,
+                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>shave_image:</dt>
@@ -349,7 +349,7 @@ region of the image to crop.</dd>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-void TransformImage( <a class="reference" href="types.html#Image">Image</a> ** image, const char *crop_geometry,
+void TransformImage( <a class="reference" href="types.html#image">Image</a> ** image, const char *crop_geometry,
                      const char *image_geometry );
 </pre>
 </div>
@@ -361,7 +361,7 @@ geometry specification.  If the operation fails, the original image handle
 is returned.</p>
 <p>The format of the TransformImage method is:</p>
 <pre class="literal-block">
-void TransformImage( <a class="reference" href="types.html#Image">Image</a> ** image, const char *crop_geometry,
+void TransformImage( <a class="reference" href="types.html#image">Image</a> ** image, const char *crop_geometry,
                      const char *image_geometry );
 </pre>
 <dl class="docutils">
@@ -379,7 +379,7 @@ final size of the image.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

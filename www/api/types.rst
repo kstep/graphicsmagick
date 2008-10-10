@@ -25,6 +25,11 @@ AffineMatrix defines a 2D affine matrix transform.
       ty;
   } AffineMatrix;
 
+BlobInfo
+========
+
+BlobInfo is an opaque pointer reference to the internal structure of an
+I/O blob handle.
 
 Cache
 =====
@@ -42,24 +47,25 @@ ChannelType
   typedef enum
   {
     UndefinedChannel,
-    RedChannel,
-    CyanChannel,
-    GreenChannel,
-    MagentaChannel,
-    BlueChannel,
-    YellowChannel,
-    OpacityChannel,
-    BlackChannel,
-    MatteChannel
+    RedChannel,     /* RGB Red channel */
+    CyanChannel,    /* CMYK Cyan channel */
+    GreenChannel,   /* RGB Green channel */
+    MagentaChannel, /* CMYK Magenta channel */
+    BlueChannel,    /* RGB Blue channel */
+    YellowChannel,  /* CMYK Yellow channel */
+    OpacityChannel, /* Opacity channel */
+    BlackChannel,   /* CMYK Black (K) channel */
+    MatteChannel,   /* Same as Opacity channel (deprecated) */
+    AllChannels,    /* Color channels */
+    GrayChannel     /* Color channels represent an intensity. */
   } ChannelType;
-
-
-
+  
 ChromaticityInfo
 ================
 
-The ChromaticityInfo structure is used to represent chromaticity values
-for images in GraphicsMagick.
+The ChromaticityInfo structure is used to represent chromaticity
+(colorspace primary coordinates in xy space) values for images in
+GraphicsMagick.
 
 The members of the ChromaticityInfo structure are shown in the following
 table:
@@ -77,7 +83,6 @@ table:
    +-------------------+-----------+-----------------------------------------------------------------+
    |white_point        |PointInfo  |Chromaticity white point (e.g. x=0.3127, y=0.329)                |
    +-------------------+-----------+-----------------------------------------------------------------+
-
 
 
 ClassType
@@ -151,40 +156,30 @@ bitmap (PSD) files.
 
 .. table:: ColorspaceType
 
-   +---------------------+---------------------------------------------------------------------------+
-   |     Enumeration     |                                Description                                |
-   +---------------------+---------------------------------------------------------------------------+
-   |UndefinedColorspace  |Unset value.                                                               |
-   +---------------------+---------------------------------------------------------------------------+
-   |RGBColorspace        |Red-Green-Blue colorspace.                                                 |
-   +---------------------+---------------------------------------------------------------------------+
-   |GRAYColorspace       |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |TransparentColorspace|The Transparent color space behaves uniquely in that it preserves the matte|
-   |                     |channel of the image if it exists.                                         |
-   +---------------------+---------------------------------------------------------------------------+
-   |OHTAColorspace       |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |XYZColorspace        |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |YCbCrColorspace      |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |YCCColorspace        |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |YIQColorspace        |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |YPbPrColorspace      |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |YUVColorspace        |Y-signal, U-signal, and V-signal colorspace. YUV is most widely used to    |
-   |                     |encode color for use in television transmission.                           |
-   +---------------------+---------------------------------------------------------------------------+
-   |                     |Cyan-Magenta-Yellow-Black colorspace. CYMK is a subtractive color system   |
-   |CMYKColorspace       |used by printers and photographers for the rendering of colors with ink or |
-   |                     |emulsion, normally on a white surface.                                     |
-   +---------------------+---------------------------------------------------------------------------+
-   |sRGBColorspace       |                                                                           |
-   +---------------------+---------------------------------------------------------------------------+
-
+   ========================= ======================================================
+        Enumeration                              Description
+   ========================= ======================================================
+   UndefinedColorspace       Unset value.
+   RGBColorspace             Red, Green, Blue colorspace.
+   GRAYColorspace            Similar to Luma (Y) according to ITU-R 601
+   TransparentColorspace     RGB which preserves the matte while quantizing colors.
+   OHTAColorspace
+   XYZColorspace             CIE XYZ
+   YCCColorspace             Kodak PhotoCD PhotoYCC
+   YIQColorspace
+   YPbPrColorspace
+   YUVColorspace             YUV colorspace as used for computer video.
+   CMYKColorspace            Cyan, Magenta, Yellow, Black colorspace.
+   sRGBColorspace            Kodak PhotoCD sRGB
+   HSLColorspace             Hue, saturation, luminosity
+   HWBColorspace             Hue, whiteness, blackness
+   LABColorspace             ITU LAB
+   CineonLogRGBColorspace    RGB data with Cineon Log scaling, 2.048 density range
+   Rec601LumaColorspace      Luma (Y) according to ITU-R 601
+   Rec601YCbCrColorspace     YCbCr according to ITU-R 601
+   Rec709LumaColorspace      Luma (Y) according to ITU-R 709
+   Rec709YCbCrColorspace     YCbCr according to ITU-R 709
+   ========================= ======================================================
 
 ComplianceType
 ==============
@@ -210,72 +205,74 @@ to compose a composite image with an image. By default, each of the
 composite image pixels are replaced by the corresponding image tile
 pixel. Specify CompositeOperator to select a different algorithm.
  
+The image compositor requires a matte, or alpha channel in the image for
+some operations. This extra channel usually defines a mask which
+represents a sort of a cookie-cutter for the image. This is the case when
+matte is 255 (full coverage) for pixels inside the shape, zero outside,
+and between zero and 255 on the boundary. For certain operations, if
+image does not have a matte channel, it is initialized with 0 for any
+pixel matching in color to pixel location (0,0), otherwise 255 (to work
+properly borderWidth must be 0).
 
 .. table:: CompositeOperator
 
-   +----------------------+--------------------------------------------------------------------------+
-   |     Enumeration      |                               Description                                |
-   +----------------------+--------------------------------------------------------------------------+
-   |UndefinedCompositeOp  |Unset value.                                                              |
-   +----------------------+--------------------------------------------------------------------------+
-   |OverCompositeOp       |The result is the union of the the two image shapes with the composite    |
-   |                      |image obscuring image in the region of overlap.                           |
-   +----------------------+--------------------------------------------------------------------------+
-   |InCompositeOp         |The result is a simply composite image cut by the shape of image. None of |
-   |                      |the image data of image is included in the result.                        |
-   +----------------------+--------------------------------------------------------------------------+
-   |OutCompositeOp        |The resulting image is composite image with the shape of image cut out.   |
-   +----------------------+--------------------------------------------------------------------------+
-   |                      |The result is the same shape as image image, with composite image         |
-   |AtopCompositeOp       |obscuring image there the image shapes overlap. Note that this differs    |
-   |                      |from OverCompositeOp because the portion of composite image outside of    |
-   |                      |image's shape does not appear in the result.                              |
-   +----------------------+--------------------------------------------------------------------------+
-   |XorCompositeOp        |The result is the image data from both composite image and image that is  |
-   |                      |outside the overlap region. The overlap region will be blank.             |
-   +----------------------+--------------------------------------------------------------------------+
-   |PlusCompositeOp       |The result is just the sum of the  image data. Output values are cropped  |
-   |                      |to 255 (no overflow). This operation is independent of the matte channels.|
-   +----------------------+--------------------------------------------------------------------------+
-   |MinusCompositeOp      |The result of composite image - image, with overflow cropped to zero. The |
-   |                      |matte chanel is ignored (set to 255, full coverage).                      |
-   +----------------------+--------------------------------------------------------------------------+
-   |AddCompositeOp        |The result of composite image + image, with overflow wrapping around (mod |
-   |                      |256).                                                                     |
-   +----------------------+--------------------------------------------------------------------------+
-   |                      |The result of composite image - image, with underflow wrapping around (mod|
-   |SubtractCompositeOp   |256). The add and subtract operators can be used to perform reverible     |
-   |                      |transformations.                                                          |
-   +----------------------+--------------------------------------------------------------------------+
-   |DifferenceCompositeOp |The result of abs(composite image - image). This is useful for comparing  |
-   |                      |two very similar images.                                                  |
-   +----------------------+--------------------------------------------------------------------------+
-   |BumpmapCompositeOp    |The result image shaded by composite image.                               |
-   +----------------------+--------------------------------------------------------------------------+
-   |CopyCompositeOp       |The resulting image is image replaced with composite image. Here the matte|
-   |                      |information is ignored.                                                   |
-   +----------------------+--------------------------------------------------------------------------+
-   |CopyRedCompositeOp    |The resulting image is the red layer in image replaced with the red layer |
-   |                      |in composite image. The other layers are copied untouched.                |
-   +----------------------+--------------------------------------------------------------------------+
-   |CopyGreenCompositeOp  |The resulting image is the green layer in image replaced with the green   |
-   |                      |layer in composite image. The other layers are copied untouched.          |
-   +----------------------+--------------------------------------------------------------------------+
-   |CopyBlueCompositeOp   |The resulting image is the blue layer in image replaced with the blue     |
-   |                      |layer in composite image. The other layers are copied untouched.          |
-   +----------------------+--------------------------------------------------------------------------+
-   |                      |The resulting image is the matte layer in image replaced with the matte   |
-   |                      |layer in composite image. The other layers are copied untouched.          |
-   |                      |                                                                          |
-   |                      |The image compositor requires a matte, or alpha channel in the image for  |
-   |                      |some operations. This extra channel usually defines a mask which          |
-   |CopyOpacityCompositeOp|represents a sort of a cookie-cutter for the image. This is the case when |
-   |                      |matte is 255 (full coverage) for pixels inside the shape, zero outside,   |
-   |                      |and between zero and 255 on the boundary.  For certain operations, if     |
-   |                      |image does not have a matte channel, it is initialized with 0 for any     |
-   |                      |pixel matching in color to pixel location (0,0), otherwise 255 (to work   |
-   |                      |properly borderWidth must be 0).                                          |
-   +----------------------+--------------------------------------------------------------------------+
+   ======================  ==========================================================================
+        Enumeration                                       Description                                
+   ======================  ==========================================================================
+   UndefinedCompositeOp    Unset value.
+   OverCompositeOp         The result is the union of the the two image shapes with the composite
+                           image obscuring image in the region of overlap.
+   InCompositeOp           The result is a simply composite image cut by the shape of image. None of
+                           the image data of image is included in the result.
+   OutCompositeOp          The resulting image is composite image with the shape of image cut out.
+   AtopCompositeOp         The result is the same shape as image image, with composite image
+                           obscuring image there the image shapes overlap. Note that this differs
+                           from OverCompositeOp because the portion of composite image outside of
+                           image's shape does not appear in the result.
+   XorCompositeOp          The result is the image data from both composite image and image that is
+                           outside the overlap region. The overlap region will be blank.
+   PlusCompositeOp         The result is just the sum of the  image data. Output values are cropped
+                           to 255 (no overflow). This operation is independent of the matte channels.
+   MinusCompositeOp        The result of composite image - image, with overflow cropped to zero. The
+                           matte chanel is ignored (set to 255, full coverage).
+   AddCompositeOp          The result of composite image + image, with overflow wrapping around (mod
+                           256).                                                                     
+   SubtractCompositeOp     The result of composite image - image, with underflow wrapping around (mod
+                           256). The add and subtract operators can be used to perform reversible
+                           transformations.
+   DifferenceCompositeOp   The result of abs(composite image - image). This is useful for comparing
+                           two very similar images.
+   BumpmapCompositeOp      The result image shaded by composite image.
+   CopyCompositeOp         The resulting image is image replaced with composite image. Here the matte
+                           information is ignored.
+   CopyRedCompositeOp      The resulting image is the red layer in image replaced with the red layer
+                           in composite image. The other layers are copied untouched.
+   CopyGreenCompositeOp    The resulting image is the green layer in image replaced with the green
+                           layer in composite image. The other layers are copied untouched.
+   CopyBlueCompositeOp     The resulting image is the blue layer in image replaced with the blue
+                           layer in composite image. The other layers are copied untouched.
+   CopyOpacityCompositeOp  The resulting image is the matte layer in image replaced with the matte
+                           layer in composite image. The other layers are copied untouched.
+   ClearCompositeOp
+   DissolveCompositeOp
+   DisplaceCompositeOp
+   ModulateCompositeOp
+   ThresholdCompositeOp
+   NoCompositeOp
+   DarkenCompositeOp
+   LightenCompositeOp
+   HueCompositeOp
+   SaturateCompositeOp
+   ColorizeCompositeOp
+   LuminizeCompositeOp
+   ScreenCompositeOp
+   OverlayCompositeOp
+   CopyCyanCompositeOp
+   CopyMagentaCompositeOp
+   CopyYellowCompositeOp
+   CopyBlackCompositeOp
+   DivideCompositeOp
+   ======================  ==========================================================================
 
 CompressionType
 ===============
@@ -305,9 +302,11 @@ compatable with the image type.
    +---------------------------+---------------------------------------------------------------------+
    |JPEGCompression            |JPEG compression                                                     |
    +---------------------------+---------------------------------------------------------------------+
+   |LosslessJPEGCompression    |Lossless JPEG compression                                            |
+   +---------------------------+---------------------------------------------------------------------+
    |LZWCompression             |Lempel-Ziv-Welch (LZW) compression (caution, patented by Unisys)     |
    +---------------------------+---------------------------------------------------------------------+
-   |RunlengthEncodedCompression|Run-Length encoded (RLE) compression                                 |
+   |RLECompression             |Run-Length encoded (RLE) compression                                 |
    +---------------------------+---------------------------------------------------------------------+
    |ZipCompression             |Lempel-Ziv compression (LZ77) as used in PKZIP and GNU gzip.         |
    +---------------------------+---------------------------------------------------------------------+
@@ -1170,6 +1169,14 @@ ImageType indicates the type classification of the image.
    |ColorSeparationType           |Cyan/Yellow/Magenta/Black (CYMK) image                            |
    +------------------------------+------------------------------------------------------------------+
 
+IndexPacket
+===========
+
+IndexPacket is the type used for a colormap index. An array of type
+IndexPacket is used to represent an image in PseudoClass type. Currently
+supported IndexPacket underlying types are 'unsigned char' and 'unsigned
+short'. The type is selected at build time according to the QuantumDepth
+setting.
 
 InterlaceType
 =============
@@ -2004,8 +2011,8 @@ VirtualPixelMethod
   } VirtualPixelMethod;
 
 
-XResourceInfo
-=============
+MagickXResourceInfo
+===================
 
 ::
 

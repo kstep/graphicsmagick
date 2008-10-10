@@ -68,7 +68,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-ImageProfileIterator AllocateImageProfileIterator( const <a class="reference" href="types.html#Image">Image</a> *image );
+ImageProfileIterator AllocateImageProfileIterator( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -81,7 +81,7 @@ is not currently referencing. Inserting additional profiles does not
 invalidate the current iterator.</p>
 <p>The format of the AllocateImageProfileIterator method is:</p>
 <pre class="literal-block">
-ImageProfileIterator AllocateImageProfileIterator( const <a class="reference" href="types.html#Image">Image</a> *image );
+ImageProfileIterator AllocateImageProfileIterator( const <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -117,7 +117,7 @@ void DeallocateImageProfileIterator( ImageProfileIterator profile_iterator );
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int DeleteImageProfile( <a class="reference" href="types.html#Image">Image</a> *image, const char *name );
+unsigned int DeleteImageProfile( <a class="reference" href="types.html#image">Image</a> *image, const char *name );
 </pre>
 </div>
 <div class="section">
@@ -125,7 +125,7 @@ unsigned int DeleteImageProfile( <a class="reference" href="types.html#Image">Im
 <p>DeleteImageProfile removes a named profile from the image.</p>
 <p>The format of the DeleteImageProfile method is:</p>
 <pre class="literal-block">
-unsigned int DeleteImageProfile( <a class="reference" href="types.html#Image">Image</a> *image, const char *name );
+unsigned int DeleteImageProfile( <a class="reference" href="types.html#image">Image</a> *image, const char *name );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -142,8 +142,8 @@ generic profile name.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-const unsigned char *GetImageProfile( const <a class="reference" href="types.html#Image">Image</a> *image, const char *name,
-                                       size_t *length );
+const unsigned char *GetImageProfile( const <a class="reference" href="types.html#image">Image</a> *image, const char *name,
+                                      size_t *length );
 </pre>
 </div>
 <div class="section">
@@ -156,8 +156,8 @@ GetImageProfile() will try the alternate name if the specifically
 requested profile name is not available.</p>
 <p>The format of the GetImageProfile method is:</p>
 <pre class="literal-block">
-const unsigned char *GetImageProfile( const <a class="reference" href="types.html#Image">Image</a> *image, const char *name,
-                                       size_t *length );
+const unsigned char *GetImageProfile( const <a class="reference" href="types.html#image">Image</a> *image, const char *name,
+                                      size_t *length );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -207,7 +207,7 @@ MagickPassFail NextImageProfile( ImageProfileIterator profile_iterator, const ch
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ProfileImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *name, unsigned char *profile,
+unsigned int ProfileImage( <a class="reference" href="types.html#image">Image</a> *image, const char *name, unsigned char *profile,
                            const size_t length, unsigned int clone );
 </pre>
 </div>
@@ -229,7 +229,7 @@ is applied to the image pixels, and the new profile is associated
 with the image.</p>
 <p>The format of the ProfileImage method is:</p>
 <pre class="literal-block">
-unsigned int ProfileImage( <a class="reference" href="types.html#Image">Image</a> *image, const char *name, unsigned char *profile,
+unsigned int ProfileImage( <a class="reference" href="types.html#image">Image</a> *image, const char *name, unsigned char *profile,
                            const size_t length, unsigned int clone );
 </pre>
 <dl class="docutils">
@@ -253,7 +253,7 @@ ownership of it.</dd>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SetImageProfile( <a class="reference" href="types.html#Image">Image</a> *image, const char *name, const unsigned char *profile,
+unsigned int SetImageProfile( <a class="reference" href="types.html#image">Image</a> *image, const char *name, const unsigned char *profile,
                               const size_t length );
 </pre>
 </div>
@@ -273,7 +273,7 @@ a profile, it may be necessary to remove both names in order for an
 &quot;IPTC&quot; profile to no longer be included in output file formats.</p>
 <p>The format of the SetImageProfile method is:</p>
 <pre class="literal-block">
-unsigned int SetImageProfile( <a class="reference" href="types.html#Image">Image</a> *image, const char *name, const unsigned char *profile,
+unsigned int SetImageProfile( <a class="reference" href="types.html#image">Image</a> *image, const char *name, const unsigned char *profile,
                               const size_t length );
 </pre>
 <dl class="docutils">
@@ -293,7 +293,7 @@ profile.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

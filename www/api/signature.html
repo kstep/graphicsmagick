@@ -66,7 +66,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-FinalizeSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+FinalizeSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 </div>
 <div class="section">
@@ -74,7 +74,7 @@ FinalizeSignature( <a class="reference" href="types.html#SignatureInfo">Signatur
 <p>Method FinalizeSignature finalizes the SHA message digest computation.</p>
 <p>The format of the FinalizeSignature method is:</p>
 <pre class="literal-block">
-FinalizeSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+FinalizeSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -88,7 +88,7 @@ FinalizeSignature( <a class="reference" href="types.html#SignatureInfo">Signatur
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-GetSignatureInfo( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+GetSignatureInfo( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 </div>
 <div class="section">
@@ -96,7 +96,7 @@ GetSignatureInfo( <a class="reference" href="types.html#SignatureInfo">Signature
 <p>Method GetSignatureInfo initializes the SHA message digest structure.</p>
 <p>The format of the GetSignatureInfo method is:</p>
 <pre class="literal-block">
-GetSignatureInfo( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+GetSignatureInfo( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -110,7 +110,7 @@ GetSignatureInfo( <a class="reference" href="types.html#SignatureInfo">Signature
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int SignatureImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int SignatureImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -121,7 +121,7 @@ signature uniquely identifies the image and is convenient for determining
 if an image has been modified or whether two images are identical.</p>
 <p>The format of the SignatureImage method is:</p>
 <pre class="literal-block">
-unsigned int SignatureImage( <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int SignatureImage( <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -135,7 +135,7 @@ unsigned int SignatureImage( <a class="reference" href="types.html#Image">Image<
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-TransformSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+TransformSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 </div>
 <div class="section">
@@ -143,7 +143,7 @@ TransformSignature( <a class="reference" href="types.html#SignatureInfo">Signatu
 <p>TransformSignature() transforms the SHA message digest.</p>
 <p>The format of the TransformSignature method is:</p>
 <pre class="literal-block">
-TransformSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info );
+TransformSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -157,7 +157,7 @@ TransformSignature( <a class="reference" href="types.html#SignatureInfo">Signatu
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-UpdateSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info, const unsigned char *message,
+UpdateSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info, const unsigned char *message,
                  const size_t length );
 </pre>
 </div>
@@ -166,7 +166,7 @@ UpdateSignature( <a class="reference" href="types.html#SignatureInfo">SignatureI
 <p>UpdateSignature() updates the SHA message digest.</p>
 <p>The format of the UpdateSignature method is:</p>
 <pre class="literal-block">
-UpdateSignature( <a class="reference" href="types.html#SignatureInfo">SignatureInfo</a> *signature_info, const unsigned char *message,
+UpdateSignature( <a class="reference" href="types.html#signatureinfo">SignatureInfo</a> *signature_info, const unsigned char *message,
                  const size_t length );
 </pre>
 <dl class="docutils">
@@ -182,7 +182,7 @@ UpdateSignature( <a class="reference" href="types.html#SignatureInfo">SignatureI
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

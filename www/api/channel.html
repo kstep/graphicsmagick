@@ -67,7 +67,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ChannelImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel );
+unsigned int ChannelImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
 </pre>
 </div>
 <div class="section">
@@ -81,7 +81,7 @@ transformed to the HWB colorspace, the 'B' channel may be extracted by
 specifying RedChannel as the ChannelType argument.</p>
 <p>The format of the ChannelImage method is:</p>
 <pre class="literal-block">
-unsigned int ChannelImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel );
+unsigned int ChannelImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -98,8 +98,8 @@ Blue, Yellow, or Opacity.</dd>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                               <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -107,8 +107,8 @@ Blue, Yellow, or Opacity.</dd>
 <p>ExportImageChannel() exports a specified image channel as a new image.</p>
 <p>The format of the ExportImageChannel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                               <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -125,8 +125,8 @@ Blue, Yellow, or Opacity.</dd>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                    <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -141,8 +141,8 @@ lost). As an example, the value one is returned for a bilevel channel
 since only one bit of resolution is required to represent a bilevel channel.</p>
 <p>The format of the GetImageChannelDepth method is:</p>
 <pre class="literal-block">
-unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
-                                    <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -159,8 +159,8 @@ unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#Image">Image</a> *source_image, <a class="reference" href="types.html#Image">Image</a> *update_image,
-                                   const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel );
+MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#image">Image</a> *source_image, <a class="reference" href="types.html#image">Image</a> *update_image,
+                                   const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
 </pre>
 </div>
 <div class="section">
@@ -168,8 +168,8 @@ MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#I
 <p>ImportImageChannel() imports an image into the specified image channel.</p>
 <p>The format of the ImportImageChannel method is:</p>
 <pre class="literal-block">
-MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#Image">Image</a> *source_image, <a class="reference" href="types.html#Image">Image</a> *update_image,
-                                   const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel );
+MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#image">Image</a> *source_image, <a class="reference" href="types.html#image">Image</a> *update_image,
+                                   const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
 </pre>
 <dl class="docutils">
 <dt>source_image:</dt>
@@ -186,9 +186,9 @@ MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#I
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#Image">Image</a> *source_image,
-                                          <a class="reference" href="types.html#Image">Image</a> *update_image,
-                                          const <a class="reference" href="types.html#ChannelType">ChannelType</a> channels );
+MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#image">Image</a> *source_image,
+                                          <a class="reference" href="types.html#image">Image</a> *update_image,
+                                          const <a class="reference" href="types.html#channeltype">ChannelType</a> channels );
 </pre>
 </div>
 <div class="section">
@@ -197,9 +197,9 @@ MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types
 image to an update image, except for the channels specified.</p>
 <p>The format of the ImportImageChannelsMasked method is:</p>
 <pre class="literal-block">
-MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#Image">Image</a> *source_image,
-                                          <a class="reference" href="types.html#Image">Image</a> *update_image,
-                                          const <a class="reference" href="types.html#ChannelType">ChannelType</a> channels );
+MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#image">Image</a> *source_image,
+                                          <a class="reference" href="types.html#image">Image</a> *update_image,
+                                          const <a class="reference" href="types.html#channeltype">ChannelType</a> channels );
 </pre>
 <dl class="docutils">
 <dt>source_image:</dt>
@@ -216,7 +216,7 @@ MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
+MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
                                      const unsigned int depth );
 </pre>
 </div>
@@ -231,7 +231,7 @@ value is returned if the operation is successful. Check the exception
 member of image to determine the cause for any failure.</p>
 <p>The format of the SetImageChannelDepth method is:</p>
 <pre class="literal-block">
-MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
+MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
                                      const unsigned int depth );
 </pre>
 <dl class="docutils">
@@ -247,7 +247,7 @@ MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#Image
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

@@ -200,6 +200,10 @@ class Prototype:
         if openparen_index > 0:
             fcn = proto[:openparen_index+1]
             indent_len = len(fcn) + 3
+            toomuch = (2 * fcn.count('\\')) + (3 * fcn.count('`_'))
+            if toomuch > 0: # account for the space following the opening paren
+                toomuch -= 1
+            indent_len -= toomuch
             params = proto[openparen_index+1:].split(',')
             params = [p.strip() for p in params]
             max_param_len = 0

@@ -70,7 +70,7 @@
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
 void InitializePixelIteratorOptions( PixelIteratorOptions *options,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -82,7 +82,7 @@ changes to it.</p>
 <p>The format of the InitializePixelIteratorOptions method is:</p>
 <pre class="literal-block">
 void InitializePixelIteratorOptions( PixelIteratorOptions *options,
-                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                     <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>options:</dt>
@@ -102,7 +102,7 @@ MagickPassFail PixelIterateMonoRead( PixelIteratorMonoReadCallback call_back,
                                      const char *description, void *mutable_data,
                                      const void *immutable_data, const long x, const long y,
                                      const unsigned long columns, const unsigned long rows,
-                                     const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                     const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -118,7 +118,7 @@ MagickPassFail PixelIterateMonoRead( PixelIteratorMonoReadCallback call_back,
                                      const char *description, void *mutable_data,
                                      const void *immutable_data, const long x, const long y,
                                      const unsigned long columns, const unsigned long rows,
-                                     const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                     const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -157,8 +157,8 @@ MagickPassFail PixelIterateMonoModify( PixelIteratorMonoModifyCallback call_back
                                        const char *description, void *mutable_data,
                                        const void *immutable_data, const long x,
                                        const long y, const unsigned long columns,
-                                       const unsigned long rows, <a class="reference" href="types.html#Image">Image</a> *image,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                       const unsigned long rows, <a class="reference" href="types.html#image">Image</a> *image,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -174,8 +174,8 @@ MagickPassFail PixelIterateMonoModify( PixelIteratorMonoModifyCallback call_back
                                        const char *description, void *mutable_data,
                                        const void *immutable_data, const long x,
                                        const long y, const unsigned long columns,
-                                       const unsigned long rows, <a class="reference" href="types.html#Image">Image</a> *image,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                       const unsigned long rows, <a class="reference" href="types.html#image">Image</a> *image,
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -213,10 +213,10 @@ MagickPassFail PixelIterateDualRead( PixelIteratorDualReadCallback call_back,
                                      const PixelIteratorOptions *options,
                                      const char *description, void *mutable_data,
                                      const void *immutable_data, const unsigned long columns,
-                                     const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *first_image,
+                                     const unsigned long rows, const <a class="reference" href="types.html#image">Image</a> *first_image,
                                      const long first_x, const long first_y,
-                                     const <a class="reference" href="types.html#Image">Image</a> *second_image, const long second_x,
-                                     const long second_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception ); ;
+                                     const <a class="reference" href="types.html#image">Image</a> *second_image, const long second_x,
+                                     const long second_y, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception ); ;
 </pre>
 </div>
 <div class="section">
@@ -231,10 +231,10 @@ MagickPassFail PixelIterateDualRead( PixelIteratorDualReadCallback call_back,
                                      const PixelIteratorOptions *options,
                                      const char *description, void *mutable_data,
                                      const void *immutable_data, const unsigned long columns,
-                                     const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *first_image,
+                                     const unsigned long rows, const <a class="reference" href="types.html#image">Image</a> *first_image,
                                      const long first_x, const long first_y,
-                                     const <a class="reference" href="types.html#Image">Image</a> *second_image, const long second_x,
-                                     const long second_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception ); ;
+                                     const <a class="reference" href="types.html#image">Image</a> *second_image, const long second_x,
+                                     const long second_y, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception ); ;
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -279,10 +279,10 @@ MagickPassFail PixelIterateDualModify( PixelIteratorDualModifyCallback call_back
                                        const char *description, void *mutable_data,
                                        const void *immutable_data,
                                        const unsigned long columns, const unsigned long rows,
-                                       const <a class="reference" href="types.html#Image">Image</a> *source_image, const long source_x,
-                                       const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                       const <a class="reference" href="types.html#image">Image</a> *source_image, const long source_x,
+                                       const long source_y, <a class="reference" href="types.html#image">Image</a> *update_image,
                                        const long update_x, const long update_y,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -298,10 +298,10 @@ MagickPassFail PixelIterateDualModify( PixelIteratorDualModifyCallback call_back
                                        const char *description, void *mutable_data,
                                        const void *immutable_data,
                                        const unsigned long columns, const unsigned long rows,
-                                       const <a class="reference" href="types.html#Image">Image</a> *source_image, const long source_x,
-                                       const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                       const <a class="reference" href="types.html#image">Image</a> *source_image, const long source_x,
+                                       const long source_y, <a class="reference" href="types.html#image">Image</a> *update_image,
                                        const long update_x, const long update_y,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -345,10 +345,10 @@ MagickPassFail PixelIterateDualNew( PixelIteratorDualNewCallback call_back,
                                     const PixelIteratorOptions *options,
                                     const char *description, void *mutable_data,
                                     const void *immutable_data, const unsigned long columns,
-                                    const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *source_image,
+                                    const unsigned long rows, const <a class="reference" href="types.html#image">Image</a> *source_image,
                                     const long source_x, const long source_y,
-                                    <a class="reference" href="types.html#Image">Image</a> *new_image, const long new_x,
-                                    const long new_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                    <a class="reference" href="types.html#image">Image</a> *new_image, const long new_x,
+                                    const long new_y, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -365,10 +365,10 @@ MagickPassFail PixelIterateDualNew( PixelIteratorDualNewCallback call_back,
                                     const PixelIteratorOptions *options,
                                     const char *description, void *mutable_data,
                                     const void *immutable_data, const unsigned long columns,
-                                    const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *source_image,
+                                    const unsigned long rows, const <a class="reference" href="types.html#image">Image</a> *source_image,
                                     const long source_x, const long source_y,
-                                    <a class="reference" href="types.html#Image">Image</a> *new_image, const long new_x,
-                                    const long new_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                    <a class="reference" href="types.html#image">Image</a> *new_image, const long new_x,
+                                    const long new_y, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -413,11 +413,11 @@ MagickPassFail PixelIterateTripleModify( PixelIteratorTripleModifyCallback call_
                                          const char *description, void *mutable_data,
                                          const void *immutable_data,
                                          const unsigned long columns, const unsigned long rows,
-                                         const <a class="reference" href="types.html#Image">Image</a> *source1_image,
-                                         const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
-                                         const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                         const <a class="reference" href="types.html#image">Image</a> *source1_image,
+                                         const <a class="reference" href="types.html#image">Image</a> *source2_image, const long source_x,
+                                         const long source_y, <a class="reference" href="types.html#image">Image</a> *update_image,
                                          const long update_x, const long update_y,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -435,11 +435,11 @@ MagickPassFail PixelIterateTripleModify( PixelIteratorTripleModifyCallback call_
                                          const char *description, void *mutable_data,
                                          const void *immutable_data,
                                          const unsigned long columns, const unsigned long rows,
-                                         const <a class="reference" href="types.html#Image">Image</a> *source1_image,
-                                         const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
-                                         const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                         const <a class="reference" href="types.html#image">Image</a> *source1_image,
+                                         const <a class="reference" href="types.html#image">Image</a> *source2_image, const long source_x,
+                                         const long source_y, <a class="reference" href="types.html#image">Image</a> *update_image,
                                          const long update_x, const long update_y,
-                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -486,11 +486,11 @@ MagickPassFail PixelIterateTripleNew( PixelIteratorTripleNewCallback call_back,
                                       const char *description, void *mutable_data,
                                       const void *immutable_data,
                                       const unsigned long columns, const unsigned long rows,
-                                      const <a class="reference" href="types.html#Image">Image</a> *source1_image,
-                                      const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
-                                      const long source_y, <a class="reference" href="types.html#Image">Image</a> *new_image,
+                                      const <a class="reference" href="types.html#image">Image</a> *source1_image,
+                                      const <a class="reference" href="types.html#image">Image</a> *source2_image, const long source_x,
+                                      const long source_y, <a class="reference" href="types.html#image">Image</a> *new_image,
                                       const long new_x, const long new_y,
-                                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -510,11 +510,11 @@ MagickPassFail PixelIterateTripleNew( PixelIteratorTripleNewCallback call_back,
                                       const char *description, void *mutable_data,
                                       const void *immutable_data,
                                       const unsigned long columns, const unsigned long rows,
-                                      const <a class="reference" href="types.html#Image">Image</a> *source1_image,
-                                      const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
-                                      const long source_y, <a class="reference" href="types.html#Image">Image</a> *new_image,
+                                      const <a class="reference" href="types.html#image">Image</a> *source1_image,
+                                      const <a class="reference" href="types.html#image">Image</a> *source2_image, const long source_x,
+                                      const long source_y, <a class="reference" href="types.html#image">Image</a> *new_image,
                                       const long new_x, const long new_y,
-                                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                                      <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>call_back:</dt>
@@ -554,7 +554,7 @@ a region of source pixels and initializes a region of destination pixels.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

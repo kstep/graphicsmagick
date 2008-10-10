@@ -75,7 +75,7 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-CatchException( const <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+CatchException( const <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -84,7 +84,7 @@ CatchException( const <a class="reference" href="types.html#ExceptionInfo">Excep
 the exception as a warning, error, or fatal depending on the severity.</p>
 <p>The format of the CatchException method is:</p>
 <pre class="literal-block">
-CatchException( const <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+CatchException( const <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -98,7 +98,7 @@ CatchException( const <a class="reference" href="types.html#ExceptionInfo">Excep
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-void CopyException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *copy, const <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *original );
+void CopyException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *copy, const <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *original );
 </pre>
 </div>
 <div class="section">
@@ -107,7 +107,7 @@ void CopyException( <a class="reference" href="types.html#ExceptionInfo">Excepti
 to another.</p>
 <p>The format of the CopyException method is:</p>
 <pre class="literal-block">
-void CopyException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *copy, const <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *original );
+void CopyException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *copy, const <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *original );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -123,7 +123,7 @@ void CopyException( <a class="reference" href="types.html#ExceptionInfo">Excepti
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+void DestroyExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -131,7 +131,7 @@ void DestroyExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">
 <p>DestroyExceptionInfo() deallocates memory associated with exception.</p>
 <p>The format of the DestroyExceptionInfo method is:</p>
 <pre class="literal-block">
-void DestroyExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+void DestroyExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -145,7 +145,7 @@ void DestroyExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-GetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+GetExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -153,7 +153,7 @@ GetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">Exception
 <p>GetExceptionInfo() initializes an exception to default values.</p>
 <p>The format of the GetExceptionInfo method is:</p>
 <pre class="literal-block">
-GetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+GetExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -167,7 +167,7 @@ GetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">Exception
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-const char *GetLocaleExceptionMessage( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity, const char *tag );
+const char *GetLocaleExceptionMessage( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity, const char *tag );
 </pre>
 </div>
 <div class="section">
@@ -176,7 +176,7 @@ const char *GetLocaleExceptionMessage( const <a class="reference" href="types.ht
 to a message in the current locale.</p>
 <p>The format of the GetLocaleExceptionMessage method is:</p>
 <pre class="literal-block">
-const char *GetLocaleExceptionMessage( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity, const char *tag );
+const char *GetLocaleExceptionMessage( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity, const char *tag );
 </pre>
 <dl class="docutils">
 <dt>severity:</dt>
@@ -191,7 +191,7 @@ const char *GetLocaleExceptionMessage( const <a class="reference" href="types.ht
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-void MagickError( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> error, const char *reason, const char *description );
+void MagickError( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> error, const char *reason, const char *description );
 </pre>
 </div>
 <div class="section">
@@ -199,7 +199,7 @@ void MagickError( const <a class="reference" href="types.html#ExceptionType">Exc
 <p>Method MagickError calls the error handler methods with an error reason.</p>
 <p>The format of the MagickError method is:</p>
 <pre class="literal-block">
-void MagickError( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> error, const char *reason, const char *description );
+void MagickError( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> error, const char *reason, const char *description );
 </pre>
 <dl class="docutils">
 <dt>exception:</dt>
@@ -217,7 +217,7 @@ program.</dd>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-void MagickFatalError( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> error, const char *reason,
+void MagickFatalError( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> error, const char *reason,
                        const char *description );
 </pre>
 </div>
@@ -227,7 +227,7 @@ void MagickFatalError( const <a class="reference" href="types.html#ExceptionType
 reason.</p>
 <p>The format of the MagickError method is:</p>
 <pre class="literal-block">
-void MagickFatalError( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> error, const char *reason,
+void MagickFatalError( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> error, const char *reason,
                        const char *description );
 </pre>
 <dl class="docutils">
@@ -246,7 +246,7 @@ program.</dd>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-void MagickWarning( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> warning, const char *reason,
+void MagickWarning( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> warning, const char *reason,
                     const char *description );
 </pre>
 </div>
@@ -256,7 +256,7 @@ void MagickWarning( const <a class="reference" href="types.html#ExceptionType">E
 reason.</p>
 <p>The format of the MagickWarning method is:</p>
 <pre class="literal-block">
-void MagickWarning( const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> warning, const char *reason,
+void MagickWarning( const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> warning, const char *reason,
                     const char *description );
 </pre>
 <dl class="docutils">
@@ -274,7 +274,7 @@ void MagickWarning( const <a class="reference" href="types.html#ExceptionType">E
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> SetErrorHandler( <a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> handler );
+<a class="reference" href="types.html#errorhandler">ErrorHandler</a> SetErrorHandler( <a class="reference" href="types.html#errorhandler">ErrorHandler</a> handler );
 </pre>
 </div>
 <div class="section">
@@ -283,7 +283,7 @@ void MagickWarning( const <a class="reference" href="types.html#ExceptionType">E
 and returns the previous error handler.</p>
 <p>The format of the SetErrorHandler method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> SetErrorHandler( <a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> handler );
+<a class="reference" href="types.html#errorhandler">ErrorHandler</a> SetErrorHandler( <a class="reference" href="types.html#errorhandler">ErrorHandler</a> handler );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -297,7 +297,7 @@ and returns the previous error handler.</p>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-SetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity );
+SetExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity );
 </pre>
 </div>
 <div class="section">
@@ -305,7 +305,7 @@ SetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">Exception
 <p>SetExceptionInfo() set the exception severity.</p>
 <p>The format of the SetExceptionInfo method is:</p>
 <pre class="literal-block">
-SetExceptionInfo( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity );
+SetExceptionInfo( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -344,7 +344,7 @@ FatalErrorHandler SetFatalErrorHandler( FatalErrorHandler handler );
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> SetWarningHandler( <a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> handler );
+<a class="reference" href="types.html#errorhandler">ErrorHandler</a> SetWarningHandler( <a class="reference" href="types.html#errorhandler">ErrorHandler</a> handler );
 </pre>
 </div>
 <div class="section">
@@ -353,7 +353,7 @@ FatalErrorHandler SetFatalErrorHandler( FatalErrorHandler handler );
 and returns the previous warning handler.</p>
 <p>The format of the SetWarningHandler method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> SetWarningHandler( <a class="reference" href="types.html#ErrorHandler">ErrorHandler</a> handler );
+<a class="reference" href="types.html#errorhandler">ErrorHandler</a> SetWarningHandler( <a class="reference" href="types.html#errorhandler">ErrorHandler</a> handler );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -367,7 +367,7 @@ and returns the previous warning handler.</p>
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-void ThrowException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity,
+void ThrowException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity,
                      const char *reason, const char *description );
 </pre>
 </div>
@@ -377,7 +377,7 @@ void ThrowException( <a class="reference" href="types.html#ExceptionInfo">Except
 reason, and optional description.</p>
 <p>The format of the ThrowException method is:</p>
 <pre class="literal-block">
-void ThrowException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity,
+void ThrowException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity,
                      const char *reason, const char *description );
 </pre>
 <dl class="docutils">
@@ -397,7 +397,7 @@ void ThrowException( <a class="reference" href="types.html#ExceptionInfo">Except
 <div class="section">
 <h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
-void ThrowLoggedException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity,
+void ThrowLoggedException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity,
                            const char *reason, const char *description, const char *module,
                            const char *function, const unsigned long line ;
 </pre>
@@ -409,7 +409,7 @@ reason, optional description, source filename, function name, and line
 number. If logging is enabled, the exception is also logged.</p>
 <p>The format of the ThrowLoggedException method is:</p>
 <pre class="literal-block">
-void ThrowLoggedException( <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#ExceptionType">ExceptionType</a> severity,
+void ThrowLoggedException( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception, const <a class="reference" href="types.html#exceptiontype">ExceptionType</a> severity,
                            const char *reason, const char *description, const char *module,
                            const char *function, const unsigned long line ;
 </pre>
@@ -434,7 +434,7 @@ void ThrowLoggedException( <a class="reference" href="types.html#ExceptionInfo">
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

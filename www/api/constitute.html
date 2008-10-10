@@ -73,9 +73,9 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConstituteImage( const unsigned long width, const unsigned long height,
-                            const char *map, const <a class="reference" href="types.html#StorageType">StorageType</a> type, const void *pixels,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConstituteImage( const unsigned long width, const unsigned long height,
+                        const char *map, const <a class="reference" href="types.html#storagetype">StorageType</a> type, const void *pixels,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -96,9 +96,9 @@ character data, use</p>
 <p>image=ConstituteImage(640,480,&quot;RGB&quot;,CharPixel,pixels,&amp;exception);</p>
 <p>The format of the Constitute method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConstituteImage( const unsigned long width, const unsigned long height,
-                            const char *map, const <a class="reference" href="types.html#StorageType">StorageType</a> type, const void *pixels,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConstituteImage( const unsigned long width, const unsigned long height,
+                        const char *map, const <a class="reference" href="types.html#storagetype">StorageType</a> type, const void *pixels,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>width:</dt>
@@ -132,8 +132,8 @@ length varies depending on the values of width, height, map, and type.</dd>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConstituteTextureImage( unsigned long columns, unsigned long rows,
-                                   const <a class="reference" href="types.html#Image">Image</a> *texture, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConstituteTextureImage( unsigned long columns, unsigned long rows,
+                               const <a class="reference" href="types.html#image">Image</a> *texture, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -143,8 +143,8 @@ tiling the texture image across and down the new image canvas.  The
 returned image properties are similar to the texture image properties.</p>
 <p>The format of the TextureImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ConstituteTextureImage( unsigned long columns, unsigned long rows,
-                                   const <a class="reference" href="types.html#Image">Image</a> *texture, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ConstituteTextureImage( unsigned long columns, unsigned long rows,
+                               const <a class="reference" href="types.html#image">Image</a> *texture, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>columns:</dt>
@@ -163,10 +163,10 @@ returned image properties are similar to the texture image properties.</p>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int DispatchImage( const <a class="reference" href="types.html#Image">Image</a> *image, const long x_offset, const long y_offset,
+unsigned int DispatchImage( const <a class="reference" href="types.html#image">Image</a> *image, const long x_offset, const long y_offset,
                             const unsigned long columns, const unsigned long rows,
-                            const char *map, const <a class="reference" href="types.html#StorageType">StorageType</a> type, void *pixels,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                            const char *map, const <a class="reference" href="types.html#storagetype">StorageType</a> type, void *pixels,
+                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -186,10 +186,10 @@ character data in red-green-blue order:</p>
 <p>DispatchImage(image,0,0,640,1,&quot;RGB&quot;,0,pixels,exception);</p>
 <p>The format of the DispatchImage method is:</p>
 <pre class="literal-block">
-unsigned int DispatchImage( const <a class="reference" href="types.html#Image">Image</a> *image, const long x_offset, const long y_offset,
+unsigned int DispatchImage( const <a class="reference" href="types.html#image">Image</a> *image, const long x_offset, const long y_offset,
                             const unsigned long columns, const unsigned long rows,
-                            const char *map, const <a class="reference" href="types.html#StorageType">StorageType</a> type, void *pixels,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+                            const char *map, const <a class="reference" href="types.html#storagetype">StorageType</a> type, void *pixels,
+                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -223,7 +223,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ExportImagePixelArea( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+MagickPassFail ExportImagePixelArea( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                                      unsigned int quantum_size, unsigned char *destination,
                                      const ExportPixelAreaOptions *options,
                                      ExportPixelAreaInfo *export_info );
@@ -243,7 +243,7 @@ native CPU type sizes, it can support any integer bit depth from 1 to 32
 otherwise MagickFail.</p>
 <p>The format of the ExportImagePixelArea method is:</p>
 <pre class="literal-block">
-MagickPassFail ExportImagePixelArea( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+MagickPassFail ExportImagePixelArea( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                                      unsigned int quantum_size, unsigned char *destination,
                                      const ExportPixelAreaOptions *options,
                                      ExportPixelAreaInfo *export_info );
@@ -302,7 +302,7 @@ void ExportPixelAreaOptionsInit( ExportPixelAreaOptions *options );
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                                      const unsigned int quantum_size,
                                      const unsigned char *source,
                                      const ImportPixelAreaOptions *options,
@@ -323,7 +323,7 @@ depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.</p>
 otherwise MagickFail.</p>
 <p>The format of the ImportImagePixelArea method is:</p>
 <pre class="literal-block">
-MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#QuantumType">QuantumType</a> quantum_type,
+MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                                      const unsigned int quantum_size,
                                      const unsigned char *source,
                                      const ImportPixelAreaOptions *options,
@@ -381,7 +381,7 @@ void ImportPixelAreaOptionsInit( ImportPixelAreaOptions *options );
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *PingImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *PingImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -392,7 +392,7 @@ than ReadImage().  On failure, a NULL image is returned and exception
 describes the reason for the failure.</p>
 <p>The format of the PingImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *PingImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *PingImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -409,7 +409,7 @@ this structure.</dd>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -420,7 +420,7 @@ cannot be read.  On failure, a NULL image is returned and exception
 describes the reason for the failure.</p>
 <p>The format of the ReadImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -437,8 +437,8 @@ this structure.</dd>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadInlineImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *content,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadInlineImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *content,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -449,8 +449,8 @@ cannot be read.  On failure, a NULL image is returned and exception
 describes the reason for the failure.</p>
 <p>The format of the ReadInlineImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *ReadInlineImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, const char *content,
-                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *ReadInlineImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *content,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -467,7 +467,7 @@ describes the reason for the failure.</p>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int WriteImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int WriteImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -479,7 +479,7 @@ memory shortage or if the image cannot be written.  Check the exception
 member of image to determine the cause for any failure.</p>
 <p>The format of the WriteImage method is:</p>
 <pre class="literal-block">
-unsigned int WriteImage( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image );
+unsigned int WriteImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -495,8 +495,8 @@ unsigned int WriteImage( const <a class="reference" href="types.html#ImageInfo">
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int WriteImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image,
-                          const char *filename, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned int WriteImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image,
+                          const char *filename, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -504,8 +504,8 @@ unsigned int WriteImages( const <a class="reference" href="types.html#ImageInfo"
 <p>WriteImages() writes an image sequence.</p>
 <p>The format of the WriteImages method is:</p>
 <pre class="literal-block">
-unsigned int WriteImages( const <a class="reference" href="types.html#ImageInfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#Image">Image</a> *image,
-                          const char *filename, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+unsigned int WriteImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image,
+                          const char *filename, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -522,7 +522,7 @@ unsigned int WriteImages( const <a class="reference" href="types.html#ImageInfo"
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

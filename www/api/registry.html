@@ -89,8 +89,8 @@ unsigned int DeleteMagickRegistry( const long id );
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
+                                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -99,8 +99,8 @@ unsigned int DeleteMagickRegistry( const long id );
 its name.  If the blob that matches the name is not found, NULL is returned.</p>
 <p>The format of the GetImageFromMagickRegistry method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#Image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
-                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+<a class="reference" href="types.html#image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
+                                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>name:</dt>
@@ -117,8 +117,8 @@ its name.  If the blob that matches the name is not found, NULL is returned.</p>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#RegistryType">RegistryType</a> *type, size_t *length,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#registrytype">RegistryType</a> *type, size_t *length,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -127,8 +127,8 @@ const void *GetMagickRegistry( const long id, <a class="reference" href="types.h
 the blob that matches the id is not found, NULL is returned.</p>
 <p>The format of the GetMagickRegistry method is:</p>
 <pre class="literal-block">
-const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#RegistryType">RegistryType</a> *type, size_t *length,
-                                <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#registrytype">RegistryType</a> *type, size_t *length,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>id:</dt>
@@ -147,8 +147,8 @@ const void *GetMagickRegistry( const long id, <a class="reference" href="types.h
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-long SetMagickRegistry( const <a class="reference" href="types.html#RegistryType">RegistryType</a> type, const void *blob, const size_t length,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+long SetMagickRegistry( const <a class="reference" href="types.html#registrytype">RegistryType</a> type, const void *blob, const size_t length,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -157,8 +157,8 @@ long SetMagickRegistry( const <a class="reference" href="types.html#RegistryType
 If an error occurs, -1 is returned.</p>
 <p>The format of the SetMagickRegistry method is:</p>
 <pre class="literal-block">
-long SetMagickRegistry( const <a class="reference" href="types.html#RegistryType">RegistryType</a> type, const void *blob, const size_t length,
-                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+long SetMagickRegistry( const <a class="reference" href="types.html#registrytype">RegistryType</a> type, const void *blob, const size_t length,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>type:</dt>
@@ -176,7 +176,7 @@ otherise the blob length in number of bytes.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>

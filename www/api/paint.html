@@ -65,9 +65,9 @@
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int ColorFloodfillImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#DrawInfo">DrawInfo</a> *draw_info,
-                                  const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target, const long x_offset,
-                                  const long y_offset, const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> method );
+unsigned int ColorFloodfillImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#drawinfo">DrawInfo</a> *draw_info,
+                                  const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target, const long x_offset,
+                                  const long y_offset, const <a class="reference" href="types.html#paintmethod">PaintMethod</a> method );
 </pre>
 </div>
 <div class="section">
@@ -84,9 +84,9 @@ color red at intensities of 100 and 102 respectively are now
 interpreted as the same color for the purposes of the floodfill.</p>
 <p>The format of the ColorFloodfillImage method is:</p>
 <pre class="literal-block">
-unsigned int ColorFloodfillImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#DrawInfo">DrawInfo</a> *draw_info,
-                                  const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target, const long x_offset,
-                                  const long y_offset, const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> method );
+unsigned int ColorFloodfillImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#drawinfo">DrawInfo</a> *draw_info,
+                                  const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target, const long x_offset,
+                                  const long y_offset, const <a class="reference" href="types.html#paintmethod">PaintMethod</a> method );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -107,9 +107,9 @@ unsigned int ColorFloodfillImage( <a class="reference" href="types.html#Image">I
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int MatteFloodfillImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
+unsigned int MatteFloodfillImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
                                   const unsigned int opacity, const long x_offset,
-                                  const long y_offset, const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> method );
+                                  const long y_offset, const <a class="reference" href="types.html#paintmethod">PaintMethod</a> method );
 </pre>
 </div>
 <div class="section">
@@ -126,9 +126,9 @@ set fuzz to 10 and the opacity values of 100 and 102 respectively are
 now interpreted as the same value for the purposes of the floodfill.</p>
 <p>The format of the MatteFloodfillImage method is:</p>
 <pre class="literal-block">
-unsigned int MatteFloodfillImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
+unsigned int MatteFloodfillImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
                                   const unsigned int opacity, const long x_offset,
-                                  const long y_offset, const <a class="reference" href="types.html#PaintMethod">PaintMethod</a> method );
+                                  const long y_offset, const <a class="reference" href="types.html#paintmethod">PaintMethod</a> method );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -150,8 +150,8 @@ fully transparent.</dd>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int OpaqueImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
-                          const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> fill );
+unsigned int OpaqueImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
+                          const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> fill );
 </pre>
 </div>
 <div class="section">
@@ -165,8 +165,8 @@ For example, set fuzz to 10 and the color red at intensities of 100 and
 102 respectively are now interpreted as the same color.</p>
 <p>The format of the OpaqueImage method is:</p>
 <pre class="literal-block">
-unsigned int OpaqueImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
-                          const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> fill );
+unsigned int OpaqueImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
+                          const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> fill );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -183,7 +183,7 @@ unsigned int OpaqueImage( <a class="reference" href="types.html#Image">Image</a>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned int TransparentImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
+unsigned int TransparentImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
                                const unsigned int opacity );
 </pre>
 </div>
@@ -198,7 +198,7 @@ For example, set fuzz to 10 and the color red at intensities of 100 and
 102 respectively are now interpreted as the same color.</p>
 <p>The format of the TransparentImage method is:</p>
 <pre class="literal-block">
-unsigned int TransparentImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#PixelPacket">PixelPacket</a> target,
+unsigned int TransparentImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> target,
                                const unsigned int opacity );
 </pre>
 <dl class="docutils">
@@ -214,7 +214,7 @@ unsigned int TransparentImage( <a class="reference" href="types.html#Image">Imag
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-09 21:04 UTC.
+Generated on: 2008-10-10 17:52 UTC.
 
 </div>
 </body>
