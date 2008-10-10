@@ -67,14 +67,22 @@
 <h1><a class="toc-backref" href="#id13" id="differenceimage" name="differenceimage">DifferenceImage</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*DifferenceImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">DifferenceImageOptions</span> <span class="pre">*difference_options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *DifferenceImage( const <a class="reference" href="types.html#Image">Image</a> *reference_image, const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                            const DifferenceImageOptions *difference_options,
+                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
 <p>DifferenceImage() returns an annotated difference image based on the
 the difference between a reference image and a compare image.</p>
 <p>The format of the DifferenceImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*DifferenceImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">DifferenceImageOptions</span> <span class="pre">*difference_options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *DifferenceImage( const <a class="reference" href="types.html#Image">Image</a> *reference_image, const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                            const DifferenceImageOptions *difference_options,
+                            <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>reference_image:</dt>
 <dd>the reference image.</dd>
@@ -93,7 +101,13 @@ the difference between a reference image and a compare image.</p>
 <h1><a class="toc-backref" href="#id14" id="getimagechanneldifference" name="getimagechanneldifference">GetImageChannelDifference</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageChannelDifference(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">DifferenceStatistics</span> <span class="pre">*statistics,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageChannelDifference( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                          const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                                          const MetricType metric,
+                                          DifferenceStatistics *statistics,
+                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id2" name="id2">Description</a></h2>
@@ -101,7 +115,13 @@ the difference between a reference image and a compare image.</p>
 with per-channel, and totalized, difference statistics corresponding
 to a specified comparison metric.</p>
 <p>The format of the GetImageChannelDifference method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageChannelDifference(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">DifferenceStatistics</span> <span class="pre">*statistics,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageChannelDifference( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                          const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                                          const MetricType metric,
+                                          DifferenceStatistics *statistics,
+                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>reference_image:</dt>
 <dd>the reference image.</dd>
@@ -120,7 +140,13 @@ to a specified comparison metric.</p>
 <h1><a class="toc-backref" href="#id15" id="getimagechanneldistortion" name="getimagechanneldistortion">GetImageChannelDistortion</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageChannelDistortion(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">ChannelType</span> <span class="pre">channel,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">double</span> <span class="pre">*distortion,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageChannelDistortion( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                          const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                                          const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
+                                          const MetricType metric, double *distortion,
+                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id4" name="id4">Description</a></h2>
@@ -128,7 +154,13 @@ to a specified comparison metric.</p>
 distortion (error) computed according to the specified comparison metric.
 The value returned is only for the channel specified.</p>
 <p>The format of the GetImageChannelDistortion method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageChannelDistortion(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">ChannelType</span> <span class="pre">channel,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">double</span> <span class="pre">*distortion,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageChannelDistortion( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                          const <a class="reference" href="types.html#Image">Image</a> *compare_image,
+                                          const <a class="reference" href="types.html#ChannelType">ChannelType</a> channel,
+                                          const MetricType metric, double *distortion,
+                                          <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>reference_image:</dt>
 <dd>the reference image.</dd>
@@ -149,7 +181,11 @@ The value returned is only for the channel specified.</p>
 <h1><a class="toc-backref" href="#id16" id="getimagedistortion" name="getimagedistortion">GetImageDistortion</a></h1>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageDistortion(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">double</span> <span class="pre">*distortion,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageDistortion( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                   const <a class="reference" href="types.html#Image">Image</a> *compare_image, const MetricType metric,
+                                   double *distortion, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id6" name="id6">Description</a></h2>
@@ -157,7 +193,11 @@ The value returned is only for the channel specified.</p>
 (error) computed according to the specified comparison metric.  The value
 returned reflects all enabled channels.</p>
 <p>The format of the GetImageDistortion method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">GetImageDistortion(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*compare_image,</span> <span class="pre">const</span> <span class="pre">MetricType</span> <span class="pre">metric,</span> <span class="pre">double</span> <span class="pre">*distortion,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail GetImageDistortion( const <a class="reference" href="types.html#Image">Image</a> *reference_image,
+                                   const <a class="reference" href="types.html#Image">Image</a> *compare_image, const MetricType metric,
+                                   double *distortion, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>reference_image:</dt>
 <dd>the reference image.</dd>
@@ -178,7 +218,9 @@ returned reflects all enabled channels.</p>
 <h1><a class="toc-backref" href="#id17" id="isimagesequal" name="isimagesequal">IsImagesEqual</a></h1>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickBool</span> <span class="pre">IsImagesEqual(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickBool IsImagesEqual( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *reference );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id8" name="id8">Description</a></h2>
@@ -202,7 +244,9 @@ of red, green, and blue values in your image.</p>
 image-&gt;normalized_mean_error, suggests the images are very similiar in
 spatial layout and color.</p>
 <p>The format of the IsImagesEqual method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickBool</span> <span class="pre">IsImagesEqual(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*reference</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickBool IsImagesEqual( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#Image">Image</a> *reference );
+</pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
 <dt>image:</dt>
@@ -216,7 +260,10 @@ spatial layout and color.</p>
 <h1><a class="toc-backref" href="#id18" id="initializedifferenceimageoptions" name="initializedifferenceimageoptions">InitializeDifferenceImageOptions</a></h1>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializeDifferenceImageOptions(</span> <span class="pre">DifferenceImageOptions</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializeDifferenceImageOptions( DifferenceImageOptions *options,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id10" name="id10">Description</a></h2>
@@ -225,7 +272,10 @@ DifferenceImageOptions structure.  This function should always be used
 to initialize the DifferenceImageOptions structure prior to making any
 changes to it.</p>
 <p>The format of the InitializeDifferenceImageOptions method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializeDifferenceImageOptions(</span> <span class="pre">DifferenceImageOptions</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializeDifferenceImageOptions( DifferenceImageOptions *options,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>options:</dt>
 <dd>pointer to DifferenceImageOptions structure to initialize.</dd>
@@ -238,14 +288,20 @@ changes to it.</p>
 <h1><a class="toc-backref" href="#id19" id="initializedifferencestatistics" name="initializedifferencestatistics">InitializeDifferenceStatistics</a></h1>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializeDifferenceStatistics(</span> <span class="pre">DifferenceStatistics</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializeDifferenceStatistics( DifferenceStatistics *options,
+                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id12" name="id12">Description</a></h2>
 <p>InitializeDifferenceStatistics() assigns default options to a user-provided
 DifferenceStatistics structure.</p>
 <p>The format of the InitializeDifferenceStatistics method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializeDifferenceStatistics(</span> <span class="pre">DifferenceStatistics</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializeDifferenceStatistics( DifferenceStatistics *options,
+                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>options:</dt>
 <dd>pointer to DifferenceStatistics structure to initialize.</dd>
@@ -257,7 +313,7 @@ DifferenceStatistics structure.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-07 03:51 UTC.
+Generated on: 2008-10-09 21:04 UTC.
 
 </div>
 </body>

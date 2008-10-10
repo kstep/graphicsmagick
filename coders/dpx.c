@@ -1591,26 +1591,22 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
   size_t
     offset,
     row_octets;
-
-  sample_t
-    *samples,                   /* parsed sample array */
-    *samples_itr;               /* current sample */
 
   Quantum
     *map_Y,                     /* value translation map (RGB or Y) */
     *map_CbCr;                  /* value translation map (CbCr) */
 
-  unsigned char
-    *scanline;
+  ThreadViewDataSet
+    *samples_set;
+
+  ThreadViewDataSet
+    *scanline_set;
+
+  ThreadViewSet
+    *view_set=(ThreadViewSet *) NULL;
 
   size_t
     element_size;               /* Number of bytes in an element */
@@ -1621,7 +1617,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_bits_per_sample,        /* maximum number of bits per sample for any element */
     max_samples_per_pixel,      /* maximum number of samples comprising one pixel for any element */
     samples_per_pixel,          /* number of samples comprising one pixel for this element */
-    samples_per_row,            /* number of samples in one row */
+    samples_per_row;            /* number of samples in one row */
+
+  MagickPassFail
     status;
 
   unsigned long
@@ -2032,20 +2030,17 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for ( ; offset < pixels_offset ; offset++ )
     if (ReadBlobByte(image) == EOF)
       ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
   /*
-    Allocate row samples.
+    Allocate thread view set.
   */
-  samples=MagickAllocateArray(sample_t *,image->columns,
-                              max_samples_per_pixel*sizeof(sample_t));
-  if (samples == (sample_t *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  /*
-    Allocate scanline storage.
-  */
-  scanline=MagickAllocateArray(unsigned char *,image->columns,
-                               max_samples_per_pixel*sizeof(U32));
-  if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  view_set=AllocateThreadViewSet(image,exception);
+  if (view_set == (ThreadViewSet *) NULL)
+    {
+      CloseBlob(image);
+      DestroyImageList(image);
+      return ((Image *) NULL);
+    }
 
   /*
     Allocate sample translation map storage.
@@ -2054,13 +2049,102 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             MaxValueGivenBits(max_bits_per_sample)+1,
                             sizeof(Quantum));
   if (map_Y == (Quantum *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-
+    {
+      DestroyThreadViewSet(view_set);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  
   map_CbCr=MagickAllocateArray(Quantum *,
                                MaxValueGivenBits(max_bits_per_sample)+1,
                                sizeof(Quantum));
   if (map_CbCr == (Quantum *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    {
+      MagickFreeMemory(map_Y);
+      DestroyThreadViewSet(view_set);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+
+  {
+    /*
+      Allocate per-thread-view row samples.
+    */
+    MagickPassFail
+      alloc_status=MagickFail;
+
+    samples_set=AllocateThreadViewDataSet(image,exception);
+    if (samples_set != (ThreadViewDataSet *) NULL)
+      {
+        unsigned int
+          allocated_views;
+
+        alloc_status=MagickPass;
+        allocated_views=GetThreadViewDataSetAllocatedViews(samples_set);
+
+        for (i=0; i < allocated_views; i++)
+          {
+            sample_t
+              *samples;
+    
+            samples=MagickAllocateArray(sample_t *,image->columns,
+                                        max_samples_per_pixel*sizeof(sample_t));
+            if (samples == (sample_t *) NULL)
+              {
+                alloc_status=MagickFail;
+                break;
+              }
+            AssignThreadViewData(samples_set,i,samples);
+          }
+      }
+    if (alloc_status == MagickFail)
+      {
+        DestroyThreadViewDataSet(samples_set);
+        MagickFreeMemory(map_CbCr);
+        MagickFreeMemory(map_Y);
+        DestroyThreadViewSet(view_set);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      }
+  }
+  {
+    /*
+      Allocate per-thread-view scanline storage.
+    */
+    MagickPassFail
+      alloc_status=MagickFail;
+
+    scanline_set=AllocateThreadViewDataSet(image,exception);
+    if (scanline_set != (ThreadViewDataSet *) NULL)
+      {
+        unsigned int
+          allocated_views;
+
+        alloc_status=MagickPass;
+        allocated_views=GetThreadViewDataSetAllocatedViews(scanline_set);
+
+        for (i=0; i < allocated_views; i++)
+          {
+            unsigned char
+              *scanline;
+ 
+            scanline=MagickAllocateArray(unsigned char *,image->columns,
+                                         max_samples_per_pixel*sizeof(U32));
+            if (scanline == (unsigned char *) NULL)
+              {
+                alloc_status=MagickFail;
+                break;
+              }
+            AssignThreadViewData(scanline_set,i,scanline);
+          }
+        if (alloc_status == MagickFail)
+          {
+            DestroyThreadViewDataSet(scanline_set);
+            DestroyThreadViewDataSet(samples_set);
+            MagickFreeMemory(map_CbCr);
+            MagickFreeMemory(map_Y);
+            DestroyThreadViewSet(view_set);
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          }
+      }
+  }
 
   /*
     Allow user to over-ride pixel endianness.
@@ -2077,6 +2161,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
+      unsigned long
+        row_count=0;
+
       MagickBool
         swap_word_datums = MagickFalse;
 
@@ -2272,19 +2359,39 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read element data.
           */
+#pragma omp parallel for schedule(dynamic,1)
           for (y=0; y < (long) image->rows; y++)
             {
+              MagickBool
+                thread_status;
+
+              register long
+                x;
+              
+              register PixelPacket
+                *q;
+
+              sample_t
+                *samples_itr;               /* current sample */
+
               PixelPacket
-                *pixels;
+                *pixels=(PixelPacket *) NULL;
 
-              if (element == 0)
-                pixels=SetImagePixels(image,0,y,image->columns,1);
-              else
-                pixels=GetImagePixels(image,0,y,image->columns,1);
-              if (pixels == (PixelPacket *) NULL)
-                break;
+              sample_t
+                *samples;                   /* parsed sample array */
+              
+              unsigned char
+                *scanline;
 
-              q = pixels;
+              unsigned long
+                thread_row_count;
+
+              thread_status=status;
+              if (thread_status == MagickFail)
+                continue;
+
+              samples=AccessThreadViewData(samples_set);
+              scanline=AccessThreadViewData(scanline_set);
 
               /*
                 Obtain a row's worth of samples.
@@ -2294,18 +2401,42 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *scanline_data;
                 
                 scanline_data=scanline;
-                if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
-                  {
-                    status=MagickFail;
-                    break;
-                  }
-                ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
-                               packing_method,endian_type,swap_word_datums,samples);
+#pragma omp critical
+                {
+                  if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
+                    thread_status=MagickFail;
+
+                  thread_row_count=row_count;
+                  row_count++;
+                }
+                  
+                if (thread_status != MagickFail)
+                  ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
+                                 packing_method,endian_type,swap_word_datums,samples);
               }
+
+              if (thread_status != MagickFail)
+                {
+                  if (element == 0)
+                    pixels=SetThreadViewPixels(view_set,0,thread_row_count,image->columns,1,exception);
+                  else
+                    pixels=GetThreadViewPixels(view_set,0,thread_row_count,image->columns,1,exception);
+                }
+
+              if (pixels == (PixelPacket *) NULL)
+                thread_status=MagickFail;
+
+              if (thread_status == MagickFail)
+                {
+#pragma omp critical
+                  status=thread_status;
+                  continue;
+                }
 
               /*
                 Assign samples to pixels.
               */
+              q = pixels;
               samples_itr=samples;
               switch (element_descriptor)
                 {
@@ -2506,18 +2637,24 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 default:
                   break;
                 }
-              if (!SyncImagePixels(image))
-                break;
+
+              if (!SyncThreadViewPixels(view_set,exception))
+                thread_status=MagickFail;
 
               /*
                 FIXME: Add support for optional EOL padding.
               */
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(y,image->rows))
-                  if (!MagickMonitorFormatted(y,image->rows,exception,
+#pragma omp critical
+              {
+                if (QuantumTick(row_count,image->rows))
+                  if (!MagickMonitorFormatted(row_count,image->rows,exception,
                                               LoadImageText,image->filename))
-                    break;
-
+                    thread_status=MagickFail;
+                  
+                if (thread_status == MagickFail)
+                  status=MagickFail;
+              }
+#if 0
               if (BlobIsSeekable(image))
                 {
                   magick_off_t reported_file_offset = TellBlob(image);
@@ -2529,6 +2666,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                     }
                 }
+#endif
             }
           /* break; */
         }
@@ -2571,24 +2709,12 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
-#if 0
-  /*
-    Don't return image in YCbCr colorspace at the moment since it can
-    cause some usability problems elsewhere in GraphicsMagick.
-  */
-  if (IsYCbCrColorspace(image->colorspace))
-    {
-      (void) TransformColorspace(image,RGBColorspace);
-      if (transfer_characteristic == TransferCharacteristicPrintingDensity)
-        image->colorspace=CineonLogRGBColorspace;
-    }
-#endif
-
   /*
     If image is YCbCr representing Cineon Log RGB, then return the image as
     RGB in CineonLog colorspace.
   */
-  if (IsYCbCrColorspace(image->colorspace) && (transfer_characteristic == TransferCharacteristicPrintingDensity))
+  if (IsYCbCrColorspace(image->colorspace) &&
+      (transfer_characteristic == TransferCharacteristicPrintingDensity))
     {
       (void) TransformColorspace(image,RGBColorspace);
       image->colorspace=CineonLogRGBColorspace;
@@ -2599,8 +2725,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=Min(QuantumDepth,image->depth);
   MagickFreeMemory(map_CbCr);
   MagickFreeMemory(map_Y);
-  MagickFreeMemory(samples);
-  MagickFreeMemory(scanline);
+  DestroyThreadViewDataSet(scanline_set);
+  DestroyThreadViewDataSet(samples_set);
+  DestroyThreadViewSet(view_set);
   CloseBlob(image);
   return(image);
 }

@@ -65,7 +65,10 @@
 <h1><a class="toc-backref" href="#id9" id="magickallocfunctions" name="magickallocfunctions">MagickAllocFunctions</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">MagickAllocFunctions(</span> <span class="pre">MagickFreeFunc</span> <span class="pre">free_func,</span> <span class="pre">MagickMallocFunc</span> <span class="pre">malloc_func,</span> <span class="pre">MagickReallocFunc</span> <span class="pre">realloc_func</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_func,
+                           MagickReallocFunc realloc_func );
+</pre>
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
@@ -73,7 +76,10 @@
 free(), malloc(), and realloc() functions.  Otherwise the default system
 versions are used.</p>
 <p>The format of the  MagickAllocFunctions method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">MagickAllocFunctions(</span> <span class="pre">MagickFreeFunc</span> <span class="pre">free_func,</span> <span class="pre">MagickMallocFunc</span> <span class="pre">malloc_func,</span> <span class="pre">MagickReallocFunc</span> <span class="pre">realloc_func</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_func,
+                           MagickReallocFunc realloc_func );
+</pre>
 <dl class="docutils">
 <dt>free_func:</dt>
 <dd>Function to free memory.</dd>
@@ -88,7 +94,9 @@ versions are used.</p>
 <h1><a class="toc-backref" href="#id10" id="magickmalloc" name="magickmalloc">MagickMalloc</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickMalloc(</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickMalloc( const size_t size );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id2" name="id2">Description</a></h2>
@@ -96,7 +104,9 @@ versions are used.</p>
 bytes suitably aligned for any use.  NULL is returned if insufficient
 memory is available or the requested size is zero.</p>
 <p>The format of the  MagickMalloc method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickMalloc(</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickMalloc( const size_t size );
+</pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
 <dt>size:</dt>
@@ -108,7 +118,9 @@ memory is available or the requested size is zero.</p>
 <h1><a class="toc-backref" href="#id11" id="magickclonememory" name="magickclonememory">MagickCloneMemory</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickCloneMemory(</span> <span class="pre">void</span> <span class="pre">*destination,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*source,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickCloneMemory( void *destination, const void *source, const size_t size );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id4" name="id4">Description</a></h2>
@@ -116,7 +128,9 @@ memory is available or the requested size is zero.</p>
 destination.  Copying between objects that overlap will take place
 correctly.  It returns destination.</p>
 <p>The format of the MagickCloneMemory method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickCloneMemory(</span> <span class="pre">void</span> <span class="pre">*destination,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*source,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickCloneMemory( void *destination, const void *source, const size_t size );
+</pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
 <dt>size:</dt>
@@ -128,7 +142,9 @@ correctly.  It returns destination.</p>
 <h1><a class="toc-backref" href="#id12" id="magickrealloc" name="magickrealloc">MagickRealloc</a></h1>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickRealloc(</span> <span class="pre">void</span> <span class="pre">*memory,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickRealloc( void *memory, const size_t size );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id6" name="id6">Description</a></h2>
@@ -138,7 +154,9 @@ lesser of the new and old sizes.  If size is zero, then the memory is
 freed and a NULL value is returned.  If the memory allocation fails, then
 the existing memory is freed, and a NULL value is returned.</p>
 <p>The format of the MagickRealloc method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickRealloc(</span> <span class="pre">void</span> <span class="pre">*memory,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">size</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickRealloc( void *memory, const size_t size );
+</pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
 <dt>memory:</dt>
@@ -152,7 +170,9 @@ the existing memory is freed, and a NULL value is returned.</p>
 <h1><a class="toc-backref" href="#id13" id="magickfree" name="magickfree">MagickFree</a></h1>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickFree(</span> <span class="pre">void</span> <span class="pre">*memory</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickFree( void *memory );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id8" name="id8">Description</a></h2>
@@ -160,7 +180,9 @@ the existing memory is freed, and a NULL value is returned.</p>
 argument is ignored.  The function always returns NULL so that the
 return value may be used to set the memory pointer to null.</p>
 <p>The format of the MagickFree method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">*MagickFree(</span> <span class="pre">void</span> <span class="pre">*memory</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void *MagickFree( void *memory );
+</pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
 <dt>memory:</dt>
@@ -171,7 +193,7 @@ return value may be used to set the memory pointer to null.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-04 21:26 UTC.
+Generated on: 2008-10-09 21:04 UTC.
 
 </div>
 </body>

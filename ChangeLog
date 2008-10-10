@@ -1,3 +1,9 @@
+2008-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* scripts/format_c_api_doc.py: Improvements from Mark Mitchell to
+	perform keyword/target substitions and wrap function prototypes.
+	* coders/dpx.c (ReadDPXImage): Accellerate reader using OpenMP.
+
 2008-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/api/types.rst: Convert types.html to reStructured text

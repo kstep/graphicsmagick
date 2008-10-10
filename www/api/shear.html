@@ -63,7 +63,10 @@
 <h1><a class="toc-backref" href="#id5" id="affinetransformimage" name="affinetransformimage">AffineTransformImage</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AffineTransformImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">AffineMatrix</span> <span class="pre">*affine,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *AffineTransformImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#AffineMatrix">AffineMatrix</a> *affine,
+                                 <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
@@ -71,7 +74,10 @@
 It allocates the memory necessary for the new Image structure and returns
 a pointer to the new image.</p>
 <p>The format of the AffineTransformImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*AffineTransformImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">AffineMatrix</span> <span class="pre">*affine,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *AffineTransformImage( const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#AffineMatrix">AffineMatrix</a> *affine,
+                                 <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>image:</dt>
 <dd>The image.</dd>
@@ -86,7 +92,10 @@ a pointer to the new image.</p>
 <h1><a class="toc-backref" href="#id6" id="rotateimage" name="rotateimage">RotateImage</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*RotateImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">degrees,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *RotateImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double degrees,
+                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id2" name="id2">Description</a></h2>
@@ -103,7 +112,10 @@ Raster Rotatation&quot; by Alan W. Paeth.  RotateImage is adapted from a similar
 method based on the Paeth paper written by Michael Halle of the Spatial
 Imaging Group, MIT Media Lab.</p>
 <p>The format of the RotateImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*RotateImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">degrees,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *RotateImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double degrees,
+                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>status:</dt>
 <dd>Method RotateImage returns a pointer to the image after
@@ -122,7 +134,10 @@ ReadImage.</dd>
 <h1><a class="toc-backref" href="#id7" id="shearimage" name="shearimage">ShearImage</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*ShearImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">x_shear,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">y_shear,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *ShearImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double x_shear, const double y_shear,
+                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id4" name="id4">Description</a></h2>
@@ -140,7 +155,10 @@ a pointer to the new image.</p>
 <p>Method ShearImage is based on the paper &quot;A Fast Algorithm for General
 Raster Rotatation&quot; by Alan W. Paeth.</p>
 <p>The format of the ShearImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*ShearImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">x_shear,</span> <span class="pre">const</span> <span class="pre">double</span> <span class="pre">y_shear,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *ShearImage( const <a class="reference" href="types.html#Image">Image</a> *image, const double x_shear, const double y_shear,
+                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>status:</dt>
 <dd>Method ShearImage returns a pointer to the image after
@@ -158,7 +176,7 @@ ReadImage.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-07 03:51 UTC.
+Generated on: 2008-10-09 21:04 UTC.
 
 </div>
 </body>

@@ -502,6 +502,11 @@ pre.doctest-block {
 	background-color : #E8F8F0;
 }
 
+pre.literal-block a
+{
+	text-decoration : none;
+}
+
 span.classifier {
 	font-style : oblique;
 }

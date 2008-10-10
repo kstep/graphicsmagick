@@ -63,7 +63,10 @@
 <h1><a class="toc-backref" href="#id5" id="borderimage" name="borderimage">BorderImage</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*BorderImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">RectangleInfo</span> <span class="pre">*border_info,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *BorderImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *border_info,
+                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
@@ -72,7 +75,10 @@ the bordercolor member of the image structure.  The width and height
 of the border are defined by the corresponding members of the border_info
 structure.</p>
 <p>The format of the BorderImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*BorderImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">RectangleInfo</span> <span class="pre">*border_info,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *BorderImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *border_info,
+                        <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>image:</dt>
 <dd>The image.</dd>
@@ -87,7 +93,10 @@ structure.</p>
 <h1><a class="toc-backref" href="#id6" id="frameimage" name="frameimage">FrameImage</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*FrameImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">FrameInfo</span> <span class="pre">*frame_info,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *FrameImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#FrameInfo">FrameInfo</a> *frame_info,
+                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id2" name="id2">Description</a></h2>
@@ -97,7 +106,10 @@ Members width and height of frame_info specify the border width of the
 vertical and horizontal sides of the frame.  Members inner and outer
 indicate the width of the inner and outer shadows of the frame.</p>
 <p>The format of the FrameImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">Image</span> <span class="pre">*FrameImage(</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">FrameInfo</span> <span class="pre">*frame_info,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+<a class="reference" href="types.html#Image">Image</a> *FrameImage( const <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#FrameInfo">FrameInfo</a> *frame_info,
+                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>image:</dt>
 <dd>The image.</dd>
@@ -112,7 +124,10 @@ indicate the width of the inner and outer shadows of the frame.</p>
 <h1><a class="toc-backref" href="#id7" id="raiseimage" name="raiseimage">RaiseImage</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">RaiseImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">RectangleInfo</span> <span class="pre">*raise_info,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">raise</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+unsigned int RaiseImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *raise_info,
+                         const int raise );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id4" name="id4">Description</a></h2>
@@ -121,7 +136,10 @@ by lightening and darkening the edges of the image.  Members width and
 height of raise_info define the width of the vertical and horizontal
 edge of the effect.</p>
 <p>The format of the RaiseImage method is:</p>
-<p><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">RaiseImage(</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">const</span> <span class="pre">RectangleInfo</span> <span class="pre">*raise_info,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">raise</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+unsigned int RaiseImage( <a class="reference" href="types.html#Image">Image</a> *image, const <a class="reference" href="types.html#RectangleInfo">RectangleInfo</a> *raise_info,
+                         const int raise );
+</pre>
 <dl class="docutils">
 <dt>image:</dt>
 <dd>The image.</dd>
@@ -136,7 +154,7 @@ otherwise it has a lowered effect.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-07 03:51 UTC.
+Generated on: 2008-10-09 21:04 UTC.
 
 </div>
 </body>

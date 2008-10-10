@@ -115,7 +115,7 @@ def main(argv=None):
                 '--url-prefix=%s' % url_prefix,
                 rstfile_path,
                 htmlfile_path]
-        print 'rst2htmldeco %s' % ' '.join(args)
+        print 'rst2htmldeco.py %s' % ' '.join(args)
         rst2htmldeco.main(args)
         print 'rm', rstfile_path
         os.unlink(rstfile_path)

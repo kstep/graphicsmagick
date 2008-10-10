@@ -68,7 +68,10 @@
 <h1><a class="toc-backref" href="#id15" id="initializepixeliteratoroptions" name="initializepixeliteratoroptions">InitializePixelIteratorOptions</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializePixelIteratorOptions(</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializePixelIteratorOptions( PixelIteratorOptions *options,
+                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
@@ -77,7 +80,10 @@ PixelIteratorOptions structure.  This function should always be used
 to initialize the PixelIteratorOptions structure prior to making any
 changes to it.</p>
 <p>The format of the InitializePixelIteratorOptions method is:</p>
-<p><tt class="docutils literal"><span class="pre">void</span> <span class="pre">InitializePixelIteratorOptions(</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+void InitializePixelIteratorOptions( PixelIteratorOptions *options,
+                                     <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>options:</dt>
 <dd>pointer to PixelIteratorOptions structure to initialize.</dd>
@@ -90,7 +96,14 @@ changes to it.</p>
 <h1><a class="toc-backref" href="#id16" id="pixeliteratemonoread" name="pixeliteratemonoread">PixelIterateMonoRead</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateMonoRead(</span> <span class="pre">PixelIteratorMonoReadCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">y,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateMonoRead( PixelIteratorMonoReadCallback call_back,
+                                     const PixelIteratorOptions *options,
+                                     const char *description, void *mutable_data,
+                                     const void *immutable_data, const long x, const long y,
+                                     const unsigned long columns, const unsigned long rows,
+                                     const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id2" name="id2">Description</a></h2>
@@ -99,7 +112,14 @@ user-provided callback function (of type PixelRowIteratorMonoReadCallback)
 for a row of pixels. This is useful to support simple operations such as
 statistics computation.</p>
 <p>The format of the PixelIterateMonoRead method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateMonoRead(</span> <span class="pre">PixelIteratorMonoReadCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">y,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateMonoRead( PixelIteratorMonoReadCallback call_back,
+                                     const PixelIteratorOptions *options,
+                                     const char *description, void *mutable_data,
+                                     const void *immutable_data, const long x, const long y,
+                                     const unsigned long columns, const unsigned long rows,
+                                     const <a class="reference" href="types.html#Image">Image</a> *image, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which is passed the
@@ -131,7 +151,15 @@ address of pixels from each image.</dd>
 <h1><a class="toc-backref" href="#id17" id="pixeliteratemonomodify" name="pixeliteratemonomodify">PixelIterateMonoModify</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateMonoModify(</span> <span class="pre">PixelIteratorMonoModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">y,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateMonoModify( PixelIteratorMonoModifyCallback call_back,
+                                       const PixelIteratorOptions *options,
+                                       const char *description, void *mutable_data,
+                                       const void *immutable_data, const long x,
+                                       const long y, const unsigned long columns,
+                                       const unsigned long rows, <a class="reference" href="types.html#Image">Image</a> *image,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id4" name="id4">Description</a></h2>
@@ -140,7 +168,15 @@ a user-provided callback function (of type PixelIteratorMonoReadCallback)
 for a region of pixels. This is useful to support simple operations such as
 level shifting, colorspace translation, or thresholding.</p>
 <p>The format of the PixelIterateMonoModify method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateMonoModify(</span> <span class="pre">PixelIteratorMonoModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">y,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">Image</span> <span class="pre">*image,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateMonoModify( PixelIteratorMonoModifyCallback call_back,
+                                       const PixelIteratorOptions *options,
+                                       const char *description, void *mutable_data,
+                                       const void *immutable_data, const long x,
+                                       const long y, const unsigned long columns,
+                                       const unsigned long rows, <a class="reference" href="types.html#Image">Image</a> *image,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which is passed the
@@ -172,7 +208,16 @@ address of pixels from each image.</dd>
 <h1><a class="toc-backref" href="#id18" id="pixeliteratedualread" name="pixeliteratedualread">PixelIterateDualRead</a></h1>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualRead(</span> <span class="pre">PixelIteratorDualReadCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*first_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">first_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">first_y,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*second_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">second_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">second_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span> <span class="pre">;</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualRead( PixelIteratorDualReadCallback call_back,
+                                     const PixelIteratorOptions *options,
+                                     const char *description, void *mutable_data,
+                                     const void *immutable_data, const unsigned long columns,
+                                     const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *first_image,
+                                     const long first_x, const long first_y,
+                                     const <a class="reference" href="types.html#Image">Image</a> *second_image, const long second_x,
+                                     const long second_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception ); ;
+</pre>
 </div>
 <div class="section">
 <h2><a id="id6" name="id6">Description</a></h2>
@@ -181,7 +226,16 @@ invokes a user-provided callback function (of type
 PixelIteratorDualReadCallback) for each row of pixels. This is useful to
 support operations such as image comparison.</p>
 <p>The format of the PixelIterateDualModify method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualRead(</span> <span class="pre">PixelIteratorDualReadCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*first_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">first_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">first_y,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*second_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">second_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">second_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span> <span class="pre">;</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualRead( PixelIteratorDualReadCallback call_back,
+                                     const PixelIteratorOptions *options,
+                                     const char *description, void *mutable_data,
+                                     const void *immutable_data, const unsigned long columns,
+                                     const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *first_image,
+                                     const long first_x, const long first_y,
+                                     const <a class="reference" href="types.html#Image">Image</a> *second_image, const long second_x,
+                                     const long second_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception ); ;
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which is passed the
@@ -219,7 +273,17 @@ address of pixels from each image.</dd>
 <h1><a class="toc-backref" href="#id19" id="pixeliteratedualmodify" name="pixeliteratedualmodify">PixelIterateDualModify</a></h1>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualModify(</span> <span class="pre">PixelIteratorDualModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*update_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualModify( PixelIteratorDualModifyCallback call_back,
+                                       const PixelIteratorOptions *options,
+                                       const char *description, void *mutable_data,
+                                       const void *immutable_data,
+                                       const unsigned long columns, const unsigned long rows,
+                                       const <a class="reference" href="types.html#Image">Image</a> *source_image, const long source_x,
+                                       const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                       const long update_x, const long update_y,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id8" name="id8">Description</a></h2>
@@ -228,7 +292,17 @@ invokes a user-provided callback function (of type
 PixelIteratorDualModifyCallback) for each row of pixels. This is useful to
 support operations such as composition.</p>
 <p>The format of the PixelIterateDualModify method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualModify(</span> <span class="pre">PixelIteratorDualModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*update_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualModify( PixelIteratorDualModifyCallback call_back,
+                                       const PixelIteratorOptions *options,
+                                       const char *description, void *mutable_data,
+                                       const void *immutable_data,
+                                       const unsigned long columns, const unsigned long rows,
+                                       const <a class="reference" href="types.html#Image">Image</a> *source_image, const long source_x,
+                                       const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                       const long update_x, const long update_y,
+                                       <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which reads from
@@ -266,7 +340,16 @@ a region of source pixels and updates a region of destination pixels.</dd>
 <h1><a class="toc-backref" href="#id20" id="pixeliteratedualnew" name="pixeliteratedualnew">PixelIterateDualNew</a></h1>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualNew(</span> <span class="pre">PixelIteratorDualNewCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*new_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualNew( PixelIteratorDualNewCallback call_back,
+                                    const PixelIteratorOptions *options,
+                                    const char *description, void *mutable_data,
+                                    const void *immutable_data, const unsigned long columns,
+                                    const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *source_image,
+                                    const long source_x, const long source_y,
+                                    <a class="reference" href="types.html#Image">Image</a> *new_image, const long new_x,
+                                    const long new_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id10" name="id10">Description</a></h2>
@@ -277,7 +360,16 @@ new output image is created based on an input image.  The difference from
 PixelIterateDualModify() is that the output pixels are not initialized so
 it is more efficient when outputting a new image.</p>
 <p>The format of the PixelIterateDualNew method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateDualNew(</span> <span class="pre">PixelIteratorDualNewCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*new_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateDualNew( PixelIteratorDualNewCallback call_back,
+                                    const PixelIteratorOptions *options,
+                                    const char *description, void *mutable_data,
+                                    const void *immutable_data, const unsigned long columns,
+                                    const unsigned long rows, const <a class="reference" href="types.html#Image">Image</a> *source_image,
+                                    const long source_x, const long source_y,
+                                    <a class="reference" href="types.html#Image">Image</a> *new_image, const long new_x,
+                                    const long new_y, <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which reads from
@@ -315,7 +407,18 @@ a region of source pixels and initializes a region of destination pixels.</dd>
 <h1><a class="toc-backref" href="#id21" id="pixeliteratetriplemodify" name="pixeliteratetriplemodify">PixelIterateTripleModify</a></h1>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateTripleModify(</span> <span class="pre">PixelIteratorTripleModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source1_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source2_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*update_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateTripleModify( PixelIteratorTripleModifyCallback call_back,
+                                         const PixelIteratorOptions *options,
+                                         const char *description, void *mutable_data,
+                                         const void *immutable_data,
+                                         const unsigned long columns, const unsigned long rows,
+                                         const <a class="reference" href="types.html#Image">Image</a> *source1_image,
+                                         const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
+                                         const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                         const long update_x, const long update_y,
+                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id12" name="id12">Description</a></h2>
@@ -326,7 +429,18 @@ images are read-only, while the third image is read-write for update.
 Access of the first two images is done lock-step using the same coordinates.
 This is useful to support operations such as image differencing.</p>
 <p>The format of the PixelIterateTripleModify method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateTripleModify(</span> <span class="pre">PixelIteratorTripleModifyCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source1_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source2_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*update_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">update_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateTripleModify( PixelIteratorTripleModifyCallback call_back,
+                                         const PixelIteratorOptions *options,
+                                         const char *description, void *mutable_data,
+                                         const void *immutable_data,
+                                         const unsigned long columns, const unsigned long rows,
+                                         const <a class="reference" href="types.html#Image">Image</a> *source1_image,
+                                         const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
+                                         const long source_y, <a class="reference" href="types.html#Image">Image</a> *update_image,
+                                         const long update_x, const long update_y,
+                                         <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which reads from
@@ -366,7 +480,18 @@ a region of source pixels and updates a region of destination pixels.</dd>
 <h1><a class="toc-backref" href="#id22" id="pixeliteratetriplenew" name="pixeliteratetriplenew">PixelIterateTripleNew</a></h1>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateTripleNew(</span> <span class="pre">PixelIteratorTripleNewCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source1_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source2_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*new_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateTripleNew( PixelIteratorTripleNewCallback call_back,
+                                      const PixelIteratorOptions *options,
+                                      const char *description, void *mutable_data,
+                                      const void *immutable_data,
+                                      const unsigned long columns, const unsigned long rows,
+                                      const <a class="reference" href="types.html#Image">Image</a> *source1_image,
+                                      const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
+                                      const long source_y, <a class="reference" href="types.html#Image">Image</a> *new_image,
+                                      const long new_x, const long new_y,
+                                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 </div>
 <div class="section">
 <h2><a id="id14" name="id14">Description</a></h2>
@@ -379,7 +504,18 @@ This is used if a new output image is created based on two input images.
 The difference from PixelIterateTripleModify() is that the output pixels
 are not initialized so it is more efficient when outputting a new image.</p>
 <p>The format of the PixelIterateTripleNew method is:</p>
-<p><tt class="docutils literal"><span class="pre">MagickPassFail</span> <span class="pre">PixelIterateTripleNew(</span> <span class="pre">PixelIteratorTripleNewCallback</span> <span class="pre">call_back,</span> <span class="pre">const</span> <span class="pre">PixelIteratorOptions</span> <span class="pre">*options,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*description,</span> <span class="pre">void</span> <span class="pre">*mutable_data,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*immutable_data,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">columns,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">rows,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source1_image,</span> <span class="pre">const</span> <span class="pre">Image</span> <span class="pre">*source2_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">source_y,</span> <span class="pre">Image</span> <span class="pre">*new_image,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_x,</span> <span class="pre">const</span> <span class="pre">long</span> <span class="pre">new_y,</span> <span class="pre">ExceptionInfo</span> <span class="pre">*exception</span> <span class="pre">);</span></tt></p>
+<pre class="literal-block">
+MagickPassFail PixelIterateTripleNew( PixelIteratorTripleNewCallback call_back,
+                                      const PixelIteratorOptions *options,
+                                      const char *description, void *mutable_data,
+                                      const void *immutable_data,
+                                      const unsigned long columns, const unsigned long rows,
+                                      const <a class="reference" href="types.html#Image">Image</a> *source1_image,
+                                      const <a class="reference" href="types.html#Image">Image</a> *source2_image, const long source_x,
+                                      const long source_y, <a class="reference" href="types.html#Image">Image</a> *new_image,
+                                      const long new_x, const long new_y,
+                                      <a class="reference" href="types.html#ExceptionInfo">ExceptionInfo</a> *exception );
+</pre>
 <dl class="docutils">
 <dt>call_back:</dt>
 <dd>A user-provided C callback function which reads from
@@ -418,7 +554,7 @@ a region of source pixels and initializes a region of destination pixels.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-07 02:30 UTC.
+Generated on: 2008-10-09 21:04 UTC.
 
 </div>
 </body>

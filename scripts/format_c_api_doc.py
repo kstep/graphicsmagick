@@ -65,6 +65,65 @@ import sys
 import getopt
 import os, os.path
 import re
+import textwrap
+
+
+# Key words to replace with HTML links
+keywords = {
+    'AffineMatrix'       : '`AffineMatrix`_',
+    'BlobInfo'           : '`BlobInfo`_',
+    'Cache'              : '`Cache`_',
+    'ChannelType'        : '`ChannelType`_',
+    'ChromaticityInfo'   : '`ChromaticityInfo`_',
+    'ClassType'          : '`ClassType`_',
+    'ClipPathUnits'      : '`ClipPathUnits`_',
+    'ColorPacket'        : '`ColorPacket`_',
+    'ColorspaceType'     : '`ColorspaceType`_',
+    'ComplianceType'     : '`ComplianceType`_',
+    'CompositeOperator'  : '`CompositeOperator`_',
+    'CompressionType'    : '`CompressionType`_',
+    'DecorationType'     : '`DecorationType`_',
+    'DrawContext'        : '`DrawContext`_',
+    'DrawInfo'           : '`DrawInfo`_',
+    'ErrorHandler'       : '`ErrorHandler`_',
+    'ExceptionInfo'      : '`ExceptionInfo`_',
+    'ExceptionType'      : '`ExceptionType`_',
+    'FillRule'           : '`FillRule`_',
+    'FilterTypes'        : '`FilterTypes`_',
+    'FrameInfo'          : '`FrameInfo`_',
+    'GravityType'        : '`GravityType`_',
+    'Image'              : '`Image`_',
+    'ImageInfo'          : '`ImageInfo`_',
+    'ImageType'          : '`ImageType`_',
+    'InterlaceType'      : '`InterlaceType`_',
+    'LayerType'          : '`LayerType`_',
+    'MagickInfo'         : '`MagickInfo`_',
+    'MonitorHandler'     : '`MonitorHandler`_',
+    'MontageInfo'        : '`MontageInfo`_',
+    'NoiseType'          : '`NoiseType`_',
+    'PaintMethod'        : '`PaintMethod`_',
+    'PixelPacket'        : '`PixelPacket`_',
+    'PointInfo'          : '`PointInfo`_',
+    'ProfileInfo'        : '`ProfileInfo`_',
+    'QuantizeInfo'       : '`QuantizeInfo`_',
+    'Quantum'            : '`Quantum`_',
+    'QuantumType'        : '`QuantumType`_',
+    'RectangleInfo'      : '`RectangleInfo`_',
+    'RegistryType'       : '`RegistryType`_',
+    'RenderingIntent'    : '`RenderingIntent`_',
+    'ResolutionType'     : '`ResolutionType`_',
+    'ResourceType'       : '`ResourceType`_',
+    'SegmentInfo'        : '`SegmentInfo`_',
+    'SignatureInfo'      : '`SignatureInfo`_',
+    'StorageType'        : '`StorageType`_',
+    'StreamHandler'      : '`StreamHandler`_',
+    'StretchType'        : '`StretchType`_',
+    'StyleType'          : '`StyleType`_',
+    'TypeMetric'         : '`TypeMetric`_',
+    'ViewInfo'           : '`ViewInfo`_',
+    'VirtualPixelMethod' : '`VirtualPixelMethod`_',
+    'MagickXResourceInfo'      : '`MagickXResourceInfo`_',
+    }
 
 
 state_init = 0
@@ -126,7 +185,44 @@ class Prototype:
 
     def __str__(self):
         proto = ' '.join(self.lines)
-        return "``%s``" % proto_pretty(proto)
+        proto = proto_pretty(proto)
+        # escape all the '*' chars
+        proto = re.sub(r'\*', '\\*', proto)
+        # escape all the '_' chars
+        proto = re.sub(r'_', '\\_', proto)
+        # now replace keywords with hyperlinks
+        for k,v in keywords.iteritems():
+            proto = re.sub(r'^%s ' % k, '%s ' % v, proto)
+            proto = re.sub(r' %s ' % k, ' %s ' % v, proto)
+
+        # make some attempt to wrap the text nicely
+        openparen_index = proto.find('(')
+        if openparen_index > 0:
+            fcn = proto[:openparen_index+1]
+            indent_len = len(fcn) + 3
+            params = proto[openparen_index+1:].split(',')
+            params = [p.strip() for p in params]
+            max_param_len = 0
+            for x in params:
+                if len(x) > max_param_len:
+                    max_param_len = len(x)
+            wrap_width = max(96, max_param_len + indent_len)
+
+            proto_lines = []
+            line = fcn + ' '
+            while params:
+                x = params.pop(0)
+                if len(line) + len(x) > wrap_width:
+                    proto_lines.append(line)
+                    line = ' ' * indent_len
+
+                line += x
+                if params:
+                    line += ', '
+
+            proto_lines.append(line)
+            proto = '\n  '.join(proto_lines)                    
+        return ".. parsed-literal::\n\n    %s" % proto
 
 
 class ListItem:
@@ -390,6 +486,8 @@ def process_srcfile(srcfilepath, basename, whatis, outfile):
         print >> outfile, "-" * len(whatis)
     print >> outfile
     print >> outfile, '.. contents:: :depth: 1'
+    print >> outfile
+    print >> outfile, '.. include:: api_hyperlinks.rst'
     print >> outfile
 
     # print all functions found in this source file
