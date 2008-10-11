@@ -11,9 +11,7 @@ wwwapidir = $(htmldir)/api
 
 WWWAPIDIR = $(top_srcdir)/www/api
 
-
 WWWAPI_HTML_TARGETS = \
-	$(WWWAPIDIR)/api.html \
 	$(WWWAPIDIR)/animate.html \
 	$(WWWAPIDIR)/annotate.html \
 	$(WWWAPIDIR)/attribute.html \
@@ -57,8 +55,6 @@ WWWAPI_HTML_TARGETS = \
 WWWWAPI_FILES = \
 	www/api/animate.html \
 	www/api/annotate.html \
-	www/api/api.html \
-	www/api/api.rst \
 	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
 	www/api/blob.html \

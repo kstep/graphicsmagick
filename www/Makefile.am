@@ -32,10 +32,12 @@ uninstall-data-html:
 	done
 
 RST2HTML_TARGETS = \
+	$(WWWDIR)/Magick++/index.html \
+	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/api/api.html \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
-	$(WWWDIR)/formats.html \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/NEWS.html \
@@ -46,6 +48,8 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/bugs.html \
 	$(WWWDIR)/contribute.html \
 	$(WWWDIR)/download.html \
+	$(WWWDIR)/formats.html \
+	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/index.html \
 	$(WWWDIR)/links.html \
 	$(WWWDIR)/miff.html \
@@ -62,13 +66,17 @@ RST2HTML_TARGETS = \
 WWW_RST_FILES = \
 	www/CVS.rst \
 	www/FAQ.rst \
-	www/formats.rst \
 	www/OpenMP.rst \
+	www/Magick++/index.rst \
+	www/Magick++/Documentation.rst \
+	www/api/api.rst \
 	www/authors.rst \
 	www/benchmarks.rst \
 	www/bugs.rst \
 	www/contribute.rst \
 	www/download.rst \
+	www/formats.rst \
+	www/ImageMagickObject.rst \
 	www/index.rst \
 	www/links.rst \
 	www/miff.rst \
@@ -91,10 +99,15 @@ WWW_HTML_FILES = \
 	www/INSTALL-unix.html \
 	www/INSTALL-windows.html \
 	www/ImageMagickObject.html \
+	www/ImageMagickObject.rst \
+	www/Magick++/Documentation.html \
+	www/Magick++/Documentation.rst \
+	www/Magick++/index.html \
 	www/NEWS.html \
 	www/OpenMP.html \
 	www/README.html \
 	www/animate.html \
+	www/api/api.html \
 	www/authors.html \
 	www/benchmarks.html \
 	www/bugs.html \
