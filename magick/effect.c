@@ -3798,7 +3798,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  sharp_image=GaussianBlurImage(image,radius,sigma,exception);
+  sharp_image=BlurImage(image,radius,sigma,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
   options.amount=amount;

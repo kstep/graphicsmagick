@@ -24,6 +24,9 @@
 2008-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/filter.t: Add a test for UnsharpMask.
+  <LI> magick/effect.c (UnsharpMaskImage): Use Blur rather than
+        GaussianBlur to create blur image since it is faster.
   <LI> magick/pixel_cache.c (AllocateThreadViewDataSet): Add a
         destructor function in case data should not be destroyed, or needs
         something other than MagickFree().
