@@ -228,15 +228,28 @@ extern "C" {
   } ThreadViewSet;
 
 
+  /*
+    Destroy a thread view set.
+  */
   extern MagickExport void
   DestroyThreadViewSet(ThreadViewSet *view_set);
-  
+
+  /*
+    Allocate a thread view set.
+  */
   extern MagickExport ThreadViewSet
   *AllocateThreadViewSet(Image *image,ExceptionInfo *exception);
-  
+
+  /*
+    Obtain the view corresponding to the current thread from the
+    thread view set.
+  */
   extern MagickExport ViewInfo
   *AccessThreadView(ThreadViewSet *view_set);
 
+  /*
+    Obtain the number of allocated views in the thread view set.
+  */
   extern MagickExport unsigned int
   GetThreadViewSetAllocatedViews(ThreadViewSet *view_set);
 
@@ -363,7 +376,7 @@ extern "C" {
 
   /*
    *
-   * Inline convenience functions for using thread view sets
+   * Convenience functions for using thread view sets
    *
    */
 
@@ -371,83 +384,59 @@ extern "C" {
     AcquireThreadViewPixels() obtains a read-only pixel region from a
     cache thread view.
   */
-  static inline const PixelPacket
+  MagickExport const PixelPacket
   *AcquireThreadViewPixels(ThreadViewSet *view_set,
                            const long x,const long y,
                            const unsigned long columns,
-                           const unsigned long rows,ExceptionInfo *exception)
-  {
-    return AcquireCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
-                                  exception);
-  }
+                           const unsigned long rows,ExceptionInfo *exception);
 
   /*
     AcquireThreadViewViewIndexes() returns the read-only indexes
     associated with a cache thread view.
   */
-  static inline const IndexPacket
-  *AcquireThreadViewIndexes(ThreadViewSet *view_set)
-  {
-    return AcquireCacheViewIndexes(AccessThreadView(view_set));
-  }
+  MagickExport const IndexPacket
+  *AcquireThreadViewIndexes(ThreadViewSet *view_set);
 
   /*
     AcquireOneThreadViewPixel() returns one pixel from a cache thread
     view.
   */
-  static inline PixelPacket
+  MagickExport PixelPacket
   AcquireOneThreadViewPixel(ThreadViewSet *view_set,const long x,const long y,
-                            ExceptionInfo *exception)
-  {
-    return AcquireOneCacheViewPixel(AccessThreadView(view_set),x,y,exception);
-  }
+                            ExceptionInfo *exception);
 
   /*
     GetThreadViewPixels() obtains a writeable pixel region from a
     cache thread view.
   */
-  static inline PixelPacket
+  MagickExport PixelPacket
   *GetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
                        const unsigned long columns,const unsigned long rows,
-                       ExceptionInfo *exception)
-  {
-    return GetCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
-                              exception);
-  }
+                       ExceptionInfo *exception);
 
   /*
     GetThreadViewIndexes() returns the writeable indexes associated
     with a cache thread view.
   */
-  static inline IndexPacket
-  *GetThreadViewIndexes(ThreadViewSet *view_set)
-  {
-    return GetCacheViewIndexes(AccessThreadView(view_set));
-  }
+  MagickExport IndexPacket
+  *GetThreadViewIndexes(ThreadViewSet *view_set);
 
   /*
     SetThreadViewPixels() gets blank writeable pixels from a cache
     thread view.
   */
-  static inline PixelPacket
+  MagickExport PixelPacket
   *SetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
                        const unsigned long columns,const unsigned long rows,
-                       ExceptionInfo *exception)
-  {
-    return SetCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
-                              exception);
-  }
+                       ExceptionInfo *exception);
 
   /*
     SyncThreadViewPixels() saves any changes to pixel cache thread
     view.
   */
-  static inline MagickPassFail
+  MagickExport MagickPassFail
   SyncThreadViewPixels(ThreadViewSet *view_set,
-                       ExceptionInfo *exception)
-  {
-    return SyncCacheViewPixels(AccessThreadView(view_set),exception);
-  }
+                       ExceptionInfo *exception);
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

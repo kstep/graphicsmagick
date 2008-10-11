@@ -467,6 +467,90 @@ GetThreadViewSetAllocatedViews(ThreadViewSet *view_set)
 }
 
 
+/*
+  AcquireThreadViewPixels() obtains a read-only pixel region from a
+  cache thread view.
+*/
+MagickExport const PixelPacket
+*AcquireThreadViewPixels(ThreadViewSet *view_set,
+                         const long x,const long y,
+                         const unsigned long columns,
+                         const unsigned long rows,ExceptionInfo *exception)
+{
+  return AcquireCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
+                                exception);
+}
+
+/*
+  AcquireThreadViewViewIndexes() returns the read-only indexes
+  associated with a cache thread view.
+*/
+MagickExport const IndexPacket
+*AcquireThreadViewIndexes(ThreadViewSet *view_set)
+{
+  return AcquireCacheViewIndexes(AccessThreadView(view_set));
+}
+
+/*
+  AcquireOneThreadViewPixel() returns one pixel from a cache thread
+  view.
+*/
+MagickExport PixelPacket
+AcquireOneThreadViewPixel(ThreadViewSet *view_set,const long x,const long y,
+                          ExceptionInfo *exception)
+{
+  return AcquireOneCacheViewPixel(AccessThreadView(view_set),x,y,exception);
+}
+
+/*
+  GetThreadViewPixels() obtains a writeable pixel region from a
+  cache thread view.
+*/
+MagickExport PixelPacket
+*GetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
+                     const unsigned long columns,const unsigned long rows,
+                     ExceptionInfo *exception)
+{
+  return GetCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
+                            exception);
+}
+
+/*
+  GetThreadViewIndexes() returns the writeable indexes associated
+  with a cache thread view.
+*/
+MagickExport IndexPacket
+*GetThreadViewIndexes(ThreadViewSet *view_set)
+{
+  return GetCacheViewIndexes(AccessThreadView(view_set));
+}
+
+/*
+  SetThreadViewPixels() gets blank writeable pixels from a cache
+  thread view.
+*/
+MagickExport PixelPacket
+*SetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
+                     const unsigned long columns,const unsigned long rows,
+                     ExceptionInfo *exception)
+{
+  return SetCacheViewPixels(AccessThreadView(view_set),x,y,columns,rows,
+                            exception);
+}
+
+/*
+  SyncThreadViewPixels() saves any changes to pixel cache thread
+  view.
+*/
+MagickExport MagickPassFail
+SyncThreadViewPixels(ThreadViewSet *view_set,
+                     ExceptionInfo *exception)
+{
+  return SyncCacheViewPixels(AccessThreadView(view_set),exception);
+}
+
+
+
 MagickExport void
 DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
 {

@@ -1,3 +1,11 @@
+2008-10-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (AcquireThreadViewPixels): Convert thread
+	set view convenience methods into library methods because the
+	inline methods were causing the Sun Studio compiler to produce
+	thread unsafe code.  Due to likely beneficial inlining in the
+	library, this is not expected to cause any performance impact.
+
 2008-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/filter.t: Add a test for UnsharpMask.
