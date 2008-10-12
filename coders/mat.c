@@ -301,7 +301,7 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 
 
 /* Calculate minimum and maximum from a given block of data */
-void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, StorageType CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 magick_off_t filepos;
 int i, x;
