@@ -175,6 +175,12 @@ extern MagickExport void
   ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options),
   ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options);
 
+extern MagickExport MagickPassFail
+  MagickFindRawImageMinMax(Image *image, EndianType endian,
+    unsigned long width, unsigned long height,StorageType type,
+    unsigned scanline_octets, void *scanline_buffer,
+    double *min, double *max);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

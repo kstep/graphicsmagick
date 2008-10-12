@@ -62,10 +62,10 @@ testReadWrite( 'DIB:input.dib',
 
 print("Flexible Image Transport System ...\n");
 ++$test;
-testReadWrite( 'FITS:input.fits',
+testReadWrite( 'FITS:input_gray_08bit.fits',
   'FITS:output.fits',
   q//,
-  '0e54b24352da9f7d0966c9b882988b9124b6b7fd7493ff266f4c03382b94a42a' );
+  '863a70f43cb481512e805babd7e09360ef6e5c7fe75725712242b367f0d0ef28' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;

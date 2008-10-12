@@ -2408,6 +2408,10 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                   thread_row_count=row_count;
                   row_count++;
+                  if (QuantumTick(thread_row_count,image->rows))
+                    if (!MagickMonitorFormatted(thread_row_count,image->rows,exception,
+                                                LoadImageText,image->filename))
+                      thread_status=MagickFail;
                 }
                   
                 if (thread_status != MagickFail)
@@ -2643,17 +2647,10 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
               /*
                 FIXME: Add support for optional EOL padding.
-              */
+              */              
+              if (thread_status == MagickFail)
 #pragma omp critical
-              {
-                if (QuantumTick(row_count,image->rows))
-                  if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                              LoadImageText,image->filename))
-                    thread_status=MagickFail;
-                  
-                if (thread_status == MagickFail)
-                  status=MagickFail;
-              }
+                status=MagickFail;
 #if 0
               if (BlobIsSeekable(image))
                 {

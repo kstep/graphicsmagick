@@ -253,114 +253,6 @@ static void InsertComplexFloatRow(float *p, int y, Image * image, double MinVal,
 
 /************** READERS ******************/
 
-/* This function reads one block of floats*/
-static void ReadBlobFloatsLSB(Image * image, size_t len, float *data)
-{
-  while (len >= 4)
-  {
-    *data++ = ReadBlobLSBFloat(image);
-    len -= sizeof(float);
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-static void ReadBlobFloatsMSB(Image * image, size_t len, float *data)
-{
-  while (len >= 4)
-  {
-    *data++ = ReadBlobMSBFloat(image);
-    len -= sizeof(float);
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-/* This function reads one block of doubles*/
-static void ReadBlobDoublesLSB(Image * image, size_t len, double *data)
-{
-  while (len >= 8)
-  {
-    *data++ = ReadBlobLSBDouble(image);
-    len -= sizeof(double);
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
-{
-  while (len >= 8)
-  {
-    *data++ = ReadBlobMSBDouble(image);
-    len -= sizeof(double);
-  }
-  if (len > 0)
-    (void) SeekBlob(image, len, SEEK_CUR);
-}
-
-
-/* Calculate minimum and maximum from a given block of data */
-void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, StorageType CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
-{
-magick_off_t filepos;
-int i, x;
-void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
-void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
-double *dblrow;
-float *fltrow;
-
-  if (endian_indicator == LSBEndian)
-  {    
-    ReadBlobDoublesXXX = ReadBlobDoublesLSB;
-    ReadBlobFloatsXXX = ReadBlobFloatsLSB;   
-  } 
-  else		/* MI */
-  {    
-    ReadBlobDoublesXXX = ReadBlobDoublesMSB;
-    ReadBlobFloatsXXX = ReadBlobFloatsMSB;   
-  }
-
-  filepos = TellBlob(image);	   /* Please note that file seeking occurs only in the case of doubles */
-  for (i = 0; i < SizeY; i++)
-  {
-    if (CellType==DoublePixel)
-    {
-      ReadBlobDoublesXXX(image, ldblk, (double *)BImgBuff);
-      dblrow = (double *)BImgBuff;
-      if (i == 0)
-      {
-        *Min = *Max = *dblrow;
-      }
-      for (x = 0; x < SizeX; x++)
-      {
-        if (*Min > *dblrow)
-          *Min = *dblrow;
-        if (*Max < *dblrow)
-          *Max = *dblrow;
-        dblrow++;
-      }
-    }
-    if (CellType==FloatPixel)
-    {
-      ReadBlobFloatsXXX(image, ldblk, (float *)BImgBuff);
-      fltrow = (float *)BImgBuff;
-      if (i == 0)
-      {
-        *Min = *Max = *fltrow;
-      }
-    for (x = 0; x < SizeX; x++)
-      {
-        if (*Min > *fltrow)
-          *Min = *fltrow;
-        if (*Max < *fltrow)
-          *Max = *fltrow;
-        fltrow++;
-      }
-    }
-  }
-  (void) SeekBlob(image, filepos, SEEK_SET);
-}
 
 
 static void FixSignedValues(PixelPacket *q, int y)
@@ -550,8 +442,8 @@ static Image *ReadMATImage(const ImageInfo *image_info, ExceptionInfo *exception
   
   magick_uint32_t (*ReadBlobXXXLong)(Image *image);
   magick_uint16_t (*ReadBlobXXXShort)(Image *image);
-  void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
-  void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
+  size_t (*ReadBlobXXXDoubles)(Image * image, size_t len, double *data);
+  size_t (*ReadBlobXXXFloats)(Image * image, size_t len, float *data);
 
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -585,16 +477,16 @@ static Image *ReadMATImage(const ImageInfo *image_info, ExceptionInfo *exception
   {
     ReadBlobXXXLong = ReadBlobLSBLong;
     ReadBlobXXXShort = ReadBlobLSBShort;
-    ReadBlobDoublesXXX = ReadBlobDoublesLSB;
-    ReadBlobFloatsXXX = ReadBlobFloatsLSB;
+    ReadBlobXXXDoubles = ReadBlobLSBDoubles;
+    ReadBlobXXXFloats = ReadBlobLSBFloats;
     import_options.endian = LSBEndian;
   } 
   else if (!strncmp(MATLAB_HDR.EndianIndicator, "MI", 2))
   {
     ReadBlobXXXLong = ReadBlobMSBLong;
     ReadBlobXXXShort = ReadBlobMSBShort;
-    ReadBlobDoublesXXX = ReadBlobDoublesMSB;
-    ReadBlobFloatsXXX = ReadBlobFloatsMSB;
+    ReadBlobXXXDoubles = ReadBlobMSBDoubles;
+    ReadBlobXXXFloats = ReadBlobMSBFloats;
     import_options.endian = MSBEndian;
   }
   else 
@@ -807,11 +699,17 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     MaxVal = 0;
     if (CellType==miDOUBLE)        /* Find Min and Max Values for floats */
     {
-      CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, DoublePixel, ldblk, BImgBuff, &import_options.double_minvalue, &import_options.double_maxvalue);
+      (void) MagickFindRawImageMinMax(image2, import_options.endian,MATLAB_HDR.SizeX,
+                                      MATLAB_HDR.SizeY,DoublePixel, ldblk, BImgBuff,
+                                      &import_options.double_minvalue, 
+                                      &import_options.double_maxvalue);
     }
     if (CellType==miSINGLE)        /* Find Min and Max Values for floats */
     {
-      CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, FloatPixel, ldblk, BImgBuff, &import_options.double_minvalue, &import_options.double_maxvalue);
+      (void) MagickFindRawImageMinMax(image2, import_options.endian,MATLAB_HDR.SizeX,
+                                      MATLAB_HDR.SizeY,FloatPixel, ldblk, BImgBuff, 
+                                      &import_options.double_minvalue, 
+                                      &import_options.double_maxvalue);
     }
 
     /* Main loop for reading all scanlines */
@@ -874,24 +772,28 @@ ExitLoop:
 
       if (CellType==miDOUBLE)
       {
-        CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, DoublePixel, ldblk, BImgBuff, &MinVal, &MaxVal);
+        (void) MagickFindRawImageMinMax(image2, import_options.endian, MATLAB_HDR.SizeX,
+                                        MATLAB_HDR.SizeY, DoublePixel, ldblk, BImgBuff,
+                                        &MinVal, &MaxVal);
       }
       if(CellType==miSINGLE)
       {
-        CalcMinMax(image2, import_options.endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, FloatPixel, ldblk, BImgBuff, &MinVal, &MaxVal);
+        (void) MagickFindRawImageMinMax(image2, import_options.endian, MATLAB_HDR.SizeX,
+                                        MATLAB_HDR.SizeY, FloatPixel, ldblk, BImgBuff,
+                                        &MinVal, &MaxVal);
       }
 
       if (CellType==miDOUBLE)
         for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
 	{
-          ReadBlobDoublesXXX(image2, ldblk, (double *)BImgBuff);
+          ReadBlobXXXDoubles(image2, ldblk, (double *)BImgBuff);
           InsertComplexDoubleRow((double *)BImgBuff, i, image, MinVal, MaxVal);
 	}
 
       if (CellType==miSINGLE)
         for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
 	{
-          ReadBlobFloatsXXX(image2, ldblk, (float *)BImgBuff);
+          ReadBlobXXXFloats(image2, ldblk, (float *)BImgBuff);
           InsertComplexFloatRow((float *)BImgBuff, i, image, MinVal, MaxVal);
 	}    
     }

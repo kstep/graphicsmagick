@@ -45,6 +45,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
   Forward declarations.
@@ -61,12 +62,6 @@ static void FixSignedMSBValues(unsigned char *data, int size, unsigned step)
     data += step;
   }
 }
-
-
-/* Calculate minimum and maximum from a given block of data */
-void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, magick_uint32_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max);
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -391,9 +386,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
     {  /*  Determine minimum and maximum intensity. */
       if(fits_info.bits_per_pixel==-32)
-        CalcMinMax(image, import_options.endian, image->columns, image->rows, FloatPixel, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+        (void) MagickFindRawImageMinMax(image, import_options.endian, image->columns,
+                                        image->rows, FloatPixel, packet_size*image->columns,
+                                        fits_pixels, &import_options.double_minvalue,
+                                        &import_options.double_maxvalue);
       if(fits_info.bits_per_pixel==-64)
-        CalcMinMax(image, import_options.endian, image->columns, image->rows, DoublePixel, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+        (void) MagickFindRawImageMinMax(image, import_options.endian, image->columns,
+                                        image->rows, DoublePixel, packet_size*image->columns,
+                                        fits_pixels, &import_options.double_minvalue,
+                                        &import_options.double_maxvalue);
     }
     else
     {
@@ -583,7 +584,7 @@ int len;
 static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[81],
+    buffer[MaxTextExtent],
     *fits_info;
 
   long
@@ -657,14 +658,14 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   y = InsertRowHDU(fits_info, buffer, y);  
   FormatString(buffer,        "DATAMIN =           %10u",0);
   y = InsertRowHDU(fits_info, buffer, y);    
-  FormatString(buffer,        "DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(quantum_size));
+  FormatString(buffer,        "DATAMAX =           %10lu", MaxValueGivenBits(quantum_size));
   y = InsertRowHDU(fits_info, buffer, y);
   if(quantum_size>8)
   {
-    FormatString(buffer,      "BZERO   =           %10u", (quantum_size<=16)?32768:2147483648);
+    FormatString(buffer,      "BZERO   =           %10u", (quantum_size <= 16) ? 32768U : 2147483648U);
     y = InsertRowHDU(fits_info, buffer, y);
   }
-  (void) strcpy(buffer,       "HISTORY Created by GraphicsMagick.");
+  (void) FormatString(buffer, "HISTORY Created by %s.",GetMagickVersion((unsigned long *) NULL));
   y = InsertRowHDU(fits_info, buffer, y);
   y = InsertRowHDU(fits_info, "END", y);        
   (void) WriteBlob(image,2880,(char *) fits_info);

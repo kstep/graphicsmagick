@@ -3153,6 +3153,56 @@ MagickExport double ReadBlobLSBDouble(Image * image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b L S B D o u b l e s                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBDoubles reads an array of little-endian 64-bit "double"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobLSBDoubles method is:
+%
+%      size_t ReadBlobLSBDoubles(Image *image, size_t octets, double *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBDoubles returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobLSBDoubles(Image *image, size_t octets, double *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (double *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(double))
+    MagickSwabArrayOfDouble(data,(octets_read+sizeof(double)-1)/sizeof(double));
+#endif
+
+  return octets_read;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b L S B L o n g                                              %
 %                                                                             %
 %                                                                             %
@@ -3196,6 +3246,58 @@ MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
   value|=buffer[1] << 8;
   value|=buffer[0];
   return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b L S B L o n g s                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBLongs reads an array of little-endian 32-bit "long"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobLSBLongs method is:
+%
+%      size_t ReadBlobLSBLongs(Image *image, size_t octets,
+%                              magick_uint32_t *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBLongs returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobLSBLongs(Image *image, size_t octets,
+                                     magick_uint32_t *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (magick_uint32_t *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(magick_uint32_t))
+    MagickSwabArrayOfUInt32(data,(octets_read+sizeof(magick_uint32_t)-1)/sizeof(magick_uint32_t));
+#endif
+
+  return octets_read;
 }
 
 /*
@@ -3302,6 +3404,56 @@ MagickExport float ReadBlobLSBFloat(Image * image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b L S B F l o a t s                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBFloats reads an array of little-endian 32-bit "float"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobLSBFloats method is:
+%
+%      size_t ReadBlobLSBFloats(Image *image, size_t octets, float *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBFloats returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobLSBFloats(Image *image, size_t octets, float *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (float *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(float))
+    MagickSwabArrayOfFloat(data,(octets_read+sizeof(float)-1)/sizeof(float));
+#endif
+
+  return octets_read;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b M S B F l o a t                                            %
 %                                                                             %
 %                                                                             %
@@ -3353,6 +3505,56 @@ MagickExport float ReadBlobMSBFloat(Image * image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b M S B F l o a t s                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBFloats reads an array of big-endian 32-bit "float"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobMSBFloats method is:
+%
+%      size_t ReadBlobMSBFloats(Image *image, size_t octets, float *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBFloats returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobMSBFloats(Image *image, size_t octets, float *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (float *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if !defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(float))
+    MagickSwabArrayOfFloat(data,(octets_read+sizeof(float)-1)/sizeof(float));
+#endif
+
+  return octets_read;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  R e a d B l o b M S B D o u b l e                                          %
 %                                                                             %
 %                                                                             %
@@ -3397,6 +3599,56 @@ MagickExport double ReadBlobMSBDouble(Image * image)
 #endif
 
   return (dbl_buffer.d);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B D o u b l e s                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBDoubles reads an array of big-endian 64-bit "double"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobMSBDoubles method is:
+%
+%      size_t ReadBlobMSBDoubles(Image *image, size_t octets, double *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBDoubles returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobMSBDoubles(Image *image, size_t octets, double *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (double *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if !defined(WORDS_BIGENDIAN)
+  if (octets_read > 0)
+    MagickSwabArrayOfDouble(data,(octets_read+sizeof(double)-1)/sizeof(double));
+#endif
+
+  return octets_read;
 }
 
 /*
@@ -3496,6 +3748,58 @@ MagickExport magick_uint16_t ReadBlobMSBShort(Image *image)
   value=buffer[0] << 8;
   value|=buffer[1];
   return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B S h o r t s                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBShorts reads an array of big-endian 16-bit "short"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobMSBShorts method is:
+%
+%      size_t ReadBlobMSBShorts(Image *image, size_t octets,
+%                               magick_uint16_t *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBShorts returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobMSBShorts(Image *image, size_t octets,
+                                      magick_uint16_t *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (magick_uint16_t *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if !defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(magick_uint32_t))
+    MagickSwabArrayOfUInt16(data,(octets_read+sizeof(magick_uint16_t)-1)/sizeof(magick_uint16_t));
+#endif
+
+  return octets_read;
 }
 
 /*
@@ -4288,6 +4592,58 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const magick_uint16_t value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  R e a d B l o b L S B S h o r t s                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobLSBShorts reads an array of little-endian 16-bit "short"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobLSBShorts method is:
+%
+%      size_t ReadBlobLSBShorts(Image *image, size_t octets,
+%                               magick_uint16_t *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobLSBShorts returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobLSBShorts(Image *image, size_t octets,
+                                      magick_uint16_t *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (magick_uint16_t *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(magick_uint16_t))
+    MagickSwabArrayOfUInt16(data,(octets_read+sizeof(magick_uint16_t)-1)/sizeof(magick_uint16_t));
+#endif
+
+  return octets_read;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  W r i t e B l o b M S B L o n g                                            %
 %                                                                             %
 %                                                                             %
@@ -4331,6 +4687,58 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const magick_uint32_t value)
   else
     count=WriteBlob(image,4,buffer);
   return count;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b M S B L o n g s                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobMSBLongs reads an array of big-endian 32-bit "long"
+%  values from the file or BLOB and returns them in native order.
+%
+%  The format of the ReadBlobMSBLongs method is:
+%
+%      size_t ReadBlobMSBLongs(Image *image, size_t octets,
+%                              magick_uint32_t *data)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadBlobMSBLongs returns the number of octets
+%        which were actually read.
+%
+%    o image: The image.
+%
+%    o octets: The number of bytes of data to read.
+%
+%    o data: The address of a user-supplied buffer in which to write
+%        the decoded data.  The buffer must be suitably aligned for the
+%        data type.
+%
+*/
+MagickExport size_t ReadBlobMSBLongs(Image *image, size_t octets,
+                                     magick_uint32_t *data)
+{
+  size_t
+    octets_read;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (magick_uint32_t *) NULL);
+
+  octets_read=ReadBlob(image,octets,data);
+#if !defined(WORDS_BIGENDIAN)
+  if (octets_read >= sizeof(magick_uint32_t))
+    MagickSwabArrayOfUInt32(data,(octets_read+sizeof(magick_uint32_t)-1)/sizeof(magick_uint32_t));
+#endif
+
+  return octets_read;
 }
 
 /*

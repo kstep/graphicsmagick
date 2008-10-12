@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2008-10-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Progress monitor needs to tick when
+        row count is updated.<BR>
+  <LI> coders/fits.c (ReadFITSImage): Update to use
+        MagickFindRawImageMinMax().<BR>
+        (WriteFITSImage): Expand buffer size to MaxTextExtent.  Include
+        GraphicsMagick version in FITS header.
+  <LI> coders/mat.c (ReadMATImage): Update to use
+        MagickFindRawImageMinMax().<BR>
+  <LI> magick/constitute.c (MagickFindRawImageMinMax): New internal
+        function to assist with finding the minimum and maximum data of
+        raw image files.
+
+</UL>
+<p>
 2008-10-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

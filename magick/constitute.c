@@ -5733,6 +5733,185 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k F i n d R a w I m a g e M i n M a x                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickFindRawImageMinMax() obtains the minimum and maximum sample values
+%  for a raw image.  The image blob must already be open with its current
+%  seek offset pointing to the start of the raw data.  The seek offset is
+%  restored when this function returns.  File data is processed on a 
+%  scanline basis in order to minimize memory consumption.  The purpose of
+%  this function is to support pre-scanning a raw image to find its maximum
+%  values so that appropriate scaling may be applied when the data is read a
+%  second time. MagickFail is returned if a problem occurs while scanning the
+%  data.
+%
+%  The format of the MagickFindRawImageMinMax method is:
+%
+%      MagickPassFail MagickFindRawImageMinMax(Image *image, EndianType endian,
+%                   unsigned long width, unsigned long height,StorageType type,
+%                   unsigned scanline_octets, void *scanline_buffer,
+%                   double *min, double *max)
+%
+%  A description of each parameter follows:
+%
+%    o image: Pointer to an image with an already open blob, with seek
+%         offset pointing to raw data.
+%
+%    o endian: Endian order of raw data (LSBEndian or MSBEndian)
+%
+%    o width: Number of raw samples in a scanline.
+%
+%    o height: Number of scanlines to process.
+%
+%    o type: Raw data storage type.
+%
+%    o scanline_octets: Number of octets to read per scanline.
+%
+%    o scanline_buffer: Working buffer for scanlines.  Allocation size
+%         must at least be enough to contain scanline octets.
+%
+%    o min: Pointer to double value to update with minimum value.
+%
+%    o max: Pointer to double value to update with maximum value.
+%
+*/
+#define MagickFindMinMax(status,image,read_func,basic_type,scanline_octets,scanline_buffer,min,max) \
+  {                                                                     \
+    unsigned long                                                       \
+      y;                                                                \
+                                                                        \
+    for (y = 0; y < height; y++)                                        \
+      {                                                                 \
+        unsigned long                                                   \
+          x;                                                            \
+                                                                        \
+        basic_type                                                      \
+          *scanline;                                                    \
+                                                                        \
+        scanline=(basic_type *) scanline_buffer;                        \
+        if ((read_func)(image, scanline_octets, scanline) !=            \
+            scanline_octets)                                            \
+          {                                                             \
+            status=MagickFail;                                          \
+            break;                                                      \
+          }                                                             \
+                                                                        \
+        if (y == 0)                                                     \
+          *min = *max = (double) scanline[0];                           \
+                                                                        \
+        for (x = 0; x < width; x++)                                     \
+          {                                                             \
+            if (*min > (double) scanline[x])                            \
+              *min = (double) scanline[x];                              \
+            if (*max < (double) scanline[x])                            \
+              *max = (double) scanline[x];                              \
+          }                                                             \
+      }                                                                 \
+  }
+
+MagickPassFail
+MagickFindRawImageMinMax(Image *image, EndianType endian,
+                         unsigned long width, unsigned long height,StorageType type,
+                         unsigned scanline_octets, void *scanline_buffer,
+                         double *min, double *max)
+{
+  magick_off_t
+    filepos;
+
+  MagickPassFail
+    status;
+
+  *min=0.0;
+  *max=1.0;
+  status=MagickFail;
+
+  filepos = TellBlob(image);
+
+  if (filepos >= 0)
+    {
+      status=MagickPass;
+      switch (type)
+        {
+        case CharPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, void *data);
+
+            read_func = ReadBlob;
+            
+            MagickFindMinMax(status,image,read_func,char,scanline_octets,
+                             scanline_buffer,min,max)
+              break;
+          }
+        case ShortPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, magick_uint16_t *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBShorts;
+            else
+              read_func = ReadBlobMSBShorts;
+
+            MagickFindMinMax(status,image,read_func,magick_uint16_t,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case IntegerPixel:
+        case LongPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, magick_uint32_t *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBLongs;
+            else
+              read_func = ReadBlobMSBLongs;
+
+            MagickFindMinMax(status,image,read_func,magick_uint32_t,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case FloatPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, float *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBFloats;
+            else
+              read_func = ReadBlobMSBFloats;
+
+            MagickFindMinMax(status,image,read_func,float,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case DoublePixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, double *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBDoubles;
+            else
+              read_func = ReadBlobMSBDoubles;
+
+            MagickFindMinMax(status,image,read_func,double,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        }
+
+      (void) SeekBlob(image, filepos, SEEK_SET);
+    }
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i n g I m a g e                                                         %
 %                                                                             %
 %                                                                             %
