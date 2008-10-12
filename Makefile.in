@@ -379,7 +379,7 @@ coders_fax_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_fax_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_fax_la_rpath = -rpath $(codersdir)
-coders_fits_la_DEPENDENCIES = $(LIBMAGICK)
+coders_fits_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
 am_coders_fits_la_OBJECTS = coders/coders_fits_la-fits.lo
 coders_fits_la_OBJECTS = $(am_coders_fits_la_OBJECTS)
 coders_fits_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -490,7 +490,7 @@ coders_map_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_map_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_map_la_rpath = -rpath $(codersdir)
-coders_mat_la_DEPENDENCIES = $(LIBMAGICK)
+coders_mat_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
 am_coders_mat_la_OBJECTS = coders/coders_mat_la-mat.lo
 coders_mat_la_OBJECTS = $(am_coders_mat_la_OBJECTS)
 coders_mat_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2367,7 +2367,7 @@ coders_fax_la_LIBADD = $(LIBMAGICK)
 coders_fits_la_SOURCES = coders/fits.c
 coders_fits_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_fits_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_fits_la_LIBADD = $(LIBMAGICK)
+coders_fits_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # FPX coder module
 coders_fpx_la_SOURCES = coders/fpx.c
@@ -2457,7 +2457,7 @@ coders_map_la_LIBADD = $(LIBMAGICK)
 coders_mat_la_SOURCES = coders/mat.c
 coders_mat_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD = $(LIBMAGICK)
+coders_mat_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES = coders/matte.c

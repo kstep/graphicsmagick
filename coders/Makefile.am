@@ -280,7 +280,7 @@ coders_fax_la_LIBADD       = $(LIBMAGICK)
 coders_fits_la_SOURCES     = coders/fits.c
 coders_fits_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_fits_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_fits_la_LIBADD      = $(LIBMAGICK)
+coders_fits_la_LIBADD      = $(LIBMAGICK) $(LIB_MATH)
 
 # FPX coder module
 coders_fpx_la_SOURCES      = coders/fpx.c
@@ -370,7 +370,7 @@ coders_map_la_LIBADD       = $(LIBMAGICK)
 coders_mat_la_SOURCES      = coders/mat.c
 coders_mat_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD       = $(LIBMAGICK)
+coders_mat_la_LIBADD       = $(LIBMAGICK) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES    = coders/matte.c
