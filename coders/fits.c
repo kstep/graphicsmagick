@@ -391,9 +391,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
     {  /*  Determine minimum and maximum intensity. */
       if(fits_info.bits_per_pixel==-32)
-        CalcMinMax(image, import_options.endian, image->columns, image->rows, 7, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+        CalcMinMax(image, import_options.endian, image->columns, image->rows, FloatPixel, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
       if(fits_info.bits_per_pixel==-64)
-        CalcMinMax(image, import_options.endian, image->columns, image->rows, 9, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
+        CalcMinMax(image, import_options.endian, image->columns, image->rows, DoublePixel, packet_size*image->columns, fits_pixels, &import_options.double_minvalue, &import_options.double_maxvalue);
     }
     else
     {
