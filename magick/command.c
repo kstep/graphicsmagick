@@ -9015,13 +9015,23 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("page",option+1) == 0)
           {
-            char
-              *geometry;
-
-            geometry=GetPageGeometry(argv[++i]);
-            (void) GetGeometry(geometry,&(*image)->page.x,&(*image)->page.y,
-              &(*image)->page.width,&(*image)->page.height);
-            MagickFreeMemory(geometry);
+            if (option[0] == '+')
+              {
+                (*image)->page.width=0U;
+                (*image)->page.height=0U;
+                (*image)->page.x=0;
+                (*image)->page.y=0;
+              }
+            else
+              {
+                char
+                  *geometry;
+                
+                geometry=GetPageGeometry(argv[++i]);
+                (void) GetGeometry(geometry,&(*image)->page.x,&(*image)->page.y,
+                                   &(*image)->page.width,&(*image)->page.height);
+                MagickFreeMemory(geometry);
+              }
           }
         if (LocaleCompare("paint",option+1) == 0)
           {

@@ -1,3 +1,8 @@
+2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Using +page now resets image
+	page offsets as documented for convert and mogrify.
+
 2008-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/conjure.imdoc: Applied patches from Max at hohenegger.eu to
