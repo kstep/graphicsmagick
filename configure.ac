@@ -260,6 +260,17 @@ else
 fi
 
 #
+# Determine options necessary to enable OpenMP support
+#
+# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
+# variable to these options.
+AC_OPENMP([C])
+CFLAGS="$OPENMP_CFLAGS $CFLAGS"
+#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
+#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+AC_SUBST(OPENMP_CFLAGS)
+
+#
 # Determine Posix threads settings
 #
 # Enable support for threads
@@ -329,17 +340,6 @@ then
   fi
 fi
 AC_SUBST(LFS_CPPFLAGS)
-
-#
-# Determine options necessary to enable OpenMP support
-#
-# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
-# variable to these options.
-AC_OPENMP([C])
-CFLAGS="$OPENMP_CFLAGS $CFLAGS"
-#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
-#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
-AC_SUBST(OPENMP_CFLAGS)
 
 #
 # Configure libtool & libltdl

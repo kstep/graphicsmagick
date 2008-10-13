@@ -363,7 +363,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if ((image_view != (ThreadViewSet *) NULL) &&
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
             for (y=0; y < (long) image->rows; y++)
               {
                 register const PixelPacket
@@ -402,7 +404,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!SyncThreadViewPixels(rotate_image_view,exception))
                       thread_status=MagickFail;
                   }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
                 {
                   row_count++;
                   if (QuantumTick(row_count,image->rows))
@@ -589,7 +593,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if ((image_view != (ThreadViewSet *) NULL) &&
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
             for (y=0; y < (long) image->rows; y++)
               {
                 register const PixelPacket
@@ -633,7 +639,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!SyncThreadViewPixels(rotate_image_view,exception))
                       thread_status=MagickFail;
                   }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
                 {
                   row_count++;
                   if (QuantumTick(row_count,image->rows))
@@ -872,7 +880,9 @@ static void XShearImage(Image *image,const double degrees,
   if (image_view == (ThreadViewSet *) NULL)
     return;
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (y=0; y < (long) height; y++)
     {
       double
@@ -968,7 +978,9 @@ static void XShearImage(Image *image,const double degrees,
           if (!SyncThreadViewPixels(image_view,&image->exception))
               thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
           {
             row_count++;
             if (QuantumTick(row_count,height))
@@ -1050,8 +1062,9 @@ static void XShearImage(Image *image,const double degrees,
         }
       if (!SyncThreadViewPixels(image_view,&image->exception))
         thread_status=MagickFail;
-
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,height))
@@ -1130,7 +1143,9 @@ static void YShearImage(Image *image,const double degrees,
   if (image_view == (ThreadViewSet *) NULL)
     return;
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (y=0; y < (long) width; y++)
     {
       double
@@ -1226,7 +1241,9 @@ static void YShearImage(Image *image,const double degrees,
           if (!SyncThreadViewPixels(image_view,&image->exception))
               thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
           {
             row_count++;
             if (QuantumTick(row_count,width))
@@ -1309,7 +1326,9 @@ static void YShearImage(Image *image,const double degrees,
       if (!SyncThreadViewPixels(image_view,&image->exception))
         thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,width))

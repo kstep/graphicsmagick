@@ -570,7 +570,9 @@ QuantumDepthCB(void *mutable_data,
         Build LUT for Q8 and Q16 builds
       */
 #if MaxRGB <= MaxMap
-#pragma omp critical
+#  if defined(_OPENMP)
+#    pragma omp critical
+#  endif
       if (mutable_context->channel_lut == (Quantum *) NULL)
         {
           mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap+1,sizeof(Quantum));
@@ -748,7 +750,9 @@ QuantumGammaCB(void *mutable_data,
     Build LUT for Q8 and Q16 builds
   */
 #if MaxRGB <= MaxMap
-#pragma omp critical
+#  if defined(_OPENMP)
+#    pragma omp critical
+#  endif
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {
       mutable_context->channel_lut=MagickAllocateArray(Quantum *, MaxMap+1,sizeof(Quantum));

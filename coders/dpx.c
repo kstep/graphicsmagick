@@ -2359,7 +2359,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read element data.
           */
-#pragma omp parallel for schedule(dynamic,1)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(dynamic,1)
+#endif
           for (y=0; y < (long) image->rows; y++)
             {
               MagickBool
@@ -2401,7 +2403,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *scanline_data;
                 
                 scanline_data=scanline;
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
                 {
                   if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
                     thread_status=MagickFail;
@@ -2432,7 +2436,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
               if (thread_status == MagickFail)
                 {
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
                   status=thread_status;
                   continue;
                 }
@@ -2649,7 +2655,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 FIXME: Add support for optional EOL padding.
               */              
               if (thread_status == MagickFail)
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
                 status=MagickFail;
 #if 0
               if (BlobIsSeekable(image))

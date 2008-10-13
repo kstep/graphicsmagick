@@ -519,7 +519,9 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) minify_image->rows; y++)
       {
         ViewInfo
@@ -578,7 +580,9 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -858,7 +862,9 @@ HorizontalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for
+#if defined(_OPENMP)
+#  pragma omp parallel for
+#endif
   for (x=0; x < (long) destination->columns; x++)
     {
       ViewInfo
@@ -996,8 +1002,9 @@ HorizontalFilter(const Image *source,Image *destination,
           if (!SyncCacheViewPixels(destination_view,exception))
             thread_status=MagickFail;
         }
-
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         if (QuantumTick(*quantum,span))
           if (!MagickMonitorFormatted(*quantum,span,exception,
@@ -1077,7 +1084,9 @@ VerticalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for
+#if defined(_OPENMP)
+#  pragma omp parallel for
+#endif
   for (y=0; y < (long) destination->rows; y++)
     {
       ViewInfo
@@ -1213,7 +1222,9 @@ VerticalFilter(const Image *source,Image *destination,
           if (!SyncCacheViewPixels(destination_view,exception))
             thread_status=MagickFail;
         }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         if (QuantumTick(*quantum,span))
           if (!MagickMonitorFormatted(*quantum,span,exception,

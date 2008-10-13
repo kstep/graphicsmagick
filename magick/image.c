@@ -2717,7 +2717,9 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
   {
     depth=*current_depth;
   }
@@ -2769,7 +2771,9 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
     }
 #endif
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
   {
     if (depth > *current_depth)
       *current_depth=depth;
@@ -3328,7 +3332,9 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
         }
     }
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
   {
     statistics->red.mean += lstatistics.red.mean;
     if (lstatistics.red.maximum > statistics->red.maximum)
@@ -3386,7 +3392,9 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
   ARG_NOT_USED(exception);
 
   (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
   {
     lstatistics.red.mean=statistics->red.mean;
     lstatistics.green.mean=statistics->green.mean;
@@ -3416,7 +3424,9 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
         }
     }
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
   {
     statistics->red.variance += lstatistics.red.variance;
     statistics->green.variance += lstatistics.green.variance;
@@ -3628,13 +3638,13 @@ MagickExport MagickPassFail GradientImage(Image *image,
   long
     y;
 
-  register long
-    x;
+  unsigned long
+    row_count=0;
 
-  register PixelPacket
-    *q;
+  ThreadViewSet
+    *view_set;
 
-  MagickPassFail
+  volatile MagickPassFail
     status=MagickPass;
 
   /*
@@ -3644,34 +3654,63 @@ MagickExport MagickPassFail GradientImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(start_color != (const PixelPacket *) NULL);
   assert(stop_color != (const PixelPacket *) NULL);
+
+  view_set=AllocateThreadViewSet((Image *) image,&image->exception);
+  if (view_set == (ThreadViewSet *) NULL)
+    return MagickFail;
+
   /*
     Generate gradient pixels.
   */
+#if defined(_OPENMP)
+#  pragma omp parallel for
+#endif
   for (y=0; y < (long) image->rows; y++)
     {
-      q=SetImagePixels(image,0,y,image->columns,1);
+      MagickPassFail
+        thread_status;
+
+      register long
+        x;
+      
+      register PixelPacket
+        *q;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      q=SetThreadViewPixels(view_set,0,y,image->columns,1,&image->exception);
       if (q == (PixelPacket *) NULL)
+        thread_status=MagickFail;
+
+      if (q != (PixelPacket *) NULL)
         {
-          status=MagickFail;
-          break;
+          for (x=0; x < (long) image->columns; x++)
+            {
+              q[x]=BlendComposite(start_color,stop_color,(double)
+                                  MaxRGB*(y*image_columns+x)/(image_columns*image_rows));
+            }
+
+          if (!SyncThreadViewPixels(view_set,&image->exception))
+            thread_status=MagickFail;
         }
 
-#pragma omp parallel for schedule(static,256)
-      for (x=0; x < (long) image->columns; x++)
-        {
-          q[x]=BlendComposite(start_color,stop_color,(double)
-                              MaxRGB*(y*image_columns+x)/(image_columns*image_rows));
-        }
-      if (!SyncImagePixels(image))
-        {
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitorFormatted(row_count,image->rows,&image->exception,
+                                      GradientImageText,image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
           status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                    GradientImageText,image->filename))
-          break;
+      }
     }
+  DestroyThreadViewSet(view_set);
   return(status);
 }
 

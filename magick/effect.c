@@ -147,7 +147,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
@@ -221,7 +223,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -648,7 +652,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
       long
         y;
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
       for (y=0; y < (long) image->rows; y++)
         {
           ViewInfo
@@ -694,7 +700,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                     thread_status=MagickFail;
                 }
             }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
           {
             row_count++;
             if (QuantumTick(row_count,image->rows))
@@ -1459,7 +1467,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
@@ -1546,7 +1556,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -2254,7 +2266,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
@@ -2323,7 +2337,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -2527,7 +2543,9 @@ RandomChannelThresholdImage(Image *image,const char *channel,
       ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                             UnableToThresholdImage);
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         Quantum
@@ -2815,7 +2833,9 @@ RandomChannelThresholdImage(Image *image,const char *channel,
             if (!SyncCacheViewPixels(view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -3110,7 +3130,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         return (Image *) NULL;
       }
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
@@ -3206,7 +3228,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -3462,7 +3486,9 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         return (Image *) NULL;
       }
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) image->rows; y++)
       {
         ViewInfo
@@ -3539,7 +3565,9 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))

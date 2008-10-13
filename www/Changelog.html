@@ -21,9 +21,19 @@
 </tr>
 </table>
 <p>
+2008-10-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): Using +page now resets image
+        page offsets as documented for convert and mogrify.
+
+</UL>
+<p>
 2008-10-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.c (GradientImage): Re-do OpenMP accelleration based
+        on new pixel cache interface for better performance.
   <LI> coders/dpx.c (ReadDPXImage): Progress monitor needs to tick when
         row count is updated.<BR>
   <LI> coders/fits.c (ReadFITSImage): Update to use

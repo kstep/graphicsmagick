@@ -139,17 +139,21 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
     *view_set;
 
   int
-    max_threads;
+    max_threads=1;
 
   max_threads=omp_get_max_threads();
   if ((options) && (options->max_threads > 0))
-    omp_set_num_threads(Min(max_threads,options->max_threads));
+    {
+      omp_set_num_threads(Min(max_threads,options->max_threads));
+    }
 
   view_set=AllocateThreadViewSet((Image *) image,exception);
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (row=y; row < (long) (y+rows); row++)
     {
       MagickPassFail
@@ -173,7 +177,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,rows))
@@ -280,13 +286,17 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 
   max_threads=omp_get_max_threads();
   if ((options) && (options->max_threads > 0))
-    omp_set_num_threads(Min(max_threads,options->max_threads));
+    {
+      omp_set_num_threads(Min(max_threads,options->max_threads));
+    }
 
   view_set=AllocateThreadViewSet(image,exception);
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (row=y; row < (long) (y+rows); row++)
     {
       MagickBool
@@ -314,7 +324,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         if (!SyncThreadViewPixels(view_set,exception))
           thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,rows))
@@ -434,7 +446,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
 
   max_threads=omp_get_max_threads();
   if ((options) && (options->max_threads > 0))
-    omp_set_num_threads(Min(max_threads,options->max_threads));
+    {
+      omp_set_num_threads(Min(max_threads,options->max_threads));
+    }
 
   first_view_set=AllocateThreadViewSet((Image *) first_image,exception);
   second_view_set=AllocateThreadViewSet((Image *) second_image,exception);
@@ -446,7 +460,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       return MagickFail;
     }
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (row=0; row < (long) rows; row++)
     {
       MagickBool
@@ -489,7 +505,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                                   second_image,second_pixels,second_indexes,
                                   columns, exception);
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,rows))
@@ -612,7 +630,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
 
   max_threads=omp_get_max_threads();
   if ((options) && (options->max_threads > 0))
-    omp_set_num_threads(Min(max_threads,options->max_threads));
+    {
+      omp_set_num_threads(Min(max_threads,options->max_threads));
+    }
 
   source_view_set=AllocateThreadViewSet((Image *) source_image,exception);
   update_view_set=AllocateThreadViewSet(update_image,exception);
@@ -624,7 +644,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       return MagickFail;
     }
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (row=0; row < (long) rows; row++)
     {
       MagickBool
@@ -679,7 +701,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
         if (!SyncThreadViewPixels(update_view_set,exception))
           thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,rows))
@@ -923,7 +947,9 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
 
   max_threads=omp_get_max_threads();
   if ((options) && (options->max_threads > 0))
-    omp_set_num_threads(Min(max_threads,options->max_threads));
+    {
+      omp_set_num_threads(Min(max_threads,options->max_threads));
+    }
 
   source1_view_set=AllocateThreadViewSet((Image *) source1_image,exception);
   source2_view_set=AllocateThreadViewSet((Image *) source2_image,exception);
@@ -938,7 +964,9 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       return MagickFail;
     }
 
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (row=0; row < (long) rows; row++)
     {
       MagickBool
@@ -1013,7 +1041,9 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       if (!SyncThreadViewPixels(update_view_set,exception))
         thread_status=MagickFail;
 
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,rows))

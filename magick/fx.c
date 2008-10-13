@@ -420,7 +420,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
         ViewInfo
@@ -493,7 +495,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
             if (!SyncCacheViewPixels(write_view,exception))
               thread_status=MagickFail;
           }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
           row_count++;
           if (QuantumTick(row_count,image->rows))
@@ -936,7 +940,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Paint each row of the image.
   */
-#pragma omp parallel for schedule(static,64)
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (y=0; y < (long) image->rows; y++)
     {
       ViewInfo
@@ -1021,7 +1027,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             thread_status=MagickFail;
 
         }
-#pragma omp critical
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
         row_count++;
         if (QuantumTick(row_count,image->rows))
