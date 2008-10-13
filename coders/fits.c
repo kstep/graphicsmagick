@@ -355,10 +355,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     else
       image->depth = QuantumDepth;		/* double type cell */
     //image->storage_class=PseudoClass;
+    image->storage_class = DirectClass;
     image->scene=scene;
     image->is_grayscale = 1;
 
-    if (image->depth<=8)
+    if (image->depth<=8 && fits_info.bits_per_pixel==1)
       if (!AllocateImageColormap(image,1 << image->depth))
         ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 

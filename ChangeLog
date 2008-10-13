@@ -1,3 +1,8 @@
+
+2008-10-13  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c Fixed palette problem for >8 bit images.
+
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Using +page now resets image
