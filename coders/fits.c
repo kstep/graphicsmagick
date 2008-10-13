@@ -359,7 +359,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->scene=scene;
     image->is_grayscale = 1;
 
-    if (image->depth<=8 && fits_info.bits_per_pixel==1)
+    if (image->depth<=8 && fits_info.bits_per_pixel==8)
       if (!AllocateImageColormap(image,1 << image->depth))
         ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 
