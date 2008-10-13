@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 27, 2008
+This file was last updated on October 13, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -82,19 +82,24 @@ Performance Improvements:
 
   * OpenMP (parallel processing) improvements for these functions:
 
+    - Affine transform (-affine -transform)
     - Add noise (+noise)
+    - Black threshold (-black-threshold)
     - Blur (-blur)
     - Channel import, export, and depth-setting (-channel, -depth)
+    - Coalesce (-coalesce)
     - Colorize (-colorize)
     - Colorspace transformation (-colorspace)
     - Compare images ('compare' command)
     - Composition ('composite' command)
     - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
     - Contrast adjust (-contrast)
+    - CycleColormap (-cycle)
     - Depth setting (-depth, -operator depth)
     - Enhance (-enhance)
     - Equalize (-equalize)
     - Gamma adjust (-gamma, -operator gamma)
+    - Gradient
     - Levels adjust image (-level)
     - Local adaptive threshold (-lat)
     - Minify image (-minify)
@@ -117,6 +122,7 @@ Performance Improvements:
     - Statistics computation (identify -verbose)
     - Threshold channel (-threshold, -operator threshold)
     - UnsharpMaskImage (-unsharp)
+    - White threshold (-white-threshold)
 
   * Improved coder management performance.
 
@@ -162,6 +168,9 @@ New Features:
   * Mogrify and convert now support -black-threshold and -white-threshold.
 
   * MAT: Now supports reading compressed files.
+
+  * FITS: Now supports 8, 16, 32 bit integer, float, and double images
+    and writes correct FITS format.
 
   * DCRAW: Coder proxy module allows reading digital camera files as if
     they were natively supported.

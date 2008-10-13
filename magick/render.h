@@ -400,7 +400,7 @@ extern MagickExport const TypeInfo
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
-extern MagickExport unsigned int
+extern MagickExport MagickPassFail
   AnnotateImage(Image *,const DrawInfo *),
   DrawAffineImage(Image *,const Image *,const AffineMatrix *),
   DrawClipPath(Image *,const DrawInfo *,const char *),

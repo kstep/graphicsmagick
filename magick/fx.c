@@ -425,10 +425,6 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
-        ViewInfo
-          *read_view,
-          *write_view;
-
         const PixelPacket
           *p;
     
@@ -445,11 +441,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         if (thread_status == MagickFail)
           continue;
 
-        read_view=AccessThreadView(read_view_set);
-        p=AcquireCacheViewPixels(read_view,-width/2,y-width/2,image->columns+width,width,
-                                 exception);
-        write_view=AccessThreadView(write_view_set);
-        q=SetCacheViewPixels(write_view,0,y,convolve_image->columns,1,exception);
+        p=AcquireThreadViewPixels(read_view_set,-width/2,y-width/2,image->columns+width,width,
+                                  exception);
+        q=SetThreadViewPixels(write_view_set,0,y,convolve_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
 
@@ -492,7 +486,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                 p++;
                 q++;
               }
-            if (!SyncCacheViewPixels(write_view,exception))
+            if (!SyncThreadViewPixels(write_view_set,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -945,10 +939,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
-      ViewInfo
-        *read_view,
-        *write_view;
-
       const PixelPacket
         *p,
         *r;
@@ -969,11 +959,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       if (thread_status == MagickFail)
         continue;
 
-      read_view=AccessThreadView(read_view_set);
-      p=AcquireCacheViewPixels(read_view,-width/2,y-width/2,image->columns+width,width,
-                               exception);
-      write_view=AccessThreadView(write_view_set);
-      q=SetCacheViewPixels(write_view,0,y,paint_image->columns,1,exception);
+      p=AcquireThreadViewPixels(read_view_set,-width/2,y-width/2,image->columns+width,width,
+                                exception);
+      q=SetThreadViewPixels(write_view_set,0,y,paint_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
       if (thread_status != MagickFail)
@@ -1023,9 +1011,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
                 }
               *q++=(*s);
             }
-          if (!SyncCacheViewPixels(write_view,exception))
+          if (!SyncThreadViewPixels(write_view_set,exception))
             thread_status=MagickFail;
-
         }
 #if defined(_OPENMP)
 #  pragma omp critical

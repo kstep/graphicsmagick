@@ -879,7 +879,7 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 */
 
 static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
-  const long y,const SegmentInfo *edge)
+                              const long y,const SegmentInfo *edge)
 {
   double
     intercept,
@@ -984,45 +984,61 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   return(inverse_affine);
 }
 
-MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
-  const AffineMatrix *affine)
+#define AffineDrawImageText "[%s] Affine composite image..."
+MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
+                                            const AffineMatrix *affine)
 {
+  volatile MagickPassFail
+    status = MagickPass;
+
+  ThreadViewSet
+    *image_views,
+    *composite_views;
+
+  unsigned long
+    row_count=0;
+
   AffineMatrix
     inverse_affine;
 
   long
-    start,
-    stop,
-    y;
-
-  PixelPacket
-    pixel;
+    y,
+    y_max,
+    y_min;
 
   PointInfo
     extent[4],
     min,
-    max,
-    point;
+    max;
 
   register long
-    i,
-    x;
-
-  register PixelPacket
-    *q;
+    i;
 
   SegmentInfo
-    edge,
-    inverse_edge;
+    edge;
 
-  /*
-    Determine bounding box.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(composite != (const Image *) NULL);
   assert(composite->signature == MagickSignature);
   assert(affine != (AffineMatrix *) NULL);
+
+  /*
+    Allocate thread views
+  */
+  image_views=AllocateThreadViewSet(image,&image->exception);
+  composite_views=AllocateThreadViewSet((Image *) composite, &image->exception);
+  if ((image_views == (ThreadViewSet *) NULL) ||
+      (composite_views == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(image_views);
+      DestroyThreadViewSet(composite_views);
+      return MagickFail;
+    }
+
+  /*
+    Determine bounding box.
+  */
   extent[0].x=0;
   extent[0].y=0;
   extent[1].x=composite->columns;
@@ -1032,25 +1048,28 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   extent[3].x=0;
   extent[3].y=composite->rows;
   for (i=0; i < 4; i++)
-  {
-    x=(long) extent[i].x;
-    y=(long) extent[i].y;
-    extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
-    extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
-  }
+    {
+      register long
+        x;
+
+      x=(long) extent[i].x;
+      y=(long) extent[i].y;
+      extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
+      extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
+    }
   min=extent[0];
   max=extent[0];
   for (i=1; i < 4; i++)
-  {
-    if (min.x > extent[i].x)
-      min.x=extent[i].x;
-    if (min.y > extent[i].y)
-      min.y=extent[i].y;
-    if (max.x < extent[i].x)
-      max.x=extent[i].x;
-    if (max.y < extent[i].y)
-      max.y=extent[i].y;
-  }
+    {
+      if (min.x > extent[i].x)
+        min.x=extent[i].x;
+      if (min.y > extent[i].y)
+        min.y=extent[i].y;
+      if (max.x < extent[i].x)
+        max.x=extent[i].x;
+      if (max.y < extent[i].y)
+        max.y=extent[i].y;
+    }
   /*
     Affine transform image.
   */
@@ -1064,37 +1083,87 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     edge.y1=0.0;
   if (edge.y2 >= image->rows)
     edge.y2=image->rows-1;
-  /* FIXME: OpenMP */
-  for (y=(long) ceil(edge.y1-0.5); y <= (long) floor(edge.y2+0.5); y++)
-  {
-    inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
-    if (inverse_edge.x2 < inverse_edge.x1)
-      continue;
-    if (inverse_edge.x1 < 0)
-      inverse_edge.x1=0.0;
-    if (inverse_edge.x2 >= image->columns)
-      inverse_edge.x2=image->columns-1;
-    start=(long) ceil(inverse_edge.x1-0.5);
-    stop=(long) floor(inverse_edge.x2+0.5);
-    x=start;
-    q=GetImagePixels(image,x,y,stop-x+1,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for ( ; x <= stop; x++)
+  y_min=(long) ceil(edge.y1-0.5);
+  y_max=(long) floor(edge.y2+0.5);
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,8)
+#endif
+  for (y=y_min; y <= y_max; y++)
     {
-      point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
-      point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) point.x,(long) point.y,
-        &image->exception);
-      if (!composite->matte)
-        pixel.opacity=OpaqueOpacity;
-      *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
-      q++;
+      MagickBool
+        thread_status;
+
+      long
+        start,
+        stop;
+
+      SegmentInfo
+        inverse_edge;
+
+      PixelPacket
+        pixel;
+
+      register PixelPacket
+        *q;
+
+      register long
+        x;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
+      if (inverse_edge.x2 < inverse_edge.x1)
+        continue;
+      if (inverse_edge.x1 < 0)
+        inverse_edge.x1=0.0;
+      if (inverse_edge.x2 >= image->columns)
+        inverse_edge.x2=image->columns-1;
+      start=(long) ceil(inverse_edge.x1-0.5);
+      stop=(long) floor(inverse_edge.x2+0.5);
+      x=start;
+      q=GetThreadViewPixels(image_views,x,y,stop-x+1,1,&image->exception);
+      if (q == (PixelPacket *) NULL)
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
+        {
+          for ( ; x <= stop; x++)
+            {
+              PointInfo
+                point;
+
+              point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
+              point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
+              pixel=AcquireOneThreadViewPixel(composite_views,(long) point.x,(long) point.y,
+                                              &image->exception);
+              if (!composite->matte)
+                pixel.opacity=OpaqueOpacity;
+              *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
+              q++;
+            }
+          if (!SyncThreadViewPixels(image_views,&image->exception))
+            thread_status=MagickFail;
+        }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,y_max-y_min+1))
+          if (!MagickMonitorFormatted(row_count,y_max-y_min+1,&image->exception,
+                                      AffineDrawImageText,image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
     }
-    if (!SyncImagePixels(image))
-      break;
-  }
-  return(True);
+
+  DestroyThreadViewSet(image_views);
+  DestroyThreadViewSet(composite_views);
+
+  return (status);
 }
 
 /*

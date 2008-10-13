@@ -52,7 +52,7 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 27, 2008</p>
+<p>This file was last updated on October 13, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -113,19 +113,24 @@ had stopped working.</li>
 <blockquote>
 <ul class="simple">
 <li>OpenMP (parallel processing) improvements for these functions:<ul>
+<li>Affine transform (-affine -transform)</li>
 <li>Add noise (+noise)</li>
+<li>Black threshold (-black-threshold)</li>
 <li>Blur (-blur)</li>
 <li>Channel import, export, and depth-setting (-channel, -depth)</li>
+<li>Coalesce (-coalesce)</li>
 <li>Colorize (-colorize)</li>
 <li>Colorspace transformation (-colorspace)</li>
 <li>Compare images ('compare' command)</li>
 <li>Composition ('composite' command)</li>
 <li>Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)</li>
 <li>Contrast adjust (-contrast)</li>
+<li>CycleColormap (-cycle)</li>
 <li>Depth setting (-depth, -operator depth)</li>
 <li>Enhance (-enhance)</li>
 <li>Equalize (-equalize)</li>
 <li>Gamma adjust (-gamma, -operator gamma)</li>
+<li>Gradient</li>
 <li>Levels adjust image (-level)</li>
 <li>Local adaptive threshold (-lat)</li>
 <li>Minify image (-minify)</li>
@@ -148,6 +153,7 @@ had stopped working.</li>
 <li>Statistics computation (identify -verbose)</li>
 <li>Threshold channel (-threshold, -operator threshold)</li>
 <li>UnsharpMaskImage (-unsharp)</li>
+<li>White threshold (-white-threshold)</li>
 </ul>
 </li>
 <li>Improved coder management performance.</li>
@@ -190,6 +196,8 @@ image files.</li>
 <li>Added -motion-blur to motion blur the image.</li>
 <li>Mogrify and convert now support -black-threshold and -white-threshold.</li>
 <li>MAT: Now supports reading compressed files.</li>
+<li>FITS: Now supports 8, 16, 32 bit integer, float, and double images
+and writes correct FITS format.</li>
 <li>DCRAW: Coder proxy module allows reading digital camera files as if
 they were natively supported.</li>
 <li>New C API functions:<ul>
@@ -873,7 +881,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 21:54 UTC.
+Generated on: 2008-10-13 20:39 UTC.
 
 </div>
 </body>

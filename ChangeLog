@@ -1,3 +1,6 @@
+2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawAffineImage): Accelerate using OpenMP.
 
 2008-10-13  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
