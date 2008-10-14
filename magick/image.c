@@ -4532,6 +4532,7 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
   if ((image->matte) && (MagickFail != status))
     status=QuantumOperatorImage(image,OpacityChannel,DepthQuantumOp,(double) depth,
                                 &image->exception);
+  image->depth=Min(depth,QuantumDepth);
   return status;
 }
 
