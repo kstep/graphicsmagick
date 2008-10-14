@@ -4,6 +4,7 @@
 	attribute to user-specified depth rather than only altering the
 	pixels.
 	(SetImageOpacity): Reimplement using pixel iterators.
+	(AverageImages): Accelerate using OpenMP.
 
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

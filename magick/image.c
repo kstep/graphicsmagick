@@ -702,37 +702,34 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
 %
 %
 */
-#define AverageImageText  "[%s] Average image sequence..."
 MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 {
-
-  DoublePixelPacket
-    *pixels_array;
-
-  register DoublePixelPacket
-    *pixels;
+  ThreadViewDataSet
+    *pixels_sums;
 
   Image
     *average_image;
 
+  const Image
+    *last_image;
+
+  ThreadViewSet
+    *average_views;
+
   long
     y;
 
-  register const Image
-    *next;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
   unsigned long
-    number_scenes,
+    row_count=0;
+
+  double
+    number_scenes;
+    
+  unsigned long
     number_pixels;
+
+  volatile MagickPassFail
+    status=MagickPass;
 
   /*
     Ensure the image are the same size.
@@ -743,83 +740,197 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException3(ImageError,ImageSequenceIsRequired,
-      UnableToAverageImage);
-  for (next=image; next != (Image *) NULL; next=next->next)
+                         UnableToAverageImage);
   {
-    if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException3(OptionError,UnableToAverageImageSequence,
-        ImageWidthsOrHeightsDiffer);
+    const Image
+      *next;
+      
+    for (next=image; next != (Image *) NULL; next=next->next)
+      {
+        if ((next->columns != image->columns) || (next->rows != image->rows))
+          ThrowImageException3(OptionError,UnableToAverageImageSequence,
+                               ImageWidthsOrHeightsDiffer);
+      }
   }
   /*
     Allocate sum accumulation buffer.
   */
-  number_pixels=image->columns*image->rows;
-  pixels_array=MagickAllocateMemory(DoublePixelPacket *,
-    number_pixels*sizeof(DoublePixelPacket));
-  if (pixels_array == (DoublePixelPacket *) NULL)
+  number_pixels=image->columns;
+  pixels_sums=AllocateThreadViewDataSet(MagickFree,image,exception);
+  if (pixels_sums == (ThreadViewDataSet *) NULL)
     ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToAverageImageSequence);
-  (void) memset(pixels_array,0,number_pixels*sizeof(DoublePixelPacket));
+                         UnableToAverageImageSequence);
+  {
+    unsigned int
+      allocated_views;
+
+    unsigned int
+      i;
+
+    allocated_views=GetThreadViewDataSetAllocatedViews(pixels_sums);
+    for (i=0 ; i < allocated_views; i++)
+      {
+        DoublePixelPacket
+          *pixels_sum;
+
+        pixels_sum=MagickAllocateArray(DoublePixelPacket *,
+                                       number_pixels,sizeof(DoublePixelPacket));
+        if (pixels_sum == (DoublePixelPacket *) NULL)
+          {
+            status=MagickFail;
+            break;
+          }
+        AssignThreadViewData(pixels_sums,i,pixels_sum);
+      }
+    if (status == MagickFail)
+      {
+        DestroyThreadViewDataSet(pixels_sums);
+        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                             UnableToAverageImageSequence);
+      }
+  }
   /*
     Initialize average next attributes.
   */
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      MagickFreeMemory(pixels_array);
+      DestroyThreadViewDataSet(pixels_sums);
       return((Image *) NULL);
     }
-  (void) SetImageType(average_image,TrueColorType);
+  average_image->storage_class=DirectClass;
+
   /*
-    Compute sum over each pixel color component.
+    Allocate average image views.
   */
-  number_scenes=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    pixels=pixels_array;
-    for (y=0; y < (long) next->rows; y++)
+  average_views=AllocateThreadViewSet(average_image,exception);
+  if (average_views == (ThreadViewSet *) NULL)
     {
-      p=AcquireImagePixels(next,0,y,next->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=(long) next->columns; x > 0; x--)
+      DestroyThreadViewDataSet(pixels_sums);
+      DestroyImage(average_image);
+      return((Image *) NULL);
+    }
+
+  number_scenes=(double) GetImageListLength(image);
+  last_image=GetLastImageInList(image);
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(dynamic)
+#endif
+  for (y=0; y < (long) image->rows; y++)
+    {
+      register DoublePixelPacket
+        *pixels_sum;
+
+      const Image
+        *next;
+
+      register const PixelPacket
+        *p;
+
+      register long
+        x;
+
+      MagickBool
+        thread_status;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      pixels_sum=AccessThreadViewData(pixels_sums);
+
+      /*
+        Compute sum over each pixel color component.
+      */
+      for (next=image; next != (Image *) NULL; next=next->next)
+        {
+          ViewInfo
+            *next_view;
+
+          next_view=OpenCacheView((Image *) next);
+          if (next_view == (ViewInfo *) NULL)
+            thread_status=MagickFail;
+          if (next_view != (ViewInfo *) NULL)
+            {
+              p=AcquireCacheViewPixels(next_view,0,y,next->columns,1,exception);
+              if (p == (const PixelPacket *) NULL)
+                thread_status=MagickFail;
+              if (p != (const PixelPacket *) NULL)
+                {
+                  if (next == image)
+                    {
+                      for (x=0; x < (long) next->columns; x++)
+                        {
+                          pixels_sum[x].red=p[x].red;
+                          pixels_sum[x].green=p[x].green;
+                          pixels_sum[x].blue=p[x].blue;
+                          pixels_sum[x].opacity=p[x].opacity;
+                        }
+                    }
+                  else
+                    {
+                      for (x=0; x < (long) next->columns; x++)
+                        {
+                          pixels_sum[x].red+=p[x].red;
+                          pixels_sum[x].green+=p[x].green;
+                          pixels_sum[x].blue+=p[x].blue;
+                          pixels_sum[x].opacity+=p[x].opacity;
+                        }
+                    }
+                }
+              CloseCacheView(next_view);
+            }
+        }
+      /*
+        Average next pixels.
+      */
+      if (thread_status != MagickFail)
+        {
+          register PixelPacket
+            *q;
+
+          q=SetThreadViewPixels(average_views,0,y,average_image->columns,1,exception);
+          if (q == (PixelPacket *) NULL)
+            thread_status=MagickFail;
+          if (q != (PixelPacket *) NULL)
+            {
+              for (x=0; x < (long) average_image->columns; x++)
+                {
+                  q[x].red=(Quantum) (pixels_sum[x].red/number_scenes+0.5);
+                  q[x].green=(Quantum) (pixels_sum[x].green/number_scenes+0.5);
+                  q[x].blue=(Quantum) (pixels_sum[x].blue/number_scenes+0.5);
+                  q[x].opacity=(Quantum) (pixels_sum[x].opacity/number_scenes+0.5);
+                }
+              if (!SyncThreadViewPixels(average_views,exception))
+                thread_status=MagickFail;
+            }
+        }
+
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
-        pixels->red+=p->red;
-        pixels->green+=p->green;
-        pixels->blue+=p->blue;
-        pixels->opacity+=p->opacity;
-        p++;
-        pixels++;
+        row_count++;
+        if (QuantumTick(row_count,average_image->rows))
+          if (!MagickMonitorFormatted(row_count,average_image->rows,exception,
+                                      "[%s,...,%s] Average image sequence...",
+                                      image->filename,last_image->filename))
+            thread_status=MagickFail;
+      
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
     }
-    number_scenes++;
-  }
-  /*
-    Average next pixels.
-  */
-  pixels=pixels_array;
-  for (y=0; y < (long) average_image->rows; y++)
-  {
-    q=SetImagePixels(average_image,0,y,average_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=(long) average_image->columns; x > 0; x--)
+
+  DestroyThreadViewSet(average_views);
+  DestroyThreadViewDataSet(pixels_sums);
+
+  if (status == MagickFail)
     {
-      q->red=(Quantum) (pixels->red/number_scenes+0.5);
-      q->green=(Quantum) (pixels->green/number_scenes+0.5);
-      q->blue=(Quantum) (pixels->blue/number_scenes+0.5);
-      q->opacity=(Quantum) (pixels->opacity/number_scenes+0.5);
-      q++;
-      pixels++;
+      DestroyImage(average_image);
+      average_image=(Image *) NULL;
     }
-    if (!SyncImagePixels(average_image))
-      break;
-    if (QuantumTick(y,average_image->rows))
-      if (!MagickMonitorFormatted(y,average_image->rows,exception,
-                                  AverageImageText,image->filename))
-        break;
-  }
-  MagickFreeMemory(pixels_array);
+
   return(average_image);
 }
 

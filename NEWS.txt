@@ -83,6 +83,7 @@ Performance Improvements:
   * OpenMP (parallel processing) improvements for these functions:
 
     - Affine transform (-affine -transform)
+    - Average images (-average)
     - Add noise (+noise)
     - Black threshold (-black-threshold)
     - Blur (-blur)
