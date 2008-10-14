@@ -233,7 +233,7 @@ image formats.
    |              |      |                           | image. When writing the MPC format, a file with  |
    |              |      |                           | extension ".mpc" is used to store information    |
    |              |      |                           | about the image, while a file with extension     |
-   |              |      |                           | ?.cache? stores the image pixels. The storage    |
+   |              |      |                           | ``.cache`` stores the image pixels. The storage  |
    |              |      |                           | space required by a MPC image (or an image in    |
    |              |      |                           | memory) may be calculated by the equation        |
    |              |      |                           | (QuantumDepth*Rows*Columns*5)/8.                 |
@@ -512,11 +512,20 @@ following table lists these pseudo image formats:
 
 
 GraphicsMagick includes a number of built-in (embedded) images which may
-be referenced as if they were an image file. The ?IMAGE:? format tag may
+be referenced as if they were an image file. The ``IMAGE:`` format tag may
 be used via the syntax "IMAGE:name" to request an embedded image (e.g.
-?IMAGE:LOGO?). For backwards compatibility, the image specifications
-?GRANITE:?, ?LOGO:?, ?NETSCAPE:?, and ?ROSE:? may also be used to request
+``IMAGE:LOGO``). For backwards compatibility, the image specifications
+``GRANITE:``, ``LOGO:``, ``NETSCAPE:``, and ``ROSE:`` may also be used to request
 images with those names.
+
+A new canvas image of a specified size may be created using one of these pattern
+images using a command similar to::
+
+  gm convert -size 640x480 PATTERN:BRICKS bricks.miff
+
+The TILE: virtual image type may also be used similar to::
+
+  gm convert -size 640x480 TILE:IMAGE:BRICKS bricks.miff
 
 .. |bricks| image:: images/patterns/bricks.png
 .. |circles| image:: images/patterns/circles.png

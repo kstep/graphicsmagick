@@ -844,29 +844,20 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
                                            const Image *texture_image,
                                            ExceptionInfo *exception)
 {
-  const PixelPacket
-    *texture_pixels;
-
-  const IndexPacket
-    *texture_indexes;
-
-  PixelPacket
-    *canvas_pixels;
-
-  IndexPacket
-    *canvas_indexes;
+  ThreadViewSet
+    *canvas_views,
+    *texture_views;
 
   Image
     *canvas_image;
 
-  unsigned long
-    x,
+  long
     y;
 
   unsigned long
-    texture_width;
+    row_count=0;
 
-  MagickPassFail
+  volatile MagickPassFail
     status=MagickPass;
 
   assert(texture_image != (Image *) NULL);
@@ -876,61 +867,104 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
   if (canvas_image == (Image *) NULL)
     return canvas_image;
 
-  canvas_indexes=(IndexPacket *) NULL;
-  texture_indexes=(const IndexPacket *) NULL;
-  for (y=0; y < canvas_image->rows; y++)
+  /*
+    Allocate thread views
+  */
+  canvas_views=AllocateThreadViewSet(canvas_image,exception);
+  texture_views=AllocateThreadViewSet((Image *) texture_image,exception);
+  if ((canvas_views == (ThreadViewSet *) NULL) ||
+      (texture_views == (ThreadViewSet *) NULL))
     {
-      texture_pixels=AcquireImagePixels(texture_image,0,
-                                        y % texture_image->rows,
-                                        texture_image->columns,1,
-                                        exception);
-      if (texture_pixels == (const PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
-      if (texture_image->storage_class == PseudoClass)
-        texture_indexes=(const IndexPacket *) GetIndexes(texture_image);
-
-      canvas_pixels=SetImagePixels(canvas_image,0,y,canvas_image->columns,1);
-      if (canvas_pixels == (PixelPacket *) NULL)
-        {
-          CopyException(exception,&canvas_image->exception);
-          status=MagickFail;
-          break;
-        }
-      if (canvas_image->storage_class == PseudoClass)
-        canvas_indexes=GetIndexes(canvas_image);
-      
-      for (x=0; x < canvas_image->columns; x+=texture_image->columns)
-        {
-          texture_width=texture_image->columns;
-          if ((x+texture_width) > canvas_image->columns)
-            texture_width=canvas_image->columns-x;
-
-          if (texture_indexes != (const IndexPacket *) NULL)
-            {
-              (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
-              canvas_indexes += texture_width;
-            }
-          (void) memcpy(canvas_pixels,texture_pixels,texture_width*sizeof(PixelPacket));
-          canvas_pixels += texture_width;
-        }
-      if (!SyncImagePixels(canvas_image))
-        {
-          CopyException(exception,&canvas_image->exception);
-          status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,canvas_image->rows))
-        if (!MagickMonitorFormatted(y,canvas_image->rows,exception,
-                                    ConstituteTextureImageText,
-                                    texture_image->filename))
-          {
-            status=MagickFail;
-            break;
-          }
+      DestroyThreadViewSet(canvas_views);
+      DestroyThreadViewSet(texture_views);
+      DestroyImage(canvas_image);
+      return (Image *) NULL;
     }
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,16)
+#endif
+  for (y=0; y < (long) canvas_image->rows; y++)
+    {
+      const PixelPacket
+        *texture_pixels;
+
+      PixelPacket
+        *canvas_pixels;
+
+      unsigned long
+        x;
+
+      MagickBool
+        thread_status;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      texture_pixels=AcquireThreadViewPixels(texture_views,0,
+                                             y % texture_image->rows,
+                                             texture_image->columns,1,
+                                             exception);
+      canvas_pixels=SetThreadViewPixels(canvas_views,0,y,canvas_image->columns,
+                                        1,exception);
+
+      if ((texture_pixels == (const PixelPacket *) NULL) ||
+          (canvas_pixels == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+        {
+          const IndexPacket
+            *texture_indexes=(const IndexPacket *) NULL;
+          
+          IndexPacket
+            *canvas_indexes=(IndexPacket *) NULL;;
+
+          if (texture_image->storage_class == PseudoClass)
+            texture_indexes=AcquireThreadViewIndexes(texture_views);
+          if (canvas_image->storage_class == PseudoClass)
+            canvas_indexes=GetThreadViewIndexes(canvas_views);
+
+          for (x=0; x < canvas_image->columns; x+=texture_image->columns)
+            {
+              unsigned long
+                texture_width;
+
+              texture_width=texture_image->columns;
+              if ((x+texture_width) > canvas_image->columns)
+                texture_width=canvas_image->columns-x;
+
+              if (texture_indexes != (const IndexPacket *) NULL)
+                {
+                  (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
+                  canvas_indexes += texture_width;
+                }
+              (void) memcpy(canvas_pixels,texture_pixels,texture_width*sizeof(PixelPacket));
+              canvas_pixels += texture_width;
+            }
+
+          if (!SyncThreadViewPixels(canvas_views,exception))
+              thread_status=MagickFail;
+        }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,canvas_image->rows))
+          if (!MagickMonitorFormatted(row_count,canvas_image->rows,exception,
+                                      ConstituteTextureImageText,
+                                      texture_image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
+    }
+
+  DestroyThreadViewSet(canvas_views);
+  DestroyThreadViewSet(texture_views);
+
   if (status == MagickFail)
     {
       DestroyImage(canvas_image);

@@ -1,5 +1,8 @@
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ConstituteTextureImage): Accelerate using
+	OpenMP.
+	* magick/image.c (TextureImage): Accelerate using OpenMP.
 	* magick/render.c (DrawAffineImage): Accelerate using OpenMP.
 
 2008-10-13  Fojtik Jaroslav  <JaFojtik@seznam.cz>

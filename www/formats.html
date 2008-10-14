@@ -380,7 +380,7 @@ for high-performance image processing.</p>
 image. When writing the MPC format, a file with
 extension &quot;.mpc&quot; is used to store information
 about the image, while a file with extension
-?.cache? stores the image pixels. The storage
+<tt class="docutils literal"><span class="pre">.cache</span></tt> stores the image pixels. The storage
 space required by a MPC image (or an image in
 memory) may be calculated by the equation
 (QuantumDepth*Rows*Columns*5)/8.</p>
@@ -904,11 +904,20 @@ numeric values used for named colors.</td>
 </tbody>
 </table>
 <p>GraphicsMagick includes a number of built-in (embedded) images which may
-be referenced as if they were an image file. The ?IMAGE:? format tag may
+be referenced as if they were an image file. The <tt class="docutils literal"><span class="pre">IMAGE:</span></tt> format tag may
 be used via the syntax &quot;IMAGE:name&quot; to request an embedded image (e.g.
-?IMAGE:LOGO?). For backwards compatibility, the image specifications
-?GRANITE:?, ?LOGO:?, ?NETSCAPE:?, and ?ROSE:? may also be used to request
+<tt class="docutils literal"><span class="pre">IMAGE:LOGO</span></tt>). For backwards compatibility, the image specifications
+<tt class="docutils literal"><span class="pre">GRANITE:</span></tt>, <tt class="docutils literal"><span class="pre">LOGO:</span></tt>, <tt class="docutils literal"><span class="pre">NETSCAPE:</span></tt>, and <tt class="docutils literal"><span class="pre">ROSE:</span></tt> may also be used to request
 images with those names.</p>
+<p>A new canvas image of a specified size may be created using one of these pattern
+images using a command similar to:</p>
+<pre class="literal-block">
+gm convert -size 640x480 PATTERN:BRICKS bricks.miff
+</pre>
+<p>The TILE: virtual image type may also be used similar to:</p>
+<pre class="literal-block">
+gm convert -size 640x480 TILE:IMAGE:BRICKS bricks.miff
+</pre>
 <table border="1" class="docutils">
 <caption>Built-In Images And Patterns</caption>
 <colgroup>
@@ -1231,7 +1240,7 @@ and the image is subsequently read.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 21:54 UTC.
+Generated on: 2008-10-14 00:34 UTC.
 
 </div>
 </body>

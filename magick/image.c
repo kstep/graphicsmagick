@@ -5535,32 +5535,22 @@ MagickExport MagickPassFail SyncImage(Image *image)
 #define TextureImageText  "[%s] Apply image texture...  "
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
+  ThreadViewSet
+    *image_views,
+    *texture_views;
 
-  const PixelPacket
-    *pixels;
+  volatile MagickPassFail
+    status=MagickPass;
 
   long
-    x,
     y;
 
-  register long
-    z;
-
-  register const PixelPacket
-    *p;
-
-  register PixelPacket
-    *q;
-
-  MagickPassFail
-    status=MagickPass;
+  unsigned long
+    row_count=0;
 
   MagickBool
     get_pixels,
     is_grayscale;
-
-  unsigned long
-    width;
 
   /*
     Tile texture onto the image background.
@@ -5569,69 +5559,121 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return MagickFail;
+
+  /*
+    Allocate thread views
+  */
+  image_views=AllocateThreadViewSet(image,&image->exception);
+  texture_views=AllocateThreadViewSet((Image *) texture, &image->exception);
+  if ((image_views == (ThreadViewSet *) NULL) ||
+      (texture_views == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(image_views);
+      DestroyThreadViewSet(texture_views);
+      return MagickFail;
+    }
+
   get_pixels=GetPixelCachePresent(image);
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,16)
+#endif
   for (y=0; y < (long) image->rows; y++)
     {
-      p=AcquireImagePixels(texture,0,y % texture->rows,texture->columns,1,
-                           &image->exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
-      pixels=p;
+      const PixelPacket
+        *pixels;
 
+      long
+        x;
+
+      register long
+        z;
+
+      register const PixelPacket
+        *p;
+
+      register PixelPacket
+        *q;
+
+      unsigned long
+        width;
+
+      MagickBool
+        thread_status;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      p=AcquireThreadViewPixels(texture_views,0,y % texture->rows,
+                                texture->columns,1,&image->exception);
       if (get_pixels)
-        q=GetImagePixels(image,0,y,image->columns,1);
+        q=GetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
       else
-        q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
+        q=SetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
 
-      for (x=0; x < (long) image->columns; x+=texture->columns)
+      if ((p == (const PixelPacket *) NULL) ||
+          (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
         {
-          width=texture->columns;
-          if ((x+width) > image->columns)
-            width=image->columns-x;
-          p=pixels;
-          if (image->matte)
+          pixels=p;
+          for (x=0; x < (long) image->columns; x+=texture->columns)
             {
-              for (z=(long) width; z != 0; z--)
+              width=texture->columns;
+              if ((x+width) > image->columns)
+                width=image->columns-x;
+              p=pixels;
+              if (image->matte)
                 {
-                  *q=AlphaComposite(q,q->opacity,p,texture->matte != MagickFalse ?
-                                    p->opacity : OpaqueOpacity);
-                  p++;
-                  q++;
+                  for (z=(long) width; z != 0; z--)
+                    {
+                      *q=AlphaComposite(q,q->opacity,p,texture->matte != MagickFalse ?
+                                        p->opacity : OpaqueOpacity);
+                      p++;
+                      q++;
+                    }
+                }
+              else
+                {
+                  if (width*sizeof(PixelPacket) < 1024)
+                    {
+                      for (z=(long) width; z != 0; z--)
+                        {
+                          *q=(*p);
+                          p++;
+                          q++;
+                        }
+                    }
+                  else
+                    {
+                      (void) memcpy(q,p,width*sizeof(PixelPacket));
+                      q += width;
+                    }
                 }
             }
-          else
-            {
-              for (z=(long) width; z != 0; z--)
-                {
-                  *q=(*p);
-                  p++;
-                  q++;
-                }
-            }
+          if (!SyncThreadViewPixels(image_views,&image->exception))
+            thread_status=MagickFail;
         }
-      if (!SyncImagePixels(image))
-        {
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitorFormatted(row_count,image->rows,&image->exception,
+                                      TextureImageText,image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
           status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                    TextureImageText,image->filename))
-          {
-            status=MagickFail;
-            break;
-          }
+      }
     }
+  DestroyThreadViewSet(image_views);
+  DestroyThreadViewSet(texture_views);
+
   if (image->matte)
     image->is_grayscale=(is_grayscale && texture->is_grayscale);
   else
