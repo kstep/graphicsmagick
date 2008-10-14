@@ -5,6 +5,7 @@
 	pixels.
 	(SetImageOpacity): Reimplement using pixel iterators.
 	(AverageImages): Accelerate using OpenMP.
+	(GetImageBoundingBox): Accelerate using OpenMP.
 
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

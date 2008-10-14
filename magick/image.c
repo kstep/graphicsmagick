@@ -2605,10 +2605,16 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 */
 #define GetImageBoundingBoxText "[%s] Get image bounding box..."
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
-  ExceptionInfo *exception)
+                                               ExceptionInfo *exception)
 {
+  volatile MagickPassFail
+    status = MagickPass;
+
   long
     y;
+
+  unsigned long
+    row_count=0;
 
   PixelPacket
     corners[3];
@@ -2616,65 +2622,115 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   RectangleInfo
     bounds;
 
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
+  ThreadViewSet
+    *view_set;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
   bounds.width=0;
   bounds.height=0;
   bounds.x=(long) image->columns;
   bounds.y=(long) image->rows;
-  corners[0]=AcquireOnePixel(image,0,0,exception);
-  corners[1]=AcquireOnePixel(image,(long) image->columns-1,0,exception);
-  corners[2]=AcquireOnePixel(image,0,(long) image->rows-1,exception);
+
+  view_set=AllocateThreadViewSet((Image *) image,exception);
+  if (view_set == (ThreadViewSet *) NULL)
+    return(bounds);
+
+  corners[0]=AcquireOneThreadViewPixel(view_set,0,0,exception);
+  corners[1]=AcquireOneThreadViewPixel(view_set,(long) image->columns-1,0,exception);
+  corners[2]=AcquireOneThreadViewPixel(view_set,0,(long) image->rows-1,exception);
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64)
+#endif
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    if (image->matte)
-      for (x=0; x < (long) image->columns; x++)
+    {
+      register const PixelPacket
+        *p;
+    
+      register long
+        x;
+
+      RectangleInfo
+        thread_bounds;
+
+      MagickPassFail
+        thread_status;
+
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
-        if (p->opacity != corners[0].opacity)
-          if (x < bounds.x)
-            bounds.x=x;
-        if (p->opacity != corners[1].opacity)
-          if (x > (long) bounds.width)
-            bounds.width=x;
-        if (p->opacity != corners[0].opacity)
-          if (y < bounds.y)
-            bounds.y=y;
-        if (p->opacity != corners[2].opacity)
-          if (y > (long) bounds.height)
-            bounds.height=y;
-        p++;
+        thread_status=status;
+        thread_bounds=bounds;
       }
-    else
-      for (x=0; x < (long) image->columns; x++)
+      if (thread_status == MagickFail)
+        continue;
+
+      p=AcquireThreadViewPixels(view_set,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
+        {
+          if (image->matte)
+            for (x=0; x < (long) image->columns; x++)
+              {
+                if (p->opacity != corners[0].opacity)
+                  if (x < thread_bounds.x)
+                    thread_bounds.x=x;
+                if (p->opacity != corners[1].opacity)
+                  if (x > (long) thread_bounds.width)
+                    thread_bounds.width=x;
+                if (p->opacity != corners[0].opacity)
+                  if (y < thread_bounds.y)
+                    thread_bounds.y=y;
+                if (p->opacity != corners[2].opacity)
+                  if (y > (long) thread_bounds.height)
+                    thread_bounds.height=y;
+                p++;
+              }
+          else
+            for (x=0; x < (long) image->columns; x++)
+              {
+                if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
+                  if (x < thread_bounds.x)
+                    thread_bounds.x=x;
+                if (!FuzzyColorMatch(p,&corners[1],image->fuzz))
+                  if (x > (long) thread_bounds.width)
+                    thread_bounds.width=x;
+                if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
+                  if (y < thread_bounds.y)
+                    thread_bounds.y=y;
+                if (!FuzzyColorMatch(p,&corners[2],image->fuzz))
+                  if (y > (long) thread_bounds.height)
+                    thread_bounds.height=y;
+                p++;
+              }
+        }
+
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
-        if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
-          if (x < bounds.x)
-            bounds.x=x;
-        if (!FuzzyColorMatch(p,&corners[1],image->fuzz))
-          if (x > (long) bounds.width)
-            bounds.width=x;
-        if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
-          if (y < bounds.y)
-            bounds.y=y;
-        if (!FuzzyColorMatch(p,&corners[2],image->fuzz))
-          if (y > (long) bounds.height)
-            bounds.height=y;
-        p++;
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                      GetImageBoundingBoxText,image->filename))
+          thread_status=MagickFail;
+
+        if (thread_bounds.x < bounds.x)
+          bounds.x=thread_bounds.x;
+        if (thread_bounds.y < bounds.y)
+          bounds.y=thread_bounds.y;
+        if (thread_bounds.width > bounds.width)
+          bounds.width=thread_bounds.width;
+        if (thread_bounds.height > bounds.height)
+          bounds.height=thread_bounds.height;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitorFormatted(y,image->rows,exception,
-                                  GetImageBoundingBoxText,image->filename))
-        break;
-  }
+    }
   if ((bounds.width != 0) || (bounds.height != 0))
     {
       bounds.width-=(bounds.x-1);
@@ -2684,6 +2740,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds.x=0;
   if (bounds.y < 0)
     bounds.y=0;
+  DestroyThreadViewSet(view_set);
   return(bounds);
 }
 

@@ -123,6 +123,7 @@ Performance Improvements:
     - Spread image (-spread)
     - Statistics computation (identify -verbose)
     - Threshold channel (-threshold, -operator threshold)
+    - Trim image (-trim)
     - UnsharpMaskImage (-unsharp)
     - White threshold (-white-threshold)
 
