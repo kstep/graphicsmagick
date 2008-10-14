@@ -3,6 +3,7 @@
 	* magick/image.c (SetImageDepth): Needed to assign image depth
 	attribute to user-specified depth rather than only altering the
 	pixels.
+	(SetImageOpacity): Reimplement using pixel iterators.
 
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -87,6 +87,7 @@ Performance Improvements:
     - Black threshold (-black-threshold)
     - Blur (-blur)
     - Channel import, export, and depth-setting (-channel, -depth)
+    - Clip path
     - Coalesce (-coalesce)
     - Colorize (-colorize)
     - Colorspace transformation (-colorspace)

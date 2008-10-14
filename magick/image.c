@@ -4909,24 +4909,76 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 %
 %
 */
-#define SetImageOpacityText "[%s] Set image opacity...  "
-MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
+static MagickPassFail
+ModulateImageOpacityCallBack(void *mutable_data,         /* User provided mutable data */
+                             const void *immutable_data, /* User provided immutable data */
+                             Image *image,               /* Modify image */
+                             PixelPacket *pixels,        /* Pixel row */
+                             IndexPacket *indexes,       /* Pixel row indexes */
+                             const long npixels,         /* Number of pixels in row */
+                             ExceptionInfo *exception)   /* Exception report */
 {
-  unsigned long
-    y;
+  const magick_uint32_t
+    opacity = *((const unsigned int *) immutable_data);
 
-  register IndexPacket
-    *indexes;
+  register long
+    i;
 
-  register unsigned long
-    x;
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+if (image->colorspace == CMYKColorspace)
+  {
+    for (i=0; i < npixels; i++)
+      indexes[i]=(IndexPacket) BlendQuantumOpacity(indexes[i],opacity);
+  }
+ else
+   {
+     for (i=0; i < npixels; i++)
+       pixels[i].opacity=(Quantum) BlendQuantumOpacity(pixels[i].opacity,opacity);
+   }
+  return MagickPass;
+}
+static MagickPassFail
+SetImageOpacityCallBack(void *mutable_data,         /* User provided mutable data */
+                        const void *immutable_data, /* User provided immutable data */
+                        Image *image,               /* Modify image */
+                        PixelPacket *pixels,        /* Pixel row */
+                        IndexPacket *indexes,       /* Pixel row indexes */
+                        const long npixels,         /* Number of pixels in row */
+                        ExceptionInfo *exception)   /* Exception report */
+{
+  const unsigned int
+    opacity = *((const unsigned int *) immutable_data);
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
+if (image->colorspace == CMYKColorspace)
+  {
+    for (i=0; i < npixels; i++)
+      indexes[i]=opacity;
+  }
+ else
+   {
+     for (i=0; i < npixels; i++)
+       pixels[i].opacity=opacity;
+   }
+  return MagickPass;
+}
+MagickExport void SetImageOpacity(Image *image,const unsigned int opacity_val)
+{
+  const unsigned int
+    opacity = opacity_val;
 
   MagickBool
     is_grayscale,
     is_monochrome;
-
-  register PixelPacket
-    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4939,36 +4991,10 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
       /*
         Attenuate existing opacity channel
       */
-      for (y=0; y < image->rows; y++)
-        {
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-
-          if (image->colorspace == CMYKColorspace)
-            {
-              for (x=image->columns; x != 0; --x)
-                {
-                  *indexes=(IndexPacket) BlendQuantumOpacity(*indexes,opacity);
-                  indexes++;
-                }
-            }
-          else
-            {
-              for (x=image->columns; x != 0; --x)
-                {
-                  q->opacity=(Quantum) BlendQuantumOpacity(q->opacity,opacity);
-                  q++;
-                }
-            }
-          if (!SyncImagePixels(image))
-            break;
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SetImageOpacityText,image->filename))
-              break;
-        }
+      (void) PixelIterateMonoModify(ModulateImageOpacityCallBack,NULL,
+                                    "[%s] Modulate image opacity...",
+                                    NULL,&opacity,0,0,image->columns,image->rows,
+                                    image,&image->exception);
     }
   else
     {
@@ -4976,32 +5002,10 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
         Add new opacity channel or make existing opacity channel opaque
       */
       image->matte=True;
-      for (y=0; y < image->rows; y++)
-        {
-          q=GetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          if (image->colorspace == CMYKColorspace)
-            {
-              for (x=image->columns; x != 0; --x)
-                *indexes++=opacity;
-            }
-          else
-            {
-              for (x=image->columns; x != 0; --x)
-                {
-                  q->opacity=opacity;
-                  q++;
-                }
-            }
-          if (!SyncImagePixels(image))
-            break;
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SetImageOpacityText,image->filename))
-              break;
-        }
+      (void) PixelIterateMonoModify(SetImageOpacityCallBack,NULL,
+                                    "[%s] Set image opacity...",
+                                    NULL,&opacity,0,0,image->columns,image->rows,
+                                    image,&image->exception);
     }
   image->is_grayscale=is_grayscale;
   image->is_monochrome=is_monochrome;
