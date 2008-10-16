@@ -1818,7 +1818,8 @@ See <s>-draw</s> for further details.</pp>
 <pp>
 Use this option to affect the resizing operation of an image (see
 <s>-geometry</s>).
-Choose from these filters:</pp>
+Choose from these filters (ordered by approximate increasing CPU
+time):</pp>
 
 <pre>
      Point

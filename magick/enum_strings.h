@@ -49,6 +49,7 @@ extern "C" {
   extern MagickExport const char *CompositeOperatorToString(const CompositeOperator composite_op);
   extern MagickExport const char *CompressionTypeToString(const CompressionType compression_type);
   extern MagickExport const char *HighlightStyleToString(const HighlightStyle difference_algorithm);
+  extern MagickExport const char *ImageTypeToString(const ImageType image_type);
   extern MagickExport const char *MapModeToString(MapMode map_mode);
   extern MagickExport const char *MetricTypeToString(MetricType metric);
   extern MagickExport const char *OrientationTypeToString(const OrientationType orientation_type);

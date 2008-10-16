@@ -43,6 +43,7 @@
 #include "magick/fx.h"
 #include "magick/gem.h"
 #include "magick/log.h"
+#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
@@ -302,7 +303,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     width,
     y;
 
-  volatile MagickPassFail
+  MagickPassFail
     status;
 
   /*
@@ -421,7 +422,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
@@ -899,7 +900,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *read_view_set,
     *write_view_set;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -935,7 +936,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     Paint each row of the image.
   */
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

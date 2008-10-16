@@ -45,6 +45,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/semaphore.h"
 #include "magick/tempfile.h"
@@ -857,7 +858,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
   unsigned long
     row_count=0;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   assert(texture_image != (Image *) NULL);
@@ -881,7 +882,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
       return (Image *) NULL;
     }
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,16)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) canvas_image->rows; y++)
     {
@@ -1466,17 +1467,17 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   unsigned char *destination,const ExportPixelAreaOptions *options,
   ExportPixelAreaInfo *export_info)
 {
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
-  register unsigned long
-    x;
-
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
     *q;
+
+  register unsigned long
+    x;
 
   register unsigned int
     unsigned_value,

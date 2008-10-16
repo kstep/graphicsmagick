@@ -55,6 +55,7 @@
 #include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/module.h"
+#include "magick/omp_thread_view.h"
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
@@ -728,7 +729,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   unsigned long
     number_pixels;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -814,7 +815,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   number_scenes=(double) GetImageListLength(image);
   last_image=GetLastImageInList(image);
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(dynamic)
+#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -2607,8 +2608,8 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
                                                ExceptionInfo *exception)
 {
-  volatile MagickPassFail
-    status = MagickPass;
+  MagickPassFail
+    status=MagickPass;
 
   long
     y;
@@ -2641,7 +2642,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   corners[1]=AcquireOneThreadViewPixel(view_set,(long) image->columns-1,0,exception);
   corners[2]=AcquireOneThreadViewPixel(view_set,0,(long) image->rows-1,exception);
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -3690,50 +3691,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
 %
 %
 */
-MagickExport const char *ImageTypeToString(const ImageType image_type)
-{
-  const char
-    *p = "Unknown";
 
-  switch (image_type)
-    {
-    case UndefinedType:
-      p="Undefined";
-      break;
-    case BilevelType:
-      p="Bilevel";
-      break;
-    case GrayscaleType:
-      p="Grayscale";
-      break;
-    case GrayscaleMatteType:
-      p="GrayscaleMatte";
-      break;
-    case PaletteType:
-      p="Palette";
-      break;
-    case PaletteMatteType:
-      p="PaletteMatte";
-      break;
-    case TrueColorType:
-      p="TrueColor";
-      break;
-    case TrueColorMatteType:
-      p="TrueColorMatte";
-      break;
-    case ColorSeparationType:
-      p="ColorSeparation";
-      break;
-    case ColorSeparationMatteType:
-      p="ColorSeparationMatte";
-      break;
-    case OptimizeType:
-      p="Optimize";
-      break;
-    }
-
-  return p;
-}
 MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 {
   ImageCharacteristics
@@ -3812,7 +3770,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
   ThreadViewSet
     *view_set;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -3831,7 +3789,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
     Generate gradient pixels.
   */
 #if defined(_OPENMP)
-#  pragma omp parallel for
+#  pragma omp parallel for shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -5705,14 +5663,14 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %
 */
 
-#define TextureImageText  "[%s] Apply image texture...  "
+#define TextureImageText  "[%s] Apply image texture..."
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
   ThreadViewSet
     *image_views,
     *texture_views;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   long
@@ -5750,7 +5708,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,16)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

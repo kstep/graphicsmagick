@@ -51,6 +51,7 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/paint.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
@@ -988,7 +989,7 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
 MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
                                             const AffineMatrix *affine)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   ThreadViewSet
@@ -1086,7 +1087,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
   y_min=(long) ceil(edge.y1-0.5);
   y_max=(long) floor(edge.y2+0.5);
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,8)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
   for (y=y_min; y <= y_max; y++)
     {

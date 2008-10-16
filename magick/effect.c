@@ -45,6 +45,7 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
@@ -101,7 +102,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   long
     y;
 
-  volatile MagickPassFail
+  MagickPassFail
     status;
 
   /*
@@ -148,7 +149,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -599,7 +600,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   MagickBool
     is_grayscale;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   is_grayscale=image->is_grayscale;
@@ -647,7 +648,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
         y;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
         {
@@ -1442,7 +1443,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     DoublePixelPacket
       zero;
 
-    volatile MagickPassFail
+    MagickPassFail
       status=MagickPass;
 
     read_view_set=AllocateThreadViewSet((Image *) image,exception);
@@ -1458,7 +1459,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -2232,7 +2233,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     DoublePixelPacket
       zero;
 
-    volatile MagickPassFail
+    MagickPassFail
       status;
 
     read_view_set=AllocateThreadViewSet((Image *) image,exception);
@@ -2251,7 +2252,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -2410,7 +2411,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
   ChannelType
     channel_type;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -2522,7 +2523,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                             UnableToThresholdImage);
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3060,7 +3061,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
   PrimaryInfo
     light;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -3105,7 +3106,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3440,7 +3441,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     long
       y;
 
-    volatile MagickPassFail
+    MagickPassFail
       status=MagickPass;
 
     read_view_set=AllocateThreadViewSet((Image *) image,exception);
@@ -3455,7 +3456,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {

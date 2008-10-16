@@ -132,6 +132,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/profile.h"
 #include "magick/resize.h"
 #include "magick/utility.h"

@@ -46,6 +46,7 @@
 #include "magick/color.h"
 #include "magick/decorate.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
 #include "magick/shear.h"
@@ -297,7 +298,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     tile_width_max=128,
     tile_height_max=128;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -364,7 +365,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -594,7 +595,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -870,7 +871,7 @@ static void XShearImage(Image *image,const double degrees,
   unsigned int
     is_grayscale;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   assert(image != (Image *) NULL);
@@ -881,7 +882,7 @@ static void XShearImage(Image *image,const double degrees,
     return;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (y=0; y < (long) height; y++)
     {
@@ -1133,7 +1134,7 @@ static void YShearImage(Image *image,const double degrees,
   unsigned int
     is_grayscale;
 
-  volatile MagickPassFail
+  MagickPassFail
     status=MagickPass;
 
   assert(image != (Image *) NULL);
@@ -1144,7 +1145,7 @@ static void YShearImage(Image *image,const double degrees,
     return;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (y=0; y < (long) width; y++)
     {

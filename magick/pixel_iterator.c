@@ -14,6 +14,7 @@
 
 #include "magick/studio.h"
 #include "magick/monitor.h"
+#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
@@ -126,7 +127,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
                      const Image *image,
                      ExceptionInfo *exception)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   register long
@@ -152,7 +153,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
     return MagickFail;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (row=y; row < (long) (y+rows); row++)
     {
@@ -269,7 +270,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
                        Image *image,
                        ExceptionInfo *exception)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   register long
@@ -295,7 +296,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
     return MagickFail;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (row=y; row < (long) (y+rows); row++)
     {
@@ -428,7 +429,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                      const long second_y,
                      ExceptionInfo *exception)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   register long
@@ -461,7 +462,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
     }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
     {
@@ -612,7 +613,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
                                ExceptionInfo *exception,
                                MagickBool set)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   register long
@@ -645,7 +646,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
     }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
     {
@@ -928,7 +929,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
                                  ExceptionInfo *exception,
                                  MagickBool set)
 {
-  volatile MagickPassFail
+  MagickPassFail
     status = MagickPass;
 
   register long
@@ -965,7 +966,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
     }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
     {

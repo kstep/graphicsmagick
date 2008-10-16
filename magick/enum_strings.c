@@ -699,6 +699,50 @@ StringToHighlightStyle(const char *option)
 /*
   ImageType
 */
+MagickExport const char *ImageTypeToString(const ImageType image_type)
+{
+  const char
+    *p = "Unknown";
+
+  switch (image_type)
+    {
+    case UndefinedType:
+      p="Undefined";
+      break;
+    case BilevelType:
+      p="Bilevel";
+      break;
+    case GrayscaleType:
+      p="Grayscale";
+      break;
+    case GrayscaleMatteType:
+      p="GrayscaleMatte";
+      break;
+    case PaletteType:
+      p="Palette";
+      break;
+    case PaletteMatteType:
+      p="PaletteMatte";
+      break;
+    case TrueColorType:
+      p="TrueColor";
+      break;
+    case TrueColorMatteType:
+      p="TrueColorMatte";
+      break;
+    case ColorSeparationType:
+      p="ColorSeparation";
+      break;
+    case ColorSeparationMatteType:
+      p="ColorSeparationMatte";
+      break;
+    case OptimizeType:
+      p="Optimize";
+      break;
+    }
+
+  return p;
+}
 MagickExport ImageType StringToImageType(const char *option)
 {
   ImageType

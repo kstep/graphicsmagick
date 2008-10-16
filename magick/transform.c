@@ -343,8 +343,6 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   ExceptionInfo *exception)
 {
-#define CropImageText  "[%s] Crop image..."
-
   Image
     *crop_image;
 
@@ -453,7 +451,10 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       break;
     if (QuantumTick(y,crop_image->rows))
       if (!MagickMonitorFormatted(y,crop_image->rows-1,exception,
-                                  CropImageText,crop_image->filename))
+                                  "[%s] Crop %lux%lu+%ld+%ld image...",
+                                  crop_image->filename,
+                                  crop_image->columns,crop_image->rows,
+                                  page.x,page.y))
         break;
   }
   if (y < (long) crop_image->rows)
