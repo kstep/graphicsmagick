@@ -1,3 +1,7 @@
+2008-10-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Remove unused exponential data.
+
 2008-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/omp_thread_view.c: Move OMP Thread View functions out of

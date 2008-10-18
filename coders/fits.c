@@ -157,10 +157,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
   char
     keyword[MaxTextExtent],
-    value[MaxTextExtent];
-
-  double
-    exponential[2048];
+    value[MaxTextExtent];  
 
   FITSInfo
     fits_info;
@@ -325,23 +322,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
-    ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
-  if (fits_info.bits_per_pixel == -32)
-    {
-      exponential[150]=1.0;
-      for (i=151; i < 256; i++)
-        exponential[i]=2.0*exponential[i-1];
-      for (i=149; i >= 0; i--)
-        exponential[i]=exponential[i+1]/2.0;
-    }
-  if (fits_info.bits_per_pixel == -64)
-    {
-      exponential[1075]=1.0;
-      for (i=1076; i < 2048; i++)
-        exponential[i]=2.0*exponential[i-1];
-      for (i=1074; i >= 0; i--)
-        exponential[i]=exponential[i+1]/2.0;
-    }
+    ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);  
 
   for (scene=0; scene < (long) fits_info.number_scenes; scene++)
   {
