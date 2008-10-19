@@ -1,3 +1,21 @@
+2008-10-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (GetCacheViewRegion): New function to
+	return the region bounded by a pixel cache view.
+	* magick/constitute.c (ExportViewPixelArea): New function to
+	support exporting the pixels from a pixel cache view.
+	(ImportViewPixelArea): New function to support importing pixels
+	to a pixel cache view.
+	* magick/pixel_cache.c (ReadStream): Eliminated function.
+	(WriteStream): Eliminated function.
+	(ClonePixelCacheMethods): Eliminated function.
+	* magick/image.h: Eliminated StreamHandler call-back type.
+	Eliminated ImageInfo stream member.
+	* magick/pixel_cache.c (GetCacheViewArea): New function to return
+	the area of a cache view.
+	(AccessCacheViewPixels): New function to access already selected
+	cache view pixels.
+
 2008-10-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c: Remove unused exponential data.

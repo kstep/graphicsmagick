@@ -52,7 +52,7 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on October 13, 2008</p>
+<p>This file was last updated on October 19, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -217,6 +217,15 @@ GetCacheViewPixels(), SetCacheViewPixels(), and
 SyncCacheViewPixels(). The deprecated functions are
 AcquireCacheView(), GetCacheView(), SetCacheView(), and
 SyncCacheView().</li>
+<li>GetCacheViewRegion() reports region bounded by a cache view.</li>
+<li>GetCacheViewArea() reports area bounded by a cache view.</li>
+<li>ExportViewPixelArea() exports a cache view as formatted pixels.</li>
+<li>ImportViewPixelArea imports formatted pixels into a cache view.</li>
+</ul>
+</li>
+<li>Removed C API functions:<ul>
+<li>ReadStream()</li>
+<li>WriteStream()</li>
 </ul>
 </li>
 </ul>
@@ -884,7 +893,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-14 20:47 UTC.
+Generated on: 2008-10-19 20:37 UTC.
 
 </div>
 </body>

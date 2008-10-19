@@ -78,7 +78,6 @@ typedef enum
   PipeStream,       /* Command pipe stream opened via popen() */
   ZipStream,        /* Opened with zlib's gzopen() */
   BZipStream,       /* Opened with bzlib's BZ2_bzopen() */
-  FifoStream,       /* Passed via image_info->stream */
   BlobStream        /* Memory mapped, or in allocated RAM */
 } StreamType;
 
@@ -113,10 +112,6 @@ struct _BlobInfo
 
   BlobMode
     mode;               /* Blob open mode */
-
-  StreamHandler
-    stream;             /* Used to support pixel cache functions ReadStream() and WriteStream().
-                           unsigned int (*StreamHandler)(const Image *,const void *,const size_t) */
 
   unsigned char
     *data;              /* Blob or memory mapped data. */
@@ -180,9 +175,6 @@ static const char *BlobStreamTypeToString(StreamType stream_type)
     break;
   case BZipStream:
     type_string="BZip";
-    break;
-  case FifoStream:
-    type_string="Fifo";
     break;
   case BlobStream:
     type_string="Blob";
@@ -809,7 +801,6 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->temporary=blob_info->temporary;
   clone_info->type=blob_info->type;
   clone_info->file=blob_info->file;
-  clone_info->stream=blob_info->stream;
   clone_info->data=blob_info->data;
   clone_info->reference_count=1;
   clone_info->semaphore=(SemaphoreInfo *) NULL;
@@ -888,7 +879,6 @@ MagickExport void CloseBlob(Image *image)
 #endif
       break;
     }
-    case FifoStream:
     case BlobStream:
       break;
   }
@@ -936,10 +926,6 @@ MagickExport void CloseBlob(Image *image)
 #endif
       break;
     }
-    case FifoStream:
-      {
-        break;
-      }
     case BlobStream:
       {
         if (image->blob->file != (FILE *) NULL)
@@ -1112,7 +1098,6 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
   blob_info->type=UndefinedStream;
   blob_info->file=(FILE *) NULL;
   blob_info->data=(unsigned char *) NULL;
-  blob_info->stream=(StreamHandler) NULL;
 }
 
 /*
@@ -1173,11 +1158,6 @@ MagickExport int EOFBlob(const Image *image)
       (void) BZ2_bzerror(image->blob->file,&status);
       image->blob->eof=status == BZ_UNEXPECTED_EOF;
 #endif
-      break;
-    }
-    case FifoStream:
-    {
-      image->blob->eof=False;
       break;
     }
     case BlobStream:
@@ -1418,8 +1398,6 @@ MagickExport magick_off_t GetBlobSize(const Image *image)
 #endif
       break;
     }
-    case FifoStream:
-      break;
     case BlobStream:
     {
       offset=image->blob->length;
@@ -1491,36 +1469,6 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
   if (image->blob->type != BlobStream)
     return 0;
   return(image->blob->data);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t B l o b S t r e a m H a n d l e r                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetBlobStreamHandler() returns the stream handler associated with the image.
-%
-%  The format of the GetBlobStreamHandler method is:
-%
-%      const StreamHandler GetBlobStreamHandler(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
-{
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  return (image->blob->stream);
 }
 
 /*
@@ -2407,19 +2355,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 
   if (image_info->blob != (void *) NULL)
     {
-      /*
-        Use existing blob supplied via image_info->blob
-      */
-      if (image_info->stream != (StreamHandler) NULL)
-        {
-          /*
-            Use existing stream provided via image_info->stream
-          */
-          image->blob->stream=image_info->stream;
-          if (image->logging)
-            (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                  "  using image_info->stream for blob %p",&image->blob);
-        }
       AttachBlob(image->blob,image_info->blob,image_info->length);
       if (image->logging)
         (void) LogMagickEvent(BlobEvent,GetMagickModule(),
@@ -2436,23 +2371,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
     case WriteBlobMode: type=(char *) "w"; break;
     case WriteBinaryBlobMode: type=(char *) "w+b"; break;
     }
-  if (image_info->stream != (StreamHandler) NULL)
-    {
-      /*
-        Use existing stream provided via image_info->stream and
-        return if blob is in write mode.
-      */
-      image->blob->stream=image_info->stream;
-      image->blob->type=FifoStream;
-      if (*type == 'w')
-        {
-          if (image->logging)
-            (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                  "  opened image_info->stream as FifoStream blob %p",
-                                  &image->blob);
-          return(MagickPass);
-        }
-    }
+
   /*
     Open image file.
   */
@@ -2813,22 +2732,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static unsigned int PingStream(const Image *ARGUNUSED(image),
-                               const void *ARGUNUSED(pixels),
-                               const size_t ARGUNUSED(columns))
-{
-  return(True);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
@@ -2851,10 +2754,10 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) blob;
   clone_info->length=length;
-  clone_info->ping=True;
+  clone_info->ping=MagickTrue;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
-  image=ReadStream(clone_info,&PingStream,exception);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   return(image);
 }
@@ -2946,8 +2849,6 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 #endif
       break;
     }
-    case FifoStream:
-      break;
     case BlobStream:
     {
       void
@@ -3961,8 +3862,6 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
     }
     case BZipStream:
       return(-1);
-    case FifoStream:
-      return(-1);
     case BlobStream:
     {
       switch (whence)
@@ -4149,7 +4048,6 @@ static int SyncBlob(Image *image)
 #endif
       break;
     }
-    case FifoStream:
     case BlobStream:
       break;
   }
@@ -4212,8 +4110,6 @@ MagickExport magick_off_t TellBlob(const Image *image)
       break;
     }
     case BZipStream:
-      break;
-    case FifoStream:
       break;
     case BlobStream:
     {
@@ -4345,11 +4241,6 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 #if defined(HasBZLIB)
       count=BZ2_bzwrite(image->blob->file,(void *) data,length);
 #endif
-      break;
-    }
-    case FifoStream:
-    {
-      count=image->blob->stream(image,data,length);
       break;
     }
     case BlobStream:

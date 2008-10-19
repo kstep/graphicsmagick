@@ -95,7 +95,7 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   view_set->nviews=omp_get_max_threads();
   /* printf("Allocated %d cache views ...\n",view_set->nviews); */
   
-  view_set->views=MagickAllocateMemory(ViewInfo *,view_set->nviews*sizeof(ViewInfo *));
+  view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
     {
       ThrowException(exception,CacheError,UnableToAllocateCacheView,
@@ -272,7 +272,7 @@ AllocateThreadViewDataSet(const MagickFreeFunc destructor,
                       UnableToAllocateCacheView);
   data_set->destructor=destructor;
   data_set->nviews=omp_get_max_threads();
-  data_set->view_data=MagickAllocateMemory(void *,data_set->nviews*sizeof(void *));
+  data_set->view_data=MagickAllocateArray(void *,data_set->nviews,sizeof(void *));
   if (data_set->view_data == (void *) NULL)
     {
       ThrowException(exception,CacheError,UnableToAllocateCacheView,

@@ -160,10 +160,16 @@ extern MagickExport MagickPassFail
     const StorageType type,void *pixels,ExceptionInfo *exception),
   ExportImagePixelArea(const Image *image,const QuantumType quantum_type,
     const unsigned int quantum_size,unsigned char *destination,
+    const ExportPixelAreaOptions *options,ExportPixelAreaInfo *export_info),
+  ExportViewPixelArea(const ViewInfo *view,const QuantumType quantum_type,
+    const unsigned int quantum_size,unsigned char *destination,
     const ExportPixelAreaOptions *options,ExportPixelAreaInfo *export_info);
 
 extern MagickExport MagickPassFail
   ImportImagePixelArea(Image *image,const QuantumType quantum_type,
+    const unsigned int quantum_size,const unsigned char *source,
+    const ImportPixelAreaOptions *options,ImportPixelAreaInfo *import_info),
+  ImportViewPixelArea(ViewInfo *view,const QuantumType quantum_type,
     const unsigned int quantum_size,const unsigned char *source,
     const ImportPixelAreaOptions *options,ImportPixelAreaInfo *import_info),
   WriteImage(const ImageInfo *image_info,Image *image),

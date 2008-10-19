@@ -1416,13 +1416,13 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ExportImagePixelArea() transfers one or more pixel components from the
-%  image pixel cache to a user supplied buffer.  By default, values are
-%  written in network (big-endian) byte/bit order.  By setting the 'endian'
-%  member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be output
-%  as little (LSBEndian), big (MSBEndian), or host native (NativeEndian)
-%  endian values.  This function is quite powerful in that besides common
-%  native CPU type sizes, it can support any integer bit depth from 1 to 32
-%  (e.g. 13) as well as 32 and 64-bit float.
+%  default image pixel cache view to a user supplied buffer.  By default,
+%  values are written in network (big-endian) byte/bit order.  By setting
+%  the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values
+%  may be output as little (LSBEndian), big (MSBEndian), or host native
+%  (NativeEndian) endian values.  This function is quite powerful in that
+%  besides common native CPU type sizes, it can support any integer bit
+%  depth from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
 %  
 %
 %  MagickPass is returned if the pixels are successfully transferred,
@@ -1467,6 +1467,76 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   unsigned char *destination,const ExportPixelAreaOptions *options,
   ExportPixelAreaInfo *export_info)
 {
+  return ExportViewPixelArea(image->default_view,quantum_type,quantum_size,
+                             destination,options,export_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x p o r t V i e w P i x e l A r e a                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExportViewPixelArea() transfers one or more pixel components from the
+%  specified image pixel cache view to a user supplied buffer.  By default,
+%  values are written in network (big-endian) byte/bit order.  By setting the
+%  'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be
+%  output as little (LSBEndian), big (MSBEndian), or host native
+%  (NativeEndian) endian values.  This function is quite powerful in that
+%  besides common native CPU type sizes, it can support any integer bit depth
+%  from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
+%  
+%
+%  MagickPass is returned if the pixels are successfully transferred,
+%  otherwise MagickFail.
+%
+%  The format of the ExportViewPixelArea method is:
+%
+%      MagickPassFail ExportViewPixelArea(const ViewInfo *view,
+%                                         const QuantumType quantum_type,
+%                                         unsigned int quantum_size,
+%                                         unsigned char *destination,
+%                                         const ExportPixelAreaOptions *options,
+%                                         ExportPixelAreaInfo *export_info)
+%
+%  A description of each parameter follows:
+%
+%    o status: Returns MagickPass if the pixels are successfully transferred,
+%              otherwise MagickFail.
+%
+%    o view: The image pixel cache view.
+%
+%    o quantum_type: Declare which pixel components to transfer (AlphaQuantum,
+%        BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+%        GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+%        IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+%        RedQuantum, YellowQuantum)
+%
+%    o quantum_size: Bits per quantum sample (range 1-32, and 64).
+%
+%    o destination:  The components are transferred to this buffer.  The user
+%        is responsible for ensuring that the destination buffer is large
+%        enough.
+%
+%    o options: Additional options specific to quantum_type (may be NULL).
+%
+%    o export_info : Populated with information regarding the pixels
+%        exported (may be NULL)
+%
+*/
+MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
+  const QuantumType quantum_type,const unsigned int quantum_size,
+  unsigned char *destination,const ExportPixelAreaOptions *options,
+  ExportPixelAreaInfo *export_info)
+{
+  const Image
+    *image;
+
   register const IndexPacket
     *indexes;
 
@@ -1504,8 +1574,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   EndianType
     endian=MSBEndian;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(view != (ViewInfo *) NULL);
   assert(destination != (unsigned char *) NULL);
   assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ExportPixelAreaOptions *) NULL) ||
@@ -1575,9 +1644,10 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         }
     }
 
-  number_pixels=(unsigned long) GetPixelCacheArea(image);
-  p=GetPixels(image);
-  indexes=GetIndexes(image);
+  image=GetCacheViewImage(view);
+  number_pixels=(unsigned long) GetCacheViewArea(view);
+  p=AccessCacheViewPixels(view);
+  indexes=AcquireCacheViewIndexes(view);
   q=destination;
   switch (quantum_type)
     {
@@ -3527,7 +3597,7 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImportImagePixelArea() transfers one or more pixel components from a user
-%  supplied buffer into the image pixel cache of an image. By default,
+%  supplied buffer into the default image pixel cache view. By default,
 %  values are read in network (big-endian) byte/bit order.  By setting the
 %  'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may
 %  be output as little (LSBEndian), big (MSBEndian), or host native
@@ -3570,12 +3640,78 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %               imported (may be NULL)
 %
 */
-
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   const unsigned char *source,const ImportPixelAreaOptions *options,
   ImportPixelAreaInfo *import_info)
 {
+  return ImportViewPixelArea(image->default_view,quantum_type,quantum_size,
+                             source,options,import_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m p o r t V i e w P i x e l A r e a                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ImportViewPixelArea() transfers one or more pixel components from a user
+%  supplied buffer into the specified image pixel cache view of an image. By
+%  default, values are read in network (big-endian) byte/bit order.  By
+%  setting the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit
+%  values may be output as little (LSBEndian), big (MSBEndian), or host
+%  native (NativeEndian) endian values.  This function is quite powerful in
+%  that besides common native CPU type sizes, it can support any integer bit
+%  depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.
+%
+%  MagickPass is returned if the pixels are successfully transferred,
+%  otherwise MagickFail.
+%
+%  The format of the ImportViewPixelArea method is:
+%
+%      MagickPassFail ImportViewPixelArea(ViewInfo *view,
+%                                         const QuantumType quantum_type,
+%                                         const unsigned int quantum_size,
+%                                         const unsigned char *source,
+%                                         const ImportPixelAreaOptions *options,
+%                                         ImportPixelAreaInfo *import_info)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PushImagePixels returns MagickPass if the pixels are
+%      successfully transferred, otherwise MagickFail.
+%
+%    o view: The pixel view to import pixels into.
+%
+%    o quantum_type: Declare which pixel components to transfer (AlphaQuantum,
+%        BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+%        GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+%        IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+%        RedQuantum, YellowQuantum)
+%
+%    o quantum_size: Bits per quantum sample (range 1-32, and 64).
+%
+%    o source:  The pixel components are transferred from this buffer.
+%
+%    o options: Additional options specific to quantum_type (may be NULL).
+%
+%    o import_info : Populated with information regarding the pixels
+%               imported (may be NULL)
+%
+*/
+MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
+  const QuantumType quantum_type,const unsigned int quantum_size,
+  const unsigned char *source,const ImportPixelAreaOptions *options,
+  ImportPixelAreaInfo *import_info)
+{
+  Image
+    *image;
+
   register const unsigned char
     *p;
 
@@ -3615,8 +3751,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   EndianType
     endian=MSBEndian;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(view != (ViewInfo *) NULL);
   assert(source != (const unsigned char *) NULL);
   assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ImportPixelAreaOptions *) NULL) ||
@@ -3687,10 +3822,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
         }
     }
 
-  number_pixels=(long) GetPixelCacheArea(image);
+  image=GetCacheViewImage(view);
+  number_pixels=(long) GetCacheViewArea(view);
   p=source;
-  q=GetPixels(image);
-  indexes=GetIndexes(image);
+  q=AccessCacheViewPixels(view);
+  indexes=GetCacheViewIndexes(view);
   switch (quantum_type)
     {
     case IndexQuantum:
@@ -5971,24 +6107,6 @@ MagickFindRawImageMinMax(Image *image, EndianType endian,
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static MagickPassFail PingStream(const Image *image,
-  const void *pixels,const size_t columns)
-{
-  (void) image;
-  (void) pixels;
-  (void) columns;
-  return(MagickPass);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 MagickExport Image *PingImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -6004,7 +6122,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
-  image=ReadStream(clone_info,&PingStream,exception);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   /*
     Intentionally restart timer if ping is requested since timing ping

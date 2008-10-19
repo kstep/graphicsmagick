@@ -293,6 +293,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->reference_count=1;
   allocate_image->semaphore=AllocateSemaphoreInfo();
   allocate_image->signature=MagickSignature;
+  allocate_image->default_view=OpenCacheView(allocate_image);
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
@@ -348,9 +349,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->border_color=image_info->border_color;
   allocate_image->matte_color=image_info->matte_color;
   allocate_image->client_data=image_info->client_data;
-
-  if (image_info->cache != (void *) NULL)
-    ClonePixelCacheMethods(allocate_image->cache,image_info->cache);
+  allocate_image->ping=image_info->ping;
 
   if (image_info->attributes != (Image *) NULL)
     (void) CloneImageAttributes(allocate_image,image_info->attributes);
@@ -1280,7 +1279,9 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         (void) CloneString(&clone_image->directory,image->directory);
       if (image->clip_mask != (Image *) NULL)
         clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
+      clone_image->ping=image->ping;
       clone_image->cache=ReferenceCache(image->cache);
+      clone_image->default_view=OpenCacheView(clone_image);
       return(clone_image);
     }
   clone_image->page.width=columns;
@@ -1289,7 +1290,9 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->page.y=(long) rows*image->page.y/(long) clone_image->rows;
   clone_image->columns=columns;
   clone_image->rows=rows;
+  clone_image->ping=image->ping;
   GetCacheInfo(&clone_image->cache);
+  clone_image->default_view=OpenCacheView(clone_image);
   return(clone_image);
 }
 
@@ -1386,7 +1389,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (image_info->cache != (void *) NULL)
     clone_info->cache=ReferenceCache(image_info->cache);
   clone_info->file=image_info->file;
-  clone_info->stream=image_info->stream;
   clone_info->blob=image_info->blob;
   clone_info->length=image_info->length;
   (void) strlcpy(clone_info->magick,image_info->magick,MaxTextExtent);
@@ -2408,7 +2410,13 @@ MagickExport void DestroyImage(Image *image)
     assert(image->next->previous != image);
 #endif
   /*
-    Destroy image.
+    Destroy default view.
+  */
+  if (image->default_view != (ViewInfo *) NULL)
+    CloseCacheView(image->default_view);
+  image->default_view=(ViewInfo *) NULL;
+  /*
+    Destroy image pixel cache.
   */
   DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
@@ -4107,8 +4115,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
         Left pixel.
       */
       x=(long) (segment->x1+0.5);
-      u=GetOnePixel(image,x,(long) (segment->y1+0.5));
-      v=GetOnePixel(image,x,(long) (segment->y2+0.5));
+      u=AcquireOnePixel(image,x,(long) (segment->y1+0.5),&image->exception);
+      v=AcquireOnePixel(image,x,(long) (segment->y2+0.5),&image->exception);
       q=SetImagePixels(image,x,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
@@ -4122,8 +4130,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Right pixel.
           */
           x=(long) (segment->x2+0.5);
-          u=GetOnePixel(image,x,(long) (segment->y1+0.5));
-          v=GetOnePixel(image,x,(long) (segment->y2+0.5));
+          u=AcquireOnePixel(image,x,(long) (segment->y1+0.5),&image->exception);
+          v=AcquireOnePixel(image,x,(long) (segment->y2+0.5),&image->exception);
           q=SetImagePixels(image,x,y_mid,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4141,8 +4149,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Bottom pixel.
           */
           y=(long) (segment->y2+0.5);
-          u=GetOnePixel(image,(long) (segment->x1+0.5),y);
-          v=GetOnePixel(image,(long) (segment->x2+0.5),y);
+          u=AcquireOnePixel(image,(long) (segment->x1+0.5),y,&image->exception);
+          v=AcquireOnePixel(image,(long) (segment->x2+0.5),y,&image->exception);
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4157,8 +4165,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Top pixel.
           */
           y=(long) (segment->y1+0.5);
-          u=GetOnePixel(image,(long) (segment->x1+0.5),y);
-          v=GetOnePixel(image,(long) (segment->x2+0.5),y);
+          u=AcquireOnePixel(image,(long) (segment->x1+0.5),y,&image->exception);
+          v=AcquireOnePixel(image,(long) (segment->x2+0.5),y,&image->exception);
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4175,10 +4183,10 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       x=(long) (segment->x1+0.5);
       y=(long) (segment->y1+0.5);
-      u=GetOnePixel(image,x,y);
+      u=AcquireOnePixel(image,x,y,&image->exception);
       x=(long) (segment->x2+0.5);
       y=(long) (segment->y2+0.5);
-      v=GetOnePixel(image,x,y);
+      v=AcquireOnePixel(image,x,y,&image->exception);
       q=SetImagePixels(image,x_mid,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);

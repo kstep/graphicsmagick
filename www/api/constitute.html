@@ -54,22 +54,24 @@
 <div class="contents topic">
 <p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference" href="#constituteimage" id="id23" name="id23">ConstituteImage</a></li>
-<li><a class="reference" href="#constitutetextureimage" id="id24" name="id24">ConstituteTextureImage</a></li>
-<li><a class="reference" href="#dispatchimage" id="id25" name="id25">DispatchImage</a></li>
-<li><a class="reference" href="#exportimagepixelarea" id="id26" name="id26">ExportImagePixelArea</a></li>
-<li><a class="reference" href="#exportpixelareaoptionsinit" id="id27" name="id27">ExportPixelAreaOptionsInit</a></li>
-<li><a class="reference" href="#importimagepixelarea" id="id28" name="id28">ImportImagePixelArea</a></li>
-<li><a class="reference" href="#importpixelareaoptionsinit" id="id29" name="id29">ImportPixelAreaOptionsInit</a></li>
-<li><a class="reference" href="#pingimage" id="id30" name="id30">PingImage</a></li>
-<li><a class="reference" href="#readimage" id="id31" name="id31">ReadImage</a></li>
-<li><a class="reference" href="#readinlineimage" id="id32" name="id32">ReadInlineImage</a></li>
-<li><a class="reference" href="#writeimage" id="id33" name="id33">WriteImage</a></li>
-<li><a class="reference" href="#writeimages" id="id34" name="id34">WriteImages</a></li>
+<li><a class="reference" href="#constituteimage" id="id27" name="id27">ConstituteImage</a></li>
+<li><a class="reference" href="#constitutetextureimage" id="id28" name="id28">ConstituteTextureImage</a></li>
+<li><a class="reference" href="#dispatchimage" id="id29" name="id29">DispatchImage</a></li>
+<li><a class="reference" href="#exportimagepixelarea" id="id30" name="id30">ExportImagePixelArea</a></li>
+<li><a class="reference" href="#exportviewpixelarea" id="id31" name="id31">ExportViewPixelArea</a></li>
+<li><a class="reference" href="#exportpixelareaoptionsinit" id="id32" name="id32">ExportPixelAreaOptionsInit</a></li>
+<li><a class="reference" href="#importimagepixelarea" id="id33" name="id33">ImportImagePixelArea</a></li>
+<li><a class="reference" href="#importviewpixelarea" id="id34" name="id34">ImportViewPixelArea</a></li>
+<li><a class="reference" href="#importpixelareaoptionsinit" id="id35" name="id35">ImportPixelAreaOptionsInit</a></li>
+<li><a class="reference" href="#pingimage" id="id36" name="id36">PingImage</a></li>
+<li><a class="reference" href="#readimage" id="id37" name="id37">ReadImage</a></li>
+<li><a class="reference" href="#readinlineimage" id="id38" name="id38">ReadInlineImage</a></li>
+<li><a class="reference" href="#writeimage" id="id39" name="id39">WriteImage</a></li>
+<li><a class="reference" href="#writeimages" id="id40" name="id40">WriteImages</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id23" id="constituteimage" name="constituteimage">ConstituteImage</a></h1>
+<h1><a class="toc-backref" href="#id27" id="constituteimage" name="constituteimage">ConstituteImage</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
@@ -128,7 +130,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id24" id="constitutetextureimage" name="constitutetextureimage">ConstituteTextureImage</a></h1>
+<h1><a class="toc-backref" href="#id28" id="constitutetextureimage" name="constitutetextureimage">ConstituteTextureImage</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
@@ -159,7 +161,7 @@ returned image properties are similar to the texture image properties.</p>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id25" id="dispatchimage" name="dispatchimage">DispatchImage</a></h1>
+<h1><a class="toc-backref" href="#id29" id="dispatchimage" name="dispatchimage">DispatchImage</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
@@ -219,7 +221,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id26" id="exportimagepixelarea" name="exportimagepixelarea">ExportImagePixelArea</a></h1>
+<h1><a class="toc-backref" href="#id30" id="exportimagepixelarea" name="exportimagepixelarea">ExportImagePixelArea</a></h1>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
@@ -232,13 +234,13 @@ MagickPassFail ExportImagePixelArea( const <a class="reference" href="types.html
 <div class="section">
 <h2><a id="id6" name="id6">Description</a></h2>
 <p>ExportImagePixelArea() transfers one or more pixel components from the
-image pixel cache to a user supplied buffer.  By default, values are
-written in network (big-endian) byte/bit order.  By setting the 'endian'
-member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be output
-as little (LSBEndian), big (MSBEndian), or host native (NativeEndian)
-endian values.  This function is quite powerful in that besides common
-native CPU type sizes, it can support any integer bit depth from 1 to 32
-(e.g. 13) as well as 32 and 64-bit float.</p>
+default image pixel cache view to a user supplied buffer.  By default,
+values are written in network (big-endian) byte/bit order.  By setting
+the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values
+may be output as little (LSBEndian), big (MSBEndian), or host native
+(NativeEndian) endian values.  This function is quite powerful in that
+besides common native CPU type sizes, it can support any integer bit
+depth from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.</p>
 <p>MagickPass is returned if the pixels are successfully transferred,
 otherwise MagickFail.</p>
 <p>The format of the ExportImagePixelArea method is:</p>
@@ -275,15 +277,71 @@ exported (may be NULL)</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id27" id="exportpixelareaoptionsinit" name="exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></h1>
+<h1><a class="toc-backref" href="#id31" id="exportviewpixelarea" name="exportviewpixelarea">ExportViewPixelArea</a></h1>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
+<pre class="literal-block">
+MagickPassFail ExportViewPixelArea( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
+                                    unsigned int quantum_size, unsigned char *destination,
+                                    const ExportPixelAreaOptions *options,
+                                    ExportPixelAreaInfo *export_info );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>ExportViewPixelArea() transfers one or more pixel components from the
+specified image pixel cache view to a user supplied buffer.  By default,
+values are written in network (big-endian) byte/bit order.  By setting the
+'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be
+output as little (LSBEndian), big (MSBEndian), or host native
+(NativeEndian) endian values.  This function is quite powerful in that
+besides common native CPU type sizes, it can support any integer bit depth
+from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.</p>
+<p>MagickPass is returned if the pixels are successfully transferred,
+otherwise MagickFail.</p>
+<p>The format of the ExportViewPixelArea method is:</p>
+<pre class="literal-block">
+MagickPassFail ExportViewPixelArea( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
+                                    unsigned int quantum_size, unsigned char *destination,
+                                    const ExportPixelAreaOptions *options,
+                                    ExportPixelAreaInfo *export_info );
+</pre>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Returns MagickPass if the pixels are successfully transferred,
+otherwise MagickFail.</dd>
+<dt>view:</dt>
+<dd>The image pixel cache view.</dd>
+<dt>quantum_type:</dt>
+<dd>Declare which pixel components to transfer (AlphaQuantum,
+BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+RedQuantum, YellowQuantum)</dd>
+<dt>quantum_size:</dt>
+<dd>Bits per quantum sample (range 1-32, and 64).</dd>
+<dt>destination:</dt>
+<dd>The components are transferred to this buffer.  The user
+is responsible for ensuring that the destination buffer is large
+enough.</dd>
+<dt>options:</dt>
+<dd>Additional options specific to quantum_type (may be NULL).</dd>
+<dt>export_info :</dt>
+<dd>Populated with information regarding the pixels
+exported (may be NULL)</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id32" id="exportpixelareaoptionsinit" name="exportpixelareaoptionsinit">ExportPixelAreaOptionsInit</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
 void ExportPixelAreaOptionsInit( ExportPixelAreaOptions *options );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id8" name="id8">Description</a></h2>
+<h2><a id="id10" name="id10">Description</a></h2>
 <p>ExportPixelAreaOptionsInit() initializes the options structure which is
 optionally passed to ExportPixelArea()</p>
 <p>The format of the ExportPixelAreaOptionsInit method is:</p>
@@ -298,9 +356,9 @@ void ExportPixelAreaOptionsInit( ExportPixelAreaOptions *options );
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id28" id="importimagepixelarea" name="importimagepixelarea">ImportImagePixelArea</a></h1>
+<h1><a class="toc-backref" href="#id33" id="importimagepixelarea" name="importimagepixelarea">ImportImagePixelArea</a></h1>
 <div class="section">
-<h2><a id="id9" name="id9">Synopsis</a></h2>
+<h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
 MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
                                      const unsigned int quantum_size,
@@ -310,9 +368,9 @@ MagickPassFail ImportImagePixelArea( <a class="reference" href="types.html#image
 </pre>
 </div>
 <div class="section">
-<h2><a id="id10" name="id10">Description</a></h2>
+<h2><a id="id12" name="id12">Description</a></h2>
 <p>ImportImagePixelArea() transfers one or more pixel components from a user
-supplied buffer into the image pixel cache of an image. By default,
+supplied buffer into the default image pixel cache view. By default,
 values are read in network (big-endian) byte/bit order.  By setting the
 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may
 be output as little (LSBEndian), big (MSBEndian), or host native
@@ -354,15 +412,71 @@ imported (may be NULL)</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id29" id="importpixelareaoptionsinit" name="importpixelareaoptionsinit">ImportPixelAreaOptionsInit</a></h1>
+<h1><a class="toc-backref" href="#id34" id="importviewpixelarea" name="importviewpixelarea">ImportViewPixelArea</a></h1>
 <div class="section">
-<h2><a id="id11" name="id11">Synopsis</a></h2>
+<h2><a id="id13" name="id13">Synopsis</a></h2>
+<pre class="literal-block">
+MagickPassFail ImportViewPixelArea( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
+                                    const unsigned int quantum_size,
+                                    const unsigned char *source,
+                                    const ImportPixelAreaOptions *options,
+                                    ImportPixelAreaInfo *import_info );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id14" name="id14">Description</a></h2>
+<p>ImportViewPixelArea() transfers one or more pixel components from a user
+supplied buffer into the specified image pixel cache view of an image. By
+default, values are read in network (big-endian) byte/bit order.  By
+setting the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit
+values may be output as little (LSBEndian), big (MSBEndian), or host
+native (NativeEndian) endian values.  This function is quite powerful in
+that besides common native CPU type sizes, it can support any integer bit
+depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.</p>
+<p>MagickPass is returned if the pixels are successfully transferred,
+otherwise MagickFail.</p>
+<p>The format of the ImportViewPixelArea method is:</p>
+<pre class="literal-block">
+MagickPassFail ImportViewPixelArea( <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const <a class="reference" href="types.html#quantumtype">QuantumType</a> quantum_type,
+                                    const unsigned int quantum_size,
+                                    const unsigned char *source,
+                                    const ImportPixelAreaOptions *options,
+                                    ImportPixelAreaInfo *import_info );
+</pre>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Method PushImagePixels returns MagickPass if the pixels are
+successfully transferred, otherwise MagickFail.</dd>
+<dt>view:</dt>
+<dd>The pixel view to import pixels into.</dd>
+<dt>quantum_type:</dt>
+<dd>Declare which pixel components to transfer (AlphaQuantum,
+BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+RedQuantum, YellowQuantum)</dd>
+<dt>quantum_size:</dt>
+<dd>Bits per quantum sample (range 1-32, and 64).</dd>
+<dt>source:</dt>
+<dd>The pixel components are transferred from this buffer.</dd>
+<dt>options:</dt>
+<dd>Additional options specific to quantum_type (may be NULL).</dd>
+<dt>import_info :</dt>
+<dd>Populated with information regarding the pixels
+imported (may be NULL)</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id35" id="importpixelareaoptionsinit" name="importpixelareaoptionsinit">ImportPixelAreaOptionsInit</a></h1>
+<div class="section">
+<h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
 void ImportPixelAreaOptionsInit( ImportPixelAreaOptions *options );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id12" name="id12">Description</a></h2>
+<h2><a id="id16" name="id16">Description</a></h2>
 <p>ImportPixelAreaOptionsInit() initializes the options structure which is
 optionally passed to ImportPixelArea()</p>
 <p>The format of the ImportPixelAreaOptionsInit method is:</p>
@@ -377,15 +491,15 @@ void ImportPixelAreaOptionsInit( ImportPixelAreaOptions *options );
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id30" id="pingimage" name="pingimage">PingImage</a></h1>
+<h1><a class="toc-backref" href="#id36" id="pingimage" name="pingimage">PingImage</a></h1>
 <div class="section">
-<h2><a id="id13" name="id13">Synopsis</a></h2>
+<h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
 <a class="reference" href="types.html#image">Image</a> *PingImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id14" name="id14">Description</a></h2>
+<h2><a id="id18" name="id18">Description</a></h2>
 <p>PingImage() returns all the attributes of an image or image sequence
 except for the pixels.  It is much faster and consumes far less memory
 than ReadImage().  On failure, a NULL image is returned and exception
@@ -405,15 +519,15 @@ this structure.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id31" id="readimage" name="readimage">ReadImage</a></h1>
+<h1><a class="toc-backref" href="#id37" id="readimage" name="readimage">ReadImage</a></h1>
 <div class="section">
-<h2><a id="id15" name="id15">Synopsis</a></h2>
+<h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
 <a class="reference" href="types.html#image">Image</a> *ReadImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id16" name="id16">Description</a></h2>
+<h2><a id="id20" name="id20">Description</a></h2>
 <p>ReadImage() reads an image or image sequence from a file or file handle.
 The method returns a NULL if there is a memory shortage or if the image
 cannot be read.  On failure, a NULL image is returned and exception
@@ -433,16 +547,16 @@ this structure.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id32" id="readinlineimage" name="readinlineimage">ReadInlineImage</a></h1>
+<h1><a class="toc-backref" href="#id38" id="readinlineimage" name="readinlineimage">ReadInlineImage</a></h1>
 <div class="section">
-<h2><a id="id17" name="id17">Synopsis</a></h2>
+<h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
 <a class="reference" href="types.html#image">Image</a> *ReadInlineImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const char *content,
                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id18" name="id18">Description</a></h2>
+<h2><a id="id22" name="id22">Description</a></h2>
 <p>ReadInlineImage() reads a Base64-encoded inline image or image sequence.
 The method returns a NULL if there is a memory shortage or if the image
 cannot be read.  On failure, a NULL image is returned and exception
@@ -463,15 +577,15 @@ describes the reason for the failure.</p>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id33" id="writeimage" name="writeimage">WriteImage</a></h1>
+<h1><a class="toc-backref" href="#id39" id="writeimage" name="writeimage">WriteImage</a></h1>
 <div class="section">
-<h2><a id="id19" name="id19">Synopsis</a></h2>
+<h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
 unsigned int WriteImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id20" name="id20">Description</a></h2>
+<h2><a id="id24" name="id24">Description</a></h2>
 <p>Use Write() to write an image or an image sequence to a file or
 filehandle.  If writing to a file on disk, the name is defined by the
 filename member of the image structure.  Write() returns 0 is there is a
@@ -491,16 +605,16 @@ unsigned int WriteImage( const <a class="reference" href="types.html#imageinfo">
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id34" id="writeimages" name="writeimages">WriteImages</a></h1>
+<h1><a class="toc-backref" href="#id40" id="writeimages" name="writeimages">WriteImages</a></h1>
 <div class="section">
-<h2><a id="id21" name="id21">Synopsis</a></h2>
+<h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
 unsigned int WriteImages( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image,
                           const char *filename, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
-<h2><a id="id22" name="id22">Description</a></h2>
+<h2><a id="id26" name="id26">Description</a></h2>
 <p>WriteImages() writes an image sequence.</p>
 <p>The format of the WriteImages method is:</p>
 <pre class="literal-block">
@@ -522,7 +636,7 @@ unsigned int WriteImages( const <a class="reference" href="types.html#imageinfo"
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-16 19:16 UTC.
+Generated on: 2008-10-19 16:40 UTC.
 
 </div>
 </body>

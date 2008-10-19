@@ -33,10 +33,7 @@ extern "C" {
   /*
     Typedef declaractions.
   */
-
   typedef _CacheInfoPtr_ Cache;
-  typedef void *ViewInfo;
-
 
   /*****
    *
@@ -159,6 +156,22 @@ extern "C" {
   extern MagickExport void
   CloseCacheView(ViewInfo *view);
 
+
+  /*
+    AccessCacheViewPixels() returns the pixels associated with the
+    last request to select a view pixel region
+    (i.e. AcquireCacheViewPixels() or GetCacheViewPixels()).
+  */
+  extern MagickExport PixelPacket
+  *AccessCacheViewPixels(const ViewInfo *view);
+
+  /*
+    AcquireCacheViewIndexes() returns read-only indexes associated
+    with a cache view.
+  */
+  extern MagickExport const IndexPacket
+  *AcquireCacheViewIndexes(const ViewInfo *view);
+
   /*
     AcquireCacheViewPixels() obtains a pixel region from a cache view
     for read-only access.
@@ -171,60 +184,11 @@ extern "C" {
                           ExceptionInfo *exception);
 
   /*
-    AcquireCacheViewIndexes() returns read-only indexes associated
-    with a cache view.
-  */
-  extern MagickExport const IndexPacket
-  *AcquireCacheViewIndexes(const ViewInfo *view);
-
-  /*
     AcquireOneCacheViewPixel() returns one pixel from a cache view.
   */
   extern MagickExport PixelPacket
   AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
                            ExceptionInfo *exception);
-
-  /*
-    GetCacheViewPixels() obtains a pixel region from a cache view for
-    read/write access.
-  */
-  extern MagickExport PixelPacket
-  *GetCacheViewPixels(ViewInfo *view,const long x,const long y,
-                      const unsigned long columns,const unsigned long rows,
-                      ExceptionInfo *exception);
-
-  /*
-    GetCacheViewIndexes() returns the indexes associated with a cache view.
-  */
-  extern MagickExport IndexPacket
-  *GetCacheViewIndexes(const ViewInfo *view);
-
-  /*
-    SetCacheViewPixels() gets blank writeable pixels from the pixel
-    cache view.
-  */
-  extern MagickExport PixelPacket
-  *SetCacheViewPixels(ViewInfo *view,const long x,const long y,
-                      const unsigned long columns,const unsigned long rows,
-                      ExceptionInfo *exception);
-
-  /*
-    SyncCacheViewPixels() saves any changes to the pixel cache view.
-  */
-  extern MagickExport MagickPassFail
-  SyncCacheViewPixels(ViewInfo *view,ExceptionInfo *exception);
-
-  /*
-   *
-   * Interfaces to obtain information about a cache view.
-   *
-   */
-
-  /*
-    GetCacheViewImage() obtains the image used to allocate the cache view.
-  */
-  extern Image *
-  GetCacheViewImage(const ViewInfo *view);
 
   /*
     GetCacheViewArea() returns the area (width * height in pixels)
@@ -234,44 +198,47 @@ extern "C" {
   GetCacheViewArea(const ViewInfo *view);
 
   /*
+    GetCacheViewImage() obtains the image used to allocate the cache view.
+  */
+  extern Image *
+  GetCacheViewImage(const ViewInfo *view);
+
+  /*
+    GetCacheViewIndexes() returns the indexes associated with a cache view.
+  */
+  extern MagickExport IndexPacket
+  *GetCacheViewIndexes(const ViewInfo *view);
+
+  /*
+    GetCacheViewPixels() obtains a pixel region from a cache view for
+    read/write access.
+  */
+  extern MagickExport PixelPacket
+  *GetCacheViewPixels(const ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
+
+  /*
     Obtain the offset and size of the selected region.
   */
   extern MagickExport RectangleInfo
   GetCacheViewRegion(const ViewInfo *view);
 
+
   /*
-    AccessCacheViewPixels() returns the pixels associated with the
-    last request to select a view pixel region
-    (i.e. AcquireCacheViewPixels() or GetCacheViewPixels()).
+    SetCacheViewPixels() gets blank writeable pixels from the pixel
+    cache view.
   */
   extern MagickExport PixelPacket
-  *AccessCacheViewPixels(const ViewInfo *view);
+  *SetCacheViewPixels(const ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
 
   /*
-    Stream interfaces (not thread/OpenMP safe).
-  */
-  
-  /*
-    ReadStream() makes the image pixels available to a user supplied
-    callback method immediately upon reading a scanline with the
-    ReadImage() method.
-
-    Used only by PingBlob(), and PingImage() to throw away the pixels.
-  */
-  extern MagickExport Image
-  *ReadStream(const ImageInfo *image_info,StreamHandler stream,
-              ExceptionInfo *exception);
-  
-  /*
-    WriteStream() makes the image pixels available to a user supplied
-    callback method immediately upon writing pixel data with the
-    WriteImage() method.
-
-    Used only by WriteXTRNImage()
+    SyncCacheViewPixels() saves any changes to the pixel cache view.
   */
   extern MagickExport MagickPassFail
-  WriteStream(const ImageInfo *image_info,Image *image,
-              StreamHandler stream);
+  SyncCacheViewPixels(const ViewInfo *view,ExceptionInfo *exception);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
@@ -280,16 +247,6 @@ extern "C" {
    * Private interfaces.
    *
    ****/
-
-  /*
-    ClonePixelCacheMethods() clones the pixel cache methods from one
-    cache to another
-
-    Used only by AllocateImage() in the case where a pixel cache is
-    passed via ImageInfo.
-  */
-  extern void
-  ClonePixelCacheMethods(Cache clone_info,const Cache cache_info);
 
   /*
     DestroyCacheInfo() deallocates memory associated with the pixel

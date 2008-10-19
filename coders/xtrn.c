@@ -539,38 +539,6 @@ static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
         }
       DestroyImageInfo(clone_info);
     }
-  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
-    {
-      int
-        (*fifo)(const Image *,const void *,const size_t);
-
-      char
-        filename[MaxTextExtent];
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
-            &param1,&param2,&filename);
-
-          fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-          image->client_data=param2;
-
-          scene = 0;
-          (void) strcpy(clone_info->filename, filename);
-          for (p=image; p != (Image *) NULL; p=p->next)
-          {
-            (void) strcpy(p->filename, filename);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,True,&image->exception);
-          (void) strcpy(image->magick,clone_info->magick);
-          status=WriteStream(clone_info,image,fifo);
-          if (status == False)
-            CatchImageException(image);
-        }
-      DestroyImageInfo(clone_info);
-    }
   else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
     {
       char

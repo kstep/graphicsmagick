@@ -176,9 +176,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register long
-    i;  
-
   unsigned char
     *fits_pixels;    
 

@@ -352,8 +352,9 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             }
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
-        (void) TransparentImage(image,GetOnePixel(image,0,0),
-          TransparentOpacity);
+        (void) TransparentImage(image,
+                                AcquireOnePixel(image,0,0,&image->exception),
+                                TransparentOpacity);
       (void) strlcpy(filename,image->filename,MaxTextExtent);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -868,8 +868,14 @@ typedef struct _Image
   struct _Image
     *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
 
+  MagickBool
+    ping;               /* Private, if true, pixels are undefined */
+
   _CacheInfoPtr_
     cache;              /* Private, image pixel cache */
+
+  ViewInfo
+    default_view;      /* Private, default cache view */
 
   _ImageAttributePtr_
     attributes;         /* Private, Image attribute list */
@@ -895,12 +901,6 @@ typedef struct _Image
   unsigned long
     signature;          /* Private, Unique code to validate structure */
 } Image;
-
-/*
-  Callback used by ReadStream() and WriteStream().
-*/
-typedef unsigned int
-  (*StreamHandler)(const Image *,const void *,const size_t);
 
 typedef struct _ImageInfo
 {
@@ -976,9 +976,6 @@ typedef struct _ImageInfo
 
   void
     *client_data;            /* User-specified data to pass to coder */
-
-  StreamHandler
-    stream;                  /* Pass in open blob stream handler for read/write */
 
   FILE
     *file;                   /* If not null, stdio FILE to read image from */

@@ -27,6 +27,8 @@ typedef struct _ImageAttribute* _ImageAttributePtr_;
 
 typedef struct _SemaphoreInfo* _SemaphoreInfoPtr_;
 
+typedef void *ViewInfo;
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

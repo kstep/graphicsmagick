@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 13, 2008
+This file was last updated on October 19, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -193,6 +193,15 @@ New Features:
       SyncCacheViewPixels(). The deprecated functions are
       AcquireCacheView(), GetCacheView(), SetCacheView(), and
       SyncCacheView().
+    - GetCacheViewRegion() reports region bounded by a cache view.
+    - GetCacheViewArea() reports area bounded by a cache view.
+    - ExportViewPixelArea() exports a cache view as formatted pixels.
+    - ImportViewPixelArea imports formatted pixels into a cache view.
+
+  * Removed C API functions:
+
+    - ReadStream()
+    - WriteStream()
 
 Feature improvements:
 

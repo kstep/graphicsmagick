@@ -3447,7 +3447,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 PixelPacket
                   target;
 
-                target=GetOnePixel(msl_info->image[n],0,0);
+                target=AcquireOnePixel(msl_info->image[n],0,0,&(msl_info->image[n])->exception);
                 (void) QueryColorDatabase(value,&target,&exception);
                 (void) TransparentImage(msl_info->image[n],target,TransparentOpacity);
                 break;

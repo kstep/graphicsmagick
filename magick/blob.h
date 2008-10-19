@@ -466,12 +466,6 @@ extern "C" {
   extern MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size);
 
   /*
-    Returns the stream handler associated with the image.
-  */
-  extern MagickExport StreamHandler GetBlobStreamHandler(const Image *image);
-
-
-  /*
     Copies data from the input stream to a file.  Useful in case it is
     necessary to perform seek operations on the input data.
   */
