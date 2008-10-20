@@ -1419,21 +1419,15 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
 %
 */
 MagickExport Image *SwirlImage(const Image *image,double degrees,
-  ExceptionInfo *exception)
+                               ExceptionInfo *exception)
 {
 #define SwirlImageText  "[%s] Swirl image..."
 
   double
-    cosine,
-    distance,
-    factor,
     radius,
-    sine,
     x_center,
-    x_distance,
     x_scale,
     y_center,
-    y_distance,
     y_scale;
 
   long
@@ -1441,12 +1435,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 
   Image
     *swirl_image;
-
-  register PixelPacket
-    *q;
-
-  register long
-    x;
 
   /*
     Initialize swirl image attributes.
@@ -1459,7 +1447,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageType(swirl_image,swirl_image->background_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+                      OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
   */
@@ -1477,41 +1465,102 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   /*
     Swirl each row.
   */
-  for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(swirl_image,0,y,swirl_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    y_distance=y_scale*(y-y_center);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      /*
-        Determine if the pixel is within an ellipse.
-      */
-      x_distance=x_scale*(x-x_center);
-      distance=x_distance*x_distance+y_distance*y_distance;
-      if (distance >= (radius*radius))
-        *q=AcquireOnePixel(image,x,y,exception);
-      else
+    MagickPassFail
+      status = MagickPass;
+
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *image_views,
+      *swirl_views;
+
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    swirl_views=AllocateThreadViewSet(swirl_image,exception);
+    if (swirl_views == (ThreadViewSet *) NULL)
+      {
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(swirl_views);
+        DestroyImage(swirl_image);
+        return MagickFail;
+      }
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#endif
+    for (y=0; y < (long) image->rows; y++)
+      {
+        register PixelPacket
+          *q;
+    
+        register long
+          x;
+
+        double
+          x_distance,
+          y_distance,
+          distance;
+
+        MagickPassFail
+          thread_status;
+        
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        q=SetThreadViewPixels(swirl_views,0,y,swirl_image->columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            y_distance=y_scale*(y-y_center);
+            for (x=0; x < (long) image->columns; x++)
+              {
+                /*
+                  Determine if the pixel is within an ellipse.
+                */
+                x_distance=x_scale*(x-x_center);
+                distance=x_distance*x_distance+y_distance*y_distance;
+                if (distance >= (radius*radius))
+                  *q=AcquireOneThreadViewPixel(image_views,x,y,exception);
+                else
+                  {
+                    double
+                      cosine,
+                      factor,
+                      sine;
+            
+                    /*
+                      Swirl the pixel.
+                    */
+                    factor=1.0-sqrt(distance)/radius;
+                    sine=sin(degrees*factor*factor);
+                    cosine=cos(degrees*factor*factor);
+                    *q=InterpolateViewColor(AccessThreadView(image_views),
+                                            (cosine*x_distance-sine*y_distance)/x_scale+x_center,
+                                            (sine*x_distance+cosine*y_distance)/y_scale+y_center,exception);
+                  }
+                q++;
+              }
+            if (!SyncThreadViewPixels(swirl_views,exception))
+              thread_status=MagickFail;
+          }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
-          /*
-            Swirl the pixel.
-          */
-          factor=1.0-sqrt(distance)/radius;
-          sine=sin(degrees*factor*factor);
-          cosine=cos(degrees*factor*factor);
-          *q=InterpolateColor(image,
-            (cosine*x_distance-sine*y_distance)/x_scale+x_center,
-            (sine*x_distance+cosine*y_distance)/y_scale+y_center,exception);
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        SwirlImageText,image->filename))
+              thread_status=MagickFail;
+
+          if (thread_status == MagickFail)
+            status=MagickFail;
         }
-      q++;
-    }
-    if (!SyncImagePixels(swirl_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitorFormatted(y,image->rows,exception,
-                                  SwirlImageText,image->filename))
-        break;
+      }
+    DestroyThreadViewSet(image_views);
+    DestroyThreadViewSet(swirl_views);
   }
   swirl_image->is_grayscale=image->is_grayscale;
   return(swirl_image);
@@ -1630,6 +1679,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       {
         DestroyThreadViewSet(image_views);
         DestroyThreadViewSet(wave_views);
+        DestroyImage(wave_image);
         return MagickFail;
       }
 

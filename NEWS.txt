@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 19, 2008
+This file was last updated on October 20, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -122,6 +122,7 @@ Performance Improvements:
     - Solarize image (-solarize)
     - Spread image (-spread)
     - Statistics computation (identify -verbose)
+    - Swirl (-swirl)
     - Threshold channel (-threshold, -operator threshold)
     - Trim image (-trim)
     - UnsharpMaskImage (-unsharp)
