@@ -102,6 +102,7 @@ Performance Improvements:
     - Equalize (-equalize)
     - Gamma adjust (-gamma, -operator gamma)
     - Gradient
+    - Implode (-implode)
     - Levels adjust image (-level)
     - Local adaptive threshold (-lat)
     - Minify image (-minify)

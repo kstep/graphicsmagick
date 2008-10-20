@@ -2,6 +2,7 @@
 
 	* magick/fx.c (WaveImage): Accelerate using OpenMP.
 	(SwirlImage): Accelerate using OpenMP.
+	(ImplodeImage): Accelerate using OpenMP.
 
 2008-10-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -561,13 +561,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #define ImplodeImageText  "[%s] Implode image..."
 
   double
-    distance,
     radius,
     x_center,
-    x_distance,
     x_scale,
     y_center,
-    y_distance,
     y_scale;
 
   Image
@@ -576,11 +573,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   long
     y;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   /*
     Initialize implode image attributes.
@@ -593,7 +585,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageType(implode_image,implode_image->background_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+                      OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
   */
@@ -613,43 +605,102 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   /*
     Implode each row.
   */
-  for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(implode_image,0,y,implode_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    y_distance=y_scale*(y-y_center);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      /*
-        Determine if the pixel is within an ellipse.
-      */
-      x_distance=x_scale*(x-x_center);
-      distance=x_distance*x_distance+y_distance*y_distance;
-      if (distance >= (radius*radius))
-        *q=AcquireOnePixel(image,x,y,exception);
-      else
-        {
-          double
-            factor;
+    MagickPassFail
+      status = MagickPass;
 
-          /*
-            Implode the pixel.
-          */
-          factor=1.0;
-          if (distance > 0.0)
-            factor=pow(sin(MagickPI*sqrt(distance)/radius/2),-amount);
-          *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
-            factor*y_distance/y_scale+y_center,exception);
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *image_views,
+      *implode_views;
+
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    implode_views=AllocateThreadViewSet(implode_image,exception);
+    if (implode_views == (ThreadViewSet *) NULL)
+      {
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(implode_views);
+        DestroyImage(implode_image);
+        return MagickFail;
+      }
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#endif
+    for (y=0; y < (long) image->rows; y++)
+      {
+        register long
+          x;
+
+        register PixelPacket
+          *q;
+
+        double
+          distance,
+          x_distance,
+          y_distance;
+
+        MagickPassFail
+          thread_status;
+        
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        q=SetThreadViewPixels(implode_views,0,y,implode_image->columns,1,
+                              exception);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            y_distance=y_scale*(y-y_center);
+            for (x=0; x < (long) image->columns; x++)
+              {
+                /*
+                  Determine if the pixel is within an ellipse.
+                */
+                x_distance=x_scale*(x-x_center);
+                distance=x_distance*x_distance+y_distance*y_distance;
+                if (distance >= (radius*radius))
+                  *q=AcquireOneThreadViewPixel(image_views,x,y,exception);
+                else
+                  {
+                    double
+                      factor;
+
+                    /*
+                      Implode the pixel.
+                    */
+                    factor=1.0;
+                    if (distance > 0.0)
+                      factor=pow(sin(MagickPI*sqrt(distance)/radius/2),-amount);
+                    *q=InterpolateViewColor(AccessThreadView(image_views),
+                                            factor*x_distance/x_scale+x_center,
+                                            factor*y_distance/y_scale+y_center,
+                                            exception);
+                  }
+                q++;
+              }
+            if (!SyncThreadViewPixels(implode_views,exception))
+              thread_status=MagickFail;
+          }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        ImplodeImageText,implode_image->filename))
+              thread_status=MagickFail;
+
+          if (thread_status == MagickFail)
+            status=MagickFail;
         }
-      q++;
-    }
-    if (!SyncImagePixels(implode_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitorFormatted(y,image->rows,exception,
-                                  ImplodeImageText,implode_image->filename))
-        break;
+      }
+    DestroyThreadViewSet(image_views);
+    DestroyThreadViewSet(implode_views);
   }
   implode_image->is_grayscale=image->is_grayscale;
   return(implode_image);
