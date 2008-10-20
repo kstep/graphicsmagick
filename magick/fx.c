@@ -999,7 +999,15 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
                       register unsigned int
                         *hp;
 
-                      hp=histogram+ScaleQuantumToChar(PixelIntensityToQuantum(ru));
+                      Quantum
+                        intensity;
+
+                      if (image->is_grayscale)
+                        intensity=ru->red;
+                      else
+                        intensity=PixelIntensityToQuantum(ru);
+                        
+                      hp=histogram+ScaleQuantumToChar(intensity);
                       (*hp)++;
                       if (*hp > count)
                         {
@@ -1544,6 +1552,9 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
 {
 #define WaveImageText  "[%s] Wave image..."
 
+  VirtualPixelMethod
+    virtual_pixel_method;
+    
   double
     *sine_map;
 
@@ -1553,15 +1564,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   long
     y;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  VirtualPixelMethod
-    virtual_pixel_method;
-
   /*
     Initialize wave image attributes.
   */
@@ -1570,7 +1572,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   wave_image=CloneImage(image,image->columns,(long)
-    (image->rows+2.0*fabs(amplitude)),False,exception);
+                        (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
 
@@ -1584,40 +1586,106 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     SetImageOpacity(wave_image,OpaqueOpacity);
 
   /*
-    Allocate sine map.
+    Allocate and initialize sine map.
   */
-  sine_map=MagickAllocateMemory(double *,wave_image->columns*sizeof(double));
-  if (sine_map == (double *) NULL)
-    {
-      DestroyImage(wave_image);
-      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
-        MagickMsg(OptionError,UnableToWaveImage))
-    }
-  for (x=0; x < (long) wave_image->columns; x++)
-    sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
+  {
+    register long
+      x;
+
+    sine_map=MagickAllocateMemory(double *,wave_image->columns*sizeof(double));
+    if (sine_map == (double *) NULL)
+      {
+        DestroyImage(wave_image);
+        ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+                            MagickMsg(OptionError,UnableToWaveImage));
+      }
+    
+    for (x=0; x < (long) wave_image->columns; x++)
+      sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
+  }
   /*
-    Wave image.
+    Set virtual pixel method.
   */
+
   virtual_pixel_method=GetImageVirtualPixelMethod(image);
   if (virtual_pixel_method == UndefinedVirtualPixelMethod)
     (void) SetImageVirtualPixelMethod(image,ConstantVirtualPixelMethod);
-  for (y=0; y < (long) wave_image->rows; y++)
+  /*
+    Wave image.
+  */
   {
-    q=SetImagePixels(wave_image,0,y,wave_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) wave_image->columns; x++)
-    {
-      *q=InterpolateColor(image,(double) x,(double) y-sine_map[x],exception);
-      q++;
-    }
-    if (!SyncImagePixels(wave_image))
-      break;
-    if (QuantumTick(y,wave_image->rows))
-      if (!MagickMonitorFormatted(y,wave_image->rows,exception,
-                                  WaveImageText,image->filename))
-        break;
+    MagickPassFail
+      status = MagickPass;
+
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *image_views,
+      *wave_views;
+
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    wave_views=AllocateThreadViewSet(wave_image,exception);
+    if (wave_views == (ThreadViewSet *) NULL)
+      {
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(wave_views);
+        return MagickFail;
+      }
+
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#endif
+    for (y=0; y < (long) wave_image->rows; y++)
+      {
+        register PixelPacket
+          *q;
+
+        register long
+          x;
+
+        MagickPassFail
+          thread_status;
+        
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        q=SetThreadViewPixels(wave_views,0,y,wave_image->columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) wave_image->columns; x++)
+              {
+                q[x]=InterpolateViewColor(AccessThreadView(image_views),
+                                          (double) x,(double) y-sine_map[x],
+                                          exception);
+              }
+            if (!SyncThreadViewPixels(wave_views,exception))
+              thread_status=MagickFail;
+          }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+        {
+          row_count++;
+          if (QuantumTick(row_count,wave_image->rows))
+            if (!MagickMonitorFormatted(row_count,wave_image->rows,exception,
+                                        WaveImageText,image->filename))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+
+    DestroyThreadViewSet(image_views);
+    DestroyThreadViewSet(wave_views);
   }
+  /*
+    Restore virtual pixel method.
+  */
   (void) SetImageVirtualPixelMethod(image,virtual_pixel_method);
   MagickFreeMemory(sine_map);
   wave_image->is_grayscale=(image->is_grayscale && IsGray(wave_image->background_color));

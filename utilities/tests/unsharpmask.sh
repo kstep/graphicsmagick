@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -unsharp 0x1 -label UnsharpMask Unsharp_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -unsharp 0x1+10+10 -label UnsharpMask Unsharp_out.miff

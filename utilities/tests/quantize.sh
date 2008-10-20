@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -label Quantize Quantize_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colors 16 -label Quantize Quantize_out.miff

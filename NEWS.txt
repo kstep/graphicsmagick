@@ -125,6 +125,7 @@ Performance Improvements:
     - Threshold channel (-threshold, -operator threshold)
     - Trim image (-trim)
     - UnsharpMaskImage (-unsharp)
+    - Wave (-wave)
     - White threshold (-white-threshold)
 
   * Improved coder management performance.

@@ -757,7 +757,7 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n t e r p o l a t e C o l o r                                           %
++   I n t e r p o l a t e C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -780,7 +780,7 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %
 */
-MagickExport PixelPacket InterpolateColor(const Image *image,
+MagickExport PixelPacket InterpolateViewColor(const ViewInfo *view,
   const double x_offset,const double y_offset,ExceptionInfo *exception)
 {
   double
@@ -795,11 +795,9 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
   register const PixelPacket
     *p;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  p=AcquireImagePixels(image,(long) x_offset,(long) y_offset,2,2,exception);
+  p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
   if (p == (const PixelPacket *) NULL)
-    return(AcquireOnePixel(image,(long) x_offset,(long) y_offset,exception));
+    return(AcquireOneCacheViewPixel(view,(long) x_offset,(long) y_offset,exception));
   alpha=x_offset-floor(x_offset);
   beta=y_offset-floor(y_offset);
   one_minus_alpha=1.0-alpha;
@@ -813,6 +811,14 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
   color.opacity=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].opacity+
     alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
   return(color);
+}
+MagickExport PixelPacket InterpolateColor(const Image *image,
+  const double x_offset,const double y_offset,ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return InterpolateViewColor(image->default_view,x_offset,y_offset,
+                              exception);
 }
 
 /*

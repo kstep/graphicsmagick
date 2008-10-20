@@ -29,7 +29,10 @@ extern MagickExport int
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport PixelPacket
-  InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
+  InterpolateColor(const Image *image,const double x_offset,
+    const double y_offset,ExceptionInfo *exception),
+  InterpolateViewColor(const ViewInfo *view,const double x_offset,
+    const double y_offset,ExceptionInfo *exception);
 
 extern MagickExport Quantum
   GenerateNoise(const Quantum,const NoiseType);
