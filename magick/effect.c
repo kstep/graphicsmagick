@@ -1737,7 +1737,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
 
 typedef struct _MedianListNode
 {
-  unsigned long
+  unsigned int
     next[9],
     count,
     signature;
@@ -1745,34 +1745,35 @@ typedef struct _MedianListNode
 
 typedef struct _MedianSkipList
 {
-  int
-    level;
-
   MedianListNode
     *nodes;
+
+  int
+    level;
 } MedianSkipList;
 
 typedef struct _MedianPixelList
 {
-  unsigned long
+  MedianSkipList
+    lists[4];
+
+  unsigned int
     center,
     seed,
     signature;
-
-  MedianSkipList
-    lists[4];
 } MedianPixelList;
 
-static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
-                              unsigned long color)
+static void AddNodeMedianList(MedianPixelList *pixel_list,
+                              const unsigned int channel,
+                              const unsigned int color)
 {
-  register long
-    level;
-
   register MedianSkipList
     *list;
 
-  unsigned long
+  register int
+    level;
+
+  unsigned int
     search,
     update[9];
 
@@ -1784,8 +1785,9 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   list->nodes[color].count=1;
   /*
     Determine where it belongs in the list.
+    This loop consumes most of the time.
   */
-  search=65536L;
+  search=65536UL;
   for (level=list->level; level >= 0; level--)
     {
       while (list->nodes[search].next[level] < color)
@@ -1797,7 +1799,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   */
   for (level=0; ; level++)
     {
-      pixel_list->seed=(pixel_list->seed*42893621L)+1L;
+      pixel_list->seed=(pixel_list->seed*42893621U)+1U;
       if ((pixel_list->seed & 0x300) != 0x300)
         break;
     }
@@ -1811,7 +1813,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   while (level > list->level)
     {
       list->level++;
-      update[list->level]=65536L;
+      update[list->level]=65536U;
     }
   /*
     Link the node into the skip-list.
@@ -1826,26 +1828,28 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
 
 static PixelPacket GetMedianList(MedianPixelList *pixel_list)
 {
-  PixelPacket
-    pixel;
-
-  register long
-    channel;
-
   register MedianSkipList
     *list;
 
-  unsigned long
+  register unsigned int
+    channel;
+
+  unsigned int
     center,
-    channels[4],
     color,
     count;
 
+  unsigned short
+    channels[4];
+
+  PixelPacket
+    pixel;
+
   /*
-    Find the median value for each of the color.
+    Find the median value for each of the colors.
   */
   center=pixel_list->center;
-  for (channel=0; channel < 4; channel++)
+  for (channel=0; channel < 4U; channel++)
     {
       list=pixel_list->lists+channel;
       color=65536L;
@@ -1865,90 +1869,42 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   return(pixel);
 }
 
-static int InitializeMedianList(MedianPixelList *pixel_list,long width)
+static inline void InsertMedianListChannel(MedianPixelList *pixel_list,
+                                           const unsigned int channel,
+                                           const Quantum quantum)
 {
-  register int i;
-  (void) memset(pixel_list,0,sizeof(MedianPixelList));
-  pixel_list->center=width*width/2;
-  pixel_list->signature=MagickSignature;
-  for (i=0; i < 4; i++)
-    {
-      pixel_list->lists[i].nodes =
-        MagickAllocateMemory(MedianListNode *,65537*sizeof(MedianListNode));
-      if (!pixel_list->lists[i].nodes)
-	{
-	  assert(0);
-	  return (False);
-	}
-      (void) memset(pixel_list->lists[i].nodes,0,65537*sizeof(MedianListNode));
-    }
-  return (True);
-}
+  register unsigned int
+    index;
 
-static void CleanMedianList(MedianPixelList *pixel_list)
-{
-  register int i;
-  for (i=0; i < 4; i++)
-    {
-      if (pixel_list->lists[i].nodes)
-        MagickFreeMemory(pixel_list->lists[i].nodes);
-    }
+  index=ScaleQuantumToShort(quantum);
+  if (pixel_list->lists[channel].nodes[index].signature == pixel_list->signature)
+    pixel_list->lists[channel].nodes[index].count++;
+  else
+    AddNodeMedianList(pixel_list,channel,index);
 }
 
 static inline void InsertMedianList(MedianPixelList *pixel_list,
                                     const PixelPacket *pixel)
 {
-  unsigned long
-    signature;
-
-  unsigned int
-    red_index,
-    green_index,
-    blue_index,
-    opacity_index;
-
-  red_index=ScaleQuantumToShort(pixel->red);
-  signature=pixel_list->lists[0].nodes[red_index].signature;
-  if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,0,red_index);
-  else
-    pixel_list->lists[0].nodes[red_index].count++;
-
-  green_index=ScaleQuantumToShort(pixel->green);
-  signature=pixel_list->lists[1].nodes[green_index].signature;
-  if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,1,green_index);
-  else
-    pixel_list->lists[1].nodes[green_index].count++;
-
-  blue_index=ScaleQuantumToShort(pixel->blue);
-  signature=pixel_list->lists[2].nodes[blue_index].signature;
-  if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,2,blue_index);
-  else
-    pixel_list->lists[2].nodes[blue_index].count++;
-
-  opacity_index=ScaleQuantumToShort(pixel->opacity);
-  signature=pixel_list->lists[3].nodes[opacity_index].signature;
-  if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,3,opacity_index);
-  else
-    pixel_list->lists[3].nodes[opacity_index].count++;
+  InsertMedianListChannel(pixel_list,0,pixel->red);
+  InsertMedianListChannel(pixel_list,1,pixel->green);
+  InsertMedianListChannel(pixel_list,2,pixel->blue);
+  InsertMedianListChannel(pixel_list,3,pixel->opacity);
 }
 
 static void ResetMedianList(MedianPixelList *pixel_list)
 {
-  int
-    level;
-
-  register long
-    channel;
-
   register MedianListNode
     *root;
 
   register MedianSkipList
     *list;
+
+  register long
+    channel;
+
+  int
+    level;
 
   /*
     Reset the skip-list.
@@ -1956,12 +1912,60 @@ static void ResetMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
     {
       list=pixel_list->lists+channel;
-      root=list->nodes+65536L;
+      root=list->nodes+65536UL;
       list->level=0;
       for (level=0; level < 9; level++)
-        root->next[level]=65536L;
+        root->next[level]=65536UL;
     }
   pixel_list->seed=pixel_list->signature++;
+}
+
+static void DestroyMedianList(void *pixel_list)
+{
+  MedianPixelList
+    *skiplist;
+
+  skiplist=(MedianPixelList *) pixel_list;
+
+  if (skiplist != (void *) NULL)
+    {
+      unsigned int
+        i;
+      
+      for (i=0; i < 4U; i++)
+        MagickFreeMemory(skiplist->lists[i].nodes);
+    }
+  MagickFreeMemory(skiplist);
+}
+
+static MedianPixelList *AllocateMedianList(const long width)
+{
+  MedianPixelList
+    *skiplist;
+
+  skiplist=MagickAllocateMemory(MedianPixelList *,sizeof(MedianPixelList));
+  if (skiplist != (MedianPixelList *) NULL)
+    {
+      unsigned int
+        i;
+
+      (void) memset(skiplist,0,sizeof(MedianPixelList));
+      skiplist->center=width*width/2;
+      skiplist->signature=MagickSignature;
+      for (i=0; i < 4U; i++)
+        {
+          skiplist->lists[i].nodes =
+            MagickAllocateArray(MedianListNode *,65537U,sizeof(MedianListNode));
+          if (skiplist->lists[i].nodes == (MedianListNode *) NULL)
+            {
+              DestroyMedianList(skiplist);
+              skiplist=(MedianPixelList *) NULL;
+              break;
+            }
+          (void) memset(skiplist->lists[i].nodes,0,65537U*sizeof(MedianListNode));
+        }
+    }
+  return skiplist;
 }
 
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
@@ -1974,22 +1978,20 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 
   long
     width,
-    x,
     y;
 
-  MedianPixelList
-    *skiplist;
+  ThreadViewSet
+    *image_views,
+    *median_views;
 
-  register const PixelPacket
-    *p,
-    *r;
+  ThreadViewDataSet
+    *data_set;
 
-  register long
-    u,
-    v;
+  unsigned long
+    row_count=0;
 
-  register PixelPacket
-    *q;
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Initialize median image attributes.
@@ -1998,64 +2000,133 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth2D(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException3(OptionError,UnableToFilterImage,
                          ImageSmallerThanRadius);
-  median_image=CloneImage(image,image->columns,image->rows,True,exception);
+  median_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (median_image == (Image *) NULL)
-    return((Image *) NULL);
+    return ((Image *) NULL);
+
+  image_views=AllocateThreadViewSet((Image *) image,exception);
+  median_views=AllocateThreadViewSet(median_image,exception);
+  if ((image_views == (ThreadViewSet *) NULL) ||
+      (median_views == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(image_views);
+      DestroyThreadViewSet(median_views);
+      DestroyImage(median_image);
+      return ((Image *) NULL);
+    }
+
   median_image->storage_class=DirectClass;
   /*
     Allocate skip-lists.
   */
-  skiplist=MagickAllocateMemory(MedianPixelList *,sizeof(MedianPixelList));
-  if (skiplist == (MedianPixelList *) NULL)
+  data_set=AllocateThreadViewDataSet(DestroyMedianList,image,exception);
+  if (data_set != (ThreadViewDataSet *) NULL)
     {
-      DestroyImage(median_image);
-      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-                           UnableToMedianFilterImage);
-    }
-  /*
-    Median filter each image row.
-  */
-  if (!InitializeMedianList(skiplist,width))
-    {
-      DestroyImage(median_image);
-      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-                           UnableToMedianFilterImage);
-    }
+      unsigned int
+        i,
+        views;
 
-  for (y=0; y < (long) median_image->rows; y++)
-    {
-      p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
-                           exception);
-      q=SetImagePixels(median_image,0,y,median_image->columns,1);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-        break;
-      for (x=0; x < (long) median_image->columns; x++)
+      views=GetThreadViewDataSetAllocatedViews(data_set);
+      for (i=0; i < views; i++)
         {
-          r=p;
-          ResetMedianList(skiplist);
-          for (v=0; v < width; v++)
+          MedianPixelList
+            *skiplist;
+
+          skiplist=AllocateMedianList(width);
+          if (skiplist != (MedianPixelList *) NULL)
             {
-              for (u=0; u < width; u++)
-                InsertMedianList(skiplist,r+u);
-              r+=image->columns+width;
+              AssignThreadViewData(data_set,i,skiplist);
+              continue;
             }
-          *q++=GetMedianList(skiplist);
-          p++;
-        }
-      if (!SyncImagePixels(median_image))
-        break;
-      if (QuantumTick(y,median_image->rows))
-        if (!MagickMonitorFormatted(y,median_image->rows,exception,
-                                    MedianFilterImageText,
-                                    median_image->filename))
+
+          DestroyThreadViewDataSet(data_set);
+          data_set=(ThreadViewDataSet *) NULL;
           break;
+        }
     }
-  CleanMedianList(skiplist);
-  MagickFreeMemory(skiplist);
+  if (data_set == (ThreadViewDataSet *) NULL)
+    {
+      DestroyImage(median_image);
+      return ((Image *) NULL);
+    }
+  {
+#if defined(_OPENMP)
+#  pragma omp parallel for shared(row_count, status)
+#endif
+    for (y=0; y < (long) median_image->rows; y++)
+      {
+        register MedianPixelList
+          *skiplist;
+
+        const PixelPacket
+          *p;
+
+        PixelPacket
+          *q;
+
+        long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        skiplist=AccessThreadViewData(data_set);
+        p=AcquireThreadViewPixels(image_views,-width/2,y-width/2,
+                                  image->columns+width,width,exception);
+        q=SetThreadViewPixels(median_views,0,y,median_image->columns,1,exception);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) median_image->columns; x++)
+              {
+                register const PixelPacket
+                  *r;
+
+                register long
+                  u,
+                  v;
+
+                ResetMedianList(skiplist);
+                r=&p[x];
+                for (v=0; v < width; v++)
+                  {
+                    for (u=0; u < width; u++)
+                      InsertMedianList(skiplist,&r[u]);
+                    r+=image->columns+width;
+                  }
+                q[x]=GetMedianList(skiplist);
+              }
+            if (!SyncThreadViewPixels(median_views,exception))
+              thread_status=MagickFail;
+          }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
+        {
+          row_count++;
+          if (QuantumTick(row_count,median_image->rows))
+            if (!MagickMonitorFormatted(row_count,median_image->rows,exception,
+                                        MedianFilterImageText,
+                                        median_image->filename))
+              thread_status=MagickFail;
+
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+  }
+  DestroyThreadViewDataSet(data_set);
+  DestroyThreadViewSet(image_views);
+  DestroyThreadViewSet(median_views);
   median_image->is_grayscale=image->is_grayscale;
   return(median_image);
 }
@@ -2208,7 +2279,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   /*
     Allocate blur image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
       MagickFreeMemory(kernel);
@@ -2917,7 +2988,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
 }
 
 MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
-  ExceptionInfo *exception)
+                                     ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "[%s] Reduce the image noise...  "
 
@@ -2926,90 +2997,155 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 
   long
     width,
-    x,
     y;
 
-  MedianPixelList
-    *skiplist;
+  ThreadViewSet
+    *image_views,
+    *noise_views;
 
-  register const PixelPacket
-    *p,
-    *r;
+  ThreadViewDataSet
+    *data_set;
 
-  register long
-    u,
-    v;
+  unsigned long
+    row_count=0;
 
-  register PixelPacket
-    *q;
+  MagickPassFail
+    status=MagickPass;
 
   /*
-    Initialize noised image attributes.
+    Initialize noise image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth2D(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException3(OptionError,UnableToFilterImage,
-      ImageSmallerThanRadius);
+                         ImageSmallerThanRadius);
   noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
-    return((Image *) NULL);
+    return ((Image *) NULL);
+
+  image_views=AllocateThreadViewSet((Image *) image,exception);
+  noise_views=AllocateThreadViewSet(noise_image,exception);
+  if ((image_views == (ThreadViewSet *) NULL) ||
+      (noise_views == (ThreadViewSet *) NULL))
+    {
+      DestroyThreadViewSet(image_views);
+      DestroyThreadViewSet(noise_views);
+      DestroyImage(noise_image);
+      return ((Image *) NULL);
+    }
+
   noise_image->storage_class=DirectClass;
   /*
-    Allocate skip-lists.
+    Allocate and initialize skip-lists.
   */
-  skiplist=MagickAllocateMemory(MedianPixelList *,sizeof(MedianPixelList));
-  if (skiplist == (MedianPixelList *) NULL)
+  data_set=AllocateThreadViewDataSet(DestroyMedianList,image,exception);
+  if (data_set != (ThreadViewDataSet *) NULL)
+    {
+      unsigned int
+        i,
+        views;
+
+      views=GetThreadViewDataSetAllocatedViews(data_set);
+      for (i=0; i < views; i++)
+        {
+          MedianPixelList
+            *skiplist;
+
+          skiplist=AllocateMedianList(width);
+          if (skiplist != (MedianPixelList *) NULL)
+            {
+              AssignThreadViewData(data_set,i,skiplist);
+              continue;
+            }
+
+          DestroyThreadViewDataSet(data_set);
+          data_set=(ThreadViewDataSet *) NULL;
+          break;
+        }
+    }
+  if (data_set == (ThreadViewDataSet *) NULL)
     {
       DestroyImage(noise_image);
-      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToNoiseFilterImage)
+      return ((Image *) NULL);
     }
-  /*
-    Median filter each image row.
-  */
-  if(!InitializeMedianList(skiplist,width))
-  {
-    DestroyImage(noise_image);
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-	  UnableToMedianFilterImage)
-  }
 
+#if defined(_OPENMP)
+#  pragma omp parallel for shared(row_count, status)
+#endif
   for (y=0; y < (long) noise_image->rows; y++)
-  {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
-      exception);
-    q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (long) noise_image->columns; x++)
     {
-      r=p;
-      ResetMedianList(skiplist);
-      for (v=width; v > 0; v--)
+      const PixelPacket
+        *p;
+
+      PixelPacket
+        *q;
+
+      long
+        x;
+
+      MedianPixelList
+        *skiplist;
+
+      MagickBool
+        thread_status;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+      
+      skiplist=AccessThreadViewData(data_set);
+      p=AcquireThreadViewPixels(image_views,-width/2,y-width/2,
+                                image->columns+width,width,exception);
+      q=SetThreadViewPixels(noise_views,0,y,noise_image->columns,1,exception);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
+        {
+          for (x=0; x < (long) noise_image->columns; x++)
+            {
+              register const PixelPacket
+                *r;
+
+              register long
+                u,
+                v;
+
+              r=p;
+              ResetMedianList(skiplist);
+              for (v=width; v > 0; v--)
+                {
+                  for (u=0; u < width; u++)
+                    InsertMedianList(skiplist,&r[u]);
+                  r+=image->columns+width;
+                }
+              q[x]=GetNonpeakMedianList(skiplist);
+              p++;
+            }
+          if (!SyncThreadViewPixels(noise_views,exception))
+            thread_status=MagickFail;
+        }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
       {
-        register const PixelPacket
-          *ru=r;
-        for (u=width; u > 0; u--)
-          InsertMedianList(skiplist,ru++);
-        r+=image->columns+width;
+        row_count++;
+        if (QuantumTick(row_count,noise_image->rows))
+          if (!MagickMonitorFormatted(row_count,noise_image->rows,exception,
+                                      ReduceNoiseImageText,
+                                      noise_image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
-      *q++=GetNonpeakMedianList(skiplist);
-      p++;
     }
-    if (!SyncImagePixels(noise_image))
-      break;
-    if (QuantumTick(y,noise_image->rows))
-      if (!MagickMonitorFormatted(y,noise_image->rows,exception,
-                                  ReduceNoiseImageText,
-                                  noise_image->filename))
-        break;
-  }
-  CleanMedianList(skiplist);
-  MagickFreeMemory(skiplist);
+  DestroyThreadViewDataSet(data_set);
+  DestroyThreadViewSet(image_views);
+  DestroyThreadViewSet(noise_views);
   noise_image->is_grayscale=image->is_grayscale;
   return(noise_image);
 }

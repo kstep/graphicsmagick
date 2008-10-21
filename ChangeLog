@@ -1,3 +1,8 @@
+2008-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (MedianFilterImage): Accelerate using OpenMP.
+	(ReduceNoiseImage): Accelerate using OpenMP.
+
 2008-10-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/fx.c (WaveImage): Accelerate using OpenMP.
