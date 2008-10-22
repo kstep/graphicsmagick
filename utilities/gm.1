@@ -1,4 +1,4 @@
-.TH gm 1 "2008/10/14" "GraphicsMagick"
+.TH gm 1 "2008/10/21" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -8954,6 +8954,13 @@ Overridden by \fBMAGICK_TMPDIR\fP if it is set.
 \fRFor Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
 is set.
+.TP
+.B "OMP_NUM_THREADS"
+\fRAs per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.
 .SH CONFIGURATION FILES
 GraphicsMagick uses a number of XML format configuration files:
 .TP

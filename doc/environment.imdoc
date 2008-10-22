@@ -176,4 +176,12 @@ Overridden by <s>MAGICK_TMPDIR</s> if it is set.</abs>
 should write temporary files. Overridden by <s>MAGICK_TMPDIR</s> if it
 is set.</abs>
 
+<opt>OMP_NUM_THREADS</opt>
+
+<abs>As per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.</abs>
+
 </imdoc>

@@ -46,32 +46,35 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
 
 
-GraphicsMagick is the swiss army knife of image processing. It provides a
-robust collection of tools and libraries which support reading, writing, and
-manipulating an image in over 88 major formats including important formats like
-DPX, GIF, JPEG, JPEG-2000, PNG, PDF, SVG, and TIFF. GraphicsMagick supports
-huge images on systems that support large files, and has been tested with
-gigapixel-size images. GraphicsMagick can create new images on the fly, making
-it suitable for building dynamic Web applications. GraphicsMagick may be
-used to resize, rotate, sharpen, color reduce, or add special effects to
-an image and save the result in the same or differing image format. Image
-processing operations are available from the command line, as well as through
-C, C++, Perl, or Windows COM programming interfaces. Extensions are available
-from third-parties to support `programming`_ in Tcl, and
-Ruby. With some modification, language extensions for ImageMagick may be used.
+GraphicsMagick is the swiss army knife of image processing. Comprised of
+337K lines of C and C++ code, it provides a robust collection of tools
+and libraries which support reading, writing, and manipulating an image
+in over 88 major formats including important formats like DPX, GIF, JPEG,
+JPEG-2000, PNG, PDF, PNM, and TIFF. GraphicsMagick supports huge images
+on systems that support large files, and has been tested with
+gigapixel-size images. GraphicsMagick can create new images on the fly,
+making it suitable for building dynamic Web applications. GraphicsMagick
+may be used to resize, rotate, sharpen, color reduce, or add special
+effects to an image and save the result in the same or differing image
+format. Image processing operations are available from the command line,
+as well as through C, C++, Perl, Tcl, Ruby, or Windows COM programming
+interfaces. With some modification, language extensions for ImageMagick
+may be used.
 
-GraphicsMagick is originally derived from ImageMagick_ 5.5.2. Since the branch
-from ImageMagick, many improvements have been made (`see news <NEWS.html>`_) by
-`many authors <authors.html>`_ using an open development model. GraphicsMagick
-is more efficient than ImageMagick (`see benchmark report <benchmarks.html>`_)
-so it gets the job done faster using fewer resources. GraphicsMagick is
-available for free, may be used to support both open and proprietary
-applications, and may be redistributed without fee.
+GraphicsMagick is originally derived from ImageMagick_ 5.5.2. Since the
+branch from ImageMagick, many improvements have been made (`see news
+<NEWS.html>`_) by `many authors <authors.html>`_ using an open
+development model. GraphicsMagick is much more efficient than ImageMagick
+(`see benchmark report <benchmarks.html>`_) so it gets the job done
+faster using fewer resources. GraphicsMagick is available for free, may
+be used to support both open and proprietary applications, and may be
+redistributed without fee.
 
-GraphicsMagick is `copyrighted <Copyright.html>`_ by the GraphicsMagick Group as
-well as many others. GraphicsMagick is dististributed under an X11-style license
-(“MIT License”), which is approved by the `Open Source Initiative`_ and
-declared by the FSF_ to be compatible with the `GPL Version 2`_.
+GraphicsMagick is `copyrighted <Copyright.html>`_ by the GraphicsMagick
+Group as well as many others. GraphicsMagick is dististributed under an
+X11-style license ("MIT License"), which is approved by the `Open Source
+Initiative`_ and declared by the FSF_ to be compatible with the `GPL
+Version 2`_.
 
 Here are just a few `examples <images/examples.jpg>`_ of what GraphicsMagick
 can do:
@@ -95,16 +98,17 @@ can do:
 * Describe the format and characteristics of an image
 
 GraphicsMagick is quite portable, and compiles under almost every general
-purpose operating system that runs on 32-bit or 64-bit CPUs. GraphicsMagick is
-available for virtually any Unix or Unix-like system, including Linux. It also
-runs under `Windows <INSTALL-windows.html>`_ '98 and later ('98, ME, NT 4.0,
-2000, and XP), and MacOS-X.
+purpose operating system that runs on 32-bit or 64-bit CPUs.
+GraphicsMagick is available for virtually any Unix or Unix-like system,
+including Linux. It also runs under `Windows <INSTALL-windows.html>`_ '98
+and later ('98, ME, NT 4.0, 2000, and XP), and MacOS-X.
 
 Major developments in the works for GraphicsMagick 1.3:
 
 * Algorithms are being re-written so that they are accelerated via OpenMP.
   OpenMP allows you to take advantage of those extra cores in your
   multi-core/multi-CPU system in order to dramatically reduce processing time.
+  This work is almost entirely completed now.
 
 * Additional operators are added for tasks like thresholding, gamma correction,
   and adding noise.

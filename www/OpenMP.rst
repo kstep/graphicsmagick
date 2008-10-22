@@ -12,14 +12,15 @@ threads. OpenMP originates in the super-computing world and has been
 available in one form or another since the late '90s.
 
 Since GCC 4.2 has introduced excellent OpenMP support, OpenMP has become
-available to the masses. Microsoft Visual Studio 2008 supports OpenMP 2.0
-so Windows users should benefit as well. Any multi-CPU and/or multi-core
-system is potentially a good candidate for use with OpenMP.
-Unfortunately, some older multi-CPU hardware is more suitable for
-multi-processing than multi-threading. Recent multi-core chipsets from
-Intel and AMD perform very well with OpenMP. The operating system makes a
-difference when it comes to OpenMP acceleration, with Linux and Solaris
-working exceptionally well, and FreeBSD and Apple's OS-X working poorly.
+available to the masses. Microsoft Visual Studio Professional 2005 and
+2008 support OpenMP so Windows users should benefit as well. Any
+multi-CPU and/or multi-core system is potentially a good candidate for
+use with OpenMP. Unfortunately, some older multi-CPU hardware is more
+suitable for multi-processing than multi-threading. Recent multi-core
+chipsets from Intel and AMD perform very well with OpenMP. The operating
+system makes a difference when it comes to OpenMP acceleration, with
+IBM's AIX, Linux, and Sun's Solaris working exceptionally well, and
+FreeBSD and Apple's OS-X working less well.
 
 Most image processing routines are comprised of loops which iterate
 through the image pixels, image rows, or image regions. These loops are
@@ -43,26 +44,27 @@ switch to another thread if the core would be blocked waiting for memory,
 allowing multiple memory accesses to be pending at once, and thereby
 improving throughput.
 
-The initial approach used in GraphicsMagick is to recognize the various
-access patterns in the existing code, and re-write the algorithms
-(sometimes from scratch) to be based on a framework that we call "pixel
-iterators". With this approach, the computation is restricted to a small
-unit (a callback function) with very well defined properties, and no
-knowledge as to how it is executed or where the data comes from. This
-approach removes the loops from the code and puts the loops in the
-framework, which may be adjusted based on experience. The continuing
-strategy will be to recognize design patterns and build frameworks which
-support those patterns. Sometimes algorithms are special/exotic enough
-that it is much easier to instrument the code for OpenMP rather than to
-attempt to fit the algorithm into a framework.
+An approach used in GraphicsMagick is to recognize the various access
+patterns in the existing code, and re-write the algorithms (sometimes
+from scratch) to be based on a framework that we call "pixel iterators".
+With this approach, the computation is restricted to a small unit (a
+callback function) with very well defined properties, and no knowledge as
+to how it is executed or where the data comes from. This approach removes
+the loops from the code and puts the loops in the framework, which may be
+adjusted based on experience. The continuing strategy will be to
+recognize design patterns and build frameworks which support those
+patterns. Sometimes algorithms are special/exotic enough that it is much
+easier to instrument the code for OpenMP rather than to attempt to fit
+the algorithm into a framework.
 
 Since OpenMP is based on multi-threading, multiple threads access the
 underlying pixel storage at once. The interface to this underlying
 storage is called the "pixel cache". The original pixel cache code
 (derived from ImageMagick) was thread safe only to the extent that it
-allowed one thread per image. This code has now been updated so that
+allowed one thread per image. This code has now been re-written so that
 multiple threads may safely and efficiently work on the pixels in one
-image.
+image. The re-write also makes the pixel cache thread safe if a
+multi-threaded application uses an OpenMP-fortified library.
 
 The following is an example of per-core speed-up due to OpenMP on a
 four-core system.  All the pixel quantum values are divided by 2::
@@ -70,16 +72,23 @@ four-core system.  All the pixel quantum values are divided by 2::
   % for threads in 1 2 3 4
   do
     env OMP_NUM_THREADS=$threads gm benchmark -duration 10 convert \
-      -size 2048x1080 -type truecolor 'xc:#f00' -operator all divide 2.0 null:
+      -size 2048x1080 pattern:granite -operator all divide 2.0 null:
   done
-  Results: 211 iter 9.99s user 10.00s total 21.10 iter/s (21.12 iter/s cpu)
-  Results: 372 iter 18.69s user 10.02s total 37.13 iter/s (19.90 iter/s cpu)
-  Results: 512 iter 26.62s user 10.00s total 51.20 iter/s (19.23 iter/s cpu)
-  Results: 582 iter 30.63s user 10.00s total 58.20 iter/s (19.00 iter/s cpu)
+  Results: 223 iter 10.03s user 10.03s total 22.233 iter/s (22.233 iter/s cpu)
+  Results: 390 iter 18.78s user 10.01s total 38.961 iter/s (20.767 iter/s cpu)
+  Results: 529 iter 26.98s user 10.00s total 52.900 iter/s (19.607 iter/s cpu)
+  Results: 651 iter 33.74s user 10.01s total 65.035 iter/s (19.295 iter/s cpu)
 
 Note that the "iter/s cpu" value is a measure of the number of iterations
 given the amount of reported CPU time consumed. It is an effective
-measure of relative efficacy.
+measure of relative efficacy. In the above example, the total speedup was
+close to 3X with only a small loss of CPU efficiency as threads are added.
+
+According to the OpenMP specification, the OMP_NUM_THREADS evironment
+variable (used above) may be used to specify the number of threads
+available to the application. Typically this is set to the number of
+processor cores on the system but may be set lower to limit resource
+consumption or (in some cases) to improve execution efficiency.
 
 --------------------------------------------------------------------------
 
