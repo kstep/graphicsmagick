@@ -44,6 +44,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _Open Source Initiative : http://www.opensource.org/
 .. _FSF : http://www.fsf.org/
 .. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
+.. _OpenMP : OpenMP.html
 
 
 GraphicsMagick is the swiss army knife of image processing. Comprised of
@@ -105,10 +106,11 @@ and later ('98, ME, NT 4.0, 2000, and XP), and MacOS-X.
 
 Major developments in the works for GraphicsMagick 1.3:
 
-* Algorithms are being re-written so that they are accelerated via OpenMP.
-  OpenMP allows you to take advantage of those extra cores in your
-  multi-core/multi-CPU system in order to dramatically reduce processing time.
-  This work is almost entirely completed now.
+* Algorithms are being re-written so that they are accelerated via
+  OpenMP_. OpenMP_ allows you to take advantage of those
+  extra cores in your multi-core/multi-CPU system in order to
+  dramatically reduce processing time. This work is almost entirely
+  completed now.
 
 * Additional operators are added for tasks like thresholding, gamma correction,
   and adding noise.
