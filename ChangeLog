@@ -1,5 +1,7 @@
 2008-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/pixel_cache.c (AcquireOneCacheViewPixel): Optimize
+	implementation.
 	* magick/effect.c (MedianFilterImage): Accelerate using OpenMP.
 	(ReduceNoiseImage): Accelerate using OpenMP.
 

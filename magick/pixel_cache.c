@@ -832,18 +832,40 @@ AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
                          ExceptionInfo *exception)
 {
   const View
-    *view_info = (const View *) view;
+    *view_info;
+
+  Image
+    *image;
+
+  CacheInfo
+    *cache_info;
 
   const PixelPacket
     *pixel;
 
+  view_info = (const View *) view;
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  pixel=AcquireCacheNexus(view_info->image,x,y,1,1,view_info->nexus_info,exception);
-  if (pixel != (const PixelPacket *) NULL)
-    return *pixel;
 
-  return (view_info->image->background_color);
+  image=view_info->image;
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info != (CacheInfo *) NULL);
+  assert(cache_info->signature == MagickSignature);
+
+  if (((MemoryCache == cache_info->type) || (MapCache == cache_info->type)) &&
+      ((x >= 0) && (y >= 0) &&
+       ((unsigned long) x < cache_info->columns) &&
+       ((unsigned long) y < cache_info->rows)))
+    return cache_info->pixels[y*(magick_off_t) cache_info->columns+x];
+    
+  pixel=AcquireCacheNexus(image,x,y,1,1,view_info->nexus_info,exception);
+  if (pixel != (const PixelPacket *) NULL)
+    return pixel[0];
+
+  return image->background_color;
 }
 
 /*
