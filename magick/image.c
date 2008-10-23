@@ -1441,8 +1441,12 @@ CycleColormapCallBack(void *mutable_data,         /* User provided mutable data 
   const int
     amount = *((const int *) immutable_data);
 
+
   long
     index;
+
+  register const PixelPacket
+    *colormap = image->colormap;
 
   const unsigned long
     colors = image->colors;
@@ -1457,12 +1461,12 @@ CycleColormapCallBack(void *mutable_data,         /* User provided mutable data 
   for (i=0; i < npixels; i++)
     {
       index=(long) ((indexes[i]+amount) % colors);
-      if (index < 0)
+      if (index < 0L)
         index+=colors;
       indexes[i]=(IndexPacket) index;
-      pixels[i].red=image->colormap[index].red;
-      pixels[i].green=image->colormap[index].green;
-      pixels[i].blue=image->colormap[index].blue;
+      pixels[i].red=colormap[index].red;
+      pixels[i].green=colormap[index].green;
+      pixels[i].blue=colormap[index].blue;
     }
 
   return MagickPass;

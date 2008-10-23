@@ -121,6 +121,7 @@ Performance Improvements:
     - Noise filter (-noise)
     - Normalize image (-normalize)
     - Oil Paint (-paint)
+    - Opaque (-opaque)
     - Ordered dither (-ordered-dither)
     - Operators (-operator)
     - Profile adjust (ICC) (-profile)

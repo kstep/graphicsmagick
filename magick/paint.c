@@ -39,6 +39,7 @@
 #include "magick/color.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_iterator.h"
 #include "magick/render.h"
 #include "magick/utility.h"
 
@@ -600,22 +601,58 @@ MagickExport MagickPassFail MatteFloodfillImage(Image *image,
 %
 %
 */
-MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
-  const PixelPacket fill)
+typedef struct _OpaqueImageOptions_t
 {
-#define OpaqueImageText  "[%s] Setting opaque color in image..."
-
-  long
-    y;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
+  double fuzz;
+  PixelPacket fill;
+  PixelPacket target;
+} OpaqueImageOptions_t;
+static MagickPassFail
+OpaqueImageCallBack(void *mutable_data,         /* User provided mutable data */
+                      const void *immutable_data, /* User provided immutable data */
+                      Image *image,               /* Modify image */
+                      PixelPacket *pixels,        /* Pixel row */
+                      IndexPacket *indexes,       /* Pixel row indexes */
+                      const long npixels,         /* Number of pixels in row */
+                      ExceptionInfo *exception)   /* Exception report */
+{
+  const OpaqueImageOptions_t
+    options = *((const OpaqueImageOptions_t *) immutable_data);
 
   register long
     i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  if (options.fuzz == 0.0)
+    {
+      for (i=0; i < npixels; i++)
+        {
+          if (ColorMatch(&pixels[i],&options.target))
+            pixels[i]=options.fill;
+        }
+    }
+  else
+    {
+      for (i=0; i < npixels; i++)
+        {
+          if (FuzzyColorMatch(&pixels[i],&options.target,options.fuzz))
+            pixels[i]=options.fill;
+        }
+    }
+
+  return MagickPass;
+}
+MagickExport MagickPassFail
+OpaqueImage(Image *image,const PixelPacket target,const PixelPacket fill)
+{
+#define OpaqueImageText  "[%s] Setting opaque color in image..."
+
+  OpaqueImageOptions_t
+    options;
 
   MagickPassFail
     status=MagickPass;
@@ -625,66 +662,25 @@ MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  switch (image->storage_class)
-  {
-    case DirectClass:
-    default:
+  options.fuzz=image->fuzz;
+  options.fill=fill;
+  options.target=target;
+  if (image->storage_class == PseudoClass)
     {
-      /*
-        Make DirectClass image opaque.
-      */
-      /* FIXME: OpenMP */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          {
-            status=MagickFail;
-            break;
-          }
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (FuzzyColorMatch(q,&target,image->fuzz))
-            *q=fill;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          {
-            status=MagickFail;
-            break;
-          }
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                      OpaqueImageText,image->filename))
-            {
-              status=MagickFail;
-              break;
-            }
-      }
-      break;
-    }
-    case PseudoClass:
-    {
-      /*
-        Make PseudoClass image opaque.
-      */
       assert(image->colormap != (PixelPacket *) NULL);
-      for (i=0; i < (long) image->colors; i++)
-      {
-        if (FuzzyColorMatch(&image->colormap[i],&target,image->fuzz))
-          image->colormap[i]=fill;
-        if (QuantumTick(i,image->colors))
-          if (!MagickMonitorFormatted(i,image->colors,&image->exception,
-                                      OpaqueImageText,image->filename))
-            {
-              status=MagickFail;
-              break;
-            }
-      }
+      (void) OpaqueImageCallBack(0,&options,image,image->colormap,
+                                 (IndexPacket *) NULL,image->colors,
+                                 &image->exception);
       status &= SyncImage(image);
-      break;
     }
-  }
+  else
+    {
+      status=PixelIterateMonoModify(OpaqueImageCallBack,NULL,
+                                    OpaqueImageText,NULL,&options,0,0,
+                                    image->columns,image->rows,
+                                    image,&image->exception);
+    }
+
   return(status);
 }
 
