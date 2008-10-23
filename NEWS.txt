@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 22, 2008
+This file was last updated on October 23, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -87,6 +87,7 @@ Performance Improvements:
     - Add noise (+noise)
     - Black threshold (-black-threshold)
     - Blur (-blur)
+    - Border (-border)
     - Channel import, export, and depth-setting (-channel, -depth)
     - Clip path
     - Coalesce (-coalesce)
@@ -104,6 +105,7 @@ Performance Improvements:
     - Flatten (-flatten)
     - Flip (-flip)
     - Flop (-flop)
+    - Frame (-frame)
     - Gamma adjust (-gamma, -operator gamma)
     - Gradient
     - Implode (-implode)
@@ -124,6 +126,7 @@ Performance Improvements:
     - Profile adjust (ICC) (-profile)
     - Random threshold (-random-threshold)
     - Resize image (-resize)
+    - Raise image (-raise)
     - Rotate image (-rotate)
     - Shade image (-shade)
     - Shear image (-shear)

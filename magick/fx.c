@@ -402,19 +402,19 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       row_count=0;
 
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *convolve_views;
 
     DoublePixelPacket
       zero;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(convolve_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    convolve_views=AllocateThreadViewSet(convolve_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (convolve_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(convolve_views);
         MagickFreeMemory(normal_kernel);
         DestroyImage(convolve_image);
         return (Image *) NULL;
@@ -442,9 +442,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         if (thread_status == MagickFail)
           continue;
 
-        p=AcquireThreadViewPixels(read_view_set,-width/2,y-width/2,image->columns+width,width,
+        p=AcquireThreadViewPixels(image_views,-width/2,y-width/2,image->columns+width,width,
                                   exception);
-        q=SetThreadViewPixels(write_view_set,0,y,convolve_image->columns,1,exception);
+        q=SetThreadViewPixels(convolve_views,0,y,convolve_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
 
@@ -487,7 +487,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                 p++;
                 q++;
               }
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(convolve_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -505,8 +505,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(convolve_views);
+    DestroyThreadViewSet(image_views);
   }
   MagickFreeMemory(normal_kernel);
   if (MagickFail == status)
@@ -948,8 +948,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     row_count=0;
   
   ThreadViewSet
-    *read_view_set,
-    *write_view_set;
+    *image_views,
+    *paint_views;
 
   MagickPassFail
     status=MagickPass;
@@ -970,13 +970,13 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
 
-  read_view_set=AllocateThreadViewSet((Image *) image,exception);
-  write_view_set=AllocateThreadViewSet(paint_image,exception);
-  if ((read_view_set == (ThreadViewSet *) NULL) ||
-      (write_view_set == (ThreadViewSet *) NULL))
+  image_views=AllocateThreadViewSet((Image *) image,exception);
+  paint_views=AllocateThreadViewSet(paint_image,exception);
+  if ((image_views == (ThreadViewSet *) NULL) ||
+      (paint_views == (ThreadViewSet *) NULL))
     {
-      DestroyThreadViewSet(read_view_set);
-      DestroyThreadViewSet(write_view_set);
+      DestroyThreadViewSet(image_views);
+      DestroyThreadViewSet(paint_views);
       DestroyImage(paint_image);
       return (Image *) NULL;
     }
@@ -1011,9 +1011,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(read_view_set,-width/2,y-width/2,image->columns+width,width,
+      p=AcquireThreadViewPixels(image_views,-width/2,y-width/2,image->columns+width,width,
                                 exception);
-      q=SetThreadViewPixels(write_view_set,0,y,paint_image->columns,1,exception);
+      q=SetThreadViewPixels(paint_views,0,y,paint_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
       if (thread_status != MagickFail)
@@ -1071,7 +1071,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
                 }
               *q++=(*s);
             }
-          if (!SyncThreadViewPixels(write_view_set,exception))
+          if (!SyncThreadViewPixels(paint_views,exception))
             thread_status=MagickFail;
         }
 #if defined(_OPENMP)
@@ -1089,8 +1089,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       }
     }
 
-  DestroyThreadViewSet(write_view_set);
-  DestroyThreadViewSet(read_view_set);
+  DestroyThreadViewSet(paint_views);
+  DestroyThreadViewSet(image_views);
   
   paint_image->is_grayscale=image->is_grayscale;
   return(paint_image);

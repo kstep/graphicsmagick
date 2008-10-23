@@ -130,19 +130,19 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       row_count=0;
 
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *threshold_views;
 
     DoublePixelPacket
       zero;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(threshold_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    threshold_views=AllocateThreadViewSet(threshold_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (threshold_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(threshold_views);
         DestroyImage(threshold_image);
         return (Image *) NULL;
       }
@@ -169,9 +169,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         if (thread_status == MagickFail)
           continue;
 
-        p=AcquireThreadViewPixels(read_view_set,-(long) width/2,y-height/2,
+        p=AcquireThreadViewPixels(image_views,-(long) width/2,y-height/2,
                                   image->columns+width,height,exception);
-        q=SetThreadViewPixels(write_view_set,0,y,threshold_image->columns,1,exception);
+        q=SetThreadViewPixels(threshold_views,0,y,threshold_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
 
@@ -215,7 +215,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
                 p++;
                 q++;
               }
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(threshold_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -233,8 +233,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(threshold_views);
+    DestroyThreadViewSet(image_views);
   }
   if (MagickFail == status)
     {
@@ -592,7 +592,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                                          ExceptionInfo *exception)
 {
   ThreadViewSet
-    *view_set;
+    *image_views;
 
   ThreadViewDataSet
     *data_set;
@@ -604,8 +604,8 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
     status=MagickPass;
 
   is_grayscale=image->is_grayscale;
-  view_set=AllocateThreadViewSet(image,exception);
-  if (view_set == (ThreadViewSet *) NULL)
+  image_views=AllocateThreadViewSet(image,exception);
+  if (image_views == (ThreadViewSet *) NULL)
     status=MagickFail;
 
   data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
@@ -666,7 +666,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
             continue;
   
           scanline=AccessThreadViewData(data_set);
-          q=GetThreadViewPixels(view_set,0,y,image->columns,1,exception);
+          q=GetThreadViewPixels(image_views,0,y,image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             thread_status=MagickFail;
 
@@ -687,7 +687,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                 {
                   (void) memcpy(&scanline[i],&q[i],(image->columns-i)*sizeof(PixelPacket));
                   BlurScanline(kernel,width,scanline,q,image->columns);
-                  if (!SyncThreadViewPixels(view_set,exception))
+                  if (!SyncThreadViewPixels(image_views,exception))
                     thread_status=MagickFail;
                 }
             }
@@ -707,7 +707,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
         }
     }
 
-  DestroyThreadViewSet(view_set);
+  DestroyThreadViewSet(image_views);
   DestroyThreadViewDataSet(data_set);
   image->is_grayscale=is_grayscale;
 
@@ -1437,8 +1437,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       row_count=0;
 
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *enhance_views;
 
     DoublePixelPacket
       zero;
@@ -1446,13 +1446,13 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     MagickPassFail
       status=MagickPass;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(enhance_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    enhance_views=AllocateThreadViewSet(enhance_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (enhance_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(enhance_views);
         DestroyImage(enhance_image);
         return (Image *) NULL;
       }
@@ -1482,8 +1482,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         /*
           Read another scan line.
         */
-        p=AcquireThreadViewPixels(read_view_set,0,y-2,image->columns,5,exception);
-        q=SetThreadViewPixels(write_view_set,0,y,enhance_image->columns,1,exception);
+        p=AcquireThreadViewPixels(image_views,0,y-2,image->columns,5,exception);
+        q=SetThreadViewPixels(enhance_views,0,y,enhance_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -1538,7 +1538,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             p++;
             *q++=(*p++);
             *q++=(*p++);
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(enhance_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -1555,8 +1555,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(enhance_views);
+    DestroyThreadViewSet(image_views);
   }
   enhance_image->is_grayscale=image->is_grayscale;
   return(enhance_image);
@@ -2295,8 +2295,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       row_count=0;
     
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *blur_views;
 
     long
       y;
@@ -2307,13 +2307,13 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     MagickPassFail
       status;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(blur_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    blur_views=AllocateThreadViewSet(blur_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (blur_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(blur_views);
         MagickFreeMemory(kernel);
         MagickFreeMemory(offsets);
         DestroyImage(blur_image);
@@ -2340,7 +2340,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         if (thread_status == MagickFail)
           continue;
 
-        q=SetThreadViewPixels(write_view_set,0,y,blur_image->columns,1,exception);
+        q=SetThreadViewPixels(blur_views,0,y,blur_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -2365,7 +2365,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
                     u=(long) x+offsets[i].x;
                     v=(long) y+offsets[i].y;
-                    p=AcquireThreadViewPixels(read_view_set,u,v,1,1,exception);
+                    p=AcquireThreadViewPixels(image_views,u,v,1,1,exception);
                     if (p == (const PixelPacket *) NULL)
                       {
                         thread_status=MagickFail;
@@ -2384,7 +2384,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
                 q->opacity=(Quantum) aggregate.opacity;
                 q++;
               }
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(blur_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -2401,8 +2401,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(blur_views);
+    DestroyThreadViewSet(image_views);
   }
   MagickFreeMemory(kernel);
   MagickFreeMemory(offsets);
@@ -3216,9 +3216,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=(double) MaxRGB*sin(elevation);
+  light.x=(double) MaxRGBDouble*cos(azimuth)*cos(elevation);
+  light.y=(double) MaxRGBDouble*sin(azimuth)*cos(elevation);
+  light.z=(double) MaxRGBDouble*sin(elevation);
   /*
     Shade image.
   */
@@ -3227,16 +3227,16 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       row_count=0;
     
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *shade_views;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(shade_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    shade_views=AllocateThreadViewSet(shade_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (shade_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(shade_views);
         DestroyImage(shade_image);
         return (Image *) NULL;
       }
@@ -3268,10 +3268,10 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         if (thread_status == MagickFail)
           continue;
 
-        normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
+        normal.z=2.0*MaxRGBDouble;  /* constant Z of surface normal */
 
-        p=AcquireThreadViewPixels(read_view_set,-1,y-1,image->columns+2,3,exception);
-        q=SetThreadViewPixels(write_view_set,0,y,shade_image->columns,1,exception);
+        p=AcquireThreadViewPixels(image_views,-1,y-1,image->columns+2,3,exception);
+        q=SetThreadViewPixels(shade_views,0,y,shade_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         /*
@@ -3320,9 +3320,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
                   }
                 else
                   {
-                    q->red=(Quantum) ((shade*s1->red)/MaxRGB+0.5);
-                    q->green=(Quantum) ((shade*s1->green)/MaxRGB+0.5);
-                    q->blue=(Quantum) ((shade*s1->blue)/MaxRGB+0.5);
+                    q->red=(Quantum) ((shade*s1->red)/MaxRGBDouble+0.5);
+                    q->green=(Quantum) ((shade*s1->green)/MaxRGBDouble+0.5);
+                    q->blue=(Quantum) ((shade*s1->blue)/MaxRGBDouble+0.5);
                   }
                 q->opacity=s1->opacity;
                 s0++;
@@ -3330,7 +3330,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
                 s2++;
                 q++;
               }
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(shade_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -3347,8 +3347,8 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(shade_views);
+    DestroyThreadViewSet(image_views);
   }
   shade_image->is_grayscale=image->is_grayscale;
   if (gray)
@@ -3571,8 +3571,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       row_count=0;
 
     ThreadViewSet
-      *read_view_set,
-      *write_view_set;
+      *image_views,
+      *spread_views;
 
     long
       y;
@@ -3580,13 +3580,13 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     MagickPassFail
       status=MagickPass;
 
-    read_view_set=AllocateThreadViewSet((Image *) image,exception);
-    write_view_set=AllocateThreadViewSet(spread_image,exception);
-    if ((read_view_set == (ThreadViewSet *) NULL) ||
-        (write_view_set == (ThreadViewSet *) NULL))
+    image_views=AllocateThreadViewSet((Image *) image,exception);
+    spread_views=AllocateThreadViewSet(spread_image,exception);
+    if ((image_views == (ThreadViewSet *) NULL) ||
+        (spread_views == (ThreadViewSet *) NULL))
       {
-        DestroyThreadViewSet(read_view_set);
-        DestroyThreadViewSet(write_view_set);
+        DestroyThreadViewSet(image_views);
+        DestroyThreadViewSet(spread_views);
         DestroyImage(spread_image);
         return (Image *) NULL;
       }
@@ -3624,7 +3624,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
           continue;
 
         offsets_index=(y*image->columns) % OFFSETS_ENTRIES;
-        q=SetThreadViewPixels(write_view_set,0,y,spread_image->columns,1,exception);
+        q=SetThreadViewPixels(spread_views,0,y,spread_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (radius > (unsigned int) y)
@@ -3637,7 +3637,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         else
           y_max=y+radius;
 
-        neighbors=AcquireThreadViewPixels(read_view_set,0,y_min,image->columns,y_max-y_min,exception);
+        neighbors=AcquireThreadViewPixels(image_views,0,y_min,image->columns,y_max-y_min,exception);
         if (neighbors == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -3661,7 +3661,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
                 *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));
                 q++;
               }
-            if (!SyncThreadViewPixels(write_view_set,exception))
+            if (!SyncThreadViewPixels(spread_views,exception))
               thread_status=MagickFail;
           }
 #if defined(_OPENMP)
@@ -3678,8 +3678,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(write_view_set);
-    DestroyThreadViewSet(read_view_set);
+    DestroyThreadViewSet(spread_views);
+    DestroyThreadViewSet(image_views);
   }
   MagickFreeMemory(offsets);
   spread_image->is_grayscale=image->is_grayscale;
