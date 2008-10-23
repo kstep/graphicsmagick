@@ -718,19 +718,66 @@ OpaqueImage(Image *image,const PixelPacket target,const PixelPacket fill)
 %
 %
 */
-MagickExport MagickPassFail TransparentImage(Image *image,
-  const PixelPacket target,const unsigned int opacity)
+typedef struct _TransparentImageOptions_t
+{
+  double fuzz;
+  PixelPacket target;
+  unsigned int opacity;
+} TransparentImageOptions_t;
+static MagickPassFail
+TransparentImageCallBack(void *mutable_data,         /* User provided mutable data */
+                         const void *immutable_data, /* User provided immutable data */
+                         Image *image,               /* Modify image */
+                         PixelPacket *pixels,        /* Pixel row */
+                         IndexPacket *indexes,       /* Pixel row indexes */
+                         const long npixels,         /* Number of pixels in row */
+                         ExceptionInfo *exception)   /* Exception report */
+{
+  const TransparentImageOptions_t
+    options = *((const TransparentImageOptions_t *) immutable_data);
+
+  const MagickBool
+    clear_matte = (!image->matte);
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  if (options.fuzz == 0.0)
+    {
+      for (i=0; i < npixels; i++)
+        {
+          if (ColorMatch(&pixels[i],&options.target))
+            pixels[i].opacity=options.opacity;
+          else if (clear_matte)
+            pixels[i].opacity=OpaqueOpacity;
+        }
+    }
+  else
+    {
+      for (i=0; i < npixels; i++)
+        {
+          if (FuzzyColorMatch(&pixels[i],&options.target,options.fuzz))
+            pixels[i].opacity=options.opacity;
+          else if (clear_matte)
+            pixels[i].opacity=OpaqueOpacity;
+        }
+    }
+
+  return MagickPass;
+}
+MagickExport MagickPassFail
+TransparentImage(Image *image,const PixelPacket target,
+                 const unsigned int opacity)
 {
 #define TransparentImageText  "[%s] Setting transparent color in image...  "
 
-  long
-    y;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
+  TransparentImageOptions_t
+    options;
 
   MagickPassFail
     status=MagickPass;
@@ -740,47 +787,25 @@ MagickExport MagickPassFail TransparentImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
-  /* FIXME: OpenMP */
-  for (y=0; y < (long) image->rows; y++)
+  options.fuzz=image->fuzz;
+  options.opacity=opacity;
+  options.target=target;
+  if (image->storage_class == PseudoClass)
     {
-      q=GetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        {
-          status=MagickFail;
-          break;
-        }
-      if (image->fuzz == 0.0)
-        {
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              if (ColorMatch(q,&target))
-                q->opacity=opacity;
-              q++;
-            }
-        }
-      else
-        {
-          for (x=(long) image->columns; x > 0; x--)
-            {
-              if (FuzzyColorMatch(q,&target,image->fuzz))
-                q->opacity=opacity;
-              q++;
-            }
-        }
-      if (!SyncImagePixels(image))
-        {
-          status=MagickFail;
-          break;
-        }
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                    TransparentImageText,image->filename))
-          {
-            status=MagickFail;
-            break;
-          }
+      assert(image->colormap != (PixelPacket *) NULL);
+      (void) TransparentImageCallBack(0,&options,image,image->colormap,
+                                 (IndexPacket *) NULL,image->colors,
+                                 &image->exception);
+      status &= SyncImage(image);
     }
+  else
+    {
+      status=PixelIterateMonoModify(TransparentImageCallBack,NULL,
+                                    TransparentImageText,NULL,&options,0,0,
+                                    image->columns,image->rows,
+                                    image,&image->exception);
+    }
+  image->matte=MagickTrue;
+
   return(status);
 }

@@ -138,6 +138,7 @@ Performance Improvements:
     - Swirl (-swirl)
     - Threshold channel (-threshold, -operator threshold)
     - Threshold image (-threshold)
+    - Transparent (-transparent)
     - Trim image (-trim)
     - UnsharpMaskImage (-unsharp)
     - Wave (-wave)
