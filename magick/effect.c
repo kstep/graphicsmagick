@@ -3775,7 +3775,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 #if defined(_OPENMP)
 #  pragma omp parallel for schedule(static,64) shared(row_count, status)
 #endif
-    for (y=0; (unsigned long) y < image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
       {
         register unsigned long
           x;
