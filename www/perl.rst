@@ -241,18 +241,27 @@ method Write() to write to standard out::
   binmode STDOUT;
   $image->Write('png:-');
 
+To read an image from a disk file, use::
+  $image = Graphics::Magick->new;
+  $filename = 'test.gif';
+  $status = $image->Read ($filename);
+
+and to write the image back to the disk file, use::
+
+  $status = $image->Write($filename);
+
 To read an image in the GIF format from a PERL filehandle, use::
 
   $image = Graphics::Magick->new;
   open(IMAGE, 'image.gif');
-  $image->Read(file=>\*IMAGE);
+  $status = $image->Read(file=>\*IMAGE);
   close(IMAGE);
 
 To write an image in the PNG format to a PERL filehandle, use::
 
   $filename = "image.png";
   open(IMAGE, ">$filename");
-  $image->Write(file=>\*IMAGE, filename=>$filename);
+  $status = $image->Write(file=>\*IMAGE, filename=>$filename);
   close(IMAGE);
 
 If %0Nd appears in the filename, it is interpreted as a printf format

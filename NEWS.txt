@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 20, 2008
+This file was last updated on October 22, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -96,10 +96,14 @@ Performance Improvements:
     - Composition ('composite' command)
     - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
     - Contrast adjust (-contrast)
+    - Crop (-crop)
     - CycleColormap (-cycle)
     - Depth setting (-depth, -operator depth)
     - Enhance (-enhance)
     - Equalize (-equalize)
+    - Flatten (-flatten)
+    - Flip (-flip)
+    - Flop (-flop)
     - Gamma adjust (-gamma, -operator gamma)
     - Gradient
     - Implode (-implode)
@@ -109,6 +113,7 @@ Performance Improvements:
     - Minify image (-minify)
     - Modulate image (-modulate)
     - Morph image (-morph)
+    - Mosiac (-mosaic)
     - Motion blur (-motion-blur)
     - Negate image (-negate)
     - Noise filter (-noise)
@@ -122,11 +127,13 @@ Performance Improvements:
     - Rotate image (-rotate)
     - Shade image (-shade)
     - Shear image (-shear)
+    - Shave (-shave)
     - Solarize image (-solarize)
     - Spread image (-spread)
     - Statistics computation (identify -verbose)
     - Swirl (-swirl)
     - Threshold channel (-threshold, -operator threshold)
+    - Threshold image (-threshold)
     - Trim image (-trim)
     - UnsharpMaskImage (-unsharp)
     - Wave (-wave)

@@ -828,8 +828,10 @@ static MagickPassFail load_level (Image* image,
             tiles.
           */
           handler=SetMonitorHandler((MonitorHandler) NULL);
-          (void) CompositeImage(inLayerInfo->image,CopyCompositeOp,tile_image,
-                                destLeft * TILE_WIDTH,destTop*TILE_HEIGHT);
+          (void) CompositeImageRegion(CopyCompositeOp,NULL,tile_image->columns,
+                                      tile_image->rows,tile_image,0,0,
+                                      inLayerInfo->image,destLeft * TILE_WIDTH,
+                                      destTop*TILE_HEIGHT,&inLayerInfo->image->exception);
           (void) SetMonitorHandler(handler);
         }
       DestroyImage(tile_image);

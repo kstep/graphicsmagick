@@ -51,10 +51,11 @@
 /*
   Structure to pass any necessary options to composition callbacks.
 */
-typedef struct _CompositePixelsOptions_t
+#if 0
+typedef struct _CompositeOptions_t
 {
   /* Composition operator */
-  CompositeOperator compose;
+  /* CompositeOperator compose; */
 
   /* ModulateComposite */
   double            percent_brightness;
@@ -62,7 +63,8 @@ typedef struct _CompositePixelsOptions_t
   /* ThresholdComposite */
   double            amount;
   double            threshold;
-} CompositePixelsOptions_t;
+} CompositeOptions_t;
+#endif
 
 
 /*
@@ -1161,8 +1163,8 @@ ModulateCompositePixels(void *mutable_data,                /* User provided muta
                         ExceptionInfo *exception           /* Exception report */
                         )
 {
-  const CompositePixelsOptions_t
-    *options = (const CompositePixelsOptions_t *) immutable_data;
+  const CompositeOptions_t
+    *options = (const CompositeOptions_t *) immutable_data;
 
   const double
     percent_brightness = options->percent_brightness;
@@ -1229,8 +1231,8 @@ ThresholdCompositePixels(void *mutable_data,                /* User provided mut
                          ExceptionInfo *exception           /* Exception report */
                          )
 {
-  const CompositePixelsOptions_t
-    *options = (const CompositePixelsOptions_t *) immutable_data;
+  const CompositeOptions_t
+    *options = (const CompositeOptions_t *) immutable_data;
 
   const double
     amount = options->amount,
@@ -1750,8 +1752,6 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 
   return MagickPass;
 }
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1764,8 +1764,8 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompositeImage() returns the second image (composite_image) composited
-%  onto the first (canvas_image) at the specified offsets.
+%  CompositeImage() composites the second image (composite_image) onto the
+%  first (canvas_image) at the specified offsets.
 %
 %  The format of the CompositeImage method is:
 %
@@ -1778,19 +1778,18 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 %    o canvas_image: The image to be updated.
 %
 %    o compose: This operator affects how the composite is applied to
-%      the image.  The default is Over.  Choose from one of these
-%      operators: AddCompositeOp, AtopCompositeOp, BumpmapCompositeOp,
-%      ClearCompositeOp, ColorizeCompositeOp, CopyBlackCompositeOp,
-%      CopyBlueCompositeOp, CopyCompositeOp, CopyCyanCompositeOp,
-%      CopyGreenCompositeOp, CopyMagentaCompositeOp, CopyOpacityCompositeOp,
-%      CopyRedCompositeOp, CopyYellowCompositeOp, DarkenCompositeOp,
-%      DifferenceCompositeOp, DisplaceCompositeOp, DissolveCompositeOp,
-%      DivideCompositeOp, HueCompositeOp, InCompositeOp, LightenCompositeOp,
-%      LuminizeCompositeOp, MinusCompositeOp, ModulateCompositeOp,
-%      MultiplyCompositeOp, NoCompositeOp, OutCompositeOp,
-%      OverlayCompositeOp, PlusCompositeOp, SaturateCompositeOp,
-%      ScreenCompositeOp, SubtractCompositeOp, ThresholdCompositeOp,
-%      XorCompositeOp.
+%      the image.  Choose from one of these operators: AddCompositeOp,
+%      AtopCompositeOp, BumpmapCompositeOp, ClearCompositeOp,
+%      ColorizeCompositeOp, CopyBlackCompositeOp, CopyBlueCompositeOp,
+%      CopyCompositeOp, CopyCyanCompositeOp,CopyGreenCompositeOp,
+%      CopyMagentaCompositeOp, CopyOpacityCompositeOp, CopyRedCompositeOp,
+%      CopyYellowCompositeOp, DarkenCompositeOp, DifferenceCompositeOp,
+%      DisplaceCompositeOp, DissolveCompositeOp, DivideCompositeOp,
+%      HueCompositeOp, InCompositeOp, LightenCompositeOp, LuminizeCompositeOp,
+%      MinusCompositeOp, ModulateCompositeOp, MultiplyCompositeOp,
+%      NoCompositeOp, OutCompositeOp, OverlayCompositeOp, PlusCompositeOp,
+%      SaturateCompositeOp, ScreenCompositeOp, SubtractCompositeOp,
+%      ThresholdCompositeOp, XorCompositeOp.
 %
 %    o composite_image: The composite image.
 %
@@ -1800,14 +1799,148 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 %
 %
 */
+static PixelIteratorDualModifyCallback
+GetCompositionPixelIteratorCallback(const CompositeOperator compose,
+                                    MagickBool *clear)
+{
+  PixelIteratorDualModifyCallback
+    call_back = (PixelIteratorDualModifyCallback) NULL;
 
+  MagickBool
+    clear_flag=MagickFalse;
+
+  assert(clear != (MagickBool *) NULL);
+
+  switch (compose)
+    {
+    case UndefinedCompositeOp:
+      /* Does nothing */
+      break;
+    case OverCompositeOp:
+      call_back=OverCompositePixels;
+      break;
+    case InCompositeOp:
+      call_back=InCompositePixels;
+      break;
+    case OutCompositeOp:
+      call_back=OutCompositePixels;
+      break;
+    case AtopCompositeOp:
+      call_back=AtopCompositePixels;
+      break;
+    case XorCompositeOp:
+      call_back=XorCompositePixels;
+      break;
+    case PlusCompositeOp:
+      call_back=PlusCompositePixels;
+      break;
+    case MinusCompositeOp:
+      call_back=MinusCompositePixels;
+      break;
+    case AddCompositeOp:
+      call_back=AddCompositePixels;
+      break;
+    case SubtractCompositeOp:
+      call_back=SubtractCompositePixels;
+      break;
+    case DifferenceCompositeOp:
+      call_back=DifferenceCompositePixels;
+      break;
+    case MultiplyCompositeOp:
+      call_back=MultiplyCompositePixels;
+      break;
+    case BumpmapCompositeOp:
+      call_back=BumpmapCompositePixels;
+      break;
+    case CopyCompositeOp:
+      call_back=CopyCompositePixels;
+      clear_flag=MagickTrue;
+      break;
+    case CopyRedCompositeOp:
+      call_back=CopyRedCompositePixels;
+      break;
+    case CopyGreenCompositeOp:
+      call_back=CopyGreenCompositePixels;
+      break;
+    case CopyBlueCompositeOp:
+      call_back=CopyBlueCompositePixels;
+      break;
+    case CopyOpacityCompositeOp:
+      call_back=CopyOpacityCompositePixels;
+      break;
+    case ClearCompositeOp:
+      call_back=ClearCompositePixels;
+      clear_flag=MagickTrue;
+      break;
+    case DissolveCompositeOp:
+      call_back=DissolveCompositePixels;
+      break;
+    case DisplaceCompositeOp:
+      call_back=CopyCompositePixels;
+      break;
+    case ModulateCompositeOp:
+      call_back=ModulateCompositePixels;
+      break;
+    case ThresholdCompositeOp:
+      call_back=ThresholdCompositePixels;
+      break;
+    case NoCompositeOp:
+      break;
+    case DarkenCompositeOp:
+      call_back=DarkenCompositePixels;
+      break;
+    case LightenCompositeOp:
+      call_back=LightenCompositePixels;
+      break;
+    case HueCompositeOp:
+      call_back=HueCompositePixels;
+      break;
+    case SaturateCompositeOp:
+      call_back=SaturateCompositePixels;
+      break;
+    case ColorizeCompositeOp:
+      call_back=ColorizeCompositePixels;
+      break;
+    case LuminizeCompositeOp:
+      call_back=LuminizeCompositePixels;
+      break;
+    case ScreenCompositeOp:
+      /* Not implemented (Photoshop & PDF) */
+      break;
+    case OverlayCompositeOp:
+      /* Not implemented (Photoshop & PDF) */
+      break;
+    case CopyCyanCompositeOp:
+      call_back=CopyRedCompositePixels;
+      break;
+    case CopyMagentaCompositeOp:
+      call_back=CopyGreenCompositePixels;
+      break;
+    case CopyYellowCompositeOp:
+      call_back=CopyBlueCompositePixels;
+      break;
+    case CopyBlackCompositeOp:
+      call_back=CopyBlackCompositePixels;
+      break;
+    case DivideCompositeOp:
+      call_back=DivideCompositePixels;
+      break;
+    default:
+      {
+        break;
+      }
+    }
+
+  *clear=clear_flag;
+  return call_back;
+}
 MagickExport MagickPassFail
 CompositeImage(Image *canvas_image,
                const CompositeOperator compose,
-               const Image *composite_image,
+               const Image *update_image,
                const long x_offset,const long y_offset)
 {
-  CompositePixelsOptions_t
+  CompositeOptions_t
     options;
 
   Image
@@ -1839,15 +1972,15 @@ CompositeImage(Image *canvas_image,
   */
   assert(canvas_image != (Image *) NULL);
   assert(canvas_image->signature == MagickSignature);
-  assert(composite_image != (Image *) NULL);
-  assert(composite_image->signature == MagickSignature);
+  assert(update_image != (Image *) NULL);
+  assert(update_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(MagickPass);
 
   /*
     Clone composite image so that we can modify it if need be.
   */
-  change_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
+  change_image=CloneImage(update_image,0,0,True,&canvas_image->exception);
   if (change_image == (Image *) NULL)
     return(MagickFail);
 
@@ -1882,7 +2015,7 @@ CompositeImage(Image *canvas_image,
 
         horizontal_scale=20.0;
         vertical_scale=20.0;
-        if (composite_image->geometry != (char *) NULL)
+        if (update_image->geometry != (char *) NULL)
           {
             int
               count;
@@ -1890,7 +2023,7 @@ CompositeImage(Image *canvas_image,
             /*
               Determine the horizontal and vertical displacement scale.
             */
-            count=GetMagickDimension(composite_image->geometry,
+            count=GetMagickDimension(update_image->geometry,
                                      &horizontal_scale,&vertical_scale);
             if (count == 1)
               vertical_scale=horizontal_scale;
@@ -1898,11 +2031,11 @@ CompositeImage(Image *canvas_image,
         /*
           Shift image pixels as defined by a displacement map.
         */
-        for (y=0; y < (long) composite_image->rows; y++)
+        for (y=0; y < (long) update_image->rows; y++)
           {
             if (((y+y_offset) < 0) || ((y+y_offset) >= (long) canvas_image->rows))
               continue;
-            p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
+            p=AcquireImagePixels(update_image,0,y,update_image->columns,1,
                                  &canvas_image->exception);
             q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
             r=GetImagePixels(change_image,0,y,change_image->columns,1);
@@ -1913,7 +2046,7 @@ CompositeImage(Image *canvas_image,
                 break;
               }
             q+=x_offset;
-            for (x=0; x < (long) composite_image->columns; x++)
+            for (x=0; x < (long) update_image->columns; x++)
               {
                 if (((x_offset+x) < 0) || ((x_offset+x) >= (long) canvas_image->columns))
                   {
@@ -1924,7 +2057,7 @@ CompositeImage(Image *canvas_image,
                 x_displace=(horizontal_scale*(PixelIntensityToQuantum(p)-
                                               (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
                 y_displace=x_displace;
-                if (composite_image->matte)
+                if (update_image->matte)
                   y_displace=(vertical_scale*(p->opacity-
                                               (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
                 *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
@@ -1945,7 +2078,7 @@ CompositeImage(Image *canvas_image,
       {
         percent_saturation=50.0;
         percent_brightness=50.0;
-        if (composite_image->geometry != (char *) NULL)
+        if (update_image->geometry != (char *) NULL)
           {
             int
               count;
@@ -1953,7 +2086,7 @@ CompositeImage(Image *canvas_image,
             /*
               Determine the brightness and saturation scale.
             */
-            count=GetMagickDimension(composite_image->geometry,
+            count=GetMagickDimension(update_image->geometry,
                                      &percent_brightness,&percent_saturation);
             if (count == 1)
               percent_saturation=percent_brightness;
@@ -1969,8 +2102,8 @@ CompositeImage(Image *canvas_image,
         */
         amount=0.5;
         threshold=0.05;
-        if (composite_image->geometry != (char *) NULL)
-          (void) GetMagickDimension(composite_image->geometry,&amount,&threshold);
+        if (update_image->geometry != (char *) NULL)
+          (void) GetMagickDimension(update_image->geometry,&amount,&threshold);
         threshold*=MaxRGB;
         break;
       }
@@ -2025,7 +2158,6 @@ CompositeImage(Image *canvas_image,
   /*
     Composite image.
   */
-  options.compose=compose;
   options.percent_brightness=percent_brightness;
   options.amount=amount;
   options.threshold=threshold;
@@ -2080,150 +2212,60 @@ CompositeImage(Image *canvas_image,
         PixelIteratorDualModifyCallback
           call_back = (PixelIteratorDualModifyCallback) NULL;
 
+        MagickBool
+          clear_pixels = MagickFalse;
+
         if ((canvas_x + change_image->columns) > canvas_image->columns)
           columns -= ((canvas_x + change_image->columns) - canvas_image->columns);
         if ((canvas_y + change_image->rows) > canvas_image->rows)
           rows -= ((canvas_y + change_image->rows) - canvas_image->rows);
 
-        switch (compose)
-          {
-          case UndefinedCompositeOp:
-            /* Does nothing */
-            break;
-          case OverCompositeOp:
-            call_back=OverCompositePixels;
-            break;
-          case InCompositeOp:
-            call_back=InCompositePixels;
-            break;
-          case OutCompositeOp:
-            call_back=OutCompositePixels;
-            break;
-          case AtopCompositeOp:
-            call_back=AtopCompositePixels;
-            break;
-          case XorCompositeOp:
-            call_back=XorCompositePixels;
-            break;
-          case PlusCompositeOp:
-            call_back=PlusCompositePixels;
-            break;
-          case MinusCompositeOp:
-            call_back=MinusCompositePixels;
-            break;
-          case AddCompositeOp:
-            call_back=AddCompositePixels;
-            break;
-          case SubtractCompositeOp:
-            call_back=SubtractCompositePixels;
-            break;
-          case DifferenceCompositeOp:
-            call_back=DifferenceCompositePixels;
-            break;
-          case MultiplyCompositeOp:
-            call_back=MultiplyCompositePixels;
-            break;
-          case BumpmapCompositeOp:
-            call_back=BumpmapCompositePixels;
-            break;
-          case CopyCompositeOp:
-            call_back=CopyCompositePixels;
-            break;
-          case CopyRedCompositeOp:
-            call_back=CopyRedCompositePixels;
-            break;
-          case CopyGreenCompositeOp:
-            call_back=CopyGreenCompositePixels;
-            break;
-          case CopyBlueCompositeOp:
-            call_back=CopyBlueCompositePixels;
-            break;
-          case CopyOpacityCompositeOp:
-            call_back=CopyOpacityCompositePixels;
-            break;
-          case ClearCompositeOp:
-            call_back=ClearCompositePixels;
-            break;
-          case DissolveCompositeOp:
-            call_back=DissolveCompositePixels;
-            break;
-          case DisplaceCompositeOp:
-            call_back=CopyCompositePixels;
-            break;
-          case ModulateCompositeOp:
-            call_back=ModulateCompositePixels;
-            break;
-          case ThresholdCompositeOp:
-            call_back=ThresholdCompositePixels;
-            break;
-          case NoCompositeOp:
-            break;
-          case DarkenCompositeOp:
-            call_back=DarkenCompositePixels;
-            break;
-          case LightenCompositeOp:
-            call_back=LightenCompositePixels;
-            break;
-          case HueCompositeOp:
-            call_back=HueCompositePixels;
-            break;
-          case SaturateCompositeOp:
-            call_back=SaturateCompositePixels;
-            break;
-          case ColorizeCompositeOp:
-            call_back=ColorizeCompositePixels;
-            break;
-          case LuminizeCompositeOp:
-            call_back=LuminizeCompositePixels;
-            break;
-          case ScreenCompositeOp:
-            /* Not implemented (Photoshop & PDF) */
-            break;
-          case OverlayCompositeOp:
-            /* Not implemented (Photoshop & PDF) */
-            break;
-          case CopyCyanCompositeOp:
-            call_back=CopyRedCompositePixels;
-            break;
-          case CopyMagentaCompositeOp:
-            call_back=CopyGreenCompositePixels;
-            break;
-          case CopyYellowCompositeOp:
-            call_back=CopyBlueCompositePixels;
-            break;
-          case CopyBlackCompositeOp:
-            call_back=CopyBlackCompositePixels;
-            break;
-          case DivideCompositeOp:
-            call_back=DivideCompositePixels;
-            break;
-          default:
-            {
-              break;
-            }
-          }
+        call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
         if (call_back != (PixelIteratorDualModifyCallback) NULL)
           {
-            char
-              description[MaxTextExtent];
+            const char
+              *description = "[%s] Composite image pixels ...";
 
-            FormatString(description,"[%%s] Composite %s image pixels ...",
-                         CompositeOperatorToString(compose));
-                         
-            status=PixelIterateDualModify(call_back,              /* Callback */
-                                          NULL,
-                                          description,            /* Description */
-                                          NULL,
-                                          &options,               /* Options */
-                                          columns,                /* Number of columns */
-                                          rows,                   /* Number of rows */
-                                          change_image,           /* Composite image */
-                                          composite_x,            /* Composite x offset */
-                                          composite_y,            /* Composite y offset */
-                                          canvas_image,           /* Canvas image */
-                                          canvas_x,               /* Canvas x offset */
-                                          canvas_y,               /* Canvas y offset */
-                                          &canvas_image->exception); /* Exception */
+            if (clear_pixels)
+              {
+                /*
+                  We don't care about existing pixels in the region.
+                */
+                status=PixelIterateDualNew(call_back,              /* Callback */
+                                           NULL,
+                                           description,            /* Description */
+                                           NULL,
+                                           &options,               /* Options */
+                                           columns,                /* Number of columns */
+                                           rows,                   /* Number of rows */
+                                           change_image,           /* Composite image */
+                                           composite_x,            /* Composite x offset */
+                                           composite_y,            /* Composite y offset */
+                                           canvas_image,           /* Canvas image */
+                                           canvas_x,               /* Canvas x offset */
+                                           canvas_y,               /* Canvas y offset */
+                                           &canvas_image->exception); /* Exception */
+              }
+            else
+              {
+                /*
+                  Blend with existing pixels in the region.
+                */
+                status=PixelIterateDualModify(call_back,              /* Callback */
+                                              NULL,
+                                              description,            /* Description */
+                                              NULL,
+                                              &options,               /* Options */
+                                              columns,                /* Number of columns */
+                                              rows,                   /* Number of rows */
+                                              change_image,           /* Composite image */
+                                              composite_x,            /* Composite x offset */
+                                              composite_y,            /* Composite y offset */
+                                              canvas_image,           /* Canvas image */
+                                              canvas_x,               /* Canvas x offset */
+                                              canvas_y,               /* Canvas y offset */
+                                              &canvas_image->exception); /* Exception */
+              }
           }
         else
           {
@@ -2237,4 +2279,156 @@ CompositeImage(Image *canvas_image,
 
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o m p o s i t e I m a g e R e g i o n                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CompositeImageRegion() composites the update image on the canvas image
+%  using a specified composition operation.  The offset and dimensions of
+%  the region in update image to use are specified.  The offset to
+%  composite on the canvas image is specified.  These parameters are
+%  adjusted as needed so that only the portions which overlap (according
+%  to the user's specification and the image sizes) are actually composited.
+%  If there is no overlap at all, then no work is performed and MagickFail
+%  is returned.
+%
+%  The format of the CompositeImage method is:
+%
+%      MagickPassFail CompositeImageRegion(const CompositeOperator compose,
+%                                          const CompositeOptions_t *options,
+%                                          const unsigned long columns,
+%                                          const unsigned long rows,
+%                                          const Image *update_image,
+%                                          const long update_x,
+%                                          const long update_y,
+%                                          Image *canvas_image,
+%                                          const long canvas_x,
+%                                          const long canvas_y,
+%                                          ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o compose: This operator affects how the composite is applied to
+%      the image.  Choose from one of these operators: AddCompositeOp,
+%      AtopCompositeOp, BumpmapCompositeOp, ClearCompositeOp,
+%      ColorizeCompositeOp, CopyBlackCompositeOp, CopyBlueCompositeOp,
+%      CopyCompositeOp, CopyCyanCompositeOp,CopyGreenCompositeOp,
+%      CopyMagentaCompositeOp, CopyOpacityCompositeOp, CopyRedCompositeOp,
+%      CopyYellowCompositeOp, DarkenCompositeOp, DifferenceCompositeOp,
+%      DisplaceCompositeOp, DissolveCompositeOp, DivideCompositeOp,
+%      HueCompositeOp, InCompositeOp, LightenCompositeOp, LuminizeCompositeOp,
+%      MinusCompositeOp, ModulateCompositeOp, MultiplyCompositeOp,
+%      NoCompositeOp, OutCompositeOp, OverlayCompositeOp, PlusCompositeOp,
+%      SaturateCompositeOp, ScreenCompositeOp, SubtractCompositeOp,
+%      ThresholdCompositeOp, XorCompositeOp.
+%
+%    o options: This optional structure passes options required by
+%        ModulateComposite and ThresholdComposite and NULL may be
+%        passed if it is not otherwise needed.
+%
+%    o columns: Width of update region.
+%
+%    o rows: Height of update region.
+%
+%    o update_image: Image to composite on canvas image.
+%
+%    o update_x: X ordinate of region to composite.
+%
+%    o update_y: Y ordinate of region to composite.
+%
+%    o canvas_image: Image to update.
+%
+%    o canvas_x: X ordinate of canvas region to composite on.
+%
+%    o canvas_y: Y ordinate of canvas region to composite on.
+%
+%    o exception: Details of any error are reported here.
+%
+*/
+MagickExport MagickPassFail
+CompositeImageRegion(const CompositeOperator compose,
+                     const CompositeOptions_t *options,
+                     const unsigned long columns,
+                     const unsigned long rows,
+                     const Image *update_image,
+                     const long update_x,
+                     const long update_y,
+                     Image *canvas_image,
+                     const long canvas_x,
+                     const long canvas_y,
+                     ExceptionInfo *exception)
+{
+  PixelIteratorDualModifyCallback
+    call_back = (PixelIteratorDualModifyCallback) NULL;
 
+  MagickBool
+    clear_pixels = MagickFalse;
+
+  MagickPassFail
+    status=MagickPass;
+
+  if (compose == NoCompositeOp)
+    return(MagickPass);
+
+  call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
+  if (call_back != (PixelIteratorDualModifyCallback) NULL)
+    {
+      const char
+        *description = "[%s] Composite image pixels ...";
+
+      if (clear_pixels)
+        {
+          /*
+            We don't care about existing pixels in the region.
+          */
+          status=PixelIterateDualNew(call_back,              /* Callback */
+                                     NULL,
+                                     description,            /* Description */
+                                     NULL,
+                                     options,                /* Options */
+                                     columns,                /* Number of columns */
+                                     rows,                   /* Number of rows */
+                                     update_image,           /* Composite image */
+                                     update_x,               /* Composite x offset */
+                                     update_y,               /* Composite y offset */
+                                     canvas_image,           /* Canvas image */
+                                     canvas_x,               /* Canvas x offset */
+                                     canvas_y,               /* Canvas y offset */
+                                     exception);             /* Exception */
+        }
+      else
+        {
+          /*
+            Blend with existing pixels in the region.
+          */
+          status=PixelIterateDualModify(call_back,              /* Callback */
+                                        NULL,
+                                        description,            /* Description */
+                                        NULL,
+                                        options,                /* Options */
+                                        columns,                /* Number of columns */
+                                        rows,                   /* Number of rows */
+                                        update_image,           /* Composite image */
+                                        update_x,               /* Composite x offset */
+                                        update_y,               /* Composite y offset */
+                                        canvas_image,           /* Canvas image */
+                                        canvas_x,               /* Canvas x offset */
+                                        canvas_y,               /* Canvas y offset */
+                                        exception);             /* Exception */
+        }
+    }
+  else
+    {
+      status=MagickFail;
+    }
+
+  return status;
+}

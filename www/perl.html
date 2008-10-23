@@ -303,18 +303,28 @@ method Write() to write to standard out:</p>
 binmode STDOUT;
 $image-&gt;Write('png:-');
 </pre>
+<dl class="docutils">
+<dt>To read an image from a disk file, use::</dt>
+<dd>$image = Graphics::Magick-&gt;new;
+$filename = 'test.gif';
+$status = $image-&gt;Read ($filename);</dd>
+</dl>
+<p>and to write the image back to the disk file, use:</p>
+<pre class="literal-block">
+$status = $image-&gt;Write($filename);
+</pre>
 <p>To read an image in the GIF format from a PERL filehandle, use:</p>
 <pre class="literal-block">
 $image = Graphics::Magick-&gt;new;
 open(IMAGE, 'image.gif');
-$image-&gt;Read(file=&gt;\*IMAGE);
+$status = $image-&gt;Read(file=&gt;\*IMAGE);
 close(IMAGE);
 </pre>
 <p>To write an image in the PNG format to a PERL filehandle, use:</p>
 <pre class="literal-block">
 $filename = &quot;image.png&quot;;
 open(IMAGE, &quot;&gt;$filename&quot;);
-$image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
+$status = $image-&gt;Write(file=&gt;\*IMAGE, filename=&gt;$filename);
 close(IMAGE);
 </pre>
 <p>If %0Nd appears in the filename, it is interpreted as a printf format
@@ -2017,7 +2027,7 @@ die &quot;unable to continue&quot; if ($1 == ResourceLimitError);
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 21:54 UTC.
+Generated on: 2008-10-22 23:05 UTC.
 
 </div>
 </body>

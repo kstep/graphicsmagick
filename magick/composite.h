@@ -15,10 +15,34 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+/*
+  Special options required by some composition operators.
+*/
+typedef struct _CompositeOptions_t
+{
+  /* ModulateComposite */
+  double            percent_brightness;
+
+  /* ThresholdComposite */
+  double            amount;
+  double            threshold;
+} CompositeOptions_t;
+
 extern MagickExport MagickPassFail
   CompositeImage(Image *canvas_image,const CompositeOperator compose,
-                 const Image *composite_image,
-                 const long x_offset,const long y_offset);
+                 const Image *update_image,
+                 const long x_offset,const long y_offset),
+  CompositeImageRegion(const CompositeOperator compose,
+                       const CompositeOptions_t *options,
+                       const unsigned long columns,
+                       const unsigned long rows,
+                       const Image *update_image,
+                       const long update_x,
+                       const long update_y,
+                       Image *canvas_image,
+                       const long canvas_x,
+                       const long canvas_y,
+                       ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

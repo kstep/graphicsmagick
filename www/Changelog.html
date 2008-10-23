@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-10-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImageRegion): Start of new function
+        to act as a lighter-weight yet more flexible image composition
+        interface.<BR>
+  <LI> magick/transform.c (ChopImage): Accelerate using OpenMP.
+        (CropImage): Accelerate using OpenMP.
+        (FlipImage): Accelerate using OpenMP.
+        (FlopImage): Accelerate using OpenMP.
+  <LI> magick/effect.c (ThresholdImage): Accelerate using OpenMP.
+
+</UL>
+<p>
 2008-10-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

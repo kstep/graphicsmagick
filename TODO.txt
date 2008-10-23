@@ -3,6 +3,14 @@ Items large and small which remain to be worked on.
 See website for "wish list".
 --------------------------------------------------------------------
 
+For GM 1.3
+===========
+
+* Incorporate MSL test script from Max <lists.sourceforge.net@hohenegger.eu>
+
+* Update Magick++ Color class so that transparent black is not an invalid
+  color.
+
 For Future
 ==========
 

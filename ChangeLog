@@ -1,3 +1,14 @@
+2008-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImageRegion): Start of new function
+	to act as a lighter-weight yet more flexible image composition
+	interface.
+	* magick/transform.c (ChopImage): Accelerate using OpenMP.
+	(CropImage): Accelerate using OpenMP.
+	(FlipImage): Accelerate using OpenMP.
+	(FlopImage): Accelerate using OpenMP.
+	* magick/effect.c (ThresholdImage): Accelerate using OpenMP.
+
 2008-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (AcquireOneCacheViewPixel): Optimize

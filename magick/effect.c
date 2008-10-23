@@ -3719,29 +3719,15 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 {
 #define ThresholdImageText  "[%s] Threshold image..."
 
-  register IndexPacket
-    index;
-
-  unsigned long
+  long
     y;
 
-  register IndexPacket
-    *indexes;
-
   Quantum
-    intensity,
     quantum_threshold;
-
-  register unsigned long
-    x;
-
-  register PixelPacket
-    *q;
 
   MagickBool
     grayscale,
-    initialize_indexes,
-    modified;
+    initialize_indexes;
 
   /*
     Threshold image.
@@ -3771,40 +3757,98 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                           UnableToThresholdImage);
 
-  for (y=0; y < image->rows; y++)
-    {
-      q=GetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      modified=MagickFalse;
+  {
+    MagickPassFail
+      status=MagickPass;
 
-      for (x=0; x < image->columns; x++)
+    unsigned long
+      row_count=0;
+
+    ThreadViewSet
+      *image_views;
+
+    image_views=AllocateThreadViewSet((Image *) image,&image->exception);
+    if (image_views == (ThreadViewSet *) NULL)
+      ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+                            UnableToThresholdImage);
+
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#endif
+    for (y=0; (unsigned long) y < image->rows; y++)
+      {
+        register unsigned long
+          x;
+
+        register PixelPacket
+          *q;
+
+        register IndexPacket
+          index;
+
+        register IndexPacket
+          *indexes;
+
+        MagickBool
+          modified;
+
+        Quantum
+          intensity;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+        q=GetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
+        if (q == (PixelPacket *) NULL)
+          thread_status=MagickFail;
+
+        if (thread_status != MagickFail)
+          {
+            indexes=GetThreadViewIndexes(image_views);
+            modified=MagickFalse;
+
+            for (x=0; x < image->columns; x++)
+              {
+                if (grayscale)
+                  intensity=q[x].red;
+                else
+                  intensity=PixelIntensityToQuantum(&q[x]);
+                index=(intensity <= quantum_threshold ? 0U : 1U);
+                if ((initialize_indexes) || (index != indexes[x]))
+                  {
+                    modified=MagickTrue;
+                    indexes[x]=index;
+                  }
+                if (NotColorMatch(&image->colormap[index],&q[x]))
+                  {
+                    modified=MagickTrue;
+                    q[x].red=q[x].green=q[x].blue=image->colormap[index].red;
+                  }
+              }
+            if (modified)
+              if (!SyncThreadViewPixels(image_views,&image->exception))
+                thread_status=MagickFail;
+          }
+#if defined(_OPENMP)
+#  pragma omp critical
+#endif
         {
-          if (grayscale)
-            intensity=q[x].red;
-          else
-            intensity=PixelIntensityToQuantum(&q[x]);
-          index=(intensity <= quantum_threshold ? 0U : 1U);
-          if ((initialize_indexes) || (index != indexes[x]))
-            {
-              modified=MagickTrue;
-              indexes[x]=index;
-            }
-          if (NotColorMatch(&image->colormap[index],&q[x]))
-            {
-              modified=MagickTrue;
-              q[x].red=q[x].green=q[x].blue=image->colormap[index].red;
-            }
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitorFormatted(row_count,image->rows,&image->exception,
+                                        ThresholdImageText,image->filename))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
         }
-      if (modified)
-        if (!SyncImagePixels(image))
-          break;
-      if (QuantumTick(y,image->rows))
-        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                    ThresholdImageText,image->filename))
-          break;
-    }
+      }
+    DestroyThreadViewSet(image_views);
+  }
   image->is_monochrome=MagickTrue;
   image->is_grayscale=MagickTrue;
   return(MagickPass);

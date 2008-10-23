@@ -69,8 +69,8 @@ MagickPassFail CompositeImage( <a class="reference" href="types.html#image">Imag
 </div>
 <div class="section">
 <h2><a id="description" name="description">Description</a></h2>
-<p>CompositeImage() returns the second image (composite_image) composited
-onto the first (canvas_image) at the specified offsets.</p>
+<p>CompositeImage() composites the second image (composite_image) onto the
+first (canvas_image) at the specified offsets.</p>
 <p>The format of the CompositeImage method is:</p>
 <pre class="literal-block">
 MagickPassFail CompositeImage( <a class="reference" href="types.html#image">Image</a> *canvas_image, const <a class="reference" href="types.html#compositeoperator">CompositeOperator</a> compose,
@@ -82,19 +82,18 @@ MagickPassFail CompositeImage( <a class="reference" href="types.html#image">Imag
 <dd>The image to be updated.</dd>
 <dt>compose:</dt>
 <dd>This operator affects how the composite is applied to
-the image.  The default is Over.  Choose from one of these
-operators: AddCompositeOp, AtopCompositeOp, BumpmapCompositeOp,
-ClearCompositeOp, ColorizeCompositeOp, CopyBlackCompositeOp,
-CopyBlueCompositeOp, CopyCompositeOp, CopyCyanCompositeOp,
-CopyGreenCompositeOp, CopyMagentaCompositeOp, CopyOpacityCompositeOp,
-CopyRedCompositeOp, CopyYellowCompositeOp, DarkenCompositeOp,
-DifferenceCompositeOp, DisplaceCompositeOp, DissolveCompositeOp,
-DivideCompositeOp, HueCompositeOp, InCompositeOp, LightenCompositeOp,
-LuminizeCompositeOp, MinusCompositeOp, ModulateCompositeOp,
-MultiplyCompositeOp, NoCompositeOp, OutCompositeOp,
-OverlayCompositeOp, PlusCompositeOp, SaturateCompositeOp,
-ScreenCompositeOp, SubtractCompositeOp, ThresholdCompositeOp,
-XorCompositeOp.</dd>
+the image.  Choose from one of these operators: AddCompositeOp,
+AtopCompositeOp, BumpmapCompositeOp, ClearCompositeOp,
+ColorizeCompositeOp, CopyBlackCompositeOp, CopyBlueCompositeOp,
+CopyCompositeOp, CopyCyanCompositeOp,CopyGreenCompositeOp,
+CopyMagentaCompositeOp, CopyOpacityCompositeOp, CopyRedCompositeOp,
+CopyYellowCompositeOp, DarkenCompositeOp, DifferenceCompositeOp,
+DisplaceCompositeOp, DissolveCompositeOp, DivideCompositeOp,
+HueCompositeOp, InCompositeOp, LightenCompositeOp, LuminizeCompositeOp,
+MinusCompositeOp, ModulateCompositeOp, MultiplyCompositeOp,
+NoCompositeOp, OutCompositeOp, OverlayCompositeOp, PlusCompositeOp,
+SaturateCompositeOp, ScreenCompositeOp, SubtractCompositeOp,
+ThresholdCompositeOp, XorCompositeOp.</dd>
 <dt>composite_image:</dt>
 <dd>The composite image.</dd>
 <dt>x_offset:</dt>
@@ -107,7 +106,7 @@ XorCompositeOp.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 20:02 UTC.
+Generated on: 2008-10-23 02:18 UTC.
 
 </div>
 </body>
