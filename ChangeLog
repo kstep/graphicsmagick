@@ -1,5 +1,6 @@
 2008-10-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (DespeckleImage): Accelerate using OpenMP.
 	* magick/paint.c (OpaqueImage): Update to use pixel iterators.
 	(TransparentImage): Update to use pixel iterators.
 	* magick/decorate.c (FrameImage): Accelerate using OpenMP.
