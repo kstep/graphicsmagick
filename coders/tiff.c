@@ -2017,8 +2017,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     rows_remaining--;
 
                     if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows))
-                        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                      if (QuantumTick(y+image->rows*sample,image->rows*max_sample))
+                        if (!MagickMonitor(LoadImageText,y+image->rows*sample,image->rows*max_sample,exception))
                           {
                             status=MagickFail;
                             break;

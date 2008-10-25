@@ -1,3 +1,8 @@
+2008-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fix progress monitor for the case
+	of reading planar stripped images.
+
 2008-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Using +page now resets image
