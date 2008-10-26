@@ -1,3 +1,15 @@
+2008-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* pragma omp parallel for: Use consistent static scheduling
+	throughout and ensure that 64 threads can be usefully engaged on a
+	1024 row image.
+	* magick/pixel_iterator.c (SetRegionThreads): Implement logic so
+	that pixel iterators execute single-threaded when invoked on tiny
+	regions.
+	* magick/pixel_cache.c (SetNexus): Make staging buffer memset()
+	conditional in order to dramatically diminish impact to small
+	accesses.  This memset() only exists to make valgrind happy.
+
 2008-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix progress monitor for the case

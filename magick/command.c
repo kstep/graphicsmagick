@@ -4571,7 +4571,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("motion-blur",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
@@ -11435,7 +11435,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("motion-blur",option+1) == 0)
           {
             i++;
-            if ((i == argc) ||  !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }

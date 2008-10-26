@@ -522,7 +522,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) minify_image->rows; y++)
       {

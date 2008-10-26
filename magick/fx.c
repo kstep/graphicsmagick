@@ -422,7 +422,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
@@ -626,7 +626,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         return MagickFail;
       }
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -987,7 +987,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     Paint each row of the image.
   */
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -1537,7 +1537,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         return MagickFail;
       }
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -1672,7 +1672,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   wave_image=CloneImage(image,image->columns,(long)
-                        (image->rows+2.0*fabs(amplitude)),False,exception);
+                        (image->rows+2.0*fabs(amplitude)),MagickFalse,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
 
@@ -1699,7 +1699,10 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
                             MagickMsg(OptionError,UnableToWaveImage));
       }
-    
+
+#if defined(_OPENMP)
+#  pragma omp parallel for schedule(static,256)
+#endif
     for (x=0; x < (long) wave_image->columns; x++)
       sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
   }
@@ -1735,7 +1738,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       }
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) wave_image->rows; y++)
       {
@@ -1757,10 +1760,14 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
           thread_status=MagickFail;
         if (thread_status != MagickFail)
           {
+            ViewInfo
+              *view;
+
+            view=AccessThreadView(image_views);
             for (x=0; x < (long) wave_image->columns; x++)
               {
-                q[x]=InterpolateViewColor(AccessThreadView(image_views),
-                                          (double) x,(double) y-sine_map[x],
+                q[x]=InterpolateViewColor(view,(double) x,
+                                          (double) y-sine_map[x],
                                           exception);
               }
             if (!SyncThreadViewPixels(wave_views,exception))

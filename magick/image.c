@@ -2654,7 +2654,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   corners[1]=AcquireOneThreadViewPixel(view_set,(long) image->columns-1,0,exception);
   corners[2]=AcquireOneThreadViewPixel(view_set,0,(long) image->rows-1,exception);
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

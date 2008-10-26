@@ -603,7 +603,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -623,7 +623,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -650,7 +650,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -721,7 +721,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -754,7 +754,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -790,7 +790,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -869,7 +869,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -902,7 +902,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -936,7 +936,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           xform.primary_info.z=((MaxMap+1)/2);
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1688,7 +1688,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1720,7 +1720,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           xform.rgb_map_max_index=350;
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1748,7 +1748,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1781,7 +1781,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1815,7 +1815,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1852,7 +1852,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           xform.rgb_map_max_index=350;
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1883,7 +1883,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1914,7 +1914,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)
@@ -1946,7 +1946,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           */
 #if MaxMap > 255
 #  if defined(_OPENMP)
-#    pragma omp parallel for
+#    pragma omp parallel for schedule(static,64)
 #  endif
 #endif
           for (i=0; i <= (long) MaxMap; i++)

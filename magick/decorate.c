@@ -310,7 +310,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status) private (p, q, width, x)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status) private (p, q, width, x)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

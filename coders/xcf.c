@@ -818,21 +818,60 @@ static MagickPassFail load_level (Image* image,
 
       if (MagickPass == status)
         {
-          MonitorHandler
-            handler;
-
           /*
             Composite the tile onto the layer's image, and then
             destroy it.  We temporarily disable the progress monitor
             so that the user does not see composition of individual
             tiles.
           */
+#if 0
+          const PixelPacket
+            *p;
+
+          PixelPacket
+            *q;
+
+          long
+            canvas_x,
+            canvas_y,
+            y;
+
+          unsigned long
+            tile_width;
+
+          canvas_x=destLeft*TILE_WIDTH;
+          tile_width=tile_image->columns;
+          for (y=0; y < (long) tile_image->columns; y++)
+            {
+              canvas_y=destTop*TILE_HEIGHT+y;
+              p=AcquireImagePixels(tile_image,0,y,tile_image->columns,1,
+                                   &inLayerInfo->image->exception);
+              q=GetImagePixels(inLayerInfo->image,canvas_x,canvas_y,
+                               tile_image->columns,1);
+              if ((p != (const PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+                (void) memcpy(q,p,tile_image->columns*sizeof(PixelPacket));
+              else
+                printf("null pointer canvas: %lux%lu tile: %lux%lu+%ld+%ld !\n",
+                       inLayerInfo->image->columns,inLayerInfo->image->rows,
+                       tile_width,1LU,canvas_x,canvas_y);
+            }
+#else
+          MonitorHandler
+            handler;
+
+          long
+            canvas_x,
+            canvas_y;
+
+          canvas_x=destLeft*TILE_WIDTH;
+          canvas_y=destTop*TILE_HEIGHT;
           handler=SetMonitorHandler((MonitorHandler) NULL);
           (void) CompositeImageRegion(CopyCompositeOp,NULL,tile_image->columns,
                                       tile_image->rows,tile_image,0,0,
-                                      inLayerInfo->image,destLeft * TILE_WIDTH,
-                                      destTop*TILE_HEIGHT,&inLayerInfo->image->exception);
+                                      inLayerInfo->image,canvas_x,
+                                      canvas_y,&inLayerInfo->image->exception);
           (void) SetMonitorHandler(handler);
+#endif
         }
       DestroyImage(tile_image);
 

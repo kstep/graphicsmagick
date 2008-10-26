@@ -365,7 +365,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -478,7 +478,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   Acquire tile
                 */
                 tile_pixels=AcquireImagePixels(image,tile_x,tile_y,
-                                                    tile_width,tile_height,exception);
+                                               tile_width,tile_height,exception);
                 if (tile_pixels == (const PixelPacket *) NULL)
                   {
                     status=MagickFail;
@@ -510,7 +510,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                       x;
 
                     q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,
-                                          tile_height,1);
+                                     tile_height,1);
                     if (q == (PixelPacket *) NULL)
                       {
                         status=MagickFail;
@@ -595,7 +595,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -882,7 +882,7 @@ static void XShearImage(Image *image,const double degrees,
     return;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) height; y++)
     {
@@ -1145,7 +1145,7 @@ static void YShearImage(Image *image,const double degrees,
     return;
 
 #if defined(_OPENMP)
-#  pragma omp parallel for schedule(static,64) shared(row_count, status)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) width; y++)
     {
