@@ -221,6 +221,14 @@ New Features:
     - ReadStream()
     - WriteStream()
 
+  * Magick++ C++ API improvements
+
+    - Color class no longer considers transparent black to be an invalid
+      color.
+    - New Image methods addNoiseChannel(), blurChannel(),
+      gaussianBlurChannel(), motionBlur(), randomThresholdChannel(),
+      randomThresholdChannel(), sharpenChannel(), unsharpmaskChannel().
+
 Feature improvements:
 
   * -ordered-dither and -random-threshold may now be used to individually

@@ -476,7 +476,7 @@ namespace Magick
   // GraphicsMagick symbols used in implementation code
   //
   using MagickLib::AccessDefinition;
-  using MagickLib::AcquireCacheView;
+  using MagickLib::AcquireCacheViewPixels;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddDefinitions;
@@ -648,7 +648,7 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetBlobSize;
-  using MagickLib::GetCacheView;
+  using MagickLib::GetCacheViewPixels;
   using MagickLib::GetCacheViewIndexes;
   using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
@@ -763,7 +763,7 @@ namespace Magick
   using MagickLib::SampleImage;
   using MagickLib::ScaleImage;
   using MagickLib::SegmentImage;
-  using MagickLib::SetCacheView;
+  using MagickLib::SetCacheViewPixels;
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
   using MagickLib::SetImageAttribute;
@@ -793,7 +793,7 @@ namespace Magick
   using MagickLib::StreamFatalError;
   using MagickLib::StreamWarning;
   using MagickLib::SwirlImage;
-  using MagickLib::SyncCacheView;
+  using MagickLib::SyncCacheViewPixels;
   using MagickLib::SyncImage;
   using MagickLib::SyncImagePixels;
   using MagickLib::TextureImage;

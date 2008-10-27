@@ -49,8 +49,11 @@ extern "C" {
     Obtain the view corresponding to the current thread from the
     thread view set.
   */
-  extern MagickExport ViewInfo
-  *AccessThreadView(ThreadViewSet *view_set);
+  static inline ViewInfo
+  *AccessThreadView(ThreadViewSet *view_set)
+  {
+    return view_set->views[omp_get_thread_num()];
+  }
 
   /*
     Obtain the number of allocated views in the thread view set.
@@ -118,9 +121,12 @@ extern "C" {
     AcquireOneThreadViewPixel() returns one pixel from a cache thread
     view.
   */
-  MagickExport PixelPacket
+  static inline PixelPacket
   AcquireOneThreadViewPixel(ThreadViewSet *view_set,const long x,const long y,
-                            ExceptionInfo *exception);
+                            ExceptionInfo *exception)
+  {
+    return AcquireOneCacheViewPixel(AccessThreadView(view_set),x,y,exception);
+  }
 
   /*
     GetThreadViewPixels() obtains a writeable pixel region from a

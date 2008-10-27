@@ -66,6 +66,7 @@
 /*
   Typedef declarations.
 */
+
 typedef struct _EdgeInfo
 {
   SegmentInfo
@@ -117,7 +118,8 @@ typedef struct _PathInfo
 static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
-static unsigned int
+static MagickPassFail
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned long
@@ -3586,7 +3588,7 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
   }
 }
 
-MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
+static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   long

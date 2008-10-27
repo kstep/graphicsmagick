@@ -21,6 +21,335 @@
 </tr>
 </table>
 <p>
+2008-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/omp_thread_view.h (AccessThreadView): Inline function for
+        a bit more performance.<BR>
+        (AcquireOneThreadViewPixel) Inline function for a bit more
+        performance.
+
+</UL>
+<p>
+2008-10-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> pragma omp parallel for: Use consistent static scheduling
+        throughout and ensure that 64 threads can be usefully engaged on a
+        1024 row image.<BR>
+  <LI> magick/pixel_iterator.c (SetRegionThreads): Implement logic so
+        that pixel iterators execute single-threaded when invoked on tiny
+        regions.<BR>
+  <LI> magick/pixel_cache.c (SetNexus): Make staging buffer memset()
+        conditional in order to dramatically diminish impact to small
+        accesses.  This memset() only exists to make valgrind happy.
+
+</UL>
+<p>
+2008-10-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Fix progress monitor for the case
+        of reading planar stripped images.
+
+</UL>
+<p>
+2008-10-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (DespeckleImage): Accelerate using OpenMP.
+  <LI> magick/paint.c (OpaqueImage): Update to use pixel iterators.
+        (TransparentImage): Update to use pixel iterators.
+  <LI> magick/decorate.c (FrameImage): Accelerate using OpenMP.
+        (RaiseImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImageRegion): Start of new function
+        to act as a lighter-weight yet more flexible image composition
+        interface.<BR>
+  <LI> magick/transform.c (ChopImage): Accelerate using OpenMP.
+        (CropImage): Accelerate using OpenMP.
+        (FlipImage): Accelerate using OpenMP.
+        (FlopImage): Accelerate using OpenMP.
+  <LI> magick/effect.c (ThresholdImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (AcquireOneCacheViewPixel): Optimize
+        implementation.<BR>
+  <LI> magick/effect.c (MedianFilterImage): Accelerate using OpenMP.
+        (ReduceNoiseImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/fx.c (WaveImage): Accelerate using OpenMP.
+        (SwirlImage): Accelerate using OpenMP.
+        (ImplodeImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (GetCacheViewRegion): New function to
+        return the region bounded by a pixel cache view.
+  <LI> magick/constitute.c (ExportViewPixelArea): New function to
+        support exporting the pixels from a pixel cache view.
+        (ImportViewPixelArea): New function to support importing pixels
+        to a pixel cache view.<BR>
+  <LI> magick/pixel_cache.c (ReadStream): Eliminated function.
+        (WriteStream): Eliminated function.
+        (ClonePixelCacheMethods): Eliminated function.
+  <LI> magick/image.h: Eliminated StreamHandler call-back type.
+        Eliminated ImageInfo stream member.
+  <LI> magick/pixel_cache.c (GetCacheViewArea): New function to return
+        the area of a cache view.<BR>
+        (AccessCacheViewPixels): New function to access already selected
+        cache view pixels.
+
+</UL>
+<p>
+2008-10-19  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c: Remove unused exponential data.
+
+</UL>
+<p>
+2008-10-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/omp_thread_view.c: Move OMP Thread View functions out of
+        pixel cache module and put them in this new module.
+  <LI> coders/xtrn.c (ReadXTRNImage): XTRNSTREAM mode was never
+        implemented so remove unfinished stub code.
+
+</UL>
+<p>
+2008-10-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageDepth): Needed to assign image depth
+        attribute to user-specified depth rather than only altering the
+        pixels.<BR>
+        (SetImageOpacity): Reimplement using pixel iterators.
+        (AverageImages): Accelerate using OpenMP.
+        (GetImageBoundingBox): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ConstituteTextureImage): Accelerate using
+        OpenMP.<BR>
+  <LI> magick/image.c (TextureImage): Accelerate using OpenMP.
+  <LI> magick/render.c (DrawAffineImage): Accelerate using OpenMP.
+
+</UL>
+<p>
+2008-10-13  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c Fixed palette problem for &gt;8 bit images.
+
+</UL>
+<p>
+2008-10-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): Using +page now resets image
+        page offsets as documented for convert and mogrify.
+
+</UL>
+<p>
+2008-10-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GradientImage): Re-do OpenMP accelleration based
+        on new pixel cache interface for better performance.
+  <LI> coders/dpx.c (ReadDPXImage): Progress monitor needs to tick when
+        row count is updated.<BR>
+  <LI> coders/fits.c (ReadFITSImage): Update to use
+        MagickFindRawImageMinMax().<BR>
+        (WriteFITSImage): Expand buffer size to MaxTextExtent.  Include
+        GraphicsMagick version in FITS header.
+  <LI> coders/mat.c (ReadMATImage): Update to use
+        MagickFindRawImageMinMax().<BR>
+  <LI> magick/constitute.c (MagickFindRawImageMinMax): New internal
+        function to assist with finding the minimum and maximum data of
+        raw image files.
+
+</UL>
+<p>
+2008-10-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (AcquireThreadViewPixels): Convert thread
+        set view convenience methods into library methods because the
+        inline methods were causing the Sun Studio compiler to produce
+        thread unsafe code.  Due to likely beneficial inlining in the
+        library, this is not expected to cause any performance impact.
+
+</UL>
+<p>
+2008-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/filter.t: Add a test for UnsharpMask.
+  <LI> magick/effect.c (UnsharpMaskImage): Use Blur rather than
+        GaussianBlur to create blur image since it is faster.
+  <LI> magick/pixel_cache.c (AllocateThreadViewDataSet): Add a
+        destructor function in case data should not be destroyed, or needs
+        something other than MagickFree().
+        (AllocateThreadViewDataSet): Use user-provided destructor to free
+        user data.<BR>
+  <LI> scripts/format_c_api_doc.py: Improvements from Mark Mitchell to
+        perform keyword/target substitions and wrap function prototypes.
+  <LI> coders/dpx.c (ReadDPXImage): Accellerate reader using OpenMP.
+
+</UL>
+<p>
+2008-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/api/types.rst: Convert types.html to reStructured text
+        format.
+
+</UL>
+<p>
+2008-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/monitor.c (MagickMonitorFormatted): New method to support
+        issuing a formatted progress monitor message.  Use it throughout
+        so that file name is included in progress indication.
+
+</UL>
+<p>
+2008-10-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Bootstrap with autoconf 2.63.  Require autoconf
+        2.62 to bootstrap.
+
+</UL>
+<p>
+2008-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www: Adopted improved web page design by Mark Mitchell.
+
+</UL>
+<p>
+2008-10-04  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c coders/mat.c Used a same piece of code to calculate
+        min and max data value.
+
+</UL>
+<p>
+2008-09-30  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c Fixed 16 bit fits writer that wrote wrongly
+        shaped unsigned ints.
+
+</UL>
+<p>
+2008-09-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/conjure.imdoc: Applied patches from Max at hohenegger.eu to
+        mention previously undocumented elements and to provide a
+        composition example.
+
+</UL>
+<p>
+2008-09-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (IntegralRotateImage): Accelerate rotation by 0
+        and 180 degrees using OpenMP.<BR>
+        (XShearImage): Accellerate using OpenMP (accellerates -rotate and
+        -shear).<BR>
+        (YShearImage): Accellerate using OpenMP (accellerates -rotate and
+        -shear).
+
+</UL>
+<p>
+2008-09-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (MotionBlurImage): Enable OpenMP now that pixel
+        cache is re-entrant.<BR>
+  <LI> magick/pixel_iterator.c: Updated to use thread view convenience
+        inline methods as proof of principle.
+  <LI> magick/pixel_cache.h: Added convenience inline methods to make
+        use of thread views a bit more pleasant.
+
+</UL>
+<p>
+2008-09-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (ShadeImage): Fix valgrind gripe.
+        (MedianFilterImage): Fix valgrind gripe.
+
+</UL>
+<p>
+2008-09-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c: Pixel cache is believed to be thread safe
+        now.<BR>
+  <LI> magick/deprecate.c (AcquireCacheView): Deprecate this function.
+        (GetCacheView): Deprecate this function.
+        (SetCacheView): Deprecate this function.
+        (SyncCacheView): Deprecate this function.
+  <LI> magick/pixel_cache.c (AcquireCacheViewPixels): New function to
+        replace AcquireCacheView().<BR>
+        (GetCacheViewPixels): New function to replace GetCacheView().
+        (SetCacheViewPixels): New function to replace SetCacheView().
+        (SyncCacheViewPixels): New function to replace SyncCacheView().
+  <LI> coders/msl.c: Applied patches from Max at hohenegger.eu which
+        fix a MSL parsing error related to gamma, and erroneous text
+        comments which claim that elements can't have attributes.
+
+</UL>
+<p>
+2008-09-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (ResizeImage): Move OpenMP instrumentation to
+        outer loop so that eventually there can be more performance.
+
+</UL>
+<p>
+2008-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (MinifyImage): Accelerate using OpenMP.
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+        Accept -gaussian-blur as a synonym for -gaussian.
+        (ConvertImageCommand, MogrifyImageCommand): Provide access to
+        MinifyImage() via -minify.<BR>
+        (ConvertImageCommand, MogrifyImageCommand): Provide access to
+        Magnifyimage() via -magnify.
+
+</UL>
+<p>
 2008-09-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

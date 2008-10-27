@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/studio.h (omp_get_thread_num): Remove spurious trailing
+        ';'.<BR>
+  <LI> magick/render.c (DrawPrimitive): Make method private since
+        nothing else is using it.<BR>
+  <LI> magick/omp_thread_view.h (AccessThreadView): Inline function for
+        a bit more performance.<BR>
+        (AcquireOneThreadViewPixel) Inline function for a bit more
+        performance.
+
+</UL>
+<p>
 2008-10-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

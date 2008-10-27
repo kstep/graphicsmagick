@@ -406,7 +406,6 @@ extern MagickExport MagickPassFail
   DrawClipPath(Image *,const DrawInfo *,const char *),
   DrawImage(Image *,const DrawInfo *),
   DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
-  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *);
 

@@ -123,29 +123,15 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
 
   return view_set;
 }
-MagickExport ViewInfo *
-AccessThreadView(ThreadViewSet *view_set)
-{
-  ViewInfo
-    *view;
 
-  unsigned int
-    thread_num=0;
-
-  thread_num=omp_get_thread_num();
-  assert(thread_num < view_set->nviews);
-  view=view_set->views[thread_num];
-
-  return view;
-}
-
-
+/*
+  Get the number of views allocated in this thread set.
+*/
 MagickExport unsigned int
 GetThreadViewSetAllocatedViews(ThreadViewSet *view_set)
 {
   return view_set->nviews;
 }
-
 
 /*
   AcquireThreadViewPixels() obtains a read-only pixel region from a
@@ -169,17 +155,6 @@ MagickExport const IndexPacket
 *AcquireThreadViewIndexes(ThreadViewSet *view_set)
 {
   return AcquireCacheViewIndexes(AccessThreadView(view_set));
-}
-
-/*
-  AcquireOneThreadViewPixel() returns one pixel from a cache thread
-  view.
-*/
-MagickExport PixelPacket
-AcquireOneThreadViewPixel(ThreadViewSet *view_set,const long x,const long y,
-                          ExceptionInfo *exception)
-{
-  return AcquireOneCacheViewPixel(AccessThreadView(view_set),x,y,exception);
 }
 
 /*

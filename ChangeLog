@@ -1,3 +1,14 @@
+2008-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h (omp_get_thread_num): Remove spurious trailing
+	';'.
+	* magick/render.c (DrawPrimitive): Make method private since
+	nothing else is using it.
+	* magick/omp_thread_view.h (AccessThreadView): Inline function for
+	a bit more performance.
+	(AcquireOneThreadViewPixel) Inline function for a bit more
+	performance.
+
 2008-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* pragma omp parallel for: Use consistent static scheduling

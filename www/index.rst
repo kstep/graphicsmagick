@@ -46,7 +46,6 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
 .. _OpenMP : OpenMP.html
 
-
 GraphicsMagick is the swiss army knife of image processing. Comprised of
 337K lines of C and C++ code, it provides a robust collection of tools
 and libraries which support reading, writing, and manipulating an image
@@ -62,20 +61,39 @@ as well as through C, C++, Perl, Tcl, Ruby, or Windows COM programming
 interfaces. With some modification, language extensions for ImageMagick
 may be used.
 
-GraphicsMagick is originally derived from ImageMagick_ 5.5.2. Since the
-branch from ImageMagick, many improvements have been made (`see news
-<NEWS.html>`_) by `many authors <authors.html>`_ using an open
-development model. GraphicsMagick is much more efficient than ImageMagick
-(`see benchmark report <benchmarks.html>`_) so it gets the job done
-faster using fewer resources. GraphicsMagick is available for free, may
-be used to support both open and proprietary applications, and may be
-redistributed without fee.
+GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has been
+completely independent of the ImageMagick project since then. Since the
+fork from ImageMagick in 2002, many improvements have been made (`see
+news <NEWS.html>`_) by `many authors <authors.html>`_ using an open
+development model but without breaking the API or utilities operation.
+
+Here are some reasons to prefer GraphicsMagick over ImageMagick:
+
+* GraphicsMagick is much more efficient (`see benchmark report
+  <benchmarks.html>`_) so it gets the job done faster using fewer
+  resources.
+
+* GraphicsMagick is much smaller and tighter.
+
+* GraphicsMagick does not use generic names for its utilities so it does
+  not conflict with other installed software (including system tools.)
+
+* GraphicsMagick comes with a comprehensive manual page.
+
+* GraphicsMagick provides API and ABI stability and managed releases that
+  you can count on.
+
+* GraphicsMagick provides detailed human-readable ChangeLog and NEWS files.
+
+* GraphicsMagick is available for free, may be used to support both open
+  and proprietary applications, and may be redistributed without fee.
+
+* GraphicsMagick is dististributed under an X11-style license ("MIT
+  License"), which is approved by the `Open Source Initiative`_ and
+  declared by the FSF_ to be compatible with the `GPL Version 2`_.
 
 GraphicsMagick is `copyrighted <Copyright.html>`_ by the GraphicsMagick
-Group as well as many others. GraphicsMagick is dististributed under an
-X11-style license ("MIT License"), which is approved by the `Open Source
-Initiative`_ and declared by the FSF_ to be compatible with the `GPL
-Version 2`_.
+Group as well as many others.
 
 Here are just a few `examples <images/examples.jpg>`_ of what GraphicsMagick
 can do:

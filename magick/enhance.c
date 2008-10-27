@@ -245,7 +245,6 @@ BuildHistogram(void *mutable_data,          /* User provided mutable data */
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
-  /* #pragma omp critical */
   for (i=0; i < npixels; i++)
     {
       histogram[ScaleQuantumToMap(pixels[i].red)].red++;

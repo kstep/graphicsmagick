@@ -1,3 +1,11 @@
+2008-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp: Added an _isValid boolean to represent an invalid
+	color.  Transparent black is no longer special and can be used in
+	drawing.
+	* lib/Pixels.cpp: Update to use new cache view interfaces provided
+	by GraphicsMagick 1.3.
+
 2008-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (addNoiseChannel): New method to add noise to a

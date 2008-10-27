@@ -556,6 +556,8 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 */
 static double constant(char *name,int sans)
 {
+  (void) sans;
+
   errno=0;
   switch (*name)
   {

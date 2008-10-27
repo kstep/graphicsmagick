@@ -460,6 +460,7 @@ static void BlurScanline(const double *kernel,const unsigned long width,
         {
           if ((i >= (x-(long) width/2)) && (i <= (x+(long) width/2)))
             {
+              /* This region is the big CPU burner for the whole function */
               aggregate.red+=(*p)*q->red;
               aggregate.green+=(*p)*q->green;
               aggregate.blue+=(*p)*q->blue;

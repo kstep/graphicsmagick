@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2008
 //
 // Color Implementation
 //
@@ -159,6 +159,9 @@ namespace Magick
     // Set true if we allocated pixel
     bool                        _pixelOwn;
 
+    // Set true if pixel is "valid"
+    bool                       _isValid;
+
     // Color type supported by _pixel
     PixelType			_pixelType;
 
@@ -311,8 +314,7 @@ namespace Magick
 //
 
 // Common initializer for PixelPacket representation
-// Initialized to state that ImageMagick considers to be
-// an invalid color.
+// Initialized transparent black
 inline void Magick::Color::initPixel()
 {
   _pixel->red     = 0;
@@ -324,6 +326,7 @@ inline void Magick::Color::initPixel()
 inline void Magick::Color::redQuantum ( Magick::Quantum red_ )
 {
   _pixel->red = red_;
+  _isValid = true;
 }
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
@@ -334,6 +337,7 @@ inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 inline void Magick::Color::greenQuantum ( Magick::Quantum green_ )
 {
   _pixel->green = green_;
+  _isValid = true;
 }
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
@@ -344,6 +348,7 @@ inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 inline void  Magick::Color::blueQuantum ( Magick::Quantum blue_ )
 {
   _pixel->blue = blue_;
+  _isValid = true;
 }
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
@@ -354,6 +359,7 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )
 {
   _pixel->opacity = alpha_;
+  _isValid = true ;
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
