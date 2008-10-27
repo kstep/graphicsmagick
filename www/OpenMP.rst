@@ -180,6 +180,90 @@ and Apple OS-X systems:
    ================================== ==== ==== ==== ====
 
 
+The following table shows the boost on a two core Linux system:
+
+.. table:: Performance Boost On Two Core AMD Operon System
+
+   ================================== ==== ====
+   Operation                            1    2 
+   ================================== ==== ====
+   -noop                              1.00 1.49
+   -affine 1,0,0.785,1,0,0 -transform 1.00 1.37
+   -black-threshold 20%               1.00 1.26
+   -blur 0x0.5                        1.00 1.02
+   -blur 0x1.0                        1.00 1.48
+   -border 6x6                        1.00 1.42
+   -charcoal 0x1                      1.00 1.59
+   -chop 800x600+200+300              1.00 1.25
+   -colorspace CMYK                   1.00 1.42
+   -colorspace GRAY                   1.00 1.57
+   -colorspace HSL                    1.00 1.87
+   -colorspace HWB                    1.00 1.89
+   -colorspace OHTA                   1.00 1.75
+   -colorspace YCbCr                  1.00 1.83
+   -colorspace YIQ                    1.00 1.85
+   -colorspace YUV                    1.00 1.80
+   -contrast -contrast -contrast      1.00 1.94
+   +contrast +contrast +contrast      1.00 1.96
+   -convolve 1,1,1,1,4,1,1,1,1        1.00 1.18
+   -colorize 30%/20%/50%              1.00 1.65
+   -crop 1700x900+100+100             1.00 1.55
+   -despeckle                         1.00 1.50
+   -edge 0x1                          1.00 1.85
+   -emboss 0x1                        1.00 1.90
+   -enhance                           1.00 1.94
+   -equalize                          1.00 1.29
+   -flip                              1.00 1.50
+   -flop                              1.00 1.43
+   -frame 15x15+3+3                   1.00 1.56
+   -gamma 1.6                         1.00 1.26
+   -gaussian 0x0.5                    1.00 2.01
+   -gaussian 0x1.0                    1.00 1.97
+   -implode 0.5                       1.00 1.62
+   -implode -1                        1.00 1.23
+   -lat 10x10-5%                      1.00 1.92
+   -level 10%,1.2,90%                 1.00 1.47
+   -modulate 110/100/95               1.00 1.96
+   -motion-blur 0x3+30                1.00 1.11
+   -negate                            1.00 1.01
+   +noise Uniform                     1.00 1.67
+   +noise Gaussian                    1.00 1.92
+   +noise Multiplicative              1.00 1.91
+   +noise Impulse                     1.00 1.64
+   +noise Laplacian                   1.00 1.80
+   +noise Poisson                     1.00 1.77
+   -noise 1                           1.00 1.01
+   -noise 2                           1.00 1.11
+   -normalize                         1.00 1.24
+   -fill blue -fuzz 35% -opaque red   1.00 1.71
+   -ordered-dither all 3x3            1.00 1.66
+   -paint 0x1                         1.00 1.94
+   -raise 10x10                       1.00 1.49
+   -density 75x75 -resample 50x50     1.00 1.61
+   -resize 10%                        1.00 1.89
+   -resize 50%                        1.00 1.75
+   -resize 150%                       1.00 1.82
+   -rotate 0                          1.00 1.40
+   -rotate 45                         1.00 1.63
+   -rotate 180                        1.00 1.47
+   -shade 30x30                       1.00 2.07
+   -sharpen 0x0.5                     1.00 1.41
+   -sharpen 0x1.0                     1.00 1.97
+   -shave 10x10                       1.00 1.31
+   -shear 45x45                       1.00 1.75
+   -solarize 50%                      1.00 1.47
+   -spread 1                          1.00 1.59
+   -spread 3                          1.00 1.60
+   -swirl 90                          1.00 1.23
+   -threshold 35%                     1.00 1.54
+   -fuzz 35% -transparent red         1.00 1.73
+   -trim                              1.00 1.84
+   -unsharp 0x0.5                     1.00 1.47
+   -unsharp 0x1.0                     1.00 1.46
+   -wave 25x150                       1.00 1.54
+   -white-threshold 80%               1.00 1.16
+   ================================== ==== ====
+
 --------------------------------------------------------------------------
 
 | Copyright (C) 2008 GraphicsMagick Group
@@ -187,4 +271,3 @@ and Apple OS-X systems:
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
 package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
-
