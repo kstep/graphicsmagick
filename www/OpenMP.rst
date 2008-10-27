@@ -82,7 +82,7 @@ four-core system.  All the pixel quantum values are divided by 2::
 Note that the "iter/s cpu" value is a measure of the number of iterations
 given the amount of reported CPU time consumed. It is an effective
 measure of relative efficacy. In the above example, the total speedup was
-close to 3X with only a small loss of CPU efficiency as threads are added.
+over 3X with only a small loss of CPU efficiency as threads are added.
 
 According to the OpenMP specification, the OMP_NUM_THREADS evironment
 variable (used above) may be used to specify the number of threads
