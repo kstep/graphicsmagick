@@ -350,6 +350,7 @@ MagickExport Image *MontageImages(const Image *images,
     ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToCreateImageMontage);
   image_list=master_list;
+  thumbnail=(Image *) NULL;
   for (i=0; i < (long) number_images; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -363,7 +364,6 @@ MagickExport Image *MontageImages(const Image *images,
       filter, and the montage thumbnail is smaller than the
       image. This should lead to faster montages for large images.
     */
-    thumbnail=(Image *) NULL;
     if ((image->filter != UndefinedFilter) ||
         (geometry.width>image->columns) || (geometry.height>image->rows))
       thumbnail=ZoomImage(image,geometry.width,geometry.height,exception);

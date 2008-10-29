@@ -2839,7 +2839,6 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
   register long
     y;
 
-
   size_t
     length;
 
@@ -2865,6 +2864,7 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
       length=number_pixels;
       rows=1;
     }
+  y=0;
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
@@ -3008,6 +3008,7 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
       length=number_pixels;
       rows=1;
     }
+  y=0;
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
@@ -3759,6 +3760,7 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
       length=number_pixels;
       rows=1;
     }
+  y=0;
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
@@ -3882,6 +3884,7 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
       length=number_pixels;
       rows=1;
     }
+  y=0;
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
