@@ -1269,31 +1269,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 MagickExport Image *RollImage(const Image *image,const long x_offset,
                               const long y_offset,ExceptionInfo *exception)
 {
-  /*
-    FIXME: The implementation of this function is terrible.
-    It is better implemented as a quadrant-oriented block copy, perhaps
-    based on the composite code.  CompositeImageRegion()
-  */
-#define RollImageText  "[%s] Roll image..."
-
   Image
     *roll_image;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes,
-    *roll_indexes;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
 
   RectangleInfo
     offset;
@@ -1321,35 +1298,27 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
     offset.y+=image->rows;
   while (offset.y >= (long) image->rows)
     offset.y-=image->rows;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    /*
-      Transfer scanline.
-    */
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q=SetImagePixels(roll_image,(long) (offset.x+x) % image->columns,
-        (long) (offset.y+y) % image->rows,1,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      roll_indexes=GetIndexes(roll_image);
-      if ((indexes != (IndexPacket *) NULL) &&
-          (roll_indexes != (IndexPacket *) NULL))
-        *roll_indexes=indexes[x];
-      *q=(*p);
-      p++;
-      if (!SyncImagePixels(roll_image))
-        break;
-    }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitorFormatted(y,image->rows,exception,
-                                  RollImageText,image->filename))
-        break;
-  }
+
+  /* Top left quadrant */
+  (void) CompositeImageRegion(CopyCompositeOp,0,offset.x,offset.y,image,
+                              image->columns-offset.x,image->rows-offset.y,
+                              roll_image,0,0,exception);
+
+  /* Top right quadrant */
+  (void) CompositeImageRegion(CopyCompositeOp,0,image->columns-offset.x,offset.y,image,
+                              0,image->rows-offset.y,
+                              roll_image,offset.x,0,exception);
+
+  /* Bottom left quadrant */
+  (void) CompositeImageRegion(CopyCompositeOp,0,offset.x,image->rows-offset.y,image,
+                              image->columns-offset.x,0,
+                              roll_image,0,offset.y,exception);
+
+  /* Bottom right quadrant */
+  (void) CompositeImageRegion(CopyCompositeOp,0,image->columns-offset.x,image->rows-offset.y,image,
+                              0,0,
+                              roll_image,offset.x,offset.y,exception);
+
   roll_image->is_grayscale=image->is_grayscale;
   return(roll_image);
 }

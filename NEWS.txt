@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 23, 2008
+This file was last updated on October 28, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -129,6 +129,7 @@ Performance Improvements:
     - Random threshold (-random-threshold)
     - Resize image (-resize)
     - Raise image (-raise)
+    - Roll image (-roll)
     - Rotate image (-rotate)
     - Shade image (-shade)
     - Shear image (-shear)

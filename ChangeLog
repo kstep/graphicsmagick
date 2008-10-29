@@ -1,3 +1,9 @@
+2008-10-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImageRegion): Add some minimal
+	region limit checking.  Not completed yet.
+	* magick/transform.c (RollImage): Accellerate using OpenMP.
+
 2008-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h (omp_get_thread_num): Remove spurious trailing

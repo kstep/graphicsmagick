@@ -2356,14 +2356,14 @@ CompositeImage(Image *canvas_image,
 MagickExport MagickPassFail
 CompositeImageRegion(const CompositeOperator compose,
                      const CompositeOptions_t *options,
-                     const unsigned long columns,
-                     const unsigned long rows,
+                     const unsigned long arg_columns,
+                     const unsigned long arg_rows,
                      const Image *update_image,
-                     const long update_x,
-                     const long update_y,
+                     const long arg_update_x,
+                     const long arg_update_y,
                      Image *canvas_image,
-                     const long canvas_x,
-                     const long canvas_y,
+                     const long arg_canvas_x,
+                     const long arg_canvas_y,
                      ExceptionInfo *exception)
 {
   PixelIteratorDualModifyCallback
@@ -2375,6 +2375,9 @@ CompositeImageRegion(const CompositeOperator compose,
   MagickPassFail
     status=MagickPass;
 
+  /*   printf("columns=%lu rows=%lu update_x=%ld update_y=%ld canvas_x=%ld canvas_y=%ld\n", */
+  /*          columns,rows,update_x,update_y,canvas_x,canvas_y); */
+
   if (compose == NoCompositeOp)
     return(MagickPass);
 
@@ -2384,45 +2387,81 @@ CompositeImageRegion(const CompositeOperator compose,
       const char
         *description = "[%s] Composite image pixels ...";
 
-      if (clear_pixels)
+      unsigned long
+        columns=arg_columns,
+        rows=arg_rows;
+
+      long
+        update_x=arg_update_x,
+        update_y=arg_update_y,
+        canvas_x=arg_canvas_x,
+        canvas_y=arg_canvas_y;
+
+      /*
+        FIXME: The area logic is not implemented yet.
+      */
+
+      if ((update_x >= update_image->columns) ||
+          (update_y >= update_image->rows) ||
+          (canvas_x >= canvas_image->columns) ||
+          (canvas_y >= canvas_image->rows))
+        status = MagickFail;
+
+#if 0
+      printf("canvas_image=%lux%lu update_image=%lux%lu update_region=%lux%lu+%ld+%ld canvas_region=%lux%lu+%ld+%ld \n",
+             canvas_image->columns,canvas_image->rows,
+             update_image->columns,update_image->rows,
+             columns,rows,update_x,update_y,
+             columns,rows,canvas_x,canvas_y);
+#endif
+
+      if ((status == MagickPass) && 
+          ((unsigned long) canvas_x < canvas_image->columns) &&
+          ((unsigned long) canvas_y < canvas_image->rows) &&
+          ((unsigned long) update_x < update_image->columns) &&
+          ((unsigned long) update_y < update_image->rows) &&
+          (columns != 0) && (rows != 0))
         {
-          /*
-            We don't care about existing pixels in the region.
-          */
-          status=PixelIterateDualNew(call_back,              /* Callback */
-                                     NULL,
-                                     description,            /* Description */
-                                     NULL,
-                                     options,                /* Options */
-                                     columns,                /* Number of columns */
-                                     rows,                   /* Number of rows */
-                                     update_image,           /* Composite image */
-                                     update_x,               /* Composite x offset */
-                                     update_y,               /* Composite y offset */
-                                     canvas_image,           /* Canvas image */
-                                     canvas_x,               /* Canvas x offset */
-                                     canvas_y,               /* Canvas y offset */
-                                     exception);             /* Exception */
-        }
-      else
-        {
-          /*
-            Blend with existing pixels in the region.
-          */
-          status=PixelIterateDualModify(call_back,              /* Callback */
-                                        NULL,
-                                        description,            /* Description */
-                                        NULL,
-                                        options,                /* Options */
-                                        columns,                /* Number of columns */
-                                        rows,                   /* Number of rows */
-                                        update_image,           /* Composite image */
-                                        update_x,               /* Composite x offset */
-                                        update_y,               /* Composite y offset */
-                                        canvas_image,           /* Canvas image */
-                                        canvas_x,               /* Canvas x offset */
-                                        canvas_y,               /* Canvas y offset */
-                                        exception);             /* Exception */
+          if (clear_pixels)
+            {
+              /*
+                We don't care about existing pixels in the region.
+              */
+              status=PixelIterateDualNew(call_back,              /* Callback */
+                                         NULL,
+                                         description,            /* Description */
+                                         NULL,
+                                         options,                /* Options */
+                                         columns,                /* Number of columns */
+                                         rows,                   /* Number of rows */
+                                         update_image,           /* Composite image */
+                                         update_x,               /* Composite x offset */
+                                         update_y,               /* Composite y offset */
+                                         canvas_image,           /* Canvas image */
+                                         canvas_x,               /* Canvas x offset */
+                                         canvas_y,               /* Canvas y offset */
+                                         exception);             /* Exception */
+            }
+          else
+            {
+              /*
+                Blend with existing pixels in the region.
+              */
+              status=PixelIterateDualModify(call_back,              /* Callback */
+                                            NULL,
+                                            description,            /* Description */
+                                            NULL,
+                                            options,                /* Options */
+                                            columns,                /* Number of columns */
+                                            rows,                   /* Number of rows */
+                                            update_image,           /* Composite image */
+                                            update_x,               /* Composite x offset */
+                                            update_y,               /* Composite y offset */
+                                            canvas_image,           /* Canvas image */
+                                            canvas_x,               /* Canvas x offset */
+                                            canvas_y,               /* Canvas y offset */
+                                            exception);             /* Exception */
+            }
         }
     }
   else
