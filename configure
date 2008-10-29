@@ -1021,12 +1021,12 @@ OBJDUMP
 DLLTOOL
 AS
 LFS_CPPFLAGS
+OPENMP_CFLAGS
 PTHREAD_CFLAGS
 PTHREAD_LIBS
 PTHREAD_CXX
 PTHREAD_CC
 acx_pthread_config
-OPENMP_CFLAGS
 WinPathScript
 CYGWIN_BUILD_FALSE
 CYGWIN_BUILD_TRUE
@@ -1174,8 +1174,8 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 with_gnu_ld
-enable_openmp
 with_threads
+enable_openmp
 enable_largefile
 enable_shared
 enable_static
@@ -5621,132 +5621,6 @@ else
 fi
 
 #
-# Determine options necessary to enable OpenMP support
-#
-# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
-# variable to these options.
-
-
-  OPENMP_CFLAGS=
-  # Check whether --enable-openmp was given.
-if test "${enable_openmp+set}" = set; then
-  enableval=$enable_openmp;
-fi
-
-  if test "$enable_openmp" != no; then
-    { $as_echo "$as_me:$LINENO: checking for $CC option to support OpenMP" >&5
-$as_echo_n "checking for $CC option to support OpenMP... " >&6; }
-if test "${ac_cv_prog_c_openmp+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-
-#ifndef _OPENMP
- choke me
-#endif
-#include <omp.h>
-int main () { return omp_get_num_threads (); }
-
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_prog_c_openmp='none needed'
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_prog_c_openmp='unsupported'
-	  	  	  	  	  	  	  	  	  	  	  	  	  for ac_option in -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp; do
-	    ac_save_CFLAGS=$CFLAGS
-	    CFLAGS="$CFLAGS $ac_option"
-	    cat >conftest.$ac_ext <<_ACEOF
-
-#ifndef _OPENMP
- choke me
-#endif
-#include <omp.h>
-int main () { return omp_get_num_threads (); }
-
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_prog_c_openmp=$ac_option
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-	    CFLAGS=$ac_save_CFLAGS
-	    if test "$ac_cv_prog_c_openmp" != unsupported; then
-	      break
-	    fi
-	  done
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_prog_c_openmp" >&5
-$as_echo "$ac_cv_prog_c_openmp" >&6; }
-    case $ac_cv_prog_c_openmp in #(
-      "none needed" | unsupported)
-        ;; #(
-      *)
-        OPENMP_CFLAGS=$ac_cv_prog_c_openmp ;;
-    esac
-  fi
-
-
-CFLAGS="$OPENMP_CFLAGS $CFLAGS"
-#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
-#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
-
-
-#
 # Determine Posix threads settings
 #
 # Enable support for threads
@@ -5762,6 +5636,7 @@ fi
 have_threads=no
 if test "$with_threads" != 'no'
 then
+
 
 
 
@@ -6319,8 +6194,138 @@ $as_echo "$as_me: WARNING: Replacing compiler $CXX with compiler $PTHREAD_CXX to
       CXX="$PTHREAD_CXX"
     fi
   fi
+fi
+
+#
+# Determine options necessary to enable OpenMP support
+#
+# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
+# variable to these options.
+if test "$have_threads" != 'yes'
+then
+  ac_cv_prog_c_openmp=unsupported
+fi
+
+
+  OPENMP_CFLAGS=
+  # Check whether --enable-openmp was given.
+if test "${enable_openmp+set}" = set; then
+  enableval=$enable_openmp;
+fi
+
+  if test "$enable_openmp" != no; then
+    { $as_echo "$as_me:$LINENO: checking for $CC option to support OpenMP" >&5
+$as_echo_n "checking for $CC option to support OpenMP... " >&6; }
+if test "${ac_cv_prog_c_openmp+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+
+#ifndef _OPENMP
+ choke me
+#endif
+#include <omp.h>
+int main () { return omp_get_num_threads (); }
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_prog_c_openmp='none needed'
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_prog_c_openmp='unsupported'
+	  	  	  	  	  	  	  	  	  	  	  	  	  for ac_option in -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp; do
+	    ac_save_CFLAGS=$CFLAGS
+	    CFLAGS="$CFLAGS $ac_option"
+	    cat >conftest.$ac_ext <<_ACEOF
+
+#ifndef _OPENMP
+ choke me
+#endif
+#include <omp.h>
+int main () { return omp_get_num_threads (); }
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_prog_c_openmp=$ac_option
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
 
 fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+	    CFLAGS=$ac_save_CFLAGS
+	    if test "$ac_cv_prog_c_openmp" != unsupported; then
+	      break
+	    fi
+	  done
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_prog_c_openmp" >&5
+$as_echo "$ac_cv_prog_c_openmp" >&6; }
+    case $ac_cv_prog_c_openmp in #(
+      "none needed" | unsupported)
+        ;; #(
+      *)
+        OPENMP_CFLAGS=$ac_cv_prog_c_openmp ;;
+    esac
+  fi
+
+
+CFLAGS="$OPENMP_CFLAGS $CFLAGS"
+#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
+#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+
+
 
 ########
 #
@@ -7051,13 +7056,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7054: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7059: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7057: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7062: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7060: output\"" >&5)
+  (eval echo "\"\$as_me:7065: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8248,7 +8253,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8251 "configure"' > conftest.$ac_ext
+  echo '#line 8256 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10164,11 +10169,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10167: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10172: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10171: \$? = $ac_status" >&5
+   echo "$as_me:10176: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10503,11 +10508,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10506: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10511: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10510: \$? = $ac_status" >&5
+   echo "$as_me:10515: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10608,11 +10613,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10611: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10616: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10615: \$? = $ac_status" >&5
+   echo "$as_me:10620: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10663,11 +10668,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10666: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10671: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10670: \$? = $ac_status" >&5
+   echo "$as_me:10675: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13463,7 +13468,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13466 "configure"
+#line 13471 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13559,7 +13564,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13562 "configure"
+#line 13567 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16318,11 +16323,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16321: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16326: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16325: \$? = $ac_status" >&5
+   echo "$as_me:16330: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16417,11 +16422,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16420: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16425: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16424: \$? = $ac_status" >&5
+   echo "$as_me:16429: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16469,11 +16474,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16472: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16477: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16476: \$? = $ac_status" >&5
+   echo "$as_me:16481: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18369,7 +18374,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18372 "configure"
+#line 18377 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -29505,10 +29510,11 @@ fi
 # Find OpenMP library
 #
 LIB_OMP=''
-if test "$enable_openmp" != 'no'
+if test "${OPENMP_CFLAGS}x" != 'x'
 then
   if test "${GCC}" = "yes"
   then
+    # GCC
     { $as_echo "$as_me:$LINENO: checking for GOMP_parallel_start in -lgomp" >&5
 $as_echo_n "checking for GOMP_parallel_start in -lgomp... " >&6; }
 if test "${ac_cv_lib_gomp_GOMP_parallel_start+set}" = set; then
@@ -29579,6 +29585,7 @@ if test "x$ac_cv_lib_gomp_GOMP_parallel_start" = x""yes; then
 fi
 
   else
+    # Sun CC
     { $as_echo "$as_me:$LINENO: checking for sunw_mp_register_warn in -lmtsk" >&5
 $as_echo_n "checking for sunw_mp_register_warn in -lmtsk... " >&6; }
 if test "${ac_cv_lib_mtsk_sunw_mp_register_warn+set}" = set; then
@@ -29646,6 +29653,76 @@ fi
 $as_echo "$ac_cv_lib_mtsk_sunw_mp_register_warn" >&6; }
 if test "x$ac_cv_lib_mtsk_sunw_mp_register_warn" = x""yes; then
   LIB_OMP="-lmtsk"
+fi
+
+    # AIX xlc
+    { $as_echo "$as_me:$LINENO: checking for _xlsmpFlush in -lxlsmp" >&5
+$as_echo_n "checking for _xlsmpFlush in -lxlsmp... " >&6; }
+if test "${ac_cv_lib_xlsmp__xlsmpFlush+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lxlsmp  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _xlsmpFlush ();
+int
+main ()
+{
+return _xlsmpFlush ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_xlsmp__xlsmpFlush=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_xlsmp__xlsmpFlush=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_xlsmp__xlsmpFlush" >&5
+$as_echo "$ac_cv_lib_xlsmp__xlsmpFlush" >&6; }
+if test "x$ac_cv_lib_xlsmp__xlsmpFlush" = x""yes; then
+  LIB_OMP="-xlsmp"
 fi
 
   fi

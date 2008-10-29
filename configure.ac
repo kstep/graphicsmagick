@@ -260,17 +260,6 @@ else
 fi
 
 #
-# Determine options necessary to enable OpenMP support
-#
-# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
-# variable to these options.
-AC_OPENMP([C])
-CFLAGS="$OPENMP_CFLAGS $CFLAGS"
-#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
-#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
-AC_SUBST(OPENMP_CFLAGS)
-
-#
 # Determine Posix threads settings
 #
 # Enable support for threads
@@ -303,8 +292,24 @@ then
       CXX="$PTHREAD_CXX"
     fi
   fi
-
 fi
+
+#
+# Determine options necessary to enable OpenMP support
+#
+# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
+# variable to these options.
+if test "$have_threads" != 'yes'
+then
+  ac_cv_prog_c_openmp=unsupported
+fi
+
+AC_OPENMP([C])
+CFLAGS="$OPENMP_CFLAGS $CFLAGS"
+#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
+#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+AC_SUBST(OPENMP_CFLAGS)
+
 
 ########
 #
@@ -1280,13 +1285,17 @@ AC_SUBST(LIB_UMEM)
 # Find OpenMP library
 #
 LIB_OMP=''
-if test "$enable_openmp" != 'no'
+if test "${OPENMP_CFLAGS}x" != 'x'
 then
   if test "${GCC}" = "yes"
   then
+    # GCC
     AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
   else
+    # Sun CC
     AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    # AIX xlc
+    AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-xlsmp",,)
   fi
   LIBS="$LIB_OMP $LIBS"
 fi

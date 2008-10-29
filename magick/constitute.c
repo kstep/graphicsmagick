@@ -935,7 +935,8 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
               if ((x+texture_width) > canvas_image->columns)
                 texture_width=canvas_image->columns-x;
 
-              if (texture_indexes != (const IndexPacket *) NULL)
+              if ((texture_indexes != (const IndexPacket *) NULL) &&
+                  (canvas_indexes != (const IndexPacket *) NULL))
                 {
                   (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
                   canvas_indexes += texture_width;

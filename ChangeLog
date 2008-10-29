@@ -1,3 +1,8 @@
+2008-10-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Rationalize OpenMP tests to make sure that OpenMP
+	can not be enabled without thread support.
+
 2008-10-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c (CompositeImageRegion): Add some minimal
