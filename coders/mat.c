@@ -980,7 +980,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   MATLAB_HDR[0x7F]='M';  
   (void) WriteBlob(image,sizeof(MATLAB_HDR),MATLAB_HDR);
 
-
+  pixels=(unsigned char *) NULL;
   while(image!=NULL)
   {
     pixels=MagickAllocateMemory(unsigned char *,image->rows);

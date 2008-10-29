@@ -1155,8 +1155,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         *view=(ViewInfo *) NULL;
 
       Quantum
-        *buffer,
-        *pixels;
+        *buffer = (Quantum *) NULL,
+        *pixels  = (Quantum *) NULL;
 
       MagickBool
         thread_status;
