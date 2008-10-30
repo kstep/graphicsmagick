@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-zip dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -250,16 +250,12 @@ DIST_WINDOWS_SRC_7ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDEND
 else
 DIST_WINDOWS_SRC_7ZIP=
 endif
-$(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
+$(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
 	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
-if HAS_ZIP
-	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	$(ZIP) -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
-endif # HAS_ZIP
 if HAS_P7ZIP
 	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
@@ -314,8 +310,8 @@ endif # HAS_RPM
 SNAPSHOT_DIRECTORY=/ftp/pub/GraphicsMagick/snapshots
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	$(MAKE) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)/
+	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)/
 	cp -p $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)/ChangeLog.txt
 	cp -p $(top_srcdir)/www/Changelog.html $(SNAPSHOT_DIRECTORY)/ChangeLog.html
 

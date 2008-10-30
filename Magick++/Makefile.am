@@ -1,23 +1,37 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
 #
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
+if WITH_MAGICK_PLUS_PLUS
 LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
+MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
+MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
+MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
+MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
+MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+else
+LIBMAGICKPP = 
+MAGICKPP_CHECK_PGRMS = 
+MAGICKPP_MANS = 
+MAGICKPP_PKGCONFIG = 
+MAGICKPP_SCRPTS =
+MAGICKPP_TESTS = 
+endif
 
-MAGICKPP_SCRPTS = \
+MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
-MAGICKPP_MANS = \
+MAGICKPP_MANS_OPT = \
 	Magick++/bin/GraphicsMagick++-config.1
 
-MAGICKPP_PKGCONFIG = \
+MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/GraphicsMagick++.pc
 
-MAGICKPP_TESTS = \
+MAGICKPP_TEST_SCRIPTS_OPT = \
 	Magick++/tests/exceptions.sh \
 	Magick++/tests/appendImages.sh \
 	Magick++/tests/attributes.sh \
@@ -69,7 +83,7 @@ MAGICKPP_EXTRA_DIST = \
         Magick++/demo/smile.miff \
         Magick++/demo/smile_anim.miff \
         Magick++/demo/tile.miff \
-        $(MAGICKPP_TESTS) \
+        $(MAGICKPP_TEST_SCRIPTS_OPT) \
         Magick++/tests/test_image.miff \
 	Magick++/tests/test_image_anim.miff
 
@@ -139,7 +153,7 @@ Magick___lib_libGraphicsMagick___la_LDFLAGS = \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
 
-MAGICKPP_CHECK_PGRMS = \
+MAGICKPP_CHECK_PGRMS_OPT = \
         Magick++/demo/analyze \
         Magick++/demo/button \
         Magick++/demo/demo \

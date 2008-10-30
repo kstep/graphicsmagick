@@ -46,12 +46,12 @@ following table:
 +=================+=================================================+
 | `GraphicsMagick | Contains the core GraphicsMagick sources in a   |
 | FTP`_           | file named similar to                           |
-|                 | GraphicsMagick-1.2.tar.gz,                      |
-|                 | GraphicsMagick-1.2.tar.bz, or                   |
-|                 | GraphicsMagick-1.2.zip. These core sources are  |
-|                 | sufficient to compile a minimal GraphicsMagick  |
-|                 | on a Unix system (including MacOS-X), or under  |
-|                 | the Cygwin and MinGW environments for Windows.  |
+|                 | GraphicsMagick-1.2.tar.gz, or                   |
+|                 | GraphicsMagick-1.2.tar.lzma                     |
+|                 | These core sources are sufficient to compile    |
+|                 | a minimal GraphicsMagick on a Unix system       |
+|                 | (including MacOS-X), or under the Cygwin and    |
+|                 | and MinGW environments for Windows.             |
 +-----------------+-------------------------------------------------+
 |         `beta`_ | Beta versions of GraphicsMagick.                |
 +-----------------+-------------------------------------------------+

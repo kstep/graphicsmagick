@@ -98,13 +98,13 @@ Verification testing is vital to ensure the correct operation of the
 package. GraphicsMagick is compiled, and its test suite is executed, in
 the following environments:
 
-============  =======  ========  =========================  ====  ====================================
-OS            Version  CPU       Tripplet                   Bits  Compiler
-============  =======  ========  =========================  ====  ====================================
-AIX           4.3.3    PowerPC   powerpc-ibm-aix4.3.3.0     32    C for AIX version 6.0.0
+============  =======  ========  =========================  ====  ====================================  ====================================
+OS            Version  CPU       Tripplet                   Bits  Compiler                              Notes
+============  =======  ========  =========================  ====  ====================================  ====================================
+AIX           4.3.3    PowerPC   powerpc-ibm-aix4.3.3.0     32    C for AIX version 6.0.0               Use --disable-openmp.
 AIX           5.1      PowerPC   powerpc-ibm-aix5.1.0.0     32    IBM XL C/C++ Enterprise Edition V8.0
 AIX           5.2      PowerPC   powerpc-ibm-aix5.2.0.0     32    IBM XL C/C++ Enterprise Edition V8.0
-AIX           5.3      POWER5+   powerpc-ibm-aix5.3.0.0     32    IBM XL C/C++ Enterprise Edition V8.0
+AIX           5.3      POWER5+   powerpc-ibm-aix5.3.0.0     32    IBM XL C/C++ Enterprise Edition V8.0  OpenMP works very well.
 FreeBSD       5.4      i686      i386-unknown-freebsd5.4    32    GCC 3.4.2
 HP-UX         10.20    PA-RISC   hppa2.0-hp-hpux10.20       32    HP92453-01 A.10.32.30
 HP-UX         11.00    PA-RISC   hppa2.0w-hp-hpux11.00      32    HP92453-01 B.11.X.35098-35101.GP
@@ -127,8 +127,8 @@ Solaris       10       AMD64     i386-pc-solaris2.10        32    GCC 4.2.1
 Solaris       10       AMD64     i386-pc-solaris2.10        64    GCC 4.2.1
 Solaris       10       SPARC     sparc-sun-solaris2.10      32    Sun C 5.8 Patch 121015-04
 Solaris       10       i386      i386-pc-solaris2.10        32    Sun C 5.8 Patch 121016-05
-Solaris       2.6      SPARC     sparc-sun-solaris2.6       32    Sun C 5.3 Patch 111679-14
-Solaris       7        SPARC     sparc-sun-solaris2.7       32    Vendor (Sun)
+Solaris       2.6      SPARC     sparc-sun-solaris2.6       32    Sun C 5.3 Patch 111679-14             Use --disable-openmp.
+Solaris       7        SPARC     sparc-sun-solaris2.7       32    Sun C 5.5 Patch 112760-19             OpenMP works.
 Solaris       8        SPARC     sparc-sun-solaris2.8       32    Sun C 5.8 Patch 121015-04
 Solaris       9        SPARC     sparc-sun-solaris2.9       32    GCC 4.2.1
 Solaris       9        SPARC     sparc-sun-solaris2.9       32    Sun C 5.8 Patch 121015-04
@@ -139,7 +139,7 @@ Windows XP    SP2      i686      N/A                        32    Visual C++ 6.0
 Windows XP    SP2      i686      N/A                        32    Visual Studio 2003
 Windows XP    SP2      i686      i686-pc-cygwin             32    Cygwin 1.5.24-2 / GCC 3.4.4
 Windows XP    SP2      i686      i686-pc-mingw32            32    MinGW / GCC 3.2.3
-============  =======  ========  =========================  ====  ====================================
+============  =======  ========  =========================  ====  ====================================  ====================================
 
 The output of any tests which do not support self-validation (e.g. the
 Magick++ demos) is visually inspected for correctness.

@@ -139,12 +139,13 @@ package. GraphicsMagick is compiled, and its test suite is executed, in
 the following environments:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="8%" />
 <col width="9%" />
-<col width="27%" />
-<col width="4%" />
-<col width="39%" />
+<col width="5%" />
+<col width="6%" />
+<col width="20%" />
+<col width="3%" />
+<col width="28%" />
+<col width="28%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">OS</th>
@@ -153,6 +154,7 @@ the following environments:</p>
 <th class="head">Tripplet</th>
 <th class="head">Bits</th>
 <th class="head">Compiler</th>
+<th class="head">Notes</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -162,6 +164,7 @@ the following environments:</p>
 <td>powerpc-ibm-aix4.3.3.0</td>
 <td>32</td>
 <td>C for AIX version 6.0.0</td>
+<td>Use --disable-openmp.</td>
 </tr>
 <tr><td>AIX</td>
 <td>5.1</td>
@@ -169,6 +172,7 @@ the following environments:</p>
 <td>powerpc-ibm-aix5.1.0.0</td>
 <td>32</td>
 <td>IBM XL C/C++ Enterprise Edition V8.0</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>AIX</td>
 <td>5.2</td>
@@ -176,6 +180,7 @@ the following environments:</p>
 <td>powerpc-ibm-aix5.2.0.0</td>
 <td>32</td>
 <td>IBM XL C/C++ Enterprise Edition V8.0</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>AIX</td>
 <td>5.3</td>
@@ -183,6 +188,7 @@ the following environments:</p>
 <td>powerpc-ibm-aix5.3.0.0</td>
 <td>32</td>
 <td>IBM XL C/C++ Enterprise Edition V8.0</td>
+<td>OpenMP works very well.</td>
 </tr>
 <tr><td>FreeBSD</td>
 <td>5.4</td>
@@ -190,6 +196,7 @@ the following environments:</p>
 <td>i386-unknown-freebsd5.4</td>
 <td>32</td>
 <td>GCC 3.4.2</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>HP-UX</td>
 <td>10.20</td>
@@ -197,6 +204,7 @@ the following environments:</p>
 <td>hppa2.0-hp-hpux10.20</td>
 <td>32</td>
 <td>HP92453-01 A.10.32.30</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>HP-UX</td>
 <td>11.00</td>
@@ -204,6 +212,7 @@ the following environments:</p>
 <td>hppa2.0w-hp-hpux11.00</td>
 <td>32</td>
 <td>HP92453-01 B.11.X.35098-35101.GP</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>HP-UX</td>
 <td>11.11</td>
@@ -211,6 +220,7 @@ the following environments:</p>
 <td>hppa2.0w-hp-hpux11.11</td>
 <td>32</td>
 <td>HP92453-01 B.11.X.35098-35101.GP</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>HP-UX</td>
 <td>11.23</td>
@@ -218,6 +228,7 @@ the following environments:</p>
 <td>ia64-hp-hpux11.23</td>
 <td>32</td>
 <td>HP C/aC++ B3910B A.06.13</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>HP-UX</td>
 <td>11.23</td>
@@ -225,6 +236,7 @@ the following environments:</p>
 <td>hppa2.0w-hp-hpux11.23</td>
 <td>32</td>
 <td>HP92453-01 B.11.X.35098-35101.GP</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>IRIX</td>
 <td>6.5</td>
@@ -232,6 +244,7 @@ the following environments:</p>
 <td>mips-sgi-irix6.5</td>
 <td>32</td>
 <td>MIPSpro Compilers: Version 7.4.4m</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>OS X</td>
 <td>Leopard</td>
@@ -239,6 +252,7 @@ the following environments:</p>
 <td>powerpc-apple-darwin9.1.0</td>
 <td>32</td>
 <td>GCC 4.0.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>OS X</td>
 <td>Leopard</td>
@@ -246,6 +260,7 @@ the following environments:</p>
 <td>powerpc-apple-darwin9.1.0</td>
 <td>64</td>
 <td>GCC 4.0.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>2.1</td>
@@ -253,6 +268,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 2.96</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>3</td>
@@ -260,6 +276,7 @@ the following environments:</p>
 <td>x86_64-unknown-linux-gnu</td>
 <td>64</td>
 <td>GCC 3.2.3</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>3</td>
@@ -267,6 +284,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 3.2.3</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>4</td>
@@ -274,6 +292,7 @@ the following environments:</p>
 <td>x86_64-unknown-linux-gnu</td>
 <td>64</td>
 <td>GCC 3.4.6</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>4</td>
@@ -281,6 +300,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 3.4.6</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>5</td>
@@ -288,6 +308,7 @@ the following environments:</p>
 <td>x86_64-unknown-linux-gnu</td>
 <td>64</td>
 <td>GCC 4.1.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>RHEL</td>
 <td>5</td>
@@ -295,6 +316,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 4.1.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Redhat Linux</td>
 <td>7.1</td>
@@ -302,6 +324,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 2.96</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Redhat Linux</td>
 <td>9</td>
@@ -309,6 +332,7 @@ the following environments:</p>
 <td>i686-pc-linux-gnu</td>
 <td>32</td>
 <td>GCC 3.2.2</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>10</td>
@@ -316,6 +340,7 @@ the following environments:</p>
 <td>i386-pc-solaris2.10</td>
 <td>32</td>
 <td>GCC 4.2.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>10</td>
@@ -323,6 +348,7 @@ the following environments:</p>
 <td>i386-pc-solaris2.10</td>
 <td>64</td>
 <td>GCC 4.2.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>10</td>
@@ -330,6 +356,7 @@ the following environments:</p>
 <td>sparc-sun-solaris2.10</td>
 <td>32</td>
 <td>Sun C 5.8 Patch 121015-04</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>10</td>
@@ -337,6 +364,7 @@ the following environments:</p>
 <td>i386-pc-solaris2.10</td>
 <td>32</td>
 <td>Sun C 5.8 Patch 121016-05</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>2.6</td>
@@ -344,13 +372,15 @@ the following environments:</p>
 <td>sparc-sun-solaris2.6</td>
 <td>32</td>
 <td>Sun C 5.3 Patch 111679-14</td>
+<td>Use --disable-openmp.</td>
 </tr>
 <tr><td>Solaris</td>
 <td>7</td>
 <td>SPARC</td>
 <td>sparc-sun-solaris2.7</td>
 <td>32</td>
-<td>Vendor (Sun)</td>
+<td>Sun C 5.5 Patch 112760-19</td>
+<td>OpenMP works.</td>
 </tr>
 <tr><td>Solaris</td>
 <td>8</td>
@@ -358,6 +388,7 @@ the following environments:</p>
 <td>sparc-sun-solaris2.8</td>
 <td>32</td>
 <td>Sun C 5.8 Patch 121015-04</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>9</td>
@@ -365,6 +396,7 @@ the following environments:</p>
 <td>sparc-sun-solaris2.9</td>
 <td>32</td>
 <td>GCC 4.2.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>9</td>
@@ -372,6 +404,7 @@ the following environments:</p>
 <td>sparc-sun-solaris2.9</td>
 <td>32</td>
 <td>Sun C 5.8 Patch 121015-04</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Solaris</td>
 <td>9</td>
@@ -379,6 +412,7 @@ the following environments:</p>
 <td>sparc-sun-solaris2.9</td>
 <td>64</td>
 <td>GCC 4.2.1</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Tru64 UNIX</td>
 <td>4.0D</td>
@@ -386,6 +420,7 @@ the following environments:</p>
 <td>alphaev5-dec-osf4.0d</td>
 <td>64</td>
 <td>Compaq C V6.5-207 (dtk)</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Tru64 UNIX</td>
 <td>5.1</td>
@@ -393,6 +428,7 @@ the following environments:</p>
 <td>alphaev67-dec-osf5.1</td>
 <td>64</td>
 <td>Compaq C V6.5-303 (dtk)</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Windows XP</td>
 <td>SP2</td>
@@ -400,6 +436,7 @@ the following environments:</p>
 <td>N/A</td>
 <td>32</td>
 <td>Visual C++ 6.0</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Windows XP</td>
 <td>SP2</td>
@@ -407,6 +444,7 @@ the following environments:</p>
 <td>N/A</td>
 <td>32</td>
 <td>Visual Studio 2003</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Windows XP</td>
 <td>SP2</td>
@@ -414,6 +452,7 @@ the following environments:</p>
 <td>i686-pc-cygwin</td>
 <td>32</td>
 <td>Cygwin 1.5.24-2 / GCC 3.4.4</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>Windows XP</td>
 <td>SP2</td>
@@ -421,6 +460,7 @@ the following environments:</p>
 <td>i686-pc-mingw32</td>
 <td>32</td>
 <td>MinGW / GCC 3.2.3</td>
+<td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -437,7 +477,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 21:54 UTC.
+Generated on: 2008-10-30 18:02 UTC.
 
 </div>
 </body>

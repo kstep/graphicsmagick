@@ -1,3 +1,15 @@
+2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: The Magick++ build was supposed to be optional. Now
+	it is.
+	* Makefile.am: Eliminated .tar.bz2 and .zip packages from the
+	distribution.  The .tar.bz2 package was hardly smaller than the
+	.tar.gz package so it wasted 5.9MB with little benefit.  The
+	compression ratio on the .zip archives is absolutely terrible so
+	eliminating zip eliminates huge 9.6MB and 25MB files from the
+	distribution equation.  Windows users can easily learn how to use
+	the vastly more efficient 7-Zip format.
+
 2008-10-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Rationalize OpenMP tests to make sure that OpenMP
