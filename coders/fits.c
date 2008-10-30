@@ -332,7 +332,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       image->depth = Min(QuantumDepth,fits_info.bits_per_pixel);
     else
       image->depth = QuantumDepth;		/* double type cell */
-    //image->storage_class=PseudoClass;
+    /* image->storage_class=PseudoClass; */
     image->storage_class = DirectClass;
     image->scene=scene;
     image->is_grayscale = 1;
@@ -393,9 +393,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
       if(ReadBlob(image, packet_size*image->columns, fits_pixels) != (size_t)packet_size*image->columns)
       {
-	//if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-        //  "  fits cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	break; //goto ExitLoop;
+/* 	if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*           "  fits cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1)); */
+	break; /* goto ExitLoop; */
       }
 
       if(fits_info.bits_per_pixel==16) FixSignedMSBValues(fits_pixels, image->columns, 2);
@@ -403,9 +403,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
       if(ImportImagePixelArea(image, GrayQuantum, packet_size*8, fits_pixels, &import_options,0) == MagickFail)
       {
-//ImportImagePixelAreaFailed:
-//     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-//              "  fits failed to ImportImagePixelArea for a row %u", (unsigned)y);
+/* ImportImagePixelAreaFailed: */
+/*      if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*               "  fits failed to ImportImagePixelArea for a row %u", (unsigned)y); */
 	    break;
       }
 

@@ -337,7 +337,7 @@ int status;
   zip_info.zfree = (free_func) NULL;
   zip_info.opaque = (voidpf) NULL;
   inflateInit(&zip_info);
-  //zip_info.next_out = 8*4;
+  /* zip_info.next_out = 8*4; */
 
   zip_info.avail_in = 0;
   zip_info.total_out = 0;
@@ -724,7 +724,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 	{
 	  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
-	  goto done_reading;		// Skip image rotation, when cannot set image pixels	  
+	  goto done_reading;		/* Skip image rotation, when cannot set image pixels */	  
 	}
         if(ReadBlob(image2,ldblk,(char *)BImgBuff) != (size_t) ldblk)
 	{
