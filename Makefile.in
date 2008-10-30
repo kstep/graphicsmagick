@@ -69,7 +69,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
 #
 
 # Copyright (C) 2004 GraphicsMagick Group
@@ -134,7 +134,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4)
+TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
+	$(UTILITIES_TESTS)
+check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) $(magickinc_HEADERS) \
 	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
@@ -234,6 +236,8 @@ Magick___lib_libGraphicsMagick___la_LINK = $(LIBTOOL) --tag=CXX \
 	$(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(Magick___lib_libGraphicsMagick___la_LDFLAGS) $(LDFLAGS) -o \
 	$@
+@WITH_MAGICK_PLUS_PLUS_TRUE@am_Magick___lib_libGraphicsMagick___la_rpath =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	-rpath $(libdir)
 coders_art_la_DEPENDENCIES = $(LIBMAGICK)
 am_coders_art_la_OBJECTS = coders/coders_art_la-art.lo
 coders_art_la_OBJECTS = $(am_coders_art_la_OBJECTS)
@@ -1264,93 +1268,95 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/tests/morphImages$(EXEEXT) \
 	Magick++/tests/readWriteBlob$(EXEEXT) \
 	Magick++/tests/readWriteImages$(EXEEXT)
-am__EXEEXT_4 = wand/drawtest$(EXEEXT) wand/wandtest$(EXEEXT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_4 = $(am__EXEEXT_3)
+am__EXEEXT_5 = wand/drawtest$(EXEEXT) wand/wandtest$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
-Magick___demo_analyze_DEPENDENCIES = $(LIBMAGICKPP)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 = Magick++/lib/libGraphicsMagick++.la
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_tests_bitstream_OBJECTS =  \
 	tests/tests_bitstream-bitstream.$(OBJEXT)
 tests_bitstream_OBJECTS = $(am_tests_bitstream_OBJECTS)
@@ -1593,6 +1599,8 @@ HEADERS = $(include_HEADERS) $(ltdlinclude_HEADERS) \
 	$(magickpptopinc_HEADERS) $(noinst_HEADERS) $(wandinc_HEADERS)
 ETAGS = etags
 CTAGS = ctags
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -1967,14 +1975,6 @@ TESTS_ENVIRONMENT = \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
 	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
-
-
-# Tests to run
-TESTS = \
-	$(TESTS_TESTS) \
-	$(MAGICKPP_TESTS) \
-	$(WAND_TESTS) \
-	$(UTILITIES_TESTS)
 
 
 # Tests which are expected to fail
@@ -3067,17 +3067,28 @@ MAGICK_FILTER_SRCS = \
 filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(LIBMAGICK)
-LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
-MAGICKPP_SCRPTS = \
+@WITH_MAGICK_PLUS_PLUS_FALSE@LIBMAGICKPP = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_MANS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_PKGCONFIG = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_SCRPTS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TESTS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
-MAGICKPP_MANS = \
+MAGICKPP_MANS_OPT = \
 	Magick++/bin/GraphicsMagick++-config.1
 
-MAGICKPP_PKGCONFIG = \
+MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/GraphicsMagick++.pc
 
-MAGICKPP_TESTS = \
+MAGICKPP_TEST_SCRIPTS_OPT = \
 	Magick++/tests/exceptions.sh \
 	Magick++/tests/appendImages.sh \
 	Magick++/tests/attributes.sh \
@@ -3129,7 +3140,7 @@ MAGICKPP_EXTRA_DIST = \
         Magick++/demo/smile.miff \
         Magick++/demo/smile_anim.miff \
         Magick++/demo/tile.miff \
-        $(MAGICKPP_TESTS) \
+        $(MAGICKPP_TEST_SCRIPTS_OPT) \
         Magick++/tests/test_image.miff \
 	Magick++/tests/test_image_anim.miff
 
@@ -3199,7 +3210,7 @@ Magick___lib_libGraphicsMagick___la_LDFLAGS = \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
-MAGICKPP_CHECK_PGRMS = \
+MAGICKPP_CHECK_PGRMS_OPT = \
         Magick++/demo/analyze \
         Magick++/demo/button \
         Magick++/demo/demo \
@@ -4721,7 +4732,7 @@ Magick++/lib/Thread.lo: Magick++/lib/$(am__dirstamp) \
 Magick++/lib/TypeMetric.lo: Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/libGraphicsMagick++.la: $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
-	$(Magick___lib_libGraphicsMagick___la_LINK) -rpath $(libdir) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
+	$(Magick___lib_libGraphicsMagick___la_LINK) $(am_Magick___lib_libGraphicsMagick___la_rpath) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
 coders/$(am__dirstamp):
 	@$(MKDIR_P) coders
 	@: > coders/$(am__dirstamp)

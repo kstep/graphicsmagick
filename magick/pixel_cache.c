@@ -4029,23 +4029,26 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
     {
       nexus_info->staging=MagickAllocateMemory(PixelPacket *,length);
       nexus_info->length=length;
+      /*
+        Clear memory so valgrind is happy.
+      */
+      if (nexus_info->staging != (PixelPacket *) NULL)
+        (void) memset((void *) nexus_info->staging,0,nexus_info->length);
     }
   else
     if (nexus_info->length < (magick_off_t) length)
       {
         MagickReallocMemory(PixelPacket *,nexus_info->staging,length);
         nexus_info->length=length;
+        /*
+          Clear memory so valgrind is happy.
+        */
+        if (nexus_info->staging != (PixelPacket *) NULL)
+          (void) memset((void *) nexus_info->staging,0,nexus_info->length);
       }
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateCacheInfo);
-#if 1
-  /*
-    Initialize region to zero to ensure consistent behavior.
-    FIXME: This should not be necessary
-  */
-  (void) memset((void *) nexus_info->staging,0,nexus_info->length);
-#endif
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||

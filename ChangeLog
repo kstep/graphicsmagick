@@ -1,3 +1,14 @@
+2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: The Magick++ build was supposed to be optional. Now
+	it is.
+
+2008-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (SetNexus): Make staging buffer memset()
+	conditional in order to dramatically diminish impact to small
+	accesses.  This memset() only exists to make valgrind happy.
+
 2008-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix progress monitor for the case
