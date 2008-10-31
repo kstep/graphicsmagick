@@ -267,8 +267,8 @@ extern "C" {
   OpenMP support requires version 2.0 (March 2002) or later.
 */
 #if defined(_OPENMP) && (_OPENMP >= 200203)
-# include <omp.h>
-# define HAVE_OPENMP 1
+#  include <omp.h>
+#  define HAVE_OPENMP 1
 #endif
 
 #undef index
@@ -446,12 +446,16 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 /*
   OpenMP function null replacements if not using OpenMP.
 */
-#if !defined(_OPENMP)
+#if !defined(HAVE_OPENMP)
+#  undef omp_get_max_threads
 #  define omp_get_max_threads() 1
+#  undef omp_get_num_threads
 #  define omp_get_num_threads() 1
+#  undef omp_get_thread_num
 #  define omp_get_thread_num() 0
+#  undef omp_set_num_threads
 #  define omp_set_num_threads(nthreads)
-#endif /* !defined(_OPENMP) */
+#endif /* !defined(HAVE_OPENMP) */
 
 
 /*
