@@ -65,7 +65,7 @@ all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
-	if test "x$(DESTDIR)" = "x" -o test "$(PERL_SUPPORTS_DESTDIR)" = 'yes' ; then \
+	if test "x$(DESTDIR)" = "x" -o "$(PERL_SUPPORTS_DESTDIR)" = 'yes' ; then \
 	  ( cd $(PERLMAGICK) && \
 	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
 	    INSTALLBIN="$(BIN_DIR)" \
