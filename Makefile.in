@@ -1633,7 +1633,8 @@ am__remove_distdir = \
   { test ! -d $(distdir) \
     || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr $(distdir); }; }
-DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.lzma
+DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 \
+	$(distdir).tar.lzma
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
@@ -1955,7 +1956,7 @@ windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-bzip2 dist-lzma foreign
 topincludedir = @includedir@/GraphicsMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
@@ -9400,7 +9401,6 @@ distdir: $(DISTFILES)
 dist-gzip: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	$(am__remove_distdir)
-
 dist-bzip2: distdir
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	$(am__remove_distdir)
@@ -9423,6 +9423,7 @@ dist-zip: distdir
 
 dist dist-all: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	tardir=$(distdir) && $(am__tar) | lzma -9 -c >$(distdir).tar.lzma
 	$(am__remove_distdir)
 
