@@ -1,5 +1,8 @@
 2008-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/Makefile.am (install-exec-perl): If statement seemed
+	to be missing necessary 'test' statement.  Perhaps this change
+	will fix SF issue 2212113.
 	* magick/studio.h: Make sure we don't conflict with OpenMP
 	implementation if it is active but we are not using it.
 
