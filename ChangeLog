@@ -1,3 +1,9 @@
+2008-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Makefile.am (install-exec-perl): If statement seemed
+	to be missing necessary 'test' statement.  Perhaps this change
+	will fix SF issue 2212113.
+
 2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: The Magick++ build was supposed to be optional. Now

@@ -38,7 +38,7 @@ extern "C" {
 #define MagickLibVersion  0x020005
 #define MagickLibVersionText  "1.2.5"
 #define MagickLibVersionNumber 2,0,5
-#define MagickChangeDate   "20081030"
+#define MagickChangeDate   "20081031"
 #define MagickReleaseDate  "2008-07-25"
 
 
