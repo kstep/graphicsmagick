@@ -1,5 +1,6 @@
 2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (VersionCommand): Report OpenMP version.
 	* Makefile.am: The Magick++ build was supposed to be optional. Now
 	it is.
 	* Makefile.am: Eliminated .tar.bz2 and .zip packages from the

@@ -265,6 +265,7 @@ extern "C" {
 
 #if defined(_OPENMP)
 # include <omp.h>
+# define HAVE_OPENMP 1
 #endif
 
 #undef index

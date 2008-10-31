@@ -14517,9 +14517,20 @@ static void ImportUsage(void)
 %
 %
 */
+static void PrintFeatureTextual(const char* feature,MagickBool support,const char *text)
+{
+  const char
+    *support_text;
+
+  support_text=(support ? "yes" : "no");
+  if ((text != NULL) && strlen(text) != 0)
+    (void) fprintf(stdout,"  %-24s %s (%s)\n", feature,  support_text, text);
+  else
+    (void) fprintf(stdout,"  %-24s %s\n", feature, support_text);
+}
 static void PrintFeature(const char* feature,MagickBool support)
 {
-  (void) fprintf(stdout,"  %-24s %s\n", feature, (support ? "yes" : "no"));
+  PrintFeatureTextual(feature,support, NULL);
 }
 static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   int ARGUNUSED(argc),char **ARGUNUSED(argv),char **ARGUNUSED(metadata),
@@ -14527,6 +14538,9 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 {
   MagickBool
     supported;
+
+  char
+    text[MaxTextExtent];
 
   (void) fprintf(stdout,"%.1024s\n",GetMagickVersion(0));
   (void) fprintf(stdout,"%.1024s\n",GetMagickCopyright());
@@ -14620,10 +14634,12 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 
   /* OpenMP */
   supported=MagickFalse;
+  text[0]='\0';
 #if defined(_OPENMP)
   supported=MagickTrue;
+  FormatString(text,"%u",(unsigned int) _OPENMP);
 #endif /* defined(_OPENMP) */
-  PrintFeature("OpenMP", supported);
+  PrintFeatureTextual("OpenMP", supported, text);
 
   /* PNG */
   supported=MagickFalse;
