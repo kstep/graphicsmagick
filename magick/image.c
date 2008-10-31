@@ -813,7 +813,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 
   number_scenes=(double) GetImageListLength(image);
   last_image=GetLastImageInList(image);
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(dynamic) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -906,7 +906,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
             }
         }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -2653,7 +2653,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   corners[0]=AcquireOneThreadViewPixel(view_set,0,0,exception);
   corners[1]=AcquireOneThreadViewPixel(view_set,(long) image->columns-1,0,exception);
   corners[2]=AcquireOneThreadViewPixel(view_set,0,(long) image->rows-1,exception);
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -2670,7 +2670,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       MagickPassFail
         thread_status;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -2721,7 +2721,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
               }
         }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -2898,7 +2898,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -2952,7 +2952,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
     }
 #endif
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -3513,7 +3513,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
         }
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -3573,7 +3573,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
   ARG_NOT_USED(exception);
 
   (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -3605,7 +3605,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
         }
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -3800,7 +3800,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
   /*
     Generate gradient pixels.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -3834,7 +3834,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
             thread_status=MagickFail;
         }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -5719,7 +5719,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   get_pixels=GetPixelCachePresent(image);
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -5800,7 +5800,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
           if (!SyncThreadViewPixels(image_views,&image->exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

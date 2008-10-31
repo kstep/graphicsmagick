@@ -881,7 +881,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
       DestroyImage(canvas_image);
       return (Image *) NULL;
     }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) canvas_image->rows; y++)
@@ -948,7 +948,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
           if (!SyncThreadViewPixels(canvas_views,exception))
               thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

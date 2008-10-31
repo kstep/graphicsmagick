@@ -1088,7 +1088,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
     edge.y2=image->rows-1;
   y_min=(long) ceil(edge.y1-0.5);
   y_max=(long) floor(edge.y2+0.5);
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=y_min; y <= y_max; y++)
@@ -1148,7 +1148,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
           if (!SyncThreadViewPixels(image_views,&image->exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

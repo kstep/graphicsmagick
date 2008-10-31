@@ -461,7 +461,7 @@ GetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable
 
   ARG_NOT_USED(exception);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -511,7 +511,7 @@ GetImageChannelDepthPixels(void *mutable_data,          /* User provided mutable
       }
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {

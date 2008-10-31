@@ -364,7 +364,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if ((image_view != (ThreadViewSet *) NULL) &&
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
@@ -405,7 +405,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!SyncThreadViewPixels(rotate_image_view,exception))
                       thread_status=MagickFail;
                   }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
                 {
@@ -594,7 +594,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if ((image_view != (ThreadViewSet *) NULL) &&
             (rotate_image_view != (ThreadViewSet *) NULL))
           {
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
             for (y=0; y < (long) image->rows; y++)
@@ -640,7 +640,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!SyncThreadViewPixels(rotate_image_view,exception))
                       thread_status=MagickFail;
                   }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
                 {
@@ -881,7 +881,7 @@ static void XShearImage(Image *image,const double degrees,
   if (image_view == (ThreadViewSet *) NULL)
     return;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) height; y++)
@@ -979,7 +979,7 @@ static void XShearImage(Image *image,const double degrees,
           if (!SyncThreadViewPixels(image_view,&image->exception))
               thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
           {
@@ -1063,7 +1063,7 @@ static void XShearImage(Image *image,const double degrees,
         }
       if (!SyncThreadViewPixels(image_view,&image->exception))
         thread_status=MagickFail;
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -1144,7 +1144,7 @@ static void YShearImage(Image *image,const double degrees,
   if (image_view == (ThreadViewSet *) NULL)
     return;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) width; y++)
@@ -1242,7 +1242,7 @@ static void YShearImage(Image *image,const double degrees,
           if (!SyncThreadViewPixels(image_view,&image->exception))
               thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
           {
@@ -1327,7 +1327,7 @@ static void YShearImage(Image *image,const double degrees,
       if (!SyncThreadViewPixels(image_view,&image->exception))
         thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

@@ -570,7 +570,7 @@ QuantumDepthCB(void *mutable_data,
         Build LUT for Q8 and Q16 builds
       */
 #if MaxRGB <= MaxMap
-#  if defined(_OPENMP)
+#  if defined(HAVE_OPENMP)
 #    pragma omp critical
 #  endif
       if (mutable_context->channel_lut == (Quantum *) NULL)
@@ -750,7 +750,7 @@ QuantumGammaCB(void *mutable_data,
     Build LUT for Q8 and Q16 builds
   */
 #if MaxRGB <= MaxMap
-#  if defined(_OPENMP)
+#  if defined(HAVE_OPENMP)
 #    pragma omp critical
 #  endif
   if (mutable_context->channel_lut == (Quantum *) NULL)

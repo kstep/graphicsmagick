@@ -192,7 +192,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (row=y; row < (long) (y+rows); row++)
@@ -218,7 +218,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -332,7 +332,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   if (view_set == (ThreadViewSet *) NULL)
     return MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (row=y; row < (long) (y+rows); row++)
@@ -362,7 +362,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         if (!SyncThreadViewPixels(view_set,exception))
           thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -495,7 +495,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       return MagickFail;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
@@ -540,7 +540,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
                                   second_image,second_pixels,second_indexes,
                                   columns, exception);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -676,7 +676,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       return MagickFail;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
@@ -733,7 +733,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
         if (!SyncThreadViewPixels(update_view_set,exception))
           thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -993,7 +993,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       return MagickFail;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (row=0; row < (long) rows; row++)
@@ -1070,7 +1070,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       if (!SyncThreadViewPixels(update_view_set,exception))
         thread_status=MagickFail;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

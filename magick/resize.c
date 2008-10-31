@@ -521,7 +521,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) minify_image->rows; y++)
@@ -576,7 +576,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
             if (!SyncThreadViewPixels(minify_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -858,7 +858,7 @@ HorizontalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for shared(status)
 #endif
   for (x=0; x < (long) destination->columns; x++)
@@ -991,7 +991,7 @@ HorizontalFilter(const Image *source,Image *destination,
           if (!SyncThreadViewPixels(destination_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -1073,7 +1073,7 @@ VerticalFilter(const Image *source,Image *destination,
     }
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for shared(status)
 #endif
   for (y=0; y < (long) destination->rows; y++)
@@ -1204,7 +1204,7 @@ VerticalFilter(const Image *source,Image *destination,
           if (!SyncThreadViewPixels(destination_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

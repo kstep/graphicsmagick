@@ -421,7 +421,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
@@ -490,7 +490,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
             if (!SyncThreadViewPixels(convolve_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -625,7 +625,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         DestroyImage(implode_image);
         return MagickFail;
       }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -685,7 +685,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
             if (!SyncThreadViewPixels(implode_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -986,7 +986,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Paint each row of the image.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -1074,7 +1074,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           if (!SyncThreadViewPixels(paint_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -1536,7 +1536,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         DestroyImage(swirl_image);
         return MagickFail;
       }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -1596,7 +1596,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
             if (!SyncThreadViewPixels(swirl_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -1700,7 +1700,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
                             MagickMsg(OptionError,UnableToWaveImage));
       }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,256)
 #endif
     for (x=0; x < (long) wave_image->columns; x++)
@@ -1737,7 +1737,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         return MagickFail;
       }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) wave_image->rows; y++)
@@ -1773,7 +1773,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
             if (!SyncThreadViewPixels(wave_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {

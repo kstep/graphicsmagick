@@ -14635,10 +14635,10 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   /* OpenMP */
   supported=MagickFalse;
   text[0]='\0';
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
   supported=MagickTrue;
   FormatString(text,"%u",(unsigned int) _OPENMP);
-#endif /* defined(_OPENMP) */
+#endif /* defined(HAVE_OPENMP) */
   PrintFeatureTextual("OpenMP", supported, text);
 
   /* PNG */

@@ -1,5 +1,7 @@
 2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/studio.h (HAVE_OPENMP): Add logic to make sure that
+	OpenMP is only engaged for OpenMP 2.0 or later.
 	* magick/command.c (VersionCommand): Report OpenMP version.
 	* Makefile.am: The Magick++ build was supposed to be optional. Now
 	it is.

@@ -337,7 +337,7 @@ ComputeAbsoluteError(void *mutable_data,
       lstats.opacity += fabs(first_pixels[i].opacity-(double) second_pixels[i].opacity)/MaxRGBDouble;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -405,7 +405,7 @@ ComputePeakAbsoluteError(void *mutable_data,
         lstats.opacity=difference;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -473,7 +473,7 @@ ComputeSquaredError(void *mutable_data,
       lstats.opacity += difference*difference;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {
@@ -867,7 +867,7 @@ ComputePixelError(void *mutable_data,
         stats_maximum=distance;
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
   {

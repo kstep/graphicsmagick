@@ -154,7 +154,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   /*
     Extract chop image.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) clone_info.y; y++)
@@ -205,7 +205,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (!SyncThreadViewPixels(chop_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -222,7 +222,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   /*
     Extract chop image.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) (image->rows-(clone_info.y+clone_info.height)); y++)
@@ -273,7 +273,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           if (!SyncThreadViewPixels(chop_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -538,7 +538,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   crop_image->page=page;
   if ((geometry->width == 0) || (geometry->height == 0))
     (void) memset(&crop_image->page,0,sizeof(RectangleInfo));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) crop_image->rows; y++)
@@ -579,7 +579,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           if (!SyncThreadViewPixels(crop_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -928,7 +928,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   /*
     Flip each row.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) flip_image->rows; y++)
@@ -969,7 +969,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
           if (!SyncThreadViewPixels(flip_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -1066,7 +1066,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   /*
     Flop each row.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) flop_image->rows; y++)
@@ -1115,7 +1115,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
           if (!SyncThreadViewPixels(flop_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {

@@ -148,7 +148,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -218,7 +218,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
             if (!SyncThreadViewPixels(threshold_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -648,7 +648,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
       long
         y;
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
@@ -692,7 +692,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                     thread_status=MagickFail;
                 }
             }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
           {
@@ -1132,7 +1132,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   /*
     Reduce speckle in the image.
   */
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(dynamic,1) shared(status,progress)
 #endif
   for (layer=min_layer; layer < max_layer; layer++)
@@ -1239,7 +1239,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
             {
               if (status == MagickFail)
                 continue;
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
               {
@@ -1262,7 +1262,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
           if (view == (ViewInfo *) NULL)
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       if (thread_status != MagickFail)
@@ -1320,7 +1320,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       view=(ViewInfo *) NULL;
       MagickFreeMemory(pixels);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -1591,7 +1591,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -1674,7 +1674,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             if (!SyncThreadViewPixels(enhance_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -2187,7 +2187,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       return ((Image *) NULL);
     }
   {
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) median_image->rows; y++)
@@ -2241,7 +2241,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
             if (!SyncThreadViewPixels(median_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -2455,7 +2455,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -2520,7 +2520,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             if (!SyncThreadViewPixels(blur_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -2726,7 +2726,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
       ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                             UnableToThresholdImage);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3012,7 +3012,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
             if (!SyncThreadViewPixels(view_set,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -3206,7 +3206,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       return ((Image *) NULL);
     }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) noise_image->rows; y++)
@@ -3261,7 +3261,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
           if (!SyncThreadViewPixels(noise_views,exception))
             thread_status=MagickFail;
         }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
       {
@@ -3374,7 +3374,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         return (Image *) NULL;
       }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3466,7 +3466,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
             if (!SyncThreadViewPixels(shade_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -3724,7 +3724,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         return (Image *) NULL;
       }
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3797,7 +3797,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
             if (!SyncThreadViewPixels(spread_views,exception))
               thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
@@ -3905,7 +3905,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
       ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                             UnableToThresholdImage);
 
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3966,7 +3966,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
               if (!SyncThreadViewPixels(image_views,&image->exception))
                 thread_status=MagickFail;
           }
-#if defined(_OPENMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
         {
