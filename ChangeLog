@@ -1,3 +1,9 @@
+2008-11-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/color.c (FuzzyColorMatch): If fuzz is zero then
+	completely use the result of ColorMatch() rather than entering
+	unnecessary expensive code.
+
 2008-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: The Magick++ build was supposed to be optional. Now

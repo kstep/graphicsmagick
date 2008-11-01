@@ -433,10 +433,10 @@ static void DestroyColorList(NodeInfo *node_info)
 %  This function is used by ColorFloodFill and other algorithms which
 %  compare two colors.
 %
-%  The format of the ColorMatch method is:
+%  The format of the FuzzyColorMatc method is:
 %
-%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
-%        const double fuzz)
+%      MagickBool FuzzyColorMatch(const PixelPacket *p,
+%                                 const PixelPacket *q,const double fuzz)
 %
 %  A description of each parameter follows:
 %
@@ -449,32 +449,30 @@ static void DestroyColorList(NodeInfo *node_info)
 %
 %
 */
-MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
+MagickExport MagickBool FuzzyColorMatch(const PixelPacket *p,
   const PixelPacket *q,const double fuzz)
 {
-  DoublePixelPacket
-    pixel;
-
-  register double
+  double
+    difference,
     distance,
     fuzz_squared;
 
-  if ((fuzz == 0.0) && ColorMatch(q,p))
-    return(True);
+  if (fuzz < MagickEpsilon)
+    return (ColorMatch(q,p));
   fuzz_squared=fuzz*fuzz;
-  pixel.red=p->red-(double) q->red;
-  distance=pixel.red*pixel.red;
+  difference=p->red-(double) q->red;
+  distance=difference*difference;
   if (distance > (fuzz_squared))
-    return(False);
-  pixel.green=p->green-(double) q->green;
-  distance+=pixel.green*pixel.green;
+    return(MagickFalse);
+  difference=p->green-(double) q->green;
+  distance+=difference*difference;
   if (distance > (fuzz_squared))
-    return(False);
-  pixel.blue=p->blue-(double) q->blue;
-  distance+=pixel.blue*pixel.blue;
+    return(MagickFalse);
+  difference=p->blue-(double) q->blue;
+  distance+=difference*difference;
   if (distance > (fuzz_squared))
-    return(False);
-  return(True);
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
