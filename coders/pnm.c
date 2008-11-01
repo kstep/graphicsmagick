@@ -235,9 +235,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LongPixelPacket
     pixel;
 
-  MonitorHandler
-    handler;
-
   register IndexPacket
     *indexes;
 
@@ -682,8 +679,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         MagickFreeMemory(pixels);
-        handler=SetMonitorHandler((MonitorHandler) NULL);
-        (void) SetMonitorHandler(handler);
         image->is_monochrome=is_monochrome;
         image->is_grayscale=is_grayscale;
         if (EOFBlob(image))
