@@ -5249,7 +5249,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
   }
   DestroyImageInfo(image_info);
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 }
 
 /*

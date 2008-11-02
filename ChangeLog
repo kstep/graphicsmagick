@@ -1,3 +1,10 @@
+2008-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Fix passing the --with-windows-font-dir option via
+	DISTCHECK_CONFIG_FLAGS.
+	* magick/command.c (ConjureImageCommand): Return status was
+	inverted so one was returned for command success rather than zero.
+
 2008-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/msl.c: Applied MSL patch from graphicsmagick-bugs list to

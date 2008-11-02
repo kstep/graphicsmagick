@@ -1659,9 +1659,9 @@ reflect the scanlines in the horizontal direction.</pp>
 <abs>use this font when annotating the image with text</abs>
 
 <pp>
-You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+You can tag a font to specify whether it is a PostScript, TrueType, or X11
 font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
-is PostScript, and <tt>x:fixed</tt> is OPTION1.</pp>
+is PostScript, and <tt>x:fixed</tt> is X11.</pp>
 
 </utils>
 
@@ -3082,7 +3082,7 @@ snapshot.</pp>
 <utils apps=convert,import,mogrify,montage>
 <opt>-pointsize <value></opt>
 
-<abs>pointsize of the PostScript, OPTION1, or TrueType font</abs>
+<abs>pointsize of the PostScript, X11, or TrueType font</abs>
 
 </utils>
 
@@ -4008,8 +4008,8 @@ formatted text.  The default is 14 point <i>Courier</i>.</pp>
 
 <pp>
 You can tag a font to specify whether it is a PostScript, TrueType, or
-OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
-and <tt>x:fixed</tt> is OPTION1.</pp>
+X11 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
+and <tt>x:fixed</tt> is X11.</pp>
 
 </utils>
 
