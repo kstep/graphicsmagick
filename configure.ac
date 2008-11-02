@@ -742,7 +742,7 @@ AC_ARG_WITH(windows-font-dir,
 	      [with_windows_font_dir=$withval],
 	      [with_windows_font_dir=''])
 if test "$with_windows_font_dir" != '' ; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir==$with_windows_font_dir "
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir=$with_windows_font_dir "
 fi
 
 # Disable XML.

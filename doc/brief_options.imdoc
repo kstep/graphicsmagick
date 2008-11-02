@@ -463,7 +463,7 @@
 </utils>
 <utils apps=convert,import,mogrify,montage>
 <opt>-pointsize <value></opt>
-<abs>pointsize of the PostScript, OPTION1, or TrueType font</abs>
+<abs>pointsize of the PostScript, X11, or TrueType font</abs>
 </utils>
 <utils apps=convert>
 <lopt>-preview <type></opt>
