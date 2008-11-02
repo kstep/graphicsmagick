@@ -74,7 +74,8 @@ TESTS = \
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
-	$(TESTS_XFAIL_TESTS)
+	$(TESTS_XFAIL_TESTS) \
+	$(UTILITIES_XFAIL_TESTS)
 
 CHANGELOGS = \
 	ChangeLog \

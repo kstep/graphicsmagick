@@ -5530,26 +5530,26 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
     i;
 
   unsigned int
-    status;
+    status=MagickPass;
 
   if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
       LocaleCompare("-?",argv[1]) == 0)))
     {
       ConjureUsage();
       ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      return MagickFail;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickFail;
     }
 
   /*
     Expand argument list
   */
   status=ExpandFilenames(&argc,&argv);
-  if (status == False)
+  if (status == MagickFail)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       (char *) NULL);
 
@@ -5612,7 +5612,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
         */
         (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
         status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
-        if (status == False)
+        if (status == MagickFail)
           MagickFatalError(ImageFatalError,UnableToPersistKey,option);
         i++;
         continue;
@@ -5622,19 +5622,19 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
     */
     (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
-    if (status == False)
+    if (status == MagickFail)
       MagickFatalError(ImageFatalError,UnableToPersistKey,argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,exception);
     if (exception->severity > UndefinedException)
       CatchException(exception);
-    status&=image != (Image *) NULL;
+    status&=(image != (Image *) NULL);
     if (image != (Image *) NULL)
       DestroyImageList(image);
   }
   DestroyImageInfo(image_info);
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 }
 
 /*

@@ -1,3 +1,12 @@
+2008-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Fix passing the --with-windows-font-dir option via
+	DISTCHECK_CONFIG_FLAGS.
+	* utilities/tests/msl_composite.sh: Integrated MSL composition
+	test script contributed by Max Hohenegger, Max at hohenegger.eu.
+	* magick/command.c (ConjureImageCommand): Return status was
+	inverted so one was returned for command success rather than zero.
+
 2008-11-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Updated libpng to 1.2.33 release.

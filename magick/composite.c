@@ -2401,10 +2401,10 @@ CompositeImageRegion(const CompositeOperator compose,
         FIXME: The area logic is not implemented yet.
       */
 
-      if ((update_x >= update_image->columns) ||
-          (update_y >= update_image->rows) ||
-          (canvas_x >= canvas_image->columns) ||
-          (canvas_y >= canvas_image->rows))
+      if ((update_x >= (long) update_image->columns) ||
+          (update_y >= (long) update_image->rows) ||
+          (canvas_x >= (long) canvas_image->columns) ||
+          (canvas_y >= (long) canvas_image->rows))
         status = MagickFail;
 
 #if 0
