@@ -1,3 +1,11 @@
+2008-11-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: With excessive maintenance releases, the library
+	age portion of MAGICK_LIB_VERSION was overflowing its allotted
+	space.  This resulted in 1.1.X releases reporting the wrong
+	MagickLibVersion as of 1.1.10.  Fix this by supporting up to 99
+	values for each field.
+
 2008-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Fix passing the --with-windows-font-dir option via
