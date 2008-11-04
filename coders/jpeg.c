@@ -1682,7 +1682,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
       /* FIXME: density should not be set via image_info->density
          but removing this support may break some applications. */
       count=GetMagickDimension(image_info->density,&image->x_resolution,
-        &image->y_resolution);
+        &image->y_resolution,NULL,NULL);
       if (count == 1 )
         image->y_resolution=image->x_resolution;
     }

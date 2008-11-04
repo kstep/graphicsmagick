@@ -1084,7 +1084,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
-      i=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
+      i=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y,NULL,NULL);
       if (i != 2)
         resolution.y=resolution.x;
     }
@@ -1518,7 +1518,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
+      count=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y,NULL,NULL);
       if (count != 2)
         resolution.y=resolution.x;
     }

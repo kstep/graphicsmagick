@@ -5797,7 +5797,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
          &(*image)->exception);
       x_shear=0.0;
       y_shear=0.0;
-      (void) GetMagickDimension(geometry,&x_shear,&y_shear);
+      (void) GetMagickDimension(geometry,&x_shear,&y_shear,NULL,NULL);
       ReplaceImage(*image,ShearImage(*image,x_shear,y_shear,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6150,7 +6150,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
-      (void) GetMagickDimension(emboss_argument,&radius,&sigma);
+      (void) GetMagickDimension(emboss_argument,&radius,&sigma,NULL,NULL);
       ReplaceImage(*image,EmbossImage(*image,radius,sigma,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6247,7 +6247,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
-      (void) GetMagickDimension(option,&radius,&sigma);
+      (void) GetMagickDimension(option,&radius,&sigma,NULL,NULL);
       ReplaceImage(*image,SharpenImage(*image,radius,sigma,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6280,7 +6280,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
-      (void) GetMagickDimension(option,&radius,&sigma);
+      (void) GetMagickDimension(option,&radius,&sigma,NULL,NULL);
       ReplaceImage(*image,BlurImage(*image,radius,sigma,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6391,7 +6391,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       azimuth=30.0;
       elevation=30.0;
-      (void) GetMagickDimension(geometry,&azimuth,&elevation);
+      (void) GetMagickDimension(geometry,&azimuth,&elevation,NULL,NULL);
       ReplaceImage(*image,ShadeImage(*image,(status ? True : False),
         azimuth,elevation,&(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6451,7 +6451,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       cluster_threshold=1.0;
       smoothing_threshold=1.5;
       (void) GetMagickDimension(threshold,&cluster_threshold,
-         &smoothing_threshold);
+                                &smoothing_threshold,NULL,NULL);
       (void) SegmentImage(*image,(*image)->colorspace,False,
         cluster_threshold,smoothing_threshold);
       MagickXSetCursorState(display,windows,False);
@@ -6561,7 +6561,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       amplitude=25.0;
       wavelength=150.0;
-      (void) GetMagickDimension(geometry,&amplitude,&wavelength);
+      (void) GetMagickDimension(geometry,&amplitude,&wavelength,NULL,NULL);
       ReplaceImage(*image,WaveImage(*image,amplitude,wavelength,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
@@ -6621,7 +6621,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
-      (void) GetMagickDimension(option,&radius,&sigma);
+      (void) GetMagickDimension(option,&radius,&sigma,NULL,NULL);
       ReplaceImage(*image,CharcoalImage(*image,radius,sigma,
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);

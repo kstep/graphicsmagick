@@ -4294,7 +4294,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     width,
                     height;
 
-                  if (GetMagickDimension(value,&width,&height) == 2)
+                  if (GetMagickDimension(value,&width,&height,NULL,NULL) == 2)
                     {
                       tile_rows=(uint32) height;
                       tile_columns=(uint32) width;

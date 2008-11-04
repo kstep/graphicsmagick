@@ -2024,7 +2024,7 @@ CompositeImage(Image *canvas_image,
               Determine the horizontal and vertical displacement scale.
             */
             count=GetMagickDimension(update_image->geometry,
-                                     &horizontal_scale,&vertical_scale);
+                                     &horizontal_scale,&vertical_scale,NULL,NULL);
             if (count == 1)
               vertical_scale=horizontal_scale;
           }
@@ -2087,7 +2087,7 @@ CompositeImage(Image *canvas_image,
               Determine the brightness and saturation scale.
             */
             count=GetMagickDimension(update_image->geometry,
-                                     &percent_brightness,&percent_saturation);
+                                     &percent_brightness,&percent_saturation,NULL,NULL);
             if (count == 1)
               percent_saturation=percent_brightness;
           }
@@ -2103,7 +2103,7 @@ CompositeImage(Image *canvas_image,
         amount=0.5;
         threshold=0.05;
         if (update_image->geometry != (char *) NULL)
-          (void) GetMagickDimension(update_image->geometry,&amount,&threshold);
+          (void) GetMagickDimension(update_image->geometry,&amount,&threshold,NULL,NULL);
         threshold*=MaxRGB;
         break;
       }

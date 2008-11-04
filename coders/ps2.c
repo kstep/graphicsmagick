@@ -608,13 +608,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=GetMagickDimension(density,&x_resolution,&y_resolution);
+    count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
         count=GetMagickDimension(image_info->density,&x_resolution,
-          &y_resolution);
+          &y_resolution,NULL,NULL);
         if (count != 2)
           y_resolution=x_resolution;
       }

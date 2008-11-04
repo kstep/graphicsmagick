@@ -324,7 +324,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
               width,
               height;
             
-            if (GetMagickDimension(value,&width,&height) == 2)
+            if (GetMagickDimension(value,&width,&height,NULL,NULL) == 2)
               {
                 tile_height_max=(unsigned long) height;
                 tile_width_max=(unsigned long) width;

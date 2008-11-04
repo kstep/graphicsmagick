@@ -40,39 +40,42 @@ COMPARED="comp_compared$FORMAT"
 
 draw_text ()
 {
-    TEMPFILE=draw_text_tmp.msl
     TEXT=$1
     TARGET=$2
 
-    cat <<EOF >$TEMPFILE
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="120" height="100" xmlns="http://www.w3.org/2000/svg">
-    <style type="text/css"><![CDATA[ text {font-size:20px; text-anchor:middle;} ]]></style>
-    <text x="50" y="50">$TEXT</text>
-</svg>
-EOF
+#    TEMPFILE=draw_text_tmp.svg
+#    cat <<EOF >$TEMPFILE
+#<?xml version="1.0" encoding="utf-8" ?>
+#<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+# "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+#<svg width="120" height="100" xmlns="http://www.w3.org/2000/svg">
+#    <style type="text/css"><![CDATA[ text {font-size:20px; text-anchor:middle;} ]]></style>
+#    <text x="50" y="50">$TEXT</text>
+#</svg>
+#EOF
 
-    $CONVERT_CMD $TEMPFILE $TARGET || exit 1
+#    $CONVERT_CMD $TEMPFILE $TARGET || exit 1
+
+    $CONVERT_CMD -size 100x100 xc:white -draw "font-size 20 font '${GENERIC_TTF}' gravity center text 0,0 '$TEXT'" $TARGET
     rm -f $TEMPFILE
 }
 
 draw_blank ()
 {
-    TEMPFILE=draw_blank_tmp.msl
     TARGET=$1
 
-    cat <<EOF >$TEMPFILE
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="500" height="500"
- xmlns="http://www.w3.org/2000/svg">
-</svg>
-EOF
+#    TEMPFILE=draw_blank_tmp.svg
+#    cat <<EOF >$TEMPFILE
+#<?xml version="1.0" encoding="utf-8" ?>
+#<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+# "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+#<svg width="500" height="500"
+# xmlns="http://www.w3.org/2000/svg">
+#</svg>
+#EOF
 
-    $CONVERT_CMD $TEMPFILE $TARGET || exit 2
+#    $CONVERT_CMD $TEMPFILE $TARGET || exit 2
+    $CONVERT_CMD -size 500x500 xc:white $TARGET
     rm -f $TEMPFILE
 }
 

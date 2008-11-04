@@ -2732,7 +2732,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                           msl_info->image_info[n]->density);
                 j=GetMagickDimension(msl_info->image_info[n]->density,
                       &msl_info->image[n]->x_resolution,
-                      &msl_info->image[n]->y_resolution);
+                                     &msl_info->image[n]->y_resolution,NULL,NULL);
                 if (j != 2)
                   msl_info->image[n]->y_resolution = msl_info->image[n]->x_resolution;
                 break;

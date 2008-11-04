@@ -385,7 +385,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=GetMagickDimension(density,&image->x_resolution,&image->y_resolution);
+      count=GetMagickDimension(density,&image->x_resolution,&image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -952,12 +952,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       dy_resolution=72.0;
       x_resolution=72.0;
       (void) strcpy(density,PSDensityGeometry);
-      count=GetMagickDimension(density,&x_resolution,&y_resolution);
+      count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
       if (count != 2)
         y_resolution=x_resolution;
       if (image_info->density != (char *) NULL)
         {
-          count=GetMagickDimension(image_info->density,&x_resolution,&y_resolution);
+          count=GetMagickDimension(image_info->density,&x_resolution,&y_resolution,NULL,NULL);
           if (count != 2)
             y_resolution=x_resolution;
         }

@@ -214,7 +214,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     {
       (void) strcpy(density,PSDensityGeometry);
       count=GetMagickDimension(density,&image->x_resolution,
-        &image->y_resolution);
+        &image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }

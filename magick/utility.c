@@ -1689,18 +1689,15 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickDimension() parses a string in the scanf form %lfx%lf to obtain
-%  WIDTHxHEIGHT values and returns the number of values successfully parsed.
-%  This function exists to overcome a Linux GNU libc "feature" in which scanf
-%  treats strings in the form "0x5" as a single hexadecimal value regardless
-%  of the scanf specification. No other scanf has been encountered which
-%  behaves this way. Linux strtod() has the same problem.  It seems that
-%  this new behavior of Linux is due to ANSI C'99 which supports hex
-%  parsing.
+%  GetMagickDimension() parses a string in the scanf form %lfx%lf+%lf+%lf
+%  to obtain WIDTHxHEIGHT+XOFF+YOFF values and returns the number of values
+%  successfully parsed. This function exists to overcome a new behavior of
+%  ANSI C'99 which supports hex parsing.
 %
 %  The format of the GetMagickDimension method is:
 %
-%      int GetMagickDimension(const char *str,double *width,double *height)
+%      int GetMagickDimension(const char *str,double *width,double *height,
+%                             double *xoff,double *yoff)
 %
 %  A description of each parameter follows:
 %
@@ -1709,6 +1706,10 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %    o width:  First double value
 %
 %    o height: Second double value
+%
+%    o xoff:   Third double value (usually "x offset").  May be NULL.
+%
+%    o yoff:   Fourth double value (usually "y offset"). May be NULL.
 %
 */
 static int MagickStrToD(const char *start,char **end,double *value)
@@ -1737,11 +1738,13 @@ static int MagickStrToD(const char *start,char **end,double *value)
 
   return (n);
 }
-MagickExport int GetMagickDimension(const char *str,double *width,
-  double *height)
+MagickExport int
+GetMagickDimension(const char *str,double *width,double *height,
+                   double *xoff,double *yoff)
 {
   int
-    n;
+    n,
+    parsed;
 
   const char
     *start=str;
@@ -1758,7 +1761,36 @@ MagickExport int GetMagickDimension(const char *str,double *width,
   if ((*start != 'x') && (*start != 'X'))
     return n;
   start++;
-  n += MagickStrToD(start,&end,height);
+  parsed = MagickStrToD(start,&end,height);
+  if (parsed == 0)
+    return n;
+  n += parsed;
+  start=end;
+  if (xoff != (double *) NULL)
+    {
+      if ((*start != '+') && (*start != '-'))
+        return n;
+      parsed = MagickStrToD(start,&end,xoff);
+      if (parsed == 0)
+        return n;
+      n += parsed;
+      if (*(start -1) == '-')
+        *xoff=-*xoff;
+      start=end;
+    }
+  if (yoff != (double *) NULL)
+    {
+      if ((*start != '+') && (*start != '-'))
+        return n;
+      parsed = MagickStrToD(start,&end,yoff);
+      if (parsed == 0)
+        return n;
+      n += parsed;
+      if (*(start -1) == '-')
+        *yoff=-*yoff;
+      start=end;
+    }
+
   return (n);
 }
 
@@ -1859,7 +1891,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       */
       x_scale=(*width);
       y_scale=(*height);
-        count=GetMagickDimension(geometry,&x_scale,&y_scale);
+      count=GetMagickDimension(geometry,&x_scale,&y_scale,NULL,NULL);
       if (count == 1)
         y_scale=x_scale;
       *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
@@ -1882,7 +1914,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       target_width=(*width);
       target_height=(*height);
       target_area=target_width*target_height;
-        count=GetMagickDimension(geometry,&target_width,&target_height);
+      count=GetMagickDimension(geometry,&target_width,&target_height,NULL,NULL);
       if (count == 2)
         target_area=target_width*target_height;
       if (count == 1)

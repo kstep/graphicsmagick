@@ -571,7 +571,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"resolution") == 0)
                   {
                     (void) GetMagickDimension(values,&image->x_resolution,
-                      &image->y_resolution);
+                                              &image->y_resolution,NULL,NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
