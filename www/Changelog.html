@@ -21,6 +21,31 @@
 </tr>
 </table>
 <p>
+2008-11-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.h (AcquireOneCacheViewPixel): Pass pixel to
+        update by reference.<BR>
+        (AcquireOnePixelByReference): New private inline method which
+        passes pixel to update by reference.
+  <LI> magick/omp_thread_view.h (AcquireOneThreadViewPixel): Pass pixel
+        to update by reference.<BR>
+  <LI> magick/alpha_composite.h (BlendCompositePixel): Replace
+        BlendComposite with BlendCompositePixel, which passes the
+        composite pixel by reference.<BR>
+        (AlphaCompositePixel): Replace AlphaComposite with
+        AlphaCompositePixel, which passes the composite pixel by
+        reference.<BR>
+        (AtopCompositePixel): Replace AtopComposite with
+        AtopCompositePixel, which passes the composite pixel by reference.
+  <LI> configure.ac: With excessive maintenance releases, the library
+        age portion of MAGICK_LIB_VERSION was overflowing its allotted
+        space.  This resulted in 1.1.X releases reporting the wrong
+        MagickLibVersion as of 1.1.10.  Fix this by supporting up to 99
+        values for each field.
+
+</UL>
+<p>
 2008-11-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -617,7 +617,7 @@ MagickExport unsigned int MagickXAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  annotate_image->background_color=AcquireOnePixel(image,x,y,&image->exception);
+  (void) AcquireOnePixelByReference(image,&annotate_image->background_color,x,y,&image->exception);
   annotate_image->matte=annotate_info->stencil == ForegroundStencil;
   for (y=0; y < (long) annotate_image->rows; y++)
   {
@@ -2417,7 +2417,7 @@ MagickExport unsigned int MagickXDrawImage(Display *display,const MagickXPixelIn
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  draw_image->background_color=AcquireOnePixel(image,x,y,&image->exception);
+  (void) AcquireOnePixelByReference(image,&draw_image->background_color,x,y,&image->exception);
   (void) SetImageType(draw_image,TrueColorMatteType);
   for (y=0; y < (long) draw_image->rows; y++)
   {
@@ -7329,7 +7329,7 @@ MagickExport void MagickXMakeMagnifyImage(Display *display,MagickXWindows *windo
   /*
     Show center pixel color.
   */
-  color=AcquireOnePixel(windows->image.image,windows->magnify.x,
+  (void) AcquireOnePixelByReference(windows->image.image,&color,windows->magnify.x,
                         windows->magnify.y,&windows->image.image->exception);
   GetColorTuple(&color,windows->image.image->depth,windows->image.image->matte,
     False,tuple);

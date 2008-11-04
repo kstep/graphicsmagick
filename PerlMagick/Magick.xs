@@ -3551,8 +3551,8 @@ Get(ref,...)
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-              (void) AcquireOnePixel(image,(long) (x % image->columns),
-                (long) (y % image->rows),&image->exception);
+              (void) AcquireImagePixels(image,(long) (x % image->columns),
+                                        (long) (y % image->rows),1,1,&image->exception);
               indexes=GetIndexes(image);
               FormatString(name,"%u",*indexes);
               s=newSVpv(name,0);
@@ -3719,7 +3719,7 @@ Get(ref,...)
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-              pixel=AcquireOnePixel(image,(long) (x % image->columns),
+              (void) AcquireOnePixelByReference(image,&pixel,(long) (x % image->columns),
                 (long) (y % image->rows),&image->exception);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
@@ -3737,7 +3737,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"preview") == 0)
             {
               s=newSViv(info->image_info->preview_type);
-              if ((info->image_info->preview_type >= 0) &&
+              if ((info->image_info->preview_type != UndefinedPreview) &&
                   (info->image_info->preview_type < (long) NumberOf(PreviewTypes)-1))
                 {
                   (void) sv_setpv(s,
@@ -4568,7 +4568,7 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,&target,
               &exception);
@@ -5088,7 +5088,7 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&fill_color,
               &exception);
-          target=AcquireOnePixel(image,(long) (geometry.x % image->columns),
+          (void) AcquireOnePixelByReference(image,&target,(long) (geometry.x % image->columns),
             (long) (geometry.y % image->rows),&exception);
           if (attribute_flag[4])
             target=fill_color;
@@ -5463,7 +5463,7 @@ Mogrify(ref,...)
             opacity=argument_list[3].int_reference;
           if (!image->matte)
             SetImageOpacity(image,OpaqueOpacity);
-          target=AcquireOnePixel(image,(long) (geometry.x % image->columns),
+          (void) AcquireOnePixelByReference(image,&target,(long) (geometry.x % image->columns),
             (long) (geometry.y % image->rows),&exception);
           if (attribute_flag[4])
             target=fill_color;
@@ -5510,11 +5510,11 @@ Mogrify(ref,...)
             fill_color,
             target;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target,&exception);
-          fill_color=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&fill_color,0,0,&exception);
           if (attribute_flag[1])
             (void) QueryColorDatabase(argument_list[1].string_reference,
               &fill_color,&exception);
@@ -5636,7 +5636,7 @@ Mogrify(ref,...)
           unsigned int
             opacity;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target,&exception);
@@ -6411,7 +6411,7 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"transparent") == 0)
             {
-              transparent_color=AcquireOnePixel(image,0,0,&exception);
+              (void) AcquireOnePixelByReference(image,&transparent_color,0,0,&exception);
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color,
                 &exception);
               for (next=image; next; next=next->next)

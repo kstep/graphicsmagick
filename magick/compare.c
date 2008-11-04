@@ -198,9 +198,8 @@ DifferenceImagePixels(void *mutable_data,                  /* User provided muta
               Alpha composite highlight color on top of change pixels.
             */
             if (change)
-              result_pixels[i]=
-                AlphaComposite(&difference_options->highlight_color,0.75*MaxRGBDouble,
-                               &compare_pixels[i],compare_pixels[i].opacity);
+              AlphaCompositePixel(&result_pixels[i],&difference_options->highlight_color,0.75*MaxRGBDouble,
+                                  &compare_pixels[i],compare_pixels[i].opacity);
             else
               result_pixels[i]=compare_pixels[i];
             break;

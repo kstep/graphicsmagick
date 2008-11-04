@@ -462,7 +462,7 @@ MagickExport MagickBool FuzzyColorMatch(const PixelPacket *p,
     distance,
     fuzz_squared;
 
-  if (fuzz < MagickEpsilon)
+  if (fuzz <= MagickEpsilon)
     return (ColorMatch(q,p));
   fuzz_squared=fuzz*fuzz;
   difference=p->red-(double) q->red;

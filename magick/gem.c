@@ -368,7 +368,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       normalize+=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma);
     u=width/2;
     value=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma)/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGBDouble*value) <= 0)
       break;
     width+=2;
   }
@@ -404,7 +404,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp(-((double) v*v)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma)/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGBDouble*value) <= 0)
       break;
     width+=2;
   }
@@ -456,7 +456,7 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   assert(blue != (Quantum *) NULL);
   if (saturation == 0.0)
     {
-      double l = MaxRGB*luminosity;
+      double l = MaxRGBDouble*luminosity;
       *red=*green=*blue= RoundDoubleToQuantum(l);
     }
   else
@@ -498,11 +498,11 @@ MagickExport void HSLTransform(const double hue,const double saturation,
         case 5: r=v; g=y; b=z; break;
         default: r=v; g=x; b=y; break;
         }
-      r *= MaxRGB;
+      r *= MaxRGBDouble;
       *red=RoundDoubleToQuantum(r);
-      g *= MaxRGB;
+      g *= MaxRGBDouble;
       *green=RoundDoubleToQuantum(g);
-      b *= MaxRGB;
+      b *= MaxRGBDouble;
       *blue=RoundDoubleToQuantum(b);
     }
 }
@@ -562,7 +562,7 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == 0.0)
     {
-      v *= MaxRGB;
+      v *= MaxRGBDouble;
       *red=*green=*blue=RoundDoubleToQuantum(v);
       return;
     }
@@ -582,9 +582,9 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  r *= MaxRGB;
-  g *= MaxRGB;
-  b *= MaxRGB;
+  r *= MaxRGBDouble;
+  g *= MaxRGBDouble;
+  b *= MaxRGBDouble;
   *red=RoundDoubleToQuantum(r);
   *green=RoundDoubleToQuantum(g);
   *blue=RoundDoubleToQuantum(b);
@@ -780,45 +780,59 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %
 */
-MagickExport PixelPacket InterpolateViewColor(const ViewInfo *view,
-  const double x_offset,const double y_offset,ExceptionInfo *exception)
+MagickExport void
+InterpolateViewColor(const ViewInfo *view,
+                     PixelPacket *color,
+                     const double x_offset,
+                     const double y_offset,
+                     ExceptionInfo *exception)
 {
-  double
-    alpha,
-    beta,
-    one_minus_alpha,
-    one_minus_beta;
-
-  PixelPacket
-    color;
-
   register const PixelPacket
     *p;
 
   p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
   if (p == (const PixelPacket *) NULL)
-    return(AcquireOneCacheViewPixel(view,(long) x_offset,(long) y_offset,exception));
-  alpha=x_offset-floor(x_offset);
-  beta=y_offset-floor(y_offset);
-  one_minus_alpha=1.0-alpha;
-  one_minus_beta=1.0-beta;
-  color.red=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].red+
-    alpha*p[1].red)+beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
-  color.green=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].green+
-    alpha*p[1].green)+beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
-  color.blue=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].blue+
-    alpha*p[1].blue)+beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
-  color.opacity=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].opacity+
-    alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
-  return(color);
+    {
+      (void) AcquireOneCacheViewPixel(view,color,(long) x_offset,
+                                      (long) y_offset,exception);
+    }
+  else
+    {
+      double
+        alpha,
+        beta,
+        one_minus_alpha,
+        one_minus_beta;
+
+      alpha=x_offset-floor(x_offset);
+      beta=y_offset-floor(y_offset);
+      one_minus_alpha=1.0-alpha;
+      one_minus_beta=1.0-beta;
+      color->red=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].red+
+                         alpha*p[1].red)+beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
+      color->green=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].green+
+                         alpha*p[1].green)+beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
+      color->blue=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].blue+
+                         alpha*p[1].blue)+beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
+      color->opacity=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].opacity+
+                         alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
+    }
 }
 MagickExport PixelPacket InterpolateColor(const Image *image,
   const double x_offset,const double y_offset,ExceptionInfo *exception)
 {
+  PixelPacket
+    color;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return InterpolateViewColor(image->default_view,x_offset,y_offset,
+  InterpolateViewColor(image->default_view,&color,x_offset,y_offset,
                               exception);
+  return color;
 }
 
 /*
@@ -935,9 +949,9 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   assert(saturation_result != (double *) NULL);
   assert(luminosity_result != (double *) NULL);
 
-  r=(double) red/MaxRGB;
-  g=(double) green/MaxRGB;
-  b=(double) blue/MaxRGB;
+  r=(double) red/MaxRGBDouble;
+  g=(double) green/MaxRGBDouble;
+  b=(double) blue/MaxRGBDouble;
   max=Max(r,Max(g,b));
   min=Min(r,Min(g,b));
   hue=0.0;
@@ -1014,7 +1028,7 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green, const Quan
   assert(blackness != (double *) NULL);
   w=(double) Min(red,Min(green,blue));
   v=(double) Max(red,Max(green,blue));
-  *blackness=((double) MaxRGB-v)/MaxRGB;
+  *blackness=((double) MaxRGBDouble-v)/MaxRGBDouble;
   if (v == w)
     {
       *hue=0.0;
@@ -1027,6 +1041,6 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green, const Quan
          (double) red-green);
       i=(red == w) ? 3 : ((green == w) ? 5 : 1);
       *hue=((double) i-f/(v-w))/6.0;
-      *whiteness=((double) w/MaxRGB);
+      *whiteness=((double) w/MaxRGBDouble);
     }
 }

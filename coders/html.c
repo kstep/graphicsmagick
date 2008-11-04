@@ -352,9 +352,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             }
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
-        (void) TransparentImage(image,
-                                AcquireOnePixel(image,0,0,&image->exception),
-                                TransparentOpacity);
+        {
+          PixelPacket
+            transparent_color;
+
+          (void) AcquireOnePixelByReference(image,&transparent_color,0,0,&image->exception);
+          (void) TransparentImage(image,transparent_color,TransparentOpacity);
+        }
       (void) strlcpy(filename,image->filename,MaxTextExtent);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");

@@ -30,8 +30,6 @@ extern MagickExport int
 
 extern MagickExport PixelPacket
   InterpolateColor(const Image *image,const double x_offset,
-    const double y_offset,ExceptionInfo *exception),
-  InterpolateViewColor(const ViewInfo *view,const double x_offset,
     const double y_offset,ExceptionInfo *exception);
 
 extern MagickExport Quantum
@@ -46,6 +44,8 @@ extern MagickExport void
   Hull(const long,const long,const unsigned long,const unsigned long,Quantum *,
     Quantum *,const int),
   IdentityAffine(AffineMatrix *),
+  InterpolateViewColor(const ViewInfo *view,PixelPacket *color,
+    const double x_offset,const double y_offset,ExceptionInfo *exception),
   Modulate(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,

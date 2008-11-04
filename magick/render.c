@@ -1103,9 +1103,6 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
       SegmentInfo
         inverse_edge;
 
-      PixelPacket
-        pixel;
-
       register PixelPacket
         *q;
 
@@ -1136,13 +1133,16 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
               PointInfo
                 point;
 
+              PixelPacket
+                pixel;
+
               point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
               point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
-              pixel=AcquireOneThreadViewPixel(composite_views,(long) point.x,(long) point.y,
-                                              &image->exception);
+              (void) AcquireOneThreadViewPixel(composite_views,&pixel,(long) point.x,
+                                               (long) point.y,&image->exception);
               if (!composite->matte)
                 pixel.opacity=OpaqueOpacity;
-              *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
+              AlphaCompositePixel(q,&pixel,pixel.opacity,q,q->opacity);
               q++;
             }
           if (!SyncThreadViewPixels(image_views,&image->exception))
@@ -3433,22 +3433,22 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)
-        fill_color=AcquireOnePixel(pattern,
+        (void) AcquireOnePixelByReference(pattern,&fill_color,
           (long) (x-pattern->tile_info.x) % pattern->columns,
           (long) (y-pattern->tile_info.y) % pattern->rows,
           &image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
-        *q=AlphaComposite(&fill_color,fill_opacity,q,
+        AlphaCompositePixel(q,&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       pattern=draw_info->stroke_pattern;
       if (pattern != (Image *) NULL)
-        stroke_color=AcquireOnePixel(pattern,
+        (void) AcquireOnePixelByReference(pattern,&stroke_color,
           (long) (x-pattern->tile_info.x) % pattern->columns,
           (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
-        *q=AlphaComposite(&stroke_color,stroke_opacity,q,
+        AlphaCompositePixel(q,&stroke_color,stroke_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       q++;
     }
@@ -3650,7 +3650,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
             target;
 
           color=draw_info->fill;
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           pattern=draw_info->fill_pattern;
           for (y=0; y < (long) image->rows; y++)
           {
@@ -3666,7 +3666,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 }
               if (pattern != (Image *) NULL)
                 {
-                  color=AcquireOnePixel(pattern,
+                  (void) AcquireOnePixelByReference(pattern,&color,
                     (long) (x-pattern->tile_info.x) % pattern->columns,
                     (long) (y-pattern->tile_info.y) % pattern->rows,
                     &image->exception);
@@ -3674,7 +3674,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
                     color.opacity=OpaqueOpacity;
                 }
               if (color.opacity != TransparentOpacity)
-                *q=AlphaComposite(&color,color.opacity,q,q->opacity);
+                AlphaCompositePixel(q,&color,color.opacity,q,q->opacity);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -3689,7 +3689,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;
@@ -3740,7 +3740,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
           PixelPacket
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           (void) TransparentImage(image,target,TransparentOpacity);
           break;
         }
@@ -3751,7 +3751,7 @@ static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;

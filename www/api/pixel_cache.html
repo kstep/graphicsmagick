@@ -220,8 +220,9 @@ pixels.</dd>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
-                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *pixel,
+                                         const long x, const long y,
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -232,12 +233,15 @@ The image background color is returned if there is an error retrieving
 the pixel.</p>
 <p>The format of the AcquireOneCacheViewPixel method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#pixelpacket">PixelPacket</a> AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, const long x, const long y,
-                                       <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail AcquireOneCacheViewPixel( const <a class="reference" href="types.html#viewinfo">ViewInfo</a> *view, <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *pixel,
+                                         const long x, const long y,
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>view:</dt>
 <dd>The address of a structure of type ViewInfo.</dd>
+<dt>pixel:</dt>
+<dd>Pointer to PixelPacket to update.</dd>
 <dt>x,y:</dt>
 <dd>Coordinate of pixel to retrieve</dd>
 <dt>exception:</dt>
@@ -798,7 +802,7 @@ transferred to the in-memory or disk cache otherwise MagickFail.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-31 01:25 UTC.
+Generated on: 2008-11-03 22:57 UTC.
 
 </div>
 </body>

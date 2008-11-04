@@ -2650,9 +2650,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   if (view_set == (ThreadViewSet *) NULL)
     return(bounds);
 
-  corners[0]=AcquireOneThreadViewPixel(view_set,0,0,exception);
-  corners[1]=AcquireOneThreadViewPixel(view_set,(long) image->columns-1,0,exception);
-  corners[2]=AcquireOneThreadViewPixel(view_set,0,(long) image->rows-1,exception);
+  (void) AcquireOneThreadViewPixel(view_set,&corners[0],0,0,exception);
+  (void) AcquireOneThreadViewPixel(view_set,&corners[1],(long) image->columns-1,0,exception);
+  (void) AcquireOneThreadViewPixel(view_set,&corners[2],0,(long) image->rows-1,exception);
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
@@ -3826,7 +3826,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
             {
-              q[x]=BlendComposite(start_color,stop_color,(double)
+              BlendCompositePixel(&q[x],start_color,stop_color,(double)
                                   MaxRGB*(y*image_columns+x)/(image_columns*image_rows));
             }
 
@@ -4119,8 +4119,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
         Left pixel.
       */
       x=(long) (segment->x1+0.5);
-      u=AcquireOnePixel(image,x,(long) (segment->y1+0.5),&image->exception);
-      v=AcquireOnePixel(image,x,(long) (segment->y2+0.5),&image->exception);
+      (void) AcquireOnePixelByReference(image,&u,x,(long) (segment->y1+0.5),&image->exception);
+      (void) AcquireOnePixelByReference(image,&v,x,(long) (segment->y2+0.5),&image->exception);
       q=SetImagePixels(image,x,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
@@ -4134,8 +4134,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Right pixel.
           */
           x=(long) (segment->x2+0.5);
-          u=AcquireOnePixel(image,x,(long) (segment->y1+0.5),&image->exception);
-          v=AcquireOnePixel(image,x,(long) (segment->y2+0.5),&image->exception);
+          (void) AcquireOnePixelByReference(image,&u,x,(long) (segment->y1+0.5),&image->exception);
+          (void) AcquireOnePixelByReference(image,&v,x,(long) (segment->y2+0.5),&image->exception);
           q=SetImagePixels(image,x,y_mid,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4153,8 +4153,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Bottom pixel.
           */
           y=(long) (segment->y2+0.5);
-          u=AcquireOnePixel(image,(long) (segment->x1+0.5),y,&image->exception);
-          v=AcquireOnePixel(image,(long) (segment->x2+0.5),y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&u,(long) (segment->x1+0.5),y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&v,(long) (segment->x2+0.5),y,&image->exception);
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4169,8 +4169,8 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
             Top pixel.
           */
           y=(long) (segment->y1+0.5);
-          u=AcquireOnePixel(image,(long) (segment->x1+0.5),y,&image->exception);
-          v=AcquireOnePixel(image,(long) (segment->x2+0.5),y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&u,(long) (segment->x1+0.5),y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&v,(long) (segment->x2+0.5),y,&image->exception);
           q=SetImagePixels(image,x_mid,y,1,1);
           if (q == (PixelPacket *) NULL)
             return(True);
@@ -4187,10 +4187,10 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       x=(long) (segment->x1+0.5);
       y=(long) (segment->y1+0.5);
-      u=AcquireOnePixel(image,x,y,&image->exception);
+      (void) AcquireOnePixelByReference(image,&u,x,y,&image->exception);
       x=(long) (segment->x2+0.5);
       y=(long) (segment->y2+0.5);
-      v=AcquireOnePixel(image,x,y,&image->exception);
+      (void) AcquireOnePixelByReference(image,&v,x,y,&image->exception);
       q=SetImagePixels(image,x_mid,y_mid,1,1);
       if (q == (PixelPacket *) NULL)
         return(True);
@@ -5773,8 +5773,8 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
                 {
                   for (z=(long) width; z != 0; z--)
                     {
-                      *q=AlphaComposite(q,q->opacity,p,texture->matte != MagickFalse ?
-                                        p->opacity : OpaqueOpacity);
+                      AlphaCompositePixel(q,q,q->opacity,p,texture->matte != MagickFalse ?
+                                          p->opacity : OpaqueOpacity);
                       p++;
                       q++;
                     }

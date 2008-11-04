@@ -170,7 +170,7 @@ OverCompositePixels(void *mutable_data,                /* User provided mutable 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      destination=AlphaComposite(&source,source.opacity,&destination,destination.opacity);
+      AlphaCompositePixel(&destination,&source,source.opacity,&destination,destination.opacity);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }
@@ -357,7 +357,7 @@ AtopCompositePixels(void *mutable_data,                /* User provided mutable 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      destination=AtopComposite(&destination,&source);
+      AtopCompositePixel(&destination,&destination,&source);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }

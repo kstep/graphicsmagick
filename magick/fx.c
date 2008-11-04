@@ -641,6 +641,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           x_distance,
           y_distance;
 
+        ViewInfo
+          *image_view;
+
         MagickPassFail
           thread_status;
         
@@ -648,6 +651,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         if (thread_status == MagickFail)
           continue;
 
+        image_view=AccessThreadView(image_views);
         q=SetThreadViewPixels(implode_views,0,y,implode_image->columns,1,
                               exception);
         if (q == (PixelPacket *) NULL)
@@ -663,7 +667,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
                 x_distance=x_scale*(x-x_center);
                 distance=x_distance*x_distance+y_distance*y_distance;
                 if (distance >= (radius*radius))
-                  *q=AcquireOneThreadViewPixel(image_views,x,y,exception);
+                  (void) AcquireOneCacheViewPixel(image_view,q,x,y,exception);
                 else
                   {
                     double
@@ -675,10 +679,10 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
                     factor=1.0;
                     if (distance > 0.0)
                       factor=pow(sin(MagickPI*sqrt(distance)/radius/2),-amount);
-                    *q=InterpolateViewColor(AccessThreadView(image_views),
-                                            factor*x_distance/x_scale+x_center,
-                                            factor*y_distance/y_scale+y_center,
-                                            exception);
+                    InterpolateViewColor(image_view,q,
+                                         factor*x_distance/x_scale+x_center,
+                                         factor*y_distance/y_scale+y_center,
+                                         exception);
                   }
                 q++;
               }
@@ -1294,7 +1298,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     {
       for (x=0; (x < (long) watermark->columns) && (j < QuantumDepth); x++)
       {
-        pixel=AcquireOnePixel(watermark,x,y,exception);
+        (void) AcquireOnePixelByReference(watermark,&pixel,x,y,exception);
         q=GetImagePixels(stegano_image,k % (long) stegano_image->columns,
           k/(long) stegano_image->columns,1,1);
         if (q == (PixelPacket *) NULL)
@@ -1552,6 +1556,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           y_distance,
           distance;
 
+        ViewInfo
+          *image_view;
+
         MagickPassFail
           thread_status;
         
@@ -1559,6 +1566,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
         if (thread_status == MagickFail)
           continue;
 
+        image_view=AccessThreadView(image_views);
         q=SetThreadViewPixels(swirl_views,0,y,swirl_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
@@ -1573,7 +1581,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
                 x_distance=x_scale*(x-x_center);
                 distance=x_distance*x_distance+y_distance*y_distance;
                 if (distance >= (radius*radius))
-                  *q=AcquireOneThreadViewPixel(image_views,x,y,exception);
+                  (void) AcquireOneCacheViewPixel(image_view,q,x,y,exception);
                 else
                   {
                     double
@@ -1587,9 +1595,10 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
                     factor=1.0-sqrt(distance)/radius;
                     sine=sin(degrees*factor*factor);
                     cosine=cos(degrees*factor*factor);
-                    *q=InterpolateViewColor(AccessThreadView(image_views),
-                                            (cosine*x_distance-sine*y_distance)/x_scale+x_center,
-                                            (sine*x_distance+cosine*y_distance)/y_scale+y_center,exception);
+                    InterpolateViewColor(image_view,q,
+                                         (cosine*x_distance-sine*y_distance)/x_scale+x_center,
+                                         (sine*x_distance+cosine*y_distance)/y_scale+y_center,
+                                         exception);
                   }
                 q++;
               }
@@ -1748,27 +1757,27 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         register long
           x;
 
+        ViewInfo
+          *image_view;
+
         MagickPassFail
           thread_status;
         
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
-
+        
+        image_view=AccessThreadView(image_views);
         q=SetThreadViewPixels(wave_views,0,y,wave_image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
           {
-            ViewInfo
-              *view;
-
-            view=AccessThreadView(image_views);
             for (x=0; x < (long) wave_image->columns; x++)
               {
-                q[x]=InterpolateViewColor(view,(double) x,
-                                          (double) y-sine_map[x],
-                                          exception);
+                InterpolateViewColor(image_view,&q[x],(double) x,
+                                     (double) y-sine_map[x],
+                                     exception);
               }
             if (!SyncThreadViewPixels(wave_views,exception))
               thread_status=MagickFail;

@@ -151,7 +151,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     {
       for (x=0; (x < image->columns) && (j < QuantumDepth); x++)
       {
-        pixel=AcquireOnePixel(watermark,k % watermark->columns,
+        (void) AcquireOnePixelByReference(watermark,&pixel,k % watermark->columns,
           k/watermark->columns,exception);
         q=GetImagePixels(image,x,y,1,1);
         if (q == (PixelPacket *) NULL)

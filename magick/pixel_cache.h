@@ -50,8 +50,9 @@ extern "C" {
                       const unsigned long rows,ExceptionInfo *exception);
 
   /*
-    Return one pixel at the the specified (x,y) location.
-    Similar function as GetOnePixel();
+    Return one DirectClass pixel at the the specified (x,y) location.
+    Similar function as GetOnePixel().  Note that the value returned
+    by GetIndexes() is not reliably influenced by this function.
   */
   extern MagickExport PixelPacket
   AcquireOnePixel(const Image *image,const long x,const long y,
@@ -87,8 +88,11 @@ extern "C" {
   *GetIndexes(const Image *image);
 
   /*
-    GetOnePixel() returns a single pixel at the specified (x,y) location.
-    Similar to AcquireOnePixel().
+    GetOnePixel() returns a single DirectClass pixel at the specified
+    (x,y) location.  Similar to AcquireOnePixel().  It is preferred to
+    use AcquireOnePixel() since it allows reporting to a specified
+    exception structure. Note that the value returned by GetIndexes()
+    is not reliably influenced by this function.
   */
   extern MagickExport PixelPacket
   GetOnePixel(Image *image,const long x,const long y);
@@ -184,11 +188,13 @@ extern "C" {
                           ExceptionInfo *exception);
 
   /*
-    AcquireOneCacheViewPixel() returns one pixel from a cache view.
+    AcquireOneCacheViewPixel() returns one DirectClass pixel from a
+    cache view. Note that the value returned by GetCacheViewIndexes()
+    is not reliably influenced by this function.
   */
-  extern MagickExport PixelPacket
-  AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
-                           ExceptionInfo *exception);
+  extern MagickExport MagickPassFail
+  AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
+                           const long x,const long y,ExceptionInfo *exception);
 
   /*
     GetCacheViewArea() returns the area (width * height in pixels)
@@ -247,6 +253,18 @@ extern "C" {
    * Private interfaces.
    *
    ****/
+
+  /*
+    Return one pixel at the the specified (x,y) location via a pointer
+    reference.
+  */
+  static inline MagickPassFail
+  AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
+                             const long x,const long y,
+                             ExceptionInfo *exception)
+  {
+    return AcquireOneCacheViewPixel((ViewInfo *) image->default_view,pixel,x,y,exception);
+  }
 
   /*
     DestroyCacheInfo() deallocates memory associated with the pixel

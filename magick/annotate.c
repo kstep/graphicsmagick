@@ -1267,7 +1267,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                   opacity=((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
-                  fill_color=AcquireOnePixel(pattern,
+                  (void) AcquireOnePixelByReference(pattern,&fill_color,
                     (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
                     (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
                             &image->exception);
@@ -1281,8 +1281,8 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                     q++;
                     continue;
                   }
-                *q=AlphaComposite(&fill_color,opacity,q,
-                                  image->matte ? q->opacity : OpaqueOpacity);
+                AlphaCompositePixel(q,&fill_color,opacity,q,
+                                    image->matte ? q->opacity : OpaqueOpacity);
                 if (!active)
                   (void) SyncImagePixels(image);
                 p++;
@@ -1575,7 +1575,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
         for (x=0; x < (long) annotate_image->columns; x++)
         {
           if (pattern != (Image *) NULL)
-            fill_color=AcquireOnePixel(pattern,
+            (void) AcquireOnePixelByReference(pattern,&fill_color,
               (long) (x-pattern->tile_info.x) % pattern->columns,
               (long) (y-pattern->tile_info.y) % pattern->rows,
               &image->exception);

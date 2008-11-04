@@ -124,6 +124,18 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   return view_set;
 }
 
+#if 0
+/*
+  Obtain the view corresponding to the current thread from the
+  thread view set.
+*/
+MagickExport ViewInfo
+*AccessThreadView(ThreadViewSet *view_set)
+{
+  return view_set->views[omp_get_thread_num()];
+}
+#endif
+
 /*
   Get the number of views allocated in this thread set.
 */
@@ -132,6 +144,20 @@ GetThreadViewSetAllocatedViews(ThreadViewSet *view_set)
 {
   return view_set->nviews;
 }
+
+#if 0
+/*
+  AcquireOneThreadViewPixel() returns one pixel from a cache thread
+  view.
+*/
+MagickExport MagickPassFail
+AcquireOneThreadViewPixel(ThreadViewSet *view_set,PixelPacket *pixel,
+                          const long x,const long y,
+                          ExceptionInfo *exception)
+{
+  return AcquireOneCacheViewPixel(AccessThreadView(view_set),pixel,x,y,exception);
+}
+#endif
 
 /*
   AcquireThreadViewPixels() obtains a read-only pixel region from a

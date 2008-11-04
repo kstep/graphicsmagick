@@ -104,7 +104,7 @@ extern "C" {
     AcquireThreadViewPixels() obtains a read-only pixel region from a
     cache thread view.
   */
-  MagickExport const PixelPacket
+  extern MagickExport const PixelPacket
   *AcquireThreadViewPixels(ThreadViewSet *view_set,
                            const long x,const long y,
                            const unsigned long columns,
@@ -114,25 +114,26 @@ extern "C" {
     AcquireThreadViewViewIndexes() returns the read-only indexes
     associated with a cache thread view.
   */
-  MagickExport const IndexPacket
+  extern MagickExport const IndexPacket
   *AcquireThreadViewIndexes(ThreadViewSet *view_set);
 
   /*
     AcquireOneThreadViewPixel() returns one pixel from a cache thread
     view.
   */
-  static inline PixelPacket
-  AcquireOneThreadViewPixel(ThreadViewSet *view_set,const long x,const long y,
+  static inline MagickPassFail
+  AcquireOneThreadViewPixel(ThreadViewSet *view_set,PixelPacket *pixel,
+                            const long x,const long y,
                             ExceptionInfo *exception)
   {
-    return AcquireOneCacheViewPixel(AccessThreadView(view_set),x,y,exception);
+    return AcquireOneCacheViewPixel(AccessThreadView(view_set),pixel,x,y,exception);
   }
 
   /*
     GetThreadViewPixels() obtains a writeable pixel region from a
     cache thread view.
   */
-  MagickExport PixelPacket
+  extern MagickExport PixelPacket
   *GetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
                        const unsigned long columns,const unsigned long rows,
                        ExceptionInfo *exception);
@@ -141,14 +142,14 @@ extern "C" {
     GetThreadViewIndexes() returns the writeable indexes associated
     with a cache thread view.
   */
-  MagickExport IndexPacket
+  extern MagickExport IndexPacket
   *GetThreadViewIndexes(ThreadViewSet *view_set);
 
   /*
     SetThreadViewPixels() gets blank writeable pixels from a cache
     thread view.
   */
-  MagickExport PixelPacket
+  extern MagickExport PixelPacket
   *SetThreadViewPixels(ThreadViewSet *view_set,const long x,const long y,
                        const unsigned long columns,const unsigned long rows,
                        ExceptionInfo *exception);
@@ -157,7 +158,7 @@ extern "C" {
     SyncThreadViewPixels() saves any changes to pixel cache thread
     view.
   */
-  MagickExport MagickPassFail
+  extern MagickExport MagickPassFail
   SyncThreadViewPixels(ThreadViewSet *view_set,
                        ExceptionInfo *exception);
 

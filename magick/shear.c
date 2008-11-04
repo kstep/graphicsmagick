@@ -1025,10 +1025,12 @@ static void XShearImage(Image *image,const double degrees,
                     q++;
                     continue;
                   }
-                *q++=BlendComposite(&pixel,p,alpha);
+                BlendCompositePixel(q,&pixel,p,alpha);
+                q++;
                 pixel=(*p++);
               }
-            *q++=BlendComposite(&pixel,&image->background_color,alpha);
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            q++;
             for (i=0; i < (step-1); i++)
               *q++=image->background_color;
             break;
@@ -1052,10 +1054,11 @@ static void XShearImage(Image *image,const double degrees,
                 q--;
                 if ((x_offset+width+step-i) >= image->columns)
                   continue;
-                *q=BlendComposite(&pixel,p,alpha);
+                BlendCompositePixel(q,&pixel,p,alpha);
                 pixel=(*p);
               }
-            *--q=BlendComposite(&pixel,&image->background_color,alpha);
+            --q;
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
             for (i=0; i < (step-1); i++)
               *--q=image->background_color;
             break;
@@ -1288,10 +1291,12 @@ static void YShearImage(Image *image,const double degrees,
                     q++;
                     continue;
                   }
-                *q++=BlendComposite(&pixel,p,alpha);
+                BlendCompositePixel(q,&pixel,p,alpha);
+                q++;
                 pixel=(*p++);
               }
-            *q++=BlendComposite(&pixel,&image->background_color,alpha);
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            q++;
             for (i=0; i < (step-1); i++)
               *q++=image->background_color;
             break;
@@ -1315,10 +1320,11 @@ static void YShearImage(Image *image,const double degrees,
                 q--;
                 if ((y_offset+height+step-i) >= image->rows)
                   continue;
-                *q=BlendComposite(&pixel,p,alpha);
+                BlendCompositePixel(q,&pixel,p,alpha);
                 pixel=(*p);
               }
-            *--q=BlendComposite(&pixel,&image->background_color,alpha);
+            --q;
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
             for (i=0; i < (step-1); i++)
               *--q=image->background_color;
             break;

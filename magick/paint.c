@@ -330,14 +330,14 @@ MagickExport MagickPassFail ColorFloodfillImage(Image *image,
         {
           if (floodplane[y*image->columns+x])
             {
-              color=AcquireOnePixel(pattern,(long) ((unsigned long)
+              (void) AcquireOnePixelByReference(pattern,&color,(long) ((unsigned long)
                 (x-pattern->tile_info.x) % pattern->columns),(long)
                 ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
                 &image->exception);
               if (!pattern->matte)
                 color.opacity=OpaqueOpacity;
               if (color.opacity != TransparentOpacity)
-                *q=AlphaComposite(&color,color.opacity,q,q->opacity);
+                AlphaCompositePixel(q,&color,color.opacity,q,q->opacity);
             }
           q++;
         }

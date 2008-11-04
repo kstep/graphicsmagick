@@ -2029,7 +2029,7 @@ static unsigned int MagickXColorEditImage(Display *display,
             /*
               Update color information using replace algorithm.
             */
-            target=AcquireOnePixel(*image,x_offset,y_offset,&((*image)->exception));
+            (void) AcquireOnePixelByReference(*image,&target,x_offset,y_offset,&((*image)->exception));
             if ((*image)->storage_class == DirectClass)
               {
                 for (y=0; y < (long) (*image)->rows; y++)
@@ -2078,7 +2078,7 @@ static unsigned int MagickXColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            target=AcquireOnePixel(*image,x_offset,y_offset,&((*image)->exception));
+            (void) AcquireOnePixelByReference(*image,&target,x_offset,y_offset,&((*image)->exception));
             if (method == FillToBorderMethod)
               {
                 target.red=ScaleShortToQuantum(border_color.red);
@@ -7916,7 +7916,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
             /*
               Update matte information using replace algorithm.
             */
-            target=AcquireOnePixel(*image,x_offset,y_offset,&((*image)->exception));
+            (void) AcquireOnePixelByReference(*image,&target,x_offset,y_offset,&((*image)->exception));
             for (y=0; y < (long) (*image)->rows; y++)
             {
               q=GetImagePixels(*image,0,y,(*image)->columns,1);
@@ -7942,7 +7942,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
             /*
               Update matte information using floodfill algorithm.
             */
-            target=AcquireOnePixel(*image,x_offset,y_offset,&((*image)->exception));
+            (void) AcquireOnePixelByReference(*image,&target,x_offset,y_offset,&((*image)->exception));
             if (method == FillToBorderMethod)
               {
                 target.red=ScaleShortToQuantum(border_color.red);
@@ -10974,7 +10974,7 @@ static Image *MagickXTileImage(Display *display,MagickXResourceInfo *resource_in
         */
         x_offset=width*(tile % (((int) image->columns-x)/width))+x;
         y_offset=height*(tile/(((int) image->columns-x)/width))+y;
-        pixel=AcquireOnePixel(image,0,0,&image->exception);
+        (void) AcquireOnePixelByReference(image,&pixel,0,0,&image->exception);
         for (i=0; i < (int) height; i++)
         {
           s=GetImagePixels(image,x_offset,y_offset+i,width,1);

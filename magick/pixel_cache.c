@@ -812,12 +812,15 @@ AcquireImagePixels(const Image *image,
 %
 %  The format of the AcquireOneCacheViewPixel method is:
 %
-%      PixelPacket AcquireOneCacheViewPixel(const ViewInfo *view,
-%        const long x,const long y,ExceptionInfo *exception)
+%      MagickPassFail AcquireOneCacheViewPixel(const ViewInfo *view,
+%                              PixelPacket *pixel,const long x,const long y,
+%                              ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o view: The address of a structure of type ViewInfo.
+%
+%    o pixel: Pointer to PixelPacket to update.
 %
 %    o x,y:  Coordinate of pixel to retrieve
 %
@@ -825,8 +828,9 @@ AcquireImagePixels(const Image *image,
 %
 %
 */
-MagickExport PixelPacket
-AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
+MagickExport MagickPassFail
+AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
+                         const long x,const long y,
                          ExceptionInfo *exception)
 {
   const View
@@ -838,8 +842,8 @@ AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
   CacheInfo
     *cache_info;
 
-  const PixelPacket
-    *pixel;
+  MagickPassFail
+    status;
 
   view_info = (const View *) view;
   assert(view_info != (View *) NULL);
@@ -853,17 +857,45 @@ AcquireOneCacheViewPixel(const ViewInfo *view,const long x,const long y,
   assert(cache_info != (CacheInfo *) NULL);
   assert(cache_info->signature == MagickSignature);
 
+  status=MagickFail;
   if (((MemoryCache == cache_info->type) || (MapCache == cache_info->type)) &&
       ((x >= 0) && (y >= 0) &&
        ((unsigned long) x < cache_info->columns) &&
        ((unsigned long) y < cache_info->rows)))
-    return cache_info->pixels[y*(magick_off_t) cache_info->columns+x];
-    
-  pixel=AcquireCacheNexus(image,x,y,1,1,view_info->nexus_info,exception);
-  if (pixel != (const PixelPacket *) NULL)
-    return pixel[0];
+    {
+      magick_off_t
+        offset;
+      
+      offset=y*(magick_off_t) cache_info->columns+x;
+      if ((image->storage_class == PseudoClass) ||
+          (image->colorspace == CMYKColorspace))
+        {
+          *pixel=image->colormap[cache_info->indexes[offset]];
+        }
+      else
+        {
+          *pixel=cache_info->pixels[offset];
+        }
+      status=MagickPass;
+    }
+  else
+    {
+      const PixelPacket
+        *pixels;
 
-  return image->background_color;
+      pixels=AcquireCacheNexus(image,x,y,1,1,view_info->nexus_info,exception);
+      if (pixels != (const PixelPacket *) NULL)
+        {
+          *pixel=pixels[0];
+          status=MagickPass;
+        }
+      else
+        {
+          *pixel=image->background_color;
+        }
+    }
+
+  return status;
 }
 
 /*
@@ -904,9 +936,13 @@ MagickExport PixelPacket
 AcquireOnePixel(const Image *image,const long x,const long y,
                 ExceptionInfo *exception)
 {
+  PixelPacket
+    pixel;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return AcquireOneCacheViewPixel(image->default_view,x,y,exception);
+  (void) AcquireOneCacheViewPixel(image->default_view,&pixel,x,y,exception);
+  return pixel;
 }
 
 /*
@@ -2045,9 +2081,15 @@ GetNexusPixels(const NexusInfo *nexus_info)
 MagickExport PixelPacket
 GetOnePixel(Image *image,const long x,const long y)
 {
+  PixelPacket
+    pixel;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return AcquireOneCacheViewPixel(image->default_view,x,y,&image->exception);
+  (void) AcquireOneCacheViewPixel(image->default_view,&pixel,x,y,
+                                  &image->exception);
+
+  return pixel;
 }
 
 /*

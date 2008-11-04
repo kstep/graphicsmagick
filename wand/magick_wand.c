@@ -1102,7 +1102,7 @@ WandExport unsigned int MagickColorFloodfillImage(MagickWand *wand,
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   PixelGetQuantumColor(fill,&draw_info->fill);
-  target=AcquireOnePixel(wand->image,x % wand->image->columns,
+  (void) AcquireOnePixelByReference(wand->image,&target,x % wand->image->columns,
     y % wand->image->rows,&wand->exception);
   if (bordercolor != (PixelWand *) NULL)
     PixelGetQuantumColor(bordercolor,&target);
@@ -4850,7 +4850,7 @@ WandExport unsigned int MagickMatteFloodfillImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
-  target=AcquireOnePixel(wand->image,x % wand->image->columns,
+  (void) AcquireOnePixelByReference(wand->image,&target,x % wand->image->columns,
     y % wand->image->rows,&wand->exception);
   if (bordercolor != (PixelWand *) NULL)
     PixelGetQuantumColor(bordercolor,&target);

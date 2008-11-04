@@ -2925,7 +2925,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   {
     for (i=0; i < image->columns; i++)
     {
-      p=GetOnePixel(image,i,j);
+      p=AcquireOnePixel(image,i,j,&image->exception);
       bitmap.bitmap[point++]=pixel->red;
       if (number_planes == 3)
         {
