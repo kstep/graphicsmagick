@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
-<title>GraphicsMagick 1.2 vs ImageMagick 6.3.6 Benchmark Report</title>
+<title>GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -48,1537 +48,1829 @@
 <li><a href="links.html">Links</a></li>
 </ul>
 </div>
-<div class="document" id="graphicsmagick-1-2-vs-imagemagick-6-3-6-benchmark-report">
-<h1 class="title">GraphicsMagick 1.2 vs ImageMagick 6.3.6 Benchmark Report</h1>
+<div class="document" id="graphicsmagick-1-3-vs-imagemagick-6-4-5-benchmark-report">
+<h1 class="title">GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#purpose" id="id1" name="id1">Purpose</a></li>
+<li><a class="reference" href="#introduction" id="id1" name="id1">Introduction</a></li>
 <li><a class="reference" href="#executive-summary" id="id2" name="id2">Executive Summary</a></li>
-<li><a class="reference" href="#input-files" id="id3" name="id3">Input Files</a></li>
-<li><a class="reference" href="#file-conversion-results" id="id4" name="id4">File Conversion Results</a><ul>
-<li><a class="reference" href="#bmp-format" id="id5" name="id5">BMP Format</a></li>
-<li><a class="reference" href="#dpx-format" id="id6" name="id6">DPX Format</a></li>
-<li><a class="reference" href="#gif-format" id="id7" name="id7">GIF Format</a></li>
-<li><a class="reference" href="#jpeg-format" id="id8" name="id8">JPEG Format</a></li>
-<li><a class="reference" href="#pcx-format" id="id9" name="id9">PCX Format</a></li>
-<li><a class="reference" href="#pdf-format" id="id10" name="id10">PDF Format</a></li>
-<li><a class="reference" href="#pnm-format" id="id11" name="id11">PNM Format</a></li>
-<li><a class="reference" href="#postscript-format" id="id12" name="id12">Postscript Format</a></li>
-<li><a class="reference" href="#sgi-format" id="id13" name="id13">SGI Format</a></li>
-<li><a class="reference" href="#tiff-format" id="id14" name="id14">TIFF Format</a></li>
+<li><a class="reference" href="#strategy" id="id3" name="id3">Strategy</a></li>
+<li><a class="reference" href="#the-benchmark" id="id4" name="id4">The Benchmark</a></li>
+<li><a class="reference" href="#test-results" id="id5" name="id5">Test Results</a><ul>
+<li><a class="reference" href="#amd-opteron-solaris-10" id="id6" name="id6">AMD Opteron/Solaris 10</a></li>
+<li><a class="reference" href="#sun-sparc-solaris-10" id="id7" name="id7">Sun SPARC/Solaris 10</a></li>
+<li><a class="reference" href="#apple-powerpc-g5-os-x-tiger" id="id8" name="id8">Apple PowerPC G5/OS-X Tiger</a></li>
+<li><a class="reference" href="#intel-xeon-freebsd-7-0" id="id9" name="id9">Intel Xeon / FreeBSD 7.0</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#image-processing-results" id="id15" name="id15">Image Processing Results</a><ul>
-<li><a class="reference" href="#blur-0-0x1-0-up-to-162-faster" id="id16" name="id16">-blur 0.0x1.0 (up to 162% faster)</a></li>
-<li><a class="reference" href="#gamma-1-2-up-to-219-faster" id="id17" name="id17">-gamma 1.2 (up to 219% faster)</a></li>
-<li><a class="reference" href="#resize-50-only-34-faster" id="id18" name="id18">-resize 50% (only 34% faster)</a></li>
-<li><a class="reference" href="#rotate-90-up-to-134-faster" id="id19" name="id19">-rotate 90 (up to 134% faster)</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#execution-overhead-results-3-2x-less-overhead" id="id20" name="id20">Execution Overhead Results (3.2X less overhead!)</a></li>
 </ul>
 </div>
-<p>GraphicsMagick 1.2 has been benchmarked against the most recent
-ImageMagick delivered by the FreeBSD Ports system at that time
-(ImageMagick 6.3.6). Testing was done on a dual-CPU Intel Xeon 2.4GHz
-system, with 2GB RAM and running FreeBSD 7.0. The software involved is
-configured and compiled using similar options. The software involved in
-the testing identified itself as:</p>
-<pre class="literal-block">
-GraphicsMagick 1.2.1 2008-05-06 Q16 http://www.GraphicsMagick.org/
-
-ImageMagick 6.3.6 03/30/08 Q16 http://www.imagemagick.org
-</pre>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="purpose" name="purpose">Purpose</a></h1>
-<p>The purpose of the benchmark was to measure the raw throughput of the
-sofware with medium sized (600 DPI) files. We consider 600 DPI to be
-&quot;medium&quot; since today's printers typically support 1200 or 2400 DPI. Raw
-throughput is important since testing showed that reading and writing
-files often dominates image processing time. We threw in a little bit of
-image processing as well. The benchmark uses Ghostscript and the
-'golfer.ps' and 'tiger.ps' sample files to render test input TIFF files
-at 600 DPI.</p>
-<p>The benchmark is available via anonymous ftp so that you can try it on
-your own computer. Retrieve it from
-&quot;<a class="reference" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/benchmark/magick-bench.tar.gz">ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/benchmark/magick-bench.tar.gz</a>&quot;.</p>
+<h1><a class="toc-backref" href="#id1" id="introduction" name="introduction">Introduction</a></h1>
+<p>GraphicsMagick 1.3 has been benchmarked against the most recent
+ImageMagick release available at time of release. ImageMagick has
+recently been significantly updated to use OpenMP as has GraphicsMagick
+1.3. Several disparate types of systems were used in our testing. We are
+pleased to see that ImageMagick's performance has improved significantly
+on the benchmark that we posted earlier (see <a class="reference" href="benchmarks-1.2.html">GraphicsMagick 1.2
+Benchmarks</a>). It seems that access to the useful benchmark and
+GraphicsMagick source code has been quite helpful to ImageMagick in order
+to resolve many of the performance issues.</p>
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id2" id="executive-summary" name="executive-summary">Executive Summary</a></h1>
-<p>GraphicsMagick is often 2X to 200X faster at converting from one file to
-another than ImageMagick 6.3.6 is on garden variety hardware. Typical
-image processing tasks are faster as well. If time and money are
-important to you, then you should consider using GraphicsMagick rather
+<p>GraphicsMagick is typically 1.5 to 5X faster at executing image
+processing operations from the command line than ImageMagick 6.4.5 is.
+Some ImageMagick algorithms run as much as 262X slower on three year old
+hardware. ImageMagick 6.4.5 only runs adequately on the latest high-end
+hardware with large caches, and runs poorly on most of the installed
+computing base. Even on the latest high-end hardware, GraphicsMagick is
+much more efficient than ImageMagick.</p>
+<p>The often extreme difference in the results is difficult to believe until
+one inspects the source code from both packages and sees that
+GraphicsMagick uses streamlined straight-forward code paths while
+ImageMagick uses convoluted and arcane code paths in an apparent attempt
+to defeat human comprehension. While the ImageMagick approach does
+successfully defeat human comprehension, it also seems to largely defeat
+C compiler comprehension as well, resulting in slow code. If time and
+money are important to you, then you should use GraphicsMagick rather
 than ImageMagick. If time and money are not important to you, then you
-should continue using ImageMagick.</p>
+should use ImageMagick.</p>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="input-files" name="input-files">Input Files</a></h1>
-<p>The following input files are used (alphabetical order):</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="41%" />
-<col width="59%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>Black/white (8 bits/sample) in &quot;RGB&quot; format</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>Black/white (1 bit/sample) in bilevel format</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>Grayscale (8 bits/sample)in &quot;RGB&quot; format</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>Grayscale (8 bits/sample) in compact format</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>Graycale (16 bits/sample) in a compact format.</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>Grayscale, indexed (4 bits/sample)</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>Black/white, indexed (1 bit/sample)</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>Color (RGB) indexed (8 bits/sample)</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>Color (RGB) truecolor (8 bits/sample)</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>Color (RGB) truecolor (16 bits/sample)</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>Color (RGBA) truecolor (8 bits/sample)</td>
-</tr>
-</tbody>
-</table>
-<p>The 'golfer-600' files have pixel dimensions of 4750x5792, and the
-'tiger-600' files have pixel dimensions of 4542x4725.</p>
-<p>The benchmark is run via a simple script which runs a 'convert' command to convert the
-input file to an output file with the specified format.</p>
+<h1><a class="toc-backref" href="#id3" id="strategy" name="strategy">Strategy</a></h1>
+<p>For this benchmark cycle, we used a completely different benchmark
+approach. Instead of testing single-shot performance with large
+uncompressed files, we focused on the ability to process many medium
+sized (2048x1024 pixels) images. In order to prevent disk I/O from being
+a factor, we used a small input image and tiled it to create a larger
+input image via the &quot;tile:&quot; coder. The processed image is send to the
+&quot;null:&quot; coder so that file writes to a slow disk are also not a factor.
+In order to obtain accurate and useful timing, we used the bash shell to
+execute the command 20 times and see how long it took. This is a very
+simple benchmark approach which is quite representative of the
+performance that the typical user observes.</p>
+<p>This new benchmark reveals the following performance criteria:</p>
+<blockquote>
+<ul class="simple">
+<li>Basic execution overhead of the software.</li>
+<li>Image processing algorithmic efficiency.</li>
+<li>Efficacy of OpenMP enhancements.</li>
+</ul>
+</blockquote>
+<p>The software involved in the testing identified itself as:</p>
+<pre class="literal-block">
+GraphicsMagick 1.3 unreleased Q16 http://www.GraphicsMagick.org/
+
+ImageMagick 6.4.5 2008-11-03 Q16 OpenMP http://www.imagemagick.org
+</pre>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id4" id="file-conversion-results" name="file-conversion-results">File Conversion Results</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="bmp-format" name="bmp-format">BMP Format</a></h2>
-<p>BMP is a popular format on Windows systems. Since it is uncompressed, it
-should be fast. GraphicsMagick is clearly much faster at writing BMP than
-ImageMagick is.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>0.66s</td>
-<td>0.88s</td>
-<td>1.30s</td>
-<td>3.11s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.46s</td>
-<td>0.59s</td>
-<td>0.90s</td>
-<td>1.07s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>0.61s</td>
-<td>0.93s</td>
-<td>1.33s</td>
-<td>3.05s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.60s</td>
-<td>0.89s</td>
-<td>1.13s</td>
-<td>3.02s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.66s</td>
-<td>0.85s</td>
-<td>1.19s</td>
-<td>2.93s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.64s</td>
-<td>0.49s</td>
-<td>0.62s</td>
-<td>1.50s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.65s</td>
-<td>0.42s</td>
-<td>0.68s</td>
-<td>0.76s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.50s</td>
-<td>0.45s</td>
-<td>0.75s</td>
-<td>2.29s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.43s</td>
-<td>0.78s</td>
-<td>0.98s</td>
-<td>2.52s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.58s</td>
-<td>0.84s</td>
-<td>1.08s</td>
-<td>2.65s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>0.62s</td>
-<td>0.84s</td>
-<td>1.14s</td>
-<td>2.48s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="dpx-format" name="dpx-format">DPX Format</a></h2>
-<p>DPX format is used by the motion picture industry. It is rarely used
-outside that industry. Since a typical motion picture contains 144K image
-frames (and millions of frames may be processed), processing speed is
-quite important. Even though GraphicsMagick's DPX implementation
-prioritizes flexibility and correctness over speed, it compares well with
-ImageMagick.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>0.87s</td>
-<td>0.67s</td>
-<td>1.32s</td>
-<td>2.87s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.90s</td>
-<td>0.74s</td>
-<td>5.24s</td>
-<td>0.61s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>0.88s</td>
-<td>0.68s</td>
-<td>1.22s</td>
-<td>3.04s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.84s</td>
-<td>0.65s</td>
-<td>0.91s</td>
-<td>3.05s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.79s</td>
-<td>1.03s</td>
-<td>0.86s</td>
-<td>3.21s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.89s</td>
-<td>1.05s</td>
-<td>5.21s</td>
-<td>1.45s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.91s</td>
-<td>0.75s</td>
-<td>5.40s</td>
-<td>0.80s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.65s</td>
-<td>0.89s</td>
-<td>1.05s</td>
-<td>2.46s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.54s</td>
-<td>0.68s</td>
-<td>0.92s</td>
-<td>2.44s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.67s</td>
-<td>1.00s</td>
-<td>0.91s</td>
-<td>2.75s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>0.69s</td>
-<td>0.73s</td>
-<td>0.89s</td>
-<td>2.33s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="gif-format" name="gif-format">GIF Format</a></h2>
-<p>GIF format is quite popular on the Internet. It seems that GraphicsMagick
-is sometimes 3X to 50X faster than ImageMagick at outputting GIF files.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.19s</td>
-<td>0.63s</td>
-<td>41.21s</td>
-<td>3.40s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.88s</td>
-<td>0.58s</td>
-<td>45.67s</td>
-<td>1.26s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.14s</td>
-<td>0.60s</td>
-<td>50.16s</td>
-<td>3.32s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.96s</td>
-<td>0.60s</td>
-<td>52.96s</td>
-<td>3.35s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>1.06s</td>
-<td>0.52s</td>
-<td>52.99s</td>
-<td>3.33s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.97s</td>
-<td>0.48s</td>
-<td>1.02s</td>
-<td>1.43s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.94s</td>
-<td>0.51s</td>
-<td>1.09s</td>
-<td>0.72s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.72s</td>
-<td>0.40s</td>
-<td>0.93s</td>
-<td>2.30s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>12.75s</td>
-<td>0.48s</td>
-<td>34.63s</td>
-<td>2.84s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>12.70s</td>
-<td>0.66s</td>
-<td>34.96s</td>
-<td>2.78s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>12.57s</td>
-<td>0.50s</td>
-<td>73.41s</td>
-<td>3.12s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="jpeg-format" name="jpeg-format">JPEG Format</a></h2>
-<p>JPEG is a quite popular format for still photos and on the Internet.
-GraphicsMagick writes JPEG files faster than ImageMagick.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>2.26s</td>
-<td>0.61s</td>
-<td>3.73s</td>
-<td>2.74s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>2.16s</td>
-<td>0.65s</td>
-<td>3.41s</td>
-<td>0.72s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.67s</td>
-<td>0.59s</td>
-<td>2.80s</td>
-<td>2.81s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>1.37s</td>
-<td>0.66s</td>
-<td>2.70s</td>
-<td>2.73s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>1.48s</td>
-<td>0.56s</td>
-<td>2.77s</td>
-<td>2.64s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>1.49s</td>
-<td>0.71s</td>
-<td>2.63s</td>
-<td>1.49s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>2.15s</td>
-<td>0.66s</td>
-<td>3.53s</td>
-<td>0.81s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>2.21s</td>
-<td>0.52s</td>
-<td>2.91s</td>
-<td>2.48s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>2.14s</td>
-<td>0.47s</td>
-<td>2.93s</td>
-<td>2.31s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>2.12s</td>
-<td>0.72s</td>
-<td>3.02s</td>
-<td>2.50s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>2.24s</td>
-<td>0.55s</td>
-<td>3.00s</td>
-<td>2.08s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="pcx-format" name="pcx-format">PCX Format</a></h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.48s</td>
-<td>0.47s</td>
-<td>1.85s</td>
-<td>2.70s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.52s</td>
-<td>0.53s</td>
-<td>1.58s</td>
-<td>0.64s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.15s</td>
-<td>0.58s</td>
-<td>1.51s</td>
-<td>2.73s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>1.07s</td>
-<td>0.46s</td>
-<td>1.49s</td>
-<td>2.55s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>1.03s</td>
-<td>0.52s</td>
-<td>1.39s</td>
-<td>2.64s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.61s</td>
-<td>0.54s</td>
-<td>0.71s</td>
-<td>1.45s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.56s</td>
-<td>0.52s</td>
-<td>0.87s</td>
-<td>0.75s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.44s</td>
-<td>0.51s</td>
-<td>0.77s</td>
-<td>2.29s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.86s</td>
-<td>0.42s</td>
-<td>1.31s</td>
-<td>2.14s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.93s</td>
-<td>0.56s</td>
-<td>1.50s</td>
-<td>2.20s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>1.13s</td>
-<td>0.53s</td>
-<td>1.55s</td>
-<td>1.95s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id10" id="pdf-format" name="pdf-format">PDF Format</a></h2>
-<p>PDF format is important since it is used for documents and by the
-pre-press industry. GraphicsMagick writes PDF files much faster than
-ImageMagick.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.78s</td>
-<td>0.55s</td>
-<td>4.38s</td>
-<td>2.84s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>1.68s</td>
-<td>0.59s</td>
-<td>4.07s</td>
-<td>0.76s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.71s</td>
-<td>0.52s</td>
-<td>4.45s</td>
-<td>2.76s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>1.51s</td>
-<td>0.53s</td>
-<td>4.25s</td>
-<td>2.77s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>1.48s</td>
-<td>0.58s</td>
-<td>4.23s</td>
-<td>2.73s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>1.69s</td>
-<td>0.58s</td>
-<td>4.40s</td>
-<td>1.48s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>1.80s</td>
-<td>0.49s</td>
-<td>4.07s</td>
-<td>0.80s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>1.24s</td>
-<td>0.51s</td>
-<td>2.85s</td>
-<td>2.26s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>2.70s</td>
-<td>0.43s</td>
-<td>6.85s</td>
-<td>2.54s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>2.68s</td>
-<td>0.67s</td>
-<td>7.11s</td>
-<td>2.56s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>2.80s</td>
-<td>0.57s</td>
-<td>9.25s</td>
-<td>2.51s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id11" id="pnm-format" name="pnm-format">PNM Format</a></h2>
-<p>The PNM format (from pbmplus/netpbm) is designed for blazing speed since
-it is often used as part of image processing pipelines. Unfortunately the
-ImageMagick implementation does not offer blazing speed and is 200X
-slower than GraphicsMagick.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>0.78s</td>
-<td>0.42s</td>
-<td>98.05s</td>
-<td>3.78s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.49s</td>
-<td>0.57s</td>
-<td>98.00s</td>
-<td>1.62s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>0.70s</td>
-<td>0.57s</td>
-<td>97.89s</td>
-<td>3.88s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.56s</td>
-<td>0.54s</td>
-<td>98.11s</td>
-<td>3.80s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.54s</td>
-<td>0.60s</td>
-<td>99.53s</td>
-<td>4.37s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.63s</td>
-<td>0.64s</td>
-<td>98.09s</td>
-<td>2.47s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.59s</td>
-<td>0.50s</td>
-<td>98.04s</td>
-<td>1.78s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.56s</td>
-<td>0.79s</td>
-<td>76.47s</td>
-<td>3.20s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.58s</td>
-<td>0.51s</td>
-<td>76.62s</td>
-<td>2.95s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.55s</td>
-<td>0.93s</td>
-<td>77.71s</td>
-<td>3.44s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>0.49s</td>
-<td>0.79s</td>
-<td>76.51s</td>
-<td>2.98s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id12" id="postscript-format" name="postscript-format">Postscript Format</a></h2>
-<p>Sending jobs to Postscript printers can be slow, and now we know why.
-GraphicsMagick is 10-40X more efficient at outputting Level I Postscript
-than ImageMagick is.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.06s</td>
-<td>0.56s</td>
-<td>10.73s</td>
-<td>2.73s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.55s</td>
-<td>0.57s</td>
-<td>10.45s</td>
-<td>0.62s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>0.83s</td>
-<td>0.64s</td>
-<td>75.58s</td>
-<td>3.07s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.65s</td>
-<td>0.62s</td>
-<td>75.31s</td>
-<td>2.71s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.64s</td>
-<td>0.67s</td>
-<td>75.23s</td>
-<td>2.72s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.75s</td>
-<td>0.67s</td>
-<td>75.09s</td>
-<td>1.52s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.63s</td>
-<td>0.48s</td>
-<td>10.54s</td>
-<td>0.74s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.57s</td>
-<td>0.52s</td>
-<td>58.38s</td>
-<td>2.28s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.98s</td>
-<td>0.78s</td>
-<td>72.56s</td>
-<td>2.56s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>1.10s</td>
-<td>0.89s</td>
-<td>72.48s</td>
-<td>2.79s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>1.20s</td>
-<td>0.75s</td>
-<td>72.78s</td>
-<td>2.54s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id13" id="sgi-format" name="sgi-format">SGI Format</a></h2>
-<p>SGI format is a legacy format which is still used for heavy-duty image
-processing. GraphicsMagick is several times faster at dealing with SGI
-format than ImageMagick is.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>0.99s</td>
-<td>0.75s</td>
-<td>2.75s</td>
-<td>2.94s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>1.01s</td>
-<td>0.67s</td>
-<td>2.47s</td>
-<td>0.85s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.01s</td>
-<td>0.66s</td>
-<td>2.69s</td>
-<td>3.03s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.82s</td>
-<td>0.67s</td>
-<td>2.57s</td>
-<td>2.95s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.80s</td>
-<td>0.71s</td>
-<td>2.40s</td>
-<td>3.04s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.92s</td>
-<td>0.72s</td>
-<td>2.47s</td>
-<td>1.65s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>1.02s</td>
-<td>0.67s</td>
-<td>2.54s</td>
-<td>0.99s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.88s</td>
-<td>0.53s</td>
-<td>3.57s</td>
-<td>2.70s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.77s</td>
-<td>0.53s</td>
-<td>3.54s</td>
-<td>2.55s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.84s</td>
-<td>0.68s</td>
-<td>3.72s</td>
-<td>3.05s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>0.90s</td>
-<td>0.60s</td>
-<td>4.42s</td>
-<td>2.33s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id14" id="tiff-format" name="tiff-format">TIFF Format</a></h2>
-<p>TIFF is one of the world's most important image file formats. Since it is
-often used serious image processing, it needs to be as efficient as
-possible. Clearly GraphicsMagick is much faster than ImageMagick at
-processing TIFF files.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>0.74s</td>
-<td>0.49s</td>
-<td>1.25s</td>
-<td>2.76s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.60s</td>
-<td>0.46s</td>
-<td>0.89s</td>
-<td>0.73s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>0.65s</td>
-<td>0.68s</td>
-<td>1.91s</td>
-<td>2.80s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.56s</td>
-<td>0.58s</td>
-<td>1.70s</td>
-<td>2.88s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.56s</td>
-<td>0.63s</td>
-<td>1.32s</td>
-<td>2.67s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.49s</td>
-<td>0.61s</td>
-<td>1.55s</td>
-<td>1.45s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>0.58s</td>
-<td>0.50s</td>
-<td>1.04s</td>
-<td>0.77s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.36s</td>
-<td>0.60s</td>
-<td>0.77s</td>
-<td>2.32s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.51s</td>
-<td>0.63s</td>
-<td>0.84s</td>
-<td>2.52s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.46s</td>
-<td>1.05s</td>
-<td>0.86s</td>
-<td>2.73s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>0.74s</td>
-<td>0.74s</td>
-<td>1.27s</td>
-<td>2.37s</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="image-processing-results" name="image-processing-results">Image Processing Results</a></h1>
-<p>For these tests, we convert between two TIFF files with a simple image
-processing step added in. The pupose of these tests is to show that the
-performance advantages of GraphicsMagick carry over to simple image
-processing tasks as well.</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id16" id="blur-0-0x1-0-up-to-162-faster" name="blur-0-0x1-0-up-to-162-faster">-blur 0.0x1.0 (up to 162% faster)</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that
-'-blur 0.0x1.0' is included. GraphicsMagick seems to be 2X faster than
-ImageMagick for -blur.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>19.22s</td>
-<td>1.25s</td>
-<td>49.89s</td>
-<td>3.46s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>19.25s</td>
-<td>0.98s</td>
-<td>36.89s</td>
-<td>1.32s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>19.29s</td>
-<td>1.18s</td>
-<td>50.13s</td>
-<td>3.41s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>19.24s</td>
-<td>0.92s</td>
-<td>37.31s</td>
-<td>3.12s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>19.09s</td>
-<td>1.12s</td>
-<td>37.10s</td>
-<td>3.29s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>19.15s</td>
-<td>1.17s</td>
-<td>37.38s</td>
-<td>2.11s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>19.31s</td>
-<td>0.92s</td>
-<td>37.04s</td>
-<td>1.46s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>14.61s</td>
-<td>1.13s</td>
-<td>28.63s</td>
-<td>2.88s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>14.36s</td>
-<td>0.96s</td>
-<td>28.17s</td>
-<td>2.91s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>14.32s</td>
-<td>1.42s</td>
-<td>28.30s</td>
-<td>3.03s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>14.60s</td>
-<td>0.98s</td>
-<td>28.41s</td>
-<td>3.00s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id17" id="gamma-1-2-up-to-219-faster" name="gamma-1-2-up-to-219-faster">-gamma 1.2 (up to 219% faster)</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that
-'-gamma 1.2' is included. Clearly GraphicsMagick is much faster at this
-task.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.03s</td>
-<td>0.57s</td>
-<td>1.77s</td>
-<td>2.81s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>0.99s</td>
-<td>0.52s</td>
-<td>1.48s</td>
-<td>0.71s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.08s</td>
-<td>0.63s</td>
-<td>2.54s</td>
-<td>2.92s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>0.88s</td>
-<td>0.63s</td>
-<td>2.41s</td>
-<td>2.89s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>0.97s</td>
-<td>0.61s</td>
-<td>2.41s</td>
-<td>2.79s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>0.97s</td>
-<td>0.56s</td>
-<td>2.59s</td>
-<td>1.41s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>1.02s</td>
-<td>0.48s</td>
-<td>1.62s</td>
-<td>0.78s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>0.72s</td>
-<td>0.59s</td>
-<td>1.84s</td>
-<td>2.43s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>0.80s</td>
-<td>0.66s</td>
-<td>1.83s</td>
-<td>2.56s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.75s</td>
-<td>1.07s</td>
-<td>1.75s</td>
-<td>2.85s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>1.13s</td>
-<td>0.66s</td>
-<td>1.90s</td>
-<td>2.71s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id18" id="resize-50-only-34-faster" name="resize-50-only-34-faster">-resize 50% (only 34% faster)</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that '-resize
-50%' is included so that there is some more serious image procesing. We
-have done nothing at all to try to improve image resize performance
-(considerable speed-up is possible). Image resize currently has severe
-performance problems (compared to what is possible) due to the way the
-algorithm accesses memory. Regardless, GraphicsMagick is still somewhat
-faster.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>9.38s</td>
-<td>0.95s</td>
-<td>10.78s</td>
-<td>3.15s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>7.38s</td>
-<td>1.02s</td>
-<td>10.55s</td>
-<td>0.96s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>9.46s</td>
-<td>0.86s</td>
-<td>10.84s</td>
-<td>3.04s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>9.40s</td>
-<td>0.84s</td>
-<td>10.61s</td>
-<td>3.06s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>9.55s</td>
-<td>0.83s</td>
-<td>10.73s</td>
-<td>2.94s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>7.40s</td>
-<td>0.93s</td>
-<td>8.79s</td>
-<td>2.08s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>7.60s</td>
-<td>0.82s</td>
-<td>8.48s</td>
-<td>1.57s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>5.53s</td>
-<td>0.90s</td>
-<td>6.91s</td>
-<td>2.88s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>7.21s</td>
-<td>0.71s</td>
-<td>8.28s</td>
-<td>2.51s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>7.14s</td>
-<td>1.03s</td>
-<td>8.41s</td>
-<td>2.67s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>6.29s</td>
-<td>0.79s</td>
-<td>7.63s</td>
-<td>2.46s</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section">
-<h2><a class="toc-backref" href="#id19" id="rotate-90-up-to-134-faster" name="rotate-90-up-to-134-faster">-rotate 90 (up to 134% faster)</a></h2>
-<p>This test is the same as a TIFF to TIFF conversion except that
-'-rotate 90' is included so that there is some simple image processing.
-Rotating by 90 degrees is a common requirement. For this system,
-GraphicsMagick is typically 2X faster for this task.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="54%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head" rowspan="2">Name</th>
-<th class="head" colspan="2">GraphicsMagick</th>
-<th class="head" colspan="2">ImageMagick</th>
-</tr>
-<tr><th class="head">User</th>
-<th class="head">System</th>
-<th class="head">User</th>
-<th class="head">System</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>golfer-600-bilevel-truecolor.tiff</td>
-<td>1.28s</td>
-<td>1.02s</td>
-<td>2.82s</td>
-<td>3.20s</td>
-</tr>
-<tr><td>golfer-600-bilevel.tiff</td>
-<td>1.46s</td>
-<td>1.19s</td>
-<td>2.63s</td>
-<td>1.02s</td>
-</tr>
-<tr><td>golfer-600-gray-truecolor.tiff</td>
-<td>1.25s</td>
-<td>1.15s</td>
-<td>3.40s</td>
-<td>3.29s</td>
-</tr>
-<tr><td>golfer-600-gray.tiff</td>
-<td>1.18s</td>
-<td>1.01s</td>
-<td>3.42s</td>
-<td>3.12s</td>
-</tr>
-<tr><td>golfer-600-gray16.tiff</td>
-<td>1.11s</td>
-<td>1.15s</td>
-<td>3.47s</td>
-<td>2.98s</td>
-</tr>
-<tr><td>golfer-600-palette16.tiff</td>
-<td>1.55s</td>
-<td>1.13s</td>
-<td>4.15s</td>
-<td>2.11s</td>
-</tr>
-<tr><td>golfer-600-pallet2.tiff</td>
-<td>1.59s</td>
-<td>1.08s</td>
-<td>3.51s</td>
-<td>1.17s</td>
-</tr>
-<tr><td>tiger-600-palette256.tiff</td>
-<td>1.15s</td>
-<td>1.04s</td>
-<td>3.28s</td>
-<td>2.63s</td>
-</tr>
-<tr><td>tiger-600-rgb.tiff</td>
-<td>1.15s</td>
-<td>0.86s</td>
-<td>2.39s</td>
-<td>3.01s</td>
-</tr>
-<tr><td>tiger-600-rgb16.tiff</td>
-<td>0.96s</td>
-<td>1.42s</td>
-<td>2.60s</td>
-<td>3.00s</td>
-</tr>
-<tr><td>tiger-600-rgba.tiff</td>
-<td>1.23s</td>
-<td>1.11s</td>
-<td>2.67s</td>
-<td>2.96s</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section">
-<h1><a class="toc-backref" href="#id20" id="execution-overhead-results-3-2x-less-overhead" name="execution-overhead-results-3-2x-less-overhead">Execution Overhead Results (3.2X less overhead!)</a></h1>
-<p>It is common to execute GraphicsMagick and ImageMagick utilities in
-scripts. In this case, the utilities may be started over and over again
-for thousands of files. If the operation requested takes little time to
-execute then the time required to start the utility will dominate the
-time. In order to evaluate the execution overhead, this small script
-(&quot;bench&quot;):</p>
+<h1><a class="toc-backref" href="#id4" id="the-benchmark" name="the-benchmark">The Benchmark</a></h1>
+<p>The benchmark is quite simple. It reads a list of commands to execute
+from a file named &quot;commands.txt&quot; and times how long it takes to execute
+each command 20 times using GraphicsMagick and ImageMagick.</p>
+<p>Here is the simple benchmark script:</p>
 <pre class="literal-block">
 #!/bin/bash
-i=1
-count=1000
-time while test $i -lt $count
+#
+# Measure the performance between two 'convert' commands by
+# executing a subcommand through many iterations and seeing
+# the total time that it takes.
+#
+# Written by Bob Friesenhahn, October 2008
+#
+convert1='/usr/local/bin/gm convert'
+convert2='/usr/local/bin/convert'
+input_image=&quot;-size 1920x1080 tile:model.pnm&quot;
+output_image=&quot;null:&quot;
+iterations=20
+echo &quot;Convert-1:   ${convert1}&quot;
+echo &quot;Version:     `${convert1} -version | head -1`&quot;
+echo &quot;Convert-2:   ${convert2}&quot;
+echo &quot;Version:     `${convert2} -version | head -1`&quot;
+echo &quot;Date:        `date`&quot;
+echo &quot;Host:        `uname -n`&quot;
+echo &quot;OS:          `uname -s`&quot;
+echo &quot;Release:     `uname -r`&quot;
+echo &quot;Arch:        `uname -p`&quot;
+echo &quot;Input File:  ${input_image}&quot;
+echo &quot;Output File: ${output_image}&quot;
+echo &quot;Threads:     ${OMP_NUM_THREADS:-1}&quot;
+echo &quot;Iterations:  ${iterations}&quot;
+echo &quot;========================================================================================&quot;
+echo
+cat commands.txt | while read subcommand
 do
-  eval &quot;$&#64;&quot;
-  let i=i+1
+  echo ${subcommand}
+
+  command1=&quot;${convert1} ${input_image} ${subcommand} ${output_image}&quot;
+  i=1
+  count=$iterations
+  time while test $i -lt $count
+  do
+    eval &quot;${command1}&quot;
+    let i=i+1
+  done
+  sleep 1
+
+  command2=&quot;${convert2} ${input_image} ${subcommand} ${output_image}&quot;
+  i=1
+  count=$iterations
+  time while test $i -lt $count
+  do
+    eval &quot;${command2}&quot;
+    let i=i+1
+  done
+
+  echo
+  sleep 1
 done
 </pre>
-<p>Is used to execute a specified command 1000 times and report the amount
-of time it took. For the purposes of this test, we take the 'rose' image
-which is included in GraphicsMagick and ImageMagick, write it to an input
-file, and then measure how long it takes to rotate it by 90 degrees and
-write to another file:</p>
-<pre class="literal-block">
-/usr/local/bin/gm convert magick:rose input.tiff
-./bench /usr/local/bin/convert input.tiff -rotate 90 output.tiff
-./bench /usr/local/bin/gm convert input.tiff -rotate 90 output.tiff
-</pre>
-<p>Which results in these timings for ImageMagick:</p>
-<blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id5" id="test-results" name="test-results">Test Results</a></h1>
+<p>The test results are expressed as the image processing operation
+performed, the amount of wall-clock time it took for GraphicsMagick to
+execute it twenty times, the amount of wall-clock time it took for
+ImageMagick to execute it twenty times, and the ImageMagick time divided
+by the GraphicsMagick time. In order to understand the &quot;IM/GM ratio&quot;
+column, a value of 0.50 indicates that GM is half as fast as IM, a value
+of 1.00 indicates that GM and IM are the same speed, and a value of 4.00
+indicates that GM is four times as fast as IM.</p>
+<div class="section">
+<h2><a class="toc-backref" href="#id6" id="amd-opteron-solaris-10" name="amd-opteron-solaris-10">AMD Opteron/Solaris 10</a></h2>
+<p>This system is a modern AMD Opteron system with two dual-core 3.0GHz CPUs
+and running Solaris 10 U5. The compiler used identifies itself as &quot;gcc
+(GCC) 4.2.3&quot;.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="40%" />
-<col width="60%" />
+<col width="52%" />
+<col width="15%" />
+<col width="15%" />
+<col width="17%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Type</th>
-<th class="head">Time</th>
+<tr><th class="head">Operation</th>
+<th class="head">GM real</th>
+<th class="head">IM real</th>
+<th class="head">IM/GM ratio</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>real</td>
-<td>1m53.885s</td>
+<tr><td>-noop</td>
+<td>0:00.749</td>
+<td>0:01.273</td>
+<td>1.70</td>
 </tr>
-<tr><td>user</td>
-<td>1m30.421s</td>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td>0:02.310</td>
+<td>4:08.401</td>
+<td>107.53</td>
 </tr>
-<tr><td>sys</td>
-<td>0m17.356s</td>
+<tr><td>-black-threshold 20%</td>
+<td>0:00.863</td>
+<td>0:01.568</td>
+<td>1.82</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td>0:04.185</td>
+<td>0:08.070</td>
+<td>1.93</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td>0:04.663</td>
+<td>0:08.448</td>
+<td>1.81</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td>0:01.265</td>
+<td>0:02.946</td>
+<td>2.33</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td>0:08.167</td>
+<td>0:12.700</td>
+<td>1.56</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td>0:00.923</td>
+<td>0:01.532</td>
+<td>1.66</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td>0:00.960</td>
+<td>0:02.562</td>
+<td>2.67</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td>0:01.117</td>
+<td>0:02.672</td>
+<td>2.39</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td>0:01.740</td>
+<td>0:02.821</td>
+<td>1.62</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td>0:01.384</td>
+<td>0:02.603</td>
+<td>1.88</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td>0:01.103</td>
+<td>0:02.676</td>
+<td>2.43</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td>0:01.120</td>
+<td>0:02.691</td>
+<td>2.40</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td>0:01.100</td>
+<td>0:02.698</td>
+<td>2.45</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td>0:01.109</td>
+<td>0:02.664</td>
+<td>2.40</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td>0:07.231</td>
+<td>0:08.209</td>
+<td>1.14</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td>0:06.668</td>
+<td>0:07.739</td>
+<td>1.16</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td>0:01.964</td>
+<td>0:03.231</td>
+<td>1.65</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td>0:01.437</td>
+<td>0:02.421</td>
+<td>1.68</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td>0:01.153</td>
+<td>0:01.969</td>
+<td>1.71</td>
+</tr>
+<tr><td>-despeckle</td>
+<td>0:12.996</td>
+<td>0:39.230</td>
+<td>3.02</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td>0:02.831</td>
+<td>0:04.415</td>
+<td>1.56</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td>0:03.617</td>
+<td>0:10.060</td>
+<td>2.78</td>
+</tr>
+<tr><td>-enhance</td>
+<td>0:08.398</td>
+<td>0:08.606</td>
+<td>1.02</td>
+</tr>
+<tr><td>-equalize</td>
+<td>0:01.441</td>
+<td>0:02.658</td>
+<td>1.84</td>
+</tr>
+<tr><td>-flip</td>
+<td>0:01.249</td>
+<td>0:02.088</td>
+<td>1.67</td>
+</tr>
+<tr><td>-flop</td>
+<td>0:01.280</td>
+<td>0:02.051</td>
+<td>1.60</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:01.288</td>
+<td>0:02.943</td>
+<td>2.28</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:01.372</td>
+<td>0:01.555</td>
+<td>1.13</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:02.806</td>
+<td>0:04.340</td>
+<td>1.55</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:05.661</td>
+<td>0:08.310</td>
+<td>1.47</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:05.468</td>
+<td>0:09.718</td>
+<td>1.78</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:04.794</td>
+<td>0:09.094</td>
+<td>1.90</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:07.770</td>
+<td>0:09.821</td>
+<td>1.26</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:01.041</td>
+<td>0:05.902</td>
+<td>5.67</td>
+</tr>
+<tr><td>-median 1</td>
+<td>0:38.099</td>
+<td>0:33.813</td>
+<td>0.89</td>
+</tr>
+<tr><td>-median 2</td>
+<td>1:26.705</td>
+<td>1:16.754</td>
+<td>0.89</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:02.159</td>
+<td>0:02.577</td>
+<td>1.19</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>0:54.621</td>
+<td>1:11.876</td>
+<td>1.32</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:00.861</td>
+<td>0:01.344</td>
+<td>1.56</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:04.366</td>
+<td>0:32.834</td>
+<td>7.52</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>0:15.524</td>
+<td>1:35.974</td>
+<td>6.18</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:10.598</td>
+<td>1:16.297</td>
+<td>7.20</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:04.381</td>
+<td>0:31.372</td>
+<td>7.16</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:06.020</td>
+<td>0:40.159</td>
+<td>6.67</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:11.579</td>
+<td>2:05.059</td>
+<td>10.80</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>0:38.586</td>
+<td>0:33.877</td>
+<td>0.88</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>1:27.003</td>
+<td>1:17.142</td>
+<td>0.89</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:01.376</td>
+<td>0:03.059</td>
+<td>2.22</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:00.983</td>
+<td>0:01.657</td>
+<td>1.69</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:04.626</td>
+<td>0:10.314</td>
+<td>2.23</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:00.809</td>
+<td>0:01.342</td>
+<td>1.66</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:03.025</td>
+<td>0:04.371</td>
+<td>1.44</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:01.543</td>
+<td>0:02.196</td>
+<td>1.42</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:02.170</td>
+<td>0:03.259</td>
+<td>1.50</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:09.444</td>
+<td>0:13.145</td>
+<td>1.39</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:01.272</td>
+<td>0:31.839</td>
+<td>25.03</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:01.275</td>
+<td>0:02.098</td>
+<td>1.65</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>0:25.886</td>
+<td>0:29.334</td>
+<td>1.13</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:02.032</td>
+<td>0:02.584</td>
+<td>1.27</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:01.242</td>
+<td>0:02.109</td>
+<td>1.70</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:02.109</td>
+<td>0:02.603</td>
+<td>1.23</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td>0:02.295</td>
+<td>0:03.131</td>
+<td>1.36</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:02.806</td>
+<td>0:04.274</td>
+<td>1.52</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:05.637</td>
+<td>0:08.309</td>
+<td>1.47</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:01.217</td>
+<td>0:02.189</td>
+<td>1.80</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>0:21.181</td>
+<td>0:42.687</td>
+<td>2.02</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:00.857</td>
+<td>0:01.351</td>
+<td>1.58</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:01.301</td>
+<td>1:16.739</td>
+<td>58.98</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:01.317</td>
+<td>1:15.766</td>
+<td>57.53</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:04.751</td>
+<td>0:09.107</td>
+<td>1.92</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:00.999</td>
+<td>0:01.444</td>
+<td>1.45</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:01.021</td>
+<td>0:01.728</td>
+<td>1.69</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:01.156</td>
+<td>0:02.238</td>
+<td>1.94</td>
+</tr>
+<tr><td>-unsharp 0x0.5</td>
+<td>0:04.408</td>
+<td>0:08.497</td>
+<td>1.93</td>
+</tr>
+<tr><td>-unsharp 0x1.0</td>
+<td>0:04.981</td>
+<td>0:08.928</td>
+<td>1.79</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td>0:05.938</td>
+<td>0:11.513</td>
+<td>1.94</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td>0:00.853</td>
+<td>0:01.546</td>
+<td>1.81</td>
 </tr>
 </tbody>
 </table>
-</blockquote>
-<p>and these timings for GraphicsMagick:</p>
-<blockquote>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id7" id="sun-sparc-solaris-10" name="sun-sparc-solaris-10">Sun SPARC/Solaris 10</a></h2>
+<p>This system is a 2004 vintage Sun SPARC workstation with two 1.2GHz CPUs
+and running Solaris 10 U5. The compiler used identifies itself as &quot;gcc
+(GCC) 4.2.4&quot;.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="40%" />
-<col width="60%" />
+<col width="52%" />
+<col width="15%" />
+<col width="15%" />
+<col width="17%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Type</th>
-<th class="head">Time</th>
+<tr><th class="head">Operation</th>
+<th class="head">GM real</th>
+<th class="head">IM real</th>
+<th class="head">IM/GM ratio</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>real</td>
-<td>0m36.002s</td>
+<tr><td>-noop</td>
+<td>0:01.526</td>
+<td>0:07.578</td>
+<td>4.97</td>
 </tr>
-<tr><td>user</td>
-<td>0m22.440s</td>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td>0:11.329</td>
+<td>5:15.568</td>
+<td>27.85</td>
 </tr>
-<tr><td>sys</td>
-<td>0m12.008s</td>
+<tr><td>-black-threshold 20%</td>
+<td>0:02.506</td>
+<td>0:09.372</td>
+<td>3.74</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td>0:12.971</td>
+<td>0:33.334</td>
+<td>2.57</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td>0:15.991</td>
+<td>0:37.050</td>
+<td>2.32</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td>0:02.336</td>
+<td>0:18.318</td>
+<td>7.84</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td>0:36.199</td>
+<td>1:09.599</td>
+<td>1.92</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td>0:02.024</td>
+<td>0:08.183</td>
+<td>4.04</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td>0:02.552</td>
+<td>0:12.894</td>
+<td>5.05</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td>0:04.225</td>
+<td>0:12.964</td>
+<td>3.07</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td>0:08.005</td>
+<td>0:14.341</td>
+<td>1.79</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td>0:07.083</td>
+<td>0:13.906</td>
+<td>1.96</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td>0:04.229</td>
+<td>0:12.973</td>
+<td>3.07</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td>0:04.228</td>
+<td>0:12.972</td>
+<td>3.07</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td>0:04.224</td>
+<td>0:12.876</td>
+<td>3.05</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td>0:04.244</td>
+<td>0:12.913</td>
+<td>3.04</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td>0:42.505</td>
+<td>0:50.048</td>
+<td>1.18</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td>0:40.600</td>
+<td>0:48.062</td>
+<td>1.18</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td>0:09.024</td>
+<td>0:19.082</td>
+<td>2.11</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td>0:04.398</td>
+<td>0:12.425</td>
+<td>2.83</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td>0:02.193</td>
+<td>0:08.409</td>
+<td>3.83</td>
+</tr>
+<tr><td>-despeckle</td>
+<td>1:49.642</td>
+<td>3:40.489</td>
+<td>2.01</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td>0:14.888</td>
+<td>0:26.428</td>
+<td>1.78</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td>0:19.709</td>
+<td>1:03.768</td>
+<td>3.24</td>
+</tr>
+<tr><td>-enhance</td>
+<td>0:42.950</td>
+<td>0:42.707</td>
+<td>0.99</td>
+</tr>
+<tr><td>-equalize</td>
+<td>0:04.744</td>
+<td>0:14.854</td>
+<td>3.13</td>
+</tr>
+<tr><td>-flip</td>
+<td>0:02.367</td>
+<td>0:08.657</td>
+<td>3.66</td>
+</tr>
+<tr><td>-flop</td>
+<td>0:02.984</td>
+<td>0:09.343</td>
+<td>3.13</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:02.384</td>
+<td>0:18.684</td>
+<td>7.84</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:04.023</td>
+<td>0:11.262</td>
+<td>2.80</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:15.795</td>
+<td>0:27.357</td>
+<td>1.73</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:37.937</td>
+<td>0:55.230</td>
+<td>1.46</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:22.553</td>
+<td>0:42.850</td>
+<td>1.90</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:18.346</td>
+<td>0:37.770</td>
+<td>2.06</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:43.750</td>
+<td>1:36.189</td>
+<td>2.20</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:02.927</td>
+<td>5:17.769</td>
+<td>108.56</td>
+</tr>
+<tr><td>-median 1</td>
+<td>0:59.438</td>
+<td>1:17.222</td>
+<td>1.30</td>
+</tr>
+<tr><td>-median 2</td>
+<td>2:25.367</td>
+<td>2:50.264</td>
+<td>1.17</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:13.802</td>
+<td>0:21.001</td>
+<td>1.52</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>2:30.047</td>
+<td>3:21.344</td>
+<td>1.34</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:02.248</td>
+<td>0:08.389</td>
+<td>3.73</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:14.880</td>
+<td>1:17.969</td>
+<td>5.24</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>1:03.557</td>
+<td>3:42.364</td>
+<td>3.50</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:42.832</td>
+<td>2:57.973</td>
+<td>4.16</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:15.328</td>
+<td>1:17.282</td>
+<td>5.04</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:25.185</td>
+<td>1:40.490</td>
+<td>3.99</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:46.892</td>
+<td>4:50.567</td>
+<td>6.20</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>1:01.259</td>
+<td>1:19.243</td>
+<td>1.29</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>2:27.977</td>
+<td>2:52.308</td>
+<td>1.16</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:04.367</td>
+<td>0:15.507</td>
+<td>3.55</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:03.790</td>
+<td>0:26.564</td>
+<td>7.01</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:24.461</td>
+<td>0:47.008</td>
+<td>1.92</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:01.637</td>
+<td>0:07.766</td>
+<td>4.74</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:12.703</td>
+<td>0:23.249</td>
+<td>1.83</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:06.780</td>
+<td>0:13.772</td>
+<td>2.03</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:09.917</td>
+<td>0:19.356</td>
+<td>1.95</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:32.555</td>
+<td>0:53.850</td>
+<td>1.65</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:02.347</td>
+<td>0:30.410</td>
+<td>12.96</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:02.388</td>
+<td>0:08.613</td>
+<td>3.61</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>0:58.035</td>
+<td>1:22.708</td>
+<td>1.43</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:04.085</td>
+<td>0:09.689</td>
+<td>2.37</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:02.987</td>
+<td>0:09.448</td>
+<td>3.16</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:04.074</td>
+<td>0:09.552</td>
+<td>2.34</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td>0:10.117</td>
+<td>0:17.305</td>
+<td>1.71</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:15.744</td>
+<td>0:27.288</td>
+<td>1.73</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:38.054</td>
+<td>0:55.323</td>
+<td>1.45</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:02.331</td>
+<td>0:08.658</td>
+<td>3.71</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>0:32.762</td>
+<td>1:18.842</td>
+<td>2.41</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:02.306</td>
+<td>0:09.034</td>
+<td>3.92</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:03.171</td>
+<td>1:19.073</td>
+<td>24.94</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:03.297</td>
+<td>1:19.369</td>
+<td>24.07</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:18.545</td>
+<td>0:36.082</td>
+<td>1.95</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:02.869</td>
+<td>0:09.256</td>
+<td>3.23</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:03.854</td>
+<td>0:11.147</td>
+<td>2.89</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:05.808</td>
+<td>0:09.636</td>
+<td>1.66</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td>0:16.020</td>
+<td>0:38.857</td>
+<td>2.43</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td>0:18.996</td>
+<td>0:42.441</td>
+<td>2.23</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td>0:18.589</td>
+<td>0:37.635</td>
+<td>2.02</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td>0:02.487</td>
+<td>0:09.405</td>
+<td>3.78</td>
 </tr>
 </tbody>
 </table>
-</blockquote>
-<p>From which it can be seen that GraphicsMagick has 3.2X less overhead than
-ImageMagick when executed on small files.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id8" id="apple-powerpc-g5-os-x-tiger" name="apple-powerpc-g5-os-x-tiger">Apple PowerPC G5/OS-X Tiger</a></h2>
+<p>This system is an Apple G5 system with two 2.5GHz CPUs and running the
+Tiger release of OS-X. The compiler used identifies itself as &quot;gcc-4.3.2
+(GCC) 4.3.2&quot;.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="15%" />
+<col width="15%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">GM real</th>
+<th class="head">IM real</th>
+<th class="head">IM/GM ratio</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>-noop</td>
+<td>0:02.141</td>
+<td>0:05.006</td>
+<td>2.34</td>
+</tr>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td>0:07.154</td>
+<td>31:15.331</td>
+<td>262.14</td>
+</tr>
+<tr><td>-black-threshold 20%</td>
+<td>0:02.351</td>
+<td>0:06.176</td>
+<td>2.63</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td>0:09.133</td>
+<td>0:28.061</td>
+<td>3.07</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td>0:11.170</td>
+<td>0:33.305</td>
+<td>2.98</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td>0:03.235</td>
+<td>0:09.618</td>
+<td>2.97</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td>0:23.033</td>
+<td>0:59.141</td>
+<td>2.57</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td>0:02.460</td>
+<td>0:05.401</td>
+<td>2.20</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td>0:02.551</td>
+<td>0:07.816</td>
+<td>3.06</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td>0:03.371</td>
+<td>0:07.975</td>
+<td>2.37</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td>0:05.102</td>
+<td>0:08.414</td>
+<td>1.65</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td>0:04.695</td>
+<td>0:08.404</td>
+<td>1.79</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td>0:03.421</td>
+<td>0:08.121</td>
+<td>2.37</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td>0:03.400</td>
+<td>0:07.983</td>
+<td>2.35</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td>0:03.369</td>
+<td>0:08.037</td>
+<td>2.39</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td>0:03.380</td>
+<td>0:07.966</td>
+<td>2.36</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td>0:16.176</td>
+<td>0:24.352</td>
+<td>1.51</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td>0:15.800</td>
+<td>0:24.236</td>
+<td>1.53</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td>0:06.525</td>
+<td>0:13.683</td>
+<td>2.10</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td>0:03.708</td>
+<td>0:07.797</td>
+<td>2.10</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td>0:02.953</td>
+<td>0:05.784</td>
+<td>1.96</td>
+</tr>
+<tr><td>-despeckle</td>
+<td>1:22.125</td>
+<td>3:04.660</td>
+<td>2.25</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td>0:06.472</td>
+<td>0:25.053</td>
+<td>3.87</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td>0:12.320</td>
+<td>1:09.507</td>
+<td>5.64</td>
+</tr>
+<tr><td>-enhance</td>
+<td>0:32.979</td>
+<td>0:46.402</td>
+<td>1.41</td>
+</tr>
+<tr><td>-equalize</td>
+<td>0:03.033</td>
+<td>0:08.155</td>
+<td>2.69</td>
+</tr>
+<tr><td>-flip</td>
+<td>0:03.186</td>
+<td>0:06.041</td>
+<td>1.90</td>
+</tr>
+<tr><td>-flop</td>
+<td>0:03.216</td>
+<td>0:06.064</td>
+<td>1.89</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:03.255</td>
+<td>0:09.785</td>
+<td>3.01</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:03.001</td>
+<td>0:06.086</td>
+<td>2.03</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:10.551</td>
+<td>0:25.374</td>
+<td>2.40</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:25.813</td>
+<td>1:04.932</td>
+<td>2.52</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:10.902</td>
+<td>0:22.598</td>
+<td>2.07</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:09.828</td>
+<td>0:21.626</td>
+<td>2.20</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:46.072</td>
+<td>1:10.197</td>
+<td>1.52</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:02.604</td>
+<td>0:11.996</td>
+<td>4.61</td>
+</tr>
+<tr><td>-median 1</td>
+<td>0:50.120</td>
+<td>1:23.171</td>
+<td>1.66</td>
+</tr>
+<tr><td>-median 2</td>
+<td>1:51.367</td>
+<td>3:07.753</td>
+<td>1.69</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:06.488</td>
+<td>0:08.774</td>
+<td>1.35</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>1:43.890</td>
+<td>2:08.546</td>
+<td>1.24</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:02.397</td>
+<td>0:05.246</td>
+<td>2.19</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:08.812</td>
+<td>0:58.416</td>
+<td>6.63</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>0:24.687</td>
+<td>2:10.219</td>
+<td>5.27</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:17.700</td>
+<td>1:55.919</td>
+<td>6.55</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:08.959</td>
+<td>0:55.778</td>
+<td>6.23</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:12.668</td>
+<td>1:10.429</td>
+<td>5.56</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:21.891</td>
+<td>3:34.119</td>
+<td>9.78</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>1:07.811</td>
+<td>1:29.053</td>
+<td>1.31</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>2:37.043</td>
+<td>3:15.371</td>
+<td>1.24</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:02.951</td>
+<td>0:08.906</td>
+<td>3.02</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:02.883</td>
+<td>0:06.302</td>
+<td>2.19</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:06.435</td>
+<td>0:40.101</td>
+<td>6.23</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:02.226</td>
+<td>0:05.067</td>
+<td>2.28</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:10.346</td>
+<td>0:21.792</td>
+<td>2.11</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:04.905</td>
+<td>0:12.508</td>
+<td>2.55</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:07.371</td>
+<td>0:15.093</td>
+<td>2.05</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:36.230</td>
+<td>0:48.238</td>
+<td>1.33</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:03.240</td>
+<td>6:29.392</td>
+<td>120.18</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:03.129</td>
+<td>0:06.056</td>
+<td>1.94</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>1:22.108</td>
+<td>1:27.433</td>
+<td>1.06</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:03.669</td>
+<td>0:06.440</td>
+<td>1.76</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:03.203</td>
+<td>0:06.036</td>
+<td>1.88</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:03.671</td>
+<td>0:06.484</td>
+<td>1.77</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td>0:04.950</td>
+<td>0:14.357</td>
+<td>2.90</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:10.704</td>
+<td>0:25.082</td>
+<td>2.34</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:25.956</td>
+<td>1:05.129</td>
+<td>2.51</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:03.162</td>
+<td>0:06.028</td>
+<td>1.91</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>1:10.489</td>
+<td>1:58.259</td>
+<td>1.68</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:02.367</td>
+<td>0:05.966</td>
+<td>2.52</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:03.106</td>
+<td>12:55.481</td>
+<td>249.67</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:03.162</td>
+<td>13:05.018</td>
+<td>248.27</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:11.516</td>
+<td>0:23.322</td>
+<td>2.03</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:02.540</td>
+<td>0:06.191</td>
+<td>2.44</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:02.849</td>
+<td>0:06.894</td>
+<td>2.42</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:04.384</td>
+<td>0:06.751</td>
+<td>1.54</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td>0:11.336</td>
+<td>0:31.509</td>
+<td>2.78</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td>0:12.989</td>
+<td>0:36.978</td>
+<td>2.85</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td>0:12.091</td>
+<td>0:25.553</td>
+<td>2.11</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td>0:02.295</td>
+<td>0:06.228</td>
+<td>2.71</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="intel-xeon-freebsd-7-0" name="intel-xeon-freebsd-7-0">Intel Xeon / FreeBSD 7.0</a></h2>
+<p>This system is a 2003 vintage Intel Xeon system with two 2.4GHz CPUs and
+running FreeBSD 7.0. The compiler used identifies itself as &quot;gcc (GCC)
+4.2.1 20070719 [FreeBSD]&quot;.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="15%" />
+<col width="15%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">GM real</th>
+<th class="head">IM real</th>
+<th class="head">IM/GM ratio</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>-noop</td>
+<td>0:03.010</td>
+<td>0:06.700</td>
+<td>2.23</td>
+</tr>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td>0:09.811</td>
+<td>20:25.680</td>
+<td>124.93</td>
+</tr>
+<tr><td>-black-threshold 20%</td>
+<td>0:03.329</td>
+<td>0:07.208</td>
+<td>2.17</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td>0:09.071</td>
+<td>0:25.944</td>
+<td>2.86</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td>0:10.336</td>
+<td>0:27.158</td>
+<td>2.63</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td>0:05.676</td>
+<td>0:11.523</td>
+<td>2.03</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td>0:22.392</td>
+<td>0:41.373</td>
+<td>1.85</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td>0:03.626</td>
+<td>0:07.087</td>
+<td>1.95</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td>0:03.869</td>
+<td>0:09.694</td>
+<td>2.51</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td>0:04.554</td>
+<td>0:10.047</td>
+<td>2.21</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td>0:05.914</td>
+<td>0:10.404</td>
+<td>1.76</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td>0:04.838</td>
+<td>0:10.110</td>
+<td>2.09</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td>0:04.615</td>
+<td>0:10.064</td>
+<td>2.18</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td>0:04.482</td>
+<td>0:10.058</td>
+<td>2.24</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td>0:04.481</td>
+<td>0:10.020</td>
+<td>2.24</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td>0:04.491</td>
+<td>0:10.093</td>
+<td>2.25</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td>0:18.364</td>
+<td>0:30.375</td>
+<td>1.65</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td>0:18.060</td>
+<td>0:30.199</td>
+<td>1.67</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td>0:06.893</td>
+<td>0:10.962</td>
+<td>1.59</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td>0:04.811</td>
+<td>0:09.779</td>
+<td>2.03</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td>0:05.024</td>
+<td>0:07.920</td>
+<td>1.58</td>
+</tr>
+<tr><td>-despeckle</td>
+<td>0:51.850</td>
+<td>3:04.778</td>
+<td>3.56</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td>0:06.985</td>
+<td>0:13.995</td>
+<td>2.00</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td>0:12.343</td>
+<td>0:28.644</td>
+<td>2.32</td>
+</tr>
+<tr><td>-enhance</td>
+<td>0:31.325</td>
+<td>0:32.333</td>
+<td>1.03</td>
+</tr>
+<tr><td>-equalize</td>
+<td>0:04.751</td>
+<td>0:10.307</td>
+<td>2.17</td>
+</tr>
+<tr><td>-flip</td>
+<td>0:05.662</td>
+<td>0:08.471</td>
+<td>1.50</td>
+</tr>
+<tr><td>-flop</td>
+<td>0:05.556</td>
+<td>0:08.391</td>
+<td>1.51</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:05.693</td>
+<td>0:11.275</td>
+<td>1.98</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:05.541</td>
+<td>0:08.331</td>
+<td>1.50</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:10.305</td>
+<td>0:14.091</td>
+<td>1.37</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:20.015</td>
+<td>0:23.821</td>
+<td>1.19</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:17.680</td>
+<td>0:30.186</td>
+<td>1.71</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:12.920</td>
+<td>0:25.140</td>
+<td>1.95</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:23.660</td>
+<td>0:23.226</td>
+<td>0.98</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:03.986</td>
+<td>1:45.078</td>
+<td>26.36</td>
+</tr>
+<tr><td>-median 1</td>
+<td>1:20.912</td>
+<td>1:09.754</td>
+<td>0.86</td>
+</tr>
+<tr><td>-median 2</td>
+<td>3:22.398</td>
+<td>2:57.052</td>
+<td>0.87</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:07.388</td>
+<td>0:11.225</td>
+<td>1.52</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>2:24.969</td>
+<td>3:01.534</td>
+<td>1.25</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:03.421</td>
+<td>0:07.056</td>
+<td>2.06</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:09.654</td>
+<td>1:03.113</td>
+<td>6.54</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>0:24.779</td>
+<td>2:30.811</td>
+<td>6.09</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:18.474</td>
+<td>2:12.502</td>
+<td>7.17</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:09.787</td>
+<td>1:01.354</td>
+<td>6.27</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:12.522</td>
+<td>1:15.968</td>
+<td>6.07</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:23.621</td>
+<td>4:15.570</td>
+<td>10.82</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>1:23.062</td>
+<td>1:09.541</td>
+<td>0.84</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>3:19.800</td>
+<td>2:55.989</td>
+<td>0.88</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:04.590</td>
+<td>0:11.292</td>
+<td>2.46</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:03.522</td>
+<td>0:07.752</td>
+<td>2.20</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:12.565</td>
+<td>0:31.864</td>
+<td>2.54</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:03.106</td>
+<td>0:06.830</td>
+<td>2.20</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:12.371</td>
+<td>0:16.312</td>
+<td>1.32</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:06.852</td>
+<td>0:10.760</td>
+<td>1.57</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:09.951</td>
+<td>0:13.566</td>
+<td>1.36</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:34.780</td>
+<td>0:38.619</td>
+<td>1.11</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:05.649</td>
+<td>3:25.671</td>
+<td>36.41</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:05.663</td>
+<td>0:08.351</td>
+<td>1.47</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>1:16.726</td>
+<td>1:19.749</td>
+<td>1.04</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:04.813</td>
+<td>0:08.905</td>
+<td>1.85</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:05.595</td>
+<td>0:08.363</td>
+<td>1.49</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:04.866</td>
+<td>0:08.923</td>
+<td>1.83</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td>0:07.087</td>
+<td>0:10.833</td>
+<td>1.53</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:09.876</td>
+<td>0:14.087</td>
+<td>1.43</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:20.033</td>
+<td>0:23.786</td>
+<td>1.19</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:05.548</td>
+<td>0:08.311</td>
+<td>1.50</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>1:06.440</td>
+<td>1:48.575</td>
+<td>1.63</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:03.406</td>
+<td>0:06.897</td>
+<td>2.02</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:05.427</td>
+<td>5:26.353</td>
+<td>60.14</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:05.768</td>
+<td>5:25.069</td>
+<td>56.36</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:12.994</td>
+<td>0:24.819</td>
+<td>1.91</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:03.964</td>
+<td>0:07.203</td>
+<td>1.82</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:03.528</td>
+<td>0:08.060</td>
+<td>2.28</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:04.547</td>
+<td>0:08.939</td>
+<td>1.97</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td>0:10.401</td>
+<td>0:28.620</td>
+<td>2.75</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td>0:11.618</td>
+<td>0:29.342</td>
+<td>2.53</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td>0:16.272</td>
+<td>0:32.563</td>
+<td>2.00</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td>0:03.227</td>
+<td>0:07.130</td>
+<td>2.21</td>
+</tr>
+</tbody>
+</table>
 <hr class="docutils" />
 <div class="line-block">
 <div class="line">Copyright (C) 2008 GraphicsMagick Group</div>
@@ -1588,9 +1880,10 @@ Copyright.txt. You should have received a copy of Copyright.txt with this
 package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
+</div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-11 21:54 UTC.
+Generated on: 2008-11-05 20:43 UTC.
 
 </div>
 </body>

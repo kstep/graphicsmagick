@@ -52,7 +52,7 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on October 28, 2008</p>
+<p>This file was last updated on November 11, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -107,6 +107,11 @@ default, according to GNU conventions.</li>
 optimize is requested, or the image is colormapped.</li>
 <li>Configure: Fixed the --enable-magick-compat configure option, which
 had stopped working.</li>
+<li>Configure: Fixed --without-magick-plus-plus so that it works again.  This
+stopped working in the 1.2 release cycle.</li>
+<li>Configure: Fixed MagickLibVersion text string generation so that it
+is now correct when a component of the release number exceeds '9'.
+Now components can safely count up to '99' before there is a problem.</li>
 </ul>
 </blockquote>
 <p>Performance Improvements:</p>
@@ -920,7 +925,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-29 00:46 UTC.
+Generated on: 2008-11-05 17:12 UTC.
 
 </div>
 </body>

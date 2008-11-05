@@ -71,48 +71,52 @@
 </table>
 <p>Check <a class="reference" href="http://www.GraphicsMagick.org/">http://www.GraphicsMagick.org/</a> for the latest version of this page.</p>
 <p>GraphicsMagick is the swiss army knife of image processing. Comprised of
-337K lines of C and C++ code, it provides a robust collection of tools
-and libraries which support reading, writing, and manipulating an image
-in over 88 major formats including important formats like DPX, GIF, JPEG,
-JPEG-2000, PNG, PDF, PNM, and TIFF. GraphicsMagick supports huge images
-on systems that support large files, and has been tested with
-gigapixel-size images. GraphicsMagick can create new images on the fly,
-making it suitable for building dynamic Web applications. GraphicsMagick
-may be used to resize, rotate, sharpen, color reduce, or add special
-effects to an image and save the result in the same or differing image
-format. Image processing operations are available from the command line,
-as well as through C, C++, Perl, Tcl, Ruby, or Windows COM programming
-interfaces. With some modification, language extensions for ImageMagick
-may be used.</p>
+337K lines of C and C++ code, it provides a robust and efficient
+collection of tools and libraries which support reading, writing, and
+manipulating an image in over 88 major formats including important
+formats like DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF.
+GraphicsMagick supports huge images on systems that support large files,
+and has been tested with gigapixel-size images. GraphicsMagick can create
+new images on the fly, making it suitable for building dynamic Web
+applications. GraphicsMagick may be used to resize, rotate, sharpen,
+color reduce, or add special effects to an image and save the result in
+the same or differing image format. Image processing operations are
+available from the command line, as well as through C, C++, Perl, Tcl,
+Ruby, or Windows COM programming interfaces. With some modification,
+language extensions for ImageMagick may be used.</p>
 <p>GraphicsMagick is originally derived from <a class="reference" href="http://www.imagemagick.org/">ImageMagick</a> 5.5.2 but has been
 completely independent of the ImageMagick project since then. Since the
 fork from ImageMagick in 2002, many improvements have been made (<a class="reference" href="NEWS.html">see
 news</a>) by <a class="reference" href="authors.html">many authors</a> using an open
 development model but without breaking the API or utilities operation.</p>
 <p>Here are some reasons to prefer GraphicsMagick over ImageMagick:</p>
+<blockquote>
 <ul class="simple">
-<li>GraphicsMagick is much more efficient (<a class="reference" href="benchmarks.html">see benchmark report</a>) so it gets the job done faster using fewer
-resources.</li>
-<li>GraphicsMagick is much smaller and tighter.</li>
-<li>GraphicsMagick does not use generic names for its utilities so it does
-not conflict with other installed software (including system tools.)</li>
-<li>GraphicsMagick comes with a comprehensive manual page.</li>
-<li>GraphicsMagick provides API and ABI stability and managed releases that
-you can count on.</li>
-<li>GraphicsMagick provides detailed human-readable ChangeLog and NEWS files.</li>
-<li>GraphicsMagick is available for free, may be used to support both open
-and proprietary applications, and may be redistributed without fee.</li>
-<li>GraphicsMagick is dististributed under an X11-style license (&quot;MIT
-License&quot;), which is approved by the <a class="reference" href="http://www.opensource.org/">Open Source Initiative</a> and
-declared by the <a class="reference" href="http://www.fsf.org/">FSF</a> to be compatible with the <a class="reference" href="http://www.fsf.org/licenses/licenses.html">GPL Version 2</a>.</li>
+<li>GM is much more efficient (see the <a class="reference" href="benchmarks.html">benchmarks</a>) so it gets the job
+done faster using fewer resources.</li>
+<li>GM is much smaller and tighter.</li>
+<li>GM does not use generic names for its utilities so it does not
+conflict with other installed software (including system tools.)</li>
+<li>GM comes with a comprehensive manual page.</li>
+<li>GM provides API and ABI stability and managed releases that you can
+count on.</li>
+<li>GM provides detailed human-readable ChangeLog and NEWS files.</li>
+<li>GM is available for free, may be used to support both open and
+proprietary applications, and may be redistributed without fee.</li>
+<li>GM is dististributed under an X11-style license (&quot;MIT License&quot;),
+which is approved by the <a class="reference" href="http://www.opensource.org/">Open Source Initiative</a> and declared by
+the <a class="reference" href="http://www.fsf.org/">FSF</a> to be compatible with the <a class="reference" href="http://www.fsf.org/licenses/licenses.html">GPL Version 2</a>.</li>
 </ul>
+</blockquote>
 <p>GraphicsMagick is <a class="reference" href="Copyright.html">copyrighted</a> by the GraphicsMagick
 Group as well as many others.</p>
 <p>Here are just a few <a class="reference" href="images/examples.jpg">examples</a> of what GraphicsMagick
 can do:</p>
+<blockquote>
 <ul class="simple">
 <li>Convert an image from one format to another (e.g. TIFF to JPEG)</li>
-<li>Resize, rotate, sharpen, color reduce, or add special effects to an image</li>
+<li>Resize, rotate, sharpen, color reduce, or add special effects to an
+image</li>
 <li>Create a montage of image thumbnails</li>
 <li>Create a transparent image suitable for use on the Web</li>
 <li>Turn a group of images into a GIF animation sequence</li>
@@ -121,35 +125,41 @@ can do:</p>
 <li>Decorate an image with a border or frame</li>
 <li>Describe the format and characteristics of an image</li>
 </ul>
+</blockquote>
 <p>GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
 GraphicsMagick is available for virtually any Unix or Unix-like system,
 including Linux. It also runs under <a class="reference" href="INSTALL-windows.html">Windows</a> '98
 and later ('98, ME, NT 4.0, 2000, and XP), and MacOS-X.</p>
-<p>Major developments in the works for GraphicsMagick 1.3:</p>
+<p>Major developments appearing in GraphicsMagick 1.3:</p>
+<blockquote>
 <ul class="simple">
-<li>Algorithms are being re-written so that they are accelerated via
-<a class="reference" href="OpenMP.html">OpenMP</a>. <a class="reference" href="OpenMP.html">OpenMP</a> allows you to take advantage of those
-extra cores in your multi-core/multi-CPU system in order to
-dramatically reduce processing time. This work is almost entirely
-completed now.</li>
-<li>Additional operators are added for tasks like thresholding, gamma correction,
-and adding noise.</li>
+<li>Algorithms are re-written so that they are accelerated via <a class="reference" href="OpenMP.html">OpenMP</a>.
+<a class="reference" href="OpenMP.html">OpenMP</a> allows you to take advantage of those extra cores in your
+multi-core/multi-CPU system in order to dramatically reduce
+processing time.</li>
+<li>Additional operators are added for tasks like thresholding, gamma
+correction, and adding noise.</li>
 </ul>
+</blockquote>
 <p>Major developments which appeared in GraphicsMagick 1.2:</p>
+<blockquote>
 <ul class="simple">
-<li>Stellar support for SMPTE DPX format as used by the motion picture industry for
-film frames. <a class="reference" href="motion-picture.html">Read about it</a>!</li>
-<li>TIFF format support is completely re-written to support all subformats, an
-arbitrary number of sample bits, floating point types, and improved performance.</li>
+<li>Stellar support for SMPTE DPX format as used by the motion picture
+industry for film frames. <a class="reference" href="motion-picture.html">Read about it</a>!</li>
+<li>TIFF format support is completely re-written to support all
+subformats, an arbitrary number of sample bits, floating point types,
+and improved performance.</li>
 <li>Support for ITU Rec.601 and Rec.709 colorspaces (RGB and Luma).</li>
-<li>A huge number of bug fixes, performance improvements, and minor features.</li>
+<li>A huge number of bug fixes, performance improvements, and minor
+features.</li>
 </ul>
+</blockquote>
 <p>Copyright © GraphicsMagick Group 2002 - 2008</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-10-27 19:34 UTC.
+Generated on: 2008-11-05 20:03 UTC.
 
 </div>
 </body>
