@@ -100,6 +100,15 @@ extern "C" {
 #define MagickTrue     1
 #define MagickFalse    0
 
+#if defined(MAGICK_IMPLEMENTATION)
+#  if defined(MSWINDOWS)
+  /* Use Visual C++ C inline method extension to improve performance */
+#    if !defined(inline) && !defined(__cplusplus) && !defined(c_plusplus)
+#      define inline __inline
+#    endif
+#  endif
+#endif
+
 #if defined(PREFIX_MAGICK_SYMBOLS)
 #  include "magick/symbols.h"
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
