@@ -1447,7 +1447,7 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
   argv++;
   i=0;
   duration=-1.0;
-  iterations=-1L;
+  iterations=1L;
   if (argc)
     {
       if (LocaleCompare("-duration",argv[0]) == 0)

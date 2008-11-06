@@ -1,5 +1,7 @@
 2008-11-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (BenchmarkImageCommand): With no other
+	arguments, the benchmark command now defaults to one iteration.
 	* magick/effect.c (SpreadImage): Offsets array size is a prime
 	number to help avoid beating.
 	(SpreadImage): Ensure that spread loops are always terminal.
