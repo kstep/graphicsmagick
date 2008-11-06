@@ -429,7 +429,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  spread ..." << endl;
       example = model;
       example.label( "Spread" );
-      example.spread( );
+      example.spread( 3 );
       images.push_back( example );
     
       cout << "  solarize ..." << endl;

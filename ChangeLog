@@ -1,3 +1,10 @@
+2008-11-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (SpreadImage): Offsets array size is a prime
+	number to help avoid beating.
+	* magick/utility.c (MagickRandReentrant): Fix bug where rand() was
+	being continually re-seeded if rand_r() was not available.
+
 2008-11-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/tests/msl_composite.sh: Replace SVG image generation

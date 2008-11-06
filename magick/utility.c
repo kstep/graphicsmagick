@@ -3404,8 +3404,7 @@ MagickExport int MagickRandReentrant(unsigned int *seed)
     result=rand();
 #else
   /* This version is not reentrant */
-  if (seed)
-    srand(*seed);
+  ARG_NOT_USED(seed);
   result=rand();
 #endif
   return result;
@@ -3416,7 +3415,7 @@ MagickExport int MagickRandReentrant(unsigned int *seed)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k R a n d R e e n t r a n t                                     %
+%   M a g i c k R a n d N e w S e e d                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3436,12 +3435,14 @@ MagickExport unsigned int MagickRandNewSeed(void)
     seed;
 
   seed=time(0);
+#if defined(HAVE_RAND_R)
   /*
     It is quite likely that multiple threads will invoke this function
     during the same second so we also tap into the default random
     number generator to help produce a more random seed.
   */
   seed ^= (unsigned int) rand();
+#endif
   return seed;
 }
 

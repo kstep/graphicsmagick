@@ -3654,7 +3654,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
                                 ExceptionInfo *exception)
 {
 #define SpreadImageText  "[%s] Spread image..."
-#define OFFSETS_ENTRIES 5000U
+#define OFFSETS_ENTRIES 5009U /* prime number is best */
 
   Image
     *spread_image;
@@ -3692,8 +3692,10 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         return (Image *) NULL;
       }
     for (x=0; x < OFFSETS_ENTRIES; x++)
-      offsets[x]=((((2*(double) radius+1)*MagickRandReentrant(&seed))/
-                   RAND_MAX)-((int) radius));
+      {
+        offsets[x]=((((2*(double) radius+1)*MagickRandReentrant(&seed))/
+                     RAND_MAX)-((int) radius));
+      }
   }
 
   /*

@@ -108,10 +108,12 @@ sized (2048x1024 pixels) images. In order to prevent disk I/O from being
 a factor, we used a small input image and tiled it to create a larger
 input image via the &quot;tile:&quot; coder. The processed image is send to the
 &quot;null:&quot; coder so that file writes to a slow disk are also not a factor.
-In order to obtain accurate and useful timing, we used the bash shell to
-execute the command 20 times and see how long it took. This is a very
-simple benchmark approach which is quite representative of the
-performance that the typical user observes.</p>
+Static executables are used and executed via full paths in order to
+minimize variability from the execution environment. In order to obtain
+accurate and useful timing, we used the bash shell to execute the command
+20 times and see how long it took. This is a very simple benchmark
+approach which is quite representative of the performance that the
+typical user observes.</p>
 <p>This new benchmark reveals the following performance criteria:</p>
 <blockquote>
 <ul class="simple">
@@ -1883,7 +1885,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-05 20:43 UTC.
+Generated on: 2008-11-05 23:13 UTC.
 
 </div>
 </body>
