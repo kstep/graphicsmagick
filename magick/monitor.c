@@ -93,12 +93,7 @@ MagickMonitor(const char *text,
   ProcessPendingEvents(text);
   status=MagickPass;
   if (monitor_handler != (MonitorHandler) NULL)
-    {
-#if defined(HAVE_OPENMP)
-#  pragma omp critical
-#endif
-      status=(*monitor_handler)(text,quantum,span,exception);
-    }
+    status=(*monitor_handler)(text,quantum,span,exception);
   return(status);
 }
 
