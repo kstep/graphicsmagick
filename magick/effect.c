@@ -3779,18 +3779,37 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
           {
             for (x=0; x < (long) image->columns; x++)
               {
+                unsigned int
+                  tries;
+
+                tries=0;
                 do
                   {
                     x_distance=offsets[offsets_index++];
-                    if (offsets_index==OFFSETS_ENTRIES)
-                      offsets_index=0;
+                    if (offsets_index == OFFSETS_ENTRIES)
+                      {
+                        if (tries++)
+                          {
+                            x_distance=0;
+                            break;
+                          }
+                        offsets_index=0;
+                      }
                   } while (((x+x_distance) < 0) ||
                            ((x+x_distance) >= (long) image->columns));
+                tries=0;
                 do
                   {
                     y_distance=offsets[offsets_index++];
-                    if (offsets_index==OFFSETS_ENTRIES)
-                      offsets_index=0;
+                    if (offsets_index == OFFSETS_ENTRIES)
+                      {
+                        if (tries++)
+                          {
+                            y_distance=0;
+                            break;
+                          }
+                        offsets_index=0;
+                      }
                   } while (((y+y_distance) < 0) ||
                            ((y+y_distance) >= (long) image->rows));
                 *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));

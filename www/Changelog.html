@@ -26,6 +26,7 @@
 <UL>
   <LI> magick/effect.c (SpreadImage): Offsets array size is a prime
         number to help avoid beating.<BR>
+        (SpreadImage): Ensure that spread loops are always terminal.
   <LI> magick/utility.c (MagickRandReentrant): Fix bug where rand() was
         being continually re-seeded if rand_r() was not available.
 
