@@ -29732,7 +29732,7 @@ fi
 { $as_echo "$as_me:$LINENO: result: $ac_cv_lib_xlsmp__xlsmpFlush" >&5
 $as_echo "$ac_cv_lib_xlsmp__xlsmpFlush" >&6; }
 if test "x$ac_cv_lib_xlsmp__xlsmpFlush" = x""yes; then
-  LIB_OMP="-xlsmp"
+  LIB_OMP="-lxlsmp"
 fi
 
   fi
