@@ -1181,10 +1181,10 @@ namespace Magick
                                         const unsigned int columns_,
                                         const unsigned int rows_ ) const;
 
-    // Obtain image pixel indexes (valid for PseudoClass images)
-    IndexPacket* getIndexes ( void ) const;
+    // Obtain mutable image pixel indexes (valid for PseudoClass images)
+    IndexPacket* getIndexes ( void );
 
-    // Obtain image pixel indexes (valid for PseudoClass images)
+    // Obtain immutable image pixel indexes (valid for PseudoClass images)
     const IndexPacket* getConstIndexes ( void ) const;
 
     // Transfers pixels from the image to the pixel cache as defined

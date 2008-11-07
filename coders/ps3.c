@@ -449,7 +449,7 @@ static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
   int
     status;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   assert(image != (Image *) NULL);
@@ -465,7 +465,7 @@ static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
       *q++=indexes[x];
     if (image->previous == (Image *) NULL)

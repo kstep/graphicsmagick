@@ -721,7 +721,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register unsigned char
@@ -1463,7 +1463,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                            &image->exception);
                       if (p == (const PixelPacket *) NULL)
                         break;
-                      indexes=GetIndexes(image);
+                      indexes=AccessImmutableIndexes(image);
                       for (x=0; x < (long) image->columns; x++)
                         *q++=indexes[x];
                       if (image->previous == (Image *) NULL)
@@ -1506,7 +1506,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                            &image->exception);
                       if (p == (const PixelPacket *) NULL)
                         break;
-                      indexes=GetIndexes(image);
+                      indexes=AccessImmutableIndexes(image);
                       for (x=0; x < (long) image->columns; x++)
                         Ascii85Encode(image,indexes[x]);
                       if (image->previous == (Image *) NULL)
@@ -1909,7 +1909,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                                &tile_image->exception);
                           if (p == (const PixelPacket *) NULL)
                             break;
-                          indexes=GetIndexes(tile_image);
+                          indexes=AccessImmutableIndexes(tile_image);
                           for (x=0; x < (long) tile_image->columns; x++)
                             *q++=indexes[x];
                         }
@@ -1942,7 +1942,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                                &tile_image->exception);
                           if (p == (const PixelPacket *) NULL)
                             break;
-                          indexes=GetIndexes(tile_image);
+                          indexes=AccessImmutableIndexes(tile_image);
                           for (x=0; x < (long) tile_image->columns; x++)
                             Ascii85Encode(image,indexes[x]);
                         }

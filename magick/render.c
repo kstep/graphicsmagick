@@ -51,7 +51,6 @@
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
 #include "magick/paint.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
@@ -994,10 +993,6 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
   MagickPassFail
     status = MagickPass;
 
-  ThreadViewSet
-    *image_views,
-    *composite_views;
-
   unsigned long
     row_count=0;
 
@@ -1025,19 +1020,6 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
   assert(composite != (const Image *) NULL);
   assert(composite->signature == MagickSignature);
   assert(affine != (AffineMatrix *) NULL);
-
-  /*
-    Allocate thread views
-  */
-  image_views=AllocateThreadViewSet(image,&image->exception);
-  composite_views=AllocateThreadViewSet((Image *) composite, &image->exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (composite_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(composite_views);
-      return MagickFail;
-    }
 
   /*
     Determine bounding box.
@@ -1123,7 +1105,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
       start=(long) ceil(inverse_edge.x1-0.5);
       stop=(long) floor(inverse_edge.x2+0.5);
       x=start;
-      q=GetThreadViewPixels(image_views,x,y,stop-x+1,1,&image->exception);
+      q=GetImagePixelsEx(image,x,y,stop-x+1,1,&image->exception);
       if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
       if (thread_status != MagickFail)
@@ -1138,14 +1120,14 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
 
               point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
               point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
-              (void) AcquireOneThreadViewPixel(composite_views,&pixel,(long) point.x,
-                                               (long) point.y,&image->exception);
+              (void) AcquireOnePixelByReference(composite,&pixel,(long) point.x,
+                                                (long) point.y,&image->exception);
               if (!composite->matte)
                 pixel.opacity=OpaqueOpacity;
               AlphaCompositePixel(q,&pixel,pixel.opacity,q,q->opacity);
               q++;
             }
-          if (!SyncThreadViewPixels(image_views,&image->exception))
+          if (!SyncImagePixelsEx(image,&image->exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -1162,9 +1144,6 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(composite_views);
 
   return (status);
 }

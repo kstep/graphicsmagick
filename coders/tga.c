@@ -406,7 +406,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,(long) real,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             {
               if ((tga_info.image_type == TGARLEColormap) ||
@@ -739,7 +739,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -940,7 +940,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           q=targa_pixels;
-          indexes=GetIndexes(image);
+          indexes=AccessImmutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             {
               if (targa_info.image_type == TargaColormap)

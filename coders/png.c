@@ -506,8 +506,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes,
+  IndexPacket
     top_used;
 
   register long
@@ -553,10 +552,13 @@ static unsigned int CompressColormapTransFirst(Image *image)
   top_used=0;
   for (y=0; y < (long) image->rows; y++)
     {
+      register const IndexPacket
+        *indexes;
+
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessImmutableIndexes(image);
       if (image->matte)
         for (x=0; x < (long) image->columns; x++)
           {
@@ -717,10 +719,13 @@ static unsigned int CompressColormapTransFirst(Image *image)
       */
       for (y=0; y < (long) image->rows; y++)
         {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          register IndexPacket
+            *indexes;
+
+          p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             {
               j=(int) indexes[x];
@@ -2287,7 +2292,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessMutableIndexes(image);
             p=png_pixels+row_offset;
             r=quantum_scanline;
             switch (ping_info->bit_depth)
@@ -2458,7 +2463,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
 
           q->opacity=OpaqueOpacity;
           if (storage_class == PseudoClass)
@@ -2846,7 +2851,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                          "  enter ReadOneJNGImage()");
 
   image=mng_info->image;
-  if (GetPixels(image) != (PixelPacket *) NULL)
+  if (AccessMutablePixels(image) != (PixelPacket *) NULL)
     {
       /*
         Allocate next image structure.
@@ -3777,7 +3782,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (mng_type != 3 && !image_info->ping)
                 insert_layers=True;
 #endif
-              if (GetPixels(image) != (PixelPacket *) NULL)
+              if (AccessMutablePixels(image) != (PixelPacket *) NULL)
                 {
                   /*
                     Allocate next image structure.
@@ -4157,7 +4162,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /*
                     Allocate next image structure.
                   */
-                  if (GetPixels(image) != (PixelPacket *) NULL)
+                  if (AccessMutablePixels(image) != (PixelPacket *) NULL)
                     {
                       AllocateNextImage(image_info,image);
                       if (image->next == (Image *) NULL)
@@ -4627,7 +4632,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (image_height < mng_info->mng_height) ||
                   (mng_info->clip.bottom < (long) mng_info->mng_height))
                 {
-                  if (GetPixels(image) != (PixelPacket *) NULL)
+                  if (AccessMutablePixels(image) != (PixelPacket *) NULL)
                     {
                       /*
                         Allocate next image structure.
@@ -4676,7 +4681,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (subframe_width) && (subframe_height) && (simplicity == 0 ||
                                                         (simplicity & 0x08)))
             {
-              if (GetPixels(image) != (PixelPacket *) NULL)
+              if (AccessMutablePixels(image) != (PixelPacket *) NULL)
                 {
                   /*
                     Allocate next image structure.
@@ -4717,7 +4722,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
 #endif /* MNG_INSERT_LAYERS */
           first_mng_object=False;
-          if (GetPixels(image) != (PixelPacket *) NULL)
+          if (AccessMutablePixels(image) != (PixelPacket *) NULL)
             {
               /*
                 Allocate next image structure.
@@ -5357,7 +5362,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  No images found.  Inserting a background layer.");
-      if (GetPixels(image) != (PixelPacket *) NULL)
+      if (AccessMutablePixels(image) != (PixelPacket *) NULL)
         {
           /*
             Allocate next image structure.
@@ -5981,7 +5986,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   long
     y;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -6287,7 +6292,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                                  &image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity != OpaqueOpacity)
@@ -6661,7 +6666,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                                              &image->exception);
                         if (p == (const PixelPacket *) NULL)
                           break;
-                        indexes=GetIndexes(image);
+                        indexes=AccessImmutableIndexes(image);
                         for (x=0; x < (long) image->columns; x++)
                           {
                             if (p->opacity != OpaqueOpacity)

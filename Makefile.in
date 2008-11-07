@@ -1035,8 +1035,8 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/magick_endian.h magick/map.c magick/map.h \
 	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
-	magick/montage.c magick/montage.h magick/omp_thread_view.c \
-	magick/omp_thread_view.h magick/operator.c magick/operator.h \
+	magick/montage.c magick/montage.h magick/omp_data_view.c \
+	magick/omp_data_view.h magick/operator.c magick/operator.h \
 	magick/paint.c magick/paint.h magick/pixel_cache.h \
 	magick/pixel_cache.c magick/pixel_iterator.c \
 	magick/pixel_iterator.h magick/PreRvIcccm.c \
@@ -1115,7 +1115,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-module.lo \
 	magick/magick_libGraphicsMagick_la-monitor.lo \
 	magick/magick_libGraphicsMagick_la-montage.lo \
-	magick/magick_libGraphicsMagick_la-omp_thread_view.lo \
+	magick/magick_libGraphicsMagick_la-omp_data_view.lo \
 	magick/magick_libGraphicsMagick_la-operator.lo \
 	magick/magick_libGraphicsMagick_la-paint.lo \
 	magick/magick_libGraphicsMagick_la-pixel_cache.lo \
@@ -2928,8 +2928,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
-	magick/omp_thread_view.c \
-	magick/omp_thread_view.h \
+	magick/omp_data_view.c \
+	magick/omp_data_view.h \
 	magick/operator.c \
 	magick/operator.h \
 	magick/paint.c \
@@ -3057,7 +3057,7 @@ MAGICK_NOINST_HDRS = \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
-	magick/omp_thread_view.h \
+	magick/omp_data_view.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \
@@ -5508,7 +5508,7 @@ magick/magick_libGraphicsMagick_la-monitor.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-montage.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
-magick/magick_libGraphicsMagick_la-omp_thread_view.lo:  \
+magick/magick_libGraphicsMagick_la-omp_data_view.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-operator.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
@@ -6556,8 +6556,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-nt_base.lo
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.lo
-	-rm -f magick/magick_libGraphicsMagick_la-omp_thread_view.$(OBJEXT)
-	-rm -f magick/magick_libGraphicsMagick_la-omp_thread_view.lo
+	-rm -f magick/magick_libGraphicsMagick_la-omp_data_view.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-omp_data_view.lo
 	-rm -f magick/magick_libGraphicsMagick_la-operator.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-operator.lo
 	-rm -f magick/magick_libGraphicsMagick_la-paint.$(OBJEXT)
@@ -6912,7 +6912,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_feature.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_thread_view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-paint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-pixel_cache.Plo@am__quote@
@@ -7956,12 +7956,12 @@ magick/magick_libGraphicsMagick_la-montage.lo: magick/montage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-montage.lo `test -f 'magick/montage.c' || echo '$(srcdir)/'`magick/montage.c
 
-magick/magick_libGraphicsMagick_la-omp_thread_view.lo: magick/omp_thread_view.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-omp_thread_view.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_thread_view.Tpo -c -o magick/magick_libGraphicsMagick_la-omp_thread_view.lo `test -f 'magick/omp_thread_view.c' || echo '$(srcdir)/'`magick/omp_thread_view.c
-@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_thread_view.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_thread_view.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/omp_thread_view.c' object='magick/magick_libGraphicsMagick_la-omp_thread_view.lo' libtool=yes @AMDEPBACKSLASH@
+magick/magick_libGraphicsMagick_la-omp_data_view.lo: magick/omp_data_view.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-omp_data_view.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Tpo -c -o magick/magick_libGraphicsMagick_la-omp_data_view.lo `test -f 'magick/omp_data_view.c' || echo '$(srcdir)/'`magick/omp_data_view.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/omp_data_view.c' object='magick/magick_libGraphicsMagick_la-omp_data_view.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-omp_thread_view.lo `test -f 'magick/omp_thread_view.c' || echo '$(srcdir)/'`magick/omp_thread_view.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-omp_data_view.lo `test -f 'magick/omp_data_view.c' || echo '$(srcdir)/'`magick/omp_data_view.c
 
 magick/magick_libGraphicsMagick_la-operator.lo: magick/operator.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-operator.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Tpo -c -o magick/magick_libGraphicsMagick_la-operator.lo `test -f 'magick/operator.c' || echo '$(srcdir)/'`magick/operator.c

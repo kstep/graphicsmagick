@@ -4425,7 +4425,7 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
               q=SetImagePixels(composite_image,0,y,composite_image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(composite_image);
+              indexes=AccessMutableIndexes(composite_image);
               for (x=0; x < (long) composite_image->columns; x++)
               {
                 index=(IndexPacket) XGetPixel(ximage,x,y);
@@ -5832,7 +5832,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
   int
     y;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register int
@@ -5892,7 +5892,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         bit=0;
         byte=0;
         for (x=0; x < (long) image->columns; x++)
@@ -5932,7 +5932,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -5983,7 +5983,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -6026,7 +6026,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -6056,7 +6056,7 @@ static void MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
@@ -6397,7 +6397,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
   int
     y;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register int
@@ -6457,7 +6457,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         bit=0;
         byte=0;
         for (x=(long) image->columns; x > 0; x--)
@@ -6497,7 +6497,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             nibble=0;
             for (x=(long) image->columns; x > 0; x--)
             {
@@ -6548,7 +6548,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             nibble=0;
             for (x=(long) image->columns; x > 0; x--)
             {
@@ -6591,7 +6591,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=(long) image->columns; x > 0; x--)
               *q++=(unsigned char) (pixels[*indexes++]);
             q+=scanline_pad;
@@ -6618,7 +6618,7 @@ static void MagickXMakeImageMSBFirst(const MagickXResourceInfo *resource_info,
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=(long) image->columns; x > 0; x--)
             {
               pixel=pixels[*indexes++];
@@ -7777,7 +7777,7 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessMutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
               diversity[indexes[x]].count++;
           }

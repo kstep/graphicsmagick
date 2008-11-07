@@ -152,7 +152,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     bit=0;
     byte=0;
     for (x=0; x < (long) image->columns; x++)
@@ -285,7 +285,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -339,7 +339,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     bit=0;
     byte=0;
     for (x=0; x < (long) image->columns; x++)

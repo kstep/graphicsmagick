@@ -45,7 +45,6 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/semaphore.h"
 #include "magick/tempfile.h"
@@ -452,7 +451,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
 
               switch (dispatch_type)
                 {
@@ -641,7 +640,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x++)
         {
 	  SetRedSample(q,0);
@@ -845,10 +844,6 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
                                            const Image *texture_image,
                                            ExceptionInfo *exception)
 {
-  ThreadViewSet
-    *canvas_views,
-    *texture_views;
-
   Image
     *canvas_image;
 
@@ -867,20 +862,6 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
   canvas_image=CloneImage(texture_image,columns,rows,MagickTrue,exception);
   if (canvas_image == (Image *) NULL)
     return canvas_image;
-
-  /*
-    Allocate thread views
-  */
-  canvas_views=AllocateThreadViewSet(canvas_image,exception);
-  texture_views=AllocateThreadViewSet((Image *) texture_image,exception);
-  if ((canvas_views == (ThreadViewSet *) NULL) ||
-      (texture_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(canvas_views);
-      DestroyThreadViewSet(texture_views);
-      DestroyImage(canvas_image);
-      return (Image *) NULL;
-    }
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
@@ -902,12 +883,12 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
       if (thread_status == MagickFail)
         continue;
 
-      texture_pixels=AcquireThreadViewPixels(texture_views,0,
-                                             y % texture_image->rows,
-                                             texture_image->columns,1,
-                                             exception);
-      canvas_pixels=SetThreadViewPixels(canvas_views,0,y,canvas_image->columns,
-                                        1,exception);
+      texture_pixels=AcquireImagePixels(texture_image,0,
+                                        y % texture_image->rows,
+                                        texture_image->columns,1,
+                                        exception);
+      canvas_pixels=SetImagePixelsEx(canvas_image,0,y,canvas_image->columns,
+                                     1,exception);
 
       if ((texture_pixels == (const PixelPacket *) NULL) ||
           (canvas_pixels == (PixelPacket *) NULL))
@@ -922,9 +903,9 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
             *canvas_indexes=(IndexPacket *) NULL;;
 
           if (texture_image->storage_class == PseudoClass)
-            texture_indexes=AcquireThreadViewIndexes(texture_views);
+            texture_indexes=AccessImmutableIndexes(texture_image);
           if (canvas_image->storage_class == PseudoClass)
-            canvas_indexes=GetThreadViewIndexes(canvas_views);
+            canvas_indexes=AccessMutableIndexes(canvas_image);
 
           for (x=0; x < canvas_image->columns; x+=texture_image->columns)
             {
@@ -945,8 +926,8 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
               canvas_pixels += texture_width;
             }
 
-          if (!SyncThreadViewPixels(canvas_views,exception))
-              thread_status=MagickFail;
+          if (!SyncImagePixelsEx(canvas_image,exception))
+            thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
@@ -963,9 +944,6 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(canvas_views);
-  DestroyThreadViewSet(texture_views);
 
   if (status == MagickFail)
     {
@@ -1468,7 +1446,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   unsigned char *destination,const ExportPixelAreaOptions *options,
   ExportPixelAreaInfo *export_info)
 {
-  return ExportViewPixelArea(image->default_view,quantum_type,quantum_size,
+  return ExportViewPixelArea(AccessDefaultCacheView(image),
+                             quantum_type,quantum_size,
                              destination,options,export_info);
 }
 
@@ -3646,7 +3625,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const unsigned char *source,const ImportPixelAreaOptions *options,
   ImportPixelAreaInfo *import_info)
 {
-  return ImportViewPixelArea(image->default_view,quantum_type,quantum_size,
+  return ImportViewPixelArea(AccessDefaultCacheView(image),
+                             quantum_type,quantum_size,
                              source,options,import_info);
 }
 

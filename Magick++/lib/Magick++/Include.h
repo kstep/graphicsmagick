@@ -476,6 +476,8 @@ namespace Magick
   // GraphicsMagick symbols used in implementation code
   //
   using MagickLib::AccessDefinition;
+  using MagickLib::AccessImmutableIndexes;
+  using MagickLib::AccessMutableIndexes;
   using MagickLib::AcquireCacheViewPixels;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AdaptiveThresholdImage;
@@ -665,14 +667,12 @@ namespace Magick
   using MagickLib::GetImageQuantizeError;
   using MagickLib::GetImageStatistics;
   using MagickLib::GetImageType;
-  using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;
   using MagickLib::GetMagickInfo;
   using MagickLib::GetMagickInfoArray;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
   using MagickLib::GetPageGeometry;
-  using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
   using MagickLib::GetTypeMetrics;
   using MagickLib::GlobExpression;

@@ -37,7 +37,7 @@ extern "C" {
 
   /*****
    *
-   * Default View interfaces (Single-threaded access)
+   * Default View interfaces
    *
    *****/
 
@@ -50,28 +50,34 @@ extern "C" {
                       const unsigned long rows,ExceptionInfo *exception);
 
   /*
+    AccessImmutableIndexes() returns the read-only indexes
+    associated with a rectangular pixel region already selected via
+    AcquireImagePixels().
+  */
+  extern MagickExport const IndexPacket
+  *AccessImmutableIndexes(const Image *image);
+
+  /*
     Return one DirectClass pixel at the the specified (x,y) location.
     Similar function as GetOnePixel().  Note that the value returned
-    by GetIndexes() is not reliably influenced by this function.
+    by GetIndexes() may or may not be influenced by this function.
   */
   extern MagickExport PixelPacket
   AcquireOnePixel(const Image *image,const long x,const long y,
                   ExceptionInfo *exception);
 
-  /*
-    DestroyImagePixels() deallocates memory associated with the pixel cache.
-
-    Used only by DestroyImage().
-  */
-  extern MagickExport void
-  DestroyImagePixels(Image *image);
 
   /*
-    GetImagePixels() obtains a pixel region for read/write access.
+    GetImagePixels() and GetImagePixelsEx() obtains a pixel region for
+    read/write access.
   */
   extern MagickExport PixelPacket
   *GetImagePixels(Image *image,const long x,const long y,
                   const unsigned long columns,const unsigned long rows);
+  extern MagickExport PixelPacket
+  *GetImagePixelsEx(Image *image,const long x,const long y,
+                    const unsigned long columns,const unsigned long rows,
+                    ExceptionInfo *exception);
 
   /*
     GetImageVirtualPixelMethod() gets the "virtual pixels" method for
@@ -81,11 +87,23 @@ extern "C" {
   GetImageVirtualPixelMethod(const Image *image);
 
   /*
-    GetIndexes() returns the colormap indexes associated with the last
-    call to SetImagePixels() or GetImagePixels().
+    GetPixels() and AccessMutablePixels() return the pixels associated
+    with the last call to SetImagePixels() or GetImagePixels().
+  */
+  extern MagickExport PixelPacket
+  *GetPixels(const Image *image);
+  extern MagickExport PixelPacket
+  *AccessMutablePixels(Image *image);
+
+  /*
+    GetIndexes() and AccessMutableIndexes() return the colormap
+    indexes associated with the last call to SetImagePixels() or
+    GetImagePixels().
   */
   extern MagickExport IndexPacket
   *GetIndexes(const Image *image);
+  extern MagickExport IndexPacket
+  *AccessMutableIndexes(Image *image);
 
   /*
     GetOnePixel() returns a single DirectClass pixel at the specified
@@ -105,27 +123,16 @@ extern "C" {
   GetPixelCacheArea(const Image *image);
 
   /*
-    GetPixels() returns the pixels associated with the last call to
-    SetImagePixels() or GetImagePixels().
-  */
-  extern MagickExport PixelPacket
-  *GetPixels(const Image *image);
-
-  /*
-    PersistCache() attaches to or initializes a persistent pixel cache.
-
-    Used only by ReadMPCImage() and WriteMPCImage().
-  */
-  extern MagickExport MagickPassFail
-  PersistCache(Image *image,const char *filename,const MagickBool attach,
-               magick_off_t *offset,ExceptionInfo *exception);
-
-  /*
-    SetImagePixels() initializes a pixel region for write-only access.
+    SetImagePixels() and SetImagePixelsEx() initialize a pixel region
+    for write-only access.
   */
   extern MagickExport PixelPacket
   *SetImagePixels(Image *image,const long x,const long y,
                   const unsigned long columns,const unsigned long rows);
+  extern MagickExport PixelPacket
+  *SetImagePixelsEx(Image *image,const long x,const long y,
+                    const unsigned long columns,const unsigned long rows,
+                    ExceptionInfo *exception);
 
   /*
     SetImageVirtualPixelMethod() sets the "virtual pixels" method for
@@ -136,15 +143,17 @@ extern "C" {
                              const VirtualPixelMethod method);
 
   /*
-    SyncImagePixels() saves the image pixels to the in-memory or disk
-    cache.
+    SyncImagePixels() and SyncImagePixelsEx() save the image pixels to
+    the in-memory or disk cache.
   */
   extern MagickExport MagickPassFail
   SyncImagePixels(Image *image);
+  extern MagickExport MagickPassFail
+  SyncImagePixelsEx(Image *image,ExceptionInfo *exception);
 
   /****
    *
-   * Cache view interfaces (Thread safe for multiple access).
+   * Cache view interfaces
    *
    ****/
 
@@ -255,16 +264,39 @@ extern "C" {
    ****/
 
   /*
+    Access the default view
+  */
+  extern MagickExport ViewInfo
+  *AccessDefaultCacheView(const Image *image);
+
+  /*
+    Destroy a thread view set.
+  */
+  extern MagickExport void
+  DestroyThreadViewSet(_ThreadViewSetPtr_ view_set);
+
+  /*
+    Allocate a thread view set.
+  */
+  extern MagickExport _ThreadViewSetPtr_
+  AllocateThreadViewSet(Image *image,ExceptionInfo *exception);
+
+  /*
     Return one pixel at the the specified (x,y) location via a pointer
     reference.
   */
-  static inline MagickPassFail
+  extern MagickExport MagickPassFail
   AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
                              const long x,const long y,
-                             ExceptionInfo *exception)
-  {
-    return AcquireOneCacheViewPixel((ViewInfo *) image->default_view,pixel,x,y,exception);
-  }
+                             ExceptionInfo *exception);
+
+  /*
+    DestroyImagePixels() deallocates memory associated with the pixel cache.
+
+    Used only by DestroyImage().
+  */
+  extern MagickExport void
+  DestroyImagePixels(Image *image);
 
   /*
     DestroyCacheInfo() deallocates memory associated with the pixel
@@ -290,6 +322,15 @@ extern "C" {
   */
   extern MagickBool
   GetPixelCachePresent(const Image *image);
+
+  /*
+    PersistCache() attaches to or initializes a persistent pixel cache.
+
+    Used only by ReadMPCImage() and WriteMPCImage().
+  */
+  extern MagickExport MagickPassFail
+  PersistCache(Image *image,const char *filename,const MagickBool attach,
+               magick_off_t *offset,ExceptionInfo *exception);
 
   /*
     ReferenceCache() increments the reference count associated with

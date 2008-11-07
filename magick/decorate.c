@@ -39,7 +39,6 @@
 #include "magick/studio.h"
 #include "magick/color.h"
 #include "magick/decorate.h"
-#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/monitor.h"
 
@@ -146,10 +145,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 
   unsigned long
     row_count=0;
-  
-  ThreadViewSet
-    *image_views,
-    *frame_views;
 
   long
     height,
@@ -212,20 +207,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
                       OpaqueOpacity ? TrueColorMatteType : TrueColorType);
 
   /*
-    Allocate thread views.
-  */
-  image_views=AllocateThreadViewSet((Image *) image,exception);
-  frame_views=AllocateThreadViewSet(frame_image,exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (frame_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(frame_views);
-      DestroyImage(frame_image);
-      return (Image *) NULL;
-    }
-
-  /*
     Initialize 3D effects color.
   */
   matte=image->matte_color;
@@ -260,7 +241,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   height=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
                  frame_info->inner_bevel);
-  q=SetThreadViewPixels(frame_views,0,0,frame_image->columns,height,exception);
+  q=SetImagePixelsEx(frame_image,0,0,frame_image->columns,height,exception);
   if (q != (PixelPacket *) NULL)
     {
       for (y=0; y < frame_info->outer_bevel; y++)
@@ -304,7 +285,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           for (x=0; x < frame_info->outer_bevel; x++)
             *q++=shadow;
         }
-      (void) SyncThreadViewPixels(frame_views,exception);
+      (void) SyncImagePixelsEx(frame_image,exception);
     }
   /*
     Draw sides of ornamental border.
@@ -324,8 +305,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       /*
         Initialize scanline with border color.
       */
-      p=AcquireThreadViewPixels(image_views,0,y,image->columns,1,exception);
-      q=SetThreadViewPixels(frame_views,0,frame_info->y+y,frame_image->columns,1,exception);
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      q=SetImagePixelsEx(frame_image,0,frame_info->y+y,frame_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
@@ -349,7 +330,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             *q++=matte;
           for (x=0; x < frame_info->outer_bevel; x++)
             *q++=shadow;
-          if (!SyncThreadViewPixels(frame_views,exception))
+          if (!SyncImagePixelsEx(frame_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -371,7 +352,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   height=(long) (frame_info->inner_bevel+frame_info->height-frame_info->y-
                  image->rows-bevel_width+frame_info->outer_bevel);
-  q=SetThreadViewPixels(frame_views,0,(long) (frame_image->rows-height),
+  q=SetImagePixelsEx(frame_image,0,(long) (frame_image->rows-height),
                         frame_image->columns,height,exception);
   if (q == (PixelPacket *) NULL)
     return(frame_image);
@@ -414,10 +395,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         else
           *q++=trough;
     }
-  (void) SyncThreadViewPixels(frame_views,exception);
-
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(frame_views);
+  (void) SyncImagePixelsEx(frame_image,exception);
 
   frame_image->is_grayscale=is_grayscale;
   return(frame_image);
@@ -464,9 +442,6 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
 #define RaiseImageText  "[%s] Raise image..."
 #define TroughFactor  (double) ScaleCharToQuantum(135)
 
-  ThreadViewSet
-    *image_views;
-
   unsigned long
     row_count=0;
 
@@ -498,10 +473,6 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
     ThrowBinaryException3(OptionError,UnableToRaiseImage,
                           ImageSizeMustExceedBevelWidth);
 
-  image_views=AllocateThreadViewSet((Image *) image,&image->exception);
-  if (image_views == (ThreadViewSet *) NULL)
-    return MagickFail;
-
   foreground=MaxRGBDouble;
   background=0.0;
   if (!raise)
@@ -523,7 +494,7 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
       if (thread_status == MagickFail)
         continue;
 
-      q=GetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
+      q=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
       if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
 
@@ -611,7 +582,7 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
                                         background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble+0.5);
                 }
             }
-          if (!SyncThreadViewPixels(image_views,&image->exception))
+          if (!SyncImagePixelsEx(image,&image->exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -628,8 +599,6 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(image_views);
 
   image->is_grayscale=is_grayscale;
   return(status);

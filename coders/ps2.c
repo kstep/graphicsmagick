@@ -508,7 +508,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1081,7 +1081,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=AccessImmutableIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                   *q++=indexes[x];
                 if (image->previous == (Image *) NULL)
@@ -1119,7 +1119,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=AccessImmutableIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)

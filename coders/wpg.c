@@ -279,7 +279,7 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
 
     case 2:  /* Convert PseudoColor scanline. */
       {
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
             index=(IndexPacket) ((*p >> 6) & 0x3);

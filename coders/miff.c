@@ -172,10 +172,10 @@ static unsigned int PushImageRLEPixels(Image *image,
          ((quantum_type == RGBQuantum) && (image->storage_class == DirectClass) && !image->matte));
 
   p=source;
-  q=GetPixels(image);
+  q=AccessMutablePixels(image);
   length=0;
   index=0;
-  indexes=GetIndexes(image);
+  indexes=AccessMutableIndexes(image);
 
   pixel.red=0;
   pixel.green=0;
@@ -1777,7 +1777,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -2207,7 +2207,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessImmutableIndexes(image);
       q=pixels;
       switch (compression)
       {

@@ -608,7 +608,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
@@ -639,7 +639,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);
           if (!SyncImagePixels(image))
@@ -888,7 +888,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1114,7 +1114,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
               *q++=indexes[x];
             if (image->previous == (Image *) NULL)
@@ -1150,7 +1150,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessImmutableIndexes(image);
               bit=0;
               byte=0;
               for (x=0; x < (long) image->columns; x++)

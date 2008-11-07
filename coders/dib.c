@@ -606,7 +606,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
@@ -652,7 +652,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
         {
           index=(IndexPacket) ((*p >> 4) & 0xf);
@@ -700,7 +700,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           index=(IndexPacket) (*p);
@@ -940,7 +940,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1050,7 +1050,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         q=pixels+(image->rows-y-1)*bytes_per_line;
         bit=0;
         byte=0;
@@ -1090,7 +1090,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         q=pixels+(image->rows-y-1)*bytes_per_line;
         for (x=0; x < (long) image->columns; x++)
         {

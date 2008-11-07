@@ -156,7 +156,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         q=GetImagePixels(image,x,y,1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         switch (c)
         {
           case 0:

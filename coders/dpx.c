@@ -132,7 +132,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
+#include "magick/omp_data_view.h"
 #include "magick/profile.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
@@ -1606,9 +1606,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ThreadViewDataSet
     *scanline_set;
 
-  ThreadViewSet
-    *view_set=(ThreadViewSet *) NULL;
-
   size_t
     element_size;               /* Number of bytes in an element */
 
@@ -2033,17 +2030,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   /*
-    Allocate thread view set.
-  */
-  view_set=AllocateThreadViewSet(image,exception);
-  if (view_set == (ThreadViewSet *) NULL)
-    {
-      CloseBlob(image);
-      DestroyImageList(image);
-      return ((Image *) NULL);
-    }
-
-  /*
     Allocate sample translation map storage.
   */
   map_Y=MagickAllocateArray(Quantum *,
@@ -2051,7 +2037,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             sizeof(Quantum));
   if (map_Y == (Quantum *) NULL)
     {
-      DestroyThreadViewSet(view_set);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   
@@ -2061,7 +2046,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (map_CbCr == (Quantum *) NULL)
     {
       MagickFreeMemory(map_Y);
-      DestroyThreadViewSet(view_set);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
 
@@ -2101,7 +2085,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         DestroyThreadViewDataSet(samples_set);
         MagickFreeMemory(map_CbCr);
         MagickFreeMemory(map_Y);
-        DestroyThreadViewSet(view_set);
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       }
   }
@@ -2141,7 +2124,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyThreadViewDataSet(samples_set);
             MagickFreeMemory(map_CbCr);
             MagickFreeMemory(map_Y);
-            DestroyThreadViewSet(view_set);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
           }
       }
@@ -2427,9 +2409,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (thread_status != MagickFail)
                 {
                   if (element == 0)
-                    pixels=SetThreadViewPixels(view_set,0,thread_row_count,image->columns,1,exception);
+                    pixels=SetImagePixelsEx(image,0,thread_row_count,image->columns,1,exception);
                   else
-                    pixels=GetThreadViewPixels(view_set,0,thread_row_count,image->columns,1,exception);
+                    pixels=GetImagePixelsEx(image,0,thread_row_count,image->columns,1,exception);
                 }
 
               if (pixels == (PixelPacket *) NULL)
@@ -2649,7 +2631,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 }
 
-              if (!SyncThreadViewPixels(view_set,exception))
+              if (!SyncImagePixelsEx(image,exception))
                 thread_status=MagickFail;
 
               /*
@@ -2733,7 +2715,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(map_Y);
   DestroyThreadViewDataSet(scanline_set);
   DestroyThreadViewDataSet(samples_set);
-  DestroyThreadViewSet(view_set);
   CloseBlob(image);
   return(image);
 }

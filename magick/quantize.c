@@ -407,7 +407,7 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
           status=MagickFail;
           break;
         }
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x+=count)
       {
         /*
@@ -1114,7 +1114,7 @@ static MagickPassFail Dither(CubeInfo *cube_info,Image *image,
       q=GetImagePixels(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return(MagickFail);
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       error.red=q->red;
       error.green=q->green;
       error.blue=q->blue;
@@ -1488,7 +1488,7 @@ MagickExport MagickPassFail GetImageQuantizeError(Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1519,7 +1519,7 @@ MagickExport MagickPassFail GetImageQuantizeError(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=indexes[x];
@@ -1698,7 +1698,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
                   register int
@@ -1731,7 +1731,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
                   *indexes=ScaleQuantumToIndex(q->red);
@@ -1820,7 +1820,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=(long) image->columns; x > 0; x--)
             {
               *indexes=colormap_index[*indexes];
@@ -2203,7 +2203,7 @@ MagickExport MagickPassFail OrderedDitherImage(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=(Quantum) (PixelIntensityToQuantum(q) >

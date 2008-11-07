@@ -112,8 +112,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
-	magick/omp_thread_view.c \
-	magick/omp_thread_view.h \
+	magick/omp_data_view.c \
+	magick/omp_data_view.h \
 	magick/operator.c \
 	magick/operator.h \
 	magick/paint.c \
@@ -246,7 +246,7 @@ MAGICK_NOINST_HDRS = \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
-	magick/omp_thread_view.h \
+	magick/omp_data_view.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \

@@ -36,7 +36,7 @@
 #include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
+#include "magick/omp_data_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
@@ -499,26 +499,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     unsigned long
       row_count=0;
 
-    ThreadViewSet
-      *image_views,
-      *minify_views;
-
     DoublePixelPacket
       zero;
 
     MagickPassFail
       status=MagickPass;
-
-    image_views=AllocateThreadViewSet((Image *) image,exception);
-    minify_views=AllocateThreadViewSet(minify_image,exception);
-    if ((image_views == (ThreadViewSet *) NULL) ||
-        (minify_views == (ThreadViewSet *) NULL))
-      {
-        DestroyThreadViewSet(image_views);
-        DestroyThreadViewSet(minify_views);
-        DestroyImage(minify_image);
-        return (Image *) NULL;
-      }
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
@@ -546,8 +531,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
         if (thread_status == MagickFail)
           continue;
 
-        p=AcquireThreadViewPixels(image_views,-2,2*(y-1),image->columns+4,4,exception);
-        q=SetThreadViewPixels(minify_views,0,y,minify_image->columns,1,exception);
+        p=AcquireImagePixels(image,-2,2*(y-1),image->columns+4,4,exception);
+        q=SetImagePixelsEx(minify_image,0,y,minify_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;
         if (thread_status != MagickFail)
@@ -573,7 +558,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
                 p+=2;
                 q++;
               }
-            if (!SyncThreadViewPixels(minify_views,exception))
+            if (!SyncImagePixelsEx(minify_image,exception))
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
@@ -590,8 +575,6 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
             status=MagickFail;
         }
       }
-    DestroyThreadViewSet(minify_views);
-    DestroyThreadViewSet(image_views);
   }
   minify_image->is_grayscale=image->is_grayscale;
   return(minify_image);
@@ -808,10 +791,6 @@ HorizontalFilter(const Image *source,Image *destination,
                  ExceptionInfo *exception)
 {
 #define ResizeImageText  "[%s] Resize image..."
-
-  ThreadViewSet
-    *destination_views,
-    *source_views;
   
   double
     scale,
@@ -829,19 +808,6 @@ HorizontalFilter(const Image *source,Image *destination,
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                           "Enter HorizontalFilter() ...");
-
-  /*
-    Apply filter to resize horizontally from source to destination.
-  */
-  source_views=AllocateThreadViewSet((Image *) source,exception);
-  destination_views=AllocateThreadViewSet(destination,exception);
-  if ((source_views ==  (ThreadViewSet *) NULL) ||
-      (destination_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(source_views);
-      DestroyThreadViewSet(destination_views);
-      return MagickFail;
-    }
 
   scale=blur*Max(1.0/x_factor,1.0);
   support=scale*filter_info->support;
@@ -876,9 +842,11 @@ HorizontalFilter(const Image *source,Image *destination,
       register PixelPacket
         *q;
 
-      IndexPacket
-        *indexes,
+      const IndexPacket
         *source_indexes;
+
+      IndexPacket
+        *indexes;
 
       long
         n,
@@ -919,17 +887,17 @@ HorizontalFilter(const Image *source,Image *destination,
             contribution[i].weight*=density;
         }
 
-      p=AcquireThreadViewPixels(source_views,contribution[0].pixel,0,
-                                contribution[n-1].pixel-contribution[0].pixel+1,
-                                source->rows,exception);
-      q=SetThreadViewPixels(destination_views,x,0,1,destination->rows,exception);
+      p=AcquireImagePixels(source,contribution[0].pixel,0,
+                           contribution[n-1].pixel-contribution[0].pixel+1,
+                           source->rows,exception);
+      q=SetImagePixelsEx(destination,x,0,1,destination->rows,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
-          source_indexes=GetThreadViewIndexes(source_views);
-          indexes=GetThreadViewIndexes(destination_views);
+          source_indexes=AccessImmutableIndexes(source);
+          indexes=AccessMutableIndexes(destination);
           for (y=0; y < (long) destination->rows; y++)
             {
               double
@@ -988,7 +956,7 @@ HorizontalFilter(const Image *source,Image *destination,
                   indexes[y]=source_indexes[j];
                 }
             }
-          if (!SyncThreadViewPixels(destination_views,exception))
+          if (!SyncImagePixelsEx(destination,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -1007,9 +975,6 @@ HorizontalFilter(const Image *source,Image *destination,
       }
     }
 
-  DestroyThreadViewSet(source_views);
-  DestroyThreadViewSet(destination_views);
-
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                           "Normal exit HorizontalFilter()");
@@ -1024,10 +989,6 @@ VerticalFilter(const Image *source,Image *destination,
                const size_t span,unsigned long *quantum,
                ExceptionInfo *exception)
 {
-  ThreadViewSet
-    *destination_views,
-    *source_views;
-
   double
     scale,
     support;
@@ -1048,16 +1009,6 @@ VerticalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize vertically from source to destination.
   */
-  source_views=AllocateThreadViewSet((Image *) source,exception);
-  destination_views=AllocateThreadViewSet(destination,exception);
-  if ((source_views ==  (ThreadViewSet *) NULL) ||
-      (destination_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(source_views);
-      DestroyThreadViewSet(destination_views);
-      return MagickFail;
-    }
-
   scale=blur*Max(1.0/y_factor,1.0);
   support=scale*filter_info->support;
   destination->storage_class=source->storage_class;
@@ -1091,9 +1042,11 @@ VerticalFilter(const Image *source,Image *destination,
       register PixelPacket
         *q;
 
-      register IndexPacket
-        *indexes,
+      const IndexPacket
         *source_indexes;
+
+      IndexPacket
+        *indexes;
 
       long
         n,
@@ -1133,16 +1086,16 @@ VerticalFilter(const Image *source,Image *destination,
             contribution[i].weight*=density;
         }
 
-      p=AcquireThreadViewPixels(source_views,0,contribution[0].pixel,source->columns,
-                                contribution[n-1].pixel-contribution[0].pixel+1,
-                                exception);
-      q=SetThreadViewPixels(destination_views,0,y,destination->columns,1,exception);
+      p=AcquireImagePixels(source,0,contribution[0].pixel,source->columns,
+                           contribution[n-1].pixel-contribution[0].pixel+1,
+                           exception);
+      q=SetImagePixelsEx(destination,0,y,destination->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
       if (thread_status != MagickFail)
         {
-          source_indexes=GetThreadViewIndexes(source_views);
-          indexes=GetThreadViewIndexes(destination_views);
+          source_indexes=AccessImmutableIndexes(source);
+          indexes=AccessMutableIndexes(destination);
           for (x=0; x < (long) destination->columns; x++)
             {
               double
@@ -1201,7 +1154,7 @@ VerticalFilter(const Image *source,Image *destination,
                   indexes[x]=source_indexes[j];
                 }
             }
-          if (!SyncThreadViewPixels(destination_views,exception))
+          if (!SyncImagePixelsEx(destination,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -1219,9 +1172,6 @@ VerticalFilter(const Image *source,Image *destination,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(source_views);
-  DestroyThreadViewSet(destination_views);
 
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -1519,8 +1469,10 @@ SampleImage(const Image *image,const unsigned long columns,
       register PixelPacket
         *q;
 
+      register const IndexPacket
+        *indexes;
+
       register IndexPacket
-        *indexes,
         *sample_indexes;
 
       register long
@@ -1545,8 +1497,8 @@ SampleImage(const Image *image,const unsigned long columns,
       */
       for (x=0; x < (long) sample_image->columns; x++)
         *q++=pixels[(long) x_offset[x]];
-      indexes=GetIndexes(image);
-      sample_indexes=GetIndexes(sample_image);
+      indexes=AccessImmutableIndexes(image);
+      sample_indexes=AccessMutableIndexes(sample_image);
       if ((indexes != (IndexPacket *) NULL) &&
           (sample_indexes != (IndexPacket *) NULL))
         for (x=0; x < (long) sample_image->columns; x++)

@@ -1028,7 +1028,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
 
     /* FIXME .... */
     if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)

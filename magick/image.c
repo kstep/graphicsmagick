@@ -55,7 +55,7 @@
 #include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/module.h"
-#include "magick/omp_thread_view.h"
+#include "magick/omp_data_view.h"
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
@@ -293,7 +293,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->reference_count=1;
   allocate_image->semaphore=AllocateSemaphoreInfo();
   allocate_image->signature=MagickSignature;
-  allocate_image->default_view=OpenCacheView(allocate_image);
+  allocate_image->default_views=AllocateThreadViewSet(allocate_image,
+                                                      &allocate_image->exception);
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
@@ -713,9 +714,6 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   const Image
     *last_image;
 
-  ThreadViewSet
-    *average_views;
-
   long
     y;
 
@@ -800,17 +798,6 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     }
   average_image->storage_class=DirectClass;
 
-  /*
-    Allocate average image views.
-  */
-  average_views=AllocateThreadViewSet(average_image,exception);
-  if (average_views == (ThreadViewSet *) NULL)
-    {
-      DestroyThreadViewDataSet(pixels_sums);
-      DestroyImage(average_image);
-      return((Image *) NULL);
-    }
-
   number_scenes=(double) GetImageListLength(image);
   last_image=GetLastImageInList(image);
 #if defined(HAVE_OPENMP)
@@ -889,7 +876,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
           register PixelPacket
             *q;
 
-          q=SetThreadViewPixels(average_views,0,y,average_image->columns,1,exception);
+          q=SetImagePixelsEx(average_image,0,y,average_image->columns,1,exception);
           if (q == (PixelPacket *) NULL)
             thread_status=MagickFail;
           if (q != (PixelPacket *) NULL)
@@ -901,7 +888,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
                   q[x].blue=(Quantum) (pixels_sum[x].blue/number_scenes+0.5);
                   q[x].opacity=(Quantum) (pixels_sum[x].opacity/number_scenes+0.5);
                 }
-              if (!SyncThreadViewPixels(average_views,exception))
+              if (!SyncImagePixelsEx(average_image,exception))
                 thread_status=MagickFail;
             }
         }
@@ -922,7 +909,6 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       }
     }
 
-  DestroyThreadViewSet(average_views);
   DestroyThreadViewDataSet(pixels_sums);
 
   if (status == MagickFail)
@@ -1281,7 +1267,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
       clone_image->ping=image->ping;
       clone_image->cache=ReferenceCache(image->cache);
-      clone_image->default_view=OpenCacheView(clone_image);
+      clone_image->default_views=AllocateThreadViewSet(clone_image,exception);
       return(clone_image);
     }
   clone_image->page.width=columns;
@@ -1292,7 +1278,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->rows=rows;
   clone_image->ping=image->ping;
   GetCacheInfo(&clone_image->cache);
-  clone_image->default_view=OpenCacheView(clone_image);
+  clone_image->default_views=AllocateThreadViewSet(clone_image,exception);
   return(clone_image);
 }
 
@@ -2414,11 +2400,11 @@ MagickExport void DestroyImage(Image *image)
     assert(image->next->previous != image);
 #endif
   /*
-    Destroy default view.
+    Destroy default views.
   */
-  if (image->default_view != (ViewInfo *) NULL)
-    CloseCacheView(image->default_view);
-  image->default_view=(ViewInfo *) NULL;
+  if (image->default_views != (_ThreadViewSetPtr_) NULL)
+    DestroyThreadViewSet(image->default_views);
+  image->default_views=(_ThreadViewSetPtr_) NULL;
   /*
     Destroy image pixel cache.
   */
@@ -2635,9 +2621,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   RectangleInfo
     bounds;
 
-  ThreadViewSet
-    *view_set;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
@@ -2646,13 +2629,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   bounds.x=(long) image->columns;
   bounds.y=(long) image->rows;
 
-  view_set=AllocateThreadViewSet((Image *) image,exception);
-  if (view_set == (ThreadViewSet *) NULL)
-    return(bounds);
-
-  (void) AcquireOneThreadViewPixel(view_set,&corners[0],0,0,exception);
-  (void) AcquireOneThreadViewPixel(view_set,&corners[1],(long) image->columns-1,0,exception);
-  (void) AcquireOneThreadViewPixel(view_set,&corners[2],0,(long) image->rows-1,exception);
+  (void) AcquireOnePixelByReference(image,&corners[0],0,0,exception);
+  (void) AcquireOnePixelByReference(image,&corners[1],(long) image->columns-1,0,exception);
+  (void) AcquireOnePixelByReference(image,&corners[2],0,(long) image->rows-1,exception);
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
@@ -2680,7 +2659,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(view_set,0,y,image->columns,1,exception);
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
         thread_status=MagickFail;
       if (thread_status != MagickFail)
@@ -2729,7 +2708,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         if (QuantumTick(row_count,image->rows))
           if (!MagickMonitorFormatted(row_count,image->rows,exception,
                                       GetImageBoundingBoxText,image->filename))
-          thread_status=MagickFail;
+            thread_status=MagickFail;
 
         if (thread_bounds.x < bounds.x)
           bounds.x=thread_bounds.x;
@@ -2753,7 +2732,6 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds.x=0;
   if (bounds.y < 0)
     bounds.y=0;
-  DestroyThreadViewSet(view_set);
   return(bounds);
 }
 
@@ -3779,9 +3757,6 @@ MagickExport MagickPassFail GradientImage(Image *image,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *view_set;
-
   MagickPassFail
     status=MagickPass;
 
@@ -3792,10 +3767,6 @@ MagickExport MagickPassFail GradientImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(start_color != (const PixelPacket *) NULL);
   assert(stop_color != (const PixelPacket *) NULL);
-
-  view_set=AllocateThreadViewSet((Image *) image,&image->exception);
-  if (view_set == (ThreadViewSet *) NULL)
-    return MagickFail;
 
   /*
     Generate gradient pixels.
@@ -3818,7 +3789,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
       if (thread_status == MagickFail)
         continue;
 
-      q=SetThreadViewPixels(view_set,0,y,image->columns,1,&image->exception);
+      q=SetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
       if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
 
@@ -3830,7 +3801,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
                                   MaxRGB*(y*image_columns+x)/(image_columns*image_rows));
             }
 
-          if (!SyncThreadViewPixels(view_set,&image->exception))
+          if (!SyncImagePixelsEx(image,&image->exception))
             thread_status=MagickFail;
         }
 
@@ -3848,7 +3819,6 @@ MagickExport MagickPassFail GradientImage(Image *image,
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(view_set);
   return(status);
 }
 
@@ -5678,10 +5648,6 @@ MagickExport MagickPassFail SyncImage(Image *image)
 #define TextureImageText  "[%s] Apply image texture..."
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
-  ThreadViewSet
-    *image_views,
-    *texture_views;
-
   MagickPassFail
     status=MagickPass;
 
@@ -5702,19 +5668,6 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return MagickFail;
-
-  /*
-    Allocate thread views
-  */
-  image_views=AllocateThreadViewSet(image,&image->exception);
-  texture_views=AllocateThreadViewSet((Image *) texture, &image->exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (texture_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(texture_views);
-      return MagickFail;
-    }
 
   get_pixels=GetPixelCachePresent(image);
   is_grayscale=image->is_grayscale;
@@ -5749,12 +5702,12 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(texture_views,0,y % texture->rows,
-                                texture->columns,1,&image->exception);
+      p=AcquireImagePixels(texture,0,y % texture->rows,
+                           texture->columns,1,&image->exception);
       if (get_pixels)
-        q=GetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
+        q=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
       else
-        q=SetThreadViewPixels(image_views,0,y,image->columns,1,&image->exception);
+        q=SetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
 
       if ((p == (const PixelPacket *) NULL) ||
           (q == (PixelPacket *) NULL))
@@ -5797,7 +5750,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
                     }
                 }
             }
-          if (!SyncThreadViewPixels(image_views,&image->exception))
+          if (!SyncImagePixelsEx(image,&image->exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -5814,8 +5767,6 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(texture_views);
 
   if (image->matte)
     image->is_grayscale=(is_grayscale && texture->is_grayscale);

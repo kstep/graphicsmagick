@@ -14,7 +14,6 @@
 
 #include "magick/studio.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
@@ -179,18 +178,11 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *view_set;
-
   int
     max_threads=1;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
-
-  view_set=AllocateThreadViewSet((Image *) image,exception);
-  if (view_set == (ThreadViewSet *) NULL)
-    return MagickFail;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -210,10 +202,10 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       if (thread_status == MagickFail)
         continue;
 
-      pixels=AcquireThreadViewPixels(view_set,x, row, columns, 1, exception);
+      pixels=AcquireImagePixels(image,x, row, columns, 1, exception);
       if (!pixels)
         thread_status=MagickFail;
-      indexes=AcquireThreadViewIndexes(view_set);
+      indexes=AccessImmutableIndexes(image);
 
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
@@ -232,8 +224,6 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(view_set);
 
   omp_set_num_threads(max_threads);
 
@@ -319,18 +309,11 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *view_set=(ThreadViewSet *) NULL;
-
   int
     max_threads;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
-
-  view_set=AllocateThreadViewSet(image,exception);
-  if (view_set == (ThreadViewSet *) NULL)
-    return MagickFail;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -350,16 +333,16 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
       if (thread_status == MagickFail)
         continue;
 
-      pixels=GetThreadViewPixels(view_set, x, row, columns, 1, exception);
+      pixels=GetImagePixelsEx(image, x, row, columns, 1, exception);
       if (!pixels)
         thread_status=MagickFail;
-      indexes=GetThreadViewIndexes(view_set);
+      indexes=AccessMutableIndexes(image);
       
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,image,pixels,indexes,columns,exception);
 
       if (thread_status != MagickFail)
-        if (!SyncThreadViewPixels(view_set,exception))
+        if (!SyncImagePixelsEx(image,exception))
           thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -376,8 +359,6 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(view_set);
 
   omp_set_num_threads(max_threads);
 
@@ -475,25 +456,11 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *first_view_set,
-    *second_view_set;
-
   int
     max_threads;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
-
-  first_view_set=AllocateThreadViewSet((Image *) first_image,exception);
-  second_view_set=AllocateThreadViewSet((Image *) second_image,exception);
-  if ((first_view_set == (ThreadViewSet *) NULL) ||
-      (second_view_set == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(first_view_set);
-      DestroyThreadViewSet(second_view_set);
-      return MagickFail;
-    }
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -522,17 +489,17 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
       first_row=first_y+row;
       second_row=second_y+row;
 
-      first_pixels=AcquireThreadViewPixels(first_view_set, first_x, first_row,
-                                           columns, 1, exception);
+      first_pixels=AcquireImagePixels(first_image, first_x, first_row,
+                                      columns, 1, exception);
       if (!first_pixels)
         thread_status=MagickFail;
-      first_indexes=AcquireThreadViewIndexes(first_view_set);
+      first_indexes=AccessImmutableIndexes(first_image);
 
-      second_pixels=AcquireThreadViewPixels(second_view_set, second_x, second_row,
-                                            columns, 1, exception);
+      second_pixels=AcquireImagePixels(second_image, second_x, second_row,
+                                       columns, 1, exception);
       if (!second_pixels)
         thread_status=MagickFail;
-      second_indexes=AcquireThreadViewIndexes(second_view_set);
+      second_indexes=AccessImmutableIndexes(second_image);
 
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,
@@ -555,9 +522,6 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(second_view_set);
-  DestroyThreadViewSet(first_view_set);
 
   omp_set_num_threads(max_threads);
 
@@ -656,25 +620,11 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *source_view_set,
-    *update_view_set;
-
   int
     max_threads;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
-
-  source_view_set=AllocateThreadViewSet((Image *) source_image,exception);
-  update_view_set=AllocateThreadViewSet(update_image,exception);
-  if ((source_view_set == (ThreadViewSet *) NULL) ||
-      (update_view_set == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(source_view_set);
-      DestroyThreadViewSet(update_view_set);
-      return MagickFail;
-    }
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -707,21 +657,21 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
       source_row=source_y+row;
       update_row=update_y+row;
 
-      source_pixels=AcquireThreadViewPixels(source_view_set, source_x, source_row,
-                                            columns, 1, exception);
+      source_pixels=AcquireImagePixels(source_image, source_x, source_row,
+                                       columns, 1, exception);
       if (!source_pixels)
         thread_status=MagickFail;
-      source_indexes=AcquireThreadViewIndexes(source_view_set);
+      source_indexes=AccessImmutableIndexes(source_image);
       
       if (set)
-        update_pixels=SetThreadViewPixels(update_view_set, update_x, update_row,
-                                          columns, 1, exception);
+        update_pixels=SetImagePixelsEx(update_image, update_x, update_row,
+                                       columns, 1, exception);
       else
-        update_pixels=GetThreadViewPixels(update_view_set, update_x, update_row,
-                                          columns, 1, exception);
+        update_pixels=GetImagePixelsEx(update_image, update_x, update_row,
+                                       columns, 1, exception);
       if (!update_pixels)
         thread_status=MagickFail;
-      update_indexes=GetThreadViewIndexes(update_view_set);
+      update_indexes=AccessMutableIndexes(update_image);
 
       if (thread_status != MagickFail)
         thread_status=(call_back)(mutable_data,immutable_data,
@@ -730,7 +680,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
                                   columns,exception);
       
       if (thread_status != MagickFail)
-        if (!SyncThreadViewPixels(update_view_set,exception))
+        if (!SyncImagePixelsEx(update_image,exception))
           thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -748,9 +698,6 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(update_view_set);
-  DestroyThreadViewSet(source_view_set);
 
   omp_set_num_threads(max_threads);
 
@@ -969,29 +916,11 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  ThreadViewSet
-    *source1_view_set,
-    *source2_view_set,
-    *update_view_set;
-
   int
     max_threads;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
-
-  source1_view_set=AllocateThreadViewSet((Image *) source1_image,exception);
-  source2_view_set=AllocateThreadViewSet((Image *) source2_image,exception);
-  update_view_set=AllocateThreadViewSet(update_image,exception);
-  if ((source1_view_set == (ThreadViewSet *) NULL) ||
-      (source2_view_set == (ThreadViewSet *) NULL) ||
-      (update_view_set == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(source1_view_set);
-      DestroyThreadViewSet(source2_view_set);
-      DestroyThreadViewSet(update_view_set);
-      return MagickFail;
-    }
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -1029,36 +958,36 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       /*
         First image (read only).
       */
-      source1_pixels=AcquireThreadViewPixels(source1_view_set, source_x, source_row,
-                                             columns, 1, exception);
+      source1_pixels=AcquireImagePixels(source1_image, source_x, source_row,
+                                        columns, 1, exception);
       if (!source1_pixels)
         thread_status=MagickFail;
-      source1_indexes=AcquireThreadViewIndexes(source1_view_set);
+      source1_indexes=AccessImmutableIndexes(source1_image);
 
       /*
         Second image (read only).
       */
-      source2_pixels=AcquireThreadViewPixels(source2_view_set, source_x, source_row,
-                                             columns, 1, exception);
+      source2_pixels=AcquireImagePixels(source2_image, source_x, source_row,
+                                        columns, 1, exception);
       if (!source2_pixels)
         thread_status=MagickFail;
-      source2_indexes=AcquireThreadViewIndexes(source2_view_set);
+      source2_indexes=AccessImmutableIndexes(source2_image);
 
       /*
         Third image (read/write).
       */
       if (set)
-        update_pixels=SetThreadViewPixels(update_view_set, update_x, update_row,
-                                          columns, 1, exception);
+        update_pixels=SetImagePixelsEx(update_image, update_x, update_row,
+                                       columns, 1, exception);
       else
-        update_pixels=GetThreadViewPixels(update_view_set, update_x, update_row,
-                                          columns, 1, exception);
+        update_pixels=GetImagePixelsEx(update_image, update_x, update_row,
+                                       columns, 1, exception);
       if (!update_pixels)
         {
           thread_status=MagickFail;
           CopyException(exception,&update_image->exception);
         }
-      update_indexes=GetThreadViewIndexes(update_view_set);
+      update_indexes=AccessMutableIndexes(update_image);
 
       if (thread_status != MagickFail)
         status=(call_back)(mutable_data,immutable_data,
@@ -1067,7 +996,7 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
                            update_image,update_pixels,update_indexes,
                            columns,exception);
       
-      if (!SyncThreadViewPixels(update_view_set,exception))
+      if (!SyncImagePixelsEx(update_image,exception))
         thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -1086,10 +1015,6 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  DestroyThreadViewSet(source1_view_set);
-  DestroyThreadViewSet(source2_view_set);
-  DestroyThreadViewSet(update_view_set);
 
   omp_set_num_threads(max_threads);
 

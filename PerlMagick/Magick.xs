@@ -3537,7 +3537,7 @@ Get(ref,...)
               char
                 name[MaxTextExtent];
 
-              IndexPacket
+              const IndexPacket
                 *indexes;
 
               long
@@ -3553,7 +3553,7 @@ Get(ref,...)
               (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               (void) AcquireImagePixels(image,(long) (x % image->columns),
                                         (long) (y % image->rows),1,1,&image->exception);
-              indexes=GetIndexes(image);
+              indexes=AccessImmutableIndexes(image);
               FormatString(name,"%u",*indexes);
               s=newSVpv(name,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);

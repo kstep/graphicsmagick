@@ -809,17 +809,17 @@ InterpolateViewColor(const ViewInfo *view,
       one_minus_alpha=1.0-alpha;
       one_minus_beta=1.0-beta;
       color->red=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].red+
-                         alpha*p[1].red)+beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
+        (one_minus_beta*(one_minus_alpha*p[0].red+alpha*p[1].red)+
+         beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
       color->green=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].green+
-                         alpha*p[1].green)+beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
+        (one_minus_beta*(one_minus_alpha*p[0].green+alpha*p[1].green)+
+         beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
       color->blue=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].blue+
-                         alpha*p[1].blue)+beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
+        (one_minus_beta*(one_minus_alpha*p[0].blue+alpha*p[1].blue)+
+         beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
       color->opacity=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].opacity+
-                         alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
+        (one_minus_beta*(one_minus_alpha*p[0].opacity+alpha*p[1].opacity)+
+         beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
     }
 }
 MagickExport PixelPacket InterpolateColor(const Image *image,
@@ -830,8 +830,8 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  InterpolateViewColor(image->default_view,&color,x_offset,y_offset,
-                              exception);
+  InterpolateViewColor(AccessDefaultCacheView(image),&color,
+                       x_offset,y_offset,exception);
   return color;
 }
 

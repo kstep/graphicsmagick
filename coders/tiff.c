@@ -1102,7 +1102,7 @@ static void AssociateAlphaRegion(Image *image)
     number_pixels;
 
   number_pixels=(long) GetPixelCacheArea(image);
-  q=GetPixels(image);
+  q=AccessMutablePixels(image);
 
   for (x = number_pixels; x > 0; --x)
     {
@@ -1137,7 +1137,7 @@ static void DisassociateAlphaRegion(Image *image)
     number_pixels;
 
   number_pixels=(long) GetPixelCacheArea(image);
-  q=GetPixels(image);
+  q=AccessMutablePixels(image);
 
   for (x = number_pixels; x > 0; --x)
     {

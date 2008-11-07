@@ -435,7 +435,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             index=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
@@ -714,10 +714,10 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 
     if (image->storage_class == PseudoClass)
       {
-        register IndexPacket
+        register const IndexPacket
           *indexes;
 
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         for (x=(long) image->columns; x > 0; x--)
           *q++=(unsigned char) *indexes++;
       }

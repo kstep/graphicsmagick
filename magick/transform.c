@@ -40,7 +40,6 @@
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/resize.h"
 #include "magick/transform.h"
@@ -83,10 +82,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
   Image
     *chop_image;
-
-  ThreadViewSet
-    *chop_views,
-    *image_views;
 
   unsigned long
     row_count=0;
@@ -138,20 +133,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     return((Image *) NULL);
 
   /*
-    Allocate views.
-  */
-  image_views=AllocateThreadViewSet((Image *) image,exception);
-  chop_views=AllocateThreadViewSet(chop_image,exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (chop_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(chop_views);
-      DestroyImage(chop_image);
-      return (Image *) NULL;
-    }
-
-  /*
     Extract chop image.
   */
 #if defined(HAVE_OPENMP)
@@ -181,15 +162,15 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(image_views,0,y,image->columns,1,exception);
-      q=SetThreadViewPixels(chop_views,0,y,chop_image->columns,1,exception);
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      q=SetImagePixelsEx(chop_image,0,y,chop_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
-          indexes=AcquireThreadViewIndexes(image_views);
-          chop_indexes=GetThreadViewIndexes(chop_views);
+          indexes=AccessImmutableIndexes(image);
+          chop_indexes=AccessMutableIndexes(chop_image);
           for (x=0; x < (long) image->columns; x++)
             {
               if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
@@ -202,7 +183,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
                 }
               p++;
             }
-          if (!SyncThreadViewPixels(chop_views,exception))
+          if (!SyncImagePixelsEx(chop_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -249,15 +230,15 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(image_views,0,clone_info.y+clone_info.height+y,image->columns,1,exception);
-      q=SetThreadViewPixels(chop_views,0,clone_info.y+y,chop_image->columns,1,exception);
+      p=AcquireImagePixels(image,0,clone_info.y+clone_info.height+y,image->columns,1,exception);
+      q=SetImagePixelsEx(chop_image,0,clone_info.y+y,chop_image->columns,1,exception);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
-          indexes=AcquireThreadViewIndexes(image_views);
-          chop_indexes=GetThreadViewIndexes(chop_views);
+          indexes=AccessImmutableIndexes(image);
+          chop_indexes=AccessMutableIndexes(chop_image);
           for (x=0; x < (long) image->columns; x++)
             {
               if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
@@ -270,7 +251,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
                 }
               p++;
             }
-          if (!SyncThreadViewPixels(chop_views,exception))
+          if (!SyncImagePixelsEx(chop_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -287,8 +268,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(chop_views);
   if (row_count < chop_image->rows)
     {
       DestroyImage(chop_image);
@@ -437,10 +416,6 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   Image
     *crop_image;
 
-  ThreadViewSet
-    *crop_views,
-    *image_views;
-
   unsigned long
     row_count=0;
 
@@ -520,19 +495,6 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   if (crop_image == (Image *) NULL)
     return((Image *) NULL);
   /*
-    Allocate views.
-  */
-  image_views=AllocateThreadViewSet((Image *) image,exception);
-  crop_views=AllocateThreadViewSet(crop_image,exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (crop_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(crop_views);
-      DestroyImage(crop_image);
-      return (Image *) NULL;
-    }
-  /*
     Extract crop image.
   */
   crop_image->page=page;
@@ -562,21 +524,21 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(image_views,page.x,page.y+y,crop_image->columns,1,exception);
-      q=SetThreadViewPixels(crop_views,0,y,crop_image->columns,1,exception);
+      p=AcquireImagePixels(image,page.x,page.y+y,crop_image->columns,1,exception);
+      q=SetImagePixelsEx(crop_image,0,y,crop_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
           (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
-          indexes=AcquireThreadViewIndexes(image_views);
-          crop_indexes=GetThreadViewIndexes(crop_views);
+          indexes=AccessImmutableIndexes(image);
+          crop_indexes=AccessMutableIndexes(crop_image);
           if ((indexes != (const IndexPacket *) NULL) &&
               (crop_indexes != (IndexPacket *) NULL))
             (void) memcpy(crop_indexes,indexes,crop_image->columns*
                           sizeof(IndexPacket));
-          if (!SyncThreadViewPixels(crop_views,exception))
+          if (!SyncImagePixelsEx(crop_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -596,8 +558,6 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(crop_views);
   if (row_count < crop_image->rows)
     {
       DestroyImage(crop_image);
@@ -889,10 +849,6 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   Image
     *flip_image;
 
-  ThreadViewSet
-    *flip_views,
-    *image_views;
-
   unsigned long
     row_count=0;
 
@@ -912,19 +868,6 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   flip_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
-  /*
-    Allocate views.
-  */
-  image_views=AllocateThreadViewSet((Image *) image,exception);
-  flip_views=AllocateThreadViewSet(flip_image,exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (flip_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(flip_views);
-      DestroyImage(flip_image);
-      return (Image *) NULL;
-    }
   /*
     Flip each row.
   */
@@ -952,21 +895,21 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(image_views,0,y,image->columns,1,exception);
-      q=SetThreadViewPixels(flip_views,0,(long) (flip_image->rows-y-1),
-                            flip_image->columns,1,exception);
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      q=SetImagePixelsEx(flip_image,0,(long) (flip_image->rows-y-1),
+                         flip_image->columns,1,exception);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
           (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
-          indexes=AcquireThreadViewIndexes(image_views);
-          flip_indexes=GetThreadViewIndexes(flip_views);
+          indexes=AccessImmutableIndexes(image);
+          flip_indexes=AccessMutableIndexes(flip_image);
           if ((indexes != (IndexPacket *) NULL) &&
               (flip_indexes != (IndexPacket *) NULL))
             (void) memcpy(flip_indexes,indexes,image->columns*sizeof(IndexPacket));
-          if (!SyncThreadViewPixels(flip_views,exception))
+          if (!SyncImagePixelsEx(flip_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -983,8 +926,6 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(flip_views);
   if (row_count < flip_image->rows)
     {
       DestroyImage(flip_image);
@@ -1027,10 +968,6 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   Image
     *flop_image;
 
-  ThreadViewSet
-    *flop_views,
-    *image_views;
-
   unsigned long
     row_count=0;
 
@@ -1050,19 +987,6 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   flop_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (flop_image == (Image *) NULL)
     return((Image *) NULL);
-  /*
-    Allocate views.
-  */
-  image_views=AllocateThreadViewSet((Image *) image,exception);
-  flop_views=AllocateThreadViewSet(flop_image,exception);
-  if ((image_views == (ThreadViewSet *) NULL) ||
-      (flop_views == (ThreadViewSet *) NULL))
-    {
-      DestroyThreadViewSet(image_views);
-      DestroyThreadViewSet(flop_views);
-      DestroyImage(flop_image);
-      return (Image *) NULL;
-    }
   /*
     Flop each row.
   */
@@ -1093,15 +1017,15 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       if (thread_status == MagickFail)
         continue;
 
-      p=AcquireThreadViewPixels(image_views,0,y,image->columns,1,exception);
-      q=SetThreadViewPixels(flop_views,0,y,flop_image->columns,1,exception);
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      q=SetImagePixelsEx(flop_image,0,y,flop_image->columns,1,exception);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
         {
-          indexes=AcquireThreadViewIndexes(image_views);
-          flop_indexes=GetThreadViewIndexes(flop_views);
+          indexes=AccessImmutableIndexes(image);
+          flop_indexes=AccessMutableIndexes(flop_image);
           q+=flop_image->columns;
           for (x=0; x < (long) flop_image->columns; x++)
             {
@@ -1112,7 +1036,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
               *q=(*p);
               p++;
             }
-          if (!SyncThreadViewPixels(flop_views,exception))
+          if (!SyncImagePixelsEx(flop_image,exception))
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
@@ -1129,8 +1053,6 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_views);
-  DestroyThreadViewSet(flop_views);
   if (row_count < flop_image->rows)
     {
       DestroyImage(flop_image);

@@ -606,7 +606,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       q = SetImagePixels(image, 0, y, image->columns, 1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       if(bits_per_pixel == 16)
         {
           if (image->columns > 2*bytes_per_row)
@@ -925,7 +925,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           for(y = 0; y < (long) image->rows; y++)
             {
               p = GetImagePixels(image, 0, y, image->columns, 1);
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for(x = 0; x < (long) image->columns; x++)
                 indexes[x] = FindColor(&image->colormap[indexes[x]]);
             }
@@ -947,7 +947,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       if(bits_per_pixel == 16)
         {
           for (x=0; x < (int) image->columns; x++)

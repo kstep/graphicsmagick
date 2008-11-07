@@ -595,7 +595,7 @@ MagickExport MagickPassFail HuffmanDecodeImage(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=(unsigned int) (*p++);
@@ -694,7 +694,7 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
   Image
     *huffman_image;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -774,7 +774,7 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(huffman_image);
+    indexes=AccessImmutableIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)
     {
       *q=(unsigned char) (indexes[x] == polarity ? !polarity : polarity);

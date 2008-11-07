@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2008-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c: Incorporate OMP thread views into the
+        pixel cache so usage is less invasive.  Update OMP-enhanced source
+        modules to suit.<BR>
+        (GetImagePixelsEx): New function similar to GetImagePixels()
+        except that it reports exceptions to a user-provided structure.
+        (SetImagePixelsEx): New function similar to SetImagePixels()
+        except that it reports exceptions to a user-provided structure.
+        (SyncImagePixelsEx): New function similar to SyncImagePixels()
+        except that it reports exceptions to a user-provided structure.
+        (AccessImmutableIndexes): New function to access read-only
+        colormap indexes.<BR>
+        (AccessMutableIndexes): New function to access writeable colormap
+        indexes.<BR>
+        (AccessMutablePixels): New function to access writeable pixels.
+        (AccessDefaultCacheView): New function to access the default cache
+        view.
+
+</UL>
+<p>
 2008-11-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

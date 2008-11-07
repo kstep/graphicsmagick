@@ -46,7 +46,6 @@
 #include "magick/color.h"
 #include "magick/decorate.h"
 #include "magick/monitor.h"
-#include "magick/omp_thread_view.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
 #include "magick/shear.h"
@@ -348,10 +347,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 0 degrees.
         */
-        ThreadViewSet
-          *image_view,
-          *rotate_image_view;
-
         long
           y;
 
@@ -359,69 +354,61 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           row_count=0;
 
         (void) strlcpy(message,"[%s] Rotate image 0 degrees...",sizeof(message));
-        image_view=AllocateThreadViewSet((Image *) image,exception);
-        rotate_image_view=AllocateThreadViewSet(rotate_image,exception);
-        if ((image_view != (ThreadViewSet *) NULL) &&
-            (rotate_image_view != (ThreadViewSet *) NULL))
-          {
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
-            for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
+          {
+            register const PixelPacket
+              *p;
+            
+            register PixelPacket
+              *q;
+            
+            register const IndexPacket
+              *indexes;
+            
+            IndexPacket
+              *rotate_indexes;
+
+            MagickPassFail
+              thread_status;
+
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
+
+            p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+            q=SetImagePixelsEx(rotate_image,0,y,rotate_image->columns,1,exception);
+            if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              thread_status=MagickFail;
+            if (thread_status != MagickFail)
               {
-                register const PixelPacket
-                  *p;
-            
-                register PixelPacket
-                  *q;
-            
-                register const IndexPacket
-                  *indexes;
-            
-                IndexPacket
-                  *rotate_indexes;
+                (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+                indexes=AccessImmutableIndexes(image);
+                rotate_indexes=AccessMutableIndexes(rotate_image);
+                if ((indexes != (IndexPacket *) NULL) &&
+                    (rotate_indexes != (IndexPacket *) NULL))
+                  (void) memcpy(rotate_indexes,indexes,image->columns*
+                                sizeof(IndexPacket));
 
-                MagickPassFail
-                  thread_status;
-
-                thread_status=status;
-                if (thread_status == MagickFail)
-                  continue;
-
-                p=AcquireThreadViewPixels(image_view,0,y,image->columns,1,exception);
-                q=SetThreadViewPixels(rotate_image_view,0,y,rotate_image->columns,1,exception);
-                if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+                if (!SyncImagePixelsEx(rotate_image,exception))
                   thread_status=MagickFail;
-                if (thread_status != MagickFail)
-                  {
-                    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-                    indexes=AcquireThreadViewIndexes(image_view);
-                    rotate_indexes=GetThreadViewIndexes(rotate_image_view);
-                    if ((indexes != (IndexPacket *) NULL) &&
-                        (rotate_indexes != (IndexPacket *) NULL))
-                      (void) memcpy(rotate_indexes,indexes,image->columns*
-                                    sizeof(IndexPacket));
-
-                    if (!SyncThreadViewPixels(rotate_image_view,exception))
-                      thread_status=MagickFail;
-                  }
+              }
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
-                {
-                  row_count++;
-                  if (QuantumTick(row_count,image->rows))
-                    if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                                message,image->filename))
-                      thread_status=MagickFail;
+            {
+              row_count++;
+              if (QuantumTick(row_count,image->rows))
+                if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                            message,image->filename))
+                  thread_status=MagickFail;
                   
-                  if (thread_status == MagickFail)
-                    status=MagickFail;
-                }
-              }
+              if (thread_status == MagickFail)
+                status=MagickFail;
+            }
           }
-        DestroyThreadViewSet(image_view);
-        DestroyThreadViewSet(rotate_image_view);
         break;
       }
     case 1:
@@ -529,10 +516,10 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     /*
                       Indexes
                     */
-                    indexes=GetIndexes(image);
+                    indexes=AccessImmutableIndexes(image);
                     if (indexes != (IndexPacket *) NULL)
                       {
-                        rotate_indexes=GetIndexes(rotate_image);
+                        rotate_indexes=AccessMutableIndexes(rotate_image);
                         if (rotate_indexes != (IndexPacket *) NULL)
                           {
                             register IndexPacket
@@ -578,10 +565,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 180 degrees.
         */
-        ThreadViewSet
-          *image_view,
-          *rotate_image_view;
-
         long
           y;
 
@@ -589,74 +572,66 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           row_count=0;
 
         (void) strlcpy(message,"[%s] Rotate image 180 degrees...",sizeof(message));
-        image_view=AllocateThreadViewSet((Image *) image,exception);
-        rotate_image_view=AllocateThreadViewSet(rotate_image,exception);
-        if ((image_view != (ThreadViewSet *) NULL) &&
-            (rotate_image_view != (ThreadViewSet *) NULL))
-          {
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
-            for (y=0; y < (long) image->rows; y++)
-              {
-                register const PixelPacket
-                  *p;
+        for (y=0; y < (long) image->rows; y++)
+          {
+            register const PixelPacket
+              *p;
 
-                register PixelPacket
-                  *q;
+            register PixelPacket
+              *q;
 
-                register const IndexPacket
-                  *indexes;
+            register const IndexPacket
+              *indexes;
         
-                IndexPacket
-                  *rotate_indexes;
+            IndexPacket
+              *rotate_indexes;
 
-                register long
-                  x;
+            register long
+              x;
 
-                MagickPassFail
-                  thread_status;
+            MagickPassFail
+              thread_status;
 
-                thread_status=status;
-                if (thread_status == MagickFail)
-                  continue;
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
 
-                p=AcquireThreadViewPixels(image_view,0,y,image->columns,1,exception);
-                q=SetThreadViewPixels(rotate_image_view,0,(long) (image->rows-y-1),
-                                      image->columns,1,exception);
-                if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+            p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+            q=SetImagePixelsEx(rotate_image,0,(long) (image->rows-y-1),
+                               image->columns,1,exception);
+            if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              thread_status=MagickFail;
+            if (thread_status != MagickFail)
+              {
+                q+=image->columns;
+                indexes=AccessImmutableIndexes(image);
+                rotate_indexes=AccessMutableIndexes(rotate_image);
+                if ((indexes != (IndexPacket *) NULL) &&
+                    (rotate_indexes != (IndexPacket *) NULL))
+                  for (x=0; x < (long) image->columns; x++)
+                    rotate_indexes[image->columns-x-1]=indexes[x];
+                for (x=0; x < (long) image->columns; x++)
+                  *--q=(*p++);
+                if (!SyncImagePixelsEx(rotate_image,exception))
                   thread_status=MagickFail;
-                if (thread_status != MagickFail)
-                  {
-                    q+=image->columns;
-                    indexes=AcquireThreadViewIndexes(image_view);
-                    rotate_indexes=GetThreadViewIndexes(rotate_image_view);
-                    if ((indexes != (IndexPacket *) NULL) &&
-                        (rotate_indexes != (IndexPacket *) NULL))
-                      for (x=0; x < (long) image->columns; x++)
-                        rotate_indexes[image->columns-x-1]=indexes[x];
-                    for (x=0; x < (long) image->columns; x++)
-                      *--q=(*p++);
-                    if (!SyncThreadViewPixels(rotate_image_view,exception))
-                      thread_status=MagickFail;
-                  }
+              }
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
 #endif
-                {
-                  row_count++;
-                  if (QuantumTick(row_count,image->rows))
-                    if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                                message,image->filename))
-                      thread_status=MagickFail;
+            {
+              row_count++;
+              if (QuantumTick(row_count,image->rows))
+                if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                            message,image->filename))
+                  thread_status=MagickFail;
                   
-                  if (thread_status == MagickFail)
-                    status=MagickFail;
-                }
-              }
+              if (thread_status == MagickFail)
+                status=MagickFail;
+            }
           }
-        DestroyThreadViewSet(image_view);
-        DestroyThreadViewSet(rotate_image_view);
         page.x=(long) (page.width-rotate_image->columns-page.x);
         page.y=(long) (page.height-rotate_image->rows-page.y);
         break;
@@ -768,10 +743,10 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     /*
                       Indexes
                     */
-                    indexes=GetIndexes(image);
+                    indexes=AccessImmutableIndexes(image);
                     if (indexes != (IndexPacket *) NULL)
                       {
-                        rotate_indexes=GetIndexes(rotate_image);
+                        rotate_indexes=AccessMutableIndexes(rotate_image);
                         if (rotate_indexes != (IndexPacket *) NULL)
                           {
                             register IndexPacket
@@ -859,9 +834,6 @@ static void XShearImage(Image *image,const double degrees,
 {
 #define XShearImageText  "[%s] X Shear image...  "
 
-  ThreadViewSet
-    *image_view;
-
   long
     y;
 
@@ -876,10 +848,6 @@ static void XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
-
-  image_view=AllocateThreadViewSet(image,&image->exception);
-  if (image_view == (ThreadViewSet *) NULL)
-    return;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -942,7 +910,7 @@ static void XShearImage(Image *image,const double degrees,
                 */
                 if (step > x_offset)
                   break;
-                p=GetThreadViewPixels(image_view,0,y+y_offset,image->columns,1,&image->exception);
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -961,7 +929,7 @@ static void XShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels right-to-left.
                 */
-                p=GetThreadViewPixels(image_view,0,y+y_offset,image->columns,1,&image->exception);
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -976,8 +944,8 @@ static void XShearImage(Image *image,const double degrees,
                 break;
               }
             }
-          if (!SyncThreadViewPixels(image_view,&image->exception))
-              thread_status=MagickFail;
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
@@ -1009,7 +977,7 @@ static void XShearImage(Image *image,const double degrees,
             */
             if (step > x_offset)
               break;
-            p=GetThreadViewPixels(image_view,0,y+y_offset,image->columns,1,&image->exception);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1040,7 +1008,7 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels right-to-left.
             */
-            p=GetThreadViewPixels(image_view,0,y+y_offset,image->columns,1,&image->exception);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1064,7 +1032,7 @@ static void XShearImage(Image *image,const double degrees,
             break;
           }
         }
-      if (!SyncThreadViewPixels(image_view,&image->exception))
+      if (!SyncImagePixelsEx(image,&image->exception))
         thread_status=MagickFail;
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
@@ -1080,7 +1048,6 @@ static void XShearImage(Image *image,const double degrees,
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_view);
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
 }
@@ -1125,9 +1092,6 @@ static void YShearImage(Image *image,const double degrees,
 {
 #define YShearImageText  "[%s] Y Shear image..."
 
-  ThreadViewSet
-    *image_view;
-
   long
     y;
 
@@ -1142,10 +1106,6 @@ static void YShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
-
-  image_view=AllocateThreadViewSet((Image *) image,&image->exception);
-  if (image_view == (ThreadViewSet *) NULL)
-    return;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
@@ -1208,7 +1168,7 @@ static void YShearImage(Image *image,const double degrees,
                 */
                 if (step > y_offset)
                   break;
-                p=GetThreadViewPixels(image_view,y+x_offset,0,1,image->rows,&image->exception);
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -1227,7 +1187,7 @@ static void YShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels bottom-to-top.
                 */
-                p=GetThreadViewPixels(image_view,y+x_offset,0,1,image->rows,&image->exception);
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -1242,8 +1202,8 @@ static void YShearImage(Image *image,const double degrees,
                 break;
               }
             }
-          if (!SyncThreadViewPixels(image_view,&image->exception))
-              thread_status=MagickFail;
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp critical
@@ -1275,7 +1235,7 @@ static void YShearImage(Image *image,const double degrees,
             */
             if (step > y_offset)
               break;
-            p=GetThreadViewPixels(image_view,y+x_offset,0,1,image->rows,&image->exception);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1306,7 +1266,7 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels bottom-to-top.
             */
-            p=GetThreadViewPixels(image_view,y+x_offset,0,1,image->rows,&image->exception);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1330,7 +1290,7 @@ static void YShearImage(Image *image,const double degrees,
             break;
           }
         }
-      if (!SyncThreadViewPixels(image_view,&image->exception))
+      if (!SyncImagePixelsEx(image,&image->exception))
         thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -1347,7 +1307,6 @@ static void YShearImage(Image *image,const double degrees,
           status=MagickFail;
       }
     }
-  DestroyThreadViewSet(image_view);
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
 }

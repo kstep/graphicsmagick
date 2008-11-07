@@ -3604,7 +3604,7 @@ const Magick::PixelPacket* Magick::Image::getConstPixels
 // Obtain read-only pixel indexes (valid for PseudoClass images)
 const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
 {
-  const Magick::IndexPacket* result = GetIndexes( constImage() );
+  const Magick::IndexPacket* result = AccessImmutableIndexes( constImage() );
 
   if( !result )
     throwImageException();
@@ -3613,9 +3613,9 @@ const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
 }
 
 // Obtain image pixel indexes (valid for PseudoClass images)
-Magick::IndexPacket* Magick::Image::getIndexes ( void ) const
+Magick::IndexPacket* Magick::Image::getIndexes ( void )
 {
-  Magick::IndexPacket* result = GetIndexes( constImage() );
+  Magick::IndexPacket* result = AccessMutableIndexes( image() );
 
   if( !result )
     throwImageException();

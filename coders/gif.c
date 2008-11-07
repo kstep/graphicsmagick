@@ -193,7 +193,7 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; )
     {
       if (top_stack == pixel_stack)
@@ -469,7 +469,7 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -533,7 +533,7 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
     p=AcquireImagePixels(image,0,offset,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     if (y == 0)
       waiting_code=(*indexes);
     for (x=(y == 0) ? 1 : 0; x < (long) image->columns; x++)
@@ -1194,9 +1194,6 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
   RectangleInfo
     page;
 
-  register IndexPacket
-    *indexes;
-
   register const PixelPacket
     *p;
 
@@ -1316,11 +1313,14 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
             image->colormap[opacity]=image->background_color;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,
+              register IndexPacket
+                *indexes;
+
+              p=GetImagePixelsEx(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity == TransparentOpacity)
@@ -1340,10 +1340,13 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (long) image->rows; y++)
           {
+            register const IndexPacket
+              *indexes;
+
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               if (p->opacity == TransparentOpacity)

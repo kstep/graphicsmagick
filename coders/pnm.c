@@ -388,7 +388,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < image->columns; x++)
           {
             index=!PNMInteger(image,2);
@@ -434,7 +434,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < image->columns; x++)
           {
             intensity=PNMInteger(image,10);
@@ -883,7 +883,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register unsigned long
@@ -1030,7 +1030,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessImmutableIndexes(image);
           for (x=0; x < image->columns; x++)
           {
             FormatString(buffer,"%u ",indexes[x] == polarity ? 0x00 : 0x01);

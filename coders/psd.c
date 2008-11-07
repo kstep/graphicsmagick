@@ -121,7 +121,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
                                (long) (x/image->columns),1,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               switch (channel)
                 {
                 case -1:
@@ -184,7 +184,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
                            (long) (x/image->columns),1,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           switch (channel)
             {
             case -1:
@@ -1156,7 +1156,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                    layer_info[i].image->columns,1);
                   if (q == (PixelPacket *) NULL)
                     break;
-                  indexes=GetIndexes(layer_info[i].image);
+                  indexes=AccessMutableIndexes(layer_info[i].image);
                   for (x=0; x < (long) layer_info[i].image->columns; x++)
                     {
                       if (packet_size == 1)
@@ -1227,7 +1227,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                    layer_info[i].image->columns,1);
                   if (q == (PixelPacket *) NULL)
                     break;
-                  indexes=GetIndexes(layer_info[i].image);
+                  indexes=AccessMutableIndexes(layer_info[i].image);
                   for (x=0; x < (long) layer_info[i].image->columns; x++)
                     {
                       q->opacity=(Quantum) ((unsigned long)
@@ -1361,7 +1361,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < (long) image->columns; x++)
                 {
                   if (packet_size == 1)

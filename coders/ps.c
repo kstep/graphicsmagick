@@ -882,7 +882,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1063,7 +1063,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 &preview_image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(preview_image);
+              indexes=AccessImmutableIndexes(preview_image);
               bit=0;
               byte=0;
               for (x=0; x < (long) preview_image->columns; x++)
@@ -1268,7 +1268,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessImmutableIndexes(image);
               bit=0;
               byte=0;
               for (x=0; x < (long) image->columns; x++)
@@ -1472,7 +1472,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=AccessImmutableIndexes(image);
                 index=(*indexes);
                 length=255;
                 for (x=0; x < (long) image->columns; x++)
@@ -1530,7 +1530,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=AccessImmutableIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
                   bp=AppendHexVal(bp,indexes[x]);

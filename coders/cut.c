@@ -78,7 +78,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
@@ -111,7 +111,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
             index=(IndexPacket) ((*p >> 6U) & 0x3U);
@@ -169,7 +169,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
             index=(IndexPacket) ((*p >> 4U) & 0xfU);
@@ -201,7 +201,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL) break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
 
         for (x=0; x < (long) image->columns; x++)
           {

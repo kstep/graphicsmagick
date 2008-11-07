@@ -362,7 +362,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             CopyException(exception,&image->exception);
             break;
           }
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           (void) strncpy(key,p,width);
@@ -575,9 +575,6 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -676,10 +673,13 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
       MagickReallocMemory(PixelPacket *,picon->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) picon->rows; y++)
       {
+        register IndexPacket
+          *indexes;
+
         q=GetImagePixels(picon,0,y,picon->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(picon);
+        indexes=AccessMutableIndexes(picon);
         for (x=0; x < (long) picon->columns; x++)
         {
           if (q->opacity == TransparentOpacity)
@@ -740,10 +740,13 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (long) picon->rows; y++)
   {
+    register const IndexPacket
+      *indexes;
+
     p=AcquireImagePixels(picon,0,y,picon->columns,1,&picon->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(picon);
+    indexes=AccessImmutableIndexes(picon);
     (void) WriteBlobString(image,"\"");
     for (x=0; x < (long) picon->columns; x++)
     {
@@ -825,9 +828,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -897,10 +897,13 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       MagickReallocMemory(PixelPacket *,image->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) image->rows; y++)
       {
+        register IndexPacket
+          *indexes;
+
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           if (q->opacity == TransparentOpacity)
@@ -961,10 +964,13 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (long) image->rows; y++)
   {
+    register const IndexPacket
+      *indexes;
+
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     (void) WriteBlobString(image,"\"");
     for (x=0; x < (long) image->columns; x++)
     {

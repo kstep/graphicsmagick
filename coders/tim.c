@@ -233,7 +233,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
@@ -269,7 +269,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           p=tim_pixels+y*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);

@@ -269,7 +269,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < ((long) image->columns-7); x+=8)
           {
             byte=ReadBlobByte(image);
@@ -302,7 +302,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
             byte=ReadBlobByte(image);
@@ -334,7 +334,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
@@ -360,7 +360,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);

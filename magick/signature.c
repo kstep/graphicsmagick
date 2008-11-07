@@ -173,7 +173,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   char
     signature[MaxTextExtent];
 
-  IndexPacket
+  const IndexPacket
     *indexes;
 
   long
@@ -215,7 +215,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {

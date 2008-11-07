@@ -163,9 +163,6 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -236,10 +233,13 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           colors++;
           for (y=0; y < (long) image->rows; y++)
           {
-            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            register IndexPacket
+              *indexes;
+
+            p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessMutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               if (matte_image[i])
@@ -304,10 +304,13 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (long) image->rows; y++)
   {
+    register const IndexPacket
+      *indexes;
+
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     (void) WriteBlobString(image,"    \"");
     for (x=0; x < (long) image->columns; x++)
     {

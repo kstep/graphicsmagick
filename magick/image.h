@@ -874,8 +874,8 @@ typedef struct _Image
   _CacheInfoPtr_
     cache;              /* Private, image pixel cache */
 
-  ViewInfo
-    default_view;      /* Private, default cache view */
+  _ThreadViewSetPtr_
+    default_views;      /* Private, default cache views */
 
   _ImageAttributePtr_
     attributes;         /* Private, Image attribute list */

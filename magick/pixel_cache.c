@@ -200,6 +200,17 @@ typedef struct _View
   unsigned long signature;
 } View;
 
+/*
+  A vector of thread views.
+*/
+typedef struct _ThreadViewSet
+{ 
+  ViewInfo
+  *views;
+  
+  unsigned int
+  nviews;
+} ThreadViewSet;
 
 static const PixelPacket
   *AcquireCacheNexus(const Image *image,const long x,const long y,
@@ -329,6 +340,102 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
     return (ssize_t)-1;
   return (ssize_t) total_count;
 }
+
+MagickExport void
+DestroyThreadViewSet(ThreadViewSet *view_set)
+{
+  unsigned int
+    i;
+  
+  if (view_set != (ThreadViewSet *) NULL)
+    {
+      if (view_set->views != (ViewInfo *) NULL)
+        {
+          for (i=0; i < view_set->nviews; i++)
+            {
+              if (view_set->views[i] != (ViewInfo *) NULL)
+                {
+                  CloseCacheView(view_set->views[i]);
+                  view_set->views[i]=(ViewInfo *) NULL;
+                }
+            }
+        }
+      view_set->nviews=0;
+      MagickFreeMemory(view_set->views);
+      MagickFreeMemory(view_set);
+    }
+}
+MagickExport ThreadViewSet *
+AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
+{
+  ThreadViewSet
+    *view_set;
+  
+  unsigned int
+    i;
+  
+  MagickPassFail
+    status=MagickPass;
+  
+  view_set=MagickAllocateMemory(ThreadViewSet *,sizeof(ThreadViewSet));
+  if (view_set == (ThreadViewSet *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                      UnableToAllocateCacheView);
+  /*
+    omp_get_max_threads() returns the # threads which will be used in team by default.
+    omp_get_num_threads() returns the # of threads in current team (1 in main thread).
+  */
+  view_set->nviews=omp_get_max_threads();
+  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
+  
+  view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
+  if (view_set->views == (ViewInfo *) NULL)
+    {
+      ThrowException(exception,CacheError,UnableToAllocateCacheView,
+                     image->filename);
+      status=MagickFail;
+    }
+
+  if (view_set->views != (ViewInfo *) NULL)
+    for (i=0; i < view_set->nviews; i++)
+      {
+        view_set->views[i]=OpenCacheView(image);
+        if (view_set->views[i] == (ViewInfo *) NULL)
+          {
+            ThrowException(exception,CacheError,UnableToAllocateCacheView,
+                           image->filename);
+            status=MagickFail;
+          }
+      }
+
+  if (status == MagickFail)
+    {
+      DestroyThreadViewSet(view_set);
+      view_set=(ThreadViewSet *) NULL;
+    }
+
+  return view_set;
+}
+
+/*
+  Obtain the view corresponding to the current thread from the thread
+  view set.  The compiler should normally automatically inline this
+  function when used in this module.  Since we don't trust that, we
+  also provide a static inlined version along with a macro to remap
+  code from this module to use the inline version.
+*/
+MagickExport ViewInfo
+*AccessDefaultCacheView(const Image *image)
+{
+  return image->default_views->views[omp_get_thread_num()];
+}
+static inline ViewInfo
+*AccessDefaultCacheViewInlined(const Image *image)
+{
+  return image->default_views->views[omp_get_thread_num()];
+}
+#define AccessDefaultCacheView(image) AccessDefaultCacheViewInlined(image)
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -426,6 +533,114 @@ AccessCacheViewPixels(const ViewInfo *view)
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
   return GetNexusPixels(view_info->nexus_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c c e s s I m m u t a b l e I n d e x e s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AccessImmutableIndexes() returns the colormap indexes associated with
+%  the last call to AcquireImagePixels(). NULL is returned if colormap
+%  indexes are not available.
+%
+%  The format of the AccessImmutableIndexes() method is:
+%
+%      const IndexPacket *AccessImmutableIndexes(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: The indexes associated with the last call to
+%               AcquireImagePixels().
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport const IndexPacket *
+AccessImmutableIndexes(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return GetCacheViewIndexes(AccessDefaultCacheView(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c c e s s M u t a b l e I n d e x e s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AccessMutableIndexes() returns the colormap indexes associated with
+%  the last call to SetImagePixels() or GetImagePixels(). NULL is returned
+%  if colormap indexes are not available.
+%
+%  The format of the AccessMutagleIndexes() method is:
+%
+%      IndexPacket *AccessMutableIndexes(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: The indexes associated with the last call to
+%               AcquireImagePixels().
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport IndexPacket *
+AccessMutableIndexes(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return GetCacheViewIndexes(AccessDefaultCacheView(image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c c e s s M u t a b l e P i x e l s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AccessMutablePixels() returns the pixels associated with the last call to
+%  SetImagePixels() or GetImagePixels(). This is useful in order to access
+%  an already selected region without passing the geometry of the region.
+%
+%  The format of the GetPixels() method is:
+%
+%      PixelPacket *AccessMutablePixels(Image image)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: The pixels associated with the last call to SetImagePixels()
+%              or GetImagePixels().
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport PixelPacket *
+AccessMutablePixels(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return AccessCacheViewPixels(AccessDefaultCacheView(image));
 }
 
 /*
@@ -791,7 +1006,8 @@ AcquireImagePixels(const Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return AcquireCacheViewPixels(image->default_view,x,y,columns,rows,exception);
+  return AcquireCacheViewPixels(AccessDefaultCacheView(image),
+                                x,y,columns,rows,exception);
 }
 
 /*
@@ -941,8 +1157,56 @@ AcquireOnePixel(const Image *image,const long x,const long y,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) AcquireOneCacheViewPixel(image->default_view,&pixel,x,y,exception);
+  (void) AcquireOneCacheViewPixel(AccessDefaultCacheView(image),
+                                  &pixel,x,y,exception);
   return pixel;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e O n e P i x e l B y R e f e r e n c e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireOnePixelByReference() returns a single pixel at the specified (x,y)
+%  location. The image background color is returned if an error occurs. This
+%  function is convenient but performance will be poor if it is used too
+%  often.
+%
+%  The format of the AcquireOnePixelByReference() method is:
+%
+%      MagickPassFail AcquireOnePixelByReference(const Image *image,
+%                                                PixelPacket *pixel,
+%                                                const long x,const long y,
+%                                                ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: AcquireOnePixel() returns a pixel at the specified (x,y)
+%      location.
+%
+%    o image: The image.
+%
+%    o pixel: A reference to the pixel to update.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport MagickPassFail
+AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
+                           const long x,const long y,
+                           ExceptionInfo *exception)
+{
+  return AcquireOneCacheViewPixel(AccessDefaultCacheView(image),
+                                  pixel,x,y,exception);
 }
 
 /*
@@ -1862,8 +2126,54 @@ GetImagePixels(Image *image,const long x,const long y,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return GetCacheViewPixels(image->default_view,x,y,columns,rows,
-                            &image->exception);
+  return GetCacheViewPixels(AccessDefaultCacheView(image),
+                            x,y,columns,rows,&image->exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e P i x e l s E x                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImagePixelsEx() obtains a pixel region for read/write access.  It is
+%  similar to GetImagePixels() except that it reports any error information
+%  to a user provided exception structure.
+%
+%  The format of the GetImagePixelsEx() method is:
+%
+%      PixelPacket *GetImagePixelsEx(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: GetImagePixelsEx() returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Any error details are reported here.
+%
+%
+*/
+MagickExport PixelPacket *
+GetImagePixelsEx(Image *image,const long x,const long y,
+                 const unsigned long columns,const unsigned long rows,
+                 ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return GetCacheViewPixels(AccessDefaultCacheView(image),
+                            x,y,columns,rows,exception);
 }
 
 /*
@@ -1938,7 +2248,7 @@ GetIndexes(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  return GetCacheViewIndexes(image->default_view);
+  return GetCacheViewIndexes(AccessDefaultCacheView(image));
 }
 
 /*
@@ -2086,8 +2396,8 @@ GetOnePixel(Image *image,const long x,const long y)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) AcquireOneCacheViewPixel(image->default_view,&pixel,x,y,
-                                  &image->exception);
+  (void) AcquireOneCacheViewPixel(AccessDefaultCacheView(image),
+                                  &pixel,x,y,&image->exception);
 
   return pixel;
 }
@@ -2125,7 +2435,7 @@ GetPixels(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return AccessCacheViewPixels(image->default_view);
+  return AccessCacheViewPixels(AccessDefaultCacheView(image));
 }
 
 /*
@@ -2157,7 +2467,7 @@ GetPixelCacheArea(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return GetCacheViewArea(image->default_view);
+  return GetCacheViewArea(AccessDefaultCacheView(image));
 }
 
 /*
@@ -3344,8 +3654,54 @@ SetImagePixels(Image *image,const long x,const long y,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return SetCacheViewPixels(image->default_view,x,y,columns,rows,
-                            &image->exception);
+  return SetCacheViewPixels(AccessDefaultCacheView(image),
+                            x,y,columns,rows,&image->exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e P i x e l s E x                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImagePixelsEx() initializes a pixel region for write-only access.
+%  It is similar to SetImagePixels() except that any exception information
+%  is written to a user provided exception structure.
+%
+%  The format of the SetImagePixelsEx() method is:
+%
+%      PixelPacket *SetImagePixelsEx(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: SetImagePixelsEx returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Any error details are reported here.
+%
+%
+*/
+MagickExport PixelPacket *
+SetImagePixelsEx(Image *image,const long x,const long y,
+                 const unsigned long columns,const unsigned long rows,
+                 ExceptionInfo *exception)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return SetCacheViewPixels(AccessDefaultCacheView(image),
+                            x,y,columns,rows,exception);
 }
 
 /*
@@ -3725,7 +4081,45 @@ SyncImagePixels(Image *image)
 {
   assert (image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  return SyncCacheViewPixels(image->default_view,&image->exception);
+  return SyncCacheViewPixels(AccessDefaultCacheView(image),
+                             &image->exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c I m a g e P i x e l s E x                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncImagePixelsEx() saves the image pixels to the in-memory or disk cache.
+%  The method returns MagickPass if the pixel region is synced, otherwise
+%  MagickFail.
+%
+%  The format of the SyncImagePixelsEx() method is:
+%
+%      MagickPassFail SyncImagePixelsEx(Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: SyncImagePixelsEx() returns MagickPass if the image pixels are
+%      transferred to the in-memory or disk cache otherwise MagickFail.
+%
+%    o image: The image.
+%
+%    o exception: Any error details are reported here.
+%
+*/
+MagickExport MagickPassFail
+SyncImagePixelsEx(Image *image,ExceptionInfo *exception)
+{
+  assert (image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return SyncCacheViewPixels(AccessDefaultCacheView(image),exception);
 }
 
 /*
