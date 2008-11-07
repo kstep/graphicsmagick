@@ -30,12 +30,13 @@
 
 <utils apps=all>
 <p>
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (<i>animate, composite, convert, display, identify,
-import, mogrify</i> and <i>montage</i>).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (<i>animate</i>, <i>compare</i>,
+<i>composite</i>, <i>convert</i>, <i>display</i>, <i>identify</i>,
+<i>import</i>, <i>mogrify</i> and <i>montage</i>).
 </p>
 </utils>
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <p>
 In this document, angle brackets ("<>") enclose variables and curly
 brackets ("{}") enclose optional parameters. For example,
@@ -120,7 +121,7 @@ option appears after all of the input images, all images are appended.</pp>
 
 <!-- ------------ -authenticate ------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <dopt>-authenticate <string></opt>
 
 <abs>decrypt image with this password</abs>
@@ -189,6 +190,29 @@ for details.</pp>
 The color is specified using the format described under the <s>-fill</s>
 option.</pp>
 
+
+</utils>
+
+
+
+
+<!-- ------------ -black-threshold -------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-black-threshold red[,green][,blue][,opacity]</opt>
+
+<abs>pixels below the threshold become black</abs>
+
+<pp>
+Use <s>-black-threshold</s> to set pixels with values below the specified
+threshold to minimum value (black). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</pp>
 
 </utils>
 
@@ -294,11 +318,12 @@ details.</pp>
 <abs>the type of channel</abs>
 <pp>
 Choose from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
-<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, or <s>Black</s>.</pp>
+<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, <s>Black</s>,
+or <s>Gray</s>.</pp>
 
 <pp>
 Use this option to extract a particular <i>channel</i> from the image.
-<s>Matte</s>,
+<s>Opacity</s>,
 for example, is useful for extracting the opacity values from an image.</pp>
 
 </utils>
@@ -468,7 +493,7 @@ affect the color reduction algorithm.</pp>
 
 <!-- ------------ -colorspace --------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <dopt>-colorspace <value></opt>
 
 <abs>the type of colorspace</abs>
@@ -603,6 +628,7 @@ composite operators are available:</pp>
      Add
      Subtract
      Difference
+     Divide
      Multiply
      Bumpmap
      Copy
@@ -610,6 +636,10 @@ composite operators are available:</pp>
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 </pre>
 
 <pp>
@@ -675,6 +705,12 @@ operators can be used to perform reversible transformations.
 useful for comparing two very similar images.
 </dd>
 
+<dt>Divide</dt>
+<dd>The result of <i>change-image</i> / <i>base-image</i>. This is useful
+for improving the readability of text on unevenly illuminated photos (by
+using a gaussian blurred copy of change-image as base-image).
+</dd>
+
 <dt>Multiply</dt>
 <dd>The result of <i>change-image</i> * <i>base-image</i>. This is useful for
 the creation of drop-shadows.
@@ -711,6 +747,35 @@ copied untouched.
 <dd>The resulting image is the opacity channel in <i>base-image</i> replaced
 with the opacity channel in <i>change-image</i>. The other channels are
 copied untouched.
+</dd>
+
+<dt>CopyCyan</dt>
+<dd>The resulting image is the cyan channel in <i>base-image</i> replaced
+with the cyan channel in <i>change-image</i>. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+</dd>
+
+<dt>CopyMagenta</dt>
+<dd>The resulting image is the magenta channel in <i>base-image</i>
+replaced with the magenta channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+
+<dt>CopyYellow</dt>
+<dd>The resulting image is the yellow channel in <i>base-image</i>
+replaced with the yellow channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+
+<dt>CopyBlack</dt>
+<dd>The resulting image is the black channel in <i>base-image</i>
+replaced with the black channel in <i>change-image</i>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
 </dd>
 </dl>
 
@@ -784,10 +849,10 @@ For a more pronounced effect you can repeat the option:</pp>
 <abs>convolve image with the specified convolution kernel</abs>
 
 <pp>
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.</pp>
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.</pp>
 
 </utils>
 
@@ -872,7 +937,7 @@ specified geometry extends beyond the dimensions of the input image.</pp>
 
 <!-- ------------ -debug -------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <opt>-debug <events></opt>
 
 <abs>enable debug printout</abs>
@@ -938,7 +1003,7 @@ option appears after all of the input images, all images are deconstructed.</pp>
 
 <!-- ------------ -define ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-define <key>{=<value>},...</opt>
 
 <abs>add coder/decoder specific options</abs>
@@ -1098,6 +1163,18 @@ will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
 </dd>
 
+<dt>tiff:rows-per-strip=<value></dt>
+<dd>Allows the user to specify the number of rows per TIFF strip. Ignored
+if using tiles or JPEG compression.
+</dd>
+
+<dt>tiff:strip-per-page=true</dt>
+<dd>Requests that the image is written in a single TIFF strip. This is
+normally the default when group3 or group4 compression is requested
+within reasonable limits. Requesting a single strip for large images may
+result in failure due to resource consumption in the writer or reader.
+</dd>
+
 <dt>tiff:tile</dt>
 <dd>Enable writing tiled TIFF (rather than stripped) using the default tile
 size. Tiled TIFF organizes the image as an array of smaller images
@@ -1128,7 +1205,8 @@ Enables tiled TIFF if it has not already been enabled.
 <dd>Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
-Enables tiled TIFF if it has not already been enabled.</dd>
+Enables tiled TIFF if it has not already been enabled.
+</dd>
 </dl>
 
 <pp>
@@ -1167,7 +1245,7 @@ minimum and maximum delay.</pp>
 
 <!-- ------------ -density ------------------------------------------ -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-density <width>x<height></opt>
 
 <abs>horizontal and vertical resolution in pixels of the image</abs>
@@ -1208,7 +1286,7 @@ use the <s>-resample</s> option.</pp>
 
 <!-- ------------ -depth -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-depth <value></opt>
 
 <abs>depth of the image</abs>
@@ -1276,7 +1354,7 @@ in both the horizontal and vertical directions.  However, if you specify
 
 <!-- ------------ -display ------------------------------------------ -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <dopt>-display <host:display[.screen]></opt>
 
 <abs>specifies the X server to contact</abs>
@@ -1622,7 +1700,7 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i></pp>
 
 <!-- ------------ -endian ------------------------------------------- -->
 
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=compare,composite,convert,display,import,mogrify,montage>
 <dopt>-endian <type></opt>
 
 <abs>specify endianness (MSB or LSB) of output image</abs>
@@ -1662,6 +1740,25 @@ Use <s>+endian</s> to revert to unspecified endianness.</pp>
 
 </utils>
 
+
+
+<!-- ------------ -file ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-file <filename></opt>
+
+<abs>write annotated difference image to file</abs>
+
+<pp>
+If <s>-file</s> is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the <s>reference</s> and <s>compare</s> images are modified from those in
+the <s>compare</s> image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+<s>-highlight-style</s>) or highlight color (see <s>-highlight-color</s>)
+before the changes are obvious.</pp>
+
+</utils>
 
 
 
@@ -1721,7 +1818,8 @@ See <s>-draw</s> for further details.</pp>
 <pp>
 Use this option to affect the resizing operation of an image (see
 <s>-geometry</s>).
-Choose from these filters:</pp>
+Choose from these filters (ordered by approximate increasing CPU
+time):</pp>
 
 <pre>
      Point
@@ -1811,9 +1909,9 @@ reflect the scanlines in the horizontal direction.</pp>
 <abs>use this font when annotating the image with text</abs>
 
 <pp>
-You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+You can tag a font to specify whether it is a PostScript, TrueType, or X11
 font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
-is PostScript, and <tt>x:fixed</tt> is OPTION1.</pp>
+is PostScript, and <tt>x:fixed</tt> is X11.</pp>
 
 </utils>
 
@@ -2282,13 +2380,46 @@ for this purpose.</pp>
 
 <!-- ------------ -help --------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <opt>-help</opt>
 
 <abs>print usage instructions</abs>
 
 </utils>
 
+
+
+<!-- ------------ -highlight-color ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-highlight-color <color></opt>
+
+<abs>pixel annotation color</abs>
+
+<pp>
+Specifies the color to use when annotating difference pixels.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -highlight-style ----------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-highlight-style <style></opt>
+
+<abs>pixel annotation style</abs>
+
+<pp>
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of <s>Assign</s>, <s>Threshold</s>,
+<s>Tint</s>, or <s>XOR</s>; where <s>Assign</s> replaces the pixel with
+the highlight color (see <s>-highlight-color</s>), <s>Threshold</s>
+replaces the pixel with black or white based on the difference in
+intensity, <s>Tint</s> alpha tints the pixel with the highlight color,
+and <s>XOR</s> does an XOR between the pixel and the highlight color.</pp>
+
+</utils>
 
 
 
@@ -2369,7 +2500,7 @@ The default intent is undefined.</pp>
 
 <!-- ------------ -interlace ---------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-interlace <type></opt>
 
 <abs>the type of interlacing scheme</abs>
@@ -2495,7 +2626,7 @@ interface works similar to Photoshop's "Image->Adjustments->Levels..."
 
 <!-- ------------ -limit -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-limit <type> <value></opt>
 
 <abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
@@ -2507,7 +2638,7 @@ total disk space consumed; <s>File</s>, maximum number of file
 descriptors allowed to be open at once; <s>Map</s>, maximum total number
 of file bytes which may be memory mapped; <s>Memory</s>, maximum total
 number of bytes of heap memory used for image storage; and <s>Pixels</s>,
-maximum absolute image size (per image).</p>
+maximum absolute image size (per image).</pp>
 
 <pp>
 These resource limits are used to decide if (for a given image) the
@@ -2517,7 +2648,7 @@ The number of total pixels in one image may also be limited in order to
 force the reading, or creation of images larger than the limit (in
 pixels) to intentionally fail. The disk limit establishes an overall
 limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.</p>
+limit has been reached, no more images may be read.</pp>
 
 <pp>
 The value argument is an absolute value, but may have standard binary
@@ -2526,7 +2657,7 @@ scaling to the value (based on a multiplier of 1024). Any additional
 characters are ignored. For example, <tt>'-limit Pixels 10MP'</tt> limits
 the maximum image size to 10 megapixels and <tt>'-limit memory 32MB
 -limit map 64MB'</tt> limits memory and memory mapped files to 32
-megabytes and 64 megabytes respectively.</p>
+megabytes and 64 megabytes respectively.</pp>
 
 <pp>
 Resource limits may also be set using environment variables. The
@@ -2578,7 +2709,7 @@ This option lists information about the GraphicsMagick configuration.</pp>
 
 <!-- ------------ -log  --------------------------------------------- -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-log <string></opt>
 
 <abs>Specify format for debug log</abs>
@@ -2639,10 +2770,28 @@ times.</pp>
 
 <!-- ------------ -magnify ------------------------------------------ -->
 
+<utils apps=convert,mogrify>
+<opt>-magnify</opt>
+
+<abs>magnify the image</abs>
+
+<pp>
+The image size is doubled using linear interpolation.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -magnify ------------------------------------------ -->
+
 <utils apps=display>
 <opt>-magnify <factor></opt>
 
 <abs>magnify the image</abs>
+
+<pp>
+The displayed image is magnified by <s>factor</s>.</pp>
 
 </utils>
 
@@ -2744,7 +2893,7 @@ is implied by <s>-mask</s>.</pp>
 
 <!-- ------------ -matte -------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,mogrify,montage>
 <dopt>-matte</opt>
 
 
@@ -2784,6 +2933,21 @@ option.</pp>
 <opt>-median <radius></opt>
 
 <abs>apply a median filter to the image</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -minify ------------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<opt>-minify <factor></opt>
+
+<abs>minify the image</abs>
+
+<pp>
+The image size is halved using linear interpolation.</pp>
 
 </utils>
 
@@ -2830,7 +2994,7 @@ degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
 
 <!-- ------------ -monitor --------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,import,mogrify,montage>
 <opt>-monitor</opt>
 
 <abs>show progress indication</abs>
@@ -2902,6 +3066,24 @@ in the mosaic.</pp>
 
 </utils>
 
+
+
+
+<!-- ------------ -motion-blur --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-motion-blur <radius>{x<sigma>}{+angle}</opt>
+
+<abs>Simulate motion blur</abs>
+
+<pp>
+Simulate motion blur by convolving the image with a Gaussian operator of
+the given radius and standard deviation (sigma). For reasonable results,
+radius should be larger than sigma. If radius is zero, then a suitable
+radius is automatically selected based on sigma. The angle specifies the
+angle that the object is coming from (side which is blurred).</pp>
+
+</utils>
 
 
 
@@ -3027,36 +3209,166 @@ See <s>-fill</s> for more details.</pp>
 <utils apps=convert,mogrify>
 <dopt>-operator channel operator rvalue[%]</opt>
 
-<abs>apply a mathematical or bitwise operator to an image channel</abs>
+<abs>apply a mathematical, bitwise, or value operator to an image channel</abs>
 
 <pp>
-Apply a low-level mathematical or bitwise operator to a selected image
-channel or all image channels. Operations which result in negative
-results are reset to zero, and operations which overflow the
-available range are reset to the maximum possible value.
-</pp>
+Apply a low-level mathematical, bitwise, or value operator to a selected
+image channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the available
+range are reset to the maximum possible value.</pp>
 <pp>
-Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
-<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, <s>Black</s>,
-or <s>All</s>.</pp>
+Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>,
+<s>Opacity</s>, <s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>,
+<s>Black</s>, <s>All</s>, or <s>Gray</s>. <s>All</s> only modifies the
+color channels and does not modify the <s>Opacity</s> channel. Except for
+the threshold operators, <s>All</s> operates on each channel
+independently so that operations are on a per-channel basis.</pp>
 <pp>
-Select an operator from <s>Add</s>, <s>And</s>, <s>Divide</s>, <s>LShift</s>,
-<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.</pp>
+<s>Gray</s> treats the color channels as a grayscale intensity and
+performs the requested operation on the equivalent pixel intensity so the
+result is a gray image.</pp>
 <pp>
-Rvalue may be any floating point value. Normally rvalue will
-be in the range of 0 to MaxRGB, where MaxRGB is the largest
-quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295) but values outside this range may be
-useful for some arithmetic operations. Arguments to logical or
-bit-wise operations are rounded to a positive integral value
-prior to use. If a percent (<s>%</s>) symbol is appended to
-the argument, then the argument has a range of 0 to 100
-percent.</pp>
+Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
+<s>Depth</s>, <s>Divide</s>, <s>Gamma</s>, <s>Negate</s>, <s>LShift</s>,
+<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>,
+<s>Threshold</s>, <s>Threshold-White</s>, <s>Threshold-Black</s>,
+<s>Xor</s>, <s>Noise-Gaussian</s>, <s>Noise-Impulse</s>,
+<s>Noise-Laplacian</s>, <s>Noise-Multiplicative</s>,
+<s>Noise-Poisson</s>, and <s>Noise-Uniform</s>.</pp>
+<pp>
+Rvalue may be any floating point or integer value. Normally rvalue will
+be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
+supported by the GraphicsMagick build (255, 65535, or 4294967295) but
+values outside this range may be useful for some arithmetic operations.
+Arguments to logical or bit-wise operations are rounded to a positive
+integral value prior to use. If a percent (<s>%</s>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.</pp>
+<pp>
+The following is a description of the operators:</pp>
+<dl>
+<dt>Add</dt>
+<dd>Result is rvalue added to channel value.
+</dd>
 
-<pp>As an example, the <s>xor</s> operator may be used to invert a
-monochrome image (interchange black and white):</pp>
+<dt>And</dt>
+<dd>Result is the logical AND of rvalue with channel value.
+</dd>
+
+<dt>Assign</dt>
+<dd>Result is rvalue.
+</dd>
+
+<dt>Depth</dt>
+<dd>Result is channel value adjusted so that it may be (approximately)
+stored in the specified number of bits without additional loss.
+</dd>
+
+<dt>Divide</dt>
+<dd>Result is channel value divided by rvalue.
+</dd>
+
+<dt>Gamma</dt>
+<dd>Result is channel value gamma adjusted by rvalue.
+</dd>
+
+<dt>LShift</dt>
+<dd>Result is channel value bitwise left shifted by rvalue bits.
+</dd>
+
+<dt>Multiply</dt>
+<dd>Result is channel value multiplied by rvalue.
+</dd>
+
+<dt>Negate</dt>
+<dd>Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+</dd>
+
+<dt>Or</dt>
+<dd>Result is the logical OR of rvalue with channel value.
+</dd>
+
+<dt>RShift</dt>
+<dd>Result is channel value bitwise right shifted by rvalue bits.
+</dd>
+
+<dt>Subtract</dt>
+<dd>Result is channel value minus rvalue.
+</dd>
+
+<dt>Threshold</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If <s>all</s>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+
+<dt>Threshold-white</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If <s>all</s>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+
+<dt>Threshold-black</dt>
+<dd>Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+<s>all</s> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+
+<dt>Xor</dt>
+<dd>Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+</dd>
+
+<dt>Noise-Gaussian</dt>
+<dd>Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dt>Noise-Impulse</dt>
+<dd>Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dt>Noise-Laplacian</dt>
+<dd>Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+</dd>
+
+<dt>Noise-Poisson</dt>
+<dd>Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+</dd>
+
+<dt>Noise-Uniform</dt>
+<dd>Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+</dd>
+</dl>
+
+<pp>
+As an example, the <s>Assign</s> operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:</pp>
 <pre>
-  gm convert in.bmp -operator all xor "100%" out.bmp
+  gm convert in.bmp -operator red assign "50%" out.bmp
+</pre>
+<pp>
+The following applies 50% thresholding to the image and returns a gray
+image:</pp>
+<pre>
+  gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
 
 </utils>
@@ -3074,23 +3386,20 @@ monochrome image (interchange black and white):</pp>
 
 <pp>
 The channel or channels specified in the <s>channeltype</s> argument are
-reduced to binary, using an ordered dither method.
-The choices for <s>channeltype</s> are:</pp>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an ordered dither method. The choices for
+<s>channeltype</s> are <s>All</s>, <s>Intensity</s>, <s>Red</s>,
+<s>Green</s>, <s>Blue</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>,
+<s>Black</s>, and <s>Opacity</s></pp>
 <pp>
-When <s>channeltype</s> is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When <s>channeltype</s> is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.</pp>
 <pp>
-When <s>channeltype</s> is "intensity", only the color samples are
-dithered.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is dithered.</pp>
+When <s>channeltype</s> is "Intensity", only the color samples are
+dithered. When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.</pp>
 <pp>
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -3309,7 +3618,7 @@ that the pixel read rate may be included in the displayed information.</pp>
 <utils apps=convert,import,mogrify,montage>
 <opt>-pointsize <value></opt>
 
-<abs>pointsize of the PostScript, OPTION1, or TrueType font</abs>
+<abs>pointsize of the PostScript, X11, or TrueType font</abs>
 
 </utils>
 
@@ -3565,27 +3874,23 @@ Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.</pp>
 
 <pp>
 The channel or channels specified in the <channeltype> argument are
-reduced to binary, using an random-threshold method.  The choices for
-<s>channeltype</s> are:</pp>
-
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an random-threshold method. The choices for
+<s>channeltype</s> are <s>All</s>, <s>Intensity</s>, <s>Red</s>,
+<s>Green</s>, <s>Blue</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>,
+<s>Black</s>, and <s>Opacity</s></pp>
 <pp>
-When <s>channeltype</s> is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When <s>channeltype</s> is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).</pp>
 <pp>
 When <s>channeltype</s> is "intensity", only the color samples are
-thresholded.  When <s>channeltype</s> is "opacity" or "matte", only the
-opacity channel is thresholded.</pp>
+thresholded. When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.</pp>
 
 </utils>
 
@@ -3806,7 +4111,7 @@ the <s>-gravity</s> option has no effect.</pp>
 
 <!-- ------------ -sampling-factor ---------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
 
 <abs>chroma subsampling factors</abs>
@@ -3922,7 +4227,8 @@ popups that are independent windows but appear over the specified window.</pp>
 
 <pp>
 Set a named image attribute.  The attribute is set on the current
-(previously specified on command line) image.
+(previously specified on command line) image.</pp>
+
 </utils>
 
 
@@ -4087,7 +4393,7 @@ The color is specified using the format described under the
 
 <!-- ------------ -size --------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <dopt>-size <width>x<height>{+offset}</opt>
 
 <abs>width and height of the image</abs>
@@ -4264,8 +4570,8 @@ formatted text.  The default is 14 point <i>Courier</i>.</pp>
 
 <pp>
 You can tag a font to specify whether it is a PostScript, TrueType, or
-OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
-and <tt>x:fixed</tt> is OPTION1.</pp>
+X11 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
+and <tt>x:fixed</tt> is X11.</pp>
 
 </utils>
 
@@ -4287,30 +4593,28 @@ and <tt>x:fixed</tt> is OPTION1.</pp>
 <!-- ------------ -threshold ---------------------------------------- -->
 
 <utils apps=convert,mogrify>
-<dopt>-threshold <value>{<green>,<blue>,<opacity>}{%}</opt>
+<dopt>-threshold <value>{%}</opt>
 
 <abs>threshold the image</abs>
 
 <pp>
-Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.</pp>
+Modify the image such that any pixel sample with an intensity value
+greater than the threshold is assigned the maximum intensity (white), or
+otherwise is assigned the minimum intensity (black). If a percent prefix
+is applied, then the threshold is a percentage of the available range.</pp>
 
 <pp>
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.</pp>
-
-<pp>
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use</pp>
+To efficiently create a black and white image from a color image, use</pp>
 <pre>
-    convert -threshold 65535 in.png black.png
-    convert -threshold 0,0 in.png white.png
+    gm convert -threshold 50% in.png out.png
 </pre>
+
+<pp>
+The optimum threshold value depends on the nature of the image.</pp>
+
+<pp>In order to threshold individual channels, use the <s>-operator</s>
+subcommand with it's <s>Threshold</s>, <s>Threshold-White</s>, or
+<s>Threshold-Black</s> options.</pp>
 
 </utils>
 
@@ -4455,7 +4759,7 @@ are nearly the same color as the corner pixels.</pp>
 
 <!-- ------------ -type --------------------------------------------- -->
 
-<utils apps=animate,composite,convert,display,mogrify,montage>
+<utils apps=animate,compare,composite,convert,display,mogrify,montage>
 <dopt>-type <type></opt>
 
 <abs>the image type</abs>
@@ -4611,7 +4915,7 @@ amount (default 0.05).
 
 <!-- ------------ -verbose ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-verbose</opt>
 
 <abs>print detailed information about the image</abs>
@@ -4641,7 +4945,7 @@ for a description of these values.</pp>
 
 <!-- ------------ -version ------------------------------------------ -->
 
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-version</opt>
 
 <abs>print GraphicsMagick version string</abs>
@@ -4773,6 +5077,29 @@ of the wave.</pp>
 <dopt>-white-point <x>,<y></opt>
 
 <abs>chromaticity white point</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -white-threshold -------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-white-threshold red[,green][,blue][,opacity]</opt>
+
+<abs>pixels above the threshold become white</abs>
+
+<pp>
+Use <s>-white-threshold</s> to set pixels with values above the specified
+threshold to maximum value (white). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</pp>
 
 </utils>
 

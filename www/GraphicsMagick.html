@@ -7,24 +7,24 @@
 	<style type=text/css>
 	<!--
 		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		A:link { color: #00B04F }
+		A:visited { color: #007B37 }
 	-->
 	</style>
 
 </head>
-<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">
 <a name="top"></a>
 <table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 <br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="top"></a>NAME
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -35,10 +35,10 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="contents"></a>Contents
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -72,10 +72,10 @@ color="#FFFFFF"><font size="+1">
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="syno"></a>Synopsis
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -83,6 +83,10 @@ color="#FFFFFF"><font size="+1">
 <p>
 <strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
+<p>
+<strong>compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong> <em>compare-image</em>
+<strong>[</strong> <em>options</em> <strong>... ]</strong>
 <p>
 <strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>change-image base-image</em>
 <strong>[</strong> <em>mask-image</em> <strong>]</strong> <em>output-image</em>
@@ -107,10 +111,10 @@ color="#FFFFFF"><font size="+1">
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="desc"></a>Description
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -178,7 +182,7 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">BMP3     </td><td>*-w-</td><td>Microsoft Windows bitmap image v3</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CACHE    </td><td>*---</td><td>Magick Persistent Cache image format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CAPTION  </td><td>*r--</td><td>Caption (requires separate size info)</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">CIN      </td><td>*rw+</td><td>Kodak Cineon Format</td></tr>
+<tr><td><dd><img SRC="../images/ball.png" ALT="*">CIN      </td><td>*rw-</td><td>Kodak Cineon Format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">CMYK     </td><td>*rw-</td><td>Raw cyan, magenta, yellow, and black</td></tr>
 <tr><td>          </td><td>    </td><td>samples (8 or 16 bits, depending on</td></tr>
 <tr><td>          </td><td>    </td><td>the image depth)</td></tr>
@@ -191,7 +195,7 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td>          </td><td>    </td><td> Medicine image</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">DCX      </td><td>*rw+</td><td>ZSoft IBM PC multi-page Paintbrush</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">DPS      </td><td>*r--</td><td>Display PostScript</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">DPX      </td><td>*r--</td><td>Digital Moving Picture Exchange</td></tr>
+<tr><td><dd><img SRC="../images/ball.png" ALT="*">DPX      </td><td>*rw-</td><td>Digital Moving Picture Exchange</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">EPDF     </td><td>*rw-</td><td>Encapsulated Portable Document Format</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">EPI      </td><td>*rw-</td><td>Adobe Encapsulated PostScript</td></tr>
 <tr><td>          </td><td>    </td><td>Interchange format</td></tr>
@@ -376,10 +380,10 @@ output.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="files"></a>Files and Formats
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -452,10 +456,10 @@ many image filenames to fit on the command line.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -467,9 +471,10 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (<em>animate, composite, convert, display, identify,
-import, mogrify</em> and <em>montage</em>).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (<em>animate</em>, <em>compare</em>,
+<em>composite</em>, <em>convert</em>, <em>display</em>, <em>identify</em>,
+<em>import</em>, <em>mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
 <p>
 In this document, angle brackets ("&lt;&gt;") enclose variables and curly
@@ -481,11 +486,11 @@ or <tt>"-fuzz 2%"</tt>.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-adjoin"></a>-adjoin
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>join images into a single multi-image file</td></tr></table>
@@ -497,11 +502,11 @@ behavior.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-affine"></a>-affine <i>&lt;matrix&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>drawing transform matrix</td></tr></table>
@@ -511,11 +516,11 @@ use by subsequent <strong>-draw</strong> or <strong>-transform</strong> options.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-antialias"></a>-antialias
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixel aliasing</td></tr></table>
@@ -527,11 +532,11 @@ include avoiding increasing colors in the image, or improving rendering speed.</
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-append"></a>-append
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>append a set of images</td></tr></table>
@@ -546,11 +551,11 @@ option appears after all of the input images, all images are appended.</font></t
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-authenticate"></a>-authenticate <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>decrypt image with this password</td></tr></table>
@@ -561,11 +566,11 @@ encryption.  Encrypting images being written is not supported.</font></td></tr><
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-average"></a>-average
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>average a set of images</td></tr></table>
@@ -577,11 +582,11 @@ option appears after all of the input images, all images are averaged.</font></t
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-backdrop"></a>-backdrop
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the image centered on a backdrop.</td></tr></table>
@@ -595,11 +600,11 @@ for details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-background"></a>-background <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the background color</td></tr></table>
@@ -609,22 +614,43 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    <a name="details-black-threshold"></a>-black-threshold <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels below the threshold become black</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>-black-threshold</strong> to set pixels with values below the specified
+threshold to minimum value (black). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-blue-primary"></a>-blue-primary <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blue chromaticity primary point</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-blur"></a>-blur <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blur the image with a Gaussian operator</td></tr></table>
@@ -634,11 +660,11 @@ standard deviation (sigma).</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-border"></a>-border <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with a border of color</td></tr></table>
@@ -648,11 +674,11 @@ about the geometry specification.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-bordercolor"></a>-bordercolor <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border color</td></tr></table>
@@ -662,22 +688,22 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -borderwidth <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border width</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-box"></a>-box <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set the color of the annotation bounding box</td></tr></table>
@@ -690,40 +716,41 @@ details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-channel"></a>-channel <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of channel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choose from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>, <strong>Opacity</strong>,
-<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, or <strong>Black</strong>.</font></td></tr></table>
+<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, <strong>Black</strong>,
+or <strong>Gray</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to extract a particular <em>channel</em> from the image.
-<strong>Matte</strong>,
+<strong>Opacity</strong>,
 for example, is useful for extracting the opacity values from an image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -charcoal <i>&lt;factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>simulate a charcoal drawing</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-chop"></a>-chop <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixels from the interior of an image</td></tr></table>
@@ -748,11 +775,11 @@ and moves the remaining corner blocks leftward and upward to close the gaps.</fo
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-clip"></a>-clip
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply the clipping path, if one is present</td></tr></table>
@@ -771,11 +798,11 @@ is not present, the option is ignored.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-coalesce"></a>-coalesce
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>merge a sequence of images</td></tr></table>
@@ -790,11 +817,11 @@ option appears after all of the input images, all images are coalesced.</font></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-colorize"></a>-colorize <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colorize the image with the pen color</td></tr></table>
@@ -805,11 +832,11 @@ a colorization value list delimited with slashes (e.g. 0/0/50).</font></td></tr>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-colormap"></a>-colormap <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the colormap type</td></tr></table>
@@ -826,11 +853,11 @@ go <em>technicolor</em> when the image colormap is installed.</font></td></tr></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-colors"></a>-colors <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred number of colors in the image</td></tr></table>
@@ -849,11 +876,11 @@ affect the color reduction algorithm.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-colorspace"></a>-colorspace <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of colorspace</td></tr></table>
@@ -895,11 +922,11 @@ take effect.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-comment"></a>-comment <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>annotate an image with a comment</td></tr></table>
@@ -925,11 +952,11 @@ is read from a file titled by the remaining characters in the string.</font></td
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-compose"></a>-compose <i>&lt;operator&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image composition</td></tr></table>
@@ -975,6 +1002,7 @@ composite operators are available:</font></td></tr></table>
      Add
      Subtract
      Difference
+     Divide
      Multiply
      Bumpmap
      Copy
@@ -982,6 +1010,10 @@ composite operators are available:</font></td></tr></table>
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The behavior of each operator is described below.</font></td></tr></table>
@@ -1035,6 +1067,11 @@ operators can be used to perform reversible transformations.
 <dd>The result of abs(<em>change-image</em> - <em>base-image</em>). This is
 useful for comparing two very similar images.
 </dd>
+<dt>Divide</dt>
+<dd>The result of <em>change-image</em> / <em>base-image</em>. This is useful
+for improving the readability of text on unevenly illuminated photos (by
+using a gaussian blurred copy of change-image as base-image).
+</dd>
 <dt>Multiply</dt>
 <dd>The result of <em>change-image</em> * <em>base-image</em>. This is useful for
 the creation of drop-shadows.
@@ -1066,15 +1103,40 @@ copied untouched.
 with the opacity channel in <em>change-image</em>. The other channels are
 copied untouched.
 </dd>
+<dt>CopyCyan</dt>
+<dd>The resulting image is the cyan channel in <em>base-image</em> replaced
+with the cyan channel in <em>change-image</em>. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+</dd>
+<dt>CopyMagenta</dt>
+<dd>The resulting image is the magenta channel in <em>base-image</em>
+replaced with the magenta channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+<dt>CopyYellow</dt>
+<dd>The resulting image is the yellow channel in <em>base-image</em>
+replaced with the yellow channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+</dd>
+<dt>CopyBlack</dt>
+<dd>The resulting image is the black channel in <em>base-image</em>
+replaced with the black channel in <em>change-image</em>. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
+</dd>
 </dl>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-compress"></a>-compress <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image compression</td></tr></table>
@@ -1099,11 +1161,11 @@ YUV encoders for downsampling the chroma channels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-contrast"></a>-contrast
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enhance or reduce the image contrast</td></tr></table>
@@ -1121,27 +1183,27 @@ For a more pronounced effect you can repeat the option:</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-convolve"></a>-convolve <i>&lt;kernel&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>convolve image with the specified convolution kernel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.</font></td></tr></table>
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-create-directories"></a>-create-directories
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create output directory if required</td></tr></table>
@@ -1153,11 +1215,11 @@ required output directory does not exist.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-crop"></a>-crop <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
@@ -1192,11 +1254,11 @@ specified geometry extends beyond the dimensions of the input image.</font></td>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-cycle"></a>-cycle <i>&lt;amount&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>displace image colormap by amount</td></tr></table>
@@ -1206,11 +1268,11 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -debug <i>&lt;events&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
@@ -1240,11 +1302,11 @@ environment variable are the same as for the <strong>-debug</strong> option.</fo
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-deconstruct"></a>-deconstruct
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>break down an image sequence into constituent parts</td></tr></table>
@@ -1262,11 +1324,11 @@ option appears after all of the input images, all images are deconstructed.</fon
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-define"></a>-define <i>&lt;key&gt;</i>{<i>=&lt;value&gt;</i>}<i>,...</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add coder/decoder specific options</td></tr></table>
@@ -1407,6 +1469,16 @@ of the image (e.g. colormapped, grayscale, RGB, CMYK).
 will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
 </dd>
+<dt>tiff:rows-per-strip=&lt;value&gt;</dt>
+<dd>Allows the user to specify the number of rows per TIFF strip. Ignored
+if using tiles or JPEG compression.
+</dd>
+<dt>tiff:strip-per-page=true</dt>
+<dd>Requests that the image is written in a single TIFF strip. This is
+normally the default when group3 or group4 compression is requested
+within reasonable limits. Requesting a single strip for large images may
+result in failure due to resource consumption in the writer or reader.
+</dd>
 <dt>tiff:tile</dt>
 <dd>Enable writing tiled TIFF (rather than stripped) using the default tile
 size. Tiled TIFF organizes the image as an array of smaller images
@@ -1434,7 +1506,8 @@ Enables tiled TIFF if it has not already been enabled.
 <dd>Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
-Enables tiled TIFF if it has not already been enabled.</dd>
+Enables tiled TIFF if it has not already been enabled.
+</dd>
 </dl>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, to create a postscript file that will render only the black
@@ -1445,11 +1518,11 @@ pixels of a bilevel image, use:</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-delay"></a>-delay <i>&lt;1/100ths of a second&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
@@ -1464,11 +1537,11 @@ minimum and maximum delay.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-density"></a>-density <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>horizontal and vertical resolution in pixels of the image</td></tr></table>
@@ -1500,11 +1573,11 @@ use the <strong>-resample</strong> option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-depth"></a>-depth <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
@@ -1522,33 +1595,33 @@ LZW or ZIP.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -descend
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>obtain image by descending window hierarchy</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -despeckle
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>reduce the speckles within an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-displace"></a>-displace <i>&lt;horizontal scale&gt;x&lt;vertical scale&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>shift image pixels as defined by a displacement map</td></tr></table>
@@ -1563,11 +1636,11 @@ in both the horizontal and vertical directions.  However, if you specify
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-display"></a>-display <i>&lt;host:display[.screen]&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the X server to contact</td></tr></table>
@@ -1577,11 +1650,11 @@ obtaining image or font from this X server.  See <em>X(1)</em>.</font></td></tr>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-dispose"></a>-dispose <i>&lt;method&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>GIF disposal method</td></tr></table>
@@ -1602,11 +1675,11 @@ Here are the valid methods:</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-dissolve"></a>-dissolve <i>&lt;percent&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>dissolve an image into another by the given percent</td></tr></table>
@@ -1616,11 +1689,11 @@ then it is composited over the main image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-dither"></a>-dither
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Floyd/Steinberg error diffusion to the image</td></tr></table>
@@ -1639,11 +1712,11 @@ always) leads to decreased processing time.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-draw"></a>-draw <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>annotate an image with one or more graphic primitives</td></tr></table>
@@ -1833,33 +1906,33 @@ options <em>before</em> the <strong>-draw</strong> option.</font></td></tr></tab
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -edge <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>detect edges within an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -emboss <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>emboss an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-encoding"></a>-encoding <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the text encoding</td></tr></table>
@@ -1869,11 +1942,11 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</em></font></td
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-endian"></a>-endian <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify endianness (MSB or LSB) of output image</td></tr></table>
@@ -1887,33 +1960,52 @@ Use <strong>+endian</strong> to revert to unspecified endianness.</font></td></t
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -enhance
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a digital filter to enhance a noisy image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -equalize
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform histogram equalization to the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    <a name="details-file"></a>-file <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write annotated difference image to file</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If <strong>-file</strong> is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the <strong>reference</strong> and <strong>compare</strong> images are modified from those in
+the <strong>compare</strong> image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+<strong>-highlight-style</strong>) or highlight color (see <strong>-highlight-color</strong>)
+before the changes are obvious.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-fill"></a>-fill <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when filling a graphic primitive</td></tr></table>
@@ -1950,18 +2042,19 @@ See <strong>-draw</strong> for further details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-filter"></a>-filter <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this type of filter when resizing an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to affect the resizing operation of an image (see
 <strong>-geometry</strong>).
-Choose from these filters:</font></td></tr></table>
+Choose from these filters (ordered by approximate increasing CPU
+time):</font></td></tr></table>
 <pre>
      Point
      Box
@@ -1987,11 +2080,11 @@ being enlarged, otherwise the <strong>Lanczos</strong> filter is used.</font></t
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-flatten"></a>-flatten
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>flatten a sequence of images</td></tr></table>
@@ -2006,11 +2099,11 @@ option appears after all of the input images, all images are flattened.</font></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-flip"></a>-flip
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create a "mirror image"</td></tr></table>
@@ -2019,11 +2112,11 @@ reflect the scanlines in the vertical direction.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-flop"></a>-flop
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create a "mirror image"</td></tr></table>
@@ -2032,26 +2125,26 @@ reflect the scanlines in the horizontal direction.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-font"></a>-font <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this font when annotating the image with text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+You can tag a font to specify whether it is a PostScript, TrueType, or X11
 font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
-is PostScript, and <tt>x:fixed</tt> is OPTION1.</font></td></tr></table>
+is PostScript, and <tt>x:fixed</tt> is X11.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-foreground"></a>-foreground <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the foreground color</td></tr></table>
@@ -2061,11 +2154,11 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-format"></a>-format <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the image format type</td></tr></table>
@@ -2084,11 +2177,11 @@ filename is <em>image.gif</em>, the output image filename becomes
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-format"></a>-format <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output formatted image characteristics</td></tr></table>
@@ -2235,11 +2328,11 @@ from misinterpreting any spaces and square brackets.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-frame"></a>-frame <i>&lt;width&gt;x&lt;height&gt;+&lt;outer bevel width&gt;+&lt;inner bevel width&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with an ornamental border</td></tr></table>
@@ -2253,22 +2346,22 @@ command line option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -frame
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>include the X window frame in the imported image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-fuzz"></a>-fuzz <i>&lt;distance&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this distance are considered equal</td></tr></table>
@@ -2286,11 +2379,11 @@ The <em>distance</em> can be in absolute intensity units or, by appending
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-gamma"></a>-gamma <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>level of gamma correction</td></tr></table>
@@ -2314,11 +2407,11 @@ but not set as an image attribute (e.g. PNG images).</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-Gaussian"></a>-Gaussian <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blur the image with a Gaussian operator</td></tr></table>
@@ -2327,11 +2420,11 @@ Use the given radius and standard deviation (sigma).</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-geometry"></a>-geometry <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i> </i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
@@ -2406,11 +2499,11 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-gravity"></a>-gravity <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>direction primitive  gravitates to when annotating the image.</td></tr></table>
@@ -2441,33 +2534,65 @@ for this purpose.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-green-primary"></a>-green-primary <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>green chromaticity primary point</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -help
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    <a name="details-highlight-color"></a>-highlight-color <i>&lt;color&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation color</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the color to use when annotating difference pixels.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a name="details-highlight-style"></a>-highlight-style <i>&lt;style&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixel annotation style</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of <strong>Assign</strong>, <strong>Threshold</strong>,
+<strong>Tint</strong>, or <strong>XOR</strong>; where <strong>Assign</strong> replaces the pixel with
+the highlight color (see <strong>-highlight-color</strong>), <strong>Threshold</strong>
+replaces the pixel with black or white based on the difference in
+intensity, <strong>Tint</strong> alpha tints the pixel with the highlight color,
+and <strong>XOR</strong> does an XOR between the pixel and the highlight color.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-iconGeometry"></a>-iconGeometry <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
@@ -2478,44 +2603,44 @@ negative offsets.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -iconic
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>iconic animation</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -immutable
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make image immutable</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -implode <i>&lt;factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>implode image pixels about the center</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-intent"></a>-intent <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this type of rendering intent when managing the image color</td></tr></table>
@@ -2529,11 +2654,11 @@ The default intent is undefined.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-interlace"></a>-interlace <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of interlacing scheme</td></tr></table>
@@ -2561,11 +2686,11 @@ Use <strong>Line</strong> or <strong>Plane</strong> to create an
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-label"></a>-label <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a label to an image</td></tr></table>
@@ -2601,11 +2726,11 @@ is displayed with the corresponding tile in the montage.  Use the
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -lat <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;offset&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform local adaptive thresholding</td></tr></table>
@@ -2617,11 +2742,11 @@ as a percentage.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-level"></a>-level <i>&lt;black_point&gt;</i>{<i>,&lt;gamma&gt;</i>}<i></i>{<i>,&lt;white_point&gt;</i>}<i></i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>adjust the level of image contrast</td></tr></table>
@@ -2638,11 +2763,11 @@ interface works similar to Photoshop's "Image-&gt;Adjustments-&gt;Levels..."
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
@@ -2653,7 +2778,7 @@ total disk space consumed; <strong>File</strong>, maximum number of file
 descriptors allowed to be open at once; <strong>Map</strong>, maximum total number
 of file bytes which may be memory mapped; <strong>Memory</strong>, maximum total
 number of bytes of heap memory used for image storage; and <strong>Pixels</strong>,
-maximum absolute image size (per image).
+maximum absolute image size (per image).</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 These resource limits are used to decide if (for a given image) the
 decoded image ("pixel cache") should be stored in heap memory (RAM), in a
@@ -2662,7 +2787,7 @@ The number of total pixels in one image may also be limited in order to
 force the reading, or creation of images larger than the limit (in
 pixels) to intentionally fail. The disk limit establishes an overall
 limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.
+limit has been reached, no more images may be read.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The value argument is an absolute value, but may have standard binary
 suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
@@ -2670,7 +2795,7 @@ scaling to the value (based on a multiplier of 1024). Any additional
 characters are ignored. For example, <tt>'-limit Pixels 10MP'</tt> limits
 the maximum image size to 10 megapixels and <tt>'-limit memory 32MB
 -limit map 64MB'</tt> limits memory and memory mapped files to 32
-megabytes and 64 megabytes respectively.
+megabytes and 64 megabytes respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
@@ -2683,22 +2808,22 @@ Use the option <tt>-list resource</tt> list the current limits.</font></td></tr>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -linewidth
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the line width for subsequent draw operations</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-list"></a>-list <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of list</td></tr></table>
@@ -2711,11 +2836,11 @@ This option lists information about the GraphicsMagick configuration.</font></td
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-log"></a>-log <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
@@ -2749,11 +2874,11 @@ The default behavior is to print all of the components.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-loop"></a>-loop <i>&lt;iterations&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add Netscape loop extension to your GIF animation</td></tr></table>
@@ -2764,22 +2889,37 @@ times.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
-    -magnify <i>&lt;factor&gt;</i>
+><font color="#00B04F"><font size="+1">
+    -magnify
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image size is doubled using linear interpolation.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    -magnify <i>&lt;factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>magnify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The displayed image is magnified by <strong>factor</strong>.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-map"></a>-map <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>choose a particular set of colors from this image</td></tr></table>
@@ -2800,11 +2940,11 @@ option appears after all of the input images, all images are mapped.</font></td>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-map"></a>-map <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display image using this type.</td></tr></table>
@@ -2829,11 +2969,11 @@ Colormaps.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-mask"></a>-mask <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify a clipping mask</td></tr></table>
@@ -2852,11 +2992,11 @@ is implied by <strong>-mask</strong>.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-matte"></a>-matte
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>store matte channel if the image has one</td></tr></table>
@@ -2868,11 +3008,11 @@ matte channel in the output file.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-mattecolor"></a>-mattecolor <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the color to be used with the <strong>-frame</strong> option</td></tr></table>
@@ -2882,33 +3022,46 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -median <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    -minify <i>&lt;factor&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>minify the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image size is halved using linear interpolation.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     -mode <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>mode of operation</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-modulate"></a>-modulate <i>brightness[,saturation[,hue]]</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vary the brightness, saturation, and hue of an image</td></tr></table>
@@ -2926,11 +3079,11 @@ degrees, 150 results in a clockwise rotation of 90 degrees, with 0 and
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -monitor
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>show progress indication</td></tr></table>
@@ -2943,22 +3096,22 @@ been displayed.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -monochrome
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image to black and white</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-morph"></a>-morph <i>&lt;frames&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>morphs an image sequence</td></tr></table>
@@ -2973,11 +3126,11 @@ option appears after all of the input images, all images are morphed.</font></td
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-mosaic"></a>-mosaic
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create a mosaic from an image or an image sequence</td></tr></table>
@@ -2993,22 +3146,39 @@ in the mosaic.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    <a name="details-motion-blur"></a>-motion-blur <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>{<i>+angle</i>}<i></i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Simulate motion blur</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Simulate motion blur by convolving the image with a Gaussian operator of
+the given radius and standard deviation (sigma). For reasonable results,
+radius should be larger than sigma. If radius is zero, then a suitable
+radius is automatically selected based on sigma. The angle specifies the
+angle that the object is coming from (side which is blurred).</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     -name
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>name an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-negate"></a>-negate
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>replace every pixel with its complementary color</td></tr></table>
@@ -3021,11 +3191,11 @@ to only negate the grayscale pixels of the image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-noise"></a>-noise <i>&lt;radius|type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add or reduce noise in an image</td></tr></table>
@@ -3052,11 +3222,11 @@ from these noise types:</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-noop"></a>-noop
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>NOOP (no option)</td></tr></table>
@@ -3067,11 +3237,11 @@ desired.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-normalize"></a>-normalize
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform image to span the full range of color values</td></tr></table>
@@ -3080,11 +3250,11 @@ This is a contrast enhancement technique.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-opaque"></a>-opaque <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>change this color to the pen color within the image</td></tr></table>
@@ -3096,72 +3266,178 @@ See <strong>-fill</strong> for more details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-operator"></a>-operator <i>channel operator rvalue[%]</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a mathematical or bitwise operator to an image channel</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a mathematical, bitwise, or value operator to an image channel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Apply a low-level mathematical or bitwise operator to a selected image
-channel or all image channels. Operations which result in negative
-results are reset to zero, and operations which overflow the
-available range are reset to the maximum possible value.
-</font></td></tr></table>
+Apply a low-level mathematical, bitwise, or value operator to a selected
+image channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the available
+range are reset to the maximum possible value.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Select a channel from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>, <strong>Opacity</strong>,
-<strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>, <strong>Black</strong>,
-or <strong>All</strong>.</font></td></tr></table>
+Select a channel from: <strong>Red</strong>, <strong>Green</strong>, <strong>Blue</strong>,
+<strong>Opacity</strong>, <strong>Matte</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
+<strong>Black</strong>, <strong>All</strong>, or <strong>Gray</strong>. <strong>All</strong> only modifies the
+color channels and does not modify the <strong>Opacity</strong> channel. Except for
+the threshold operators, <strong>All</strong> operates on each channel
+independently so that operations are on a per-channel basis.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Divide</strong>, <strong>LShift</strong>,
-<strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Xor</strong>.</font></td></tr></table>
+<strong>Gray</strong> treats the color channels as a grayscale intensity and
+performs the requested operation on the equivalent pixel intensity so the
+result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Rvalue may be any floating point value. Normally rvalue will
-be in the range of 0 to MaxRGB, where MaxRGB is the largest
-quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295) but values outside this range may be
-useful for some arithmetic operations. Arguments to logical or
-bit-wise operations are rounded to a positive integral value
-prior to use. If a percent (<strong>%</strong>) symbol is appended to
-the argument, then the argument has a range of 0 to 100
-percent.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">As an example, the <strong>xor</strong> operator may be used to invert a
-monochrome image (interchange black and white):</font></td></tr></table>
+Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
+<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>, <strong>LShift</strong>,
+<strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>,
+<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
+<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
+<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
+<strong>Noise-Poisson</strong>, and <strong>Noise-Uniform</strong>.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Rvalue may be any floating point or integer value. Normally rvalue will
+be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
+supported by the GraphicsMagick build (255, 65535, or 4294967295) but
+values outside this range may be useful for some arithmetic operations.
+Arguments to logical or bit-wise operations are rounded to a positive
+integral value prior to use. If a percent (<strong>%</strong>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The following is a description of the operators:</font></td></tr></table>
+<dl>
+<dt>Add</dt>
+<dd>Result is rvalue added to channel value.
+</dd>
+<dt>And</dt>
+<dd>Result is the logical AND of rvalue with channel value.
+</dd>
+<dt>Assign</dt>
+<dd>Result is rvalue.
+</dd>
+<dt>Depth</dt>
+<dd>Result is channel value adjusted so that it may be (approximately)
+stored in the specified number of bits without additional loss.
+</dd>
+<dt>Divide</dt>
+<dd>Result is channel value divided by rvalue.
+</dd>
+<dt>Gamma</dt>
+<dd>Result is channel value gamma adjusted by rvalue.
+</dd>
+<dt>LShift</dt>
+<dd>Result is channel value bitwise left shifted by rvalue bits.
+</dd>
+<dt>Multiply</dt>
+<dd>Result is channel value multiplied by rvalue.
+</dd>
+<dt>Negate</dt>
+<dd>Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+</dd>
+<dt>Or</dt>
+<dd>Result is the logical OR of rvalue with channel value.
+</dd>
+<dt>RShift</dt>
+<dd>Result is channel value bitwise right shifted by rvalue bits.
+</dd>
+<dt>Subtract</dt>
+<dd>Result is channel value minus rvalue.
+</dd>
+<dt>Threshold</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If <strong>all</strong>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+<dt>Threshold-white</dt>
+<dd>Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If <strong>all</strong>
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+</dd>
+<dt>Threshold-black</dt>
+<dd>Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+<dt>Xor</dt>
+<dd>Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+</dd>
+<dt>Noise-Gaussian</dt>
+<dd>Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dt>Noise-Impulse</dt>
+<dd>Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dt>Noise-Laplacian</dt>
+<dd>Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Poisson</dt>
+<dd>Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+</dd>
+<dt>Noise-Uniform</dt>
+<dd>Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+</dd>
+</dl>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+As an example, the <strong>Assign</strong> operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:</font></td></tr></table>
 <pre>
-  gm convert in.bmp -operator all xor "100%" out.bmp
+  gm convert in.bmp -operator red assign "50%" out.bmp
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The following applies 50% thresholding to the image and returns a gray
+image:</font></td></tr></table>
+<pre>
+  gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-ordered-dither"></a>-ordered-dither <i>&lt;channeltype&gt; &lt;NxN&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>ordered dither the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The channel or channels specified in the <strong>channeltype</strong> argument are
-reduced to binary, using an ordered dither method.
-The choices for <strong>channeltype</strong> are:</font></td></tr></table>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an ordered dither method. The choices for
+<strong>channeltype</strong> are <strong>All</strong>, <strong>Intensity</strong>, <strong>Red</strong>,
+<strong>Green</strong>, <strong>Blue</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
+<strong>Black</strong>, and <strong>Opacity</strong></font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When <strong>channeltype</strong> is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "intensity", only the color samples are
-dithered.  When <strong>channeltype</strong> is "opacity" or "matte", only the
-opacity channel is dithered.</font></td></tr></table>
+When <strong>channeltype</strong> is "Intensity", only the color samples are
+dithered. When <strong>channeltype</strong> is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -3171,11 +3447,11 @@ tiles and 17 levels of gray.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-output-directory"></a>-output-directory <i>&lt;directory&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output files to directory</td></tr></table>
@@ -3190,11 +3466,11 @@ The user is responsible for creating the output directory.</font></td></tr></tab
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-page"></a>-page <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>size and location of an image canvas</td></tr></table>
@@ -3283,11 +3559,11 @@ Use <strong>+page</strong> to remove the page settings for an image.</font></td>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-paint"></a>-paint <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>simulate an oil painting</td></tr></table>
@@ -3297,11 +3573,11 @@ whose width is specified with <em>radius</em>.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-pause"></a>-pause <i>&lt;seconds&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pause between animation loops [animate]</td></tr></table>
@@ -3311,11 +3587,11 @@ animation.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-pause"></a>-pause <i>&lt;seconds&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pause between snapshots [import]</td></tr></table>
@@ -3325,22 +3601,22 @@ snapshot.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-pen"></a>-pen <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>(This option has been replaced by the -fill option)</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -ping
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>efficiently determine image characteristics</td></tr></table>
@@ -3352,22 +3628,22 @@ that the pixel read rate may be included in the displayed information.</font></t
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -pointsize <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pointsize of the PostScript, OPTION1, or TrueType font</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pointsize of the PostScript, X11, or TrueType font</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-preview"></a>-preview <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image preview type</td></tr></table>
@@ -3411,11 +3687,11 @@ The default preview is <strong>JPEG</strong>.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-process"></a>-process <i>&lt;command&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>process a sequence of images using a process module</td></tr></table>
@@ -3432,11 +3708,11 @@ option appears after all of the input images, all images are processed.</font></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-profile"></a>-profile <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM, IPTC, or generic profile  to image</td></tr></table>
@@ -3462,11 +3738,11 @@ in the <em>APP1</em> profile), use
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details+progress"></a>+progress
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>disable progress monitor and busy cursor</td></tr></table>
@@ -3482,11 +3758,11 @@ or when a "clean" look is desired.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-quality"></a>-quality <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>JPEG/MIFF/PNG/TIFF compression level</td></tr></table>
@@ -3559,11 +3835,11 @@ formats.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-raise"></a>-raise <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>lighten or darken image edges</td></tr></table>
@@ -3575,55 +3851,52 @@ Use <strong>-raise</strong> to create a raised effect, otherwise use <strong>+ra
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-random-threshold"></a>-random-threshold <i>&lt;channeltype&gt; &lt;LOWxHIGH&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>random threshold the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The channel or channels specified in the &lt;channeltype&gt; argument are
-reduced to binary, using an random-threshold method.  The choices for
-<strong>channeltype</strong> are:</font></td></tr></table>
-<pre>
-    all
-    intensity
-    opacity
-    matte
-</pre>
+reduced to binary, using an random-threshold method. The choices for
+<strong>channeltype</strong> are <strong>All</strong>, <strong>Intensity</strong>, <strong>Red</strong>,
+<strong>Green</strong>, <strong>Blue</strong>, <strong>Cyan</strong>, <strong>Magenta</strong>, <strong>Yellow</strong>,
+<strong>Black</strong>, and <strong>Opacity</strong></font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When <strong>channeltype</strong> is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When <strong>channeltype</strong> is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When <strong>channeltype</strong> is "intensity", only the color samples are
-thresholded.  When <strong>channeltype</strong> is "opacity" or "matte", only the
-opacity channel is thresholded.</font></td></tr></table>
+thresholded. When <strong>channeltype</strong> is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-red-primary"></a>-red-primary <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>red chromaticity primary point</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-region"></a>-region <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply options to a portion of the image</td></tr></table>
@@ -3632,11 +3905,11 @@ The <em>x</em> and <em>y</em> offsets are treated in the same manner as in <stro
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-remote"></a>-remote
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform a X11 remote operation</td></tr></table>
@@ -3651,11 +3924,11 @@ to disable progress indication for a clean look while loading new images.</font>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-render"></a>-render
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>render vector operations</td></tr></table>
@@ -3665,11 +3938,11 @@ useful when saving the result to vector formats such as MVG or SVG.</font></td><
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-resample"></a>-resample <i>&lt;horizontal&gt;x&lt;vertical&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Resample image to specified horizontal and vertical resolution</td></tr></table>
@@ -3702,11 +3975,11 @@ saved to a file.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-resize"></a>-resize <i>&lt;width&gt;x&lt;height&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize an image</td></tr></table>
@@ -3728,11 +4001,11 @@ information about the tiles.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-roll"></a>-roll <i></i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>roll an image vertically or horizontally</td></tr></table>
@@ -3746,11 +4019,11 @@ A negative <em>x</em> offset rolls the image left-to-right. A negative
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-rotate"></a>-rotate <i>&lt;degrees&gt;</i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Paeth image rotation to the image</td></tr></table>
@@ -3770,11 +4043,11 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-sample"></a>-sample <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>scale image using pixel sampling</td></tr></table>
@@ -3787,11 +4060,11 @@ the <strong>-gravity</strong> option has no effect.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-sampling-factor"></a>-sampling-factor <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
@@ -3811,11 +4084,11 @@ jpeg:preserve-settings</tt> flag.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-scale"></a>-scale <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>scale the image.</td></tr></table>
@@ -3828,11 +4101,11 @@ the <strong>-gravity</strong> option has no effect.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-scene"></a>-scene <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set scene number</td></tr></table>
@@ -3842,11 +4115,11 @@ an image sequence.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-scenes"></a>-scenes <i>&lt;value-value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>range of image scene numbers to read</td></tr></table>
@@ -3869,11 +4142,11 @@ animates files image00.miff, image01.miff, through image12.miff.</font></td></tr
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-screen"></a>-screen
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the screen to capture</td></tr></table>
@@ -3886,25 +4159,25 @@ popups that are independent windows but appear over the specified window.</font>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-set"></a>-set <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Set a named image attribute.  The attribute is set on the current
-(previously specified on command line) image.
+(previously specified on command line) image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-segment"></a>-segment <i>&lt;cluster threshold&gt;x&lt;smoothing threshold&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>segment an image</td></tr></table>
@@ -3922,11 +4195,11 @@ for details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-shade"></a>-shade <i>&lt;azimuth&gt;x&lt;elevation&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>shade the image using a distant light source</td></tr></table>
@@ -3937,22 +4210,22 @@ image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -shadow <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>shadow the montage</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-shared-memory"></a>-shared-memory
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
@@ -3965,11 +4238,11 @@ extension.  Otherwise, this option is ignored.  The default is
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-sharpen"></a>-sharpen <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image</td></tr></table>
@@ -3979,11 +4252,11 @@ Use a Gaussian operator of the given radius and standard deviation
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-shave"></a>-shave <i>&lt;width&gt;x&lt;height&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>shave pixels from the image edges</td></tr></table>
@@ -3994,11 +4267,11 @@ top and bottom.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-shear"></a>-shear <i>&lt;x degrees&gt;x&lt;y degrees&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>shear the image along the X or Y axis</td></tr></table>
@@ -4020,22 +4293,22 @@ The color is specified using the format described under the
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -silent
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>operate silently</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-size"></a>-size <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+offset</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
@@ -4060,11 +4333,11 @@ or JPEG image (e.g. -size 1024x768).</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-snaps"></a>-snaps <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>number of screen snapshots</td></tr></table>
@@ -4075,11 +4348,11 @@ an animation sequence.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-solarize"></a>-solarize <i>&lt;factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>negate all pixels above the threshold level</td></tr></table>
@@ -4092,11 +4365,11 @@ photographic film to light during the development process.</font></td></tr></tab
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-spread"></a>-spread <i>&lt;amount&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>displace image pixels by a random amount</td></tr></table>
@@ -4106,11 +4379,11 @@ choose a candidate pixel to swap.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-stegano"></a>-stegano <i>&lt;offset&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>hide watermark within an image</td></tr></table>
@@ -4122,11 +4395,11 @@ need this information to recover the steganographic image
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-stereo"></a>-stereo
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>composite two images to create a stereo anaglyph</td></tr></table>
@@ -4137,11 +4410,11 @@ glasses are required to properly view the stereo image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-stroke"></a>-stroke <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when stroking a graphic primitive</td></tr></table>
@@ -4153,11 +4426,11 @@ See <strong>-draw</strong> for further details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-strokewidth"></a>-strokewidth <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set the stroke width</td></tr></table>
@@ -4166,11 +4439,11 @@ See <strong>-draw</strong> for further details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-swirl"></a>-swirl <i>&lt;degrees&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>swirl image pixels about the center</td></tr></table>
@@ -4179,11 +4452,11 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-text-font"></a>-text-font <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>font for writing fixed-width text</td></tr></table>
@@ -4192,78 +4465,75 @@ Specifies the name of the preferred font to use in fixed (typewriter style)
 formatted text.  The default is 14 point <em>Courier</em>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can tag a font to specify whether it is a PostScript, TrueType, or
-OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
-and <tt>x:fixed</tt> is OPTION1.</font></td></tr></table>
+X11 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
+and <tt>x:fixed</tt> is X11.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -texture <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>name of texture to tile onto the image background</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
-    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>{<i>&lt;green&gt;,&lt;blue&gt;,&lt;opacity&gt;</i>}<i></i>{<i>%</i>}<i></i>
+><font color="#00B04F"><font size="+1">
+    <a name="details-threshold"></a>-threshold <i>&lt;value&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>threshold the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.</font></td></tr></table>
+Modify the image such that any pixel sample with an intensity value
+greater than the threshold is assigned the maximum intensity (white), or
+otherwise is assigned the minimum intensity (black). If a percent prefix
+is applied, then the threshold is a percentage of the available range.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use</font></td></tr></table>
+To efficiently create a black and white image from a color image, use</font></td></tr></table>
 <pre>
-    gm convert -threshold 65535 in.png black.png
-    gm convert -threshold 0,0 in.png white.png
+    gm convert -threshold 50% in.png out.png
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The optimum threshold value depends on the nature of the image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">In order to threshold individual channels, use the <strong>-operator</strong>
+subcommand with it's <strong>Threshold</strong>, <strong>Threshold-White</strong>, or
+<strong>Threshold-Black</strong> options.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -tile <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>tile image when filling a graphic primitive</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -tile <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>layout of images [<em>montage</em>]</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-title"></a>-title <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign title to displayed image [<em>animate, display, montage</em>]</td></tr></table>
@@ -4285,11 +4555,11 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</font></td><
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-transform"></a>-transform
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image</td></tr></table>
@@ -4302,11 +4572,11 @@ This option applies the transformation matrix from a previous
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-transparent"></a>-transparent <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make this color transparent within the image</td></tr></table>
@@ -4316,11 +4586,11 @@ option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-treedepth"></a>-treedepth <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>tree depth for the color reduction algorithm</td></tr></table>
@@ -4342,11 +4612,11 @@ take effect.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-trim"></a>-trim
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>trim an image</td></tr></table>
@@ -4357,11 +4627,11 @@ are nearly the same color as the corner pixels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-type"></a>-type <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the image type</td></tr></table>
@@ -4412,11 +4682,11 @@ considerably faster if <strong>Grayscale</strong> is specified.</font></td></tr>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-update"></a>-update <i>&lt;seconds&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
@@ -4429,11 +4699,11 @@ the input file has been changed and update the displayed image accordingly.</fon
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-units"></a>-units <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the units of image resolution</td></tr></table>
@@ -4444,11 +4714,11 @@ with the <strong>-density</strong> option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-unsharp"></a>-unsharp <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>{<i>+&lt;amount&gt;</i>}<i></i>{<i>+&lt;threshold&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image with an unsharp mask operator</td></tr></table>
@@ -4482,22 +4752,22 @@ amount (default 0.05).
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -use-pixmap
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use the pixmap</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-verbose"></a>-verbose
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
@@ -4518,33 +4788,33 @@ for a description of these values.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-version"></a>-version
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -view <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>FlashPix viewing parameters</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-virtual-pixel"></a>-virtual-pixel <i>&lt;method&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify contents of "virtual pixels"</td></tr></table>
@@ -4578,11 +4848,11 @@ virtual pixels such as <strong>-blur</strong>, <strong>-sharpen</strong>, <stron
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-visual"></a>-visual <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>animate images using this X visual type</td></tr></table>
@@ -4605,22 +4875,22 @@ simultaneous colors on the default screen is chosen.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -watermark <i>&lt;brightness&gt;x&lt;saturation&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>percent brightness and saturation of a watermark</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-wave"></a>-wave <i>&lt;amplitude&gt;x&lt;wavelength&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>alter an image along a sine wave</td></tr></table>
@@ -4630,22 +4900,43 @@ of the wave.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-white-point"></a>-white-point <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chromaticity white point</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    <a name="details-white-threshold"></a>-white-threshold <i>red[,green][,blue][,opacity]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pixels above the threshold become white</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>-white-threshold</strong> to set pixels with values above the specified
+threshold to maximum value (white). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-window"></a>-window <i>&lt;id&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make image the background of a window</td></tr></table>
@@ -4664,22 +4955,22 @@ unique colors than the target window colormap allows.  Use
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     -window-group
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the window group</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-write"></a>-write <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write  an image sequence [<em>convert, composite</em>]</td></tr></table>
@@ -4692,11 +4983,11 @@ the <strong>+write</strong> <em>filename</em> option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     <a name="details-write"></a>-write <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file [<em>display</em>]</td></tr></table>
@@ -4726,10 +5017,10 @@ for details.</font></td></tr></table>
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="envi"></a>Environment
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -4737,11 +5028,11 @@ color="#FFFFFF"><font size="+1">
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     COLUMNS
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Output screen width. Used when formatting text for the screen. Many
@@ -4750,11 +5041,11 @@ explicitly exported in order for GraphicsMagick to see it.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     DISPLAY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>X11 display ID (host, display number, and screen in the form
@@ -4762,11 +5053,11 @@ hostname:display.screen).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     HOME
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Location of user's home directory. GraphicsMagick searches for
@@ -4776,11 +5067,32 @@ configuration files in $HOME/.magick if the directory exists. See
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    MAGICK_CODER_STABILITY
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
+available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, and <strong>UNSTABLE</strong>.
+The default minimum level is <strong>UNSTABLE</strong>, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the <strong>PRIMARY</strong> level are commonly used
+formats with very well maintained implementations. Coders at the
+<strong>STABLE</strong> level are reasonably well maintained but represent less used
+formats. Coders at the <strong>UNSTABLE</strong> level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_CODER_MODULE_PATH
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for image format coder modules.
@@ -4794,11 +5106,11 @@ before trying the default search path.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_CONFIGURE_PATH
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for configuration (.mgk) files.
@@ -4809,22 +5121,22 @@ the default search path.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_DEBUG
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Debug options (see <strong>-debug</strong> for details)</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_FILTER_MODULE_PATH
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for filter process modules
@@ -4838,11 +5150,11 @@ specified search path is used before trying the default search path.</td></tr></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_HOME
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to top of GraphicsMagick installation directory. Only observed
@@ -4851,11 +5163,11 @@ hard-coded or set by an installer.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_MMAP_READ
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_READ</strong> is set to <strong>TRUE</strong>, GraphicsMagick
@@ -4867,11 +5179,11 @@ failed to do read-ahead over network mounts for memory mapped files.</td></tr></
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_MMAP_WRITE
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_WRITE</strong> is set to <strong>TRUE</strong>, GraphicsMagick
@@ -4882,11 +5194,28 @@ one.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
+    MAGICK_IO_FSYNC
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_IO_FSYNC</strong> is set to <strong>TRUE</strong>, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_IOBUF_SIZE
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and
@@ -4903,55 +5232,55 @@ mind that the operating system will try to cache files in RAM.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_DISK
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of disk space allowed for use by the pixel cache.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_FILES
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of open files.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_MAP
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_MEMORY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     MAGICK_TMPDIR
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to directory where GraphicsMagick should write temporary
@@ -4960,11 +5289,11 @@ files. The default is to use the system default, or the location set by
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     TMPDIR
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For POSIX-compatible systems (Unix-compatible), the path to the
@@ -4973,26 +5302,41 @@ Overridden by <strong>MAGICK_TMPDIR</strong> if it is set.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     TMP <i>or TEMP</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by <strong>MAGICK_TMPDIR</strong> if it
 is set.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    OMP_NUM_THREADS
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>As per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.</td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="file"></a>Configuration Files
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -5001,11 +5345,11 @@ color="#FFFFFF"><font size="+1">
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     colors.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors configuration file</td></tr></table>
@@ -5019,22 +5363,22 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     delegates.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>delegates configuration file</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     log.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>logging configuration file</td></tr></table>
@@ -5052,11 +5396,11 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     magic.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>file header magic test configuration file</td></tr></table>
@@ -5069,11 +5413,11 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     modules.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>loadable modules configuration file</td></tr></table>
@@ -5086,11 +5430,11 @@ width=15><b><font face="Helvetica, Arial"
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
+><font color="#00B04F"><font size="+1">
     type.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>master type (fonts) configuration file</td></tr></table>
@@ -5118,10 +5462,10 @@ width=15><b><font face="Helvetica, Arial"
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="auth"></a>Authors
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -5141,16 +5485,16 @@ Leonard Rosenthol.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT bgcolor="#52799E"><img 
-SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#FFFFFF"><font size="+1">
+color="#00B04F"><font size="+1">
 <a NAME="copy"></a>Copyright
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002, 2003 GraphicsMagick Group, an organization
+<strong>Copyright (C) 2002 - 2008 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining a
@@ -5189,6 +5533,6 @@ otherwise see http://www.graphicsmagick.org/www/Copyright.html.</strong>
 
 [<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002, 2003, 2004</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2008</a></p></td>
 </tr></table>
 </body></html>

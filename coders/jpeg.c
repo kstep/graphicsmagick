@@ -685,7 +685,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
-  image->client_data=0;
   error_manager.image=image;
 
   /*
@@ -1029,7 +1028,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
 
     /* FIXME .... */
     if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
@@ -1091,7 +1090,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         {
           status=MagickFail;
           break;
@@ -1180,7 +1180,8 @@ ModuleExport void RegisterJPEGImage(void)
   entry->adjoin=False;
   entry->description="Joint Photographic Experts Group JFIF format";
   if (version[0] != '\0')
-    entry->module=AcquireString("JPEG");
+    entry->module="JPEG";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPG");
@@ -1194,6 +1195,7 @@ ModuleExport void RegisterJPEGImage(void)
   if (version[0] != '\0')
     entry->version=version;
   entry->module="JPEG";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1680,7 +1682,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
       /* FIXME: density should not be set via image_info->density
          but removing this support may break some applications. */
       count=GetMagickDimension(image_info->density,&image->x_resolution,
-        &image->y_resolution);
+        &image->y_resolution,NULL,NULL);
       if (count == 1 )
         image->y_resolution=image->x_resolution;
     }
@@ -2018,7 +2020,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }
@@ -2044,7 +2047,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
               }
           }
@@ -2072,7 +2076,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   }
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
               }
           }
@@ -2107,7 +2112,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
           }
       }
@@ -2133,7 +2139,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }
@@ -2161,7 +2168,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
             }
         }

@@ -1,4 +1,4 @@
-.TH gm 1 "2008/04/15" "GraphicsMagick"
+.TH gm 1 "2008/11/02" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -11,6 +11,10 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 \fBgm animate\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP
+
+\fBcompare\fP \fB[\fP \fIoptions\fP \fB... ]\fP \fIreference-image\fP
+\fB[\fP \fIoptions\fP \fB... ]\fP \fIcompare-image\fP
+\fB[\fP \fIoptions\fP \fB... ]\fP
 
 \fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIchange-image base-image\fP
 \fB[\fP \fImask-image\fP \fB]\fP \fIoutput-image\fP
@@ -95,7 +99,7 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
  o  BMP3      *-w- Microsoft Windows bitmap image v3
  o  CACHE     *--- Magick Persistent Cache image format
  o  CAPTION   *r-- Caption (requires separate size info)
- o  CIN       *rw+ Kodak Cineon Format
+ o  CIN       *rw- Kodak Cineon Format
  o  CMYK      *rw- Raw cyan, magenta, yellow, and black
                    samples (8 or 16 bits, depending on
                    the image depth)
@@ -108,7 +112,7 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
                     Medicine image
  o  DCX       *rw+ ZSoft IBM PC multi-page Paintbrush
  o  DPS       *r-- Display PostScript
- o  DPX       *r-- Digital Moving Picture Exchange
+ o  DPX       *rw- Digital Moving Picture Exchange
  o  EPDF      *rw- Encapsulated Portable Document Format
  o  EPI       *rw- Adobe Encapsulated PostScript
                    Interchange format
@@ -356,9 +360,10 @@ until the set is terminated by the appearance of any option or \fB-noop\fP.
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 
-This is a combined list of the commandline options used by the GraphicsMagick
-utilities (\fIanimate, composite, convert, display, identify,
-import, mogrify\fP and \fImontage\fP).
+This is a combined list of the commandline options used by the
+GraphicsMagick utilities (\fIanimate\fP, \fIcompare\fP,
+\fIcomposite\fP, \fIconvert\fP, \fIdisplay\fP, \fIidentify\fP,
+\fIimport\fP, \fImogrify\fP and \fImontage\fP).
 
 
 In this document, angle brackets ("<>") enclose variables and curly
@@ -432,6 +437,19 @@ for details.
 The color is specified using the format described under the \fB-fill\fP
 option.
 .TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
+
+Use \fB-black-threshold\fP to set pixels with values below the specified
+threshold to minimum value (black). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.
+.TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
 .TP
@@ -469,10 +487,11 @@ details.
 \fRthe type of channel
 
 Choose from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
-\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, or \fBBlack\fP.
+\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
+or \fBGray\fP.
 
 Use this option to extract a particular \fIchannel\fP from the image.
-\fBMatte\fP,
+\fBOpacity\fP,
 for example, is useful for extracting the opacity values from an image.
 .TP
 .B "-charcoal \fI<factor>"\fP
@@ -662,6 +681,7 @@ composite operators are available:
      Add
      Subtract
      Difference
+     Divide
      Multiply
      Bumpmap
      Copy
@@ -669,6 +689,10 @@ composite operators are available:
      CopyGreen
      CopyBlue
      CopyOpacity
+     CopyCyan
+     CopyMagenta
+     CopyYellow
+     CopyBlack
 
 The behavior of each operator is described below.
 .in 15
@@ -773,6 +797,16 @@ useful for comparing two very similar images.
 
 .in 15
 .in 15
+.B "Divide"
+.in 20
+ \fR
+.in 20
+The result of \fIchange-image\fP / \fIbase-image\fP. This is useful
+for improving the readability of text on unevenly illuminated photos (by
+using a gaussian blurred copy of change-image as base-image).
+
+.in 15
+.in 15
 .B "Multiply"
 .in 20
  \fR
@@ -838,6 +872,51 @@ with the opacity channel in \fIchange-image\fP. The other channels are
 copied untouched.
 
 .in 15
+.in 15
+.B "CopyCyan"
+.in 20
+ \fR
+.in 20
+The resulting image is the cyan channel in \fIbase-image\fP replaced
+with the cyan channel in \fIchange-image\fP. The other channels are
+copied untouched. Use of this operator requires that base-image be in
+CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyMagenta"
+.in 20
+ \fR
+.in 20
+The resulting image is the magenta channel in \fIbase-image\fP
+replaced with the magenta channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyYellow"
+.in 20
+ \fR
+.in 20
+The resulting image is the yellow channel in \fIbase-image\fP
+replaced with the yellow channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace.
+
+.in 15
+.in 15
+.B "CopyBlack"
+.in 20
+ \fR
+.in 20
+The resulting image is the black channel in \fIbase-image\fP
+replaced with the black channel in \fIchange-image\fP. The other
+channels are copied untouched. Use of this operator requires that
+base-image be in CMYK(A) colorspace. If change-image is not in CMYK
+space, then the change-image pixel intensities are used.
+
+.in 15
 
 .TP
 .B "-compress \fI<type>"\fP
@@ -877,10 +956,10 @@ For a more pronounced effect you can repeat the option:
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
 
-The kernel is specified as a comma-separated list of integers, ordered
-left-to right, starting with the top row.
-The order of the kernel is determined by the square root of the
-number of entries.  Presently only square kernels are supported.
+The kernel is specified as a comma-separated list of floating point
+values, ordered left-to right, starting with the top row. The order of
+the kernel is determined by the square root of the number of entries.
+Presently only square kernels are supported.
 .TP
 .B "-create-directories"
 \fRcreate output directory if required
@@ -1187,6 +1266,26 @@ value stored in the image. This option should not normally be used.
 
 .in 15
 .in 15
+.B "tiff:rows-per-strip=<value>"
+.in 20
+ \fR
+.in 20
+Allows the user to specify the number of rows per TIFF strip. Ignored
+if using tiles or JPEG compression.
+
+.in 15
+.in 15
+.B "tiff:strip-per-page=true"
+.in 20
+ \fR
+.in 20
+Requests that the image is written in a single TIFF strip. This is
+normally the default when group3 or group4 compression is requested
+within reasonable limits. Requesting a single strip for large images may
+result in failure due to resource consumption in the writer or reader.
+
+.in 15
+.in 15
 .B "tiff:tile"
 .in 20
  \fR
@@ -1233,6 +1332,7 @@ Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
+
 .in 15
 
 
@@ -1559,6 +1659,17 @@ Use \fB+endian\fP to revert to unspecified endianness.
 .B "-equalize"
 \fRperform histogram equalization to the image
 .TP
+.B "-file \fI<filename>"\fP
+\fRwrite annotated difference image to file
+
+If \fB-file\fP is specified, then an annotated difference image is
+generated and written to the specified file. Pixels which differ between
+the \fBreference\fP and \fBcompare\fP images are modified from those in
+the \fBcompare\fP image so that the changed pixels become more obvious.
+Some images may require use of an alternative highlight style (see
+\fB-highlight-style\fP) or highlight color (see \fB-highlight-color\fP)
+before the changes are obvious.
+.TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
 
@@ -1595,7 +1706,8 @@ See \fB-draw\fP for further details.
 
 Use this option to affect the resizing operation of an image (see
 \fB-geometry\fP).
-Choose from these filters:
+Choose from these filters (ordered by approximate increasing CPU
+time):
 
      Point
      Box
@@ -1642,9 +1754,9 @@ reflect the scanlines in the horizontal direction.
 .B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
 
-You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+You can tag a font to specify whether it is a PostScript, TrueType, or X11
 font.  For example, Arial.ttf is a TrueType font, ps:helvetica
-is PostScript, and x:fixed is OPTION1.
+is PostScript, and x:fixed is X11.
 .TP
 .B "-foreground \fI<color>"\fP
 \fRdefine the foreground color
@@ -1962,6 +2074,22 @@ for this purpose.
 .B "-help"
 \fRprint usage instructions
 .TP
+.B "-highlight-color \fI<color>"\fP
+\fRpixel annotation color
+
+Specifies the color to use when annotating difference pixels.
+.TP
+.B "-highlight-style \fI<style>"\fP
+\fRpixel annotation style
+
+Specifies the pixel difference annotation style used to draw attention to
+changed pixels. May be one of \fBAssign\fP, \fBThreshold\fP,
+\fBTint\fP, or \fBXOR\fP; where \fBAssign\fP replaces the pixel with
+the highlight color (see \fB-highlight-color\fP), \fBThreshold\fP
+replaces the pixel with black or white based on the difference in
+intensity, \fBTint\fP alpha tints the pixel with the highlight color,
+and \fBXOR\fP does an XOR between the pixel and the highlight color.
+.TP
 .B "-iconGeometry \fI<geometry>"\fP
 \fRspecify the icon geometry
 
@@ -2148,8 +2276,15 @@ A value other than zero forces the animation to repeat itself up to
 \fIiterations\fP
 times.
 .TP
+.B "-magnify"
+\fRmagnify the image
+
+The image size is doubled using linear interpolation.
+.TP
 .B "-magnify \fI<factor>"\fP
 \fRmagnify the image
+
+The displayed image is magnified by \fBfactor\fP.
 .TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
@@ -2220,6 +2355,11 @@ option.
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
 .TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
+
+The image size is halved using linear interpolation.
+.TP
 .B "-mode \fI<value>"\fP
 \fRmode of operation
 .TP
@@ -2271,6 +2411,15 @@ is terminated by the appearance of any option.
 If the \fB-mosaic\fP
 option appears after all of the input images, all images are included
 in the mosaic.
+.TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
+
+Simulate motion blur by convolving the image with a Gaussian operator of
+the given radius and standard deviation (sigma). For reasonable results,
+radius should be larger than sigma. If radius is zero, then a suitable
+radius is automatically selected based on sigma. The angle specifies the
+angle that the object is coming from (side which is blurred).
 .TP
 .B "-name"
 \fRname an image
@@ -2327,55 +2476,272 @@ option.
 See \fB-fill\fP for more details.
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 
-Apply a low-level mathematical or bitwise operator to a selected image
-channel or all image channels. Operations which result in negative
-results are reset to zero, and operations which overflow the
-available range are reset to the maximum possible value.
+Apply a low-level mathematical, bitwise, or value operator to a selected
+image channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the available
+range are reset to the maximum possible value.
+
+Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP,
+\fBOpacity\fP, \fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, \fBAll\fP, or \fBGray\fP. \fBAll\fP only modifies the
+color channels and does not modify the \fBOpacity\fP channel. Except for
+the threshold operators, \fBAll\fP operates on each channel
+independently so that operations are on a per-channel basis.
+
+\fBGray\fP treats the color channels as a grayscale intensity and
+performs the requested operation on the equivalent pixel intensity so the
+result is a gray image.
+
+Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
+\fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBNegate\fP, \fBLShift\fP,
+\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP,
+\fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
+\fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
+\fBNoise-Laplacian\fP, \fBNoise-Multiplicative\fP,
+\fBNoise-Poisson\fP, and \fBNoise-Uniform\fP.
+
+Rvalue may be any floating point or integer value. Normally rvalue will
+be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
+supported by the GraphicsMagick build (255, 65535, or 4294967295) but
+values outside this range may be useful for some arithmetic operations.
+Arguments to logical or bit-wise operations are rounded to a positive
+integral value prior to use. If a percent (\fB%\fP) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
+
+The following is a description of the operators:
+.in 15
+
+.in 15
+.B "Add"
+.in 20
+ \fR
+.in 20
+Result is rvalue added to channel value.
+
+.in 15
+.in 15
+.B "And"
+.in 20
+ \fR
+.in 20
+Result is the logical AND of rvalue with channel value.
+
+.in 15
+.in 15
+.B "Assign"
+.in 20
+ \fR
+.in 20
+Result is rvalue.
+
+.in 15
+.in 15
+.B "Depth"
+.in 20
+ \fR
+.in 20
+Result is channel value adjusted so that it may be (approximately)
+stored in the specified number of bits without additional loss.
+
+.in 15
+.in 15
+.B "Divide"
+.in 20
+ \fR
+.in 20
+Result is channel value divided by rvalue.
+
+.in 15
+.in 15
+.B "Gamma"
+.in 20
+ \fR
+.in 20
+Result is channel value gamma adjusted by rvalue.
+
+.in 15
+.in 15
+.B "LShift"
+.in 20
+ \fR
+.in 20
+Result is channel value bitwise left shifted by rvalue bits.
+
+.in 15
+.in 15
+.B "Multiply"
+.in 20
+ \fR
+.in 20
+Result is channel value multiplied by rvalue.
+
+.in 15
+.in 15
+.B "Negate"
+.in 20
+ \fR
+.in 20
+Result is inverse of channel value (like a film negative). An rvalue
+must be supplied but is currently not used. Inverting the image twice
+results in the original image.
+
+.in 15
+.in 15
+.B "Or"
+.in 20
+ \fR
+.in 20
+Result is the logical OR of rvalue with channel value.
+
+.in 15
+.in 15
+.B "RShift"
+.in 20
+ \fR
+.in 20
+Result is channel value bitwise right shifted by rvalue bits.
+
+.in 15
+.in 15
+.B "Subtract"
+.in 20
+ \fR
+.in 20
+Result is channel value minus rvalue.
+
+.in 15
+.in 15
+.B "Threshold"
+.in 20
+ \fR
+.in 20
+Result is maximum (white) if channel value is greater than rvalue,
+or minimum (black) if it is less than or equal to rvalue. If \fBall\fP
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+
+.in 15
+.in 15
+.B "Threshold-white"
+.in 20
+ \fR
+.in 20
+Result is maximum (white) if channel value is greater than rvalue and
+is unchanged if it is less than or equal to rvalue. This can be used to
+remove apparent noise from the bright parts of an image. If \fBall\fP
+channels are specified, then thresholding is done based on computed pixel
+intensity.
+
+.in 15
+.in 15
+.B "Threshold-black"
+.in 20
+ \fR
+.in 20
+Result is minimum (black) if channel value is less than than rvalue
+and is unchanged if it is greater than or equal to rvalue. This can be
+used to remove apparent noise from the dark parts of an image. If
+\fBall\fP channels are specified, then thresholding is done based on
+computed pixel intensity.
+
+.in 15
+.in 15
+.B "Xor"
+.in 20
+ \fR
+.in 20
+Result is the logical XOR of rvalue with channel value. An
+interesting property of XOR is that performing the same operation twice
+results in the original value.
+
+.in 15
+.in 15
+.B "Noise-Gaussian"
+.in 20
+ \fR
+.in 20
+Result is the channel value with gaussian noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+.B "Noise-Impulse"
+.in 20
+ \fR
+.in 20
+Result is the channel value with impulse noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+.B "Noise-Laplacian"
+.in 20
+ \fR
+.in 20
+Result is the channel value with laplacian noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+.B "Noise-Multiplicative"
+.in 20
+ \fR
+.in 20
+Result is the channel value with multiplicative noise applied
+according to the intensity specified by rvalue.
+
+.in 15
+.in 15
+.B "Noise-Poisson"
+.in 20
+ \fR
+.in 20
+Result is the channel value with poisson noise applied according to
+the intensity specified by rvalue.
+
+.in 15
+.in 15
+.B "Noise-Uniform"
+.in 20
+ \fR
+.in 20
+Result is the channel value with uniform noise applied according to
+the intensity specified by rvalue.
+
+.in 15
 
 
-Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
-\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
-or \fBAll\fP.
+As an example, the \fBAssign\fP operator assigns a fixed value to a
+channel. For example, this command sets the red channel to the mid-range
+value:
 
-Select an operator from \fBAdd\fP, \fBAnd\fP, \fBDivide\fP, \fBLShift\fP,
-\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP, \fBXor\fP.
+  gm convert in.bmp -operator red assign "50%" out.bmp
 
-Rvalue may be any floating point value. Normally rvalue will
-be in the range of 0 to MaxRGB, where MaxRGB is the largest
-quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295) but values outside this range may be
-useful for some arithmetic operations. Arguments to logical or
-bit-wise operations are rounded to a positive integral value
-prior to use. If a percent (\fB%\fP) symbol is appended to
-the argument, then the argument has a range of 0 to 100
-percent.
-As an example, the \fBxor\fP operator may be used to invert a
-monochrome image (interchange black and white):
+The following applies 50% thresholding to the image and returns a gray
+image:
 
-  gm convert in.bmp -operator all xor "100%" out.bmp
+  gm convert in.bmp -operator gray threshold "50%" out.bmp
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
 
 The channel or channels specified in the \fBchanneltype\fP argument are
-reduced to binary, using an ordered dither method.
-The choices for \fBchanneltype\fP are:
+reduced to binary, using an ordered dither method. The choices for
+\fBchanneltype\fP are \fBAll\fP, \fBIntensity\fP, \fBRed\fP,
+\fBGreen\fP, \fBBlue\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, and \fBOpacity\fP
 
-    all
-    intensity
-    opacity
-    matte
-
-When \fBchanneltype\fP is "all", the color samples are dithered into
-a graylevel and then that graylevel is stored in the three color
+When \fBchanneltype\fP is "All", the color samples are dithered into
+a gray level and then that gray level is stored in the three color
 channels.  Separately, the opacity channel is dithered into a bilevel
 opacity value which is stored in the opacity channel.
 
-When \fBchanneltype\fP is "intensity", only the color samples are
-dithered.  When \fBchanneltype\fP is "opacity" or "matte", only the
-opacity channel is dithered.
+When \fBchanneltype\fP is "Intensity", only the color samples are
+dithered. When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is dithered. When a color channel is specified, only that
+channel is dithered.
 
 The choices for N are 2, 3, or 4. When N is 2, the image is divided into
 2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
@@ -2508,7 +2874,7 @@ quickly. For identify, use +ping to force reading the image pixels so
 that the pixel read rate may be included in the displayed information.
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, X11, or TrueType font
 .TP
 .B "-preview \fI<type>"\fP
 \fRimage preview type
@@ -2675,25 +3041,23 @@ Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 \fRrandom threshold the image
 
 The channel or channels specified in the <channeltype> argument are
-reduced to binary, using an random-threshold method.  The choices for
-\fBchanneltype\fP are:
+reduced to binary, using an random-threshold method. The choices for
+\fBchanneltype\fP are \fBAll\fP, \fBIntensity\fP, \fBRed\fP,
+\fBGreen\fP, \fBBlue\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP,
+\fBBlack\fP, and \fBOpacity\fP
 
-    all
-    intensity
-    opacity
-    matte
-
-When \fBchanneltype\fP is "all", the color samples are thresholded into
-a graylevel and then that graylevel is stored in the three color
-channels.  Separately, the opacity channel is thresholded into a bilevel
-opacity value which is stored in the opacity channel.  For each pixel,
-a new random number is used to establish the threshold to be used.  The
+When \fBchanneltype\fP is "All", the color samples are thresholded into
+a graylevel and then that gray level is stored in the three color
+channels. Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel. For each pixel, a
+new random number is used to establish the threshold to be used. The
 threshold never exceeds the specified maximum (HIGH) and is never less
 than the specified minimum (LOW).
 
 When \fBchanneltype\fP is "intensity", only the color samples are
-thresholded.  When \fBchanneltype\fP is "opacity" or "matte", only the
-opacity channel is thresholded.
+thresholded. When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is thresholded. The other named channels only threshold
+the associated channel.
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -3014,31 +3378,28 @@ Specifies the name of the preferred font to use in fixed (typewriter style)
 formatted text.  The default is 14 point \fICourier\fP.
 
 You can tag a font to specify whether it is a PostScript, TrueType, or
-OPTION1 font.  For example, Courier.ttf is a TrueType font
-and x:fixed is OPTION1.
+X11 font.  For example, Courier.ttf is a TrueType font
+and x:fixed is X11.
 .TP
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 
-Create an image such that any pixel sample that is equal to, or exceeds
-the threshold, is reassigned the maximum intensity otherwise the minimum
-intensity.
+Modify the image such that any pixel sample with an intensity value
+greater than the threshold is assigned the maximum intensity (white), or
+otherwise is assigned the minimum intensity (black). If a percent prefix
+is applied, then the threshold is a percentage of the available range.
 
-If the green or blue value is omitted, these channels use the same value
-as the first one provided.  If all three color values are the same,
-the result is a bi-level image.  If the opacity threshold is omitted,
-OpaqueOpacity will be used and any partially transparent pixel will
-become fully transparent.  If only a single 0 is provided,
-auto-thresholding will be performed.
+To efficiently create a black and white image from a color image, use
 
-To generate an all-black or all-white image with the same dimensions as
-the input image, you can use
+    gm convert -threshold 50% in.png out.png
 
-    gm convert -threshold 65535 in.png black.png
-    gm convert -threshold 0,0 in.png white.png
+The optimum threshold value depends on the nature of the image.
+In order to threshold individual channels, use the \fB-operator\fP
+subcommand with it's \fBThreshold\fP, \fBThreshold-White\fP, or
+\fBThreshold-Black\fP options.
 .TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
@@ -3320,6 +3681,19 @@ of the wave.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
+
+Use \fB-white-threshold\fP to set pixels with values above the specified
+threshold to maximum value (white). If only one value is supplied, or the
+red, green, and blue values are identical, then intensity thresholding is
+used. If the color threshold values are not identical then channel-based
+thresholding is used, and color distortion will occur. Specify a negative
+value (e.g. -1) if you want a channel to be ignored but you do want to
+threshold a channel later in the list. If a percent (%) symbol is
+appended, then the values are treated as a percentage of maximum
+range.
 .TP
 .B "-window \fI<id>"\fP
 \fRmake image the background of a window
@@ -3830,6 +4204,105 @@ information is sometimes used by a window manager to provide some sort
 of header identifying the window. The default is the image file name.
 .in 15
 
+.SH GM COMPARE
+
+\fBcompare\fP compares two similar images using a specified statistical
+method (see \fB-metric\fP) and/or by writing a difference image
+(\fB-file\fP), with the altered pixels annotated using a specified
+method (see \fB-highlight-style\fP) and color (see
+\fB-highlight-color\fP). \fIReference-image\fP is the original
+image and \fIcompare-image\fP is the (possibly) altered version, which
+should have the same dimensions as \fIreference-image\fP.
+.SH EXAMPLES
+
+To compare two images using Mean Square Error (MSE) statistical analysis
+use:
+
+    gm compare -metric mse original.miff compare.miff
+
+To create an annotated difference image use:
+
+    gm compare -algorithm annotate -highlight-color purple
+            -file diff.miff original.miff compare.miff
+.SH OPTIONS
+
+Options are processed in command line order. Any option you specify on
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
+
+For a more detailed description of each option, see
+Options, above.
+
+.TP
+.B "-authenticate \fI<string>"\fP
+\fRdecrypt image with this password
+.TP
+.B "-colorspace \fI<value>"\fP
+\fRthe type of colorspace
+.TP
+.B "-debug \fI<events>"\fP
+\fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
+.B "-density \fI<width>x<height>"\fP
+\fRhorizontal and vertical resolution in pixels of the image
+.TP
+.B "-depth \fI<value>"\fP
+\fRdepth of the image
+.TP
+.B "-display \fI<host:display[.screen]>"\fP
+\fRspecifies the X server to contact
+.TP
+.B "-endian \fI<type>"\fP
+\fRspecify endianness (MSB or LSB) of output image
+.TP
+.B "-file \fI<filename>"\fP
+\fRwrite annotated difference image to file
+.TP
+.B "-help"
+\fRprint usage instructions
+.TP
+.B "-highlight-color \fI<color>"\fP
+\fRpixel annotation color
+.TP
+.B "-highlight-style \fI<style>"\fP
+\fRpixel annotation style
+.TP
+.B "-interlace \fI<type>"\fP
+\fRthe type of interlacing scheme
+.TP
+.B "-limit \fI<type> <value>"\fP
+\fRDisk, File, Map, Memory, or Pixels resource limit
+.TP
+.B "-log \fI<string>"\fP
+\fRSpecify format for debug log
+.TP
+.B "-matte"
+\fRstore matte channel if the image has one
+.TP
+.B "-monitor"
+\fRshow progress indication
+.TP
+.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
+\fRchroma subsampling factors
+.TP
+.B "-size \fI<width>x<height>{+offset}"\fP
+\fRwidth and height of the image
+.TP
+.B "-type \fI<type>"\fP
+\fRthe image type
+.TP
+.B "-verbose"
+\fRprint detailed information about the image
+.TP
+.B "-version"
+\fRprint GraphicsMagick version string
+
+For a more detailed description of each option, see
+Options, above.
+
 .SH GM COMPOSITE
 
 \fBcomposite\fP composites (combines) images to create new images.
@@ -4084,15 +4557,6 @@ invoked with
 
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-
-\fBConjure\fP is in the early stages of development as of
-April 2002.
-
-This early announcement is to allow GraphicsMagick users to contribute
-ideas early in the process so when the scripting language is released it
-will be useful/stable from the get-go! If you want to contribute
-suggestions about the Magick scripting language (MSL), post them to the
-GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -4158,6 +4622,9 @@ elements and their attributes:
 .B "<image>"
 .in 20
  \fR
+.in 20
+background, color, id, size
+.in 15
 .in 20
 
 Define a new image object.  \fB</image>\fP destroys it. Because of
@@ -4227,6 +4694,9 @@ life of the group:
 .in 20
  \fR
 .in 20
+    filename
+.in 15
+.in 20
 
 Read a new image from a disk file.
 
@@ -4253,6 +4723,9 @@ To read two images use
 .B "<write>"
 .in 20
  \fR
+.in 20
+    filename
+.in 15
 .in 20
 Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
@@ -4323,6 +4796,35 @@ PerlMagick's GetAttribute().
     geometry, height, width, x, y
 .in 15
 .in 15
+.B "<composite>"
+.in 20
+ \fR
+.in 20
+    compose, geometry, gravity, image, x, y
+.in 15
+.in 20
+
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <group>
+        <image id="image_01">
+            <read filename="cloud3.gif"/>
+            <resize geometry="250x90"/>
+        </image>
+        <image id="image_02">
+            <read filename="cloud4.gif"/>
+            <resize geometry="190x100"/>
+        </image>
+        <image>
+            <read filename="background.jpg"/>
+            <composite image="image_01" geometry="+740+470"/>
+            <composite image="image_02" geometry="+390+415"/>
+        </image>
+        <write filename="result.png"/>
+    </group>
+
+.in 15
+.in 15
 .B "<despeckle>"
 .in 20
  \fR
@@ -4342,6 +4844,13 @@ PerlMagick's GetAttribute().
 .in 20
  \fR
 .in 15
+.B "<edge>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
+.in 15
 .B "<flip>"
 .in 20
  \fR
@@ -4357,6 +4866,10 @@ PerlMagick's GetAttribute().
     fill, geometry, height, width, x, y, inner, outer
 .in 15
 .in 15
+.B "<flatten>"
+.in 20
+ \fR
+.in 15
 .B "<get>"
 .in 20
  \fR
@@ -4364,11 +4877,25 @@ PerlMagick's GetAttribute().
     height, width
 .in 15
 .in 15
+.B "<gamma>"
+.in 20
+ \fR
+.in 20
+    red, green, blue
+.in 15
+.in 15
 .B "<image>"
 .in 20
  \fR
 .in 20
     background, color, id, size
+.in 15
+.in 15
+.B "<implode>"
+.in 20
+ \fR
+.in 20
+    amount
 .in 15
 .in 15
 .B "<magnify>"
@@ -4379,9 +4906,23 @@ PerlMagick's GetAttribute().
 .in 20
  \fR
 .in 15
+.B "<medianfilter>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
+.in 15
 .B "<normalize>"
 .in 20
  \fR
+.in 15
+.B "<oilpaint>"
+.in 20
+ \fR
+.in 20
+    radius
+.in 15
 .in 15
 .B "<print>"
 .in 20
@@ -4413,6 +4954,13 @@ PerlMagick's GetAttribute().
  \fR
 .in 20
     degrees
+.in 15
+.in 15
+.B "<reducenoise>"
+.in 20
+ \fR
+.in 20
+    radius
 .in 15
 .in 15
 .B "<sample>"
@@ -4625,6 +5173,9 @@ Options, above.
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
+.TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
 .TP
@@ -4808,6 +5359,9 @@ Options, above.
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
 .TP
+.B "-magnify"
+\fRmagnify the image
+.TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
 .TP
@@ -4823,6 +5377,9 @@ Options, above.
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
 .TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
+.TP
 .B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
 .TP
@@ -4837,6 +5394,9 @@ Options, above.
 .TP
 .B "-mosaic"
 \fRcreate a mosaic from an image or an image sequence
+.TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
 .TP
 .B "-negate"
 \fRreplace every pixel with its complementary color
@@ -4854,7 +5414,7 @@ Options, above.
 \fRchange this color to the pen color within the image
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -4872,7 +5432,7 @@ Options, above.
 \fRefficiently determine image characteristics
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, X11, or TrueType font
 .TP
 .B "-preview \fI<type>"\fP
 \fRimage preview type
@@ -4964,7 +5524,7 @@ Options, above.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 .TP
 .B "-tile \fI<filename>"\fP
@@ -5011,6 +5571,9 @@ Options, above.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite  an image sequence [\fIconvert, composite\fP]
@@ -5128,7 +5691,7 @@ uniform resource locator \fB(URL)\fP, use:
 
 To display histogram of an image, use:
 
-    gm convert file.jpg HISTOGRAM:- | display -
+    gm gm convert file.jpg HISTOGRAM:- | gm display -
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -5138,7 +5701,7 @@ the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 
       gm display -colors 32 cockatoo.miff -noop duck.miff
-              -colors 16 macaw.miff
+                 -colors 16 macaw.miff
 
 \fBDisplay\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified
@@ -7418,7 +7981,7 @@ Options, above.
 \fRefficiently determine image characteristics
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, X11, or TrueType font
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG/TIFF compression level
@@ -7517,6 +8080,9 @@ Options, above.
 .TP
 .B "-background \fI<color>"\fP
 \fRthe background color
+.TP
+.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels below the threshold become black
 .TP
 .B "-blue-primary \fI<x>,<y>"\fP
 \fRblue chromaticity primary point
@@ -7689,6 +8255,9 @@ Options, above.
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
 .TP
+.B "-magnify"
+\fRmagnify the image
+.TP
 .B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
 .TP
@@ -7704,6 +8273,9 @@ Options, above.
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
 .TP
+.B "-minify \fI<factor>"\fP
+\fRminify the image
+.TP
 .B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
 .TP
@@ -7712,6 +8284,9 @@ Options, above.
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
+.TP
+.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
+\fRSimulate motion blur
 .TP
 .B "-negate"
 \fRreplace every pixel with its complementary color
@@ -7729,7 +8304,7 @@ Options, above.
 \fRchange this color to the pen color within the image
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical or bitwise operator to an image channel
+\fRapply a mathematical, bitwise, or value operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -7747,7 +8322,7 @@ Options, above.
 \fR(This option has been replaced by the -fill option)
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, X11, or TrueType font
 .TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
@@ -7833,7 +8408,7 @@ Options, above.
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
+.B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 .TP
 .B "-tile \fI<filename>"\fP
@@ -7877,6 +8452,9 @@ Options, above.
 .TP
 .B "-white-point \fI<x>,<y>"\fP
 \fRchromaticity white point
+.TP
+.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
+\fRpixels above the threshold become white
 
 For a more detailed description of each option, see
 Options, above.
@@ -8124,7 +8702,7 @@ Options, above.
 \fR(This option has been replaced by the -fill option)
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, X11, or TrueType font
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG/TIFF compression level
@@ -8265,6 +8843,19 @@ configuration files in $HOME/.magick if the directory exists. See
 \fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
 \fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
 .TP
+.B "MAGICK_CODER_STABILITY"
+\fRThe minimum coder stability level before it will be used. The
+available levels are \fBPRIMARY\fP, \fBSTABLE\fP, and \fBUNSTABLE\fP.
+The default minimum level is \fBUNSTABLE\fP, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the \fBPRIMARY\fP level are commonly used
+formats with very well maintained implementations. Coders at the
+\fBSTABLE\fP level are reasonably well maintained but represent less used
+formats. Coders at the \fBUNSTABLE\fP level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.
+.TP
 .B "MAGICK_CODER_MODULE_PATH"
 \fRSearch path to use when searching for image format coder modules.
 This path allows the user to arbitrarily extend the image formats
@@ -8315,6 +8906,15 @@ experimental feature (which is currently broken). Write performance is
 usually somewhat worse when using this approach rather than the default
 one.
 .TP
+.B "MAGICK_IO_FSYNC"
+\fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.
+.TP
 .B "MAGICK_IOBUF_SIZE"
 \fRThe amount of I/O buffering (in bytes) to use when reading and
 writing encoded files. The default is 16384, which is observed to work
@@ -8354,6 +8954,13 @@ Overridden by \fBMAGICK_TMPDIR\fP if it is set.
 \fRFor Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
 is set.
+.TP
+.B "OMP_NUM_THREADS"
+\fRAs per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.
 .SH CONFIGURATION FILES
 GraphicsMagick uses a number of XML format configuration files:
 .TP
@@ -8444,7 +9051,7 @@ based on his Zoom program.
 spatial subdivision color reduction algorithm is based on his Img software.
 .SH COPYRIGHT
 
-\fBCopyright (C) 2002, 2003 GraphicsMagick Group, an organization
+\fBCopyright (C) 2002 - 2008 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.\fP
 
 \fBPermission is hereby granted, free of charge, to any person obtaining a
