@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-11-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/url.c (RegisterURLImage): Register HTTP and FTP URL
+        support in the "unstable" category since these are capable of
+        accessing the network and therefore represent a potential security
+        issue.  Register the FILE URL support in the "stable" category
+        since it is capable of incorporating local disk files, which may
+        still represent a security security issue for server applications.
+        Note that disabling these functions might cause some existing MSL,
+        MVG and SVG scripts to stop working if they use external URLs.
+
+</UL>
+<p>
 2008-11-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

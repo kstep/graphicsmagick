@@ -1198,7 +1198,6 @@ enable_gcov
 enable_symbol_prefix
 enable_magick_compat
 with_quantum_depth
-with_cache
 with_frozenpaths
 with_magick_plus_plus
 with_perl
@@ -1907,7 +1906,6 @@ Optional Packages:
   --with-ltdl-lib=DIR     use the libltdl.la installed in DIR
   --with-modules          enable building dynamically loadable modules
   --with-quantum-depth    number of bits in a pixel quantum (default 8)
-  --with-cache            set pixel cache threshhold in MB (default available memory)
   --with-frozenpaths      enable frozen delegate paths
   --without-magick-plus-plus disable build/install of Magick++
   --without-perl          disable build/install of PerlMagick
@@ -7066,13 +7064,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7069: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7067: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7072: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7070: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7075: output\"" >&5)
+  (eval echo "\"\$as_me:7073: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8263,7 +8261,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8266 "configure"' > conftest.$ac_ext
+  echo '#line 8264 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10179,11 +10177,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10182: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10180: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10186: \$? = $ac_status" >&5
+   echo "$as_me:10184: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10518,11 +10516,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10521: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10519: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10525: \$? = $ac_status" >&5
+   echo "$as_me:10523: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10623,11 +10621,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10626: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10624: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10630: \$? = $ac_status" >&5
+   echo "$as_me:10628: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10678,11 +10676,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10681: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10679: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10685: \$? = $ac_status" >&5
+   echo "$as_me:10683: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13478,7 +13476,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13481 "configure"
+#line 13479 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13574,7 +13572,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13577 "configure"
+#line 13575 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16333,11 +16331,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16336: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16334: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16340: \$? = $ac_status" >&5
+   echo "$as_me:16338: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16432,11 +16430,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16435: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16433: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16439: \$? = $ac_status" >&5
+   echo "$as_me:16437: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16484,11 +16482,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16487: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16485: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16491: \$? = $ac_status" >&5
+   echo "$as_me:16489: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18384,7 +18382,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18387 "configure"
+#line 18385 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19874,25 +19872,6 @@ cat >>confdefs.h <<_ACEOF
 #define QuantumDepth $QuantumDepth
 _ACEOF
 
-
-# Set pixel cache threshold
-
-# Check whether --with-cache was given.
-if test "${with_cache+set}" = set; then
-  withval=$with_cache; with_cache=$withval
-else
-  with_cache=''
-fi
-
-if test "$with_cache" != ''
-then
-
-cat >>confdefs.h <<_ACEOF
-#define PixelCacheThreshold $with_cache
-_ACEOF
-
-  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
-fi
 
 # Disable/Enable support for full delegate paths in delegates.mgk
 
@@ -29665,8 +29644,76 @@ if test "x$ac_cv_lib_mtsk_sunw_mp_register_warn" = x""yes; then
   LIB_OMP="-lmtsk"
 fi
 
-    # AIX xlc (this links, but impact on performance is undetermined).
-    # AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    # AIX xlc
+    { $as_echo "$as_me:$LINENO: checking for _xlsmpFlush in -lxlsmp" >&5
+$as_echo_n "checking for _xlsmpFlush in -lxlsmp... " >&6; }
+if test "${ac_cv_lib_xlsmp__xlsmpFlush+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lxlsmp  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _xlsmpFlush ();
+int
+main ()
+{
+return _xlsmpFlush ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_xlsmp__xlsmpFlush=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_xlsmp__xlsmpFlush=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_xlsmp__xlsmpFlush" >&5
+$as_echo "$ac_cv_lib_xlsmp__xlsmpFlush" >&6; }
+if test "x$ac_cv_lib_xlsmp__xlsmpFlush" = x""yes; then
+  LIB_OMP="-lxlsmp"
+fi
+
   fi
   LIBS="$LIB_OMP $LIBS"
 fi

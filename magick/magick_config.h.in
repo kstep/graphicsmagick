@@ -548,9 +548,6 @@
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 
-/* Pixel cache threshold in MB (defaults to available memory) */
-#undef PixelCacheThreshold
-
 /* Number of bits in a pixel Quantum (8/16/32) */
 #undef QuantumDepth
 

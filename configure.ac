@@ -545,17 +545,6 @@ QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
 AC_SUBST(QuantumDepth)dnl
 
-# Set pixel cache threshold
-AC_ARG_WITH(cache,
-	      [  --with-cache            set pixel cache threshhold in MB (default available memory)],
-	      [with_cache=$withval],
-	      [with_cache=''])
-if test "$with_cache" != ''
-then
-  AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
-  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
-fi
-
 # Disable/Enable support for full delegate paths in delegates.mgk
 AC_ARG_WITH(frozenpaths,
               [  --with-frozenpaths      enable frozen delegate paths],
@@ -1304,8 +1293,8 @@ then
   else
     # Sun CC
     AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
-    # AIX xlc (this links, but impact on performance is undetermined).
-    # AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    # AIX xlc
+    AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
   fi
   LIBS="$LIB_OMP $LIBS"
 fi

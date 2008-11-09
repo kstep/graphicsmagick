@@ -224,6 +224,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (http://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("FTP");
@@ -231,6 +232,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (ftp://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("FILE");
@@ -238,6 +240,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (file://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasXML) */
 }

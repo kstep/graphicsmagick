@@ -253,24 +253,24 @@ properly borderWidth must be 0).
                            layer in composite image. The other layers are copied untouched.
    CopyOpacityCompositeOp  The resulting image is the matte layer in image replaced with the matte
                            layer in composite image. The other layers are copied untouched.
-   ClearCompositeOp
+   ClearCompositeOp        Pixels in the region are set to Transparent.
    DissolveCompositeOp
    DisplaceCompositeOp
-   ModulateCompositeOp
+   ModulateCompositeOp     Modulate brightness in HSL space.
    ThresholdCompositeOp
-   NoCompositeOp
+   NoCompositeOp           Do nothing at all.
    DarkenCompositeOp
    LightenCompositeOp
-   HueCompositeOp
-   SaturateCompositeOp
-   ColorizeCompositeOp
-   LuminizeCompositeOp
-   ScreenCompositeOp
-   OverlayCompositeOp
-   CopyCyanCompositeOp
-   CopyMagentaCompositeOp
-   CopyYellowCompositeOp
-   CopyBlackCompositeOp
+   HueCompositeOp          Copy Hue channel (from HSL colorspace).
+   SaturateCompositeOp     Copy Saturation channel (from HSL colorspace).
+   ColorizeCompositeOp     Copy Hue and Saturation channels (from HSL colorspace).
+   LuminizeCompositeOp     Copy Brightness channel (from HSL colorspace).
+   ScreenCompositeOp       [Not yet implemented]
+   OverlayCompositeOp      [Not yet implemented]
+   CopyCyanCompositeOp	   Copy the Cyan channel.
+   CopyMagentaCompositeOp  Copy the Magenta channel.
+   CopyYellowCompositeOp   Copy the Yellow channel.
+   CopyBlackCompositeOp    Copy the Black channel.
    DivideCompositeOp
    ======================  ==========================================================================
 
@@ -516,6 +516,19 @@ primitives for a way to control the propagation of drawing options.
    |                |                            |subsequent drawing commands.                           |
    +----------------+----------------------------+-------------------------------------------------------+
 
+EndianType
+==========
+
+::
+
+  typedef enum
+  {
+    UndefinedEndian,
+    LSBEndian,            /* "little" endian */
+    MSBEndian,            /* "big" endian */
+    NativeEndian          /* native endian */
+  } EndianType;
+
 ErrorHandler
 ============
 
@@ -739,7 +752,7 @@ The Image structure represents an GraphicsMagick image. It is initially
 allocated by AllocateImage() and deallocated by DestroyImage(). The
 functions ReadImage(), ReadImages(), BlobToImage() and CreateImage()
 return a new image. Use CloneImage() to copy an image. An image consists
-of a structure containing image attribute as well as the image pixels.
+of a structure containing image attributes as well as the image pixels.
 
 The image pixels are represented by the structure PixelPacket and are
 cached in-memory, or on disk, depending on the cache threshold setting.
@@ -754,7 +767,7 @@ row.
 There are two means of accessing pixel views. When using the default
 view, the pixels are made visible and accessable by using the
 GetImagePixels() method which provides access to a specified region of
-the image. After the view has been updated, thhe pixels may be saved back
+the image. After the view has been updated, the pixels may be saved back
 to the cache in their original positions via SyncImagePixels(). In order
 to create an image with new contents, or to blindly overwrite existing
 contents, the method SetImagePixels() is used to reserve a pixel view
@@ -763,13 +776,13 @@ been updated, it may be written to the cache via SyncImagePixels(). The
 function GetIndexes() provides access to the image colormap, represented
 as an array of type IndexPacket.
 
-A more flexible interface to the image pixels is via the CacheView
+A more flexible interface to the image pixels is via the Cache View
 interface. This interface supports multiple pixel cache views (limited by
-the number of image rows), each of which are identified by a handle (of
-type ViewInfo*). Use OpenCacheView() to obtain a new cache view,
-CloseCacheView() to discard a cache view, GetCacheView() to access an
-existing pixel region, SetCacheView() to define a new pixel region, and
-SyncCacheView() to save the updated pixel region. The function
+the amount of available memory), each of which are identified by a handle
+(of type ViewInfo). Use OpenCacheView() to obtain a new cache view,
+CloseCacheView() to discard a cache view, GetCacheViewPixels() to access
+an existing pixel region, SetCacheView() to define a new pixel region,
+and SyncCacheViewPixels() to save the updated pixel region. The function
 GetCacheViewIndexes() provides access to the colormap indexes associated
 with the pixel view.
 
@@ -778,10 +791,12 @@ convenient to have a high-level interface available which supports
 converting between external pixel representations and GraphicsMagick's
 own representation. Pixel components (red, green, blue, opacity, RGB, or
 RGBA) may be transferred from a user-supplied buffer into the default
-view by using PushImagePixels(). Pixel components may be transferred from
-the default view into a user-supplied buffer by using PopImagePixels().
-Use of this high-level interface helps protect image coders from changes
-to GraphicsMagick's pixel representation and simplifies the implementation.
+view by using ImportImagePixelArea(), or from an allocated view via
+ImportViewPixelArea(). Pixel components may be transferred from the
+default view into a user-supplied buffer by using ExportImagePixelArea(),
+or from an allocated view via ExportViewPixelArea(). Use of this
+high-level interface helps protect image coders from changes to
+GraphicsMagick's pixel representation and simplifies the implementation.
 
 The members of the Image structure are shown in the following table:
  
@@ -1981,19 +1996,15 @@ TypeMetric
 ViewInfo
 ========
 
+ViewInfo represents a handle to a pixel view, which represents a uniquely
+selectable rectangular region of pixels. The only limit on the number of
+views is the amount of available memory. Each Image contains a collection
+of default views (one view per thread) so that the image may be usefully
+accessed without needing to explicitly allocate pixel views.
+
 ::
 
-  typedef struct _ViewInfo
-  {
-    Image
-      *image;
-  
-    unsigned long
-      id;
-  
-    unsigned long
-      signature;
-  } ViewInfo;
+  typedef void *ViewInfo;
 
 
 VirtualPixelMethod
