@@ -81,7 +81,10 @@ extern "C" {
 # define tempnam _tempnam
 #endif
 
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
 #define vsnprintf _vsnprintf 
+#endif
+
 #if defined(_MT) && defined(MSWINDOWS)
 #define SAFE_GLOBAL __declspec(thread)
 #else
@@ -127,6 +130,11 @@ extern "C" {
 #define mkdir(path,mode) _mkdir(path)
 
 /*
+  Windows provides _commit() as a substitute for fsync()
+*/
+#define fsync(fd) _commit(fd)
+
+/*
   Typedef declarations.
 */
 typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
@@ -142,6 +150,16 @@ typedef long ssize_t;
 #endif /* !defined(ssize_t) && !defined(__MINGW32__) */
 
 #endif /* !defined(XS_VERSION) */
+
+/*
+  Bzlib is strange in that symbols from bzlib.h are DLL-exported by
+  default rather than imported.  This feels like a bug to me.
+*/
+#if defined(HasBZLIB)
+#  if defined(_WIN32)
+#    define BZ_IMPORT 1
+#  endif
+#endif /* defined(HasBZLIB) */
 
 
 /*

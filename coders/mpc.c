@@ -571,7 +571,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"resolution") == 0)
                   {
                     (void) GetMagickDimension(values,&image->x_resolution,
-                      &image->y_resolution);
+                                              &image->y_resolution,NULL,NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
@@ -794,8 +794,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
-          exception);
+        status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename);
         if (status == False)
           break;
       }
@@ -837,6 +838,7 @@ ModuleExport void RegisterMPCImage(void)
   entry=SetMagickInfo("CACHE");
   entry->description="Magick Persistent Cache image format";
   entry->module="CACHE";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("MPC");
@@ -845,6 +847,7 @@ ModuleExport void RegisterMPCImage(void)
   entry->magick=(MagickHandler) IsMPC;
   entry->description="Magick Persistent Cache image format";
   entry->module="MPC";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1259,8 +1262,9 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

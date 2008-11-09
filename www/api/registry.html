@@ -1,153 +1,183 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>registry - In-memory image registration interface</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>registry</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#deletemagickregistry">DeleteMagickRegistry</a></li>
-		<li><a href="#getimagefrommagickregisty">GetImageFromMagickRegisty</a></li>
-		<li><a href="#getmagickregistry">GetMagickRegistry</a></li>
-		<li><a href="#setmagickregistry">SetMagickRegistry</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>registry - In-memory image registration interface</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>DeleteMagickRegistry</strong>( const long id );</P>
-<P>const void * <strong>GetMagickRegistry</strong>( const long id, RegistryType *type, size_t *length, ExceptionInfo *exception );</P>
-<P>long  <strong>SetMagickRegistry</strong>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="deletemagickregistry">DeleteMagickRegistry</a></h2>
-<blockquote>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns True if the entry is deleted otherwise False if no entry is found in the registry that matches the id. </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
-<blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_id_3a">id:</a></strong>
-
-<DD>
-<P>The registry id.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="registry">
+<h1 class="title">registry</h1>
+<h2 class="subtitle" id="in-memory-image-registration-interface">In-memory image registration interface</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#deletemagickregistry" id="id7" name="id7">DeleteMagickRegistry</a></li>
+<li><a class="reference" href="#getimagefrommagickregistry" id="id8" name="id8">GetImageFromMagickRegistry</a></li>
+<li><a class="reference" href="#getmagickregistry" id="id9" name="id9">GetMagickRegistry</a></li>
+<li><a class="reference" href="#setmagickregistry" id="id10" name="id10">SetMagickRegistry</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="deletemagickregistry" name="deletemagickregistry">DeleteMagickRegistry</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int DeleteMagickRegistry( const long id );
+</pre>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>DeleteMagickRegistry() deletes an entry in the registry as defined by the id.
+It returns True if the entry is deleted otherwise False if no entry is found
+in the registry that matches the id.</p>
+<p>The format of the DeleteMagickRegistry method is:</p>
+<pre class="literal-block">
+unsigned int DeleteMagickRegistry( const long id );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>id:</dt>
+<dd>The registry id.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagefrommagickregisty">GetImageFromMagickRegisty</a></h2>
-<P><code>GetImageFromMagickRegistry()</code> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, NULL is returned.</P>
-<P>The format of the GetImageFromMagickRegistry method is:</P>
-<pre>
-    Image *GetImageFromMagickRegistry(const char *name,long *id,
-      ExceptionInfo *exception)</pre>
-<P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_name_3a">name:</a></strong>
-
-<DD>
-<P>The name of the image to retrieve from the registry.</P>
-</dd>
-</li>
-<dt><strong>id:</strong>
-
-<DD>
-<P>The registry id.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id8" id="getimagefrommagickregistry" name="getimagefrommagickregistry">GetImageFromMagickRegistry</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="types.html#image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
+                                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>GetImageFromMagickRegistry() gets an image from the registry as defined by
+its name.  If the blob that matches the name is not found, NULL is returned.</p>
+<p>The format of the GetImageFromMagickRegistry method is:</p>
+<pre class="literal-block">
+<a class="reference" href="types.html#image">Image</a> *GetImageFromMagickRegistry( const char *name, long *id,
+                                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>name:</dt>
+<dd>The name of the image to retrieve from the registry.</dd>
+<dt>id:</dt>
+<dd>The registry id.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getmagickregistry">GetMagickRegistry</a></h2>
-<blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the GetMagickRegistry method is:</P>
-<blockquote>const void *GetMagickRegistry ( const long id, <A HREF="types.html#RegistryType">RegistryType</A> *type, size_t *length, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>id:</strong>
-
-<DD>
-<P>The registry id.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_type_3a">type:</a></strong>
-
-<DD>
-<P>The registry type.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_length_3a">length:</a></strong>
-
-<DD>
-<P>The blob length in number of bytes.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id9" id="getmagickregistry" name="getmagickregistry">GetMagickRegistry</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<pre class="literal-block">
+const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#registrytype">RegistryType</a> *type, size_t *length,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>GetMagickRegistry() gets a blob from the registry as defined by the id.  If
+the blob that matches the id is not found, NULL is returned.</p>
+<p>The format of the GetMagickRegistry method is:</p>
+<pre class="literal-block">
+const void *GetMagickRegistry( const long id, <a class="reference" href="types.html#registrytype">RegistryType</a> *type, size_t *length,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>id:</dt>
+<dd>The registry id.</dd>
+<dt>type:</dt>
+<dd>The registry type.</dd>
+<dt>length:</dt>
+<dd>The blob length in number of bytes.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setmagickregistry">SetMagickRegistry</a></h2>
-<blockquote>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><P>The format of the SetMagickRegistry method is:</P>
-<blockquote>long SetMagickRegistry ( const <A HREF="types.html#RegistryType">RegistryType</A> type, const void *blob, const size_t length, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>type:</strong>
-
-<DD>
-<P>The registry type.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_blob_3a">blob:</a></strong>
-
-<DD>
-<P>The address of a Binary Large OBject.</P>
-</dd>
-</li>
-<dt><strong>length:</strong>
-
-<DD>
-<P>For a registry type of ImageRegistryType use <code>sizeof(Image)</code> otherise the blob length in number of bytes.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id10" id="setmagickregistry" name="setmagickregistry">SetMagickRegistry</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<pre class="literal-block">
+long SetMagickRegistry( const <a class="reference" href="types.html#registrytype">RegistryType</a> type, const void *blob, const size_t length,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>SetMagickRegistry() sets a blob into the registry and returns a unique ID.
+If an error occurs, -1 is returned.</p>
+<p>The format of the SetMagickRegistry method is:</p>
+<pre class="literal-block">
+long SetMagickRegistry( const <a class="reference" href="types.html#registrytype">RegistryType</a> type, const void *blob, const size_t length,
+                        <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>type:</dt>
+<dd>The registry type.</dd>
+<dt>blob:</dt>
+<dd>The address of a Binary Large OBject.</dd>
+<dt>length:</dt>
+<dd>For a registry type of ImageRegistryType use sizeof(Image)
+otherise the blob length in number of bytes.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 00:14 UTC.
 
+</div>
 </body>
-
 </html>

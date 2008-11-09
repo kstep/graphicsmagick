@@ -42,6 +42,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/tempfile.h"
@@ -2746,9 +2747,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DCM preamble.
   */
-  count=ReadBlob(image,128,(char *) magick);
-  count=ReadBlob(image,4,(char *) magick);
-  if ((count == 0) || (LocaleNCompare((char *) magick,"DICM",4) != 0))
+  if ((count=ReadBlob(image,128,(char *) magick)) != 128)
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+  if ((count=ReadBlob(image,4,(char *) magick)) != 4)
+     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "magick: \"%.4s\"",magick);
+  if (LocaleNCompare((char *) magick,"DICM",4) != 0)
     (void) SeekBlob(image,0L,SEEK_SET);
   /*
     Read DCM Medical image.
@@ -2780,6 +2786,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     group=ReadBlobLSBShort(image);
     element=ReadBlobLSBShort(image);
     quantum=0;
+    if (EOFBlob(image))
+       ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     /*
       Find corresponding VR for this group and element.
     */
@@ -2788,7 +2796,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (element == dicom_info[i].element))
         break;
     (void) strlcpy(implicit_vr,dicom_info[i].vr,MaxTextExtent);
-    count=ReadBlob(image,2,(char *) explicit_vr);
+    if ((count=ReadBlob(image,2,(char *) explicit_vr)) != 2)
+       ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     /*
       Check for "explicitness", but meta-file headers always explicit.
     */
@@ -2814,15 +2823,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
           {
             (void) ReadBlobLSBShort(image);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             quantum=4;
           }
       }
     datum=0;
     if (quantum == 4)
-      datum=(long) ReadBlobLSBLong(image);
-    else
-      if (quantum == 2)
+      {
+        datum=(long) ReadBlobLSBLong(image);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
+    else if (quantum == 2)
+      {
         datum=(long) ReadBlobLSBShort(image);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
     quantum=0;
     length=1;
     if (datum != 0)
@@ -2880,24 +2898,37 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     data=(unsigned char *) NULL;
     if ((length == 1) && (quantum == 1))
-      datum=ReadBlobByte(image);
-    else
-      if ((length == 1) && (quantum == 2))
+      {
+        if ((datum=ReadBlobByte(image)) == EOF)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
+    else if ((length == 1) && (quantum == 2))
+      {
         datum=ReadBlobLSBShort(image);
-      else
-        if ((length == 1) && (quantum == 4))
-          datum=(long) ReadBlobLSBLong(image);
-        else
-          if ((quantum != 0) && (length != 0))
-            {
-              if (length > ((~0UL)/quantum))
-                ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-              data=MagickAllocateArray(unsigned char *,(length+1),quantum);
-              if (data == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-              (void) ReadBlob(image,quantum*length,(char *) data);
-              data[length*quantum]=0;
-            }
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
+    else if ((length == 1) && (quantum == 4))
+      {
+        datum=(long) ReadBlobLSBLong(image);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
+    else if ((quantum != 0) && (length != 0))
+      {
+        size_t
+          size;
+
+        if (length > ((~0UL)/quantum))
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        data=MagickAllocateArray(unsigned char *,(length+1),quantum);
+        if (data == (unsigned char *) NULL)
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        size=quantum*length;
+        if (ReadBlob(image,size,(char *) data) != size)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        data[size]=0;
+      }
     switch (group)
     {
       case 0x0002:
@@ -3084,7 +3115,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (significant_bits > 8)
               bytes_per_pixel=2;
             mask=(1 << significant_bits)-1;
-            /* image->depth=Min(significant_bits,QuantumDepth); */
+            image->depth=Min(significant_bits,QuantumDepth);
             break;
           }
           case 0x0102:
@@ -3279,7 +3310,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             for (x=0; x < (long) image->columns; x++)
             {
               switch ((int) i)
@@ -3291,15 +3325,32 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image))); break;
                 default: break;
               }
+              if (EOFBlob(image))
+                {
+                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+                  status=MagickFail;
+                  break;
+                }
               q++;
             }
             if (!SyncImagePixels(image))
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                  break;
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
+                  {
+                    status=MagickFail;
+                    break;
+                  }
+            if (status == MagickFail)
+              break;
           }
+          if (status == MagickFail)
+            break;
         }
       }
     else
@@ -3319,8 +3370,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
+            {
+              status=MagickFail;
+              break;
+            }
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             if (samples_per_pixel == 1)
@@ -3399,24 +3453,38 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->green=(Quantum) green;
             q->blue=(Quantum) blue;
             q++;
+            if (EOFBlob(image))
+              {
+                ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+                status=MagickFail;
+              }
           }
           if (!SyncImagePixels(image))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                break;
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
+                {
+                  status=MagickFail;
+                  break;
+                }
         }
-        if (image->storage_class == PseudoClass)
-          {
-            if (bytes_per_pixel == 2)
-              (void) NormalizeImage(image);
-          }
+        if (status == MagickPass)
+          if (image->storage_class == PseudoClass)
+            {
+              if (bytes_per_pixel == 2)
+                (void) NormalizeImage(image);
+            }
       }
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
+        status=MagickFail;
         break;
       }
     /*
@@ -3437,9 +3505,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
-          exception);
-        if (status == False)
+        status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename);
+        if (status == MagickFail)
           break;
       }
   }

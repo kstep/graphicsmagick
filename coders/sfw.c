@@ -356,6 +356,7 @@ ModuleExport void RegisterSFWImage(void)
   entry->adjoin=False;
   entry->description="Seattle Film Works";
   entry->module="SFW";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

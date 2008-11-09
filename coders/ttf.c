@@ -274,6 +274,7 @@ ModuleExport void RegisterTTFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="TTF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PFA");
@@ -286,6 +287,7 @@ ModuleExport void RegisterTTFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="TTF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PFB");
@@ -298,6 +300,7 @@ ModuleExport void RegisterTTFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="TTF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

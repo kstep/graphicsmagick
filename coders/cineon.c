@@ -42,6 +42,7 @@
 #include "magick/blob.h"
 #include "magick/bit_stream.h"
 #include "magick/colorspace.h"
+#include "magick/enum_strings.h"
 #include "magick/pixel_cache.h"
 #include "magick/magick_endian.h"
 #include "magick/error.h"
@@ -592,14 +593,29 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
       unsigned char
         *user_data;
       
+      const size_t
+        block_size = 65536UL;
+      
       size_t
+        read_size,
         user_data_length;
-
-      user_data_length=cin_file_info.user_defined_length;
-      user_data=MagickAllocateMemory(unsigned char *,user_data_length);
-      if (user_data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      offset += ReadBlob(image,user_data_length,user_data);
+      
+      user_data_length=0UL;
+      user_data=(unsigned char *) NULL;
+      while (user_data_length < cin_file_info.user_defined_length)
+        {
+          read_size=Min(block_size,cin_file_info.user_defined_length-user_data_length);
+          MagickReallocMemory(unsigned char *,user_data,user_data_length+read_size);
+          if (user_data == (unsigned char *) NULL)
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          if (ReadBlob(image,read_size,user_data+user_data_length) != read_size)
+            {
+              MagickFreeMemory(user_data);
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+            }
+          user_data_length += read_size;
+          offset += read_size;
+        }
       if (!SetImageProfile(image,"CINEONUSERDATA",user_data,user_data_length))
         {
           MagickFreeMemory(user_data);
@@ -618,7 +634,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     Read remainder of header.
   */
   for ( ; offset < pixels_offset ; offset++ )
-    (void) ReadBlobByte(image);
+    if (ReadBlobByte(image) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -677,7 +694,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           MagickFreeMemory(scandata);
@@ -724,7 +742,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           MagickFreeMemory(scandata);
@@ -1338,7 +1357,8 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
 
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename))
               break;
       }
     MagickFreeMemory(scanline);

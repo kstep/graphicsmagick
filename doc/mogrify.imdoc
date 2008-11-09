@@ -41,11 +41,11 @@ mogrify - mogrify an image
 </dt>
 
 <dt>
-<a href="#mog-auth">Authors</a>
+<a href="#auth">Authors</a>
 </dt>
 
 <dt>
-<a href="#mog-copy">Copyright</a>
+<a href="#copy">Copyright</a>
 </dt>
 </dl>
 </format>
@@ -209,8 +209,16 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq></p>
 <format type=man>
 <sect NAME="mog-also">SEE ALSO
 <p>
-GraphicsMagick(1), display(1), animate(1), identify(1), montage(1), convert(1),
-composite(1), conjure(1)
+GraphicsMagick(1),
+animate(1),
+compare(1),
+composite(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+montage(1)
 </p>
 </sect>
 </format>

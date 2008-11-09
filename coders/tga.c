@@ -119,7 +119,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
+  unsigned int
     index;
 
   long
@@ -175,13 +175,14 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read TGA header information.
   */
-  count=ReadBlob(image,1,(char *) &tga_info.id_length);
+  (void) ReadBlob(image,1,(char *) &tga_info.id_length);
   tga_info.colormap_type=ReadBlobByte(image);
   tga_info.image_type=ReadBlobByte(image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   do
     {
-      if ((count == 0) ||
-          ((tga_info.image_type != TGAColormap) &&
+      if (((tga_info.image_type != TGAColormap) &&
            (tga_info.image_type != TGARGB) &&
            (tga_info.image_type != TGAMonochrome) &&
            (tga_info.image_type != TGARLEColormap) &&
@@ -200,6 +201,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tga_info.height=ReadBlobLSBShort(image);
       tga_info.bits_per_pixel=ReadBlobByte(image);
       tga_info.attributes=ReadBlobByte(image);
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "ImageType=%s CMapType=%u CMapStart=%u CMapLength=%u CMapDepth=%u\n  XOffset=%u YOffset=%u Width=%u Height=%u PixelDepth=%u Attributes=0x%.2x",
                             ((tga_info.image_type == TGAColormap) ? "Colormapped" :
@@ -209,14 +212,23 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              (tga_info.image_type == TGARLERGB) ? "Truecolor-RLE" :
                              (tga_info.image_type == TGARLEMonochrome) ? "Monochrome-RLE" :
                              "Unknown"),
-                            (unsigned int) tga_info.colormap_type,
-                            (unsigned int) tga_info.colormap_index,
-                            (unsigned int) tga_info.colormap_length,
-                            (unsigned int) tga_info.colormap_size,
-                            tga_info.x_origin, tga_info.y_origin, tga_info.width, tga_info.height,
+                            (unsigned int) tga_info.colormap_type,  /* Colormap type */
+                            (unsigned int) tga_info.colormap_index, /* Index of first colormap entry to use */
+                            (unsigned int) tga_info.colormap_length, /* # of elements in colormap */
+                            (unsigned int) tga_info.colormap_size, /* Bits in each palette entry */
+                            tga_info.x_origin, tga_info.y_origin,
+                            tga_info.width, tga_info.height,
                             (unsigned int) tga_info.bits_per_pixel,
                             tga_info.attributes);
-                   
+
+      /*
+        Validate depth.
+      */
+      if (!(((tga_info.bits_per_pixel > 1) && (tga_info.bits_per_pixel < 17)) ||
+            (tga_info.bits_per_pixel == 24 ) ||
+            (tga_info.bits_per_pixel == 32 )))
+        ThrowReaderException(CoderError,DataStorageTypeIsNotSupported,image);
+
       /*
         Initialize image structure.
       */
@@ -304,7 +316,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (comment == (char *) NULL)
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
-          (void) ReadBlob(image,tga_info.id_length,comment);
+          if(ReadBlob(image,tga_info.id_length,comment) != tga_info.id_length)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
           comment[tga_info.id_length]='\0';
           (void) SetImageAttribute(image,"comment",comment);
           MagickFreeMemory(comment);
@@ -369,6 +382,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colormap[i]=pixel;
             }
         }
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (image_info->ping && (image_info->subrange != 0))
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
@@ -391,7 +406,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,(long) real,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             {
               if ((tga_info.image_type == TGARLEColormap) ||
@@ -405,9 +420,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   else
                     {
-                      count=ReadBlob(image,1,(char *) &runlength);
-                      if (count == 0)
-                        ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
+                      if (ReadBlob(image,1,(char *) &runlength) != 1)
+                        {
+                          status=MagickFail;
+                          break;
+                        }
                       flag=runlength & 0x80;
                       if (flag != 0)
                         runlength-=128;
@@ -488,7 +505,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                     }
                   }
-              if (status == False)
+              if (EOFBlob(image))
+                status = MagickFail;
+              if (status == MagickFail)
                 ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
               if (image->storage_class == PseudoClass)
                 indexes[x]=index;
@@ -511,7 +530,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->is_grayscale=is_grayscale;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
         }
       if (EOFBlob(image))
@@ -535,7 +555,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (tga_info.image_type == TGARLEColormap) ||
               (tga_info.image_type == TGARLERGB) ||
               (tga_info.image_type == TGARLEMonochrome));
-      if (status == True)
+      if (!EOFBlob(image) && (status == True))
         {
           /*
             Allocate next image structure.
@@ -547,7 +567,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               return((Image *) NULL);
             }
           image=SyncNextImageInList(image);
-          if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename))
             break;
         }
     } while (status == True);
@@ -683,25 +705,25 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   typedef struct _TargaInfo
   {
     unsigned char
-    id_length,
+      id_length,
       colormap_type,
       image_type;
 
     unsigned short
-    colormap_index,
+      colormap_index,
       colormap_length;
 
     unsigned char
-    colormap_size;
+      colormap_size;
 
     unsigned short
-    x_origin,
+      x_origin,
       y_origin,
       width,
       height;
 
     unsigned char
-    bits_per_pixel,
+      bits_per_pixel,
       attributes;
   } TargaInfo;
 
@@ -717,7 +739,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -918,7 +940,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           q=targa_pixels;
-          indexes=GetIndexes(image);
+          indexes=AccessImmutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             {
               if (targa_info.image_type == TargaColormap)
@@ -960,14 +982,17 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
       MagickFreeMemory(targa_pixels);
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+      if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename))
         break;
     } while (image_info->adjoin);
   if (image_info->adjoin)

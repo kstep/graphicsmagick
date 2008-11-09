@@ -15,10 +15,26 @@ utilities_gm_LDADD	= $(LIBMAGICK)
 utilities_gm_LDFLAGS	= $(LDFLAGS)
 utilities_gm_SOURCES	= utilities/gm.c
 
+if !HasTTF
+UTILITIES_TTF_XFAIL_TESTS = \
+	utilities/tests/msl_composite.sh
+endif
+
+if !HasXML
+UTILITIES_XML_XFAIL_TESTS = \
+	utilities/tests/msl_composite.sh
+endif
+
+UTILITIES_XFAIL_TESTS = \
+	$(UTILITIES_TTF_XFAIL_TESTS) \
+	$(UTILITIES_XML_XFAIL_TESTS)
+
 # Tests to run
 UTILITIES_TESTS = \
 	utilities/tests/addnoise.sh \
+	utilities/tests/affine.sh \
 	utilities/tests/annotate.sh \
+	utilities/tests/black-threshold.sh \
 	utilities/tests/blur.sh \
 	utilities/tests/border.sh \
 	utilities/tests/channel.sh \
@@ -68,9 +84,12 @@ UTILITIES_TESTS = \
 	utilities/tests/solarize.sh \
 	utilities/tests/spread.sh \
 	utilities/tests/swirl.sh \
+	utilities/tests/threshold.sh \
 	utilities/tests/unsharpmask.sh \
 	utilities/tests/wave.sh \
-	utilities/tests/montage.sh
+	utilities/tests/white-threshold.sh \
+	utilities/tests/montage.sh \
+	utilities/tests/msl_composite.sh
 
 UTILITIES_MANS = \
 	utilities/gm.1 \
@@ -84,7 +103,33 @@ UTILITIES_EXTRA_DIST = \
 
 UTILITIES_CLEANFILES = \
 	utilities/tests/*_out.miff \
+	utilities/tests/*_out.pnm \
 	utilities/tests/*_out.txt \
-	utilities/tests/demo.miff \
+	utilities/tests/demo*.miff \
 	utilities/tests/gm.core \
 	utilities/tests/core
+
+# Install/Uninstall ImageMagick compatibility links
+if MAGICK_COMPAT
+MAGICKPROGRAMS=animate composite conjure convert display identify import mogrify montage
+UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
+install-exec-local-utilities:
+	$(mkdir_p) $(DESTDIR)$(bindir)
+	cd $(DESTDIR)$(bindir) ; \
+	gm=`echo "gm" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	  $(LN_S) $$gm $$target ; \
+	done
+
+UTILITIES_UNINSTALL_LOCAL_TARGETS=uninstall-local-utilities
+uninstall-local-utilities:
+	cd $(DESTDIR)$(bindir) ; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	done
+endif # MAGICK_COMPAT

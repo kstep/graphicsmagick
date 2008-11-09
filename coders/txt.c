@@ -239,7 +239,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       (void) strcpy(density,PSDensityGeometry);
       count=GetMagickDimension(density,&image->x_resolution,
-        &image->y_resolution);
+        &image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -302,7 +302,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(long) (metrics.ascent-metrics.descent);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(offset,image->rows))
-        if (!MagickMonitor(LoadImageText,offset,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(offset,image->rows,&image->exception,
+                                    LoadImageText,image->filename))
           break;
     p=ReadBlobString(image,text);
     if ((offset < (long) image->rows) && (p != (char *) NULL))
@@ -335,7 +336,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image=SyncNextImageInList(image);
     (void) strlcpy(image->filename,filename,MaxTextExtent);
     (void) SetImage(image,OpaqueOpacity);
-    if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+    if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                LoadImagesText,image->filename))
       break;
   }
   if (texture != (Image *) NULL)
@@ -514,8 +516,9 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

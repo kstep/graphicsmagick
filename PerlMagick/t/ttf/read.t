@@ -55,5 +55,5 @@ testFilterCompare('xc:#FFFFFF',
                   font=>'input.ttf',
                   fill=>'#FF0000',
                   pointsize=>14!,
-                  0.16, 1.0);
+                  0.17, 1.0);
 1;

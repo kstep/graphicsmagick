@@ -1,172 +1,254 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>channel - Image channel functions</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>channel</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#channelimage">ChannelImage</a></li>
-		<li><a href="#exportimagechannel">ExportImageChannel</a></li>
-		<li><a href="#getimagechanneldepth">GetImageChannelDepth</a></li>
-		<li><a href="#importimagechannel">ImportImageChannel</a></li>
-		<li><a href="#setimagechanneldepth">SetImageChannelDepth</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>channel - Image channel functions</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>ChannelImage</strong>( Image *image, const ChannelType channel );</P>
-<P>Image * <strong>ExportImageChannel</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
-<P>unsigned long  <strong>GetImageChannelDepth</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
-<P>MagickPassFail  <strong>ImportImageChannel</strong>( const Image *src_image, Image *dst_image, const ChannelType channel );</P>
-<P>MagickPassFail  <strong>SetImageChannelDepth</strong>( Image *image, const ChannelType channel, const unsigned int depth );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="channelimage">ChannelImage</a></h2>
-<P>Transform an image so that the resulting image is a grayscale image based on a specified image channel.  The resulting image is returned in the RGB colorspace.  This function does not force or assume an input image colorspace so it may be used to extract channels from images in colorspaces other than RGB or CMYK.  For example, if the image is currently transformed to the HWB colorspace, the 'B' channel may be extracted by specifying RedChannel as the ChannelType argument.</P>
-<P>The format of the ChannelImage method is:</P>
-<blockquote>unsigned int ChannelImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_channel_3a">channel:</a></strong>
-
-<DD>
-<P>Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="channel">
+<h1 class="title">channel</h1>
+<h2 class="subtitle" id="image-channel-functions">Image channel functions</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#channelimage" id="id11" name="id11">ChannelImage</a></li>
+<li><a class="reference" href="#exportimagechannel" id="id12" name="id12">ExportImageChannel</a></li>
+<li><a class="reference" href="#getimagechanneldepth" id="id13" name="id13">GetImageChannelDepth</a></li>
+<li><a class="reference" href="#importimagechannel" id="id14" name="id14">ImportImageChannel</a></li>
+<li><a class="reference" href="#importimagechannelsmasked" id="id15" name="id15">ImportImageChannelsMasked</a></li>
+<li><a class="reference" href="#setimagechanneldepth" id="id16" name="id16">SetImageChannelDepth</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id11" id="channelimage" name="channelimage">ChannelImage</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int ChannelImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
+</pre>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>Transform an image so that the resulting image is a grayscale image
+based on a specified image channel. The resulting image is returned in
+the RGB colorspace. This function does not force or assume an input
+image colorspace so it may be used to extract channels from images in
+colorspaces other than RGB or CMYK. For example, if the image is currently
+transformed to the HWB colorspace, the 'B' channel may be extracted by
+specifying RedChannel as the ChannelType argument.</p>
+<p>The format of the ChannelImage method is:</p>
+<pre class="literal-block">
+unsigned int ChannelImage( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>channel:</dt>
+<dd>Identify which channel to extract: Red, Cyan, Green, Magenta,
+Blue, Yellow, or Opacity.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="exportimagechannel">ExportImageChannel</a></h2>
-<blockquote>ExportImageChannel() exports a specified image channel as a new image. </blockquote><P>The format of the ExportImageChannel method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *ExportImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The source image.</P>
-</dd>
-</li>
-<dt><strong>channel:</strong>
-
-<DD>
-<P>The image channel to export</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="exportimagechannel" name="exportimagechannel">ExportImageChannel</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="types.html#image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>ExportImageChannel() exports a specified image channel as a new image.</p>
+<p>The format of the ExportImageChannel method is:</p>
+<pre class="literal-block">
+<a class="reference" href="types.html#image">Image</a> *ExportImageChannel( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The source image.</dd>
+<dt>channel:</dt>
+<dd>The image channel to export</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getimagechanneldepth">GetImageChannelDepth</a></h2>
-<blockquote>GetImageChannelDepth() returns the minimum bit depth required to store the specified image channel without actual loss of color resolution. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageChannelDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a bilevel channel since only one bit of resolution is required to represent a bilevel channel. </blockquote><P>The format of the GetImageChannelDepth method is:</P>
-<blockquote>unsigned long GetImageChannelDepth ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>channel:</strong>
-
-<DD>
-<P>Channel to test.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id13" id="getimagechanneldepth" name="getimagechanneldepth">GetImageChannelDepth</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>GetImageChannelDepth() returns the minimum bit depth required to store
+the specified image channel without actual loss of color resolution.
+Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
+depending on the QuantumDepth value set when the software is compiled.
+GetImageChannelDepth() returns the smallest modulus storage size which
+supports the scale of the pixel within the range (i.e. no information is
+lost). As an example, the value one is returned for a bilevel channel
+since only one bit of resolution is required to represent a bilevel channel.</p>
+<p>The format of the GetImageChannelDepth method is:</p>
+<pre class="literal-block">
+unsigned long GetImageChannelDepth( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                    <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>channel:</dt>
+<dd>Channel to test.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="importimagechannel">ImportImageChannel</a></h2>
-<blockquote>ImportImageChannel() imports an image into the specified image channel. </blockquote><P>The format of the ImportImageChannel method is:</P>
-<blockquote>MagickPassFail ImportImageChannel ( const <A HREF="types.html#Image">Image</A> *src_image, <A HREF="types.html#Image">Image</A> *dst_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_src_image_3a">src_image:</a></strong>
-
-<DD>
-<P>The image to use as the replacement image channel.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_dst_image_3a">dst_image:</a></strong>
-
-<DD>
-<P>The image to import the channel into.</P>
-</dd>
-</li>
-<dt><strong>channel:</strong>
-
-<DD>
-<P>The image channel to import</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id14" id="importimagechannel" name="importimagechannel">ImportImageChannel</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<pre class="literal-block">
+MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#image">Image</a> *source_image, <a class="reference" href="types.html#image">Image</a> *update_image,
+                                   const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>ImportImageChannel() imports an image into the specified image channel.</p>
+<p>The format of the ImportImageChannel method is:</p>
+<pre class="literal-block">
+MagickPassFail ImportImageChannel( const <a class="reference" href="types.html#image">Image</a> *source_image, <a class="reference" href="types.html#image">Image</a> *update_image,
+                                   const <a class="reference" href="types.html#channeltype">ChannelType</a> channel );
+</pre>
+<dl class="docutils">
+<dt>source_image:</dt>
+<dd>The image to use as the replacement image channel.</dd>
+<dt>update_image:</dt>
+<dd>The image to import the channel into.</dd>
+<dt>channel:</dt>
+<dd>The image channel to import</dd>
 </dl>
-<P>
-</P>
-<h2><a name="setimagechanneldepth">SetImageChannelDepth</a></h2>
-<blockquote>SetImageChannelDepth() translates the pixel quantums in the specified channel so that if they are later divided to fit within the specified bit depth, that no additional information is lost ( i.e. no remainder resulting from the division ) . Note that any subsequent image processing is likely to increase the effective depth of the image channels. A non-zero value is returned if the operation is successful. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageChannelDepth method is:</P>
-<blockquote>MagickPassFail SetImageChannelDepth ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const unsigned int depth ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image to update.</P>
-</dd>
-</li>
-<dt><strong>channel:</strong>
-
-<DD>
-<P>Channel to modify.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_depth_3a">depth:</a></strong>
-
-<DD>
-<P>Desired channel depth (range 1 to QuantumDepth)</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id15" id="importimagechannelsmasked" name="importimagechannelsmasked">ImportImageChannelsMasked</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<pre class="literal-block">
+MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#image">Image</a> *source_image,
+                                          <a class="reference" href="types.html#image">Image</a> *update_image,
+                                          const <a class="reference" href="types.html#channeltype">ChannelType</a> channels );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>ImportImageChannelsMasked() imports all the channels from a source
+image to an update image, except for the channels specified.</p>
+<p>The format of the ImportImageChannelsMasked method is:</p>
+<pre class="literal-block">
+MagickPassFail ImportImageChannelsMasked( const <a class="reference" href="types.html#image">Image</a> *source_image,
+                                          <a class="reference" href="types.html#image">Image</a> *update_image,
+                                          const <a class="reference" href="types.html#channeltype">ChannelType</a> channels );
+</pre>
+<dl class="docutils">
+<dt>source_image:</dt>
+<dd>The image from which to extract the replacement channels.</dd>
+<dt>update_image:</dt>
+<dd>The image to import the channels into.</dd>
+<dt>channel:</dt>
+<dd>The image channel to import</dd>
 </dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id16" id="setimagechanneldepth" name="setimagechanneldepth">SetImageChannelDepth</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<pre class="literal-block">
+MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                     const unsigned int depth );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>SetImageChannelDepth() translates the pixel quantums in the specified
+channel so that if they are later divided to fit within the specified bit
+depth, that no additional information is lost (i.e. no remainder resulting
+from the division). Note that any subsequent image processing is likely
+to increase the effective depth of the image channels. A non-zero
+value is returned if the operation is successful. Check the exception
+member of image to determine the cause for any failure.</p>
+<p>The format of the SetImageChannelDepth method is:</p>
+<pre class="literal-block">
+MagickPassFail SetImageChannelDepth( <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#channeltype">ChannelType</a> channel,
+                                     const unsigned int depth );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image to update.</dd>
+<dt>channel:</dt>
+<dd>Channel to modify.</dd>
+<dt>depth:</dt>
+<dd>Desired channel depth (range 1 to QuantumDepth)</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 00:14 UTC.
 
+</div>
 </body>
-
 </html>

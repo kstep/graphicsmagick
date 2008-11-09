@@ -39,8 +39,8 @@ lcms:
 png:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -ko -m 'Import libpng 1.2.27' delegates/png \
-    INITIAL LIBPNG_1_2_27
+    import -ko -m 'Import libpng 1.2.33' delegates/png \
+    INITIAL LIBPNG_1_2_33
 
 ralcgm:
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \

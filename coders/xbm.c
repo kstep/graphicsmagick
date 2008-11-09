@@ -329,7 +329,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     bit=0;
     byte=0;
     for (x=0; x < (long) image->columns; x++)
@@ -345,7 +345,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  LoadImageText,image->filename))
          break;
   }
   MagickFreeMemory(data);
@@ -460,7 +461,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   register long
     x;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   unsigned char
@@ -517,7 +518,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       byte>>=1;
@@ -562,7 +563,8 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
         byte=0;
       };
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   (void) strcpy(buffer,"};\n");

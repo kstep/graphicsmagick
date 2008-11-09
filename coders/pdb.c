@@ -413,7 +413,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
@@ -427,7 +427,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                      image->filename))
             break;
       }
       break;
@@ -442,7 +443,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x+=4)
         {
           index=(IndexPacket) (3-((*p >> 6) & 0x03));
@@ -466,7 +467,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                      image->filename))
             break;
       }
       break;
@@ -481,7 +483,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x+=2)
         {
           index=(IndexPacket) (15-((*p >> 4) & 0x0f));
@@ -497,7 +499,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                      image->filename))
             break;
       }
       break;
@@ -835,7 +838,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
       }
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   q=EncodeRLE(q,buffer,literal,repeat);

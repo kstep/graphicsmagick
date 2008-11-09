@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -43,6 +43,34 @@
   Define declarations.
 */
 #define MagicFilename  "magic.mgk"
+
+/*
+  Typedef declarations.
+*/
+typedef struct _MagicInfo
+{  
+  char
+    *path,
+    *name,
+    *target;
+
+  unsigned char
+    *magic;
+
+  unsigned long
+    length,
+    offset;
+
+  unsigned int
+    stealth;
+
+  unsigned long
+    signature;
+
+  struct _MagicInfo
+    *previous,
+    *next;
+} MagicInfo;
 
 /*
   Static declarations.
@@ -111,41 +139,123 @@ MagickExport void DestroyMagicInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c I n f o                                                   %
++   G e t M a g i c k F i l e F o r m a t                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagicInfo searches the magic list for the specified name and if
-%  found returns attributes for that magic.
+%  Method GetMagickFileFormat inspects the provided image file/blob header
+%  bytes and sets/updates the provided file format string buffer. The value
+%  MagickPass is returned if the format was successfully identified.  The
+%  value MagickFail is returned if the format was not identified or an
+%  exception occured.
+%  
 %
-%  The format of the GetMagicInfo method is:
+%  The format of the GetMagickFileFormat method is:
 %
-%      const MagicInfo *GetMagicInfo(const unsigned char *magic,
-%        const size_t length,ExceptionInfo *exception)
+%      MagickPassFail GetMagickFileFormat(
+%        const unsigned char *header, const size_t header_length,
+%        char *postulate, const size_t postulate_length,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o magic_info: Method GetMagicInfo searches the magic list for any image
-%      format tag that matches the specified image signature and if found
-%      returns attributes for that image format.
+%    o header: A binary string representing the first several
+%        thousand bytes of the file/blob header to test.
 %
-%    o magic: A binary string generally representing the first few characters
-%      of the image file or blob.
+%    o header_length: The length of the binary signature.  Currently
+%        2*MaxTextExtent (4106 bytes).
 %
-%    o length: The length of the binary signature.
+%    o format: Format buffer. Updated with actual format if it can be
+%        determined.
+%
+%    o format_length: Format buffer length.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
-  const size_t length,ExceptionInfo *exception)
+MagickExport MagickPassFail
+GetMagickFileFormat(const unsigned char *header, const size_t header_length,
+                    char *format, const size_t format_length,
+                    ExceptionInfo *exception)
 {
-  register MagicInfo
-    *p;
+  MagickPassFail
+    status;
 
+  status=MagickFail;
+
+  if (InitializeMagicInfo(exception) == MagickFail)
+    return MagickFail;
+
+  if ((header == (const unsigned char *) NULL) || (header_length == 0) ||
+      (format_length < 2))
+    return MagickFail;
+
+  /*
+    Search for requested magic.
+  */
+  {
+    register MagicInfo
+      *p;
+
+    AcquireSemaphoreInfo(&magic_semaphore);
+    for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
+      {
+        if (p->offset+p->length <= header_length)
+          {
+            if (memcmp(header+p->offset,p->magic,p->length) == 0)
+              {
+                strlcpy(format,p->name,format_length);
+                status=MagickPass;
+                break;
+              }
+          }
+      }
+
+    if (p != (MagicInfo *) NULL)
+      if (p != magic_list)
+        {
+          /*
+            Self-adjusting list.
+          */
+          if (p->previous != (MagicInfo *) NULL)
+            p->previous->next=p->next;
+          if (p->next != (MagicInfo *) NULL)
+            p->next->previous=p->previous;
+          p->previous=(MagicInfo *) NULL;
+          p->next=magic_list;
+          magic_list->previous=p;
+          magic_list=p;
+        }
+    LiberateSemaphoreInfo(&magic_semaphore);
+  }
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e M a g i c I n f o                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeMagicInfo initializes the file header magic detection
+%  facility.
+%
+%  The format of the InitializeMagicInfo method is:
+%
+%      MagickPassFail InitializeMagicInfo(void)
+%
+%
+*/
+MagickExport MagickPassFail InitializeMagicInfo(ExceptionInfo *exception)
+{
   if (magic_list == (MagicInfo *) NULL)
     {
       AcquireSemaphoreInfo(&magic_semaphore);
@@ -153,35 +263,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
         (void) ReadMagicConfigureFile(MagicFilename,0,exception);
       LiberateSemaphoreInfo(&magic_semaphore);
       if (exception->severity > UndefinedException)
-        return 0;
+        return MagickFail;
     }
-  if ((magic == (const unsigned char *) NULL) || (length == 0))
-    return((const MagicInfo *) magic_list);
-  /*
-    Search for requested magic.
-  */
-  AcquireSemaphoreInfo(&magic_semaphore);
-  for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
-    if (p->offset+p->length <= length)
-      if (memcmp(magic+p->offset,p->magic,p->length) == 0)
-        break;
-  if (p != (MagicInfo *) NULL)
-    if (p != magic_list)
-      {
-        /*
-          Self-adjusting list.
-        */
-        if (p->previous != (MagicInfo *) NULL)
-          p->previous->next=p->next;
-        if (p->next != (MagicInfo *) NULL)
-          p->next->previous=p->previous;
-        p->previous=(MagicInfo *) NULL;
-        p->next=magic_list;
-        magic_list->previous=p;
-        magic_list=p;
-      }
-  LiberateSemaphoreInfo(&magic_semaphore);
-  return((const MagicInfo *) p);
+  return MagickPass;
 }
 
 /*
@@ -209,7 +293,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 %
 %
 */
-MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
+MagickExport MagickPassFail ListMagicInfo(FILE *file,ExceptionInfo *exception)
 {
   register const MagicInfo
     *p;
@@ -219,7 +303,8 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
+  if (InitializeMagicInfo(exception) == MagickFail)
+    return MagickFail;
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
   {
@@ -246,7 +331,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&magic_semaphore);
-  return(True);
+  return(MagickPass);
 }
 
 /*

@@ -85,6 +85,8 @@ ModuleExport void RegisterHISTOGRAMImage(void)
   entry->adjoin=False;
   entry->description="Histogram of the image";
   entry->module="HISTOGRAM";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -293,7 +295,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (!SyncImagePixels(histogram_image))
       break;
     if (QuantumTick(x,histogram_image->columns))
-      if (!MagickMonitor(SaveImageText,x,histogram_image->columns,&image->exception))
+      if (!MagickMonitorFormatted(x,histogram_image->columns,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   /*

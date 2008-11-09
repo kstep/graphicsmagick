@@ -177,7 +177,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     (void) ReadBlob(image,packet_size*image->columns,(char *) pixels);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -237,6 +237,8 @@ ModuleExport void RegisterMAPImage(void)
   entry->raw=True;
   entry->description="Colormap intensities and indices";
   entry->module="MAP";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=ObeyExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -299,7 +301,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register const PixelPacket
@@ -378,7 +380,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     q=pixels;
     for (x=0; x < (long) image->columns; x++)
     {

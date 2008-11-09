@@ -194,7 +194,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -265,7 +265,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         bit=0;
         byte=0;
         for (x=0; x < (long) image->columns; x++)
@@ -288,7 +288,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,buffer);
           }
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
       }
       (void) WriteBlobString(image,"\033*rB");  /* end graphics */
@@ -340,7 +341,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         (void) WriteBlob(image,3*image->columns,pixels);
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
       }
       (void) WriteBlobString(image,"\033*r0C");  /* end graphics */

@@ -81,6 +81,7 @@ static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
 static MagickInitializationState MagickInitialized = InitDefault;
+static CoderClass MinimumCoderClass = UnstableCoderClass;
 
 static void DestroyMagickInfo(MagickInfo** magick_info);
 static void DestroyMagickInfoList(void);
@@ -306,92 +307,90 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %
 */
-MagickExport const MagickInfo *GetMagickInfo(const char *name,
-  ExceptionInfo *ARGUNUSED(exception))
+static MagickInfo *GetMagickInfoEntryLocked(const char *name)
 {
   register MagickInfo
     *p;
 
-#if defined(SupportMagickModules)
-  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    {
-      /*
-        If all modules are requested, then use OpenModules to load
-        all modules.
-      */
-      if (!OpenModules(exception))
-        return 0;
-    }
-#endif /* #if defined(SupportMagickModules) */
-
   AcquireSemaphoreInfo(&magick_semaphore);
-  if (magick_list != (MagickInfo *) NULL)
-    LiberateSemaphoreInfo(&magick_semaphore);
-  else
-    {
-      /*
-        Register image formats.
-      */
-      LiberateSemaphoreInfo(&magick_semaphore);
 
-#if defined(SupportMagickModules)
-      /*
-        Load module aliases and check for any error
-      */
-      if (!GetModuleInfo((char *) NULL,exception))
-        return 0;
-#endif
+  p=magick_list;
+
+  if ((name != (const char *) NULL) && (name[0] != '*'))
+    {
+      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->name,name) == 0)
+          break;
+      
+      if (p != (MagickInfo *) NULL)
+        if (p != magick_list)
+          {
+            /*
+              Self-adjusting list.
+            */
+            if (p->previous != (MagickInfo *) NULL)
+              p->previous->next=p->next;
+            if (p->next != (MagickInfo *) NULL)
+              p->next->previous=p->previous;
+            p->previous=(MagickInfo *) NULL;
+            p->next=magick_list;
+            magick_list->previous=p;
+            magick_list=p;
+          }
+    }
+
+  LiberateSemaphoreInfo(&magick_semaphore);
+
+  return p;
+}
+MagickExport const MagickInfo *GetMagickInfo(const char *name,
+  ExceptionInfo *ARGUNUSED(exception))
+{
 #if !defined(BuildMagickModules)
+  if ((magick_list == (MagickInfo *) NULL) &&
+      (GetMagickInfoEntryLocked(NULL) == (MagickInfo *) NULL))
+    {
       /*
         Register all static modules
       */
       RegisterStaticModules();
-#endif
     }
-  if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
-    return((const MagickInfo *) magick_list);
+#endif /* !defined(BuildMagickModules) */
+
   /*
-    Find name in list
+    If name is NULL, then return head of list (as it currently
+    exists).
   */
-  AcquireSemaphoreInfo(&magick_semaphore);
-  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->name,name) == 0)
-      break;
+  if (name == (const char *) NULL)
+    return GetMagickInfoEntryLocked(name);
+
 #if defined(SupportMagickModules)
-  if (p == (MagickInfo *) NULL)
+  /*
+    Load module aliases (does nothing if already loaded)
+  */
+  (void) GetModuleInfo((char *) NULL,exception);
+
+  if (name[0] == '*')
+    {
+      /*
+        If all modules are requested, then use OpenModules to load all
+        modules.
+      */
+      (void) OpenModules(exception);
+    }
+  else
     {
       /*
         Try to load a supporting module.
       */
-      if (*name != '\0')
-        {
-          /* Pass all exceptions up */
-          LiberateSemaphoreInfo(&magick_semaphore);
-          (void) OpenModule(name,exception);
-          AcquireSemaphoreInfo(&magick_semaphore);
-        }
-      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-        if (LocaleCompare(p->name,name) == 0)
-          break;
+      (void) OpenModule(name,exception);
     }
 #endif /* #if defined(SupportMagickModules) */
-  if (p != (MagickInfo *) NULL)
-    if (p != magick_list)
-      {
-        /*
-          Self-adjusting list.
-        */
-        if (p->previous != (MagickInfo *) NULL)
-          p->previous->next=p->next;
-        if (p->next != (MagickInfo *) NULL)
-          p->next->previous=p->previous;
-        p->previous=(MagickInfo *) NULL;
-        p->next=magick_list;
-        magick_list->previous=p;
-        magick_list=p;
-      }
-  LiberateSemaphoreInfo(&magick_semaphore);
-  return((const MagickInfo *) p);
+
+  /*
+    Return whatever we've got
+  */
+  return GetMagickInfoEntryLocked(name);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -812,49 +811,52 @@ MagickExport void InitializeMagickSignalHandlers(void)
 
 MagickExport void InitializeMagick(const char *path)
 {
+  const char
+    *p;
+
   /* NOTE: This routine sets up the path to the client which needs to
      be determined before almost anything else works right. This also
      includes logging!!! So we can't start logging until the path is
      actually saved. As soon as we know what the path is we make the
      same call to DefineClientSettings to set it up. Please make sure
      that this rule is followed in any future updates the this code!!!
-   */
+  */
   if (MagickInitialized == InitInitialized)
     return;
   SPINLOCK_WAIT;
   MagickInitialized=InitInitialized;
   SPINLOCK_RELEASE;
-
+  
 #if defined(MSWINDOWS)
 # if defined(_DEBUG) && !defined(__BORLANDC__)
   {
     int
       debug;
-
+    
     debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF |
-            _CRTDBG_LEAK_CHECK_DF;
+      _CRTDBG_LEAK_CHECK_DF;
     // debug=_CrtSetDbgFlag(debug);
     // _ASSERTE(_CrtCheckMemory());
   }
 # endif /* defined(_DEBUG) */
 #endif /* defined(MSWINDOWS) */
-
+  
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-
+  
   /* Seed the random number generator */
   srand(time(0));
-
+  
   /* Initialize semaphores */
   InitializeSemaphore();
-
+  
   /*
     Set logging flags using the value of MAGICK_DEBUG if it is set in
     the environment.
   */
-  if (getenv("MAGICK_DEBUG"))
-    (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+  if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
+    (void) SetLogEventMask(p);
 
   /*
     Establish the path, filename, and display name of the client app
@@ -871,7 +873,8 @@ MagickExport void InitializeMagick(const char *path)
     Set logging flags using the value of MAGICK_DEBUG if it is set in
     the environment.
   */
-  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+  if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
+    (void) SetLogEventMask(p);
 
   /*
     Establish signal handlers for common signals
@@ -885,6 +888,19 @@ MagickExport void InitializeMagick(const char *path)
   /* NOTE: This call does logging, so you can not make it before the path
      to the client is setup */
   InitializeMagickResources();
+
+  /*
+    Adjust minimum coder class if requested.
+  */
+  if ((p=getenv("MAGICK_CODER_STABILITY")) != (const char *) NULL)
+    {
+      if (LocaleCompare(p,"UNSTABLE") == 0)
+        MinimumCoderClass=UnstableCoderClass;
+      else if (LocaleCompare(p,"STABLE") == 0)
+        MinimumCoderClass=StableCoderClass;
+      else if (LocaleCompare(p,"PRIMARY") == 0)
+        MinimumCoderClass=PrimaryCoderClass;
+    }
 
   /*
     Initialize module loader
@@ -976,16 +992,21 @@ MagickExport MagickPassFail ListMagickInfo(FILE *file,ExceptionInfo *exception)
   if (!magick_array)
     return False;
 
-  (void) fprintf(file,"   Format  Mode  Description\n");
+  (void) fprintf(file,"   Format L  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
-    "-----------------------\n");
+    "------------------------\n");
   for (i=0; magick_array[i] != 0; i++)
   {
     if (magick_array[i]->stealth)
       continue;
-    (void) fprintf(file,"%9s%c  %c%c%c",magick_array[i]->name ? magick_array[i]->name : "",
-      magick_array[i]->blob_support ? '*' : ' ',magick_array[i]->decoder ? 'r' : '-',
-      magick_array[i]->encoder ? 'w' : '-',magick_array[i]->encoder && magick_array[i]->adjoin ? '+' : '-');
+    (void) fprintf(file,"%9s %c  %c%c%c",
+                   magick_array[i]->name ? magick_array[i]->name : "",
+                   (magick_array[i]->coder_class == PrimaryCoderClass ? 'P' :
+                    (magick_array[i]->coder_class == StableCoderClass ? 'S' :
+                     'U')),
+                   (magick_array[i]->decoder ? 'r' : '-'),
+                   (magick_array[i]->encoder ? 'w' : '-'),
+                   ((magick_array[i]->encoder && magick_array[i]->adjoin) ? '+' : '-'));
     if (magick_array[i]->description != (char *) NULL)
       (void) fprintf(file,"  %.1024s",magick_array[i]->description);
     if (magick_array[i]->version != (char *) NULL)
@@ -1011,7 +1032,7 @@ MagickExport MagickPassFail ListMagickInfo(FILE *file,ExceptionInfo *exception)
           }
       }
   }
-  (void) fprintf(file,"\n* native blob support\n\n");
+  (void) fprintf(file,"\n Meaning of 'L': P=Primary, S=Stable, U=Unstable\n");
   (void) fflush(file);
   MagickFreeMemory(magick_array);
   return(MagickPass);
@@ -1195,17 +1216,33 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
 
-  /* (void) UnregisterMagickInfo(magick_info->name); */
   /*
-    Add to front of list.
+    Remove any existing entry.
   */
-  AcquireSemaphoreInfo(&magick_semaphore);
-  magick_info->previous=(MagickInfo *) NULL;
-  magick_info->next=magick_list;
-  if (magick_info->next != (MagickInfo *) NULL)
-    magick_info->next->previous=magick_info;
-  magick_list=magick_info;
-  LiberateSemaphoreInfo(&magick_semaphore);
+  (void) UnregisterMagickInfo(magick_info->name);
+
+  /*
+    Verify that coder stability level is sufficient.
+  */
+  if (magick_info->coder_class >= MinimumCoderClass)
+    {
+      /*
+        Add to front of list.
+      */
+      AcquireSemaphoreInfo(&magick_semaphore);
+      magick_info->previous=(MagickInfo *) NULL;
+      magick_info->next=magick_list;
+      if (magick_info->next != (MagickInfo *) NULL)
+        magick_info->next->previous=magick_info;
+      magick_list=magick_info;
+      LiberateSemaphoreInfo(&magick_semaphore);
+      return(magick_info);
+    }
+
+  /*
+    Discard registration and return NULL.
+  */
+  DestroyMagickInfo(&magick_info);
   return(magick_info);
 }
 
@@ -1249,9 +1286,14 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
       UnableToAllocateMagickInfo);
   (void) memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=name;
-  magick_info->adjoin=True;
-  magick_info->blob_support=True;
-  magick_info->thread_support=True;
+  magick_info->adjoin=MagickTrue;
+  magick_info->raw=MagickFalse;
+  magick_info->stealth=MagickFalse;
+  magick_info->seekable_stream=MagickFalse;
+  magick_info->blob_support=MagickTrue;
+  magick_info->thread_support=MagickTrue;
+  magick_info->coder_class=StableCoderClass;
+  magick_info->extension_treatment=HintExtensionTreatment;
   magick_info->signature=MagickSignature;
   return(magick_info);
 }

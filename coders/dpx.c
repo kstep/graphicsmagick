@@ -127,10 +127,12 @@
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
+#include "magick/enum_strings.h"
 #include "magick/magick_endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/omp_data_view.h"
 #include "magick/profile.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
@@ -1215,7 +1217,7 @@ STATIC inline Quantum ScaleFromVideo(const unsigned int sample,
 
   if (sample > ref_low)
     result = (sample - ref_low)*upscale;
-  return RoundToQuantum(result);
+  return RoundDoubleToQuantum(result);
   
 }
 
@@ -1559,10 +1561,10 @@ STATIC void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
         result;
 
       result=((double) pixels[column-1].green + pixels[column+1].green)/2;
-      pixels->green=RoundToQuantum(result);
+      pixels->green=RoundDoubleToQuantum(result);
 
       result=((double) pixels[column-1].blue + pixels[column+1].blue)/2;
-      pixels->blue=RoundToQuantum(result);
+      pixels->blue=RoundDoubleToQuantum(result);
 #endif
     }
 }
@@ -1590,26 +1592,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
   size_t
     offset,
     row_octets;
-
-  sample_t
-    *samples,                   /* parsed sample array */
-    *samples_itr;               /* current sample */
 
   Quantum
     *map_Y,                     /* value translation map (RGB or Y) */
     *map_CbCr;                  /* value translation map (CbCr) */
 
-  unsigned char
-    *scanline;
+  ThreadViewDataSet
+    *samples_set;
+
+  ThreadViewDataSet
+    *scanline_set;
 
   size_t
     element_size;               /* Number of bytes in an element */
@@ -1620,7 +1615,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_bits_per_sample,        /* maximum number of bits per sample for any element */
     max_samples_per_pixel,      /* maximum number of samples comprising one pixel for any element */
     samples_per_pixel,          /* number of samples comprising one pixel for this element */
-    samples_per_row,            /* number of samples in one row */
+    samples_per_row;            /* number of samples in one row */
+
+  MagickPassFail
     status;
 
   unsigned long
@@ -1857,23 +1854,35 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           unsigned char
             *user_data;
-
+          
+          const size_t
+            block_size = 65536UL;
+          
           size_t
+            read_size,
             user_data_length;
 
           DPXUserDefinedData
             *dpx_user_data;
+          
+          user_data_length=0UL;
+          user_data=(unsigned char *) NULL;
 
-          user_data_length=dpx_file_info.user_defined_length;
-          user_data=MagickAllocateMemory(unsigned char *,user_data_length);
-          if (user_data == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-          offset += ReadBlob(image,user_data_length,user_data);
-          if (offset != (2048U+user_data_length))
+          while (user_data_length < dpx_file_info.user_defined_length)
             {
-              MagickFreeMemory(user_data);
-              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+              read_size=Min(block_size,dpx_file_info.user_defined_length-user_data_length);
+              MagickReallocMemory(unsigned char *,user_data,user_data_length+read_size);
+              if (user_data == (unsigned char *) NULL)
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+              if (ReadBlob(image,read_size,user_data+user_data_length) != read_size)
+                {
+                  MagickFreeMemory(user_data);
+                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+                }
+              user_data_length += read_size;
+              offset += read_size;
             }
+
           dpx_user_data=(DPXUserDefinedData *) user_data;
           StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
           if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
@@ -2017,21 +2026,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read remainder of header.
   */
   for ( ; offset < pixels_offset ; offset++ )
-    (void) ReadBlobByte(image);
-  /*
-    Allocate row samples.
-  */
-  samples=MagickAllocateArray(sample_t *,image->columns,
-                              max_samples_per_pixel*sizeof(sample_t));
-  if (samples == (sample_t *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  /*
-    Allocate scanline storage.
-  */
-  scanline=MagickAllocateArray(unsigned char *,image->columns,
-                               max_samples_per_pixel*sizeof(U32));
-  if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    if (ReadBlobByte(image) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   /*
     Allocate sample translation map storage.
@@ -2040,14 +2036,41 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             MaxValueGivenBits(max_bits_per_sample)+1,
                             sizeof(Quantum));
   if (map_Y == (Quantum *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-
+    {
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  
   map_CbCr=MagickAllocateArray(Quantum *,
                                MaxValueGivenBits(max_bits_per_sample)+1,
                                sizeof(Quantum));
   if (map_CbCr == (Quantum *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-
+    {
+      MagickFreeMemory(map_Y);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  /*
+    Allocate per-thread-view row samples.
+  */
+  samples_set=AllocateThreadViewDataArray(image,exception,image->columns,
+                                          max_samples_per_pixel*sizeof(sample_t));
+  if (samples_set == (ThreadViewDataSet *) NULL)
+    {
+      MagickFreeMemory(map_CbCr);
+      MagickFreeMemory(map_Y);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  /*
+    Allocate per-thread-view scanline storage.
+  */
+  scanline_set=AllocateThreadViewDataArray(image,exception,image->columns,
+                                           max_samples_per_pixel*sizeof(U32));
+  if (scanline_set == (ThreadViewDataSet *) NULL)
+    {
+      DestroyThreadViewDataSet(samples_set);
+      MagickFreeMemory(map_CbCr);
+      MagickFreeMemory(map_Y);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   /*
     Allow user to over-ride pixel endianness.
   */
@@ -2063,6 +2086,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
+      unsigned long
+        row_count=0;
+
       MagickBool
         swap_word_datums = MagickFalse;
 
@@ -2258,19 +2284,41 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read element data.
           */
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(dynamic,1)
+#endif
           for (y=0; y < (long) image->rows; y++)
             {
+              MagickBool
+                thread_status;
+
+              register long
+                x;
+              
+              register PixelPacket
+                *q;
+
+              sample_t
+                *samples_itr;               /* current sample */
+
               PixelPacket
-                *pixels;
+                *pixels=(PixelPacket *) NULL;
 
-              if (element == 0)
-                pixels=SetImagePixels(image,0,y,image->columns,1);
-              else
-                pixels=GetImagePixels(image,0,y,image->columns,1);
-              if (pixels == (PixelPacket *) NULL)
-                break;
+              sample_t
+                *samples;                   /* parsed sample array */
+              
+              unsigned char
+                *scanline;
 
-              q = pixels;
+              unsigned long
+                thread_row_count;
+
+              thread_status=status;
+              if (thread_status == MagickFail)
+                continue;
+
+              samples=AccessThreadViewData(samples_set);
+              scanline=AccessThreadViewData(scanline_set);
 
               /*
                 Obtain a row's worth of samples.
@@ -2280,18 +2328,50 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *scanline_data;
                 
                 scanline_data=scanline;
-                if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
-                  {
-                    status=MagickFail;
-                    break;
-                  }
-                ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
-                               packing_method,endian_type,swap_word_datums,samples);
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+                {
+                  if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
+                    thread_status=MagickFail;
+
+                  thread_row_count=row_count;
+                  row_count++;
+                  if (QuantumTick(thread_row_count,image->rows))
+                    if (!MagickMonitorFormatted(thread_row_count,image->rows,exception,
+                                                LoadImageText,image->filename))
+                      thread_status=MagickFail;
+                }
+                  
+                if (thread_status != MagickFail)
+                  ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
+                                 packing_method,endian_type,swap_word_datums,samples);
               }
+
+              if (thread_status != MagickFail)
+                {
+                  if (element == 0)
+                    pixels=SetImagePixelsEx(image,0,thread_row_count,image->columns,1,exception);
+                  else
+                    pixels=GetImagePixelsEx(image,0,thread_row_count,image->columns,1,exception);
+                }
+
+              if (pixels == (PixelPacket *) NULL)
+                thread_status=MagickFail;
+
+              if (thread_status == MagickFail)
+                {
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+                  status=thread_status;
+                  continue;
+                }
 
               /*
                 Assign samples to pixels.
               */
+              q = pixels;
               samples_itr=samples;
               switch (element_descriptor)
                 {
@@ -2492,17 +2572,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 default:
                   break;
                 }
-              if (!SyncImagePixels(image))
-                break;
+
+              if (!SyncImagePixelsEx(image,exception))
+                thread_status=MagickFail;
 
               /*
                 FIXME: Add support for optional EOL padding.
-              */
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                    break;
-
+              */              
+              if (thread_status == MagickFail)
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+                status=MagickFail;
+#if 0
               if (BlobIsSeekable(image))
                 {
                   magick_off_t reported_file_offset = TellBlob(image);
@@ -2514,6 +2596,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                     }
                 }
+#endif
             }
           /* break; */
         }
@@ -2556,24 +2639,12 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
-#if 0
-  /*
-    Don't return image in YCbCr colorspace at the moment since it can
-    cause some usability problems elsewhere in GraphicsMagick.
-  */
-  if (IsYCbCrColorspace(image->colorspace))
-    {
-      (void) TransformColorspace(image,RGBColorspace);
-      if (transfer_characteristic == TransferCharacteristicPrintingDensity)
-        image->colorspace=CineonLogRGBColorspace;
-    }
-#endif
-
   /*
     If image is YCbCr representing Cineon Log RGB, then return the image as
     RGB in CineonLog colorspace.
   */
-  if (IsYCbCrColorspace(image->colorspace) && (transfer_characteristic == TransferCharacteristicPrintingDensity))
+  if (IsYCbCrColorspace(image->colorspace) &&
+      (transfer_characteristic == TransferCharacteristicPrintingDensity))
     {
       (void) TransformColorspace(image,RGBColorspace);
       image->colorspace=CineonLogRGBColorspace;
@@ -2584,8 +2655,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=Min(QuantumDepth,image->depth);
   MagickFreeMemory(map_CbCr);
   MagickFreeMemory(map_Y);
-  MagickFreeMemory(samples);
-  MagickFreeMemory(scanline);
+  DestroyThreadViewDataSet(scanline_set);
+  DestroyThreadViewDataSet(samples_set);
   CloseBlob(image);
   return(image);
 }
@@ -2627,6 +2698,7 @@ ModuleExport void RegisterDPXImage(void)
   entry->module="DPX";
   entry->adjoin=MagickFalse; /* Only one frame per file */
   entry->seekable_stream=MagickFalse; /* Does not reqire seek() */
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -3884,6 +3956,18 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) memset((void *) map_CbCr,0,(MaxMap+1)*sizeof(sample_t));
 
   /*
+    Reserve file/blob length if requested.
+  */
+  {
+    const char
+      *env;
+
+    if (((env=getenv("MAGICK_RESERVE_STORAGE")) != NULL) &&
+        (LocaleCompare(env,"TRUE") == 0))
+      (void) BlobReserveSize(image,dpx_file_info.file_size);
+  }
+
+  /*
     Write file headers.
   */
   if (swab)
@@ -4268,7 +4352,8 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
     }

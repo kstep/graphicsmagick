@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.61)
+AC_PREREQ(2.62)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
@@ -67,9 +67,19 @@ AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 AC_SUBST(CVS_BRANCH_TAG)dnl
 
 # Definition used to define MagickLibVersion in version.h
-# As soon as any of these values exceeds 9, a more sophisticated formatting
-# scheme must be invented for this string.
-MAGICK_LIB_VERSION="0x0${MAGICK_LIBRARY_CURRENT}0${MAGICK_LIBRARY_AGE}0${MAGICK_LIBRARY_REVISION}"
+MAGICK_LIB_VERSION="0x"
+if test ${MAGICK_LIBRARY_CURRENT} -lt 10 ; then
+  MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}0
+fi
+MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}${MAGICK_LIBRARY_CURRENT}
+if test ${MAGICK_LIBRARY_AGE} -lt 10 ; then
+  MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}0
+fi
+MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}${MAGICK_LIBRARY_AGE}
+if test ${MAGICK_LIBRARY_REVISION} -lt 10 ; then
+  MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}0
+fi
+MAGICK_LIB_VERSION=${MAGICK_LIB_VERSION}${MAGICK_LIBRARY_REVISION}
 AC_SUBST(MAGICK_LIB_VERSION)
 
 # Definition used to define MagickLibVersionText in version.h
@@ -133,6 +143,10 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 AC_SUBST(LIBEXEC_DIR)
 eval "eval DATA_DIR=$datadir"
 AC_SUBST(DATA_DIR)
+eval "eval DOC_DIR=$docdir"
+AC_SUBST(DOC_DIR)
+eval "eval HTML_DIR=$htmldir"
+AC_SUBST(HTML_DIR)
 eval "eval SYSCONF_DIR=$sysconfdir"
 AC_SUBST(SYSCONF_DIR)
 eval "eval SHAREDSTATE_DIR=$sharedstatedir"
@@ -288,8 +302,24 @@ then
       CXX="$PTHREAD_CXX"
     fi
   fi
-
 fi
+
+#
+# Determine options necessary to enable OpenMP support
+#
+# Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
+# variable to these options.
+if test "$have_threads" != 'yes'
+then
+  ac_cv_prog_c_openmp=unsupported
+fi
+
+AC_OPENMP([C])
+CFLAGS="$OPENMP_CFLAGS $CFLAGS"
+#CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
+#LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+AC_SUBST(OPENMP_CFLAGS)
+
 
 ########
 #
@@ -407,14 +437,6 @@ if test "$with_ltdl" != 'no' ; then
   fi
 fi
 
-# Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fpx jasper jbig jpeg lcms png tiff ttf wmf xml zlib)
-AC_ARG_ENABLE(delegate-build,
-	      [  --enable-delegate-build enable using delegate libs in subdirectories
-                          (default disabled)],
-	      [with_delegate_build=$enableval],
-	      [with_delegate_build='no'])
-
 # Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
 AC_ARG_ENABLE(installed,
@@ -522,17 +544,6 @@ esac
 QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
 AC_SUBST(QuantumDepth)dnl
-
-# Set pixel cache threshold
-AC_ARG_WITH(cache,
-	      [  --with-cache            set pixel cache threshhold in MB (default available memory)],
-	      [with_cache=$withval],
-	      [with_cache=''])
-if test "$with_cache" != ''
-then
-  AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
-  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
-fi
 
 # Disable/Enable support for full delegate paths in delegates.mgk
 AC_ARG_WITH(frozenpaths,
@@ -727,7 +738,7 @@ AC_ARG_WITH(windows-font-dir,
 	      [with_windows_font_dir=$withval],
 	      [with_windows_font_dir=''])
 if test "$with_windows_font_dir" != '' ; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir==$with_windows_font_dir "
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-windows-font-dir=$with_windows_font_dir "
 fi
 
 # Disable XML.
@@ -1023,9 +1034,9 @@ AC_SUBST(UINTPTR_T)
 GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([atoll _exit ftime getexecname getc_unlocked getpagesize \
   getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
-  _popen popen pread pwrite putc_unlocked raise rand_r readlink realpath \
-  select seekdir sigemptyset sigaction strerror strlcat strlcpy strtoll \
-  sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
+  _popen popen posix_fallocate pread pwrite putc_unlocked raise rand_r \
+  readlink realpath select seekdir sigemptyset sigaction strerror strlcat \
+  strlcpy strtoll sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
 
 ########
 #
@@ -1143,56 +1154,6 @@ then
 fi
 AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 
-# Only check for delegate libraries in subdirectories if requested.
-if test "$with_delegate_build" != 'no'
-then
-  # Check for delegate sub-directories and add -I & -L options as required.
-  # This presumes that delegates are installed as detailed in the GraphicsMagick
-  # README. If delegates are installed in a standard location where the
-  # compiler will automatically find them then these options should not be
-  # required.
-
-  #
-  # Most delegates have includes in the same directory as the library, but not all ...
-  #
-  # Includes
-  for dir in bzlib fpx jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-      fi
-    fi
-  done
-
-  # Libraries
-  for dir in bzlib fpx/obj jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/objs wmf/src xml zlib
-  do
-    if test -d "$builddir/$dir"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir"
-    else
-      if test -d "$srcdirfull/$dir"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
-      fi
-    fi
-    if test -d "$builddir/$dir/.libs"
-    then
-      LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
-    else
-      if test -d "$srcdirfull/$dir/.libs"
-      then
-        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/.libs"
-      fi
-    fi
-  done
-fi
-
 # Assume that delegate headers and libraries may reside under same
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
@@ -1292,8 +1253,8 @@ if test "$with_umem" != 'no'
 then
   AC_MSG_CHECKING(for UMEM support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   AC_CHECK_HEADER(umem.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_LIB(umem,umem_alloc,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_CHECK_LIB(umem,umem_free,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1317,6 +1278,27 @@ then
 fi
 AM_CONDITIONAL(HasUMEM, test "$have_umem" = 'yes')
 AC_SUBST(LIB_UMEM)
+
+
+#
+# Find OpenMP library
+#
+LIB_OMP=''
+if test "${OPENMP_CFLAGS}x" != 'x'
+then
+  if test "${GCC}" = "yes"
+  then
+    # GCC
+    AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
+  else
+    # Sun CC
+    AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    # AIX xlc
+    AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+  fi
+  LIBS="$LIB_OMP $LIBS"
+fi
+AC_SUBST(LIB_OMP)
 
 
 #
@@ -1394,8 +1376,8 @@ if test "$with_zlib" != 'no' || test "$with_png" != 'no'
 then
   AC_MSG_CHECKING(for ZLIB support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
   AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_HEADER(zlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1434,11 +1416,29 @@ then
   LIB_BZLIB=''
   AC_MSG_CHECKING(for BZLIB support )
   AC_MSG_RESULT()
-  failed=0;
-  passed=0;
+  failed=0
+  passed=0
+  found_libbz=0
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzDecompress,found_libbz=`expr $found_libbz + 1`,,)
+  if test "$native_win32_build" = 'yes'
+  then
+    # Under MinGW, libbz2 obfuscates its functions by declaring them
+    # with DLL interfaces.  This would be all better if we could
+    # somehow include bzlib.h during the test but Autoconf does not
+    # make that possible.  We check for BZ2_decompress since that is
+    # one of the few functions exported from the DLL (very strange).
+    AC_CHECK_LIB(bz2,_imp__BZ2_decompress,found_libbz=`expr $found_libbz + 1`,,)
+  fi
+  if test $found_libbz -gt 0
+  then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  #AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  #AC_CHECK_LIB(bz2,_imp__BZ2_decompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if BZLIB package is complete)
   if test $passed -gt 0
   then
@@ -1528,8 +1528,8 @@ if test "$with_dps" != 'no' && test "$with_x" != 'no'
 then
     AC_MSG_CHECKING([for Display Postscript support ])
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     O_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
     AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1590,8 +1590,8 @@ if test "$with_fpx" != 'no'
 then
     AC_MSG_CHECKING(for FlashPIX components )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER(fpxlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1627,8 +1627,8 @@ if test "$with_lcms" != 'no'
 then
     AC_MSG_CHECKING(for LCMS support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     have_lcms_header='no'
     AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
     if test "$have_lcms_header" = 'yes'
@@ -1676,8 +1676,8 @@ if test "$with_png" != 'no'
 then
     AC_MSG_CHECKING(for PNG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if PNG package is complete)
@@ -1710,8 +1710,8 @@ if test "$with_jpeg" != 'no'
 then
     AC_MSG_CHECKING(for JPEG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1772,8 +1772,8 @@ if test "$with_jp2" != 'no'
 then
     AC_MSG_CHECKING(for JPEG version 2 support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jasper/jasper.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jasper,jas_stream_fopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if JPEG version 2 support package is complete)
@@ -1807,8 +1807,8 @@ if test "$with_gslib" != 'no'
 then
     AC_MSG_CHECKING(for Ghostscript library support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(ghostscript/iapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(gs,gsapi_new_instance,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if Ghostscript library package is complete)
@@ -1841,8 +1841,8 @@ AC_SUBST(LIB_GS)
 # then
 #     AC_MSG_CHECKING(for MPEG version 2 support )
 #     AC_MSG_RESULT()
-#     failed=0;
-#     passed=0;
+#     failed=0
+#     passed=0
 #     AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
 #     AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
 #     AC_MSG_CHECKING(if MPEG version 2 support package is complete)
@@ -1875,24 +1875,33 @@ if test "$with_ttf" != 'no'
 then
     AC_MSG_CHECKING(for FreeType 2.0 )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' && test -d "$builddir/ttf/include"
+    freetype_config=''
+    # Allow the user to specify the location of freetype.
+    if test "$with_ttf" != 'yes'
     then
-       :
-    else
-       freetype_config=''
-       AC_CHECK_PROGS(freetype_config,freetype-config,)dnl
-       if test -n "$freetype_config"
-       then
-          freetype_prefix=`freetype-config --prefix`
-          freetype_exec_prefix=`freetype-config --exec-prefix`
-          LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
-       fi
+      if test -x "${with_ttf}/bin/freetype-config"
+      then
+        freetype_config="${with_ttf}/bin/freetype-config"
+      elif test -x "${with_ttf}"
+      then
+        freetype_config=${with_ttf}
+      fi
+    fi
+    if test -z "$freetype_config"
+    then
+      AC_PATH_PROG(freetype_config,freetype-config,)dnl
+    fi
+    if test -n "$freetype_config"
+    then
+      freetype_prefix=`${freetype_config} --prefix`
+      freetype_exec_prefix=`${freetype_config} --exec-prefix`
+      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
+      CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
     fi
 
 dnl First see if there is a library
@@ -1955,8 +1964,8 @@ if test "$with_tiff" != 'no'
 then
     AC_MSG_CHECKING(for TIFF support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -1978,7 +1987,7 @@ then
 	    AC_MSG_RESULT(yes)
 	    have_tiff='yes'
 	    AC_CHECK_HEADERS(tiffconf.h)
-            AC_CHECK_FUNCS([TIFFGetConfiguredCODECs \
+            AC_CHECK_FUNCS([TIFFIsCODECConfigured \
                             TIFFMergeFieldInfo \
                             TIFFSetErrorHandlerExt \
                             TIFFSetTagExtender \
@@ -2001,8 +2010,8 @@ if test "$with_jbig" != 'no'
 then
     AC_MSG_CHECKING(for JBIG support )
     AC_MSG_RESULT()
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if JBIG package is complete)
@@ -2051,8 +2060,8 @@ then
         fi
         LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
      fi
-    failed=0;
-    passed=0;
+    failed=0
+    passed=0
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(xml2,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)
@@ -2877,9 +2886,9 @@ AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

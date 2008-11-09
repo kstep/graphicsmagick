@@ -37,11 +37,11 @@ composite - composite images together.
 </dt>
 
 <dt>
-<a href="#comp-auth">Authors</a>
+<a href="#auth">Authors</a>
 </dt>
 
 <dt>
-<a href="#comp-copy">Copyright</a>
+<a href="#copy">Copyright</a>
 </dt>
 </dl>
 </format>
@@ -207,8 +207,16 @@ Options, above.
 <format type=man>
 <sect NAME="comp-also">SEE ALSO
 <p>
-animate(1), display(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
-import(1), mogrify(1), montage(1)
+GraphicsMagick(1),
+animate(1),
+compare(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
 </p>
 </sect>
 </format>

@@ -80,8 +80,9 @@ ModuleExport void RegisterMATTEImage(void)
   entry=SetMagickInfo("MATTE");
   entry->encoder=(EncoderHandler) WriteMATTEImage;
   entry->raw=True;
-  entry->description="MATTE format";
+  entry->description="MATTE raw opacity format";
   entry->module="MATTE";
+  entry->extension_treatment=ObeyExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -188,7 +189,8 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   (void) FormatString(matte_image->filename,"MIFF:%.1024s",image->filename);

@@ -20,6 +20,8 @@ extern MagickExport unsigned int
                       char **metadata,ExceptionInfo *exception),
   BenchmarkImageCommand(ImageInfo *image_info,int argc,char **argv,
                       char **metadata,ExceptionInfo *exception),
+  CompareImageCommand(ImageInfo *image_info,int argc,char **argv,
+                      char **metadata,ExceptionInfo *exception),
   CompositeImageCommand(ImageInfo *image_info,int argc,char **argv,
                         char **metadata,ExceptionInfo *exception),
   ConjureImageCommand(ImageInfo *image_info,int argc,char **argv,

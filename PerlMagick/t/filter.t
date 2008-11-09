@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003 - 2008 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 #
@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..48\n"; }
+BEGIN { $| = 1; $test=1, print "1..49\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -116,7 +116,7 @@ testFilterCompare('input.miff', q//, 'reference/filter/Modulate.miff', 'Modulate
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/MotionBlur.miff', 'MotionBlur',
-  q/radius=>2,sigma=>1,angle=>30/, 0.003, 0.004);
+  q/radius=>0,sigma=>7,angle=>30/, 0.003, 0.004);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Negate.miff', 'Negate',
@@ -217,6 +217,10 @@ testFilterCompare('input.miff', q//, 'reference/filter/Threshold.miff', 'Thresho
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Trim.miff', 'Trim',
   q//, 0, 0);
+
+++$test;
+testFilterCompare('input.miff', q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask',
+  q/geometry=>"0.0x3.0+30+5"/, 0.003, 0.004);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Wave.miff', 'Wave',

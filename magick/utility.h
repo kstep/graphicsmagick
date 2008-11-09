@@ -98,12 +98,17 @@ extern MagickExport int
   GlobExpression(const char *,const char *),
   LocaleNCompare(const char *,const char *,const size_t),
   LocaleCompare(const char *,const char *),
-  GetMagickDimension(const char *str,double *width,double *height),
-  GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
+  GetMagickDimension(const char *str,double *width,double *height,double *xoff,double *yoff),
+  GetMagickGeometry(const char *geometry,long *x,long *y,unsigned long *width,
+    unsigned long *height),
+  MagickRandReentrant(unsigned int *seed),
   SubstituteString(char **,const char*,const char *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);
+
+extern MagickExport unsigned int
+  MagickRandNewSeed(void);
 
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);
@@ -143,7 +148,7 @@ extern MagickExport void
   SetGeometry(const Image *,RectangleInfo *);
 
 extern MagickExport void
-  FormatString(char *,const char *,...) __attribute__((format (printf,2,3))),
+  FormatString(char *string,const char *format,...) __attribute__((format (printf,2,3))),
   FormatStringList(char *string,const char *format,va_list operands);
 
 extern MagickExport magick_int64_t

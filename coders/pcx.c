@@ -446,7 +446,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       r=scanline;
       if (image->storage_class == DirectClass)
         for (i=0; i < pcx_info.planes; i++)
@@ -583,7 +583,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+          if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                      image->filename))
             break;
     }
     if (image->storage_class == PseudoClass)
@@ -623,7 +624,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   }
@@ -800,7 +802,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1016,7 +1018,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if (WriteRLEPixels(image,&pcx_info,pcx_pixels) == MagickFail)
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename))
               break;
         }
       }
@@ -1031,7 +1034,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessImmutableIndexes(image);
           q=pcx_pixels;
           /* For each column ... */
           for (x=0; x < (long) image->columns; x++)
@@ -1040,7 +1043,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
       else
@@ -1063,7 +1067,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             bit=0;
             byte=0;
             q=pcx_pixels;
@@ -1088,7 +1092,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
           }
         }
@@ -1100,8 +1105,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
     if (scene >= 1023)

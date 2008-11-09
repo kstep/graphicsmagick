@@ -136,12 +136,15 @@ MagickExport Image *BorderImage(const Image *image,
 %
 */
 MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
-  ExceptionInfo *exception)
+                               ExceptionInfo *exception)
 {
-#define FrameImageText  "  Add frame to image...  "
+#define FrameImageText  "[%s] Add frame to image..."
 
   Image
     *frame_image;
+
+  unsigned long
+    row_count=0;
 
   long
     height,
@@ -170,6 +173,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   unsigned int
     is_grayscale;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Check frame geometry.
   */
@@ -179,22 +185,27 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   is_grayscale=image->is_grayscale;
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException3(OptionError,UnableToFrameImage,
-      BevelWidthIsNegative);
+                         BevelWidthIsNegative);
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(long) (frame_info->width-frame_info->x-bevel_width);
   height=(long) (frame_info->height-frame_info->y-bevel_width);
   if ((width < (long) image->columns) || (height < (long) image->rows))
     ThrowImageException3(OptionError,UnableToFrameImage,
-      FrameIsLessThanImageSize);
+                         FrameIsLessThanImageSize);
   /*
-    Initialize framed image attributes.
+    Allocate image
   */
   frame_image=
     CloneImage(image,frame_info->width,frame_info->height,True,exception);
   if (frame_image == (Image *) NULL)
     return(False);
+
+  /*
+    Set image type.
+  */
   (void) SetImageType(frame_image,frame_image->matte_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+                      OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+
   /*
     Initialize 3D effects color.
   */
@@ -202,21 +213,21 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if (!IsGray(image->matte_color))
     is_grayscale=False;
   accentuate.red=(Quantum) ((((double) MaxRGB-AccentuateModulate)*matte.red+
-    ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+                             ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
   accentuate.green=(Quantum) ((((double) MaxRGB-AccentuateModulate)*matte.green+
-    ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+                               ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
   accentuate.blue=(Quantum) ((((double) MaxRGB-AccentuateModulate)*matte.blue+
-    ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+                              ((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
   accentuate.opacity=(Quantum) ((((double) MaxRGB-AccentuateModulate)*
-    matte.opacity+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
+                                 matte.opacity+((double) MaxRGB*AccentuateModulate))/MaxRGB+0.5);
   highlight.red=(Quantum) ((((double) MaxRGB-HighlightModulate)*matte.red+
-    ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+                            ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
   highlight.green=(Quantum) ((((double) MaxRGB-HighlightModulate)*matte.green+
-    ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+                              ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
   highlight.blue=(Quantum) ((((double) MaxRGB-HighlightModulate)*matte.blue+
-    ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+                             ((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
   highlight.opacity=(Quantum) ((((double) MaxRGB-HighlightModulate)*
-    matte.opacity+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
+                                matte.opacity+((double) MaxRGB*HighlightModulate))/MaxRGB+0.5);
   shadow.red=(Quantum) (((double) matte.red*ShadowModulate)/MaxRGB+0.5);
   shadow.green=(Quantum) (((double) matte.green*ShadowModulate)/MaxRGB+0.5);
   shadow.blue=(Quantum) (((double) matte.blue*ShadowModulate)/MaxRGB+0.5);
@@ -229,138 +240,163 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw top of ornamental border.
   */
   height=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
-    frame_info->inner_bevel);
-  q=SetImagePixels(frame_image,0,0,frame_image->columns,height);
+                 frame_info->inner_bevel);
+  q=SetImagePixelsEx(frame_image,0,0,frame_image->columns,height,exception);
   if (q != (PixelPacket *) NULL)
     {
       for (y=0; y < frame_info->outer_bevel; y++)
-      {
-        for (x=0; x < (long) (frame_image->columns-y); x++)
-          if (x < y)
-            *q++=highlight;
-          else
-            *q++=accentuate;
-        for ( ; x < (long) frame_image->columns; x++)
-          *q++=shadow;
-      }
-      for (y=0; y < (long) (frame_info->y-bevel_width); y++)
-      {
-        for (x=0; x < frame_info->outer_bevel; x++)
-          *q++=highlight;
-        width=(long) (frame_image->columns-2*frame_info->outer_bevel);
-        for (x=0; x < (long) width; x++)
-          *q++=matte;
-        for (x=0; x < frame_info->outer_bevel; x++)
-          *q++=shadow;
-      }
-      for (y=0; y < frame_info->inner_bevel; y++)
-      {
-        for (x=0; x < frame_info->outer_bevel; x++)
-          *q++=highlight;
-        for (x=0; x < (long) (frame_info->x-bevel_width); x++)
-          *q++=matte;
-        width=(long) (image->columns+(frame_info->inner_bevel << 1)-y);
-        for (x=0; x < width; x++)
-          if (x < y)
+        {
+          for (x=0; x < (long) (frame_image->columns-y); x++)
+            if (x < y)
+              *q++=highlight;
+            else
+              *q++=accentuate;
+          for ( ; x < (long) frame_image->columns; x++)
             *q++=shadow;
-          else
-            *q++=trough;
-        for ( ; x < (long) (image->columns+(frame_info->inner_bevel << 1)); x++)
-          *q++=highlight;
-        width=(long)
-          (frame_info->width-frame_info->x-image->columns-bevel_width);
-        for (x=0; x < width; x++)
-          *q++=matte;
-        for (x=0; x < frame_info->outer_bevel; x++)
-          *q++=shadow;
-      }
-      (void) SyncImagePixels(frame_image);
+        }
+      for (y=0; y < (long) (frame_info->y-bevel_width); y++)
+        {
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=highlight;
+          width=(long) (frame_image->columns-2*frame_info->outer_bevel);
+          for (x=0; x < (long) width; x++)
+            *q++=matte;
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=shadow;
+        }
+      for (y=0; y < frame_info->inner_bevel; y++)
+        {
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=highlight;
+          for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+            *q++=matte;
+          width=(long) (image->columns+(frame_info->inner_bevel << 1)-y);
+          for (x=0; x < width; x++)
+            if (x < y)
+              *q++=shadow;
+            else
+              *q++=trough;
+          for ( ; x < (long) (image->columns+(frame_info->inner_bevel << 1)); x++)
+            *q++=highlight;
+          width=(long)
+            (frame_info->width-frame_info->x-image->columns-bevel_width);
+          for (x=0; x < width; x++)
+            *q++=matte;
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=shadow;
+        }
+      (void) SyncImagePixelsEx(frame_image,exception);
     }
   /*
     Draw sides of ornamental border.
   */
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status) private (p, q, width, x)
+#endif
   for (y=0; y < (long) image->rows; y++)
-  {
-    /*
-      Initialize scanline with border color.
-    */
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(frame_image,0,frame_info->y+y,frame_image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=highlight;
-    for (x=0; x < (long) (frame_info->x-bevel_width); x++)
-      *q++=matte;
-    for (x=0; x < frame_info->inner_bevel; x++)
-      *q++=shadow;
-    /*
-      Transfer scanline.
-    */
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-    q+=image->columns;
-    for (x=0; x < frame_info->inner_bevel; x++)
-      *q++=highlight;
-    width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
-    for (x=0; x < width; x++)
-      *q++=matte;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=shadow;
-    if (!SyncImagePixels(frame_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(FrameImageText,y,image->rows,exception))
-        break;
-  }
+    {
+      MagickBool
+        thread_status;
+    
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      /*
+        Initialize scanline with border color.
+      */
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      q=SetImagePixelsEx(frame_image,0,frame_info->y+y,frame_image->columns,1,exception);
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+        {
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=highlight;
+          for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+            *q++=matte;
+          for (x=0; x < frame_info->inner_bevel; x++)
+            *q++=shadow;
+          /*
+            Transfer scanline.
+          */
+          (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+          q+=image->columns;
+          for (x=0; x < frame_info->inner_bevel; x++)
+            *q++=highlight;
+          width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
+          for (x=0; x < width; x++)
+            *q++=matte;
+          for (x=0; x < frame_info->outer_bevel; x++)
+            *q++=shadow;
+          if (!SyncImagePixelsEx(frame_image,exception))
+            thread_status=MagickFail;
+        }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                      FrameImageText,image->filename))
+            thread_status=MagickFail;
+          
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
+    }
   /*
     Draw bottom of ornamental border.
   */
   height=(long) (frame_info->inner_bevel+frame_info->height-frame_info->y-
-    image->rows-bevel_width+frame_info->outer_bevel);
-  q=SetImagePixels(frame_image,0,(long) (frame_image->rows-height),
-    frame_image->columns,height);
+                 image->rows-bevel_width+frame_info->outer_bevel);
+  q=SetImagePixelsEx(frame_image,0,(long) (frame_image->rows-height),
+                        frame_image->columns,height,exception);
   if (q == (PixelPacket *) NULL)
     return(frame_image);
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
-  {
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=highlight;
-    for (x=0; x < (long) (frame_info->x-bevel_width); x++)
-      *q++=matte;
-    for (x=0; x < y; x++)
-      *q++=shadow;
-    for ( ; x < (long) (image->columns+(frame_info->inner_bevel << 1)); x++)
-      if (x >= (long) (image->columns+(frame_info->inner_bevel << 1)-y))
+    {
+      for (x=0; x < frame_info->outer_bevel; x++)
         *q++=highlight;
-      else
-        *q++=accentuate;
-    width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
-    for (x=0; x < (long) width; x++)
-      *q++=matte;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=shadow;
-  }
+      for (x=0; x < (long) (frame_info->x-bevel_width); x++)
+        *q++=matte;
+      for (x=0; x < y; x++)
+        *q++=shadow;
+      for ( ; x < (long) (image->columns+(frame_info->inner_bevel << 1)); x++)
+        if (x >= (long) (image->columns+(frame_info->inner_bevel << 1)-y))
+          *q++=highlight;
+        else
+          *q++=accentuate;
+      width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
+      for (x=0; x < (long) width; x++)
+        *q++=matte;
+      for (x=0; x < frame_info->outer_bevel; x++)
+        *q++=shadow;
+    }
   height=(long) (frame_info->height-frame_info->y-image->rows-bevel_width);
   for (y=0; y < height; y++)
-  {
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=highlight;
-    for (x=0; x < (long) (frame_image->columns-2*frame_info->outer_bevel); x++)
-      *q++=matte;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=shadow;
-  }
-  for (y=frame_info->outer_bevel-1; y >= 0; y--)
-  {
-    for (x=0; x < y; x++)
-      *q++=highlight;
-    for ( ; x < (long) frame_image->columns; x++)
-      if (x >= (long) (frame_image->columns-y))
+    {
+      for (x=0; x < frame_info->outer_bevel; x++)
+        *q++=highlight;
+      for (x=0; x < (long) (frame_image->columns-2*frame_info->outer_bevel); x++)
+        *q++=matte;
+      for (x=0; x < frame_info->outer_bevel; x++)
         *q++=shadow;
-      else
-        *q++=trough;
-  }
-  (void) SyncImagePixels(frame_image);
+    }
+  for (y=frame_info->outer_bevel-1; y >= 0; y--)
+    {
+      for (x=0; x < y; x++)
+        *q++=highlight;
+      for ( ; x < (long) frame_image->columns; x++)
+        if (x >= (long) (frame_image->columns-y))
+          *q++=shadow;
+        else
+          *q++=trough;
+    }
+  (void) SyncImagePixelsEx(frame_image,exception);
+
   frame_image->is_grayscale=is_grayscale;
   return(frame_image);
 }
@@ -397,16 +433,19 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %
 %
 */
-MagickExport unsigned int RaiseImage(Image *image,
-  const RectangleInfo *raise_info,const int raise)
+MagickExport MagickPassFail
+RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
 {
-#define AccentuateFactor  ScaleCharToQuantum(135)
-#define HighlightFactor  ScaleCharToQuantum(190)
-#define ShadowFactor  ScaleCharToQuantum(190)
-#define RaiseImageText  "  Raise image...  "
-#define TroughFactor  ScaleCharToQuantum(135)
+#define AccentuateFactor  (double) ScaleCharToQuantum(135)
+#define HighlightFactor  (double) ScaleCharToQuantum(190)
+#define ShadowFactor  (double) ScaleCharToQuantum(190)
+#define RaiseImageText  "[%s] Raise image..."
+#define TroughFactor  (double) ScaleCharToQuantum(135)
 
-  Quantum
+  unsigned long
+    row_count=0;
+
+  double
     foreground,
     background;
 
@@ -422,6 +461,9 @@ MagickExport unsigned int RaiseImage(Image *image,
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(raise_info != (RectangleInfo *) NULL);
@@ -429,130 +471,135 @@ MagickExport unsigned int RaiseImage(Image *image,
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
     ThrowBinaryException3(OptionError,UnableToRaiseImage,
-      ImageSizeMustExceedBevelWidth);
-  foreground=MaxRGB;
-  background=0;
+                          ImageSizeMustExceedBevelWidth);
+
+  foreground=MaxRGBDouble;
+  background=0.0;
   if (!raise)
     {
-      foreground=0;
-      background=MaxRGB;
+      foreground=0.0;
+      background=MaxRGBDouble;
     }
   (void) SetImageType(image,TrueColorType);
-  for (y=0; y < (long) raise_info->height; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < y; x++)
+
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for shared(row_count, status) private (q, x)
+#endif
+  for ( y=0; y < (long) image->rows; y++)
     {
-      q->red=(Quantum) (((double) q->red*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->green=(Quantum) (((double) q->green*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->blue=(Quantum) (((double) q->blue*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q++;
+      MagickBool
+        thread_status;
+    
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      q=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
+      if (q == (PixelPacket *) NULL)
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+        {
+          if (y < (long) raise_info->height)
+            {
+              for (x=0; x < y; x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*HighlightFactor+
+                                       foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                  q[x].green=(Quantum) ((q[x].green*HighlightFactor+
+                                         foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                  q[x].blue=(Quantum) ((q[x].blue*HighlightFactor+
+                                        foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                }
+              for ( ; x < (long) (image->columns-y); x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*AccentuateFactor+
+                                       foreground*(MaxRGBDouble-AccentuateFactor))/MaxRGBDouble);
+                  q[x].green=(Quantum) ((q[x].green*AccentuateFactor+
+                                         foreground*(MaxRGBDouble-AccentuateFactor))/MaxRGBDouble);
+                  q[x].blue=(Quantum) ((q[x].blue*AccentuateFactor+
+                                        foreground*(MaxRGBDouble-AccentuateFactor))/MaxRGBDouble);
+                }
+              for ( ; x < (long) image->columns; x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*ShadowFactor+
+                                       background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                  q[x].green=(Quantum) ((q[x].green*ShadowFactor+
+                                         background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                  q[x].blue=(Quantum) ((q[x].blue*ShadowFactor+
+                                        background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                }
+            }
+          else if (y < (long) (image->rows-raise_info->height))
+            {
+              for (x=0; x < (long) raise_info->width; x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*HighlightFactor+
+                                       foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                  q[x].green=(Quantum) ((q[x].green*HighlightFactor+
+                                         foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                  q[x].blue=(Quantum) ((q[x].blue*HighlightFactor+
+                                        foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble);
+                }
+              for ( ; x < (long) (image->columns-raise_info->width); x++);
+              for ( ; x < (long) image->columns; x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*ShadowFactor+
+                                       background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                  q[x].green=(Quantum) ((q[x].green*ShadowFactor+
+                                         background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                  q[x].blue=(Quantum) ((q[x].blue*ShadowFactor+
+                                        background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble);
+                }
+            }
+          else
+            {
+              for (x=0; x < (long) (image->rows-y); x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*HighlightFactor+
+                                       foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble+0.5);
+                  q[x].green=(Quantum) ((q[x].green*HighlightFactor+
+                                         foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble+0.5);
+                  q[x].blue=(Quantum) ((q[x].blue*HighlightFactor+
+                                        foreground*(MaxRGBDouble-HighlightFactor))/MaxRGBDouble+0.5);
+                }
+              for ( ; x < (long) (image->columns-(image->rows-y)); x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*TroughFactor+
+                                       background*(MaxRGBDouble-TroughFactor))/MaxRGBDouble+0.5);
+                  q[x].green=(Quantum) ((q[x].green*TroughFactor+
+                                         background*(MaxRGBDouble-TroughFactor))/MaxRGBDouble+0.5);
+                  q[x].blue=(Quantum) ((q[x].blue*TroughFactor+
+                                        background*(MaxRGBDouble-TroughFactor))/MaxRGBDouble+0.5);
+                }
+              for ( ; x < (long) image->columns; x++)
+                {
+                  q[x].red=(Quantum) ((q[x].red*ShadowFactor+
+                                       background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble+0.5);
+                  q[x].green=(Quantum) ((q[x].green*ShadowFactor+
+                                         background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble+0.5);
+                  q[x].blue=(Quantum) ((q[x].blue*ShadowFactor+
+                                        background*(MaxRGBDouble-ShadowFactor))/MaxRGBDouble+0.5);
+                }
+            }
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
+        }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,image->rows))
+          if (!MagickMonitorFormatted(row_count,image->rows,&image->exception,
+                                      RaiseImageText,image->filename))
+            thread_status=MagickFail;
+          
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
     }
-    for ( ; x < (long) (image->columns-y); x++)
-    {
-      q->red=(Quantum) (((double) q->red*AccentuateFactor+
-        (double) foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      q->green=(Quantum) (((double) q->green*AccentuateFactor+
-        (double) foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      q->blue=(Quantum) (((double) q->blue*AccentuateFactor+
-        (double) foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      q++;
-    }
-    for ( ; x < (long) image->columns; x++)
-    {
-      q->red=(Quantum) (((double) q->red*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->green=(Quantum) (((double) q->green*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->blue=(Quantum) (((double) q->blue*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
-        break;
-  }
-  for ( ; y < (long) (image->rows-raise_info->height); y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) raise_info->width; x++)
-    {
-      q->red=(Quantum) (((double) q->red*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->green=(Quantum) (((double) q->green*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->blue=(Quantum) (((double) q->blue*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q++;
-    }
-    for ( ; x < (long) (image->columns-raise_info->width); x++)
-      q++;
-    for ( ; x < (long) image->columns; x++)
-    {
-      q->red=(Quantum) (((double) q->red*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->green=(Quantum) (((double) q->green*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->blue=(Quantum) (((double) q->blue*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
-        break;
-  }
-  for ( ; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) (image->rows-y); x++)
-    {
-      q->red=(Quantum) (((double) q->red*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB+0.5);
-      q->green=(Quantum) (((double) q->green*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB+0.5);
-      q->blue=(Quantum) (((double) q->blue*HighlightFactor+
-        (double) foreground*(MaxRGB-HighlightFactor))/MaxRGB+0.5);
-      q++;
-    }
-    for ( ; x < (long) (image->columns-(image->rows-y)); x++)
-    {
-      q->red=(Quantum) (((double) q->red*TroughFactor+
-        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
-      q->green=(Quantum) (((double) q->green*TroughFactor+
-        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
-      q->blue=(Quantum) (((double) q->blue*TroughFactor+
-        (double) background*(MaxRGB-TroughFactor))/MaxRGB+0.5);
-      q++;
-    }
-    for ( ; x < (long) image->columns; x++)
-    {
-      q->red=(Quantum) (((double) q->red*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
-      q->green=(Quantum) (((double) q->green*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
-      q->blue=(Quantum) (((double) q->blue*ShadowFactor+
-        (double) background*(MaxRGB-ShadowFactor))/MaxRGB+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RaiseImageText,y,image->rows,&image->exception))
-        break;
-  }
+
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }

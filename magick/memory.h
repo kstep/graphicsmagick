@@ -25,7 +25,7 @@ extern MagickExport void
   *MagickMallocArray(const size_t count,const size_t size),
   *MagickCloneMemory(void *destination,const void *source,const size_t size),
   *MagickRealloc(void *memory,const size_t size),
-  *MagickFree(void *memory);
+   MagickFree(void *memory);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
@@ -35,7 +35,8 @@ extern MagickExport void
 
 /* #define MagickAllocateMemory(type,size) ((type) MagickMalloc((size_t) (size))) */
 #define MagickAllocateMemory(type,size) \
-  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : ((type) MagickMalloc((size_t) (size))))
+  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : \
+   ((type) MagickMalloc((size_t) (size))))
 
 #define MagickAllocateArray(type,count,size) \
   ( (type) MagickMallocArray(count,size) )
@@ -46,7 +47,7 @@ extern MagickExport void
 #define MagickFreeMemory(memory) \
 { \
   void *_magick_mp=memory;      \
-  (void) MagickFree(_magick_mp); \
+  MagickFree(_magick_mp);       \
   memory=0;                     \
 }
 

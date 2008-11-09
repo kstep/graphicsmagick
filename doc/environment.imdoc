@@ -46,6 +46,20 @@ configuration files in $HOME/.magick if the directory exists. See
 <s>MAGICK_CODER_MODULE_PATH</s>, <s>MAGICK_CONFIGURE_PATH</s>, and
 <s>MAGICK_FILTER_MODULE_PATH</s> if more flexibility is needed.</abs>
 
+<opt>MAGICK_CODER_STABILITY</opt>
+
+<abs>The minimum coder stability level before it will be used. The
+available levels are <s>PRIMARY</s>, <s>STABLE</s>, and <s>UNSTABLE</s>.
+The default minimum level is <s>UNSTABLE</s>, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the <s>PRIMARY</s> level are commonly used
+formats with very well maintained implementations. Coders at the
+<s>STABLE</s> level are reasonably well maintained but represent less used
+formats. Coders at the <s>UNSTABLE</s> level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.</abs>
+
 <opt>MAGICK_CODER_MODULE_PATH</opt>
 
 <abs>Search path to use when searching for image format coder modules.
@@ -103,6 +117,16 @@ experimental feature (which is currently broken). Write performance is
 usually somewhat worse when using this approach rather than the default
 one.</abs>
 
+<opt>MAGICK_IO_FSYNC</opt>
+
+<abs>If <s>MAGICK_IO_FSYNC</s> is set to <s>TRUE</s>, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.</abs>
+
 <opt>MAGICK_IOBUF_SIZE</opt>
 
 <abs>The amount of I/O buffering (in bytes) to use when reading and
@@ -151,5 +175,13 @@ Overridden by <s>MAGICK_TMPDIR</s> if it is set.</abs>
 <abs>For Microsoft Windows, the path to the directory where applications
 should write temporary files. Overridden by <s>MAGICK_TMPDIR</s> if it
 is set.</abs>
+
+<opt>OMP_NUM_THREADS</opt>
+
+<abs>As per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.</abs>
 
 </imdoc>

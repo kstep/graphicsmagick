@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -39,7 +39,11 @@ extern "C" {
 #if (QuantumDepth == 8)
 #  define MaxColormapSize  256U
 #  define MaxMap  255U
+#  define MaxMapFloat 255.0f
+#  define MaxMapDouble 255.0
 #  define MaxRGB  255U
+#  define MaxRGBFloat 255.0f
+#  define MaxRGBDouble 255.0
 #  define ScaleCharToMap(value)        ((unsigned char) (value))
 #  define ScaleCharToQuantum(value)    ((Quantum) (value))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
@@ -57,7 +61,11 @@ extern "C" {
 #elif (QuantumDepth == 16)
 #  define MaxColormapSize  65536U
 #  define MaxMap 65535U
+#  define MaxMapFloat 65535.0f
+#  define MaxMapDouble 65535.0
 #  define MaxRGB  65535U
+#  define MaxRGBFloat 65535.0f
+#  define MaxRGBDouble 65535.0
 #  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
 #  define ScaleCharToQuantum(value)    ((Quantum) (257U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
@@ -75,6 +83,8 @@ extern "C" {
 #elif (QuantumDepth == 32)
 #  define MaxColormapSize  65536U
 #  define MaxRGB  4294967295U
+#  define MaxRGBFloat 4294967295.0f
+#  define MaxRGBDouble 4294967295.0
 #  define ScaleCharToQuantum(value)    ((Quantum) (16843009U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)))
 #  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
@@ -96,6 +106,8 @@ extern "C" {
   may take more time to compute the table than to process the image.
 */
 #define MaxMap 65535U
+#define MaxMapFloat 65535.0f
+#define MaxMapDouble 65535.0
 #if MaxMap == 65535U
 #  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
 #  define ScaleMapToChar(value)        ((unsigned int) ((value)/257U))
@@ -116,21 +128,29 @@ typedef unsigned int Quantum;
 
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
-#define RoundSignedToQuantum(value) ((Quantum) (value < 0.0 ? 0 : \
-  (value > MaxRGB) ? MaxRGB : value + 0.5))
-#define RoundToQuantum(value) ((Quantum) ((double) value > (double) MaxRGB ? \
-   MaxRGB : (double) value + 0.5))
+#define RoundDoubleToQuantum(value) ((Quantum) (value < 0.0 ? 0U : \
+  (value > MaxRGBDouble) ? MaxRGB : value + 0.5))
+#define RoundFloatToQuantum(value) ((Quantum) (value < 0.0f ? 0U : \
+  (value > MaxRGBFloat) ? MaxRGB : value + 0.5f))
 #define ConstrainToRange(min,max,value) (value < min ? min : \
   (value > max) ? max : value)
 #define ConstrainToQuantum(value) ConstrainToRange(0,MaxRGB,value)
 #define ScaleAnyToQuantum(x,max_value) \
-  ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
+  ((Quantum) (((double) MaxRGBDouble*x)/max_value+0.5))
 #define MagickBoolToString(value) (value != MagickFalse ? "True" : "False")
+
+/*
+  Return MagickTrue if channel is enabled in channels.  Allows using
+  code to adapt if ChannelType enumeration is changed to bit masks.
+*/
+#define MagickChannelEnabled(channels,channel) ((channels == AllChannels) || (channels == channel))
 
 /*
   Deprecated defines.
 */
 #define RunlengthEncodedCompression RLECompression
+#define RoundSignedToQuantum(value) RoundDoubleToQuantum(value)
+#define RoundToQuantum(value) RoundDoubleToQuantum(value)
 
 /*
   Enum declarations.
@@ -145,16 +165,17 @@ typedef enum
 typedef enum
 {
   UndefinedChannel,
-  RedChannel,
-  CyanChannel,
-  GreenChannel,
-  MagentaChannel,
-  BlueChannel,
-  YellowChannel,
-  OpacityChannel,
-  BlackChannel,
-  MatteChannel,
-  AllChannels
+  RedChannel,     /* RGB Red channel */
+  CyanChannel,    /* CMYK Cyan channel */
+  GreenChannel,   /* RGB Green channel */
+  MagentaChannel, /* CMYK Magenta channel */
+  BlueChannel,    /* RGB Blue channel */
+  YellowChannel,  /* CMYK Yellow channel */
+  OpacityChannel, /* Opacity channel */
+  BlackChannel,   /* CMYK Black (K) channel */
+  MatteChannel,   /* Same as Opacity channel (deprecated) */
+  AllChannels,    /* Color channels */
+  GrayChannel     /* Color channels represent an intensity. */
 } ChannelType;
 
 typedef enum
@@ -206,12 +227,13 @@ typedef enum
   SaturateCompositeOp,
   ColorizeCompositeOp,
   LuminizeCompositeOp,
-  ScreenCompositeOp,
-  OverlayCompositeOp,
+  ScreenCompositeOp, /* Not yet implemented */
+  OverlayCompositeOp,  /* Not yet implemented */
   CopyCyanCompositeOp,
   CopyMagentaCompositeOp,
   CopyYellowCompositeOp,
-  CopyBlackCompositeOp
+  CopyBlackCompositeOp,
+  DivideCompositeOp
 } CompositeOperator;
 
 typedef enum
@@ -458,36 +480,36 @@ typedef struct _ChromaticityInfo
 /*
   Useful macros for accessing PixelPacket members in a generic way.
 */
-# define GetRedSample(p) (p->red)
-# define GetGreenSample(p) (p->green)
-# define GetBlueSample(p) (p->blue)
-# define GetOpacitySample(p) (p->opacity)
+# define GetRedSample(p) ((p)->red)
+# define GetGreenSample(p) ((p)->green)
+# define GetBlueSample(p) ((p)->blue)
+# define GetOpacitySample(p) ((p)->opacity)
 
-# define SetRedSample(q,value) (q->red=(value))
-# define SetGreenSample(q,value) (q->green=(value))
-# define SetBlueSample(q,value) (q->blue=(value))
-# define SetOpacitySample(q,value) (q->opacity=(value))
+# define SetRedSample(q,value) ((q)->red=(value))
+# define SetGreenSample(q,value) ((q)->green=(value))
+# define SetBlueSample(q,value) ((q)->blue=(value))
+# define SetOpacitySample(q,value) ((q)->opacity=(value))
 
-# define GetGraySample(p) (p->red)
-# define SetGraySample(q,value) (q->red=q->green=q->blue=(value))
+# define GetGraySample(p) ((p)->red)
+# define SetGraySample(q,value) ((q)->red=(q)->green=(q)->blue=(value))
 
-# define GetYSample(p) (p->red)
-# define GetCbSample(p) (p->green)
-# define GetCrSample(p) (p->blue)
+# define GetYSample(p) ((p)->red)
+# define GetCbSample(p) ((p)->green)
+# define GetCrSample(p) ((p)->blue)
 
-# define SetYSample(q,value) (q->red=(value))
-# define SetCbSample(q,value) (q->green=(value))
-# define SetCrSample(q,value) (q->blue=(value))
+# define SetYSample(q,value) ((q)->red=(value))
+# define SetCbSample(q,value) ((q)->green=(value))
+# define SetCrSample(q,value) ((q)->blue=(value))
 
-# define GetCyanSample(p) (p->red)
-# define GetMagentSample(p) (p->green)
-# define GetYellowSample(p) (p->blue)
-# define GetBlackSample(p) (p->opacity)
+# define GetCyanSample(p) ((p)->red)
+# define GetMagentaSample(p) ((p)->green)
+# define GetYellowSample(p) ((p)->blue)
+# define GetBlackSample(p) ((p)->opacity)
 
-# define SetCyanSample(q,value) (q->red=(value))
-# define SetMagentaSample(q,value) (q->green=(value))
-# define SetYellowSample(q,value) (q->blue=(value))
-# define SetBlackSample(q,value) (q->opacity=(value))
+# define SetCyanSample(q,value) ((q)->red=(value))
+# define SetMagentaSample(q,value) ((q)->green=(value))
+# define SetYellowSample(q,value) ((q)->blue=(value))
+# define SetBlackSample(q,value) ((q)->opacity=(value))
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
@@ -846,8 +868,14 @@ typedef struct _Image
   struct _Image
     *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
 
+  MagickBool
+    ping;               /* Private, if true, pixels are undefined */
+
   _CacheInfoPtr_
     cache;              /* Private, image pixel cache */
+
+  _ThreadViewSetPtr_
+    default_views;      /* Private, default cache views */
 
   _ImageAttributePtr_
     attributes;         /* Private, Image attribute list */
@@ -873,12 +901,6 @@ typedef struct _Image
   unsigned long
     signature;          /* Private, Unique code to validate structure */
 } Image;
-
-/*
-  Callback used by ReadStream() and WriteStream().
-*/
-typedef unsigned int
-  (*StreamHandler)(const Image *,const void *,const size_t);
 
 typedef struct _ImageInfo
 {
@@ -955,9 +977,6 @@ typedef struct _ImageInfo
   void
     *client_data;            /* User-specified data to pass to coder */
 
-  StreamHandler
-    stream;                  /* Pass in open blob stream handler for read/write */
-
   FILE
     *file;                   /* If not null, stdio FILE to read image from */
 
@@ -1027,9 +1046,7 @@ extern MagickExport ImageType
 
 extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
-     const char *key),
-  *ClassTypeToString(const ClassType class_type),
-  *ImageTypeToString(const ImageType image_type);
+     const char *key);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
@@ -1040,7 +1057,6 @@ extern MagickExport RectangleInfo
 
 /* Functions which return unsigned int as a True/False boolean value */
 extern MagickExport MagickBool
-  IsImagesEqual(Image *,const Image *),
   IsTaintImage(const Image *),
   IsSubimage(const char *,const unsigned int);
 
@@ -1051,7 +1067,7 @@ extern MagickExport MagickPassFail
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ClipImage(Image *),
-  ClipPathImage(Image *,const char *,const unsigned int),
+  ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),

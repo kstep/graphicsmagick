@@ -69,7 +69,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
 #
 
 # Copyright (C) 2004 GraphicsMagick Group
@@ -88,6 +88,24 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 # Makefile for building Wand library
+#
+
+# Copyright (C) 2008 GraphicsMagick Group
+
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building HTML files
+#
+
+# Copyright (C) 2008 GraphicsMagick Group
+
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building API HTML files
 #
 
 # Copyright (C) 2004 GraphicsMagick Group
@@ -134,7 +152,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4)
+TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
+	$(UTILITIES_TESTS)
+check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) $(magickinc_HEADERS) \
 	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
@@ -145,7 +165,8 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(srcdir)/filters/Makefile.am $(srcdir)/ltdl/Makefile.inc \
 	$(srcdir)/magick/Makefile.am $(srcdir)/rungm.sh.in \
 	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
-	$(srcdir)/wand/Makefile.am \
+	$(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am \
+	$(srcdir)/www/api/Makefile.am \
 	$(top_srcdir)/Magick++/bin/GraphicsMagick++-config.in \
 	$(top_srcdir)/Magick++/lib/GraphicsMagick++.pc.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
@@ -234,6 +255,8 @@ Magick___lib_libGraphicsMagick___la_LINK = $(LIBTOOL) --tag=CXX \
 	$(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(Magick___lib_libGraphicsMagick___la_LDFLAGS) $(LDFLAGS) -o \
 	$@
+@WITH_MAGICK_PLUS_PLUS_TRUE@am_Magick___lib_libGraphicsMagick___la_rpath =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	-rpath $(libdir)
 coders_art_la_DEPENDENCIES = $(LIBMAGICK)
 am_coders_art_la_OBJECTS = coders/coders_art_la-art.lo
 coders_art_la_OBJECTS = $(am_coders_art_la_OBJECTS)
@@ -307,6 +330,13 @@ coders_dcm_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dcm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dcm_la_rpath = -rpath $(codersdir)
+coders_dcraw_la_DEPENDENCIES = $(LIBMAGICK)
+am_coders_dcraw_la_OBJECTS = coders/coders_dcraw_la-dcraw.lo
+coders_dcraw_la_OBJECTS = $(am_coders_dcraw_la_OBJECTS)
+coders_dcraw_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(coders_dcraw_la_LDFLAGS) $(LDFLAGS) -o $@
+@WITH_MODULES_TRUE@am_coders_dcraw_la_rpath = -rpath $(codersdir)
 coders_dib_la_DEPENDENCIES = $(LIBMAGICK)
 am_coders_dib_la_OBJECTS = coders/coders_dib_la-dib.lo
 coders_dib_la_OBJECTS = $(am_coders_dib_la_OBJECTS)
@@ -353,7 +383,7 @@ coders_fax_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_fax_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_fax_la_rpath = -rpath $(codersdir)
-coders_fits_la_DEPENDENCIES = $(LIBMAGICK)
+coders_fits_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
 am_coders_fits_la_OBJECTS = coders/coders_fits_la-fits.lo
 coders_fits_la_OBJECTS = $(am_coders_fits_la_OBJECTS)
 coders_fits_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -464,7 +494,7 @@ coders_map_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_map_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_map_la_rpath = -rpath $(codersdir)
-coders_mat_la_DEPENDENCIES = $(LIBMAGICK)
+coders_mat_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
 am_coders_mat_la_OBJECTS = coders/coders_mat_la-mat.lo
 coders_mat_la_OBJECTS = $(am_coders_mat_la_OBJECTS)
 coders_mat_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -986,7 +1016,8 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/alpha_composite.h magick/animate.c magick/animate.h \
 	magick/annotate.c magick/api.h magick/attribute.c \
 	magick/attribute.h magick/bit_stream.h magick/blob.c \
-	magick/blob.h magick/channel.c magick/channel.h magick/color.c \
+	magick/blob.h magick/channel.c magick/channel.h \
+	magick/compare.c magick/compare.h magick/color.c \
 	magick/color.h magick/colorspace.c magick/colorspace.h \
 	magick/command.c magick/command.h magick/composite.c \
 	magick/composite.h magick/compress.c magick/compress.h \
@@ -995,36 +1026,38 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/deprecate.c magick/deprecate.h magick/display.c \
 	magick/display.h magick/draw.c magick/draw.h magick/effect.c \
 	magick/effect.h magick/enhance.c magick/enhance.h \
-	magick/error.c magick/error.h magick/forward.h magick/fx.c \
-	magick/fx.h magick/gem.c magick/gem.h magick/image.c \
-	magick/image.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
-	magick/magic.h magick/magick.c magick/magick.h \
-	magick/magick_endian.c magick/magick_endian.h magick/map.c \
-	magick/map.h magick/memory.c magick/memory.h magick/module.c \
+	magick/enum_strings.c magick/enum_strings.h magick/error.c \
+	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
+	magick/gem.c magick/gem.h magick/image.c magick/image.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
+	magick/log.c magick/log.h magick/magic.c magick/magic.h \
+	magick/magick.c magick/magick.h magick/magick_endian.c \
+	magick/magick_endian.h magick/map.c magick/map.h \
+	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
-	magick/montage.c magick/montage.h magick/operator.c \
-	magick/operator.h magick/paint.c magick/paint.h \
-	magick/pixel_cache.h magick/pixel_cache.c \
-	magick/pixel_iterator.c magick/pixel_iterator.h \
-	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/profile.c \
-	magick/profile.h magick/quantize.c magick/quantize.h \
-	magick/registry.c magick/registry.h magick/render.c \
-	magick/render.h magick/resize.c magick/resize.h \
-	magick/resource.c magick/resource.h magick/segment.c \
-	magick/semaphore.c magick/semaphore.h magick/shear.c \
-	magick/shear.h magick/signature.c magick/signature.h \
-	magick/spinlock.h magick/static.c magick/static.h \
-	magick/studio.h magick/symbols.h magick/tempfile.c \
-	magick/tempfile.h magick/timer.c magick/timer.h \
-	magick/transform.c magick/transform.h magick/tsd.c \
-	magick/tsd.h magick/type.c magick/unix_port.c magick/utility.c \
-	magick/utility.h magick/version.c magick/version.h \
-	magick/widget.c magick/widget.h magick/xwindow.c \
-	magick/xwindow.h magick/nt_feature.c magick/nt_feature.h \
-	magick/nt_base.c magick/nt_base.h coders/art.c coders/avi.c \
-	coders/avs.c coders/bmp.c coders/caption.c coders/cineon.c \
-	coders/cmyk.c coders/cut.c coders/dcm.c coders/dib.c \
+	magick/montage.c magick/montage.h magick/omp_data_view.c \
+	magick/omp_data_view.h magick/operator.c magick/operator.h \
+	magick/paint.c magick/paint.h magick/pixel_cache.h \
+	magick/pixel_cache.c magick/pixel_iterator.c \
+	magick/pixel_iterator.h magick/PreRvIcccm.c \
+	magick/PreRvIcccm.h magick/profile.c magick/profile.h \
+	magick/quantize.c magick/quantize.h magick/registry.c \
+	magick/registry.h magick/render.c magick/render.h \
+	magick/resize.c magick/resize.h magick/resource.c \
+	magick/resource.h magick/segment.c magick/semaphore.c \
+	magick/semaphore.h magick/shear.c magick/shear.h \
+	magick/signature.c magick/signature.h magick/spinlock.h \
+	magick/static.c magick/static.h magick/studio.h \
+	magick/symbols.h magick/tempfile.c magick/tempfile.h \
+	magick/timer.c magick/timer.h magick/transform.c \
+	magick/transform.h magick/tsd.c magick/tsd.h magick/type.c \
+	magick/unix_port.c magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/widget.c \
+	magick/widget.h magick/xwindow.c magick/xwindow.h \
+	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
+	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
+	coders/bmp.c coders/caption.c coders/cineon.c coders/cmyk.c \
+	coders/cut.c coders/dcm.c coders/dcraw.c coders/dib.c \
 	coders/dps.c coders/dpx.c coders/fax.c coders/fits.c \
 	coders/gif.c coders/gradient.c coders/gray.c \
 	coders/histogram.c coders/html.c coders/icon.c coders/label.c \
@@ -1052,6 +1085,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
+	magick/magick_libGraphicsMagick_la-compare.lo \
 	magick/magick_libGraphicsMagick_la-color.lo \
 	magick/magick_libGraphicsMagick_la-colorspace.lo \
 	magick/magick_libGraphicsMagick_la-command.lo \
@@ -1065,6 +1099,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-draw.lo \
 	magick/magick_libGraphicsMagick_la-effect.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
+	magick/magick_libGraphicsMagick_la-enum_strings.lo \
 	magick/magick_libGraphicsMagick_la-error.lo \
 	magick/magick_libGraphicsMagick_la-fx.lo \
 	magick/magick_libGraphicsMagick_la-gem.lo \
@@ -1080,6 +1115,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-module.lo \
 	magick/magick_libGraphicsMagick_la-monitor.lo \
 	magick/magick_libGraphicsMagick_la-montage.lo \
+	magick/magick_libGraphicsMagick_la-omp_data_view.lo \
 	magick/magick_libGraphicsMagick_la-operator.lo \
 	magick/magick_libGraphicsMagick_la-paint.lo \
 	magick/magick_libGraphicsMagick_la-pixel_cache.lo \
@@ -1135,6 +1171,7 @@ am__objects_12 = coders/magick_libGraphicsMagick_la-art.lo \
 	coders/magick_libGraphicsMagick_la-cmyk.lo \
 	coders/magick_libGraphicsMagick_la-cut.lo \
 	coders/magick_libGraphicsMagick_la-dcm.lo \
+	coders/magick_libGraphicsMagick_la-dcraw.lo \
 	coders/magick_libGraphicsMagick_la-dib.lo \
 	coders/magick_libGraphicsMagick_la-dps.lo \
 	coders/magick_libGraphicsMagick_la-dpx.lo \
@@ -1256,93 +1293,95 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/tests/morphImages$(EXEEXT) \
 	Magick++/tests/readWriteBlob$(EXEEXT) \
 	Magick++/tests/readWriteImages$(EXEEXT)
-am__EXEEXT_4 = wand/drawtest$(EXEEXT) wand/wandtest$(EXEEXT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_4 = $(am__EXEEXT_3)
+am__EXEEXT_5 = wand/drawtest$(EXEEXT) wand/wandtest$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
-Magick___demo_analyze_DEPENDENCIES = $(LIBMAGICKPP)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 = Magick++/lib/libGraphicsMagick++.la
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(LIBMAGICKPP)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_tests_bitstream_OBJECTS =  \
 	tests/tests_bitstream-bitstream.$(OBJEXT)
 tests_bitstream_OBJECTS = $(am_tests_bitstream_OBJECTS)
@@ -1410,52 +1449,53 @@ SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_caption_la_SOURCES) $(coders_cineon_la_SOURCES) \
 	$(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) \
 	$(coders_cut_la_SOURCES) $(coders_dcm_la_SOURCES) \
-	$(coders_dib_la_SOURCES) $(coders_dps_la_SOURCES) \
-	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
-	$(coders_ept_la_SOURCES) $(coders_fax_la_SOURCES) \
-	$(coders_fits_la_SOURCES) $(coders_fpx_la_SOURCES) \
-	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
-	$(coders_gray_la_SOURCES) $(coders_histogram_la_SOURCES) \
-	$(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) \
-	$(coders_jbig_la_SOURCES) $(coders_jp2_la_SOURCES) \
-	$(coders_jpeg_la_SOURCES) $(coders_label_la_SOURCES) \
-	$(coders_locale_la_SOURCES) $(coders_logo_la_SOURCES) \
-	$(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) \
-	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
-	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
-	$(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) \
-	$(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) \
-	$(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) \
-	$(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) \
-	$(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) \
-	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
-	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
-	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
-	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
-	$(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) \
-	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) \
-	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
-	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
-	$(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) \
-	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
-	$(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) \
-	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
-	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
-	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
-	$(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
-	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
-	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
-	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
-	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
+	$(coders_dcraw_la_SOURCES) $(coders_dib_la_SOURCES) \
+	$(coders_dps_la_SOURCES) $(coders_dpx_la_SOURCES) \
+	$(coders_emf_la_SOURCES) $(coders_ept_la_SOURCES) \
+	$(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) \
+	$(coders_fpx_la_SOURCES) $(coders_gif_la_SOURCES) \
+	$(coders_gradient_la_SOURCES) $(coders_gray_la_SOURCES) \
+	$(coders_histogram_la_SOURCES) $(coders_html_la_SOURCES) \
+	$(coders_icon_la_SOURCES) $(coders_jbig_la_SOURCES) \
+	$(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) \
+	$(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) \
+	$(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) \
+	$(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) \
+	$(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) \
+	$(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) \
+	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
+	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
+	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
+	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
+	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
+	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
+	$(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) \
+	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
+	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
+	$(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) \
+	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
+	$(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) \
+	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
+	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
+	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
+	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
+	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
+	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
+	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
+	$(ltdl_shl_load_la_SOURCES) \
 	$(magick_libGraphicsMagick_la_SOURCES) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -1487,52 +1527,53 @@ DIST_SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_caption_la_SOURCES) $(coders_cineon_la_SOURCES) \
 	$(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) \
 	$(coders_cut_la_SOURCES) $(coders_dcm_la_SOURCES) \
-	$(coders_dib_la_SOURCES) $(coders_dps_la_SOURCES) \
-	$(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) \
-	$(coders_ept_la_SOURCES) $(coders_fax_la_SOURCES) \
-	$(coders_fits_la_SOURCES) $(coders_fpx_la_SOURCES) \
-	$(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) \
-	$(coders_gray_la_SOURCES) $(coders_histogram_la_SOURCES) \
-	$(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) \
-	$(coders_jbig_la_SOURCES) $(coders_jp2_la_SOURCES) \
-	$(coders_jpeg_la_SOURCES) $(coders_label_la_SOURCES) \
-	$(coders_locale_la_SOURCES) $(coders_logo_la_SOURCES) \
-	$(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) \
-	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
-	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
-	$(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) \
-	$(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) \
-	$(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) \
-	$(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) \
-	$(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) \
-	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
-	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
-	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
-	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
-	$(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) \
-	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
-	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
-	$(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) \
-	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
-	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
-	$(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) \
-	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
-	$(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) \
-	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
-	$(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) \
-	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
-	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
-	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
-	$(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
-	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
-	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
-	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
-	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
-	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
+	$(coders_dcraw_la_SOURCES) $(coders_dib_la_SOURCES) \
+	$(coders_dps_la_SOURCES) $(coders_dpx_la_SOURCES) \
+	$(coders_emf_la_SOURCES) $(coders_ept_la_SOURCES) \
+	$(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) \
+	$(coders_fpx_la_SOURCES) $(coders_gif_la_SOURCES) \
+	$(coders_gradient_la_SOURCES) $(coders_gray_la_SOURCES) \
+	$(coders_histogram_la_SOURCES) $(coders_html_la_SOURCES) \
+	$(coders_icon_la_SOURCES) $(coders_jbig_la_SOURCES) \
+	$(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) \
+	$(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) \
+	$(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) \
+	$(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) \
+	$(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) \
+	$(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) \
+	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
+	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
+	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
+	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
+	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
+	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
+	$(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) \
+	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
+	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
+	$(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) \
+	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
+	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
+	$(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) \
+	$(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) \
+	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
+	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
+	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
+	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
+	$(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) \
+	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
+	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
+	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
+	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
+	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
+	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
+	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
+	$(ltdl_shl_load_la_SOURCES) \
 	$(am__magick_libGraphicsMagick_la_SOURCES_DIST) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -1583,6 +1624,8 @@ HEADERS = $(include_HEADERS) $(ltdlinclude_HEADERS) \
 	$(magickpptopinc_HEADERS) $(noinst_HEADERS) $(wandinc_HEADERS)
 ETAGS = etags
 CTAGS = ctags
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -1591,7 +1634,7 @@ am__remove_distdir = \
     || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr $(distdir); }; }
 DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2 \
-	$(distdir).tar.lzma $(distdir).zip
+	$(distdir).tar.lzma
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
@@ -1633,6 +1676,7 @@ DIRSEP = @DIRSEP@
 DISTCHECK_CONFIG_FLAGS = @DISTCHECK_CONFIG_FLAGS@
 DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
+DOC_DIR = @DOC_DIR@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
@@ -1660,6 +1704,7 @@ GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
+HTML_DIR = @HTML_DIR@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
@@ -1703,6 +1748,7 @@ LIB_JP2 = @LIB_JP2@
 LIB_JPEG = @LIB_JPEG@
 LIB_LCMS = @LIB_LCMS@
 LIB_MATH = @LIB_MATH@
+LIB_OMP = @LIB_OMP@
 LIB_PNG = @LIB_PNG@
 LIB_THREAD = @LIB_THREAD@
 LIB_TIFF = @LIB_TIFF@
@@ -1779,6 +1825,7 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
+OPENMP_CFLAGS = @OPENMP_CFLAGS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 P7ZIP = @P7ZIP@
@@ -1863,9 +1910,7 @@ build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
-
-# Architecture independent data files installed in the package's data directory
-docdir = $(MagickSharePath)
+docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 freetype_config = @freetype_config@
@@ -1911,7 +1956,7 @@ windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-zip dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-bzip2 dist-lzma foreign
 topincludedir = @includedir@/GraphicsMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
@@ -1954,25 +1999,15 @@ RUNENV = $(SHELL) `pwd`/rungm.sh
 TESTS_ENVIRONMENT = \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
-	GM="$(RUNENV) `pwd`/utilities/gm"
-
-
-# Tests to run
-TESTS = \
-	$(TESTS_TESTS) \
-	$(MAGICKPP_TESTS) \
-	$(UTILITIES_TESTS)
+	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
 
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
-	$(TESTS_XFAIL_TESTS)
+	$(TESTS_XFAIL_TESTS) \
+	$(UTILITIES_XFAIL_TESTS)
 
-TOP_EXTRA_DIST = \
-	AUTHORS.txt \
-	BENCHMARKS.txt \
-	BUGS.txt \
-	CONTRIBUTE.txt \
+CHANGELOGS = \
 	ChangeLog \
 	ChangeLog.2001 \
 	ChangeLog.2002 \
@@ -1980,18 +2015,16 @@ TOP_EXTRA_DIST = \
 	ChangeLog.2004 \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
-	ChangeLog.2007 \
+	ChangeLog.2007
+
+TOP_EXTRA_DIST = \
+	$(CHANGELOGS) \
 	Copyright.txt \
-	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
-	MISSION.txt \
 	NEWS.txt \
-	PLATFORMS.txt \
-	PROCESS.txt \
 	README.txt \
 	TODO.txt \
-	index.html \
 	lndir.sh \
 	version.sh \
 	winpath.sh
@@ -2001,8 +2034,9 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	$(MAGICK_EXTRA_DIST) $(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) $(WAND_EXTRA_DIST) \
-	ltdl/lt__dirent.c ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README \
-	ltdl/argz_.h ltdl/argz.c
+	$(WWWW_EXTRA_DIST) $(WWWAPI_EXTRA_DIST) ltdl/lt__dirent.c \
+	ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README ltdl/argz_.h \
+	ltdl/argz.c
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
 AM_LDFLAGS = -no-undefined
@@ -2043,7 +2077,7 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.mgk.in \
 	config/type.mgk.in
 
-LTDL_VERSION_INFO = -version-info 8:2:1
+LTDL_VERSION_INFO = -version-info 9:0:2
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
@@ -2119,6 +2153,7 @@ MAGICK_CODER_SRCS = \
 	coders/cmyk.c \
 	coders/cut.c \
 	coders/dcm.c \
+	coders/dcraw.c \
 	coders/dib.c \
 	coders/dps.c \
 	coders/dpx.c \
@@ -2205,21 +2240,22 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_TRUE@coders_LTLIBRARIES = \
 @WITH_MODULES_TRUE@	coders/art.la coders/avi.la coders/avs.la coders/bmp.la \
 @WITH_MODULES_TRUE@	coders/caption.la coders/cineon.la coders/cmyk.la coders/cut.la \
-@WITH_MODULES_TRUE@	coders/dcm.la coders/dib.la coders/dps.la coders/dpx.la \
-@WITH_MODULES_TRUE@	coders/fax.la coders/fits.la coders/gif.la coders/gradient.la \
-@WITH_MODULES_TRUE@	coders/gray.la coders/histogram.la coders/html.la coders/icon.la \
-@WITH_MODULES_TRUE@	coders/label.la coders/locale.la coders/logo.la coders/map.la \
-@WITH_MODULES_TRUE@	coders/mat.la coders/matte.la coders/meta.la coders/miff.la \
-@WITH_MODULES_TRUE@	coders/mono.la coders/mpc.la coders/mpeg.la coders/mpr.la \
-@WITH_MODULES_TRUE@	coders/msl.la coders/mtv.la coders/mvg.la coders/null.la coders/otb.la \
-@WITH_MODULES_TRUE@	coders/palm.la coders/pcd.la coders/pcl.la coders/pcx.la coders/pdb.la \
-@WITH_MODULES_TRUE@	coders/pdf.la coders/pict.la coders/pix.la coders/plasma.la \
-@WITH_MODULES_TRUE@	coders/pnm.la coders/preview.la coders/ps.la coders/ps2.la \
-@WITH_MODULES_TRUE@	coders/ps3.la coders/psd.la coders/pwp.la coders/rgb.la \
-@WITH_MODULES_TRUE@	coders/rla.la coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
+@WITH_MODULES_TRUE@	coders/dcm.la coders/dcraw.la coders/dib.la coders/dps.la \
+@WITH_MODULES_TRUE@	coders/dpx.la coders/fax.la coders/fits.la coders/gif.la \
+@WITH_MODULES_TRUE@	coders/gradient.la coders/gray.la coders/histogram.la coders/html.la \
+@WITH_MODULES_TRUE@	coders/icon.la coders/label.la coders/locale.la coders/logo.la \
+@WITH_MODULES_TRUE@	coders/map.la coders/mat.la coders/matte.la coders/meta.la \
+@WITH_MODULES_TRUE@	coders/miff.la coders/mono.la coders/mpc.la coders/mpeg.la \
+@WITH_MODULES_TRUE@	coders/mpr.la coders/msl.la coders/mtv.la coders/mvg.la \
+@WITH_MODULES_TRUE@	coders/null.la coders/otb.la coders/palm.la coders/pcd.la \
+@WITH_MODULES_TRUE@	coders/pcl.la coders/pcx.la coders/pdb.la coders/pdf.la \
+@WITH_MODULES_TRUE@	coders/pict.la coders/pix.la coders/plasma.la coders/pnm.la \
+@WITH_MODULES_TRUE@	coders/preview.la coders/ps.la coders/ps2.la coders/ps3.la \
+@WITH_MODULES_TRUE@	coders/psd.la coders/pwp.la coders/rgb.la coders/rla.la \
+@WITH_MODULES_TRUE@	coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
 @WITH_MODULES_TRUE@	coders/stegano.la coders/sun.la coders/svg.la coders/tga.la \
-@WITH_MODULES_TRUE@	coders/tile.la coders/tim.la coders/topol.la \
-@WITH_MODULES_TRUE@	coders/ttf.la coders/txt.la coders/uil.la coders/url.la coders/uyvy.la \
+@WITH_MODULES_TRUE@	coders/tile.la coders/tim.la coders/topol.la coders/ttf.la \
+@WITH_MODULES_TRUE@	coders/txt.la coders/uil.la coders/url.la coders/uyvy.la \
 @WITH_MODULES_TRUE@	coders/vicar.la coders/vid.la coders/viff.la coders/wbmp.la \
 @WITH_MODULES_TRUE@	coders/wmf.la coders/wpg.la coders/xbm.la coders/xc.la \
 @WITH_MODULES_TRUE@	coders/xcf.la coders/xpm.la coders/yuv.la \
@@ -2288,6 +2324,12 @@ coders_dcm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_dcm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dcm_la_LIBADD = $(LIBMAGICK)
 
+# DCRAW coder module
+coders_dcraw_la_SOURCES = coders/dcraw.c
+coders_dcraw_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dcraw_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_dcraw_la_LIBADD = $(LIBMAGICK)
+
 # DIB coder module
 coders_dib_la_SOURCES = coders/dib.c
 coders_dib_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
@@ -2328,7 +2370,7 @@ coders_fax_la_LIBADD = $(LIBMAGICK)
 coders_fits_la_SOURCES = coders/fits.c
 coders_fits_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_fits_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_fits_la_LIBADD = $(LIBMAGICK)
+coders_fits_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # FPX coder module
 coders_fpx_la_SOURCES = coders/fpx.c
@@ -2418,7 +2460,7 @@ coders_map_la_LIBADD = $(LIBMAGICK)
 coders_mat_la_SOURCES = coders/mat.c
 coders_mat_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD = $(LIBMAGICK)
+coders_mat_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES = coders/matte.c
@@ -2825,6 +2867,8 @@ MAGICK_BASE_SRCS = \
 	magick/blob.h \
 	magick/channel.c \
 	magick/channel.h \
+	magick/compare.c \
+	magick/compare.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -2851,6 +2895,8 @@ MAGICK_BASE_SRCS = \
 	magick/effect.h \
 	magick/enhance.c \
 	magick/enhance.h \
+	magick/enum_strings.c \
+	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
 	magick/forward.h \
@@ -2882,6 +2928,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/omp_data_view.c \
+	magick/omp_data_view.h \
 	magick/operator.c \
 	magick/operator.h \
 	magick/paint.c \
@@ -2956,6 +3004,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/colorspace.h \
 	magick/command.h \
 	magick/command.h \
+	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
 	magick/constitute.h \
@@ -2982,6 +3031,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/operator.h \
 	magick/paint.h \
 	magick/pixel_cache.h \
+	magick/pixel_iterator.h \
 	magick/profile.h \
 	magick/quantize.h \
 	magick/registry.h \
@@ -3007,7 +3057,7 @@ MAGICK_NOINST_HDRS = \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
-	magick/pixel_iterator.h \
+	magick/omp_data_view.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \
@@ -3043,17 +3093,28 @@ MAGICK_FILTER_SRCS = \
 filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(LIBMAGICK)
-LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
-MAGICKPP_SCRPTS = \
+@WITH_MAGICK_PLUS_PLUS_FALSE@LIBMAGICKPP = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_MANS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_PKGCONFIG = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_SCRPTS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TESTS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
-MAGICKPP_MANS = \
+MAGICKPP_MANS_OPT = \
 	Magick++/bin/GraphicsMagick++-config.1
 
-MAGICKPP_PKGCONFIG = \
+MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/GraphicsMagick++.pc
 
-MAGICKPP_TESTS = \
+MAGICKPP_TEST_SCRIPTS_OPT = \
 	Magick++/tests/exceptions.sh \
 	Magick++/tests/appendImages.sh \
 	Magick++/tests/attributes.sh \
@@ -3105,7 +3166,7 @@ MAGICKPP_EXTRA_DIST = \
         Magick++/demo/smile.miff \
         Magick++/demo/smile_anim.miff \
         Magick++/demo/tile.miff \
-        $(MAGICKPP_TESTS) \
+        $(MAGICKPP_TEST_SCRIPTS_OPT) \
         Magick++/tests/test_image.miff \
 	Magick++/tests/test_image_anim.miff
 
@@ -3175,7 +3236,7 @@ Magick___lib_libGraphicsMagick___la_LDFLAGS = \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
-MAGICKPP_CHECK_PGRMS = \
+MAGICKPP_CHECK_PGRMS_OPT = \
         Magick++/demo/analyze \
         Magick++/demo/button \
         Magick++/demo/demo \
@@ -4266,7 +4327,9 @@ WAND_EXTRA_DIST = \
 	wand/input_bilevel.miff \
 	wand/input_gray.miff \
 	wand/input_truecolor.miff \
-	wand/sequence.miff
+	wand/sequence.miff \
+	wand/common.sh \
+	$(WAND_TESTS)
 
 wand_drawtest_LDADD = $(LIBWAND)
 wand_drawtest_LDFLAGS = $(LDFLAGS)
@@ -4278,9 +4341,237 @@ WAND_CHECK_PGRMS = \
 	wand/drawtest \
 	wand/wandtest
 
+WAND_TESTS = \
+	wand/drawtest.sh \
+	wand/wandtest.sh
+
 WAND_CLEANFILES = \
-        wand/*_out.* \
-        wand/image.miff
+        wand/*_out.*
+
+WWWDIR = $(top_srcdir)/www
+
+# Install HTML files
+DOCDIRS = www www/api www/images www/Magick++
+HTML_INSTALL_DATA_TARGETS = install-data-html
+
+# Uninstall HTML files
+HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
+RST2HTML_TARGETS = \
+	$(WWWDIR)/Magick++/index.html \
+	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/api/api.html \
+	$(WWWDIR)/CVS.html \
+	$(WWWDIR)/Copyright.html \
+	$(WWWDIR)/FAQ.html \
+	$(WWWDIR)/INSTALL-unix.html \
+	$(WWWDIR)/INSTALL-windows.html \
+	$(WWWDIR)/NEWS.html \
+	$(WWWDIR)/OpenMP.html \
+	$(WWWDIR)/README.html \
+	$(WWWDIR)/authors.html \
+	$(WWWDIR)/benchmarks.html \
+	$(WWWDIR)/benchmarks-1.2.html \
+	$(WWWDIR)/bugs.html \
+	$(WWWDIR)/contribute.html \
+	$(WWWDIR)/download.html \
+	$(WWWDIR)/formats.html \
+	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/index.html \
+	$(WWWDIR)/links.html \
+	$(WWWDIR)/miff.html \
+	$(WWWDIR)/mission.html \
+	$(WWWDIR)/motion-picture.html \
+	$(WWWDIR)/perl.html \
+	$(WWWDIR)/platforms.html \
+	$(WWWDIR)/process.html \
+	$(WWWDIR)/programming.html \
+	$(WWWDIR)/quantize.html \
+	$(WWWDIR)/tools.html \
+	$(WWWDIR)/utilities.html
+
+WWW_RST_FILES = \
+	www/CVS.rst \
+	www/FAQ.rst \
+	www/OpenMP.rst \
+	www/Magick++/index.rst \
+	www/Magick++/Documentation.rst \
+	www/api/api.rst \
+	www/authors.rst \
+	www/benchmarks.rst \
+	www/benchmarks-1.2.rst \
+	www/bugs.rst \
+	www/contribute.rst \
+	www/download.rst \
+	www/formats.rst \
+	www/ImageMagickObject.rst \
+	www/index.rst \
+	www/links.rst \
+	www/miff.rst \
+	www/mission.rst \
+	www/motion-picture.rst \
+	www/perl.rst \
+	www/platforms.rst \
+	www/process.rst \
+	www/programming.rst \
+	www/quantize.rst \
+	www/tools.rst \
+	www/utilities.rst
+
+WWW_HTML_FILES = \
+	www/CVS.html \
+	www/Changelog.html \
+	www/Copyright.html \
+	www/FAQ.html \
+	www/GraphicsMagick.html \
+	www/INSTALL-unix.html \
+	www/INSTALL-windows.html \
+	www/ImageMagickObject.html \
+	www/ImageMagickObject.rst \
+	www/Magick++/Documentation.html \
+	www/Magick++/Documentation.rst \
+	www/Magick++/index.html \
+	www/NEWS.html \
+	www/OpenMP.html \
+	www/README.html \
+	www/animate.html \
+	www/api/api.html \
+	www/authors.html \
+	www/benchmarks.html \
+	www/bugs.html \
+	www/color.html \
+	www/compare.html \
+	www/composite.html \
+	www/conjure.html \
+	www/contribute.html \
+	www/convert.html \
+	www/display.html \
+	www/docutils-api.css \
+	www/docutils-articles.css \
+	www/download.html \
+	www/formats.html \
+	www/gm.html \
+	www/identify.html \
+	www/import.html \
+	www/index.html \
+	www/links.html \
+	www/miff.html \
+	www/mission.html \
+	www/mogrify.html \
+	www/montage.html \
+	www/motion-picture.html \
+	www/perl.html \
+	www/platforms.html \
+	www/process.html \
+	www/programming.html \
+	www/quantize.html \
+	www/tools.html \
+	www/utilities.html
+
+WWWW_EXTRA_DIST = $(WWW_HTML_FILES) $(WWW_RST_FILES)
+WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color.html
+@MAINTAINER_MODE_TRUE@NAMED_COLORS = $(top_srcdir)/scripts/named_colors.py
+@MAINTAINER_MODE_TRUE@RST2HTMLDECO = $(top_srcdir)/scripts/rst2htmldeco.py
+@MAINTAINER_MODE_TRUE@RELPATH = $(top_srcdir)/scripts/relpath.py
+@MAINTAINER_MODE_TRUE@OMP_DECIMAL_ALIGN = $(top_srcdir)/scripts/omp_decimal_align.py
+@MAINTAINER_MODE_TRUE@RST2HTML_COMMAND = $(RST2HTMLDECO) --link-stylesheet=docutils-articles.css
+
+# txt2html requires perl.
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/Changelog.html
+
+wwwapidir = $(htmldir)/api
+WWWAPIDIR = $(top_srcdir)/www/api
+WWWAPI_HTML_TARGETS = \
+	$(WWWAPIDIR)/animate.html \
+	$(WWWAPIDIR)/annotate.html \
+	$(WWWAPIDIR)/attribute.html \
+	$(WWWAPIDIR)/blob.html \
+	$(WWWAPIDIR)/channel.html \
+	$(WWWAPIDIR)/color.html \
+	$(WWWAPIDIR)/compare.html \
+	$(WWWAPIDIR)/composite.html \
+	$(WWWAPIDIR)/constitute.html \
+	$(WWWAPIDIR)/decorate.html \
+	$(WWWAPIDIR)/deprecate.html \
+	$(WWWAPIDIR)/display.html \
+	$(WWWAPIDIR)/draw.html \
+	$(WWWAPIDIR)/effect.html \
+	$(WWWAPIDIR)/enhance.html \
+	$(WWWAPIDIR)/error.html \
+	$(WWWAPIDIR)/fx.html \
+	$(WWWAPIDIR)/image.html \
+	$(WWWAPIDIR)/list.html \
+	$(WWWAPIDIR)/magick.html \
+	$(WWWAPIDIR)/memory.html \
+	$(WWWAPIDIR)/monitor.html \
+	$(WWWAPIDIR)/montage.html \
+	$(WWWAPIDIR)/operator.html \
+	$(WWWAPIDIR)/paint.html \
+	$(WWWAPIDIR)/pixel_cache.html \
+	$(WWWAPIDIR)/pixel_iterator.html \
+	$(WWWAPIDIR)/profile.html \
+	$(WWWAPIDIR)/quantize.html \
+	$(WWWAPIDIR)/registry.html \
+	$(WWWAPIDIR)/render.html \
+	$(WWWAPIDIR)/resize.html \
+	$(WWWAPIDIR)/resource.html \
+	$(WWWAPIDIR)/segment.html \
+	$(WWWAPIDIR)/shear.html \
+	$(WWWAPIDIR)/signature.html \
+	$(WWWAPIDIR)/transform.html \
+	$(WWWAPIDIR)/types.html \
+	$(WWWAPIDIR)/widget.html
+
+WWWWAPI_FILES = \
+	www/api/animate.html \
+	www/api/annotate.html \
+	www/api/api_hyperlinks.rst \
+	www/api/attribute.html \
+	www/api/blob.html \
+	www/api/channel.html \
+	www/api/color.html \
+	www/api/compare.html \
+	www/api/composite.html \
+	www/api/constitute.html \
+	www/api/decorate.html \
+	www/api/deprecate.html \
+	www/api/display.html \
+	www/api/draw.html \
+	www/api/effect.html \
+	www/api/enhance.html \
+	www/api/error.html \
+	www/api/fx.html \
+	www/api/image.html \
+	www/api/list.html \
+	www/api/magick.html \
+	www/api/memory.html \
+	www/api/monitor.html \
+	www/api/montage.html \
+	www/api/operator.html \
+	www/api/paint.html \
+	www/api/pixel_cache.html \
+	www/api/pixel_iterator.html \
+	www/api/profile.html \
+	www/api/quantize.html \
+	www/api/registry.html \
+	www/api/render.html \
+	www/api/resize.html \
+	www/api/resource.html \
+	www/api/segment.html \
+	www/api/shear.html \
+	www/api/signature.html \
+	www/api/transform.html \
+	www/api/types.html \
+	www/api/widget.html
+
+WWWAPI_EXTRA_DIST = \
+	$(WWWWAPI_FILES)
+
+WWWAPI_MAINTAINER_TARGETS = $(WWWAPI_HTML_TARGETS)
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@APIWHATIS = $(top_srcdir)/scripts/whatis.txt
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@FORMATCAPI = $(top_srcdir)/scripts/format_c_api_doc.py
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@APIRST2HTML_COMMAND = $(RST2HTMLDECO) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@  --link-stylesheet=../docutils-articles.css`
 
 UTILITIES_PGMS = \
 	utilities/gm
@@ -4288,11 +4579,23 @@ UTILITIES_PGMS = \
 utilities_gm_LDADD = $(LIBMAGICK)
 utilities_gm_LDFLAGS = $(LDFLAGS)
 utilities_gm_SOURCES = utilities/gm.c
+@HasTTF_FALSE@UTILITIES_TTF_XFAIL_TESTS = \
+@HasTTF_FALSE@	utilities/tests/msl_composite.sh
+
+@HasXML_FALSE@UTILITIES_XML_XFAIL_TESTS = \
+@HasXML_FALSE@	utilities/tests/msl_composite.sh
+
+UTILITIES_XFAIL_TESTS = \
+	$(UTILITIES_TTF_XFAIL_TESTS) \
+	$(UTILITIES_XML_XFAIL_TESTS)
+
 
 # Tests to run
 UTILITIES_TESTS = \
 	utilities/tests/addnoise.sh \
+	utilities/tests/affine.sh \
 	utilities/tests/annotate.sh \
+	utilities/tests/black-threshold.sh \
 	utilities/tests/blur.sh \
 	utilities/tests/border.sh \
 	utilities/tests/channel.sh \
@@ -4342,9 +4645,12 @@ UTILITIES_TESTS = \
 	utilities/tests/solarize.sh \
 	utilities/tests/spread.sh \
 	utilities/tests/swirl.sh \
+	utilities/tests/threshold.sh \
 	utilities/tests/unsharpmask.sh \
 	utilities/tests/wave.sh \
-	utilities/tests/montage.sh
+	utilities/tests/white-threshold.sh \
+	utilities/tests/montage.sh \
+	utilities/tests/msl_composite.sh
 
 UTILITIES_MANS = \
 	utilities/gm.1 \
@@ -4358,11 +4664,17 @@ UTILITIES_EXTRA_DIST = \
 
 UTILITIES_CLEANFILES = \
 	utilities/tests/*_out.miff \
+	utilities/tests/*_out.pnm \
 	utilities/tests/*_out.txt \
-	utilities/tests/demo.miff \
+	utilities/tests/demo*.miff \
 	utilities/tests/gm.core \
 	utilities/tests/core
 
+
+# Install/Uninstall ImageMagick compatibility links
+@MAGICK_COMPAT_TRUE@MAGICKPROGRAMS = animate composite conjure convert display identify import mogrify montage
+@MAGICK_COMPAT_TRUE@UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
+@MAGICK_COMPAT_TRUE@UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
@@ -4393,48 +4705,21 @@ man_MANS = \
 	$(UTILITIES_MANS) \
 	$(WAND_MANS)
 
+
+# Files to install in the package's doc directory
 doc_DATA = \
 	Copyright.txt \
-	ChangeLog \
+	$(CHANGELOGS) \
 	NEWS.txt
 
-@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
+@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
+@MAINTAINER_MODE_TRUE@	magick-version \
+@MAINTAINER_MODE_TRUE@	$(WWW_MAINTAINER_TARGETS) \
+@MAINTAINER_MODE_TRUE@	$(WWWAPI_MAINTAINER_TARGETS)
+
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
-
-#
-# Additional install rules
-#
-
-# Install HTML files
-pkgdocdir = $(MagickSharePath)
-DOCDIRS = images www www/api www/Magick++
-HTML_INSTALL_DATA_TARGETS = install-data-html
-
-# Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
-@HasRST2HTML_TRUE@RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
-@HasRST2HTML_TRUE@RST2HTML_TARGETS = \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/AUTHORS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/BUGS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/BENCHMARKS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/contribute.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/Copyright.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/development.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/FAQ.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/mission.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/NEWS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/PLATFORMS.html \
-@HasRST2HTML_TRUE@	$(top_srcdir)/www/README.html
-
-
-# txt2html requires perl.
-@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
-@WITH_PERL_TRUE@	$(top_srcdir)/www/Changelog.html
-
 @HAS_ZIP_FALSE@DIST_WINDOWS_SRC_ZIP = 
 
 #
@@ -4458,6 +4743,11 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
 @HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
 
+
+#
+# Build a validated snapshot release and move to the snapshots directory.
+#
+SNAPSHOT_DIRECTORY = /ftp/pub/GraphicsMagick/snapshots
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -4465,7 +4755,7 @@ all: $(BUILT_SOURCES)
 .SUFFIXES: .c .cpp .lo .o .obj
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -4686,7 +4976,7 @@ Magick++/lib/Thread.lo: Magick++/lib/$(am__dirstamp) \
 Magick++/lib/TypeMetric.lo: Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 Magick++/lib/libGraphicsMagick++.la: $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
-	$(Magick___lib_libGraphicsMagick___la_LINK) -rpath $(libdir) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
+	$(Magick___lib_libGraphicsMagick___la_LINK) $(am_Magick___lib_libGraphicsMagick___la_rpath) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
 coders/$(am__dirstamp):
 	@$(MKDIR_P) coders
 	@: > coders/$(am__dirstamp)
@@ -4733,6 +5023,10 @@ coders/coders_dcm_la-dcm.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/dcm.la: $(coders_dcm_la_OBJECTS) $(coders_dcm_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(coders_dcm_la_LINK) $(am_coders_dcm_la_rpath) $(coders_dcm_la_OBJECTS) $(coders_dcm_la_LIBADD) $(LIBS)
+coders/coders_dcraw_la-dcraw.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/dcraw.la: $(coders_dcraw_la_OBJECTS) $(coders_dcraw_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(coders_dcraw_la_LINK) $(am_coders_dcraw_la_rpath) $(coders_dcraw_la_OBJECTS) $(coders_dcraw_la_LIBADD) $(LIBS)
 coders/coders_dib_la-dib.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/dib.la: $(coders_dib_la_OBJECTS) $(coders_dib_la_DEPENDENCIES) coders/$(am__dirstamp)
@@ -5155,6 +5449,8 @@ magick/magick_libGraphicsMagick_la-blob.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-channel.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-compare.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colorspace.lo:  \
@@ -5181,6 +5477,8 @@ magick/magick_libGraphicsMagick_la-effect.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-enhance.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-enum_strings.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-error.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-fx.lo: magick/$(am__dirstamp) \
@@ -5211,6 +5509,8 @@ magick/magick_libGraphicsMagick_la-monitor.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-montage.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-omp_data_view.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-operator.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-paint.lo: magick/$(am__dirstamp) \
@@ -5284,6 +5584,8 @@ coders/magick_libGraphicsMagick_la-cmyk.lo: coders/$(am__dirstamp) \
 coders/magick_libGraphicsMagick_la-cut.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libGraphicsMagick_la-dcm.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/magick_libGraphicsMagick_la-dcraw.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libGraphicsMagick_la-dib.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
@@ -5783,6 +6085,8 @@ mostlyclean-compile:
 	-rm -f coders/coders_cut_la-cut.lo
 	-rm -f coders/coders_dcm_la-dcm.$(OBJEXT)
 	-rm -f coders/coders_dcm_la-dcm.lo
+	-rm -f coders/coders_dcraw_la-dcraw.$(OBJEXT)
+	-rm -f coders/coders_dcraw_la-dcraw.lo
 	-rm -f coders/coders_dib_la-dib.$(OBJEXT)
 	-rm -f coders/coders_dib_la-dib.lo
 	-rm -f coders/coders_dps_la-dps.$(OBJEXT)
@@ -5969,6 +6273,8 @@ mostlyclean-compile:
 	-rm -f coders/magick_libGraphicsMagick_la-cut.lo
 	-rm -f coders/magick_libGraphicsMagick_la-dcm.$(OBJEXT)
 	-rm -f coders/magick_libGraphicsMagick_la-dcm.lo
+	-rm -f coders/magick_libGraphicsMagick_la-dcraw.$(OBJEXT)
+	-rm -f coders/magick_libGraphicsMagick_la-dcraw.lo
 	-rm -f coders/magick_libGraphicsMagick_la-dib.$(OBJEXT)
 	-rm -f coders/magick_libGraphicsMagick_la-dib.lo
 	-rm -f coders/magick_libGraphicsMagick_la-dps.$(OBJEXT)
@@ -6193,6 +6499,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-colorspace.lo
 	-rm -f magick/magick_libGraphicsMagick_la-command.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-command.lo
+	-rm -f magick/magick_libGraphicsMagick_la-compare.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-compare.lo
 	-rm -f magick/magick_libGraphicsMagick_la-composite.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-composite.lo
 	-rm -f magick/magick_libGraphicsMagick_la-compress.$(OBJEXT)
@@ -6213,6 +6521,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-effect.lo
 	-rm -f magick/magick_libGraphicsMagick_la-enhance.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-enhance.lo
+	-rm -f magick/magick_libGraphicsMagick_la-enum_strings.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-enum_strings.lo
 	-rm -f magick/magick_libGraphicsMagick_la-error.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-error.lo
 	-rm -f magick/magick_libGraphicsMagick_la-fx.$(OBJEXT)
@@ -6247,6 +6557,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-nt_base.lo
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-nt_feature.lo
+	-rm -f magick/magick_libGraphicsMagick_la-omp_data_view.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-omp_data_view.lo
 	-rm -f magick/magick_libGraphicsMagick_la-operator.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-operator.lo
 	-rm -f magick/magick_libGraphicsMagick_la-paint.$(OBJEXT)
@@ -6365,6 +6677,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_cmyk_la-cmyk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_cut_la-cut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_dcm_la-dcm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_dcraw_la-dcraw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_dib_la-dib.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_dps_la-dps.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_dpx_la-dpx.Plo@am__quote@
@@ -6458,6 +6771,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-cmyk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-cut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-dcm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-dcraw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-dib.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-dps.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-dpx.Plo@am__quote@
@@ -6570,6 +6884,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colorspace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-composite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-constitute.Plo@am__quote@
@@ -6580,6 +6895,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gem.Plo@am__quote@
@@ -6597,6 +6913,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-nt_feature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-paint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-pixel_cache.Plo@am__quote@
@@ -6729,6 +7046,13 @@ coders/coders_dcm_la-dcm.lo: coders/dcm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/dcm.c' object='coders/coders_dcm_la-dcm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_dcm_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_dcm_la-dcm.lo `test -f 'coders/dcm.c' || echo '$(srcdir)/'`coders/dcm.c
+
+coders/coders_dcraw_la-dcraw.lo: coders/dcraw.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_dcraw_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_dcraw_la-dcraw.lo -MD -MP -MF coders/$(DEPDIR)/coders_dcraw_la-dcraw.Tpo -c -o coders/coders_dcraw_la-dcraw.lo `test -f 'coders/dcraw.c' || echo '$(srcdir)/'`coders/dcraw.c
+@am__fastdepCC_TRUE@	mv -f coders/$(DEPDIR)/coders_dcraw_la-dcraw.Tpo coders/$(DEPDIR)/coders_dcraw_la-dcraw.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/dcraw.c' object='coders/coders_dcraw_la-dcraw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_dcraw_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_dcraw_la-dcraw.lo `test -f 'coders/dcraw.c' || echo '$(srcdir)/'`coders/dcraw.c
 
 coders/coders_dib_la-dib.lo: coders/dib.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_dib_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_dib_la-dib.lo -MD -MP -MF coders/$(DEPDIR)/coders_dib_la-dib.Tpo -c -o coders/coders_dib_la-dib.lo `test -f 'coders/dib.c' || echo '$(srcdir)/'`coders/dib.c
@@ -7423,6 +7747,13 @@ magick/magick_libGraphicsMagick_la-channel.lo: magick/channel.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-channel.lo `test -f 'magick/channel.c' || echo '$(srcdir)/'`magick/channel.c
 
+magick/magick_libGraphicsMagick_la-compare.lo: magick/compare.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-compare.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Tpo -c -o magick/magick_libGraphicsMagick_la-compare.lo `test -f 'magick/compare.c' || echo '$(srcdir)/'`magick/compare.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/compare.c' object='magick/magick_libGraphicsMagick_la-compare.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-compare.lo `test -f 'magick/compare.c' || echo '$(srcdir)/'`magick/compare.c
+
 magick/magick_libGraphicsMagick_la-color.lo: magick/color.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-color.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Tpo -c -o magick/magick_libGraphicsMagick_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c
 @am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo
@@ -7513,6 +7844,13 @@ magick/magick_libGraphicsMagick_la-enhance.lo: magick/enhance.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/enhance.c' object='magick/magick_libGraphicsMagick_la-enhance.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-enhance.lo `test -f 'magick/enhance.c' || echo '$(srcdir)/'`magick/enhance.c
+
+magick/magick_libGraphicsMagick_la-enum_strings.lo: magick/enum_strings.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-enum_strings.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Tpo -c -o magick/magick_libGraphicsMagick_la-enum_strings.lo `test -f 'magick/enum_strings.c' || echo '$(srcdir)/'`magick/enum_strings.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/enum_strings.c' object='magick/magick_libGraphicsMagick_la-enum_strings.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-enum_strings.lo `test -f 'magick/enum_strings.c' || echo '$(srcdir)/'`magick/enum_strings.c
 
 magick/magick_libGraphicsMagick_la-error.lo: magick/error.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-error.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Tpo -c -o magick/magick_libGraphicsMagick_la-error.lo `test -f 'magick/error.c' || echo '$(srcdir)/'`magick/error.c
@@ -7618,6 +7956,13 @@ magick/magick_libGraphicsMagick_la-montage.lo: magick/montage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/montage.c' object='magick/magick_libGraphicsMagick_la-montage.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-montage.lo `test -f 'magick/montage.c' || echo '$(srcdir)/'`magick/montage.c
+
+magick/magick_libGraphicsMagick_la-omp_data_view.lo: magick/omp_data_view.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-omp_data_view.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Tpo -c -o magick/magick_libGraphicsMagick_la-omp_data_view.lo `test -f 'magick/omp_data_view.c' || echo '$(srcdir)/'`magick/omp_data_view.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-omp_data_view.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/omp_data_view.c' object='magick/magick_libGraphicsMagick_la-omp_data_view.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-omp_data_view.lo `test -f 'magick/omp_data_view.c' || echo '$(srcdir)/'`magick/omp_data_view.c
 
 magick/magick_libGraphicsMagick_la-operator.lo: magick/operator.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-operator.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-operator.Tpo -c -o magick/magick_libGraphicsMagick_la-operator.lo `test -f 'magick/operator.c' || echo '$(srcdir)/'`magick/operator.c
@@ -7877,6 +8222,13 @@ coders/magick_libGraphicsMagick_la-dcm.lo: coders/dcm.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/dcm.c' object='coders/magick_libGraphicsMagick_la-dcm.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libGraphicsMagick_la-dcm.lo `test -f 'coders/dcm.c' || echo '$(srcdir)/'`coders/dcm.c
+
+coders/magick_libGraphicsMagick_la-dcraw.lo: coders/dcraw.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/magick_libGraphicsMagick_la-dcraw.lo -MD -MP -MF coders/$(DEPDIR)/magick_libGraphicsMagick_la-dcraw.Tpo -c -o coders/magick_libGraphicsMagick_la-dcraw.lo `test -f 'coders/dcraw.c' || echo '$(srcdir)/'`coders/dcraw.c
+@am__fastdepCC_TRUE@	mv -f coders/$(DEPDIR)/magick_libGraphicsMagick_la-dcraw.Tpo coders/$(DEPDIR)/magick_libGraphicsMagick_la-dcraw.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/dcraw.c' object='coders/magick_libGraphicsMagick_la-dcraw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libGraphicsMagick_la-dcraw.lo `test -f 'coders/dcraw.c' || echo '$(srcdir)/'`coders/dcraw.c
 
 coders/magick_libGraphicsMagick_la-dib.lo: coders/dib.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/magick_libGraphicsMagick_la-dib.lo -MD -MP -MF coders/$(DEPDIR)/magick_libGraphicsMagick_la-dib.Tpo -c -o coders/magick_libGraphicsMagick_la-dib.lo `test -f 'coders/dib.c' || echo '$(srcdir)/'`coders/dib.c
@@ -9079,6 +9431,7 @@ dist-tarZ: distdir
 dist-shar: distdir
 	shar $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).shar.gz
 	$(am__remove_distdir)
+
 dist-zip: distdir
 	-rm -f $(distdir).zip
 	zip -rq $(distdir).zip $(distdir)
@@ -9088,8 +9441,6 @@ dist dist-all: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	tardir=$(distdir) && $(am__tar) | lzma -9 -c >$(distdir).tar.lzma
-	-rm -f $(distdir).zip
-	zip -rq $(distdir).zip $(distdir)
 	$(am__remove_distdir)
 
 # This target untars the dist file and tries a VPATH configuration.  Then
@@ -9501,6 +9852,76 @@ generate-tests-scripts:
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+#	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
+install-data-html:
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	@for dir in $(DOCDIRS) ; do \
+	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
+	  for file in $(srcdir)/$$dir/*.* ; do \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+	  done ; \
+	done
+#	rm -f $(DESTDIR)$(htmldir)/index.html
+uninstall-data-html:
+	for dir in $(DOCDIRS) ; do \
+	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
+	done
+
+@MAINTAINER_MODE_TRUE@$(RST2HTML_TARGETS) : \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/html_fragments.py \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/rst2htmldeco.py \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/omp_decimal_align.py \
+@MAINTAINER_MODE_TRUE@	$(WWWDIR)/Makefile.am
+
+# Build HTML version of RST file
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/%.txt
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/%.html: $(top_srcdir)/%.rst
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
+@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
+
+# Build HTML version of ChangeLog
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog > \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/www/Changelog.html
+
+# Build color.html
+@MAINTAINER_MODE_TRUE@$(WWWDIR)/color.html : $(NAMED_COLORS)
+@MAINTAINER_MODE_TRUE@	$(NAMED_COLORS) > $@
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPI_HTML_TARGETS) : $(FORMATCAPI) $(RST2HTMLDECO) $(APIWHATIS) $(top_srcdir)/scripts/html_fragments.py $(top_srcdir)/www/api/Makefile.am $(top_srcdir)/www/api/api_hyperlinks.rst
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.apirst : $(top_srcdir)/magick/%.c
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(FORMATCAPI) --whatis-file $(APIWHATIS) $< $@
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.html : $(WWWAPIDIR)/%.apirst
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-api.css \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+@MAGICK_COMPAT_TRUE@install-exec-local-utilities:
+@MAGICK_COMPAT_TRUE@	$(mkdir_p) $(DESTDIR)$(bindir)
+@MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
+@MAGICK_COMPAT_TRUE@	gm=`echo "gm" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	for name in $(MAGICKPROGRAMS) ; \
+@MAGICK_COMPAT_TRUE@	do \
+@MAGICK_COMPAT_TRUE@	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	  rm -f $$target ; \
+@MAGICK_COMPAT_TRUE@	  $(LN_S) $$gm $$target ; \
+@MAGICK_COMPAT_TRUE@	done
+@MAGICK_COMPAT_TRUE@uninstall-local-utilities:
+@MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
+@MAGICK_COMPAT_TRUE@	for name in $(MAGICKPROGRAMS) ; \
+@MAGICK_COMPAT_TRUE@	do \
+@MAGICK_COMPAT_TRUE@	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+@MAGICK_COMPAT_TRUE@	  rm -f $$target ; \
+@MAGICK_COMPAT_TRUE@	done
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
@@ -9574,13 +9995,24 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
+# Target to build just the web pages.
+@MAINTAINER_MODE_TRUE@.PHONY: www
+@MAINTAINER_MODE_TRUE@www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
 
-install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS)
+all-local: $(MAGICKPP_LOCAL_TARGETS) \
+	$(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
 
-install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) $(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) $(HTML_INSTALL_DATA_TARGETS)
+install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS) \
+	$(UTILITIES_INSTALL_EXEC_LOCAL_TARGETS)
 
-uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) $(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) $(HTML_UNINSTALL_DATA_TARGETS)
+install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(HTML_INSTALL_DATA_TARGETS)
+
+uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(HTML_UNINSTALL_DATA_TARGETS) \
+	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 
@@ -9589,32 +10021,24 @@ distclean-local: $(PERLMAGICK_DISTCLEAN_LOCAL_TARGETS)
 maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
+
+memcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)
-install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
-	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
-	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
-	  done ; \
-	done
-uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
-	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
-	done
+
+#
+# Additional install rules
+#
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
@@ -9633,79 +10057,17 @@ magick-version: magick/version.h
 magick/version.h: $(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-
-# Build HTML version of AUTHORS.txt
-$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/AUTHORS.txt $(top_srcdir)/www/AUTHORS.html
-
-# Build HTML version of BUGS.txt
-$(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
-
-# Build HTML version of BENCHMARKS.txt
-$(top_srcdir)/www/BENCHMARKS.html: $(top_srcdir)/BENCHMARKS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BENCHMARKS.txt $(top_srcdir)/www/BENCHMARKS.html
-
-# Build HTML version of CONTRIBUTE.txt
-$(top_srcdir)/www/contribute.html: $(top_srcdir)/CONTRIBUTE.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/CONTRIBUTE.txt $(top_srcdir)/www/contribute.html
-
-# Build HTML version of Copyright.txt
-$(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
-
-# Build HTML version of PROCESS.txt
-$(top_srcdir)/www/development.html: $(top_srcdir)/PROCESS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PROCESS.txt $(top_srcdir)/www/development.html
-
-# Build HTML version of FAQ.txt
-$(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
-
-# Build HTML version of ChangeLog
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of INSTALL-unix.txt
-$(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-unix.txt $(top_srcdir)/www/INSTALL-unix.html
-
-# Build HTML version of INSTALL-windows.txt
-$(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
-
-# Build HTML version of mission
-$(top_srcdir)/www/mission.html: $(top_srcdir)/MISSION.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/MISSION.txt $(top_srcdir)/www/mission.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/NEWS.txt $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of PLATFORMS
-$(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PLATFORMS.txt $(top_srcdir)/www/PLATFORMS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
-
-# Format C API documentation
-format_c_api_docs:
-	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
-$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+$(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
 	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
-@HAS_ZIP_TRUE@	rm -f $(DIST_WINDOWS_SRC_ZIP)
-@HAS_ZIP_TRUE@	$(ZIP) -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_P7ZIP_TRUE@	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 @HAS_P7ZIP_TRUE@	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_P7ZIP_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
-@HAS_RPM_TRUE@PHONY: srpm
+@HAS_RPM_TRUE@.PHONY: srpm
 @HAS_RPM_TRUE@$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 @HAS_RPM_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
 @HAS_RPM_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
@@ -9713,7 +10075,7 @@ $(DIST_WINDOWS_SRC_ZIP) windows-dist:
 @HAS_RPM_TRUE@	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 @HAS_RPM_TRUE@	@echo ==============================================================
 
-@HAS_RPM_TRUE@PHONY: rpm
+@HAS_RPM_TRUE@.PHONY: rpm
 @HAS_RPM_TRUE@rpm:
 @HAS_RPM_TRUE@	rm -rf $(RPMDIR)
 @HAS_RPM_TRUE@	mkdir $(RPMDIR)
@@ -9725,14 +10087,23 @@ $(DIST_WINDOWS_SRC_ZIP) windows-dist:
 @HAS_RPM_TRUE@	@echo ==============================================================
 @HAS_RPM_TRUE@	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
 @HAS_RPM_TRUE@	@echo ==============================================================
-
-#
-# Build a validated snapshot release and move to the snapshots directory.
-#
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
+	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)/
+	cp -p $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)/ChangeLog.txt
+	cp -p $(top_srcdir)/www/Changelog.html $(SNAPSHOT_DIRECTORY)/ChangeLog.html
+
+# Rules for a profiled build (according to Paolo Bonzini <bonzini@gnu.org>)
+#.PHONY: profile
+#profile:
+#	$(MAKE) clean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-generate"
+#	$(MAKE) check
+#	$(MAKE) mostlyclean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-use"
+#
+#CLEANFILES = *.gcda *.gcno
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

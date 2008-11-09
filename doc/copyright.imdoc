@@ -1,6 +1,6 @@
 <imdoc>
 <format man,html>
-<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 </format>
 <format html>
 <sect NAME="auth">Authors
@@ -19,7 +19,7 @@ Leonard Rosenthol.
 <format man,html>
 <sect NAME="copy">Copyright
 <p>
-<s>Copyright (C) 2002, 2003 GraphicsMagick Group, an organization
+<s>Copyright (C) 2002 - 2008 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.</s></p>
 <p>
 <s>Permission is hereby granted, free of charge, to any person obtaining a

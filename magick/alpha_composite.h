@@ -34,56 +34,108 @@ static inline magick_uint32_t BlendQuantumOpacity(magick_uint32_t q,
   return result;
 }
 
-static inline PixelPacket BlendComposite(const PixelPacket *p,
-  const PixelPacket *q,const double alpha)
+static inline void BlendCompositePixel(PixelPacket *composite,
+                                       const PixelPacket *p,
+                                       const PixelPacket *q,
+                                       const double alpha)
 {
   double
     color;
 
-  PixelPacket
-    composite;
+  color=((double) p->red*(MaxRGBDouble-alpha)+q->red*alpha)/MaxRGBDouble;
+  composite->red=RoundDoubleToQuantum(color);
 
-  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=RoundSignedToQuantum(color);
+  color=((double) p->green*(MaxRGBDouble-alpha)+q->green*alpha)/MaxRGBDouble;
+  composite->green=RoundDoubleToQuantum(color);
 
-  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=RoundSignedToQuantum(color);
+  color=((double) p->blue*(MaxRGBDouble-alpha)+q->blue*alpha)/MaxRGBDouble;
+  composite->blue=RoundDoubleToQuantum(color);
 
-  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=RoundSignedToQuantum(color);
-
-  composite.opacity=p->opacity;
-  return(composite);
+  composite->opacity=p->opacity;
 }
 
-static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
-{
-  PixelPacket
-    composite;
+/*
+  Alpha compose pixel 'change' over pixel 'source'.
 
+  The result will be the union of the two image shapes, with
+  opaque areas of change-image obscuring base-image in the
+  region of overlap.
+*/
+#define  MagickAlphaCompositeQuantum(change,change_alpha,base,base_alpha) \
+   (1.0-(change_alpha/MaxRGBDouble))*(double) change+(1.0-(base_alpha/MaxRGBDouble))*(double) base*(change_alpha/MaxRGBDouble)
+
+static inline void AlphaCompositePixel(PixelPacket *composite, const PixelPacket *change,
+                                       const double change_alpha,const PixelPacket *base,
+                                       const double base_alpha)
+{
+  if ((change_alpha == TransparentOpacity) && (composite != base))
+    {
+      *composite=*base;
+    }
+  else
+    {
+      double
+        gamma,
+        value;
+
+      gamma=1.0-(change_alpha/MaxRGBDouble)*(base_alpha/MaxRGBDouble);
+      
+      value=MaxRGBDouble*(1.0-gamma);
+      composite->opacity=RoundDoubleToQuantum(value);
+      
+      gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->red,change_alpha,base->red,base_alpha);
+      composite->red=RoundDoubleToQuantum(value);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->green,change_alpha,base->green,base_alpha);
+      composite->green=RoundDoubleToQuantum(value);
+      
+      value=gamma*MagickAlphaCompositeQuantum(change->blue,change_alpha,base->blue,base_alpha);
+      composite->blue=RoundDoubleToQuantum(value);
+    }
+}
+
+/*
+  The result is the same shape as base-image, with change-image
+  obscuring base-image where the image shapes overlap. Note this
+  differs from over because the portion of change-image outside
+  base-image's shape does not appear in the result.
+*/
+static inline void AtopCompositePixel(PixelPacket *composite,
+                                      const PixelPacket *base,
+                                      const PixelPacket *change)
+{
   double
     color,
-    MaxRGB_alpha,
-    MaxRGB_beta;
+    opacity;
 
-  MaxRGB_alpha=MaxRGB-alpha;
-  MaxRGB_beta=MaxRGB-beta;
-
-  color=(MaxRGB_alpha*p->red+alpha*MaxRGB_beta*q->red/MaxRGB)/MaxRGB;
-  composite.red=RoundSignedToQuantum(color);
-
-  color=(MaxRGB_alpha*p->green+alpha*MaxRGB_beta*q->green/MaxRGB)/MaxRGB;
-  composite.green=RoundSignedToQuantum(color);
-
-  color=(MaxRGB_alpha*p->blue+alpha*MaxRGB_beta*q->blue/MaxRGB)/MaxRGB;
-  composite.blue=RoundSignedToQuantum(color);
-
-  color=MaxRGB-(MaxRGB_alpha+alpha*MaxRGB_beta/MaxRGB);
-  composite.opacity=RoundSignedToQuantum(color);
-
-  return(composite);
+  opacity=((double)(MaxRGBDouble-change->opacity)*
+           (MaxRGBDouble-base->opacity)+(double) change->opacity*
+           (MaxRGBDouble-base->opacity))/MaxRGBDouble;
+  
+  color=((double) (MaxRGBDouble-change->opacity)*
+         (MaxRGBDouble-base->opacity)*change->red/MaxRGBDouble+(double)
+         change->opacity*(MaxRGBDouble-base->opacity)*
+         base->red/MaxRGBDouble)/opacity;
+  composite->red=RoundDoubleToQuantum(color);
+  
+  color=((double) (MaxRGBDouble-change->opacity)*
+         (MaxRGBDouble-base->opacity)*change->green/MaxRGBDouble+(double)
+         change->opacity*(MaxRGBDouble-base->opacity)*
+         base->green/MaxRGBDouble)/opacity;
+  composite->green=RoundDoubleToQuantum(color);
+  
+  color=((double) (MaxRGBDouble-change->opacity)*
+         (MaxRGBDouble-base->opacity)*change->blue/MaxRGBDouble+(double)
+         change->opacity*(MaxRGBDouble-base->opacity)*
+         base->blue/MaxRGBDouble)/opacity;
+  composite->blue=RoundDoubleToQuantum(color);
+  
+  composite->opacity=MaxRGB-RoundDoubleToQuantum(opacity);
 }
+
+
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

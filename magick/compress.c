@@ -332,70 +332,6 @@ MagickExport unsigned int BlobWriteByteHook(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  C o m p r e s s i o n T y p e T o S t r i n g                              %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CompressionTypeToString returns a string describing the specified
-%  compression type.
-%
-%  The format of the CompressionTypeToString method is:
-%
-%      const char* CompressionTypeToString(const CompressionType compression_type)
-%
-%  A description of each parameter follows:
-%
-%    o compression_type:  Compression type
-%
-*/
-MagickExport const char* CompressionTypeToString(const CompressionType compression_type)
-{
-  const char
-    *log_compression_type="Unknown";
-
-  switch (compression_type)
-    {
-    case UndefinedCompression:
-      log_compression_type="Undefined";
-      break;
-    case NoCompression:
-      log_compression_type="No";
-      break;
-    case BZipCompression:
-      log_compression_type="BZip";
-      break;
-    case FaxCompression:
-      log_compression_type="Fax";
-      break;
-    case Group4Compression:
-      log_compression_type="Group4";
-      break;
-    case JPEGCompression:
-      log_compression_type="JPEG";
-      break;
-    case LosslessJPEGCompression:
-      log_compression_type="Lossless JPEG";
-      break;
-    case LZWCompression:
-      log_compression_type="LZW";
-      break;
-    case RLECompression:
-      log_compression_type="RLE";
-      break;
-    case ZipCompression:
-      log_compression_type="Zip";
-      break;
-    }
-  return log_compression_type;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   H u f f m a n D e c o d e I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -659,7 +595,7 @@ MagickExport MagickPassFail HuffmanDecodeImage(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=(unsigned int) (*p++);
@@ -672,7 +608,8 @@ MagickExport MagickPassFail HuffmanDecodeImage(Image *image)
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  "[%s] Huffman decode image...",image->filename))
         {
           status=MagickFail;
           break;
@@ -757,7 +694,7 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
   Image
     *huffman_image;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -837,7 +774,7 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(huffman_image);
+    indexes=AccessImmutableIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)
     {
       *q=(unsigned char) (indexes[x] == polarity ? !polarity : polarity);
@@ -899,7 +836,8 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
     q=scanline;
     if (huffman_image->previous == (Image *) NULL)
       if (QuantumTick(y,huffman_image->rows))
-        if (!MagickMonitor(SaveImageText,y,huffman_image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,huffman_image->rows,&image->exception,
+                                    "[%s] Huffman encode image...",image->filename))
           {
             status=MagickFail;
             break;

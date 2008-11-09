@@ -117,7 +117,7 @@ sub testCompositeCompare {
     }
 
   $background->set(depth=>8);
-#  if ("$composite_options" =~ /Xor/) {
+#  if ("$composite_options" =~ /Dissolve/) {
 #    $background->write(filename=>"$refimage_name", compression=>'None');
 #    $background->Display();
 #  }

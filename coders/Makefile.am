@@ -61,6 +61,7 @@ MAGICK_CODER_SRCS = \
 	coders/cmyk.c \
 	coders/cut.c \
 	coders/dcm.c \
+	coders/dcraw.c \
 	coders/dib.c \
 	coders/dps.c \
 	coders/dpx.c \
@@ -147,21 +148,22 @@ if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/art.la coders/avi.la coders/avs.la coders/bmp.la \
 	coders/caption.la coders/cineon.la coders/cmyk.la coders/cut.la \
-	coders/dcm.la coders/dib.la coders/dps.la coders/dpx.la \
-	coders/fax.la coders/fits.la coders/gif.la coders/gradient.la \
-	coders/gray.la coders/histogram.la coders/html.la coders/icon.la \
-	coders/label.la coders/locale.la coders/logo.la coders/map.la \
-	coders/mat.la coders/matte.la coders/meta.la coders/miff.la \
-	coders/mono.la coders/mpc.la coders/mpeg.la coders/mpr.la \
-	coders/msl.la coders/mtv.la coders/mvg.la coders/null.la coders/otb.la \
-	coders/palm.la coders/pcd.la coders/pcl.la coders/pcx.la coders/pdb.la \
-	coders/pdf.la coders/pict.la coders/pix.la coders/plasma.la \
-	coders/pnm.la coders/preview.la coders/ps.la coders/ps2.la \
-	coders/ps3.la coders/psd.la coders/pwp.la coders/rgb.la \
-	coders/rla.la coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
+	coders/dcm.la coders/dcraw.la coders/dib.la coders/dps.la \
+	coders/dpx.la coders/fax.la coders/fits.la coders/gif.la \
+	coders/gradient.la coders/gray.la coders/histogram.la coders/html.la \
+	coders/icon.la coders/label.la coders/locale.la coders/logo.la \
+	coders/map.la coders/mat.la coders/matte.la coders/meta.la \
+	coders/miff.la coders/mono.la coders/mpc.la coders/mpeg.la \
+	coders/mpr.la coders/msl.la coders/mtv.la coders/mvg.la \
+	coders/null.la coders/otb.la coders/palm.la coders/pcd.la \
+	coders/pcl.la coders/pcx.la coders/pdb.la coders/pdf.la \
+	coders/pict.la coders/pix.la coders/plasma.la coders/pnm.la \
+	coders/preview.la coders/ps.la coders/ps2.la coders/ps3.la \
+	coders/psd.la coders/pwp.la coders/rgb.la coders/rla.la \
+	coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
 	coders/stegano.la coders/sun.la coders/svg.la coders/tga.la \
-	coders/tile.la coders/tim.la coders/topol.la \
-	coders/ttf.la coders/txt.la coders/uil.la coders/url.la coders/uyvy.la \
+	coders/tile.la coders/tim.la coders/topol.la coders/ttf.la \
+	coders/txt.la coders/uil.la coders/url.la coders/uyvy.la \
 	coders/vicar.la coders/vid.la coders/viff.la coders/wbmp.la \
 	coders/wmf.la coders/wpg.la coders/xbm.la coders/xc.la \
 	coders/xcf.la coders/xpm.la coders/yuv.la \
@@ -232,6 +234,12 @@ coders_dcm_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_dcm_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_dcm_la_LIBADD       = $(LIBMAGICK)
 
+# DCRAW coder module
+coders_dcraw_la_SOURCES    = coders/dcraw.c
+coders_dcraw_la_CPPFLAGS   = $(MODULE_EXTRA_CPPFLAGS)
+coders_dcraw_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+coders_dcraw_la_LIBADD     = $(LIBMAGICK)
+
 # DIB coder module
 coders_dib_la_SOURCES      = coders/dib.c
 coders_dib_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
@@ -272,7 +280,7 @@ coders_fax_la_LIBADD       = $(LIBMAGICK)
 coders_fits_la_SOURCES     = coders/fits.c
 coders_fits_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_fits_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_fits_la_LIBADD      = $(LIBMAGICK)
+coders_fits_la_LIBADD      = $(LIBMAGICK) $(LIB_MATH)
 
 # FPX coder module
 coders_fpx_la_SOURCES      = coders/fpx.c
@@ -362,7 +370,7 @@ coders_map_la_LIBADD       = $(LIBMAGICK)
 coders_mat_la_SOURCES      = coders/mat.c
 coders_mat_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD       = $(LIBMAGICK)
+coders_mat_la_LIBADD       = $(LIBMAGICK) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES    = coders/matte.c

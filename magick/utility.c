@@ -40,6 +40,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/pixel_cache.h"
@@ -1688,18 +1689,15 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickDimension() parses a string in the scanf form %lfx%lf to obtain
-%  WIDTHxHEIGHT values and returns the number of values successfully parsed.
-%  This function exists to overcome a Linux GNU libc "feature" in which scanf
-%  treats strings in the form "0x5" as a single hexadecimal value regardless
-%  of the scanf specification. No other scanf has been encountered which
-%  behaves this way. Linux strtod() has the same problem.  It seems that
-%  this new behavior of Linux is due to ANSI C'99 which supports hex
-%  parsing.
+%  GetMagickDimension() parses a string in the scanf form %lfx%lf+%lf+%lf
+%  to obtain WIDTHxHEIGHT+XOFF+YOFF values and returns the number of values
+%  successfully parsed. This function exists to overcome a new behavior of
+%  ANSI C'99 which supports hex parsing.
 %
 %  The format of the GetMagickDimension method is:
 %
-%      int GetMagickDimension(const char *str,double *width,double *height)
+%      int GetMagickDimension(const char *str,double *width,double *height,
+%                             double *xoff,double *yoff)
 %
 %  A description of each parameter follows:
 %
@@ -1708,6 +1706,10 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %    o width:  First double value
 %
 %    o height: Second double value
+%
+%    o xoff:   Third double value (usually "x offset").  May be NULL.
+%
+%    o yoff:   Fourth double value (usually "y offset"). May be NULL.
 %
 */
 static int MagickStrToD(const char *start,char **end,double *value)
@@ -1736,11 +1738,13 @@ static int MagickStrToD(const char *start,char **end,double *value)
 
   return (n);
 }
-MagickExport int GetMagickDimension(const char *str,double *width,
-  double *height)
+MagickExport int
+GetMagickDimension(const char *str,double *width,double *height,
+                   double *xoff,double *yoff)
 {
   int
-    n;
+    n,
+    parsed;
 
   const char
     *start=str;
@@ -1757,7 +1761,36 @@ MagickExport int GetMagickDimension(const char *str,double *width,
   if ((*start != 'x') && (*start != 'X'))
     return n;
   start++;
-  n += MagickStrToD(start,&end,height);
+  parsed = MagickStrToD(start,&end,height);
+  if (parsed == 0)
+    return n;
+  n += parsed;
+  start=end;
+  if (xoff != (double *) NULL)
+    {
+      if ((*start != '+') && (*start != '-'))
+        return n;
+      parsed = MagickStrToD(start,&end,xoff);
+      if (parsed == 0)
+        return n;
+      n += parsed;
+      if (*(start -1) == '-')
+        *xoff=-*xoff;
+      start=end;
+    }
+  if (yoff != (double *) NULL)
+    {
+      if ((*start != '+') && (*start != '-'))
+        return n;
+      parsed = MagickStrToD(start,&end,yoff);
+      if (parsed == 0)
+        return n;
+      n += parsed;
+      if (*(start -1) == '-')
+        *yoff=-*yoff;
+      start=end;
+    }
+
   return (n);
 }
 
@@ -1858,7 +1891,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       */
       x_scale=(*width);
       y_scale=(*height);
-        count=GetMagickDimension(geometry,&x_scale,&y_scale);
+      count=GetMagickDimension(geometry,&x_scale,&y_scale,NULL,NULL);
       if (count == 1)
         y_scale=x_scale;
       *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
@@ -1881,7 +1914,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       target_width=(*width);
       target_height=(*height);
       target_area=target_width*target_height;
-        count=GetMagickDimension(geometry,&target_width,&target_height);
+      count=GetMagickDimension(geometry,&target_width,&target_height,NULL,NULL);
       if (count == 2)
         target_area=target_width*target_height;
       if (count == 1)
@@ -3329,6 +3362,88 @@ MagickExport void LocaleUpper(char *string)
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
     *q=(char) toupper((int) *q);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R a n d R e e n t r a n t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickRandReentrant() is a reentrant version of the standard
+%  rand() function but which allows the user to pass a pointer to the
+%  'seed'.
+%
+%  The format of the MagickRandReentrant method is:
+%
+%      int MagickRandReentrant(unsigned int *seed)
+%
+%  A description of each parameter follows:
+%
+%    o seed: The random sequence seed value.  Initialized by the user
+%            once (e.g. with output from MagickRandNewSeed()) and then
+%            passed via pointer thereafter.  If seed is NULL then
+%            this function behaves identically to rand(), using the
+%            global seed value set via srand().
+%
+*/
+MagickExport int MagickRandReentrant(unsigned int *seed)
+{
+  int
+    result;
+
+#if defined(HAVE_RAND_R)
+  if (seed)
+    result=rand_r(seed);
+  else
+    result=rand();
+#else
+  /* This version is not reentrant */
+  ARG_NOT_USED(seed);
+  result=rand();
+#endif
+  return result;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R a n d N e w S e e d                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickRandNewSeed() returns a semi-random initial seed value for
+%  use with MagickRandReentrant() or rand().
+%
+%  The format of the MagickRandNewSeed method is:
+%
+%      unsigned int MagickRandNewSeed(void)
+%
+*/
+MagickExport unsigned int MagickRandNewSeed(void)
+{
+  unsigned int
+    seed;
+
+  seed=time(0);
+#if defined(HAVE_RAND_R)
+  /*
+    It is quite likely that multiple threads will invoke this function
+    during the same second so we also tap into the default random
+    number generator to help produce a more random seed.
+  */
+  seed ^= (unsigned int) rand();
+#endif
+  return seed;
 }
 
 /*

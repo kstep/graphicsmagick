@@ -282,57 +282,23 @@ static void CropToFitImage(Image **image,const double x_shear,
 %
 */
 static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
-  ExceptionInfo *exception)
+                                  ExceptionInfo *exception)
 {
-#define RotateImageText  "  Rotate image...  "
+  char
+    message[MaxTextExtent];
 
   Image
     *rotate_image;
 
-  long
-    y;
-
   RectangleInfo
     page;
 
-  register const IndexPacket
-    *indexes;
-
-  IndexPacket
-    *rotate_indexes;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  const PixelPacket
-    *tile_pixels;
-              
-  register IndexPacket
-    *iq;
-  
-  register const IndexPacket
-    *ip;
-                          
-  unsigned long
+  long
     tile_width_max=128,
     tile_height_max=128;
-  
-  long
-    tile_width,
-    tile_height;
-  
-  long
-    tile_x,
-    tile_y;
 
   MagickPassFail
-    status;
+    status=MagickPass;
 
   /*
     Initialize rotated image attributes.
@@ -357,7 +323,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
               width,
               height;
             
-            if (GetMagickDimension(value,&width,&height) == 2)
+            if (GetMagickDimension(value,&width,&height,NULL,NULL) == 2)
               {
                 tile_height_max=(unsigned long) height;
                 tile_width_max=(unsigned long) width;
@@ -381,49 +347,117 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 0 degrees.
         */
+        long
+          y;
+
+        unsigned long
+          row_count=0;
+
+        (void) strlcpy(message,"[%s] Rotate image 0 degrees...",sizeof(message));
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
         for (y=0; y < (long) image->rows; y++)
           {
+            register const PixelPacket
+              *p;
+            
+            register PixelPacket
+              *q;
+            
+            register const IndexPacket
+              *indexes;
+            
+            IndexPacket
+              *rotate_indexes;
+
+            MagickPassFail
+              thread_status;
+
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
+
             p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-            q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
+            q=SetImagePixelsEx(rotate_image,0,y,rotate_image->columns,1,exception);
             if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-              break;
-            (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-            indexes=GetIndexes(image);
-            rotate_indexes=GetIndexes(rotate_image);
-            if ((indexes != (IndexPacket *) NULL) &&
-                (rotate_indexes != (IndexPacket *) NULL))
-              (void) memcpy(rotate_indexes,indexes,image->columns*
-                            sizeof(IndexPacket));
-            if (!SyncImagePixels(rotate_image))
-              break;
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-                break;
+              thread_status=MagickFail;
+            if (thread_status != MagickFail)
+              {
+                (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+                indexes=AccessImmutableIndexes(image);
+                rotate_indexes=AccessMutableIndexes(rotate_image);
+                if ((indexes != (IndexPacket *) NULL) &&
+                    (rotate_indexes != (IndexPacket *) NULL))
+                  (void) memcpy(rotate_indexes,indexes,image->columns*
+                                sizeof(IndexPacket));
+
+                if (!SyncImagePixelsEx(rotate_image,exception))
+                  thread_status=MagickFail;
+              }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+            {
+              row_count++;
+              if (QuantumTick(row_count,image->rows))
+                if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                            message,image->filename))
+                  thread_status=MagickFail;
+                  
+              if (thread_status == MagickFail)
+                status=MagickFail;
+            }
           }
         break;
       }
     case 1:
       {
         /*
-          Rotate 90 degrees.
+          Rotate 90 degrees (not a candidate for OpenMP).
         */
-        status=MagickPass;
+        magick_int64_t
+          tile;
+
+        magick_uint64_t
+          total_tiles;
+
+        long
+          tile_y;
+
+        (void) strlcpy(message,"[%s] Rotate image 90 degrees...",sizeof(message));
+        total_tiles=(((image->rows/tile_height_max)+1)*
+                     ((image->columns/tile_width_max)+1));        
+        tile=0;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
+            long
+              tile_x;
+
             for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
               {
                 long
                   dest_tile_x,
                   dest_tile_y;
-              
+
+                long
+                  tile_width,
+                  tile_height;
+
+                const PixelPacket
+                  *tile_pixels;
+
+                long
+                  y;
+
                 /*
                   Compute image region corresponding to tile.
                 */
-                if (tile_x+tile_width_max > image->columns)
+                if ((unsigned long) tile_x+tile_width_max > image->columns)
                   tile_width=(tile_width_max-(tile_x+tile_width_max-image->columns));
                 else
                   tile_width=tile_width_max;
-                if (tile_y+tile_height_max > image->rows)
+                if ((unsigned long) tile_y+tile_height_max > image->rows)
                   tile_height=(tile_height_max-(tile_y+tile_height_max-image->rows));
                 else
                   tile_height=tile_height_max;
@@ -447,7 +481,23 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 */
                 for (y=0; y < tile_width; y++)
                   {
-                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,tile_height,1);
+                    register const PixelPacket
+                      *p;
+                    
+                    register PixelPacket
+                      *q;
+
+                    register const IndexPacket
+                      *indexes;
+        
+                    IndexPacket
+                      *rotate_indexes;
+
+                    register long
+                      x;
+
+                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,
+                                     tile_height,1);
                     if (q == (PixelPacket *) NULL)
                       {
                         status=MagickFail;
@@ -466,12 +516,18 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     /*
                       Indexes
                     */
-                    indexes=GetIndexes(image);
+                    indexes=AccessImmutableIndexes(image);
                     if (indexes != (IndexPacket *) NULL)
                       {
-                        rotate_indexes=GetIndexes(rotate_image);
+                        rotate_indexes=AccessMutableIndexes(rotate_image);
                         if (rotate_indexes != (IndexPacket *) NULL)
                           {
+                            register IndexPacket
+                              *iq;
+                            
+                            register const IndexPacket
+                              *ip;
+
                             iq=rotate_indexes;
                             ip=indexes+(tile_height-1)*tile_width + y;
                             for (x=tile_height; x != 0; x--) 
@@ -488,11 +544,16 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                         break;
                       }
                   }
+
+                tile++;
+                if (QuantumTick(tile,total_tiles))
+                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                              message,image->filename))
+                    status=MagickFail;
+ 
                 if (status == MagickFail)
                   break;
               }
-            if (status == MagickFail)
-              break;
           }
         Swap(page.width,page.height);
         Swap(page.x,page.y);
@@ -504,27 +565,72 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         /*
           Rotate 180 degrees.
         */
+        long
+          y;
+
+        unsigned long
+          row_count=0;
+
+        (void) strlcpy(message,"[%s] Rotate image 180 degrees...",sizeof(message));
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
         for (y=0; y < (long) image->rows; y++)
           {
+            register const PixelPacket
+              *p;
+
+            register PixelPacket
+              *q;
+
+            register const IndexPacket
+              *indexes;
+        
+            IndexPacket
+              *rotate_indexes;
+
+            register long
+              x;
+
+            MagickPassFail
+              thread_status;
+
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
+
             p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-            q=SetImagePixels(rotate_image,0,(long) (image->rows-y-1),
-                             image->columns,1);
+            q=SetImagePixelsEx(rotate_image,0,(long) (image->rows-y-1),
+                               image->columns,1,exception);
             if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-              break;
-            q+=image->columns;
-            indexes=GetIndexes(image);
-            rotate_indexes=GetIndexes(rotate_image);
-            if ((indexes != (IndexPacket *) NULL) &&
-                (rotate_indexes != (IndexPacket *) NULL))
-              for (x=0; x < (long) image->columns; x++)
-                rotate_indexes[image->columns-x-1]=indexes[x];
-            for (x=0; x < (long) image->columns; x++)
-              *--q=(*p++);
-            if (!SyncImagePixels(rotate_image))
-              break;
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(RotateImageText,y,image->rows,exception))
-                break;
+              thread_status=MagickFail;
+            if (thread_status != MagickFail)
+              {
+                q+=image->columns;
+                indexes=AccessImmutableIndexes(image);
+                rotate_indexes=AccessMutableIndexes(rotate_image);
+                if ((indexes != (IndexPacket *) NULL) &&
+                    (rotate_indexes != (IndexPacket *) NULL))
+                  for (x=0; x < (long) image->columns; x++)
+                    rotate_indexes[image->columns-x-1]=indexes[x];
+                for (x=0; x < (long) image->columns; x++)
+                  *--q=(*p++);
+                if (!SyncImagePixelsEx(rotate_image,exception))
+                  thread_status=MagickFail;
+              }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+            {
+              row_count++;
+              if (QuantumTick(row_count,image->rows))
+                if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                            message,image->filename))
+                  thread_status=MagickFail;
+                  
+              if (thread_status == MagickFail)
+                status=MagickFail;
+            }
           }
         page.x=(long) (page.width-rotate_image->columns-page.x);
         page.y=(long) (page.height-rotate_image->rows-page.y);
@@ -533,25 +639,53 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     case 3:
       {
         /*
-          Rotate 270 degrees.
+          Rotate 270 degrees (not a candidate for OpenMP).
         */
+
+        magick_int64_t
+          tile;
+
+        magick_uint64_t
+          total_tiles;
+
+        long
+          tile_y;
+
+        (void) strlcpy(message,"[%s] Rotate image 270 degrees...",sizeof(message));
+        total_tiles=(((image->rows/tile_height_max)+1)*
+                     ((image->columns/tile_width_max)+1));
+        tile=0;
         status=MagickPass;
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
+            long
+              tile_x;
+
             for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
               {
+                long
+                  tile_width,
+                  tile_height;
+
                 long
                   dest_tile_x,
                   dest_tile_y;
 
+                long
+                  y;
+
+                const PixelPacket
+                  *tile_pixels;
+                    
+                tile++;
                 /*
                   Compute image region corresponding to tile.
                 */
-                if (tile_x+tile_width_max > image->columns)
+                if ((unsigned long) tile_x+tile_width_max > image->columns)
                   tile_width=(tile_width_max-(tile_x+tile_width_max-image->columns));
                 else
                   tile_width=tile_width_max;
-                if (tile_y+tile_height_max > image->rows)
+                if ((unsigned long) tile_y+tile_height_max > image->rows)
                   tile_height=(tile_height_max-(tile_y+tile_height_max-image->rows));
                 else
                   tile_height=tile_height_max;
@@ -575,6 +709,21 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 */
                 for (y=0; y < tile_width; y++)
                   {
+                    register const PixelPacket
+                      *p;
+                    
+                    register PixelPacket
+                      *q;
+
+                    register const IndexPacket
+                      *indexes;
+
+                    register long
+                      x;
+
+                    IndexPacket
+                      *rotate_indexes;
+
                     q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,tile_height,1);
                     if (q == (PixelPacket *) NULL)
                       {
@@ -594,12 +743,18 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     /*
                       Indexes
                     */
-                    indexes=GetIndexes(image);
+                    indexes=AccessImmutableIndexes(image);
                     if (indexes != (IndexPacket *) NULL)
                       {
-                        rotate_indexes=GetIndexes(rotate_image);
+                        rotate_indexes=AccessMutableIndexes(rotate_image);
                         if (rotate_indexes != (IndexPacket *) NULL)
                           {
+                            register IndexPacket
+                              *iq;
+                            
+                            register const IndexPacket
+                              *ip;
+
                             iq=rotate_indexes;
                             ip=indexes+(tile_width-1-y);
                             for (x=tile_height; x != 0; x--)
@@ -616,6 +771,10 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                         break;
                       }
                   }
+                if (QuantumTick(tile,total_tiles))
+                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                              message,image->filename))
+                    status=MagickFail;
                 if (status == MagickFail)
                   break;
               }
@@ -670,166 +829,225 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 */
 
 static void XShearImage(Image *image,const double degrees,
-  const unsigned long width,const unsigned long height,const long x_offset,
-  long y_offset)
+                        const unsigned long width,const unsigned long height,
+                        const long x_offset,long y_offset)
 {
-#define XShearImageText  "  X Shear image...  "
-
-  double
-    alpha,
-    displacement;
-
-  enum {LEFT, RIGHT}
-    direction;
+#define XShearImageText  "[%s] X Shear image...  "
 
   long
-    step,
     y;
 
-  PixelPacket
-    pixel;
-
-  register long
-    i;
+  unsigned long
+    row_count=0;
 
   unsigned int
     is_grayscale;
 
-  register PixelPacket
-    *p,
-    *q;
+  MagickPassFail
+    status=MagickPass;
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
 
-  y_offset--;
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
   for (y=0; y < (long) height; y++)
-  {
-    y_offset++;
-    displacement=degrees*(y-height/2.0);
-    if (displacement == 0.0)
-      continue;
-    if (displacement > 0.0)
-      direction=RIGHT;
-    else
-      {
-        displacement*=(-1.0);
-        direction=LEFT;
-      }
-    step=(long) floor(displacement);
-    alpha=(double) MaxRGB*(displacement-step);
-    if (alpha == 0.0)
-      {
-        /*
-          No fractional displacement-- just copy.
-        */
-        switch (direction)
+    {
+      double
+        alpha,
+        displacement;
+
+      long
+        step;
+
+      PixelPacket
+        pixel;
+
+      register long
+        i;
+
+      register PixelPacket
+        *p,
+        *q;
+
+      enum
         {
-          case LEFT:
+          LEFT,
+          RIGHT
+        } direction;
+
+      MagickPassFail
+        thread_status;
+      
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      displacement=degrees*(y-height/2.0);
+      if (displacement == 0.0)
+        continue;
+      if (displacement > 0.0)
+        direction=RIGHT;
+      else
+        {
+          displacement*=(-1.0);
+          direction=LEFT;
+        }
+      step=(long) floor(displacement);
+      alpha=(double) MaxRGB*(displacement-step);
+      if (alpha == 0.0)
+        {
+          /*
+            No fractional displacement-- just copy.
+          */
+          switch (direction)
+            {
+            case LEFT:
+              {
+                /*
+                  Transfer pixels left-to-right.
+                */
+                if (step > x_offset)
+                  break;
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+                if (p == (PixelPacket *) NULL)
+                  {
+                    thread_status=MagickFail;
+                    break;
+                  }
+                p+=x_offset;
+                q=p-step;
+                (void) memcpy(q,p,width*sizeof(PixelPacket));
+                q+=width;
+                for (i=0; i < (long) step; i++)
+                  *q++=image->background_color;
+                break;
+              }
+            case RIGHT:
+              {
+                /*
+                  Transfer pixels right-to-left.
+                */
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+                if (p == (PixelPacket *) NULL)
+                  {
+                    thread_status=MagickFail;
+                    break;
+                  }
+                p+=x_offset+width;
+                q=p+step;
+                for (i=0; i < (long) width; i++)
+                  *--q=(*--p);
+                for (i=0; i < (long) step; i++)
+                  *--q=image->background_color;
+                break;
+              }
+            }
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+          {
+            row_count++;
+            if (QuantumTick(row_count,height))
+              if (!MagickMonitorFormatted(row_count,height,&image->exception,
+                                          XShearImageText,image->filename))
+                thread_status=MagickFail;
+            
+            if (thread_status == MagickFail)
+              status=MagickFail;
+          }
+
+          continue;
+        }
+      /*
+        Fractional displacement.
+      */
+      step++;
+      pixel=image->background_color;
+      switch (direction)
+        {
+        case LEFT:
           {
             /*
               Transfer pixels left-to-right.
             */
             if (step > x_offset)
               break;
-            p=GetImagePixels(image,0,y_offset,image->columns,1);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
             if (p == (PixelPacket *) NULL)
-              break;
+              {
+                thread_status=MagickFail;
+                break;
+              }
             p+=x_offset;
             q=p-step;
-            (void) memcpy(q,p,width*sizeof(PixelPacket));
-            q+=width;
-            for (i=0; i < (long) step; i++)
+            for (i=0; i < (long) width; i++)
+              {
+                if ((x_offset+i) < step)
+                  {
+                    pixel=(*++p);
+                    q++;
+                    continue;
+                  }
+                BlendCompositePixel(q,&pixel,p,alpha);
+                q++;
+                pixel=(*p++);
+              }
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            q++;
+            for (i=0; i < (step-1); i++)
               *q++=image->background_color;
             break;
           }
-          case RIGHT:
+        case RIGHT:
           {
             /*
               Transfer pixels right-to-left.
             */
-            p=GetImagePixels(image,0,y_offset,image->columns,1);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
             if (p == (PixelPacket *) NULL)
-              break;
+              {
+                thread_status=MagickFail;
+                break;
+              }
             p+=x_offset+width;
             q=p+step;
             for (i=0; i < (long) width; i++)
-              *--q=(*--p);
-            for (i=0; i < (long) step; i++)
+              {
+                p--;
+                q--;
+                if ((x_offset+width+step-i) >= image->columns)
+                  continue;
+                BlendCompositePixel(q,&pixel,p,alpha);
+                pixel=(*p);
+              }
+            --q;
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            for (i=0; i < (step-1); i++)
               *--q=image->background_color;
             break;
           }
         }
-        if (!SyncImagePixels(image))
-          break;
-        continue;
-      }
-    /*
-      Fractional displacement.
-    */
-    step++;
-    pixel=image->background_color;
-    switch (direction)
-    {
-      case LEFT:
+      if (!SyncImagePixelsEx(image,&image->exception))
+        thread_status=MagickFail;
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
       {
-        /*
-          Transfer pixels left-to-right.
-        */
-        if (step > x_offset)
-          break;
-        p=GetImagePixels(image,0,y_offset,image->columns,1);
-        if (p == (PixelPacket *) NULL)
-          break;
-        p+=x_offset;
-        q=p-step;
-        for (i=0; i < (long) width; i++)
-        {
-          if ((x_offset+i) < step)
-            {
-              pixel=(*++p);
-              q++;
-              continue;
-            }
-          *q++=BlendComposite(&pixel,p,alpha);
-          pixel=(*p++);
-        }
-        *q++=BlendComposite(&pixel,&image->background_color,alpha);
-        for (i=0; i < (step-1); i++)
-          *q++=image->background_color;
-        break;
-      }
-      case RIGHT:
-      {
-        /*
-          Transfer pixels right-to-left.
-        */
-        p=GetImagePixels(image,0,y_offset,image->columns,1);
-        if (p == (PixelPacket *) NULL)
-          break;
-        p+=x_offset+width;
-        q=p+step;
-        for (i=0; i < (long) width; i++)
-        {
-          p--;
-          q--;
-          if ((x_offset+width+step-i) >= image->columns)
-            continue;
-          *q=BlendComposite(&pixel,p,alpha);
-          pixel=(*p);
-        }
-        *--q=BlendComposite(&pixel,&image->background_color,alpha);
-        for (i=0; i < (step-1); i++)
-          *--q=image->background_color;
-        break;
+        row_count++;
+        if (QuantumTick(row_count,height))
+          if (!MagickMonitorFormatted(row_count,height,&image->exception,
+                                      XShearImageText,image->filename))
+            thread_status=MagickFail;
+        
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
     }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,height))
-      if (!MagickMonitor(XShearImageText,y,height,&image->exception))
-        break;
-  }
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
 }
@@ -869,165 +1087,226 @@ static void XShearImage(Image *image,const double degrees,
 %
 */
 static void YShearImage(Image *image,const double degrees,
-  const unsigned long width,const unsigned long height,long x_offset,
-  const long y_offset)
+                        const unsigned long width,const unsigned long height,long x_offset,
+                        const long y_offset)
 {
-#define YShearImageText  "  Y Shear image...  "
-
-  double
-    alpha,
-    displacement;
-
-  enum {UP, DOWN}
-    direction;
+#define YShearImageText  "[%s] Y Shear image..."
 
   long
-    step,
     y;
 
-  register PixelPacket
-    *p,
-    *q;
-
-  register long
-    i;
+  unsigned long
+    row_count=0;
 
   unsigned int
     is_grayscale;
 
-  PixelPacket
-    pixel;
+  MagickPassFail
+    status=MagickPass;
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
-  x_offset--;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
   for (y=0; y < (long) width; y++)
-  {
-    x_offset++;
-    displacement=degrees*(y-width/2.0);
-    if (displacement == 0.0)
-      continue;
-    if (displacement > 0.0)
-      direction=DOWN;
-    else
-      {
-        displacement*=(-1.0);
-        direction=UP;
-      }
-    step=(long) floor(displacement);
-    alpha=(double) MaxRGB*(displacement-step);
-    if (alpha == 0.0)
-      {
-        /*
-          No fractional displacement-- just copy the pixels.
-        */
-        switch (direction)
+    {
+      double
+        alpha,
+        displacement;
+
+      enum
         {
-          case UP:
+          UP,
+          DOWN
+        } direction;
+
+      long
+        step;
+
+      register PixelPacket
+        *p,
+        *q;
+
+      register long
+        i;
+
+      PixelPacket
+        pixel;
+
+      MagickPassFail
+        thread_status;
+      
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      displacement=degrees*(y-width/2.0);
+      if (displacement == 0.0)
+        continue;
+      if (displacement > 0.0)
+        direction=DOWN;
+      else
+        {
+          displacement*=(-1.0);
+          direction=UP;
+        }
+      step=(long) floor(displacement);
+      alpha=(double) MaxRGB*(displacement-step);
+      if (alpha == 0.0)
+        {
+          /*
+            No fractional displacement-- just copy the pixels.
+          */
+          switch (direction)
+            {
+            case UP:
+              {
+                /*
+                  Transfer pixels top-to-bottom.
+                */
+                if (step > y_offset)
+                  break;
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+                if (p == (PixelPacket *) NULL)
+                  {
+                    thread_status=MagickFail;
+                    break;
+                  }
+                p+=y_offset;
+                q=p-step;
+                (void) memcpy(q,p,height*sizeof(PixelPacket));
+                q+=height;
+                for (i=0; i < (long) step; i++)
+                  *q++=image->background_color;
+                break;
+              }
+            case DOWN:
+              {
+                /*
+                  Transfer pixels bottom-to-top.
+                */
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+                if (p == (PixelPacket *) NULL)
+                  {
+                    thread_status=MagickFail;
+                    break;
+                  }
+                p+=y_offset+height;
+                q=p+step;
+                for (i=0; i < (long) height; i++)
+                  *--q=(*--p);
+                for (i=0; i < (long) step; i++)
+                  *--q=image->background_color;
+                break;
+              }
+            }
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+          {
+            row_count++;
+            if (QuantumTick(row_count,width))
+              if (!MagickMonitorFormatted(row_count,width,&image->exception,
+                                          YShearImageText,image->filename))
+                thread_status=MagickFail;
+            
+            if (thread_status == MagickFail)
+              status=MagickFail;
+          }
+
+          continue;
+        }
+      /*
+        Fractional displacment.
+      */
+      step++;
+      pixel=image->background_color;
+      switch (direction)
+        {
+        case UP:
           {
             /*
               Transfer pixels top-to-bottom.
             */
             if (step > y_offset)
               break;
-            p=GetImagePixels(image,x_offset,0,1,image->rows);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
             if (p == (PixelPacket *) NULL)
-              break;
+              {
+                thread_status=MagickFail;
+                break;
+              }
             p+=y_offset;
             q=p-step;
-            (void) memcpy(q,p,height*sizeof(PixelPacket));
-            q+=height;
-            for (i=0; i < (long) step; i++)
+            for (i=0; i < (long) height; i++)
+              {
+                if ((y_offset+i) < step)
+                  {
+                    pixel=(*++p);
+                    q++;
+                    continue;
+                  }
+                BlendCompositePixel(q,&pixel,p,alpha);
+                q++;
+                pixel=(*p++);
+              }
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            q++;
+            for (i=0; i < (step-1); i++)
               *q++=image->background_color;
             break;
           }
-          case DOWN:
+        case DOWN:
           {
             /*
               Transfer pixels bottom-to-top.
             */
-            p=GetImagePixels(image,x_offset,0,1,image->rows);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
             if (p == (PixelPacket *) NULL)
-              break;
+              {
+                thread_status=MagickFail;
+                break;
+              }
             p+=y_offset+height;
             q=p+step;
             for (i=0; i < (long) height; i++)
-              *--q=(*--p);
-            for (i=0; i < (long) step; i++)
+              {
+                p--;
+                q--;
+                if ((y_offset+height+step-i) >= image->rows)
+                  continue;
+                BlendCompositePixel(q,&pixel,p,alpha);
+                pixel=(*p);
+              }
+            --q;
+            BlendCompositePixel(q,&pixel,&image->background_color,alpha);
+            for (i=0; i < (step-1); i++)
               *--q=image->background_color;
             break;
           }
         }
-        if (!SyncImagePixels(image))
-          break;
-        continue;
-      }
-    /*
-      Fractional displacment.
-    */
-    step++;
-    pixel=image->background_color;
-    switch (direction)
-    {
-      case UP:
+      if (!SyncImagePixelsEx(image,&image->exception))
+        thread_status=MagickFail;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
       {
-        /*
-          Transfer pixels top-to-bottom.
-        */
-        if (step > y_offset)
-          break;
-        p=GetImagePixels(image,x_offset,0,1,image->rows);
-        if (p == (PixelPacket *) NULL)
-          break;
-        p+=y_offset;
-        q=p-step;
-        for (i=0; i < (long) height; i++)
-        {
-          if ((y_offset+i) < step)
-            {
-              pixel=(*++p);
-              q++;
-              continue;
-            }
-          *q++=BlendComposite(&pixel,p,alpha);
-          pixel=(*p++);
-        }
-        *q++=BlendComposite(&pixel,&image->background_color,alpha);
-        for (i=0; i < (step-1); i++)
-          *q++=image->background_color;
-        break;
-      }
-      case DOWN:
-      {
-        /*
-          Transfer pixels bottom-to-top.
-        */
-        p=GetImagePixels(image,x_offset,0,1,image->rows);
-        if (p == (PixelPacket *) NULL)
-          break;
-        p+=y_offset+height;
-        q=p+step;
-        for (i=0; i < (long) height; i++)
-        {
-          p--;
-          q--;
-          if ((y_offset+height+step-i) >= image->rows)
-            continue;
-          *q=BlendComposite(&pixel,p,alpha);
-          pixel=(*p);
-        }
-        *--q=BlendComposite(&pixel,&image->background_color,alpha);
-        for (i=0; i < (step-1); i++)
-          *--q=image->background_color;
-        break;
+        row_count++;
+        if (QuantumTick(row_count,width))
+          if (!MagickMonitorFormatted(row_count,width,&image->exception,
+                                      YShearImageText,image->filename))
+            thread_status=MagickFail;
+        
+        if (thread_status == MagickFail)
+          status=MagickFail;
       }
     }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,width))
-      if (!MagickMonitor(YShearImageText,y,width,&image->exception))
-        break;
-  }
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
 }

@@ -1,135 +1,199 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>memory - Memory allocation/deallocation functions</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>memory</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#magickallocfunctions">MagickAllocFunctions</a></li>
-		<li><a href="#magickmalloc">MagickMalloc</a></li>
-		<li><a href="#magickclonememory">MagickCloneMemory</a></li>
-		<li><a href="#magickrealloc">MagickRealloc</a></li>
-		<li><a href="#magickfree">MagickFree</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>memory - Memory allocation/deallocation functions</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>void  <strong>MagickAllocFunctions</strong>( MagickFreeFunc free_func, MagickMallocFunc malloc_func, MagickReallocFunc realloc_func );</P>
-<P>void * <strong>MagickCloneMemory</strong>( void *destination, const void *source, const size_t size );</P>
-<P>void * <strong>MagickFree</strong>( void *memory );</P>
-<P>void * <strong>MagickMalloc</strong>( const size_t size );</P>
-<P>void * <strong>MagickRealloc</strong>( void *memory, const size_t size );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="magickallocfunctions">MagickAllocFunctions</a></h2>
-<blockquote>MagickAllocFunctions() provides a way for the user to supply a preferred free ( ), malloc ( ), and realloc ( ) functions. Otherwise the default system versions are used. </blockquote><P>The format of the MagickAllocFunctions method is:</P>
-<blockquote>void MagickAllocFunctions ( MagickFreeFunc free_func, MagickMallocFunc malloc_func, MagickReallocFunc realloc_func ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_free_func_3a">free_func:</a></strong>
-
-<DD>
-<P>Function to free memory.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_malloc_func_3a">malloc_func:</a></strong>
-
-<DD>
-<P>Function to allocate memory.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_realloc_func_3a">realloc_func:</a></strong>
-
-<DD>
-<P>Function to reallocate memory.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="memory">
+<h1 class="title">memory</h1>
+<h2 class="subtitle" id="memory-allocation-deallocation-functions">Memory allocation/deallocation functions</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#magickallocfunctions" id="id9" name="id9">MagickAllocFunctions</a></li>
+<li><a class="reference" href="#magickmalloc" id="id10" name="id10">MagickMalloc</a></li>
+<li><a class="reference" href="#magickclonememory" id="id11" name="id11">MagickCloneMemory</a></li>
+<li><a class="reference" href="#magickrealloc" id="id12" name="id12">MagickRealloc</a></li>
+<li><a class="reference" href="#magickfree" id="id13" name="id13">MagickFree</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id9" id="magickallocfunctions" name="magickallocfunctions">MagickAllocFunctions</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<pre class="literal-block">
+void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_func,
+                           MagickReallocFunc realloc_func );
+</pre>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>MagickAllocFunctions() provides a way for the user to supply a preferred
+free(), malloc(), and realloc() functions.  Otherwise the default system
+versions are used.</p>
+<p>The format of the  MagickAllocFunctions method is:</p>
+<pre class="literal-block">
+void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_func,
+                           MagickReallocFunc realloc_func );
+</pre>
+<dl class="docutils">
+<dt>free_func:</dt>
+<dd>Function to free memory.</dd>
+<dt>malloc_func:</dt>
+<dd>Function to allocate memory.</dd>
+<dt>realloc_func:</dt>
+<dd>Function to reallocate memory.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="magickmalloc">MagickMalloc</a></h2>
-<blockquote>MagickMalloc() returns a pointer to a block of memory of at least size bytes suitably aligned for any use. NULL is returned if insufficient memory is available or the requested size is zero. </blockquote><P>The format of the MagickMalloc method is:</P>
-<blockquote>void *MagickMalloc ( const size_t size ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_size_3a">size:</a></strong>
-
-<DD>
-<P>The size of the memory in bytes to allocate.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id10" id="magickmalloc" name="magickmalloc">MagickMalloc</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<pre class="literal-block">
+void *MagickMalloc( const size_t size );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>MagickMalloc() returns a pointer to a block of memory of at least size
+bytes suitably aligned for any use.  NULL is returned if insufficient
+memory is available or the requested size is zero.</p>
+<p>The format of the  MagickMalloc method is:</p>
+<pre class="literal-block">
+void *MagickMalloc( const size_t size );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>size:</dt>
+<dd>The size of the memory in bytes to allocate.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="magickclonememory">MagickCloneMemory</a></h2>
-<blockquote>MagickCloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the MagickCloneMemory method is:</P>
-<blockquote>void *MagickCloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>size:</strong>
-
-<DD>
-<P>The size of the memory in bytes to allocate.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id11" id="magickclonememory" name="magickclonememory">MagickCloneMemory</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<pre class="literal-block">
+void *MagickCloneMemory( void *destination, const void *source, const size_t size );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>MagickCloneMemory() copies size bytes from memory area source to the
+destination.  Copying between objects that overlap will take place
+correctly.  It returns destination.</p>
+<p>The format of the MagickCloneMemory method is:</p>
+<pre class="literal-block">
+void *MagickCloneMemory( void *destination, const void *source, const size_t size );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>size:</dt>
+<dd>The size of the memory in bytes to allocate.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="magickrealloc">MagickRealloc</a></h2>
-<blockquote>MagickRealloc() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. If size is zero, then the memory is freed and a NULL value is returned. If the memory allocation fails, then the existing memory is freed, and a NULL value is returned. </blockquote><P>The format of the MagickRealloc method is:</P>
-<blockquote>void *MagickRealloc ( void *memory, const size_t size ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_memory_3a">memory:</a></strong>
-
-<DD>
-<P>A pointer to a memory allocation.</P>
-</dd>
-</li>
-<dt><strong>size:</strong>
-
-<DD>
-<P>The new size of the allocated memory.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="magickrealloc" name="magickrealloc">MagickRealloc</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<pre class="literal-block">
+void *MagickRealloc( void *memory, const size_t size );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>MagickRealloc() changes the size of the memory and returns a pointer to
+the (possibly moved) block.  The contents will be unchanged up to the
+lesser of the new and old sizes.  If size is zero, then the memory is
+freed and a NULL value is returned.  If the memory allocation fails, then
+the existing memory is freed, and a NULL value is returned.</p>
+<p>The format of the MagickRealloc method is:</p>
+<pre class="literal-block">
+void *MagickRealloc( void *memory, const size_t size );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>memory:</dt>
+<dd>A pointer to a memory allocation.</dd>
+<dt>size:</dt>
+<dd>The new size of the allocated memory.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="magickfree">MagickFree</a></h2>
-<blockquote>MagickFree() frees memory that has already been allocated. A NULL argument is ignored. The function always returns NULL so that the return value may be used to set the memory pointer to null. </blockquote><P>The format of the MagickFree method is:</P>
-<blockquote>void *MagickFree ( void *memory ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>memory:</strong>
-
-<DD>
-<P>A pointer to a block of memory to free for reuse.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id13" id="magickfree" name="magickfree">MagickFree</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<pre class="literal-block">
+void MagickFree( void *memory );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>MagickFree() frees memory that has already been allocated.  A NULL
+argument is ignored.</p>
+<p>The format of the MagickFree method is:</p>
+<pre class="literal-block">
+void MagickFree( void *memory );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>memory:</dt>
+<dd>A pointer to a block of memory to free for reuse.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 00:14 UTC.
 
+</div>
 </body>
-
 </html>

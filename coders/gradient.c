@@ -154,6 +154,8 @@ ModuleExport void RegisterGRADIENTImage(void)
   entry->raw=True;
   entry->description="Gradual passing from one shade to another";
   entry->module="GRADIENT";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

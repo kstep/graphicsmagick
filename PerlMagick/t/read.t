@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..58\n"; }
+BEGIN { $| = 1; $test=1; print "1..68\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -49,9 +49,37 @@ print("Microsoft Windows bitmap image file ...\n");
 ++$test;
 testReadCompare('input.dib', 'reference/read/input_dib.miff', q//, 0, 0);
 
-print("Flexible Image Transport System ...\n");
+print("Flexible Image Transport System 8-bit ...\n");
 ++$test;
-testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0, 0);
+testReadCompare('input_gray_08bit.fits', 'reference/read/input_gray_08bit_fits.miff', q//, 0, 0);
+
+print("Flexible Image Transport System LSB 16-bit ...\n");
+++$test;
+testReadCompare('input_gray_16bit.fits', 'reference/read/input_gray_16bit_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System LSB 32-bit ...\n");
+++$test;
+testReadCompare('input_gray_32bit.fits', 'reference/read/input_gray_32bit_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System LSB double ...\n");
+++$test;
+testReadCompare('input_gray_lsb_double.fits', 'reference/read/input_gray_lsb_double_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System MSB 16-bit ...\n");
+++$test;
+testReadCompare('input_gray_msb_16bit.fits', 'reference/read/input_gray_msb_16bit_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System MSB 32-bit ...\n");
+++$test;
+testReadCompare('input_gray_msb_32bit.fits', 'reference/read/input_gray_msb_32bit_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System MSB float ...\n");
+++$test;
+testReadCompare('input_gray_msb_float.fits', 'reference/read/input_gray_msb_float_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System MSB double ...\n");
+++$test;
+testReadCompare('input_gray_msb_double.fits', 'reference/read/input_gray_msb_double_fits.miff', q//, 0.002, 0.004);
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
@@ -155,7 +183,19 @@ print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
 testReadCompare('input.pict', 'reference/read/input_pict.miff', q//, 0, 0);
 
-print("Alias/Wavefront RLE image format ...\n");
+print("Alias/Wavefront RLA image format (gray scale) ...\n");
+++$test;
+testReadCompare('input_gray.rla', 'reference/read/input_gray_rla.miff', q//, 0, 0);
+
+print("Alias/Wavefront RLA image format (RGB) ...\n");
+++$test;
+testReadCompare('input_rgb.rla', 'reference/read/input_rgb_rla.miff', q//, 0, 0);
+
+print("Utah Raster Toolkit (URT) RLE image format (gray scale) ...\n");
+++$test;
+testReadCompare('input_gray.rle', 'reference/read/input_gray_rle.miff', q//, 0, 0);
+
+print("Utah Raster Toolkit (URT) RLE image format (RGB) ...\n");
 ++$test;
 testReadCompare('input.rle', 'reference/read/input_rle.miff', q//, 0, 0);
 

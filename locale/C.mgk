@@ -43,6 +43,9 @@
       <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
       </Message>
+      <Message name="UnableToAllocateCacheView">
+        Unable to allocate cache view
+      </Message>
       <Message name="UnableToCloneCache">
         Unable to clone cache
       </Message>
@@ -930,6 +933,9 @@
       <Message name="UnrecognizedGravityType">
         Unrecognized gravity type
       </Message>
+      <Message name="UnrecognizedHighlightStyle">
+        Unrecognized highlight style
+      </Message>
       <Message name="UnrecognizedImageCompression">
         Unrecognized image compression
       </Message>
@@ -953,6 +959,9 @@
       </Message>
       <Message name="UnrecognizedListType">
         Unrecognized list type
+      </Message>
+      <Message name="UnrecognizedMetric">
+        Unrecognized error metric
       </Message>
       <Message name="UnrecognizedModeType">
         Unrecognized mode type

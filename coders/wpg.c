@@ -279,7 +279,7 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
 
     case 2:  /* Convert PseudoColor scanline. */
       {
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
             index=(IndexPacket) ((*p >> 6) & 0x3);
@@ -646,7 +646,7 @@ unsigned Flags;
 
 
 static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
-  ExtendedSignedIntegralType PS_Offset,long PS_Size,ExceptionInfo *exception)
+                                ExtendedSignedIntegralType PS_Offset,long PS_Size,ExceptionInfo *exception)
 {
   char
     postscript_file[MaxTextExtent];
@@ -656,15 +656,15 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
-    
-  const MagicInfo
-    *magic_info;    
 
   Image
     *image2;
     
   unsigned char
-    magick[2*MaxTextExtent];    
+    magick[2*MaxTextExtent];
+
+  size_t
+    magick_size;
     
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
@@ -675,14 +675,14 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /* Obtain temporary file */
   ps_file=AcquireTemporaryFileStream(postscript_file,BinaryFileIOMode);
   if (!ps_file)
-  {
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
-    goto FINISH;
-  }
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
+      goto FINISH;
+    }
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  (void) ReadBlob(image, 2*MaxTextExtent, magick);
+  magick_size=ReadBlob(image, sizeof(magick), magick);
   
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while(PS_Size-- > 0)
@@ -691,16 +691,12 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     }
   (void) fclose(ps_file);
   
-    /* Detect file format - Check magic.mgk configuration file. */
-  magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
-  if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
-  /*     printf("Detected:%s  \n",magic_info->name); */
-  if(exception->severity != UndefinedException) goto FINISH_UNL;     
-  if(magic_info->name == (char *) NULL) goto FINISH_UNL;
-    
-  (void) strlcpy(clone_info->magick,magic_info->name,MaxTextExtent);
+  /* Detect file format - Check magic.mgk configuration file. */
+  if (GetMagickFileFormat(magick,magick_size,clone_info->magick,
+                           MaxTextExtent,exception) == MagickFail)
+    goto FINISH_UNL;
   
-    /* Read nested image */
+  /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%.1024s",magic_info->name,postscript_file);*/
   FormatString(clone_info->filename,"%.1024s",postscript_file);
   image2=ReadImage(clone_info,exception);
@@ -1344,6 +1340,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   }
 
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");  
+  if(image==NULL)
+    ThrowReaderException(CorruptImageError,ImageFileDoesNotContainAnyImageData,image);
   return(image);   
 }
 

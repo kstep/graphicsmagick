@@ -193,7 +193,7 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; )
     {
       if (top_stack == pixel_stack)
@@ -358,7 +358,8 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
       }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    LoadImageText,image->filename))
           {
             status=MagickFail;
             break;
@@ -468,7 +469,7 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -532,7 +533,7 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
     p=AcquireImagePixels(image,0,offset,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     if (y == 0)
       waiting_code=(*indexes);
     for (x=(y == 0) ? 1 : 0; x < (long) image->columns; x++)
@@ -641,7 +642,8 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
       }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   /*
@@ -963,7 +965,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
     image_count++;
@@ -1104,6 +1107,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->description="CompuServe graphics interchange format";
   entry->version="version 89a";
   entry->module="GIF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("GIF87");
@@ -1114,6 +1118,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->description="CompuServe graphics interchange format";
   entry->version="version 87a";
   entry->module="GIF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1188,9 +1193,6 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
 
   RectangleInfo
     page;
-
-  register IndexPacket
-    *indexes;
 
   register const PixelPacket
     *p;
@@ -1311,11 +1313,14 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
             image->colormap[opacity]=image->background_color;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,
+              register IndexPacket
+                *indexes;
+
+              p=GetImagePixelsEx(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity == TransparentOpacity)
@@ -1335,10 +1340,13 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (long) image->rows; y++)
           {
+            register const IndexPacket
+              *indexes;
+
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               if (p->opacity == TransparentOpacity)
@@ -1489,8 +1497,9 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == MagickFail)
       break;
   } while (image_info->adjoin);

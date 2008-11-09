@@ -49,7 +49,7 @@ class CModuelOverrideClass
       MagickLib::InitializeMagick(m_szAppPath);
       MagickLib::RegisterStaticModules();
       MagickLib::GetExceptionInfo(&exception);
-      (void) MagickLib::GetMagicInfo((unsigned char *) NULL,0,&exception);
+      // (void) MagickLib::GetMagicInfo((unsigned char *) NULL,0,&exception);
       (void) MagickLib::GetDelegateInfo("*","*",&exception);
       MagickLib::DestroyExceptionInfo(&exception);
     }

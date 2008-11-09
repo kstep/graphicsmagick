@@ -608,7 +608,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
@@ -627,7 +627,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
         }
       }
@@ -638,14 +639,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
         }
       else
@@ -679,7 +681,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                if (!MagickMonitorFormatted(y,image->rows,exception,
+                                            LoadImageText,image->filename))
                   break;
           }
         }
@@ -711,7 +714,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                    exception,LoadImagesText,
+                                    image->filename))
           break;
       }
   } while ((count != 0) && (viff_info.identifier == 0xab));
@@ -883,7 +888,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1073,7 +1078,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
       }
@@ -1108,12 +1114,13 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
             if (p == (const PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=AccessImmutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
               *q++=indexes[x];
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                            SaveImageText,image->filename))
                   break;
           }
         }
@@ -1143,7 +1150,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessImmutableIndexes(image);
               bit=0;
               byte=0;
               for (x=0; x < (long) image->columns; x++)
@@ -1163,7 +1170,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 *q++=byte >> (8-bit);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
             }
           }
@@ -1185,7 +1193,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                             SaveImageText,image->filename))
                     break;
             }
           }
@@ -1194,8 +1203,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

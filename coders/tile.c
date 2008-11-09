@@ -84,6 +84,10 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
+  RectangleInfo
+    geometry;
+    
+
   /*
     Initialize Image structure.
   */
@@ -91,6 +95,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
@@ -99,16 +104,19 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   if (tile_image == (Image *) NULL)
     return((Image *) NULL);
-  image=AllocateImage(image_info);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
-  if (*image_info->filename == '\0')
-    ThrowReaderException(OptionError,MustSpecifyAnImageName,image);
+
   /*
-    Tile texture onto image.
+    Adapt tile image to desired image type.
   */
-  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
-  (void) TextureImage(image,tile_image);
+  if (image_info->type != UndefinedType)
+    (void) SetImageType(tile_image,image_info->type);
+
+  /*
+    Create tiled canvas image.
+  */
+  (void) GetGeometry(image_info->size,&geometry.x,&geometry.y,&geometry.width,
+                     &geometry.height);
+  image=ConstituteTextureImage(geometry.width,geometry.height,tile_image,exception);
 
   DestroyImage(tile_image);
   return(image);
@@ -155,6 +163,8 @@ ModuleExport void RegisterTILEImage(void)
   entry->description="Tile image with a texture";
   entry->note=TILENote;
   entry->module="TILE";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

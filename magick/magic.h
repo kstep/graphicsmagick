@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -16,41 +16,13 @@ extern "C" {
 #endif
 
 /*
-  Typedef declarations.
-*/
-typedef struct _MagicInfo
-{  
-  char
-    *path,
-    *name,
-    *target;
-
-  unsigned char
-    *magic;
-
-  unsigned long
-    length,
-    offset;
-
-  unsigned int
-    stealth;
-
-  unsigned long
-    signature;
-
-  struct _MagicInfo
-    *previous,
-    *next;
-} MagicInfo;
-
-/*
   Method declarations.
 */
-extern MagickExport const MagicInfo
-  *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *);
-
-extern MagickExport unsigned int
-  ListMagicInfo(FILE *,ExceptionInfo *);
+extern MagickExport MagickPassFail
+  GetMagickFileFormat(const unsigned char *header,const size_t header_length,
+     char *format,const size_t format_length,ExceptionInfo *exception),
+  InitializeMagicInfo(ExceptionInfo *exception),
+  ListMagicInfo(FILE *file,ExceptionInfo *exception);
 
 extern MagickExport void
   DestroyMagicInfo(void);

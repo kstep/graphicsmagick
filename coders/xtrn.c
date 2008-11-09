@@ -34,7 +34,6 @@
 %     FILE   - same thing as filename so it should be a NOP                   %
 %     IMAGE  - passes an image and image info structure                       %
 %     BLOB   - passes binary blob containining the image                      %
-%     STREAM - passes pointers to stream hooks in and does the hooking        %
 %     ARRAY  - passes a pointer to a Win32 smart array and streams to it      %
 %                                                                             %
 %  Of all of these, the only one getting any real use at the moment is the    %
@@ -169,28 +168,6 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
       if (exception->severity != UndefinedException)
         MagickWarning2(exception->severity,exception->reason,exception->description);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
-    {
-#ifdef IMPLEMENT_THIS
-      unsigned int
-        status;
-#endif
-
-      char
-        filename[MaxTextExtent];
-
-      int
-        (*fifo)(const Image *,const void *,const size_t);
-
-      (void) sscanf(clone_info->filename,"%lx,%lx,%s",&param1,&param2,&filename);
-      fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-      clone_info->client_data=param2;
-#ifdef IMPLEMENT_THIS
-      status=ReadStream(clone_info,fifo,exception);
-      if (exception->severity != UndefinedException)
-        MagickWarning(exception->severity,exception->reason,exception->description);
-#endif
     }
   else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
     {
@@ -348,15 +325,6 @@ ModuleExport void RegisterXTRNImage(void)
   entry->module="XTRN";
   RegisterMagickInfo(entry);
 
-  entry=SetMagickInfo("XTRNSTREAM");
-  entry->decoder=ReadXTRNImage;
-  entry->encoder=WriteXTRNImage;
-  entry->adjoin=False;
-  entry->stealth=True;
-  entry->description="External transfer via a streaming interface";
-  entry->module="XTRN";
-  RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("XTRNARRAY");
   entry->decoder=ReadXTRNImage;
   entry->encoder=WriteXTRNImage;
@@ -400,7 +368,6 @@ ModuleExport void UnregisterXTRNImage(void)
   UnregisterMagickInfo("XTRNFILE");
   UnregisterMagickInfo("XTRNIMAGE");
   UnregisterMagickInfo("XTRNBLOB");
-  UnregisterMagickInfo("XTRNSTREAM");
   UnregisterMagickInfo("XTRNARRAY");
   UnregisterMagickInfo("XTRNBSTR");
 }
@@ -567,66 +534,6 @@ static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
           *blob_data=(char *) ImageToBlob(clone_info,image,blob_length,&exception);
           if (*blob_data == NULL)
             status=False;
-          if (status == False)
-            CatchImageException(image);
-        }
-      DestroyImageInfo(clone_info);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
-    {
-      int
-        (*fifo)(const Image *,const void *,const size_t);
-
-      char
-        filename[MaxTextExtent];
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%lx,%s",
-            &param1,&param2,&filename);
-
-          fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-          image->client_data=param2;
-
-          scene = 0;
-          (void) strcpy(clone_info->filename, filename);
-          for (p=image; p != (Image *) NULL; p=p->next)
-          {
-            (void) strcpy(p->filename, filename);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,True,&image->exception);
-          (void) strcpy(image->magick,clone_info->magick);
-          status=WriteStream(clone_info,image,fifo);
-          if (status == False)
-            CatchImageException(image);
-        }
-      DestroyImageInfo(clone_info);
-    }
-  else if (LocaleCompare(image_info->magick,"XTRNARRAY") == 0)
-    {
-      char
-        filename[MaxTextExtent];
-
-      clone_info=CloneImageInfo(image_info);
-      if (clone_info->filename[0])
-        {
-          (void) sscanf(clone_info->filename,"%lx,%s",
-            &param1,&filename);
-
-          image->client_data=param1;
-
-          scene = 0;
-          (void) strcpy(clone_info->filename, filename);
-          for (p=image; p != (Image *) NULL; p=p->next)
-          {
-            (void) strcpy(p->filename, filename);
-            p->scene=scene++;
-          }
-          SetImageInfo(clone_info,True,&image->exception);
-          (void) strcpy(image->magick,clone_info->magick);
-          status=WriteStream(clone_info,image,SafeArrayFifo);
           if (status == False)
             CatchImageException(image);
         }

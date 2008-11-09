@@ -263,6 +263,14 @@ extern "C" {
 # include <sys/poll.h>
 #endif
 
+/*
+  OpenMP support requires version 2.0 (March 2002) or later.
+*/
+#if defined(_OPENMP) && (_OPENMP >= 200203)
+#  include <omp.h>
+#  define HAVE_OPENMP 1
+#endif
+
 #undef index
 #undef pipe
 
@@ -435,6 +443,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define SignalHandlerExit Exit
 #endif /* defined(HAVE__EXIT) */
 
+/*
+  OpenMP function null replacements if not using OpenMP.
+*/
+#if !defined(HAVE_OPENMP)
+#  undef omp_get_max_threads
+#  define omp_get_max_threads() 1
+#  undef omp_get_num_threads
+#  define omp_get_num_threads() 1
+#  undef omp_get_thread_num
+#  define omp_get_thread_num() 0
+#  undef omp_set_num_threads
+#  define omp_set_num_threads(nthreads)
+#endif /* !defined(HAVE_OPENMP) */
+
 
 /*
   Image const declarations.
@@ -446,6 +468,7 @@ extern MagickExport const char
   *DefaultTileGeometry,
   *DefaultTileLabel,
   *ForegroundColor,
+  *HighlightColor,
   *LoadImageText,
   *LoadImagesText,
   *MatteColor,

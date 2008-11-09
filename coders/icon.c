@@ -269,7 +269,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < ((long) image->columns-7); x+=8)
           {
             byte=ReadBlobByte(image);
@@ -286,7 +286,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
         }
         break;
@@ -301,7 +302,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
             byte=ReadBlobByte(image);
@@ -317,7 +318,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
         }
         break;
@@ -332,7 +334,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
@@ -342,7 +344,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
         }
         break;
@@ -357,7 +360,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
@@ -369,7 +372,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
         }
         break;
@@ -398,7 +402,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename))
                 break;
         }
         break;
@@ -438,7 +443,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                      LoadImageText,image->filename))
             break;
     }
     if (EOFBlob(image))
@@ -465,7 +471,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   }

@@ -51,6 +51,8 @@ MAGICK_BASE_SRCS = \
 	magick/blob.h \
 	magick/channel.c \
 	magick/channel.h \
+	magick/compare.c \
+	magick/compare.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -77,6 +79,8 @@ MAGICK_BASE_SRCS = \
 	magick/effect.h \
 	magick/enhance.c \
 	magick/enhance.h \
+	magick/enum_strings.c \
+	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
 	magick/forward.h \
@@ -108,6 +112,8 @@ MAGICK_BASE_SRCS = \
 	magick/monitor.h \
 	magick/montage.c \
 	magick/montage.h \
+	magick/omp_data_view.c \
+	magick/omp_data_view.h \
 	magick/operator.c \
 	magick/operator.h \
 	magick/paint.c \
@@ -187,6 +193,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/colorspace.h \
 	magick/command.h \
 	magick/command.h \
+	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
 	magick/constitute.h \
@@ -213,6 +220,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/operator.h \
 	magick/paint.h \
 	magick/pixel_cache.h \
+	magick/pixel_iterator.h \
 	magick/profile.h \
 	magick/quantize.h \
 	magick/registry.h \
@@ -238,7 +246,7 @@ MAGICK_NOINST_HDRS = \
 	magick/map.h \
 	magick/nt_base.h \
 	magick/nt_feature.h \
-	magick/pixel_iterator.h \
+	magick/omp_data_view.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \

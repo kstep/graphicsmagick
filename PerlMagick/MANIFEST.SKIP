@@ -1,5 +1,6 @@
 .*\.gdbinit$
 .*core$
+.*\.cvsignore
 /output.*$
 /test_.+_out\..+$
 Magick\.bs$

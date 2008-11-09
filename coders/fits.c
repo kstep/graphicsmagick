@@ -24,6 +24,8 @@
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                                 July 1992                                   %
+%                              Jaroslav Fojtik                                %
+%                                August 2008                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -43,6 +45,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
   Forward declarations.
@@ -50,6 +53,16 @@
 static unsigned int
   WriteFITSImage(const ImageInfo *,Image *);
 
+
+static void FixSignedMSBValues(unsigned char *data, int size, unsigned step)
+{
+  while(size-->0)
+  {
+    *data ^= 0x80;
+    data += step;
+  }
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -144,57 +157,27 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
   char
     keyword[MaxTextExtent],
-    value[MaxTextExtent];
-
-  double
-    exponential[2048],
-    pixel,
-    scale,
-    scaled_pixel;
+    value[MaxTextExtent];  
 
   FITSInfo
     fits_info;
 
   Image
-    *image;
-
-  IndexPacket
-    index;
+    *image; 
 
   int
-    c,
-    quantum;
+    c;   
 
   long
-    exponent,
-    j,
-    k,
-    l,
     packet_size,
     scene,
     y;
 
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
-
   register PixelPacket
     *q;
 
-  register long
-    i;
-
-  register unsigned char
-    *p;
-
-  size_t
-    count;
-
   unsigned char
-    *fits_pixels,
-    long_quantum[8];
+    *fits_pixels;    
 
   unsigned int
     status,
@@ -202,6 +185,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
   unsigned long
     number_pixels;
+
+  ImportPixelAreaOptions import_options;
 
   /*
     Open image file.
@@ -227,15 +212,16 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   fits_info.max_data=0.0;
   fits_info.zero=0.0;
   fits_info.scale=1.0;
+
+
+  ImportPixelAreaOptionsInit(&import_options);
+  import_options.endian = MSBEndian;
+
   /*
     Decode image header.
   */
-  c=ReadBlobByte(image);
-  if (c == EOF)
-    {
-      DestroyImage(image);
-      return((Image *) NULL);
-    }
+  if ((c=ReadBlobByte(image)) == EOF)
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   for ( ; ; )
   {
     if (!isalnum((int) c))
@@ -253,7 +239,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         } while (isalnum(c) || (c == '_'));
         *p='\0';
         if (LocaleCompare(keyword,"END") == 0)
@@ -263,16 +250,21 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if (c == '=')
             value_expected=True;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
         if (value_expected == False)
           continue;
         p=value;
+        if (c == '\'')
+          c=ReadBlobByte(image);
+
         while (isalnum(c) || (c == '-') || (c == '+') || (c == '.'))
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
         *p='\0';
         /*
@@ -281,7 +273,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"SIMPLE") == 0)
           fits_info.simple=(*value == 'T') || (*value == 't');
         if (LocaleCompare(keyword,"BITPIX") == 0)
+        {
           fits_info.bits_per_pixel=atoi(value);
+	  if(fits_info.bits_per_pixel>0)
+            import_options.sample_type = UnsignedQuantumSampleType;
+	  if(fits_info.bits_per_pixel<0)          
+            import_options.sample_type = FloatQuantumSampleType;
+        }
         if (LocaleCompare(keyword,"NAXIS") == 0)
           fits_info.number_axes=atoi(value);
         if (LocaleCompare(keyword,"NAXIS1") == 0)
@@ -298,36 +296,31 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           fits_info.zero=atof(value);
         if (LocaleCompare(keyword,"BSCALE") == 0)
           fits_info.scale=atof(value);
+        if (LocaleCompare(keyword,"XENDIAN") == 0)
+        {
+	  if (LocaleCompare(keyword,"BIG") == 0)
+	    import_options.endian = MSBEndian;
+          else
+	    import_options.endian = LSBEndian;          
+	}
       }
     while ((TellBlob(image) % 80) != 0)
-      c=ReadBlobByte(image);
-    c=ReadBlobByte(image);
+      if ((c=ReadBlobByte(image)) == EOF)
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if ((c=ReadBlobByte(image)) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   }
   while ((TellBlob(image) % 2880) != 0)
-    c=ReadBlobByte(image);
+    if ((c=ReadBlobByte(image)) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   /*
     Verify that required image information is defined.
   */
   number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
-    ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
-  if (fits_info.bits_per_pixel == -32)
-    {
-      exponential[150]=1.0;
-      for (i=151; i < 256; i++)
-        exponential[i]=2.0*exponential[i-1];
-      for (i=149; i >= 0; i--)
-        exponential[i]=exponential[i+1]/2.0;
-    }
-  if (fits_info.bits_per_pixel == -64)
-    {
-      exponential[1075]=1.0;
-      for (i=1076; i < 2048; i++)
-        exponential[i]=2.0*exponential[i-1];
-      for (i=1074; i >= 0; i--)
-        exponential[i]=exponential[i+1]/2.0;
-    }
+    ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);  
+
   for (scene=0; scene < (long) fits_info.number_scenes; scene++)
   {
     /*
@@ -335,207 +328,92 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     image->columns=fits_info.columns;
     image->rows=fits_info.rows;
-    image->depth=fits_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
-    image->storage_class=PseudoClass;
+    if(fits_info.bits_per_pixel>=0)
+      image->depth = Min(QuantumDepth,fits_info.bits_per_pixel);
+    else
+      image->depth = QuantumDepth;		/* double type cell */
+    /* image->storage_class=PseudoClass; */
+    image->storage_class = DirectClass;
     image->scene=scene;
-    if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    image->is_grayscale = 1;
+
+    if (image->depth<=8 && fits_info.bits_per_pixel==8)
+      if (!AllocateImageColormap(image,1 << image->depth))
+        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
     /*
       Initialize image structure.
     */
     packet_size=fits_info.bits_per_pixel/8;
-    if (packet_size < 0)
-      packet_size=(-packet_size);
-    number_pixels=image->columns*image->rows;
-    fits_pixels=MagickAllocateMemory(unsigned char *,packet_size*number_pixels);
+    if (packet_size < 0) packet_size = -packet_size;
+        
+    number_pixels = image->columns*image->rows;
+    if ((number_pixels / image->columns) != image->rows)
+      ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,image);
+
+    fits_pixels=MagickAllocateArray(unsigned char *, image->columns, packet_size);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+
     /*
-      Convert FITS pixels to pixel packets.
-    */
-    count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
-    if (count == 0)
-      ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,
-        image);
+      Recover minimum and maximum from data if not present in HDU
+    */     
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
-      {
-        /*
-          Determine minimum and maximum intensity.
-        */
-        p=fits_pixels;
-        long_quantum[0]=(*p);
-        quantum=(*p++);
-        for (j=1; j <= (packet_size-1); j++)
-        {
-          long_quantum[j]=(*p);
-          quantum=(quantum << 8U) | (*p++);
-        }
-        pixel=(double) quantum;
-        if (fits_info.bits_per_pixel == 16)
-          if (pixel > 32767)
-            pixel-=65536L;
-        if (fits_info.bits_per_pixel == -32)
-          {
-            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-               (long) long_quantum[3];
-            k=(int) *long_quantum;
-            exponent=((k & 127) << 1) | (j >> 23);
-            *(float *) long_quantum=
-              exponential[exponent]*(float) (j | 0x800000);
-            if ((exponent | j) == 0)
-              *(float *) long_quantum=0.0;
-            if (k & 128)
-              *(float *) long_quantum=(-(*(float *) long_quantum));
-            pixel=(double) (*((float *) long_quantum));
-          }
-        if (fits_info.bits_per_pixel == -64)
-          {
-            j=((long) long_quantum[1] << 24) |
-              ((long) long_quantum[2] << 16) |
-              ((long) long_quantum[3] << 8) |
-               (long) long_quantum[4];
-            k=(int) *long_quantum;
-            l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
-               (int) long_quantum[7];
-            exponent=((k & 127) << 4) | (j >> 28);
-            *(double *) long_quantum=exponential[exponent]*(16777216.0*
-              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-            if ((exponent | j | l) == 0)
-              *(double *) long_quantum=0.0;
-            if (k & 128)
-              *(double *)long_quantum=(-(*(double *) long_quantum));
-            pixel=(double) (*((double *) long_quantum));
-          }
-        fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
-        fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
-        for (i=1; i < (long) number_pixels; i++)
-        {
-          long_quantum[0]=(*p);
-          quantum=(*p++);
-          for (j=1; j <= (packet_size-1); j++)
-          {
-            long_quantum[j]=(*p);
-            quantum=(quantum << 8) | (*p++);
-          }
-          pixel=(double) quantum;
-          if (fits_info.bits_per_pixel == 16)
-            if (pixel > 32767)
-              pixel-=65536L;
-          if (fits_info.bits_per_pixel == -32)
-            {
-              j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-                 (long) long_quantum[3];
-              k=(int) *long_quantum;
-              exponent=((k & 127) << 1) | (j >> 23);
-              *(float *) long_quantum=
-                exponential[exponent]*(float) (j | 0x800000);
-              if ((exponent | j) == 0)
-                *(float *) long_quantum=0.0;
-              if (k & 128)
-                *(float *) long_quantum=(-(*(float *) long_quantum));
-              pixel=(double) (*((float *) long_quantum));
-            }
-          if (fits_info.bits_per_pixel == -64)
-            {
-              j=((long) long_quantum[1] << 24) |
-                ((long) long_quantum[2] << 16) |
-                ((long) long_quantum[3] << 8) |
-                 (long) long_quantum[4];
-              k=(int) *long_quantum;
-              l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
-                 (int) long_quantum[7];
-              exponent=((k & 127) << 4) | (j >> 28);
-              *(double *) long_quantum=exponential[exponent]*(16777216.0*
-                (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-              if ((exponent | j | l) == 0)
-                *(double *) long_quantum=0.0;
-              if (k & 128)
-                *(double *)long_quantum=(-(*(double *) long_quantum));
-              pixel=(double) (*((double *) long_quantum));
-            }
-          scaled_pixel=pixel*fits_info.scale-fits_info.zero;
-          if (scaled_pixel < fits_info.min_data)
-            fits_info.min_data=scaled_pixel;
-          if (scaled_pixel > fits_info.max_data)
-            fits_info.max_data=scaled_pixel;
-        }
-      }
+    {  /*  Determine minimum and maximum intensity. */
+      if(fits_info.bits_per_pixel==-32)
+        (void) MagickFindRawImageMinMax(image, import_options.endian, image->columns,
+                                        image->rows, FloatPixel, packet_size*image->columns,
+                                        fits_pixels, &import_options.double_minvalue,
+                                        &import_options.double_maxvalue);
+      if(fits_info.bits_per_pixel==-64)
+        (void) MagickFindRawImageMinMax(image, import_options.endian, image->columns,
+                                        image->rows, DoublePixel, packet_size*image->columns,
+                                        fits_pixels, &import_options.double_minvalue,
+                                        &import_options.double_maxvalue);
+    }
+    else
+    {
+      import_options.double_maxvalue = fits_info.max_data;
+      import_options.double_minvalue = fits_info.min_data;
+    }
+
     /*
       Convert FITS pixels to pixel packets.
     */
-    scale=1.0;
-    if ((fits_info.bits_per_pixel < 0) ||
-        ((fits_info.max_data-fits_info.min_data) > ((1 << image->depth)-1)))
-      scale=((1 << image->depth)-1)/(fits_info.max_data-fits_info.min_data);
-    p=fits_pixels;
+
     for (y=(long) image->rows-1; y >= 0; y--)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
-      for (x=0; x < (long) image->columns; x++)
+
+      if(ReadBlob(image, packet_size*image->columns, fits_pixels) != (size_t)packet_size*image->columns)
       {
-        long_quantum[0]=(*p);
-        quantum=(*p++);
-        for (j=1; j <= (packet_size-1); j++)
-        {
-          long_quantum[j]=(*p);
-          quantum=(quantum << 8) | (*p++);
-        }
-        pixel=(double) quantum;
-        if (fits_info.bits_per_pixel == 16)
-          if (pixel > 32767)
-            pixel-=65536L;
-        if (fits_info.bits_per_pixel == -32)
-          {
-            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
-               (long) long_quantum[3];
-            k=(int) *long_quantum;
-            exponent=((k & 127) << 1) | (j >> 23);
-            *(float *) long_quantum=
-              exponential[exponent]*(float) (j | 0x800000);
-            if ((exponent | j) == 0)
-              *(float *) long_quantum=0.0;
-            if (k & 128)
-              *(float *) long_quantum=(-(*(float *) long_quantum));
-            pixel=(double) (*((float *) long_quantum));
-          }
-        if (fits_info.bits_per_pixel == -64)
-          {
-            j=((long) long_quantum[1] << 24) |
-              ((long) long_quantum[2] << 16) |
-              ((long) long_quantum[3] << 8) |
-               (long) long_quantum[4];
-            k=(int) *long_quantum;
-            l=((long) long_quantum[5] << 16) | ((long) long_quantum[6] << 8) |
-               (long) long_quantum[7];
-            exponent=((k & 127) << 4) | (j >> 28);
-            *(double *) long_quantum=exponential[exponent]*(16777216.0*
-              (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);
-            if ((exponent | j | l) == 0)
-              *(double *) long_quantum=0.0;
-            if (k & 128)
-              *(double *)long_quantum=(-(*(double *) long_quantum));
-            pixel=(double) (*((double *) long_quantum));
-          }
-        scaled_pixel=scale*
-          (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
-        index=(IndexPacket) ((scaled_pixel < 0) ? 0 :
-          (scaled_pixel > ((1 << image->depth)-1)) ? ((1 << image->depth)-1) :
-          scaled_pixel+0.5);
-        index=(IndexPacket) (index);
-        VerifyColormapIndex(image,index);
-        indexes[x]=index;
-        *q++=image->colormap[index];
+/* 	if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*           "  fits cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1)); */
+	break; /* goto ExitLoop; */
       }
+
+      if(fits_info.bits_per_pixel==16) FixSignedMSBValues(fits_pixels, image->columns, 2);
+      if(fits_info.bits_per_pixel==32) FixSignedMSBValues(fits_pixels, image->columns, 4);
+
+      if(ImportImagePixelArea(image, GrayQuantum, packet_size*8, fits_pixels, &import_options,0) == MagickFail)
+      {
+/* ImportImagePixelAreaFailed: */
+/*      if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*               "  fits failed to ImportImagePixelArea for a row %u", (unsigned)y); */
+	    break;
+      }
+
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                    LoadImageText,image->filename))
           break;
     }
     MagickFreeMemory(fits_pixels);
@@ -545,6 +423,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           image->filename);
         break;
       }
+
     /*
       Proceed to next image.
     */
@@ -563,7 +442,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   }
@@ -635,6 +515,21 @@ ModuleExport void UnregisterFITSImage(void)
   (void) UnregisterMagickInfo("FITS");
 }
 
+
+/* This functions inserts one row into a HDU */
+int InsertRowHDU(char *buffer, const char *data, int offset)
+{
+int len;
+
+  if(data==NULL) return offset;
+  len = strlen(data);
+
+  if(len > 2880-offset) len = 2880-offset;
+
+  (void) strncpy(buffer+offset,data,len);
+  return offset +80;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -668,28 +563,26 @@ ModuleExport void UnregisterFITSImage(void)
 static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[81],
+    buffer[MaxTextExtent],
     *fits_info;
 
   long
     y;
 
   register const PixelPacket
-    *p;
-
-  register long
-    i;
+    *p;  
 
   unsigned char
     *pixels;
 
-  unsigned int
-    depth,
+  unsigned int    
     quantum_size,
     status;
 
   unsigned long
     packet_size;
+
+  ExportPixelAreaOptions export_options;
 
   /*
     Open output image file.
@@ -702,48 +595,60 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
-  if (image->depth > 8)
-    depth=16;
+
+  ExportPixelAreaOptionsInit(&export_options);
+  export_options.endian = MSBEndian;
+  export_options.sample_type = UnsignedQuantumSampleType;
+
+  if (image->depth <= 8)
+  {
+    quantum_size=8;    
+  }
+  else if (image->depth <= 16)
+  {    
+    quantum_size=16;
+  }
   else
-    depth=8;
+  {   
+    quantum_size=32;
+  }
+
   /*
     Allocate image memory.
-  */
-  if (depth <= 8)
-    quantum_size=8;
-  else
-    quantum_size=16;
-
+  */  
   packet_size=quantum_size/8;
   fits_info=MagickAllocateMemory(char *,2880);
   pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
   /*
     Initialize image header.
-  */
-  for (i=0; i < 2880; i++)
-    fits_info[i]=' ';
-  (void) strcpy(buffer,"SIMPLE  =                    T");
-  (void) strncpy(fits_info+0,buffer,strlen(buffer));
-  FormatString(buffer,"BITPIX  =                    %u",depth);
-  (void) strncpy(fits_info+80,buffer,strlen(buffer));
-  (void) strcpy(buffer,"NAXIS   =                    2");
-  (void) strncpy(fits_info+160,buffer,strlen(buffer));
-  FormatString(buffer,"NAXIS1  =           %10lu",image->columns);
-  (void) strncpy(fits_info+240,buffer,strlen(buffer));
-  FormatString(buffer,"NAXIS2  =           %10lu",image->rows);
-  (void) strncpy(fits_info+320,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMIN =           %10u",0);
-  (void) strncpy(fits_info+400,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));
-  (void) strncpy(fits_info+480,buffer,strlen(buffer));
-  (void) strcpy(buffer,"HISTORY Created by GraphicsMagick.");
-  (void) strncpy(fits_info+560,buffer,strlen(buffer));
-  (void) strcpy(buffer,"END");
-  (void) strncpy(fits_info+640,buffer,strlen(buffer));
+  */  
+  memset(fits_info,' ',2880);
+  y = 0;
+  y = InsertRowHDU(fits_info, "SIMPLE  =                    T", y);
+  FormatString(buffer,        "BITPIX  =                    %u",quantum_size);
+  y = InsertRowHDU(fits_info, buffer, y);
+  y = InsertRowHDU(fits_info, "NAXIS   =                    2", y);
+  FormatString(buffer,        "NAXIS1  =           %10lu",image->columns);
+  y = InsertRowHDU(fits_info, buffer, y);
+  FormatString(buffer,        "NAXIS2  =           %10lu",image->rows); 
+  y = InsertRowHDU(fits_info, buffer, y);  
+  FormatString(buffer,        "DATAMIN =           %10u",0);
+  y = InsertRowHDU(fits_info, buffer, y);    
+  FormatString(buffer,        "DATAMAX =           %10lu", MaxValueGivenBits(quantum_size));
+  y = InsertRowHDU(fits_info, buffer, y);
+  if(quantum_size>8)
+  {
+    FormatString(buffer,      "BZERO   =           %10u", (quantum_size <= 16) ? 32768U : 2147483648U);
+    y = InsertRowHDU(fits_info, buffer, y);
+  }
+  (void) FormatString(buffer, "HISTORY Created by %s.",GetMagickVersion((unsigned long *) NULL));
+  y = InsertRowHDU(fits_info, buffer, y);
+  y = InsertRowHDU(fits_info, "END", y);        
   (void) WriteBlob(image,2880,(char *) fits_info);
-  MagickFreeMemory(fits_info);
+  
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -752,16 +657,29 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,0,0);
+    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,&export_options,0);
+    if(quantum_size==16) FixSignedMSBValues(pixels, image->columns, 2);
+    if(quantum_size==32) FixSignedMSBValues(pixels, image->columns, 4);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {
-        status=MagickMonitor(SaveImageText,image->rows-y-1,image->rows,
-          &image->exception);
+        status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                      &image->exception,SaveImageText,
+                                      image->filename);
         if (status == False)
           break;
       }
   }
+  
+	/* Calculate of padding */
+  y = 2880 - (image->columns * image->rows * packet_size) % 2880;
+  if(y>0)
+  {
+    memset(fits_info, 0, y);    
+    (void)WriteBlob(image,y,(char *) fits_info);
+  }
+  MagickFreeMemory(fits_info);
+
   MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);

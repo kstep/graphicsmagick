@@ -100,6 +100,15 @@ extern "C" {
 #define MagickTrue     1
 #define MagickFalse    0
 
+#if defined(MAGICK_IMPLEMENTATION)
+#  if defined(MSWINDOWS)
+  /* Use Visual C++ C inline method extension to improve performance */
+#    if !defined(inline) && !defined(__cplusplus) && !defined(c_plusplus)
+#      define inline __inline
+#    endif
+#  endif
+#endif
+
 #if defined(PREFIX_MAGICK_SYMBOLS)
 #  include "magick/symbols.h"
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
@@ -110,6 +119,7 @@ extern "C" {
 #include "magick/timer.h"
 #include "magick/image.h"
 #include "magick/channel.h"
+#include "magick/compare.h"
 #include "magick/list.h"
 #include "magick/paint.h"
 #include "magick/render.h"
@@ -143,6 +153,7 @@ extern "C" {
 #include "magick/monitor.h"
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
+#include "magick/pixel_iterator.h"
 #include "magick/profile.h"
 #include "magick/resource.h"
 #include "magick/version.h"

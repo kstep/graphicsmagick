@@ -747,9 +747,9 @@ MagickExport void SetExceptionInfo(ExceptionInfo *exception,
 %  SetFatalErrorHandler() sets the fatal error handler to the specified method
 %  and returns the previous fatal error handler.
 %
-%  The format of the SetErrorHandler method is:
+%  The format of the SetFatalErrorHandler method is:
 %
-%      ErrorHandler SetErrorHandler(ErrorHandler handler)
+%      FatalErrorHandler SetFatalErrorHandler(FatalErrorHandler handler)
 %
 %  A description of each parameter follows:
 %

@@ -129,7 +129,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
 #define DocumentMedia  "%%DocumentMedia:"
 #define PageBoundingBox  "%%PageBoundingBox:"
 #define PostscriptLevel  "%!PS-"
-#define RenderPostscriptText  "  Rendering postscript...  "
+#define RenderPostscriptText  "[%s] Rendering postscript..."
 
   char
     density[MaxTextExtent],
@@ -206,14 +206,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
-    Open temporary output file.
-  */
-  file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
-  if (file == (FILE *) NULL)
-      ThrowReaderTemporaryFileException(postscript_filename);
-  FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
-  (void) fputs(translate_geometry,file);
-  /*
     Set the page geometry.
   */
   dx_resolution=72.0;
@@ -222,11 +214,14 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     {
       (void) strcpy(density,PSDensityGeometry);
       count=GetMagickDimension(density,&image->x_resolution,
-        &image->y_resolution);
+        &image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Density: %s", density);
   SetGeometry(image,&page);
   page.width=612;
   page.height=792;
@@ -237,18 +232,36 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   (void) ReadBlobLSBLong(image);
   count=ReadBlobLSBLong(image);
   filesize=ReadBlobLSBLong(image);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "File Size: %lu,  Offset: %lu",
+                          (unsigned long) filesize, (unsigned long) count);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   for (i=0; i < (long) (count-12); i++)
-    (void) ReadBlobByte(image);
+    if (ReadBlobByte(image) == EOF)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+  /*
+    Open temporary output file.
+  */
+  file=AcquireTemporaryFileStream(postscript_filename,BinaryFileIOMode);
+  if (file == (FILE *) NULL)
+      ThrowReaderTemporaryFileException(postscript_filename);
+  FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
+  (void) fputs(translate_geometry,file);
   /*
     Copy Postscript to temporary file.
   */
   box.width=0;
   box.height=0;
   p=command;
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Copying Postscript to temporary file \"%s\" ...",
+                          postscript_filename);
   for (i=0; i < (long) filesize; i++)
   {
-    c=ReadBlobByte(image);
-    if (c == EOF)
+    if ((c=ReadBlobByte(image)) == EOF)
       break;
     (void) fputc(c,file);
     *p++=c;
@@ -286,12 +299,18 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     page.height=height;
     box=page;
   }
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Done copying.");
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
   FormatString(geometry,"%lux%lu",
     (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Page geometry: %s",geometry);
   if (ferror(file))
     {
       (void) fclose(file);
@@ -323,7 +342,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   FormatString(command,delegate_info->commands,antialias,
     antialias,geometry,density,options,image_info->filename,
     postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
+  (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
@@ -335,10 +355,15 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
         ThrowReaderException(FileOpenError,UnableToWriteFile,image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                             "Invoking Postscript delegate ...");
       status=InvokePostscriptDelegate(image_info->verbose,command);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Returned from Postscript delegate (status=%d) ...", status);
     }
   (void) LiberateTemporaryFile(postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
+  (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
@@ -408,6 +433,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT2");
@@ -418,6 +444,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Level II Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("EPT3");
@@ -428,6 +455,7 @@ ModuleExport void RegisterEPTImage(void)
   entry->blob_support=False;
   entry->description="Adobe Level III Encapsulated PostScript with MS-DOS TIFF preview";
   entry->module="EPT";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

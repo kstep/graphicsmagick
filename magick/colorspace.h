@@ -105,12 +105,6 @@ extern MagickExport MagickPassFail
   TransformColorspace(ImagePtr,const ColorspaceType),
   TransformRGBImage(ImagePtr,const ColorspaceType);
 
-extern MagickExport ColorspaceType
-  StringToColorspaceType(const char *colorspace_string);
-
-extern MagickExport const char
-  *ColorspaceTypeToString(const ColorspaceType colorspace);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

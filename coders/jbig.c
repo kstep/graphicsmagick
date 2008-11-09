@@ -210,7 +210,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         break;
   }
   }
@@ -274,6 +275,7 @@ ModuleExport void RegisterJBIGImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="JBIG";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JBG");
@@ -285,6 +287,7 @@ ModuleExport void RegisterJBIGImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="JBIG";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JBIG");
@@ -296,6 +299,7 @@ ModuleExport void RegisterJBIGImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="JBIG";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -445,7 +449,8 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
           q+=export_info.bytes_exported;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
     }
@@ -490,7 +495,9 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                &image->exception,SaveImagesText,
+                                image->filename))
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

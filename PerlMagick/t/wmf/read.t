@@ -26,11 +26,11 @@ testReadCompare('wizard.wmf', '../reference/wmf/wizard.miff',
                 q//, 0.0002, 0.004);
 ++$test;
 testReadCompare('clock.wmf', '../reference/wmf/clock.miff',
-                q//, 0.0002, 0.004);
+                q//, 0.0003, 0.004);
 ++$test;
 testReadCompare('ski.wmf', '../reference/wmf/ski.miff',
-                q//, 0.0002, 0.008);
+                q//, 0.0003, 0.008);
 ++$test;
 testReadCompare('fjftest.wmf', '../reference/wmf/fjftest.miff',
-                q//, 0.0003, 0.13);
+                q//, 0.0004, 0.13);
 

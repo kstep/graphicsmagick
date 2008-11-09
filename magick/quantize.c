@@ -347,7 +347,7 @@ static void
 */
 static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
 {
-#define AssignImageText  "  Assign/Image"
+#define AssignImageText  "[%s] Assign image colors..."
 
   IndexPacket
     index;
@@ -407,14 +407,14 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
           status=MagickFail;
           break;
         }
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x+=count)
       {
         /*
           Identify the deepest node containing the pixel's color.
         */
         for (count=1; (x+count) < (long) image->columns; count++)
-          if (!ColorMatch(q,q+count))
+          if (NotColorMatch(q,q+count))
             break;
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
@@ -452,7 +452,8 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
           break;
         }
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(AssignImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    AssignImageText,image->filename))
           {
             status=MagickFail;
             break;
@@ -553,7 +554,7 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
 static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image,
   ExceptionInfo *exception)
 {
-#define ClassifyImageText  "  Classify/Image"
+#define ClassifyImageText  "[%s] Classify image colors..."
 
   double
     bisect;
@@ -610,7 +611,7 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
         Start at the root and descend the color cube tree.
       */
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
+        if (NotColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
       bisect=((double) MaxRGB+1.0)/2.0;
@@ -659,7 +660,8 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
       p+=count;
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ClassifyImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  ClassifyImageText,image->filename))
         {
           status=MagickFail;
           break;
@@ -693,7 +695,7 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
         Start at the root and descend the color cube tree.
       */
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
+        if (NotColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
       bisect=((double) MaxRGB+1.0)/2.0;
@@ -742,7 +744,8 @@ static MagickPassFail ClassifyImageColors(CubeInfo *cube_info,const Image *image
       p+=count;
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ClassifyImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                  ClassifyImageText,image->filename))
         {
           status=MagickFail;
           break;
@@ -1111,7 +1114,7 @@ static MagickPassFail Dither(CubeInfo *cube_info,Image *image,
       q=GetImagePixels(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return(MagickFail);
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       error.red=q->red;
       error.green=q->green;
       error.blue=q->blue;
@@ -1122,9 +1125,9 @@ static MagickPassFail Dither(CubeInfo *cube_info,Image *image,
         error.blue+=p->error[i].blue*p->weights[i];
       }
 
-      pixel.red=RoundSignedToQuantum(error.red);
-      pixel.green=RoundSignedToQuantum(error.green);
-      pixel.blue=RoundSignedToQuantum(error.blue);
+      pixel.red=RoundDoubleToQuantum(error.red);
+      pixel.green=RoundDoubleToQuantum(error.green);
+      pixel.blue=RoundDoubleToQuantum(error.blue);
 
       i=(pixel.blue >> CacheShift) << 12 | (pixel.green >> CacheShift) << 6 |
         (pixel.red >> CacheShift);
@@ -1485,7 +1488,7 @@ MagickExport MagickPassFail GetImageQuantizeError(Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -1516,7 +1519,7 @@ MagickExport MagickPassFail GetImageQuantizeError(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=indexes[x];
@@ -1695,7 +1698,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
                   register int
@@ -1728,7 +1731,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
                   *indexes=ScaleQuantumToIndex(q->red);
@@ -1796,7 +1799,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
         new_colormap[j]=image->colormap[0];
         for (i=0; i < image->colors; i++)
           {
-            if (!ColorMatch(&new_colormap[j],&image->colormap[i]))
+            if (NotColorMatch(&new_colormap[j],&image->colormap[i]))
               {
                 j++;
                 new_colormap[j]=image->colormap[i];
@@ -1817,7 +1820,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=(long) image->columns; x > 0; x--)
             {
               *indexes=colormap_index[*indexes];
@@ -2149,7 +2152,7 @@ MagickExport MagickPassFail MapImages(Image *images,const Image *map_image,
 */
 MagickExport MagickPassFail OrderedDitherImage(Image *image)
 {
-#define DitherImageText  "  Dither/Image"
+#define DitherImageText  "[%s] Ordered dither image..."
 
   static Quantum
     DitherMatrix[8][8] =
@@ -2200,7 +2203,7 @@ MagickExport MagickPassFail OrderedDitherImage(Image *image)
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       index=(Quantum) (PixelIntensityToQuantum(q) >
@@ -2217,7 +2220,8 @@ MagickExport MagickPassFail OrderedDitherImage(Image *image)
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(DitherImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  DitherImageText,image->filename))
         {
           status=MagickFail;
           break;
@@ -2588,7 +2592,8 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
       break;
     image=image->next;
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitor(ClassifyImageText,i,number_images,&image->exception))
+    if (!MagickMonitorFormatted(i,number_images,&image->exception,
+                                ClassifyImageText,image->filename))
       break;
   }
   if (status != MagickFail)
@@ -2608,7 +2613,8 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
           (void) TransformColorspace(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitor(AssignImageText,i,number_images,&image->exception))
+        if (!MagickMonitorFormatted(i,number_images,&image->exception,
+                                    AssignImageText,image->filename))
           {
             status=MagickFail;
             break;
@@ -2733,7 +2739,7 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 static void ReduceImageColors(CubeInfo *cube_info,
   const unsigned long number_colors,ExceptionInfo *exception)
 {
-#define ReduceImageText  " Reduce/Image"
+#define ReduceImageText  "Reduce image colors..."
 
   unsigned int
     status;
@@ -2749,8 +2755,9 @@ static void ReduceImageColors(CubeInfo *cube_info,
     cube_info->next_threshold=cube_info->root->quantize_error-1;
     cube_info->colors=0;
     Reduce(cube_info,cube_info->root);
-    status=MagickMonitor(ReduceImageText,span-cube_info->colors,
-      span-number_colors+1,exception);
+    status=MagickMonitorFormatted(span-cube_info->colors,
+                                  span-number_colors+1,exception,
+                                  ReduceImageText);
     if (status == False)
       break;
   }

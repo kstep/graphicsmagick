@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2008
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -94,6 +94,12 @@ namespace MagickLib
 #  pragma warning(disable : 4996) /* function deprecation warnings */
 #endif
 
+#if defined(MAGICK_IMPLEMENTATION)
+namespace MagickLib
+{
+#  include "magick/enum_strings.h"
+}
+#endif
 
 //
 // Import GraphicsMagick symbols and types which are used as part of the
@@ -122,6 +128,8 @@ namespace Magick
   using MagickLib::OpacityChannel;
   using MagickLib::BlackChannel;
   using MagickLib::MatteChannel;
+  using MagickLib::AllChannels;
+  using MagickLib::GrayChannel;
   
   // Color-space types
   using MagickLib::ColorspaceType;
@@ -184,6 +192,7 @@ namespace Magick
   using MagickLib::CopyMagentaCompositeOp;
   using MagickLib::CopyYellowCompositeOp;
   using MagickLib::CopyBlackCompositeOp;
+  using MagickLib::DivideCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;
@@ -316,13 +325,26 @@ namespace Magick
   // Arithmetic and bitwise operators
   using MagickLib::AddQuantumOp;
   using MagickLib::AndQuantumOp;
+  using MagickLib::AssignQuantumOp;
   using MagickLib::DivideQuantumOp;
   using MagickLib::LShiftQuantumOp;
   using MagickLib::MultiplyQuantumOp;
   using MagickLib::OrQuantumOp;
   using MagickLib::RShiftQuantumOp;
   using MagickLib::SubtractQuantumOp;
+  using MagickLib::ThresholdQuantumOp;
+  using MagickLib::ThresholdBlackQuantumOp;
+  using MagickLib::ThresholdWhiteQuantumOp;
   using MagickLib::XorQuantumOp;
+  using MagickLib::NoiseGaussianQuantumOp;
+  using MagickLib::NoiseImpulseQuantumOp;
+  using MagickLib::NoiseLaplacianQuantumOp;
+  using MagickLib::NoiseMultiplicativeQuantumOp;
+  using MagickLib::NoisePoissonQuantumOp;
+  using MagickLib::NoiseUniformQuantumOp;
+  using MagickLib::NegateQuantumOp;
+  using MagickLib::GammaQuantumOp;
+  using MagickLib::DepthQuantumOp;
   using MagickLib::QuantumOperator;
 
   // Preview types.  Not currently used by Magick++
@@ -454,7 +476,9 @@ namespace Magick
   // GraphicsMagick symbols used in implementation code
   //
   using MagickLib::AccessDefinition;
-  using MagickLib::AcquireCacheView;
+  using MagickLib::AccessImmutableIndexes;
+  using MagickLib::AccessMutableIndexes;
+  using MagickLib::AcquireCacheViewPixels;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddDefinitions;
@@ -626,7 +650,7 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetBlobSize;
-  using MagickLib::GetCacheView;
+  using MagickLib::GetCacheViewPixels;
   using MagickLib::GetCacheViewIndexes;
   using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
@@ -643,14 +667,12 @@ namespace Magick
   using MagickLib::GetImageQuantizeError;
   using MagickLib::GetImageStatistics;
   using MagickLib::GetImageType;
-  using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;
   using MagickLib::GetMagickInfo;
   using MagickLib::GetMagickInfoArray;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
   using MagickLib::GetPageGeometry;
-  using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
   using MagickLib::GetTypeMetrics;
   using MagickLib::GlobExpression;
@@ -741,7 +763,7 @@ namespace Magick
   using MagickLib::SampleImage;
   using MagickLib::ScaleImage;
   using MagickLib::SegmentImage;
-  using MagickLib::SetCacheView;
+  using MagickLib::SetCacheViewPixels;
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
   using MagickLib::SetImageAttribute;
@@ -771,7 +793,7 @@ namespace Magick
   using MagickLib::StreamFatalError;
   using MagickLib::StreamWarning;
   using MagickLib::SwirlImage;
-  using MagickLib::SyncCacheView;
+  using MagickLib::SyncCacheViewPixels;
   using MagickLib::SyncImage;
   using MagickLib::SyncImagePixels;
   using MagickLib::TextureImage;
@@ -801,6 +823,16 @@ namespace Magick
   using MagickLib::YNegative;
   using MagickLib::YValue;
   using MagickLib::ZoomImage;
+
+  using MagickLib::AddNoiseImageChannel;
+  using MagickLib::BlurImageChannel;
+  using MagickLib::GaussianBlurImageChannel;
+  using MagickLib::MotionBlurImage;
+  using MagickLib::RandomChannelThresholdImage;
+  using MagickLib::SharpenImageChannel;
+  using MagickLib::UnsharpMaskImageChannel;
+
+
 #endif // MAGICK_IMPLEMENTATION
 
 }

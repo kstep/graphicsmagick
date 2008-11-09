@@ -189,7 +189,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+    if (!MagickMonitorFormatted(i,number_files,&image->exception,
+                                LoadImageText,image->filename))
       break;
   }
   DestroyImageInfo(clone_info);
@@ -253,6 +254,7 @@ ModuleExport void RegisterVIDImage(void)
   entry->encoder=(EncoderHandler) WriteVIDImage;
   entry->description="Visual Image Directory";
   entry->module="VID";
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

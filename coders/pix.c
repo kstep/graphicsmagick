@@ -156,7 +156,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x++)
       {
         if (length == 0)
@@ -182,7 +182,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
-        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+        if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                    image->filename))
           break;
     }
     if (image->storage_class == PseudoClass)
@@ -218,7 +219,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+                                    LoadImagesText,image->filename))
           break;
       }
   } while (status == True);

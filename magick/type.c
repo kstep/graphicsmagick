@@ -39,6 +39,7 @@
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/render.h"
 #include "magick/semaphore.h"
@@ -73,10 +74,6 @@ static TypeInfo
 */
 static unsigned int
   ReadTypeConfigureFile(const char *,const unsigned long,ExceptionInfo *);
-
-static const char *StretchTypeToString(StretchType stretch);
-static const char *StyleTypeToString(StyleType style);
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -881,82 +878,4 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   while (type_list->previous != (TypeInfo *) NULL)
     type_list=type_list->previous;
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  S t r e t c h T y p e T o S t r i n g                                      %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method StretchTypeToString returns a string describing the specified
-%  glyph stretch type
-%
-%  The format of the StretchTypeToString method is:
-%
-%     const char *StretchTypeToString(StretchType stretch)
-%
-%  A description of each parameter follows:
-%
-%    o stretch: StretchType enumeration
-%
-*/
-static const char *StretchTypeToString(StretchType stretch)
-{
-  switch(stretch)
-  {
-    case NormalStretch: return("normal");
-    case UltraCondensedStretch: return("ultra-condensed");
-    case ExtraCondensedStretch: return("extra-condensed");
-    case CondensedStretch: return("condensed");
-    case SemiCondensedStretch: return("semi-condensed");
-    case SemiExpandedStretch: return("semi-expanded");
-    case ExpandedStretch: return("expanded");
-    case ExtraExpandedStretch: return("extra-expanded");
-    case UltraExpandedStretch: return("ultra-expanded");
-    case AnyStretch: return("any");
-    default: break;
-  }
-  return("unknown");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  S t y l e T y p e T o S t r i n g                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method StyleTypeToString returns a string describing the specified
-%  glyph style type
-%
-%  The format of the StyleTypeToString method is:
-%
-%     const char *StyleTypeToString(StyleType style)
-%
-%  A description of each parameter follows:
-%
-%    o style: StyleType enumeration
-%
-*/
-static const char *StyleTypeToString(StyleType style)
-{
-  switch(style)
-  {
-    case NormalStyle: return("normal");
-    case ItalicStyle: return("italic");
-    case ObliqueStyle: return("oblique");
-    case AnyStyle: return("any");
-    default:  break;
-  }
-  return("unknown");
 }

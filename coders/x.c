@@ -120,6 +120,7 @@ ModuleExport void RegisterXImage(void)
   entry->adjoin=False;
   entry->description="X Window System";
   entry->module="X";
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

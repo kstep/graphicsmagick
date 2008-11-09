@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -19,7 +19,9 @@ extern "C" {
   Graphic gems define declarations.
 */
 extern MagickExport double
-  ExpandAffine(const AffineMatrix *);
+  ExpandAffine(const AffineMatrix *),
+  GenerateDifferentialNoise(const Quantum pixel,const NoiseType noise_type,
+    unsigned int *seed);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),
@@ -27,7 +29,8 @@ extern MagickExport int
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport PixelPacket
-  InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
+  InterpolateColor(const Image *image,const double x_offset,
+    const double y_offset,ExceptionInfo *exception);
 
 extern MagickExport Quantum
   GenerateNoise(const Quantum,const NoiseType);
@@ -41,6 +44,8 @@ extern MagickExport void
   Hull(const long,const long,const unsigned long,const unsigned long,Quantum *,
     Quantum *,const int),
   IdentityAffine(AffineMatrix *),
+  InterpolateViewColor(const ViewInfo *view,PixelPacket *color,
+    const double x_offset,const double y_offset,ExceptionInfo *exception),
   Modulate(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,

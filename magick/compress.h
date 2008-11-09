@@ -62,9 +62,6 @@ extern MagickExport void
   Ascii85Flush(Image *image),
   Ascii85Initialize(Image *image);
 
-extern MagickExport const char
-  *CompressionTypeToString(const CompressionType compression_type);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

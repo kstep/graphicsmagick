@@ -180,7 +180,7 @@ static char
   *ChannelTypes[] =
   {
     "Undefined", "Red", "Cyan", "Green", "Magenta", "Blue", "Yellow",
-    "Opacity", "Black", "Matte", (char *) NULL
+    "Opacity", "Black", "Matte", "All", "Gray", (char *) NULL
   },
   *ClassTypes[] =
   {
@@ -199,7 +199,8 @@ static char
     "CopyRed", "CopyGreen", "CopyBlue", "CopyOpacity", "Clear", "Dissolve",
     "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
     "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
-    "CopyCyan", "CopyMagenta", "CopyYellow", "CopyBlack", (char *) NULL
+    "CopyCyan", "CopyMagenta", "CopyYellow", "CopyBlack", "Divide",
+    (char *) NULL
   },
   *CompressionTypes[] =
   {
@@ -555,6 +556,8 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 */
 static double constant(char *name,int sans)
 {
+  (void) sans;
+
   errno=0;
   switch (*name)
   {
@@ -3534,7 +3537,7 @@ Get(ref,...)
               char
                 name[MaxTextExtent];
 
-              IndexPacket
+              const IndexPacket
                 *indexes;
 
               long
@@ -3548,9 +3551,9 @@ Get(ref,...)
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-              (void) AcquireOnePixel(image,(long) (x % image->columns),
-                (long) (y % image->rows),&image->exception);
-              indexes=GetIndexes(image);
+              (void) AcquireImagePixels(image,(long) (x % image->columns),
+                                        (long) (y % image->rows),1,1,&image->exception);
+              indexes=AccessImmutableIndexes(image);
               FormatString(name,"%u",*indexes);
               s=newSVpv(name,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -3716,7 +3719,7 @@ Get(ref,...)
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-              pixel=AcquireOnePixel(image,(long) (x % image->columns),
+              (void) AcquireOnePixelByReference(image,&pixel,(long) (x % image->columns),
                 (long) (y % image->rows),&image->exception);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
@@ -3734,7 +3737,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"preview") == 0)
             {
               s=newSViv(info->image_info->preview_type);
-              if ((info->image_info->preview_type >= 0) &&
+              if ((info->image_info->preview_type != UndefinedPreview) &&
                   (info->image_info->preview_type < (long) NumberOf(PreviewTypes)-1))
                 {
                   (void) sv_setpv(s,
@@ -4565,7 +4568,7 @@ Mogrify(ref,...)
           PixelPacket
             target;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,&target,
               &exception);
@@ -5085,7 +5088,7 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&fill_color,
               &exception);
-          target=AcquireOnePixel(image,(long) (geometry.x % image->columns),
+          (void) AcquireOnePixelByReference(image,&target,(long) (geometry.x % image->columns),
             (long) (geometry.y % image->rows),&exception);
           if (attribute_flag[4])
             target=fill_color;
@@ -5124,30 +5127,35 @@ Mogrify(ref,...)
             compose=(CompositeOperator) argument_list[1].int_reference;
           opacity=OpaqueOpacity;
           if (attribute_flag[6])
-            opacity=argument_list[6].double_reference;
-          if (opacity != OpaqueOpacity)
-            SetImageOpacity(composite_image,(unsigned int) opacity);
-          if (compose == DissolveCompositeOp)
             {
-              register PixelPacket
-                *q;
-
-              if (!composite_image->matte)
-                SetImageOpacity(composite_image,OpaqueOpacity);
-              for (y=0; y < (long) composite_image->rows; y++)
-              {
-                q=GetImagePixels(composite_image,0,y,
-                  composite_image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                for (x=(long) composite_image->columns; x > 0; x--)
+              opacity=argument_list[6].double_reference;
+              if (compose == DissolveCompositeOp)
                 {
-                  q->opacity=(Quantum) ((opacity*(MaxRGB-q->opacity))/100.0);
-                  q++;
+                  register PixelPacket
+                    *q;
+                  
+                  if (!composite_image->matte)
+                    SetImageOpacity(composite_image,OpaqueOpacity);
+                  for (y=0; y < (long) composite_image->rows; y++)
+                    {
+                      q=GetImagePixels(composite_image,0,y,
+                                       composite_image->columns,1);
+                      if (q == (PixelPacket *) NULL)
+                        break;
+                      for (x=(long) composite_image->columns; x > 0; x--)
+                        {
+                          q->opacity=(Quantum) ((opacity*(MaxRGB-q->opacity))/100.0);
+                          q++;
+                        }
+                      if (!SyncImagePixels(composite_image))
+                        break;
+                    }
                 }
-                if (!SyncImagePixels(composite_image))
-                  break;
-              }
+              else
+                {
+                  if (opacity != OpaqueOpacity)
+                    SetImageOpacity(composite_image,(unsigned int) opacity);
+                }
             }
           if (attribute_flag[9])
             QueryColorDatabase(argument_list[9].string_reference,
@@ -5455,7 +5463,7 @@ Mogrify(ref,...)
             opacity=argument_list[3].int_reference;
           if (!image->matte)
             SetImageOpacity(image,OpaqueOpacity);
-          target=AcquireOnePixel(image,(long) (geometry.x % image->columns),
+          (void) AcquireOnePixelByReference(image,&target,(long) (geometry.x % image->columns),
             (long) (geometry.y % image->rows),&exception);
           if (attribute_flag[4])
             target=fill_color;
@@ -5502,11 +5510,11 @@ Mogrify(ref,...)
             fill_color,
             target;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target,&exception);
-          fill_color=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&fill_color,0,0,&exception);
           if (attribute_flag[1])
             (void) QueryColorDatabase(argument_list[1].string_reference,
               &fill_color,&exception);
@@ -5628,7 +5636,7 @@ Mogrify(ref,...)
           unsigned int
             opacity;
 
-          target=AcquireOnePixel(image,0,0,&exception);
+          (void) AcquireOnePixelByReference(image,&target,0,0,&exception);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target,&exception);
@@ -5642,9 +5650,21 @@ Mogrify(ref,...)
         }
         case 57:  /* Threshold */
         {
+          double
+            threshold;
+
+          int
+            count;
+
           if (!attribute_flag[0])
             argument_list[0].string_reference="50%";
-          ChannelThresholdImage(image,argument_list[0].string_reference);
+          count=sscanf(argument_list[0].string_reference,"%lf",&threshold);
+          if (count > 0)
+            {
+              if (strchr(argument_list[0].string_reference,'%') != (char *) NULL)
+                  threshold *=  MaxRGB/100.0;
+                (void) ThresholdImage(image,threshold);
+            }
           break;
         }
         case 58:  /* Charcoal */
@@ -6391,7 +6411,7 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"transparent") == 0)
             {
-              transparent_color=AcquireOnePixel(image,0,0,&exception);
+              (void) AcquireOnePixelByReference(image,&transparent_color,0,0,&exception);
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color,
                 &exception);
               for (next=image; next; next=next->next)

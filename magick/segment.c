@@ -196,7 +196,7 @@ static void
 %
 %
 */
-#define SegmentImageText  "  Segmenting image...  "
+#define SegmentImageText  "[%s] Segmenting image..."
 
 static MagickPassFail Classify(Image *image,short **extrema,
   const double cluster_threshold,const double ARGUNUSED(weighting_exponent),
@@ -366,7 +366,8 @@ static MagickPassFail Classify(Image *image,short **extrema,
       p++;
     }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SegmentImageText,y,image->rows << 1,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows << 1,&image->exception,
+                                  SegmentImageText,image->filename))
         {
           status=MagickFail;
           break;
@@ -498,7 +499,7 @@ static MagickPassFail Classify(Image *image,short **extrema,
         status=MagickFail;
         break;
       }
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
@@ -566,7 +567,9 @@ static MagickPassFail Classify(Image *image,short **extrema,
         break;
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SegmentImageText,y+image->rows,image->rows << 1,&image->exception))
+      if (!MagickMonitorFormatted(y+image->rows,image->rows << 1,
+                                  &image->exception,
+                                  SegmentImageText,image->filename))
         {
           status=MagickFail;
           break;

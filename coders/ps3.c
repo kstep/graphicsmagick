@@ -392,12 +392,14 @@ ModuleExport void RegisterPS3Image(void)
   entry->encoder=(EncoderHandler) WritePS3Image;
   entry->description="Adobe Level III Encapsulated PostScript";
   entry->module="PS3";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PS3");
   entry->encoder=(EncoderHandler) WritePS3Image;
   entry->description="Adobe Level III PostScript";
   entry->module="PS3";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -447,7 +449,7 @@ static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
   int
     status;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   assert(image != (Image *) NULL);
@@ -463,13 +465,14 @@ static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     for (x=0; x < (long) image->columns; x++)
       *q++=indexes[x];
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         {
-          status=MagickMonitor(SaveImageText,y,image->rows,&image->exception);
+          status=MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename);
           if (status == False)
             break;
         }
@@ -560,7 +563,8 @@ static unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         {
-          status=MagickMonitor(SaveImageText,y,image->rows,&image->exception);
+          status=MagickMonitorFormatted(y,image->rows,&image->exception,
+                                        SaveImageText,image->filename);
           if (status == False)
             break;
         }
@@ -674,8 +678,9 @@ static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         {
-          status=MagickMonitor(SaveImageText,y,image->rows,
-            &image->exception);
+          status=MagickMonitorFormatted(y,image->rows,
+                                        &image->exception,SaveImageText,
+                                        image->filename);
           if (status == False)
             break;
         }
@@ -1300,7 +1305,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=GetMagickDimension(density,&x_resolution,&y_resolution);
+    count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
@@ -1311,7 +1316,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         unit_conversion=
           image_info->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         count=GetMagickDimension(image_info->density,&x_resolution,
-          &y_resolution);
+          &y_resolution,NULL,NULL);
         x_resolution*=unit_conversion;
         if (count != 2)
           y_resolution=x_resolution;
@@ -1862,8 +1867,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
     scene++;

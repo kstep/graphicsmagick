@@ -22,16 +22,27 @@ GraphicsMagick.
 ./configure \
   --with-tcl=/usr/lib/tcl8.4/ \
   --with-tk=/usr/lib/tk8.4/ \
-  --with-magick=/home/davidw/install/bin/GraphicsMagickWand-config \
+  --with-magick=/usr/local/bin/GraphicsMagickWand-config \
 
 Others that might very well be helpful are --enable-shared.
 
---with-tcl tells it where to find Tcl - or more accurately, the
-tclConfig.sh file that configure uses to find important information
-about how to compile Tcl.  The directory where tkConfig.sh resides is
-indicated with --with-tk.  The --with-magick option is necessary to
-tell the configure script where to get information about the
-GraphicsMagick or ImageMagick install.
+The --with-tcl option tells the configure script where to find Tcl - or
+more accurately, the tclConfig.sh file that configure uses to find
+important information about how to compile Tcl extensions.  If this option
+is not specified, the file may (but might not) be found automatically.
+
+The --with-tk option tells the configure script where to find Tk, - or
+more accurately, the tkConfig.sh file that configure uses to find
+important information about how to compile Tcl/Tk extensions. If this
+option is not specified, the file may (but might not) be found
+automatically.
+
+The --with-magick option is used to tell the configure script where to
+get information about the GraphicsMagick or ImageMagick install. If the
+--with-magick option is not specified, then the PATH is searched for
+GraphicsMagickWand-config (default for GraphicsMagick), and if that is
+not found, then the PATH is searched for MagickWand-config (default for
+ImageMagick).
 
 2) Run make - this should build the libraries.
 

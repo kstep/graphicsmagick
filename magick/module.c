@@ -436,7 +436,7 @@ static const CoderInfo *GetCoderInfo(const char *tag,
   register CoderInfo
     *p;
 
-  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
+  (void) InitializeMagicInfo(exception);
   (void) GetModuleInfo(tag,exception);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return((const CoderInfo *) coder_list);
@@ -1395,7 +1395,7 @@ MagickExport MagickPassFail OpenModule(const char *module,
 %
 %  The format of the OpenModules method is:
 %
-%      unsigned int OpenModules(ExceptionInfo *exception)
+%      MagickPassFail OpenModules(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1405,7 +1405,7 @@ MagickExport MagickPassFail OpenModule(const char *module,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int OpenModules(ExceptionInfo *exception)
+MagickExport MagickPassFail OpenModules(ExceptionInfo *exception)
 {
   (void) GetMagickInfo((char *) NULL,exception);
   {

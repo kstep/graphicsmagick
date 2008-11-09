@@ -1084,7 +1084,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
-      i=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
+      i=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y,NULL,NULL);
       if (i != 2)
         resolution.y=resolution.x;
     }
@@ -1240,6 +1240,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
+            /* FIXME: OpenMP */
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
               if ((ceil(point.y+y-0.5) < 0) ||
@@ -1266,7 +1267,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                   opacity=((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
-                  fill_color=AcquireOnePixel(pattern,
+                  (void) AcquireOnePixelByReference(pattern,&fill_color,
                     (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
                     (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
                             &image->exception);
@@ -1280,8 +1281,8 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                     q++;
                     continue;
                   }
-                *q=AlphaComposite(&fill_color,opacity,q,
-                                  image->matte ? q->opacity : OpaqueOpacity);
+                AlphaCompositePixel(q,&fill_color,opacity,q,
+                                    image->matte ? q->opacity : OpaqueOpacity);
                 if (!active)
                   (void) SyncImagePixels(image);
                 p++;
@@ -1517,7 +1518,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y);
+      count=GetMagickDimension(draw_info->density,&resolution.x,&resolution.y,NULL,NULL);
       if (count != 2)
         resolution.y=resolution.x;
     }
@@ -1574,7 +1575,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
         for (x=0; x < (long) annotate_image->columns; x++)
         {
           if (pattern != (Image *) NULL)
-            fill_color=AcquireOnePixel(pattern,
+            (void) AcquireOnePixelByReference(pattern,&fill_color,
               (long) (x-pattern->tile_info.x) % pattern->columns,
               (long) (y-pattern->tile_info.y) % pattern->rows,
               &image->exception);

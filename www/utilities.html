@@ -1,167 +1,117 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>GraphicsMagick Utilities</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
-	<META NAME="CREATED" CONTENT="20020823;18090800">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040418;19184700">
-	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2 STYLE="page-break-before: always">
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Utilities</FONT></FONT></B></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><I>GraphicsMagick</I> provides a powerful command line utility
-which may be used to access all <I>GraphicsMagick</I> functions. Gm
-uses a consistent set of options (<A HREF="GraphicsMagick.html">see
-options documentation</A>). <I>GraphicsMagick</I> provides access to
-major command modes via a single executable command-line program
-called '<B>gm</B>'; for example, to use the &quot;convert&quot; mode,
-type &quot;gm convert ...&quot;. The available command modes and
-links to their documentation are shown in the following table:</P>
-<DL>
-	<DD>
-	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0>
-		<COL WIDTH=65*>
-		<COL WIDTH=191*>
-		<TR VALIGN=TOP>
-			<TH WIDTH=25% BGCOLOR="#52799e">
-				<P ALIGN=CENTER STYLE="font-variant: normal; color: #ffffff; font-style: normal; text-decoration: none">
-				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">GM
-				Command Mode</SPAN></B></FONT></FONT></FONT></P>
-			</TH>
-			<TH WIDTH=75% BGCOLOR="#52799e">
-				<P ALIGN=CENTER STYLE="font-variant: normal; color: #ffffff; font-style: normal; text-decoration: none">
-				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Description</SPAN></B></FONT></FONT></FONT></P>
-			</TH>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="animate.html"><SPAN STYLE="text-decoration: none">gm
-				animate</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>animate
-				a sequence of images</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="composite.html"><SPAN STYLE="text-decoration: none">gm
-				composite</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>composite
-				images together</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="conjure.html"><SPAN STYLE="text-decoration: none">gm
-				conjure</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>execute
-				a Magick Scripting Language (MSL) XML script</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="convert.html"><SPAN STYLE="text-decoration: none">gm
-				convert</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>convert
-				an image or sequence of images</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="display.html"><SPAN STYLE="text-decoration: none">gm
-				display</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>display
-				an image on a workstation running X</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="identify.html"><SPAN STYLE="text-decoration: none">gm
-				identify</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>describe
-				an image or image sequence</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="import.html"><SPAN STYLE="text-decoration: none">gm
-				import</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>capture
-				an application or X server screen</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="mogrify.html"><SPAN STYLE="text-decoration: none">gm
-				mogrify</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>transform
-				an image or sequence of images</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=25%>
-				<P ALIGN=LEFT><A HREF="montage.html"><SPAN STYLE="text-decoration: none">gm
-				montage</SPAN></A></P>
-			</TD>
-			<TD WIDTH=75%>
-				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>create
-				a composite image (in a grid) from separate images</FONT></FONT></P>
-			</TD>
-		</TR>
-	</TABLE>
-</DL>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
-gm utility makes it easy to perform complex image processing
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick Utilities</title>
+<meta content="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD. With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format. " name="description" />
+<meta content="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++" name="keywords" />
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="graphicsmagick-utilities">
+<h1 class="title">GraphicsMagick Utilities</h1>
+<p>GraphicsMagick provides a powerful command line utility which may be used
+to access all GraphicsMagick functions. Gm uses a consistent set of
+options (<a class="reference" href="GraphicsMagick.html">see options documentation</a>).
+GraphicsMagick provides access to major command modes via a single
+executable command-line program called <tt class="docutils literal"><span class="pre">gm</span></tt>; for example, to use the
+&quot;convert&quot; mode, type <tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">...</span></tt>. The available command modes and
+links to their documentation are shown in the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">GM Command Mode</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>gm <a class="reference" href="animate.html">animate</a></td>
+<td>animate a sequence of images</td>
+</tr>
+<tr><td>gm <a class="reference" href="composite.html">composite</a></td>
+<td>composite images together</td>
+</tr>
+<tr><td>gm <a class="reference" href="conjure.html">conjure</a></td>
+<td>execute a Magick Scripting Language (MSL) XML script</td>
+</tr>
+<tr><td>gm <a class="reference" href="compare.html">compare</a></td>
+<td>compare two images using statistics and/or visual differencing</td>
+</tr>
+<tr><td>gm <a class="reference" href="convert.html">convert</a></td>
+<td>convert an image or sequence of images</td>
+</tr>
+<tr><td>gm <a class="reference" href="display.html">display</a></td>
+<td>display an image on a workstation running X</td>
+</tr>
+<tr><td>gm <a class="reference" href="identify.html">identify</a></td>
+<td>describe an image or image sequence</td>
+</tr>
+<tr><td>gm <a class="reference" href="import.html">import</a></td>
+<td>capture an application or X server screen</td>
+</tr>
+<tr><td>gm <a class="reference" href="mogrify.html">mogrify</a></td>
+<td>transform an image or sequence of images</td>
+</tr>
+<tr><td>gm <a class="reference" href="montage.html">montage</a></td>
+<td>create a composite image (in a grid) from separate images</td>
+</tr>
+</tbody>
+</table>
+<p>The <tt class="docutils literal"><span class="pre">gm</span></tt> utility makes it easy to perform complex image processing
 operations using a single command. It may be invoked from scripts, or
-from other programs in order to automate the processing of thousands
-of images.</FONT></FONT></P>
-<HR>
-<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</P>
-</BODY>
-</HTML>
+from other programs in order to automate the processing of thousands of
+images.</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2008</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 20:27 UTC.
+
+</div>
+</body>
+</html>

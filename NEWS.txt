@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on April 29, 2008
+This file was last updated on November 9, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,236 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3 (November 9, 2008)
+======================
+
+Security fixes:
+
+  * AVI reader: Re-worked to be more robust against crash or DOS.
+
+  * AVS reader: Re-worked to be more robust against crash or DOS.
+
+  * DCM reader: Re-worked to be more robust against crash or DOS.
+
+  * EPT reader: Re-worked to be more robust against crash or DOS.
+
+  * FITS reader: Re-worked to be more robust against crash or DOS.
+
+  * MTV reader: Re-worked to be more robust against crash or DOS.
+
+  * PALM reader: Re-worked to be more robust against crash or DOS.
+
+  * RLA reader: Re-worked to be more robust against crash or DOS.
+
+  * TGA reader: Re-worked to be more robust against crash or DOS.
+
+  * Avoid possible crash in GetImageCharacteristics() when substituting
+    text in comment read from file.
+
+  * Cineon reader: Fixed crash with broken file from Sami Liedes.
+
+  * Palm reader: Fixed crash with broken files from Sami Liedes.
+
+  * PICT reader: Fixed crash with broken files from Sami Liedes.
+
+  * DPX reader: Validate file data better to avoid improper operation with
+    intentionally (or accidentally) defective files.
+
+  * XCF reader: Fixed crash with broken files from Sami Liedes.
+
+Bug fixes:
+
+  * Libbz2 is now detected for MinGW.
+
+  * Install documentation under /usr/local/share/doc/GraphicsMagick by
+    default, according to GNU conventions.
+
+  * In PerlMagick, Dissolve composition was not working right.
+
+  * FITS: Ensure that written format conforms to specification.
+
+  * TIFF:
+
+    - Don't accidentially convert CMYK images to RGB.
+
+    - Eliminated a memory leak in the codec support detection code.
+
+  * JPEG: Removed over-write of image->client_data.
+
+  * PDF: Try to properly deal with reading rotated PDFs.
+
+  * PNG: Fixed crash when writing PNG images with transparency and either
+    optimize is requested, or the image is colormapped.
+
+  * Configure: Fixed the --enable-magick-compat configure option, which
+    had stopped working.
+
+  * Configure: Fixed --without-magick-plus-plus so that it works again.  This
+    stopped working in the 1.2 release cycle.
+
+  * Configure: Fixed MagickLibVersion text string generation so that it
+    is now correct when a component of the release number exceeds '9'.
+    Now components can safely count up to '99' before there is a problem.
+
+Performance Improvements:
+
+  * OpenMP (parallel processing) improvements for these functions:
+
+    - Affine transform (-affine -transform)
+    - Average images (-average)
+    - Add noise (+noise)
+    - Black threshold (-black-threshold)
+    - Blur (-blur)
+    - Border (-border)
+    - Channel import, export, and depth-setting (-channel, -depth)
+    - Clip path
+    - Coalesce (-coalesce)
+    - Colorize (-colorize)
+    - Colorspace transformation (-colorspace)
+    - Compare images ('compare' command)
+    - Composition ('composite' command)
+    - Convolution (-convolve, -edge, -emboss, -gaussian, -sharpen)
+    - Contrast adjust (-contrast)
+    - Crop (-crop)
+    - CycleColormap (-cycle)
+    - Depth setting (-depth, -operator depth)
+    - Despeckle (-despeckle)
+    - Enhance (-enhance)
+    - Equalize (-equalize)
+    - Flatten (-flatten)
+    - Flip (-flip)
+    - Flop (-flop)
+    - Frame (-frame)
+    - Gamma adjust (-gamma, -operator gamma)
+    - Gradient
+    - Implode (-implode)
+    - Levels adjust image (-level)
+    - Local adaptive threshold (-lat)
+    - Median filter (-median)
+    - Minify image (-minify)
+    - Modulate image (-modulate)
+    - Morph image (-morph)
+    - Mosiac (-mosaic)
+    - Motion blur (-motion-blur)
+    - Negate image (-negate)
+    - Noise filter (-noise)
+    - Normalize image (-normalize)
+    - Oil Paint (-paint)
+    - Opaque (-opaque)
+    - Ordered dither (-ordered-dither)
+    - Operators (-operator)
+    - Profile adjust (ICC) (-profile)
+    - Random threshold (-random-threshold)
+    - Resize image (-resize)
+    - Raise image (-raise)
+    - Roll image (-roll)
+    - Rotate image (-rotate)
+    - Shade image (-shade)
+    - Shear image (-shear)
+    - Shave (-shave)
+    - Solarize image (-solarize)
+    - Spread image (-spread)
+    - Statistics computation (identify -verbose)
+    - Swirl (-swirl)
+    - Threshold channel (-threshold, -operator threshold)
+    - Threshold image (-threshold)
+    - Transparent (-transparent)
+    - Trim image (-trim)
+    - UnsharpMaskImage (-unsharp)
+    - Wave (-wave)
+    - White threshold (-white-threshold)
+
+  * Improved coder management performance.
+
+  * XCF (GIMP) reader is much faster.
+
+New Features:
+
+  * Use MAGICK_CODER_STABILITY environment variable to enable a subset
+    of the coders based on their stability classification.
+
+  * Use MAGICK_IO_FSYNC environment variable to cause written file to
+    be synchronized to disk to avoid possible data loss on power fail.
+
+  * Added 'compare' command to statistically or visually compare two
+    image files.
+
+  * Added new channel operators (-operator):
+
+    - Assign
+    - Gamma
+    - Depth
+    - Negate
+    - Noise-Gaussian
+    - Noise-Impulse
+    - Noise-Laplacian
+    - Noise-Multiplicative
+    - Noise-Poisson
+    - Noise-Uniform
+    - Threshold
+    - ThresholdBlack
+    - ThresholdWhite
+
+  * New composition operators (-compose):
+
+    - CopyBlack
+    - CopyCyan
+    - CopyMagenta
+    - CopyYellow
+    - Divide
+
+  * Added -motion-blur to motion blur the image.
+
+  * Mogrify and convert now support -black-threshold and -white-threshold.
+
+  * MAT: Now supports reading compressed files.
+
+  * FITS: Now supports 8, 16, 32 bit integer, float, and double images
+    and writes correct FITS format.
+
+  * DCRAW: Coder proxy module allows reading digital camera files as if
+    they were natively supported.
+
+  * New C API functions:
+
+    - AddNoiseImageChannel(), add noise to an image channel.
+    - BlurImageChannel(), blur an image channel.
+    - GaussianBlurImageChannel(), gaussian blur an image channel.
+    - ImportImageChannelsMasked(), import selected image channels.
+    - SharpenImageChannel(), sharpen an image channel.
+    - UnsharpMaskImageChannel(), unsharpmask an image channel.
+    - New cache view interfaces to correct shortcommings of original
+      ones.  New interfaces are AcquireCacheViewPixels(),
+      AcquireOneCacheViewPixel(), AcquireCacheViewIndexes(),
+      GetCacheViewPixels(), SetCacheViewPixels(), and
+      SyncCacheViewPixels(). The deprecated functions are
+      AcquireCacheView(), GetCacheView(), SetCacheView(), and
+      SyncCacheView().
+    - GetCacheViewRegion() reports region bounded by a cache view.
+    - GetCacheViewArea() reports area bounded by a cache view.
+    - ExportViewPixelArea() exports a cache view as formatted pixels.
+    - ImportViewPixelArea imports formatted pixels into a cache view.
+
+  * Removed C API functions:
+
+    - ReadStream()
+    - WriteStream()
+
+  * Magick++ C++ API improvements
+
+    - Color class no longer considers transparent black to be an invalid
+      color.
+    - New Image methods addNoiseChannel(), blurChannel(),
+      gaussianBlurChannel(), motionBlur(), randomThresholdChannel(),
+      randomThresholdChannel(), sharpenChannel(), unsharpmaskChannel().
+
+Feature improvements:
+
+  * -ordered-dither and -random-threshold may now be used to individually
+    dither any named channel.
+  * Mogrify and convert now support -minify to halve the image size.
+  * Mogrify and convert now support -magnify to double the image size.
 
 1.2 (April 29, 2008)
 ====================

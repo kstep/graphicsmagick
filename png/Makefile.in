@@ -184,6 +184,7 @@ LIBPNG_DEFINES = @LIBPNG_DEFINES@
 LIBPNG_NO_MMX = @LIBPNG_NO_MMX@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
@@ -330,7 +331,7 @@ EXTRA_DIST = \
 	${srcdir}/contrib/pngsuite/* \
 	${srcdir}/contrib/visupng/* \
 	$(TESTS) \
-	example.c libpng-1.2.27beta05.txt pngvcrd.c 
+	example.c libpng-1.2.33.txt pngvcrd.c 
 
 CLEANFILES = pngout.png libpng12.pc libpng12-config libpng.vers \
 libpng.sym
@@ -1266,9 +1267,9 @@ libpng.sym: png.h pngconf.h
 
 libpng.vers: libpng.sym
 	rm -f $@ $@.new
-	$(ECHO) PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0 '{global:' > $@.new
+	echo PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0 '{global:' > $@.new
 	$(SED) s/$$/\;/ libpng.sym >> $@.new
-	$(ECHO) 'local: *; };' >> $@.new
+	echo 'local: *; };' >> $@.new
 	mv $@.new $@
 
 test: check

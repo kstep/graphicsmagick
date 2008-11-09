@@ -357,8 +357,16 @@ software.</dd>
 <format type=man>
 <sect NAME="also">SEE ALSO
 <p>
-display(1), composite(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
-import(1), mogrify(1), montage(1)
+GraphicsMagick(1),
+compare(1),
+composite(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
 </p>
 </sect>
 </format>

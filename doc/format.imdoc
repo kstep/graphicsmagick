@@ -15,7 +15,7 @@
 <o>BMP3     <|>*-w-<|>Microsoft Windows bitmap image v3
 <o>CACHE    <|>*---<|>Magick Persistent Cache image format
 <o>CAPTION  <|>*r--<|>Caption (requires separate size info)
-<o>CIN      <|>*rw+<|>Kodak Cineon Format
+<o>CIN      <|>*rw-<|>Kodak Cineon Format
 <o>CMYK     <|>*rw-<|>Raw cyan, magenta, yellow, and black
 < >         <|>    <|>samples (8 or 16 bits, depending on
 < >         <|>    <|>the image depth)
@@ -28,7 +28,7 @@
 < >         <|>    <|> Medicine image
 <o>DCX      <|>*rw+<|>ZSoft IBM PC multi-page Paintbrush
 <o>DPS      <|>*r--<|>Display PostScript
-<o>DPX      <|>*r--<|>Digital Moving Picture Exchange
+<o>DPX      <|>*rw-<|>Digital Moving Picture Exchange
 <o>EPDF     <|>*rw-<|>Encapsulated Portable Document Format
 <o>EPI      <|>*rw-<|>Adobe Encapsulated PostScript
 < >         <|>    <|>Interchange format

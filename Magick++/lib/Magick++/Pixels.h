@@ -84,12 +84,13 @@ namespace Magick
     Pixels( const Pixels& pixels_ );
     const Pixels& operator=( const Pixels& pixels_ );
 
-    Magick::Image          _image;   // Image reference
-    MagickLib::ViewInfo*   _view;    // Image view handle
-    int                    _x;       // Left ordinate of view
-    int                    _y;       // Top ordinate of view
-    unsigned int           _columns; // Width of view
-    unsigned int           _rows;    // Height of view
+    Magick::Image             _image;     // Image reference
+    MagickLib::ViewInfo*      _view;      // Image view handle
+    int                       _x;         // Left ordinate of view
+    int                       _y;         // Top ordinate of view
+    unsigned int              _columns;   // Width of view
+    unsigned int              _rows;      // Height of view
+    MagickLib:: ExceptionInfo _exception; // Any thrown exception
 
   }; // class Pixels
 

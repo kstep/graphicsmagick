@@ -24,18 +24,27 @@ extern "C" {
 }
 
 /*
-  Macros for testing a pixel to see if it is grayscale or bilevel.
+  Macros for testing a pixel to see if it is grayscale, bilevel,
+  black, or white
 */
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).red == (color).blue))
 #define IsMonochrome(color) \
   (((0 == (color).red) || (MaxRGB == (color).red)) && IsGray(color))
 
+#define IsBlackPixel(color) \
+  (((color).red == 0U) && IsGray(color))
+
+#define IsWhitePixel(color) \
+  (((color).red == MaxRGB) && IsGray(color))
+
 /*
   Compare two colors
 */
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
+#define NotColorMatch(p,q) (((p)->red != (q)->red) || \
+  ((p)->green != (q)->green) || ((p)->blue != (q)->blue))
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

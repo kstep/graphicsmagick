@@ -6,8 +6,6 @@
  * For a list of changes see "ChangeLog"
  **********************************************************************/
 
-/* $Id$ */
-
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
@@ -55,7 +53,7 @@ int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
     if( (description == NULL) || (strlen(description) == 0) ) {
         Tcl_AppendResult(interp, MagickGetPackageName(), ": Unknown error", NULL);
     } else {
-        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity);
+        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity); /* FIXME, not used! */
         Tcl_AppendResult(interp, description, NULL);
     }
     if( description != NULL ) {
@@ -110,17 +108,21 @@ static void magickObjDeleteCmd(ClientData clientData)
         switch(mPtr->type) {
         case TM_TYPE_WAND:
             DestroyMagickWand(mPtr->wandPtr);
+            mPtr->wandPtr=(MagickWand *) NULL;;
             break;
         case TM_TYPE_DRAWING:
             DestroyDrawingWand(mPtr->wandPtr);
+            mPtr->wandPtr=(DrawingWand *) NULL;
             break;
         case TM_TYPE_PIXEL:
             DestroyPixelWand(mPtr->wandPtr);
+            mPtr->wandPtr=(PixelWand *) NULL;
             break;
         }
     }
     if( mPtr->hashPtr != NULL ) {
         Tcl_DeleteHashEntry(mPtr->hashPtr);
+        mPtr->hashPtr=(Tcl_HashEntry *) NULL;
     }
     ckfree((char *)mPtr);
 }
@@ -452,7 +454,7 @@ static int magickCmd(
 
     case TM_RESOURCE:      /* resourcelimit resourceType ?limit? */
     {
-        unsigned long limit;
+        long limit;
         int  resourceIdx;
 
 	if( (objc != 3) && (objc != 4) ) {
@@ -470,7 +472,7 @@ static int magickCmd(
 	    if( (stat = Tcl_GetLongFromObj(interp, objv[3], &limit)) != TCL_OK ) {
 		return stat;
 	    }
-	    result = MagickSetResourceLimit(resourceTypes[resourceIdx], limit);
+	    result = MagickSetResourceLimit(resourceTypes[resourceIdx], (unsigned long) limit);
 	    if (!result) {
 		return myMagickError(interp, NULL);
 	    }
@@ -745,7 +747,7 @@ static int wandObjCmd(
         "depth",            "GetDepth",             "SetDepth",
         "dispose",          "GetDispose",           "SetDispose",
         "extrema",          "GetExtrema",
-        "format",           "GetFormat",
+        "format",           "GetFormat",            "SetFormat",
         "getimage",         "GetImage",
         "imagefilename",    "GetImageFilename",     "SetImageFilename",
         "gamma",            "GetGamma",             "SetGamma",
@@ -897,7 +899,7 @@ static int wandObjCmd(
         TM_DEPTH,           TM_GET_DEPTH,               TM_SET_DEPTH,
         TM_DISPOSE,         TM_GET_DISPOSE,             TM_SET_DISPOSE,
         TM_EXTREMA,         TM_GET_EXTREMA,
-        TM_FORMAT,          TM_GET_FORMAT,
+        TM_FORMAT,          TM_GET_FORMAT,              TM_SET_FORMAT,
         TM_GETIMAGE,        TM_GET_IMAGE,
         TM_IMAGE_FILENAME,  TM_GET_IMAGE_FILENAME,      TM_SET_IMAGE_FILENAME,
         TM_GAMMA,           TM_GET_GAMMA,               TM_SET_GAMMA,
@@ -2823,17 +2825,41 @@ static int wandObjCmd(
 
     case TM_FORMAT:     /* format */
     case TM_GET_FORMAT: /* GetImageFormat */
+    case TM_SET_FORMAT: /* SetImageFormat */
     {
 	char *fmt;
 
-	if( objc != 2 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+        if( ((enum subIndex)index == TM_FORMAT) && (objc > 3) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?format?");
 	    return TCL_ERROR;
 	}
-	fmt = (char *)MagickGetImageFormat(wandPtr);
-	if(fmt != NULL) {
+        if( ((enum subIndex)index == TM_GET_FORMAT) && (objc != 2) ) {
+          Tcl_WrongNumArgs(interp, 2, objv, NULL);
+          return TCL_ERROR;
+	}
+	if( ((enum subIndex)index == TM_SET_FORMAT) && (objc != 3) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "format");
+	    return TCL_ERROR;
+	}
+        if (objc > 2) { /* Set format */
+#if defined(HAVE_MAGICKSETIMAGEFORMAT)
+	    Tcl_DString extrep;
+
+            fmt = Tcl_UtfToExternalDString (NULL, Tcl_GetString(objv[2]), -1, &extrep);
+	    MagickSetImageFormat(wandPtr, fmt);
+	    Tcl_DStringFree (&extrep);
+#else
+            char msg[1024];
+            sprintf(msg, "%.500s: MagickSetImageFormat() is not implemented!", MagickGetPackageName());
+            Tcl_AppendResult(interp, msg, NULL);
+	    return TCL_ERROR;
+#endif /* HAVE_MAGICKSETIMAGEFORMAT */
+        } else { /* Get format */
+          fmt = (char *)MagickGetImageFormat(wandPtr);
+          if (fmt != NULL) {
 	    Tcl_SetResult(interp, fmt, TCL_VOLATILE);
 	    MagickRelinquishMemory(fmt); /* Free TclMagick resource */
+          }
 	}
 	break;
     }

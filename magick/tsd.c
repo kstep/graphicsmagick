@@ -28,6 +28,7 @@ MagickExport MagickPassFail MagickTsdKeyCreate(MagickTsdKey_t *key)
 #if defined(HAVE_PTHREAD)
   return ((pthread_key_create(key, 0) == 0) ? MagickPass : MagickFail);
 #elif defined(MSWINDOWS)
+  /* DWORD WINAPI TlsAlloc(void); */
   *key=TlsAlloc();
   return ((*key != TLS_OUT_OF_INDEXES) ? MagickPass : MagickFail);
 #else
@@ -45,6 +46,7 @@ MagickExport MagickPassFail MagickTsdKeyDelete(MagickTsdKey_t key)
 #if defined(HAVE_PTHREAD)
   return ((pthread_key_delete(key) == 0) ? MagickPass : MagickFail);
 #elif defined(MSWINDOWS)
+  /* BOOL WINAPI TlsFree(DWORD dwTlsIndex) */
   return ((TlsFree(key) != 0) ? MagickPass : MagickFail);
 #else
   MagickFreeMemory(key);
@@ -60,6 +62,7 @@ MagickExport MagickPassFail MagickTsdSetSpecific(MagickTsdKey_t key, const void 
 #if defined(HAVE_PTHREAD)
   return ((pthread_setspecific(key, value) == 0) ? MagickPass : MagickFail);
 #elif defined(MSWINDOWS)
+  /* BOOL WINAPI TlsSetValue(DWORD dwTlsIndex,LPVOID lpTlsValue) */
   return ((TlsSetValue(key,(void *) value) != 0) ? MagickPass : MagickFail);
 #else
   *key=(unsigned long) value;
@@ -75,6 +78,7 @@ MagickExport void *MagickTsdGetSpecific(MagickTsdKey_t key)
 #if defined(HAVE_PTHREAD)
   return (pthread_getspecific(key));
 #elif defined(MSWINDOWS)
+  /* LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex) */
   return TlsGetValue(key);
 #else
   return (void *) (*key);

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick CVS</title>
+<meta content="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD. With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format. " name="description" />
+<meta content="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++" name="keywords" />
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="graphicsmagick-cvs">
+<h1 class="title">GraphicsMagick CVS</h1>
+<p>The GraphicsMagick source is available via anonymous CVS. This is a convenient
+way for developers from around the country or world to download the
+GraphicsMagick source, fix bugs, or add new features.</p>
+<div class="section">
+<h1><a id="what-is-cvs" name="what-is-cvs">What is CVS</a></h1>
+<p>CVS is the Concurrent Version System and is a very popular version control tool
+for software projects. It is designed to allow multiple authors to be
+able to simultaneously operate on the same source tree. This source tree is
+centrally maintained, but each developer has a local mirror of this repository
+that they make their changes to.</p>
+</div>
+<div class="section">
+<h1><a id="cvsweb-access" name="cvsweb-access">CVSWeb Access</a></h1>
+<p>A <a class="reference" href="http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/">CVSWeb</a> interface is available which may be used to interactively view the
+latest versions of files, or the changes to files, using your web browser.</p>
+</div>
+<div class="section">
+<h1><a id="cvs-command-summary" name="cvs-command-summary">CVS Command Summary</a></h1>
+<p>Here is a summary of CVS commands. See the <a class="reference" href="http://www.cvshome.org/">CVS Home Page</a> for detailed
+information and documentation about CVS. The command <tt class="docutils literal"><span class="pre">cvs</span> <span class="pre">–help-commands</span></tt> will
+print out all of the available commands. The command <tt class="docutils literal"><span class="pre">cvs</span> <span class="pre">&lt;command&gt;</span> <span class="pre">–help</span></tt> will
+cause a help message to be printed for the specified &lt;command&gt;.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Action</th>
+<th class="head">Result</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>add</td>
+<td>Add a new file or directory to the repository.</td>
+</tr>
+<tr><td>checkout</td>
+<td>Make a working directory of source files for editing.</td>
+</tr>
+<tr><td>commit</td>
+<td>Apply changes to the source repository (write access).</td>
+</tr>
+<tr><td>diff</td>
+<td>Show differences between local files and the source repository.</td>
+</tr>
+<tr><td>history</td>
+<td>Show reports on cvs commands against the source repository.</td>
+</tr>
+<tr><td>log</td>
+<td>Display CVS log information.</td>
+</tr>
+<tr><td>rdiff</td>
+<td>Prepare a collection of differences reflecting changes between release.</td>
+</tr>
+<tr><td>status</td>
+<td>Show current status of files in the repository and local copies.</td>
+</tr>
+<tr><td>update</td>
+<td>Bring your working directory up to date with the repository.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h1><a id="using-anonymous-cvs" name="using-anonymous-cvs">Using Anonymous CVS</a></h1>
+<p>A live source tree for GraphicsMagick is available from
+<tt class="docutils literal"><span class="pre">cvs.graphicsmagick.org</span></tt>. This source tree may be retrieved over the network using
+the <a class="reference" href="http://www.cvshome.org/">CVS program</a>. Microsoft Windows users may be interested in <a class="reference" href="http://www.tortoisecvs.org/">TortoiseCVS</a>,
+which transparently extends the Windows file manager to support CVS. There
+are currently two CVS protocols available for use: 'EXT' and 'PSERVER'. The
+'EXT' protocol is used on top of encrypted SSH so it is very secure. The
+'PSERVER' protocol uses simple TCP and plain-text passwords so it is not
+very secure. GraphicsMagick CVS is in the process of transitioning to using
+SSH access only (due to security concerns), so using the EXT protocol is
+recommended. Some corporate firewalls do not allow outbound PSERVER connections
+(to TCP port 2401) while they do allow SSH connections.</p>
+<p>The protocol to use is indicated by the prefix of the CVSROOT specification. The
+CVSROOT specification may be specified via the CVSROOT environment variable or
+as an argument to the cvs -d option. The necessary CVSROOT specifications are
+shown in the following table.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Protocol</th>
+<th class="head">CVSROOT Specification</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>EXT</td>
+<td>:ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick</td>
+</tr>
+<tr><td>PSERVER</td>
+<td>:pserver:anonymous&#64;cvs.graphicsmagick.org:/GraphicsMagick</td>
+</tr>
+</tbody>
+</table>
+<p>To specify the cvs root directly on the command line:</p>
+<pre class="literal-block">
+cvs -d :pserver:anonymous&#64;cvs.graphicsmagick.org:/GraphicsMagick command args...
+</pre>
+<p>Or to set as an environment variable:</p>
+<pre class="literal-block">
+export CVSROOT=:ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick
+setenv CVSROOT :ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick
+</pre>
+<p>When using the PSERVER protocol, a CVS login is needed prior to checking out the
+sources:</p>
+<pre class="literal-block">
+cvs login
+</pre>
+<p>This will ask you for a password. The password is anonymous. Enter it and press
+Return. The EXT protocol does not currently require a password when used for
+anonymous access.</p>
+<p>The CVS program supports a configuration file (<tt class="docutils literal"><span class="pre">$HOME/.cvsrc</span></tt>). Many command
+options used in the remaining instructions may be set as defaults (so they don't
+need to be repeated) by creating a .cvsrc file in your home directory with the
+following contents:</p>
+<pre class="literal-block">
+cvs -z3
+update -P -d
+checkout -P
+diff -u
+</pre>
+<p>To get the tree and place it in a sub-directory of your current working
+directory, issue the command:</p>
+<pre class="literal-block">
+cvs co -P GraphicsMagick
+</pre>
+<p>Or to save bandwidth get the compressed version, type:</p>
+<pre class="literal-block">
+cvs -z3 co -P GraphicsMagick
+</pre>
+<p>Note that adding <tt class="docutils literal"><span class="pre">-r</span> <span class="pre">GraphicsMagick-1_2</span></tt> requests the sources from the
+GraphicsMagick 1.2 release branch.</p>
+<p>To update the sources within a checked out directory execute:</p>
+<pre class="literal-block">
+cvs update -P -d
+</pre>
+<p>and only the files which have changed will be updated.</p>
+<p>The available modules relating to GraphicsMagick are:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">GraphicsMagick</span></tt> (core sources)</li>
+<li><tt class="docutils literal"><span class="pre">GraphicsMagick-NT</span></tt> (everything needed for Microsoft Windows)</li>
+<li><tt class="docutils literal"><span class="pre">GraphicsMagick-World</span></tt> (everything related to GraphicsMagick)</li>
+</ul>
+<p>To check out the GraphicsMagick source for Microsoft Windows, try this command
+line:</p>
+<pre class="literal-block">
+cvs -z3 co -P -r GraphicsMagick-1_2 GraphicsMagick-NT
+</pre>
+<p>If you require a specific release of GraphicsMagick (e.g. 1.2.2), you may check
+it out like:</p>
+<pre class="literal-block">
+cvs -z3 co-r GraphicsMagick-1_2_2 -P GraphicsMagick
+</pre>
+<p>where the <tt class="docutils literal"><span class="pre">GraphicsMagick-1_2_2</span></tt> is the release tag. You can use:</p>
+<pre class="literal-block">
+cvs status -v README.txt
+</pre>
+<p>from within an existing checked out directory to see what branch and release
+tags are available.</p>
+<p>You can use:</p>
+<pre class="literal-block">
+cvs -z3 update -r GraphicsMagick-1_2_2
+</pre>
+<p>from within an existing checked out directory to move it up (or down) to that
+branch or release tag.</p>
+<p>Checking out from release tag, or updating to a release tag, causes the &quot;sticky&quot;
+flag to be set on checked out files so that further update requests will only
+cause an update if the tag is a branch tag, and is a newer version on the
+branch. To clear the sticky flags and update to the most current version on the
+trunk, use:</p>
+<pre class="literal-block">
+cvs -z3 update -A
+</pre>
+<p>Once a release has been tagged, checking out or updating using a release tag is
+the only reliable way to obtain release files from CVS since the default is to
+check out the most current sources on the requested branch, which may not be
+stable or released.</p>
+<p>Using compression levels over <tt class="docutils literal"><span class="pre">-z3</span></tt> may slow the CVS transfer since they require
+the CVS server to work much harder, yet don't compress the data much more.</p>
+</div>
+<div class="section">
+<h1><a id="cvs-software" name="cvs-software">CVS Software</a></h1>
+<p>The best place to look for the latest version of CVS is at the <a class="reference" href="http://www.cvshome.org/">CVS Home Page</a>.
+There is also a lot of information and documentation about CVS available on
+numerous other web sites.</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2008</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 20:27 UTC.
+
+</div>
+</body>
+</html>

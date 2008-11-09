@@ -278,7 +278,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
         }
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  LoadImageText,image->filename))
         break;
   }
   (void) ReadBlobByte(image);  /* end of line */
@@ -367,7 +368,8 @@ static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
     *q++=0x00;
     *q++=0x00;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   /*
@@ -982,8 +984,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1009,8 +1012,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1039,8 +1043,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1096,8 +1101,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1128,8 +1134,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1186,8 +1193,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               {
-                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
-                  exception);
+                status=MagickMonitorFormatted(image->rows-y-1,image->rows,
+                                              exception,LoadImageText,
+                                              image->filename);
                 if (status == False)
                   break;
               }
@@ -1244,8 +1252,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
-          exception);
+        status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename);
         if (status == False)
           break;
       }
@@ -1294,6 +1303,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->module="BMP";
   entry->adjoin=False;
   entry->seekable_stream=True;
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("BMP2");
@@ -1302,9 +1312,10 @@ ModuleExport void RegisterBMPImage(void)
   entry->description="Microsoft Windows bitmap image v2";
   entry->module="BMP";
   entry->adjoin=False;
+  entry->coder_class=PrimaryCoderClass;
   entry->seekable_stream=True;
-
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("BMP3");
   entry->encoder=(EncoderHandler) WriteBMPImage;
   entry->magick=(MagickHandler) IsBMP;
@@ -1312,6 +1323,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->module="BMP";
   entry->adjoin=False;
   entry->seekable_stream=True;
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1567,7 +1579,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                              SaveImageText,image->filename))
                     break;
             }
           break;
@@ -1596,7 +1609,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             }
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
-             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+             if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                         SaveImageText,image->filename))
                break;
         }
         break;
@@ -1624,7 +1638,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
         break;
@@ -1658,7 +1673,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                          SaveImageText,image->filename))
                 break;
         }
         break;
@@ -1905,8 +1921,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

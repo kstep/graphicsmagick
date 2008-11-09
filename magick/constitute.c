@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
@@ -450,7 +451,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
 
               switch (dispatch_type)
                 {
@@ -639,7 +640,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x++)
         {
 	  SetRedSample(q,0);
@@ -696,7 +697,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     double quantum_float;
                     register const float *p = (const float*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
-                    quantum=RoundSignedToQuantum(quantum_float);
+                    quantum=RoundDoubleToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
@@ -705,7 +706,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     double quantum_float;
                     register const double *p = (const double*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
-                    quantum=RoundSignedToQuantum(quantum_float);
+                    quantum=RoundDoubleToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
@@ -780,7 +781,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y C o n s t i t u t e                                         %
++   D e s t r o y C o n s t i t u t e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -805,6 +806,158 @@ MagickExport void DestroyConstitute(void)
   /* The final call actually releases the associated mutex used to prevent
      multiple threads from accessing the data */
   DestroySemaphoreInfo(&constitute_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     C o n s t i t u t e T e x t u r e I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConstituteTextureImage() returns a new image canvas based on repeatedly
+%  tiling the texture image across and down the new image canvas.  The
+%  returned image properties are similar to the texture image properties.
+%
+%  The format of the TextureImage method is:
+%
+%      Image *ConstituteTextureImage(unsigned long columns,unsigned long rows,
+%                              const Image *texture, ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o columns: The number of columns in the new image.
+%
+%    o rows: The number of rows in the new image.
+%
+%    o texture: The texture image to layer on the background.
+%
+%    o exceptions: Any errors are reported here.
+%
+*/
+#define ConstituteTextureImageText  "[%s] Generate image texture...  "
+MagickExport Image *ConstituteTextureImage(const unsigned long columns,
+                                           const unsigned long rows,
+                                           const Image *texture_image,
+                                           ExceptionInfo *exception)
+{
+  Image
+    *canvas_image;
+
+  long
+    y;
+
+  unsigned long
+    row_count=0;
+
+  MagickPassFail
+    status=MagickPass;
+
+  assert(texture_image != (Image *) NULL);
+  assert(texture_image->signature == MagickSignature);
+
+  canvas_image=CloneImage(texture_image,columns,rows,MagickTrue,exception);
+  if (canvas_image == (Image *) NULL)
+    return canvas_image;
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
+  for (y=0; y < (long) canvas_image->rows; y++)
+    {
+      const PixelPacket
+        *texture_pixels;
+
+      PixelPacket
+        *canvas_pixels;
+
+      unsigned long
+        x;
+
+      MagickBool
+        thread_status;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      texture_pixels=AcquireImagePixels(texture_image,0,
+                                        y % texture_image->rows,
+                                        texture_image->columns,1,
+                                        exception);
+      canvas_pixels=SetImagePixelsEx(canvas_image,0,y,canvas_image->columns,
+                                     1,exception);
+
+      if ((texture_pixels == (const PixelPacket *) NULL) ||
+          (canvas_pixels == (PixelPacket *) NULL))
+        thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+        {
+          const IndexPacket
+            *texture_indexes=(const IndexPacket *) NULL;
+          
+          IndexPacket
+            *canvas_indexes=(IndexPacket *) NULL;;
+
+          if (texture_image->storage_class == PseudoClass)
+            texture_indexes=AccessImmutableIndexes(texture_image);
+          if (canvas_image->storage_class == PseudoClass)
+            canvas_indexes=AccessMutableIndexes(canvas_image);
+
+          for (x=0; x < canvas_image->columns; x+=texture_image->columns)
+            {
+              unsigned long
+                texture_width;
+
+              texture_width=texture_image->columns;
+              if ((x+texture_width) > canvas_image->columns)
+                texture_width=canvas_image->columns-x;
+
+              if ((texture_indexes != (const IndexPacket *) NULL) &&
+                  (canvas_indexes != (const IndexPacket *) NULL))
+                {
+                  (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
+                  canvas_indexes += texture_width;
+                }
+              (void) memcpy(canvas_pixels,texture_pixels,texture_width*sizeof(PixelPacket));
+              canvas_pixels += texture_width;
+            }
+
+          if (!SyncImagePixelsEx(canvas_image,exception))
+            thread_status=MagickFail;
+        }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,canvas_image->rows))
+          if (!MagickMonitorFormatted(row_count,canvas_image->rows,exception,
+                                      ConstituteTextureImageText,
+                                      texture_image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
+    }
+
+  if (status == MagickFail)
+    {
+      DestroyImage(canvas_image);
+      canvas_image=(Image *) NULL;
+    }
+
+  if (canvas_image != (Image *) NULL)
+    {
+      canvas_image->is_monochrome=texture_image->is_monochrome;
+      canvas_image->is_grayscale=texture_image->is_grayscale;
+    }
+
+  return canvas_image;
 }
 
 /*
@@ -1151,7 +1304,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                     else
                       {
                         double intensity = PixelIntensity(p);
-                        quantum=RoundToQuantum(intensity);
+                        quantum=RoundDoubleToQuantum(intensity);
                       }
                     break;
                   }
@@ -1242,13 +1395,13 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ExportImagePixelArea() transfers one or more pixel components from the
-%  image pixel cache to a user supplied buffer.  By default, values are
-%  written in network (big-endian) byte/bit order.  By setting the 'endian'
-%  member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be output
-%  as little (LSBEndian), big (MSBEndian), or host native (NativeEndian)
-%  endian values.  This function is quite powerful in that besides common
-%  native CPU type sizes, it can support any integer bit depth from 1 to 32
-%  (e.g. 13) as well as 32 and 64-bit float.
+%  default image pixel cache view to a user supplied buffer.  By default,
+%  values are written in network (big-endian) byte/bit order.  By setting
+%  the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values
+%  may be output as little (LSBEndian), big (MSBEndian), or host native
+%  (NativeEndian) endian values.  This function is quite powerful in that
+%  besides common native CPU type sizes, it can support any integer bit
+%  depth from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
 %  
 %
 %  MagickPass is returned if the pixels are successfully transferred,
@@ -1288,139 +1441,93 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %        exported (may be NULL)
 %
 */
-MagickExport const char *StorageTypeToString(const StorageType storage_type)
-{
-    const char
-    *p = "Unknown";
-
-    switch (storage_type)
-      {
-      case CharPixel:
-        p="CharPixel";
-        break;
-      case ShortPixel:
-        p="ShortPixel";
-        break;
-      case IntegerPixel:
-        p="IntegerPixel";
-        break;
-      case LongPixel:
-        p="LongPixel";
-        break;
-      case FloatPixel:
-        p="FloatPixel";
-        break;
-      case DoublePixel:
-        p="DoublePixel";
-        break;
-      }
-
-    return p;
-}
-MagickExport const char *QuantumSampleTypeToString(const QuantumSampleType sample_type)
-{
-    const char
-    *p = "Unknown";
-
-    switch (sample_type)
-      {
-      case UndefinedQuantumSampleType:
-        p="UndefinedQuantumSampleType";
-        break;
-      case UnsignedQuantumSampleType:
-        p="UnsignedQuantumSampleType";
-        break;
-      case FloatQuantumSampleType:
-        p="FloatQuantumSampleType";
-        break;
-      }
-
-    return p;
-}
-MagickExport const char *QuantumTypeToString(const QuantumType quantum_type)
-{
-  const char
-    *p = "Unknown";
-
-  switch (quantum_type)
-    {
-    case UndefinedQuantum:
-      p="UndefinedQuantum";
-      break;
-    case IndexQuantum:
-      p="IndexQuantum";
-      break;
-    case GrayQuantum:
-      p="GrayQuantum";
-      break;
-    case IndexAlphaQuantum:
-      p="IndexAlphaQuantum";
-      break;
-    case GrayAlphaQuantum:
-      p="GrayAlphaQuantum";
-      break;
-    case RedQuantum:
-      p="RedQuantum";
-      break;
-    case CyanQuantum:
-      p="CyanQuantum";
-      break;
-    case GreenQuantum:
-      p="GreenQuantum";
-      break;
-    case YellowQuantum:
-      p="YellowQuantum";
-      break;
-    case BlueQuantum:
-      p="BlueQuantum";
-      break;
-    case MagentaQuantum:
-      p="MagentaQuantum";
-      break;
-    case AlphaQuantum:
-      p="AlphaQuantum";
-      break;
-    case BlackQuantum:
-      p="BlackQuantum";
-      break;
-    case RGBQuantum:
-      p="RGBQuantum";
-      break;
-    case RGBAQuantum:
-      p="RGBAQuantum";
-      break;
-    case CMYKQuantum:
-      p="CMYKQuantum";
-      break;
-    case CMYKAQuantum:
-      p="CMYKAQuantum";
-      break;
-    case CIEYQuantum:
-      p="CIEYQuantum";
-      break;
-    case CIEXYZQuantum:
-      p="CIEXYZQuantum";
-      break;
-    }
-
-  return p;
-}
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   unsigned char *destination,const ExportPixelAreaOptions *options,
   ExportPixelAreaInfo *export_info)
 {
-  register IndexPacket
+  return ExportViewPixelArea(AccessDefaultCacheView(image),
+                             quantum_type,quantum_size,
+                             destination,options,export_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x p o r t V i e w P i x e l A r e a                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ExportViewPixelArea() transfers one or more pixel components from the
+%  specified image pixel cache view to a user supplied buffer.  By default,
+%  values are written in network (big-endian) byte/bit order.  By setting the
+%  'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may be
+%  output as little (LSBEndian), big (MSBEndian), or host native
+%  (NativeEndian) endian values.  This function is quite powerful in that
+%  besides common native CPU type sizes, it can support any integer bit depth
+%  from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
+%  
+%
+%  MagickPass is returned if the pixels are successfully transferred,
+%  otherwise MagickFail.
+%
+%  The format of the ExportViewPixelArea method is:
+%
+%      MagickPassFail ExportViewPixelArea(const ViewInfo *view,
+%                                         const QuantumType quantum_type,
+%                                         unsigned int quantum_size,
+%                                         unsigned char *destination,
+%                                         const ExportPixelAreaOptions *options,
+%                                         ExportPixelAreaInfo *export_info)
+%
+%  A description of each parameter follows:
+%
+%    o status: Returns MagickPass if the pixels are successfully transferred,
+%              otherwise MagickFail.
+%
+%    o view: The image pixel cache view.
+%
+%    o quantum_type: Declare which pixel components to transfer (AlphaQuantum,
+%        BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+%        GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+%        IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+%        RedQuantum, YellowQuantum)
+%
+%    o quantum_size: Bits per quantum sample (range 1-32, and 64).
+%
+%    o destination:  The components are transferred to this buffer.  The user
+%        is responsible for ensuring that the destination buffer is large
+%        enough.
+%
+%    o options: Additional options specific to quantum_type (may be NULL).
+%
+%    o export_info : Populated with information regarding the pixels
+%        exported (may be NULL)
+%
+*/
+MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
+  const QuantumType quantum_type,const unsigned int quantum_size,
+  unsigned char *destination,const ExportPixelAreaOptions *options,
+  ExportPixelAreaInfo *export_info)
+{
+  const Image
+    *image;
+
+  register const IndexPacket
     *indexes;
 
-  register unsigned long
-    x;
-
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
     *q;
+
+  register unsigned long
+    x;
 
   register unsigned int
     unsigned_value,
@@ -1447,8 +1554,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   EndianType
     endian=MSBEndian;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(view != (ViewInfo *) NULL);
   assert(destination != (unsigned char *) NULL);
   assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ExportPixelAreaOptions *) NULL) ||
@@ -1518,14 +1624,16 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
         }
     }
 
-  number_pixels=(unsigned long) GetPixelCacheArea(image);
-  p=GetPixels(image);
-  indexes=GetIndexes(image);
+  image=GetCacheViewImage(view);
+  number_pixels=(unsigned long) GetCacheViewArea(view);
+  p=AccessCacheViewPixels(view);
+  indexes=AcquireCacheViewIndexes(view);
   q=destination;
   switch (quantum_type)
     {
     case IndexQuantum:
       {
+        assert(indexes != (const IndexPacket *) NULL);
         assert(image->colors <= MaxColormapSize);
         if (sample_type == UnsignedQuantumSampleType)
           {
@@ -3144,7 +3252,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportCharQuantum(q,ScaleQuantumToChar(GetCyanSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentSample(p)));
+                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
                       ExportCharQuantum(q,ScaleQuantumToChar(GetYellowSample(p)));
                       ExportCharQuantum(q,ScaleQuantumToChar(GetBlackSample(p)));
                       p++;
@@ -3156,7 +3264,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentSample(p)));
+                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
                       p++;
@@ -3168,7 +3276,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentSample(p)));
+                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
@@ -3190,7 +3298,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p));
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
                           p++;
@@ -3202,7 +3310,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)/unsigned_scale);
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
                           p++;
@@ -3214,7 +3322,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)*unsigned_scale);
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
                           p++;
@@ -3234,7 +3342,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportFloatQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetMagentSample(p)*double_scale+double_minvalue);
+                      ExportFloatQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
@@ -3246,7 +3354,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportDoubleQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetMagentSample(p)*double_scale+double_minvalue);
+                      ExportDoubleQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
                       ExportDoubleQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
                       ExportDoubleQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
@@ -3270,7 +3378,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportCharQuantum(q,ScaleQuantumToChar(GetCyanSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentSample(p)));
+                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
                       ExportCharQuantum(q,ScaleQuantumToChar(GetYellowSample(p)));
                       ExportCharQuantum(q,ScaleQuantumToChar(GetBlackSample(p)));
                       ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-*indexes));
@@ -3284,7 +3392,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentSample(p)));
+                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
                       ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-*indexes));
@@ -3298,7 +3406,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentSample(p)));
+                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
@@ -3322,7 +3430,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p));
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
                           BitStreamMSBWrite(&stream,quantum_size,MaxRGB-*indexes);
@@ -3336,7 +3444,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)/unsigned_scale);
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,
@@ -3351,7 +3459,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       for (x = number_pixels; x != 0; --x)
                         {
                           BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentSample(p)*unsigned_scale);
+                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
                           BitStreamMSBWrite(&stream,quantum_size,
@@ -3374,7 +3482,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportFloatQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetMagentSample(p)*double_scale+double_minvalue);
+                      ExportFloatQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       ExportFloatQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
@@ -3387,7 +3495,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportDoubleQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetMagentSample(p)*double_scale+double_minvalue);
+                      ExportDoubleQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
                       ExportDoubleQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
                       ExportDoubleQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       ExportDoubleQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
@@ -3469,7 +3577,7 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImportImagePixelArea() transfers one or more pixel components from a user
-%  supplied buffer into the image pixel cache of an image. By default,
+%  supplied buffer into the default image pixel cache view. By default,
 %  values are read in network (big-endian) byte/bit order.  By setting the
 %  'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit values may
 %  be output as little (LSBEndian), big (MSBEndian), or host native
@@ -3512,12 +3620,79 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %               imported (may be NULL)
 %
 */
-
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   const unsigned char *source,const ImportPixelAreaOptions *options,
   ImportPixelAreaInfo *import_info)
 {
+  return ImportViewPixelArea(AccessDefaultCacheView(image),
+                             quantum_type,quantum_size,
+                             source,options,import_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m p o r t V i e w P i x e l A r e a                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ImportViewPixelArea() transfers one or more pixel components from a user
+%  supplied buffer into the specified image pixel cache view of an image. By
+%  default, values are read in network (big-endian) byte/bit order.  By
+%  setting the 'endian' member of ExportPixelAreaOptions, 16, 32 and 64-bit
+%  values may be output as little (LSBEndian), big (MSBEndian), or host
+%  native (NativeEndian) endian values.  This function is quite powerful in
+%  that besides common native CPU type sizes, it can support any integer bit
+%  depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.
+%
+%  MagickPass is returned if the pixels are successfully transferred,
+%  otherwise MagickFail.
+%
+%  The format of the ImportViewPixelArea method is:
+%
+%      MagickPassFail ImportViewPixelArea(ViewInfo *view,
+%                                         const QuantumType quantum_type,
+%                                         const unsigned int quantum_size,
+%                                         const unsigned char *source,
+%                                         const ImportPixelAreaOptions *options,
+%                                         ImportPixelAreaInfo *import_info)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PushImagePixels returns MagickPass if the pixels are
+%      successfully transferred, otherwise MagickFail.
+%
+%    o view: The pixel view to import pixels into.
+%
+%    o quantum_type: Declare which pixel components to transfer (AlphaQuantum,
+%        BlackQuantum, BlueQuantum, CMYKAQuantum, CMYKQuantum, CyanQuantum,
+%        GrayAlphaQuantum, GrayQuantum, GreenQuantum, IndexAlphaQuantum,
+%        IndexQuantum, MagentaQuantum, RGBAQuantum, RGBQuantum,
+%        RedQuantum, YellowQuantum)
+%
+%    o quantum_size: Bits per quantum sample (range 1-32, and 64).
+%
+%    o source:  The pixel components are transferred from this buffer.
+%
+%    o options: Additional options specific to quantum_type (may be NULL).
+%
+%    o import_info : Populated with information regarding the pixels
+%               imported (may be NULL)
+%
+*/
+MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
+  const QuantumType quantum_type,const unsigned int quantum_size,
+  const unsigned char *source,const ImportPixelAreaOptions *options,
+  ImportPixelAreaInfo *import_info)
+{
+  Image
+    *image;
+
   register const unsigned char
     *p;
 
@@ -3557,8 +3732,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   EndianType
     endian=MSBEndian;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(view != (ViewInfo *) NULL);
   assert(source != (const unsigned char *) NULL);
   assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ImportPixelAreaOptions *) NULL) ||
@@ -3629,10 +3803,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
         }
     }
 
-  number_pixels=(long) GetPixelCacheArea(image);
+  image=GetCacheViewImage(view);
+  number_pixels=(long) GetCacheViewArea(view);
   p=source;
-  q=GetPixels(image);
-  indexes=GetIndexes(image);
+  q=AccessCacheViewPixels(view);
+  indexes=GetCacheViewIndexes(view);
   switch (quantum_type)
     {
     case IndexQuantum:
@@ -4100,7 +4275,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4112,7 +4287,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4350,11 +4525,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4366,11 +4541,11 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGraySample(q,RoundSignedToQuantum(double_value));
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4459,7 +4634,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4471,7 +4646,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4560,7 +4735,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4572,7 +4747,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4662,7 +4837,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4674,7 +4849,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4762,7 +4937,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           ImportFloatQuantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
-                          *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
                     }
                     break;
@@ -4773,7 +4948,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                           ImportDoubleQuantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
-                          *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
                     }
                     break;
@@ -4862,7 +5037,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4874,7 +5049,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4962,7 +5137,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -4974,7 +5149,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5085,15 +5260,15 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
@@ -5106,15 +5281,15 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
@@ -5224,19 +5399,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5248,19 +5423,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetRedSample(q,RoundSignedToQuantum(double_value));
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetGreenSample(q,RoundSignedToQuantum(double_value));
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlueSample(q,RoundSignedToQuantum(double_value));
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetOpacitySample(q,MaxRGB-RoundSignedToQuantum(double_value));
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
                 }
@@ -5371,19 +5546,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -5396,19 +5571,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
@@ -5525,23 +5700,23 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       ImportFloatQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
                 }
@@ -5553,23 +5728,23 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetCyanSample(q,RoundSignedToQuantum(double_value));
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetMagentaSample(q,RoundSignedToQuantum(double_value));
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetYellowSample(q,RoundSignedToQuantum(double_value));
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      SetBlackSample(q,RoundSignedToQuantum(double_value));
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       ImportDoubleQuantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
-                      *indexes++=(IndexPacket) MaxRGB-RoundSignedToQuantum(double_value);
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
                 }
@@ -5710,6 +5885,185 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k F i n d R a w I m a g e M i n M a x                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickFindRawImageMinMax() obtains the minimum and maximum sample values
+%  for a raw image.  The image blob must already be open with its current
+%  seek offset pointing to the start of the raw data.  The seek offset is
+%  restored when this function returns.  File data is processed on a 
+%  scanline basis in order to minimize memory consumption.  The purpose of
+%  this function is to support pre-scanning a raw image to find its maximum
+%  values so that appropriate scaling may be applied when the data is read a
+%  second time. MagickFail is returned if a problem occurs while scanning the
+%  data.
+%
+%  The format of the MagickFindRawImageMinMax method is:
+%
+%      MagickPassFail MagickFindRawImageMinMax(Image *image, EndianType endian,
+%                   unsigned long width, unsigned long height,StorageType type,
+%                   unsigned scanline_octets, void *scanline_buffer,
+%                   double *min, double *max)
+%
+%  A description of each parameter follows:
+%
+%    o image: Pointer to an image with an already open blob, with seek
+%         offset pointing to raw data.
+%
+%    o endian: Endian order of raw data (LSBEndian or MSBEndian)
+%
+%    o width: Number of raw samples in a scanline.
+%
+%    o height: Number of scanlines to process.
+%
+%    o type: Raw data storage type.
+%
+%    o scanline_octets: Number of octets to read per scanline.
+%
+%    o scanline_buffer: Working buffer for scanlines.  Allocation size
+%         must at least be enough to contain scanline octets.
+%
+%    o min: Pointer to double value to update with minimum value.
+%
+%    o max: Pointer to double value to update with maximum value.
+%
+*/
+#define MagickFindMinMax(status,image,read_func,basic_type,scanline_octets,scanline_buffer,min,max) \
+  {                                                                     \
+    unsigned long                                                       \
+      y;                                                                \
+                                                                        \
+    for (y = 0; y < height; y++)                                        \
+      {                                                                 \
+        unsigned long                                                   \
+          x;                                                            \
+                                                                        \
+        basic_type                                                      \
+          *scanline;                                                    \
+                                                                        \
+        scanline=(basic_type *) scanline_buffer;                        \
+        if ((read_func)(image, scanline_octets, scanline) !=            \
+            scanline_octets)                                            \
+          {                                                             \
+            status=MagickFail;                                          \
+            break;                                                      \
+          }                                                             \
+                                                                        \
+        if (y == 0)                                                     \
+          *min = *max = (double) scanline[0];                           \
+                                                                        \
+        for (x = 0; x < width; x++)                                     \
+          {                                                             \
+            if (*min > (double) scanline[x])                            \
+              *min = (double) scanline[x];                              \
+            if (*max < (double) scanline[x])                            \
+              *max = (double) scanline[x];                              \
+          }                                                             \
+      }                                                                 \
+  }
+
+MagickPassFail
+MagickFindRawImageMinMax(Image *image, EndianType endian,
+                         unsigned long width, unsigned long height,StorageType type,
+                         unsigned scanline_octets, void *scanline_buffer,
+                         double *min, double *max)
+{
+  magick_off_t
+    filepos;
+
+  MagickPassFail
+    status;
+
+  *min=0.0;
+  *max=1.0;
+  status=MagickFail;
+
+  filepos = TellBlob(image);
+
+  if (filepos >= 0)
+    {
+      status=MagickPass;
+      switch (type)
+        {
+        case CharPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, void *data);
+
+            read_func = ReadBlob;
+            
+            MagickFindMinMax(status,image,read_func,char,scanline_octets,
+                             scanline_buffer,min,max)
+              break;
+          }
+        case ShortPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, magick_uint16_t *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBShorts;
+            else
+              read_func = ReadBlobMSBShorts;
+
+            MagickFindMinMax(status,image,read_func,magick_uint16_t,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case IntegerPixel:
+        case LongPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, magick_uint32_t *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBLongs;
+            else
+              read_func = ReadBlobMSBLongs;
+
+            MagickFindMinMax(status,image,read_func,magick_uint32_t,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case FloatPixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, float *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBFloats;
+            else
+              read_func = ReadBlobMSBFloats;
+
+            MagickFindMinMax(status,image,read_func,float,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        case DoublePixel:
+          {
+            size_t (*read_func)(Image * image, size_t octets, double *data);
+
+            if (endian == LSBEndian)
+              read_func = ReadBlobLSBDoubles;
+            else
+              read_func = ReadBlobMSBDoubles;
+
+            MagickFindMinMax(status,image,read_func,double,scanline_octets,
+                             scanline_buffer,min,max);
+            break;
+          }
+        }
+
+      (void) SeekBlob(image, filepos, SEEK_SET);
+    }
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i n g I m a g e                                                         %
 %                                                                             %
 %                                                                             %
@@ -5734,24 +6088,6 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static MagickPassFail PingStream(const Image *image,
-  const void *pixels,const size_t columns)
-{
-  (void) image;
-  (void) pixels;
-  (void) columns;
-  return(MagickPass);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 MagickExport Image *PingImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -5767,7 +6103,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
-  image=ReadStream(clone_info,&PingStream,exception);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   /*
     Intentionally restart timer if ping is requested since timing ping

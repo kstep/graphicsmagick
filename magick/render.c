@@ -47,6 +47,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
@@ -64,6 +65,7 @@
 /*
   Typedef declarations.
 */
+
 typedef struct _EdgeInfo
 {
   SegmentInfo
@@ -115,7 +117,8 @@ typedef struct _PathInfo
 static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
-static unsigned int
+static MagickPassFail
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned long
@@ -878,7 +881,7 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 */
 
 static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
-  const long y,const SegmentInfo *edge)
+                              const long y,const SegmentInfo *edge)
 {
   double
     intercept,
@@ -983,45 +986,44 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   return(inverse_affine);
 }
 
-MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
-  const AffineMatrix *affine)
+#define AffineDrawImageText "[%s] Affine composite image..."
+MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
+                                            const AffineMatrix *affine)
 {
+  MagickPassFail
+    status = MagickPass;
+
+  unsigned long
+    row_count=0;
+
   AffineMatrix
     inverse_affine;
 
   long
-    start,
-    stop,
-    y;
-
-  PixelPacket
-    pixel;
+    y,
+    y_max,
+    y_min;
 
   PointInfo
     extent[4],
     min,
-    max,
-    point;
+    max;
 
   register long
-    i,
-    x;
-
-  register PixelPacket
-    *q;
+    i;
 
   SegmentInfo
-    edge,
-    inverse_edge;
+    edge;
 
-  /*
-    Determine bounding box.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(composite != (const Image *) NULL);
   assert(composite->signature == MagickSignature);
   assert(affine != (AffineMatrix *) NULL);
+
+  /*
+    Determine bounding box.
+  */
   extent[0].x=0;
   extent[0].y=0;
   extent[1].x=composite->columns;
@@ -1031,25 +1033,28 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   extent[3].x=0;
   extent[3].y=composite->rows;
   for (i=0; i < 4; i++)
-  {
-    x=(long) extent[i].x;
-    y=(long) extent[i].y;
-    extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
-    extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
-  }
+    {
+      register long
+        x;
+
+      x=(long) extent[i].x;
+      y=(long) extent[i].y;
+      extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
+      extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
+    }
   min=extent[0];
   max=extent[0];
   for (i=1; i < 4; i++)
-  {
-    if (min.x > extent[i].x)
-      min.x=extent[i].x;
-    if (min.y > extent[i].y)
-      min.y=extent[i].y;
-    if (max.x < extent[i].x)
-      max.x=extent[i].x;
-    if (max.y < extent[i].y)
-      max.y=extent[i].y;
-  }
+    {
+      if (min.x > extent[i].x)
+        min.x=extent[i].x;
+      if (min.y > extent[i].y)
+        min.y=extent[i].y;
+      if (max.x < extent[i].x)
+        max.x=extent[i].x;
+      if (max.y < extent[i].y)
+        max.y=extent[i].y;
+    }
   /*
     Affine transform image.
   */
@@ -1063,34 +1068,84 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     edge.y1=0.0;
   if (edge.y2 >= image->rows)
     edge.y2=image->rows-1;
-  for (y=(long) ceil(edge.y1-0.5); y <= (long) floor(edge.y2+0.5); y++)
-  {
-    inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
-    if (inverse_edge.x2 < inverse_edge.x1)
-      continue;
-    if (inverse_edge.x1 < 0)
-      inverse_edge.x1=0.0;
-    if (inverse_edge.x2 >= image->columns)
-      inverse_edge.x2=image->columns-1;
-    start=(long) ceil(inverse_edge.x1-0.5);
-    stop=(long) floor(inverse_edge.x2+0.5);
-    x=start;
-    q=GetImagePixels(image,x,y,stop-x+1,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for ( ; x <= stop; x++)
+  y_min=(long) ceil(edge.y1-0.5);
+  y_max=(long) floor(edge.y2+0.5);
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#endif
+  for (y=y_min; y <= y_max; y++)
     {
-      point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
-      point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
-      pixel=AcquireOnePixel(composite,(long) point.x,(long) point.y,
-        &image->exception);
-      *q=AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
-      q++;
+      MagickBool
+        thread_status;
+
+      long
+        start,
+        stop;
+
+      SegmentInfo
+        inverse_edge;
+
+      register PixelPacket
+        *q;
+
+      register long
+        x;
+
+      thread_status=status;
+      if (thread_status == MagickFail)
+        continue;
+
+      inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
+      if (inverse_edge.x2 < inverse_edge.x1)
+        continue;
+      if (inverse_edge.x1 < 0)
+        inverse_edge.x1=0.0;
+      if (inverse_edge.x2 >= image->columns)
+        inverse_edge.x2=image->columns-1;
+      start=(long) ceil(inverse_edge.x1-0.5);
+      stop=(long) floor(inverse_edge.x2+0.5);
+      x=start;
+      q=GetImagePixelsEx(image,x,y,stop-x+1,1,&image->exception);
+      if (q == (PixelPacket *) NULL)
+        thread_status=MagickFail;
+      if (thread_status != MagickFail)
+        {
+          for ( ; x <= stop; x++)
+            {
+              PointInfo
+                point;
+
+              PixelPacket
+                pixel;
+
+              point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
+              point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
+              (void) AcquireOnePixelByReference(composite,&pixel,(long) point.x,
+                                                (long) point.y,&image->exception);
+              if (!composite->matte)
+                pixel.opacity=OpaqueOpacity;
+              AlphaCompositePixel(q,&pixel,pixel.opacity,q,q->opacity);
+              q++;
+            }
+          if (!SyncImagePixelsEx(image,&image->exception))
+            thread_status=MagickFail;
+        }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical
+#endif
+      {
+        row_count++;
+        if (QuantumTick(row_count,y_max-y_min+1))
+          if (!MagickMonitorFormatted(row_count,y_max-y_min+1,&image->exception,
+                                      AffineDrawImageText,image->filename))
+            thread_status=MagickFail;
+
+        if (thread_status == MagickFail)
+          status=MagickFail;
+      }
     }
-    if (!SyncImagePixels(image))
-      break;
-  }
-  return(True);
+
+  return (status);
 }
 
 /*
@@ -1157,7 +1212,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=GetMagickDimension(clone_info->density,&resolution.x,&resolution.y);
+      count=GetMagickDimension(clone_info->density,&resolution.x,&resolution.y,NULL,NULL);
       if (count != 2)
         resolution.y=resolution.x;
     }
@@ -1500,7 +1555,7 @@ static inline unsigned int IsPoint(const char *point)
 
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
-#define RenderImageText  "  Render image...  "
+#define RenderImageText  "[%s] Render image..."
 
   AffineMatrix
     affine,
@@ -1987,97 +2042,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             primitive_type=ImagePrimitive;
             GetToken(q,&q,token);
-            if (LocaleCompare("Over",token) == 0)
-              {
-                graphic_context[n]->compose=OverCompositeOp;
-                break;
-              }
-            if (LocaleCompare("In",token) == 0)
-              {
-                graphic_context[n]->compose=InCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Out",token) == 0)
-              {
-                graphic_context[n]->compose=OutCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Atop",token) == 0)
-              {
-                graphic_context[n]->compose=AtopCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Xor",token) == 0)
-              {
-                graphic_context[n]->compose=XorCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Plus",token) == 0)
-              {
-                graphic_context[n]->compose=PlusCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Minus",token) == 0)
-              {
-                graphic_context[n]->compose=MinusCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Add",token) == 0)
-              {
-                graphic_context[n]->compose=AddCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Subtract",token) == 0)
-              {
-                graphic_context[n]->compose=SubtractCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Difference",token) == 0)
-              {
-                graphic_context[n]->compose=DifferenceCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Multiply",token) == 0)
-              {
-                graphic_context[n]->compose=MultiplyCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Bumpmap",token) == 0)
-              {
-                graphic_context[n]->compose=BumpmapCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Copy",token) == 0)
-              {
-                graphic_context[n]->compose=CopyCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyRed",token) == 0)
-              {
-                graphic_context[n]->compose=CopyRedCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyGreen",token) == 0)
-              {
-                graphic_context[n]->compose=CopyGreenCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyBlue",token) == 0)
-              {
-                graphic_context[n]->compose=CopyBlueCompositeOp;
-                break;
-              }
-            if (LocaleCompare("CopyOpacity",token) == 0)
-              {
-                graphic_context[n]->compose=CopyOpacityCompositeOp;
-                break;
-              }
-            if (LocaleCompare("Clear",token) == 0)
-              {
-                graphic_context[n]->compose=ClearCompositeOp;
-                break;
-              }
-            status=False;
+            graphic_context[n]->compose=StringToCompositeOperator(token);
+            if (UndefinedCompositeOp == graphic_context[n]->compose)
+              status=False;
             break;
           }
         status=False;
@@ -2964,8 +2931,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_info->text != (char *) NULL)
       MagickFreeMemory(primitive_info->text);
-    status=MagickMonitor(RenderImageText,q-primitive,
-      (magick_uint64_t) primitive_extent,&image->exception);
+    status=MagickMonitorFormatted(q-primitive,
+                                  (magick_uint64_t) primitive_extent,
+                                  &image->exception,
+                                  RenderImageText,image->filename);
     if (status == False)
       break;
   }
@@ -3391,6 +3360,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       */
       start=(long) ceil(bounds.x1-0.5);
       stop=(long) floor(bounds.x2+0.5);
+      /* FIXME: OpenMP */
       for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
       {
         x=start;
@@ -3416,6 +3386,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   */
   start=(long) ceil(bounds.x1-0.5);
   stop=(long) floor(bounds.x2+0.5);
+  /* FIXME: OpenMP */
   for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
   {
     x=start;
@@ -3441,22 +3412,22 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)
-        fill_color=AcquireOnePixel(pattern,
+        (void) AcquireOnePixelByReference(pattern,&fill_color,
           (long) (x-pattern->tile_info.x) % pattern->columns,
           (long) (y-pattern->tile_info.y) % pattern->rows,
           &image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
-        *q=AlphaComposite(&fill_color,fill_opacity,q,
+        AlphaCompositePixel(q,&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       pattern=draw_info->stroke_pattern;
       if (pattern != (Image *) NULL)
-        stroke_color=AcquireOnePixel(pattern,
+        (void) AcquireOnePixelByReference(pattern,&stroke_color,
           (long) (x-pattern->tile_info.x) % pattern->columns,
           (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
-        *q=AlphaComposite(&stroke_color,stroke_opacity,q,
+        AlphaCompositePixel(q,&stroke_color,stroke_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       q++;
     }
@@ -3596,7 +3567,7 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
   }
 }
 
-MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
+static MagickPassFail DrawPrimitive(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   long
@@ -3658,7 +3629,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             target;
 
           color=draw_info->fill;
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           pattern=draw_info->fill_pattern;
           for (y=0; y < (long) image->rows; y++)
           {
@@ -3674,7 +3645,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 }
               if (pattern != (Image *) NULL)
                 {
-                  color=AcquireOnePixel(pattern,
+                  (void) AcquireOnePixelByReference(pattern,&color,
                     (long) (x-pattern->tile_info.x) % pattern->columns,
                     (long) (y-pattern->tile_info.y) % pattern->rows,
                     &image->exception);
@@ -3682,7 +3653,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                     color.opacity=OpaqueOpacity;
                 }
               if (color.opacity != TransparentOpacity)
-                *q=AlphaComposite(&color,color.opacity,q,q->opacity);
+                AlphaCompositePixel(q,&color,color.opacity,q,q->opacity);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -3697,7 +3668,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;
@@ -3748,7 +3719,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           PixelPacket
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           (void) TransparentImage(image,target,TransparentOpacity);
           break;
         }
@@ -3759,7 +3730,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=AcquireOnePixel(image,x,y,&image->exception);
+          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;

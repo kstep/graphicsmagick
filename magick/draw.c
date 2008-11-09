@@ -40,6 +40,7 @@
 #include "magick/blob.h"
 #include "magick/color.h"
 #include "magick/draw.h"
+#include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -2389,106 +2390,7 @@ MagickExport void DrawComposite(DrawContext context,
       ThrowDrawException(ResourceLimitWarning,MemoryAllocationFailed,buffer)
     }
 
-  mode = "copy";
-  switch (composite_operator)
-    {
-    case AddCompositeOp:
-      mode = "add";
-      break;
-    case AtopCompositeOp:
-      mode = "atop";
-      break;
-    case BumpmapCompositeOp:
-      mode = "bumpmap";
-      break;
-    case ClearCompositeOp:
-      mode = "clear";
-      break;
-    case ColorizeCompositeOp:
-      mode = "colorize_not_supported";
-      break;
-    case CopyBlueCompositeOp:
-      mode = "copyblue";
-      break;
-    case CopyCompositeOp:
-      mode = "copy";
-      break;
-    case CopyGreenCompositeOp:
-      mode = "copygreen";
-      break;
-    case CopyOpacityCompositeOp:
-      mode = "copyopacity";
-      break;
-    case CopyRedCompositeOp:
-      mode = "copyred";
-      break;
-    case DarkenCompositeOp:
-      mode = "darken_not_supported";
-      break;
-    case DifferenceCompositeOp:
-      mode = "difference";
-      break;
-    case DisplaceCompositeOp:
-      mode = "displace_not_supported";
-      break;
-    case DissolveCompositeOp:
-      mode = "dissolve_not_supported";
-      break;
-    case HueCompositeOp:
-      mode = "hue_not_supported";
-      break;
-    case InCompositeOp:
-      mode = "in";
-      break;
-    case LightenCompositeOp:
-      mode = "lighten_not_supported";
-      break;
-    case LuminizeCompositeOp:
-      mode = "luminize_not_supported";
-      break;
-    case MinusCompositeOp:
-      mode = "minus";
-      break;
-    case ModulateCompositeOp:
-      mode = "modulate_not_supported";
-      break;
-    case MultiplyCompositeOp:
-      mode = "multiply";
-      break;
-    case NoCompositeOp:
-      mode = "no_not_supported";
-      break;
-    case OutCompositeOp:
-      mode = "out";
-      break;
-    case OverCompositeOp:
-      mode = "over";
-      break;
-    case OverlayCompositeOp:
-      mode = "overlay_not_supported";
-      break;
-    case PlusCompositeOp:
-      mode = "plus";
-      break;
-    case SaturateCompositeOp:
-      mode = "saturate_not_supported";
-      break;
-    case ScreenCompositeOp:
-      mode = "screen_not_supported";
-      break;
-    case SubtractCompositeOp:
-      mode = "subtract";
-      break;
-    case ThresholdCompositeOp:
-      mode = "threshold";
-      break;
-    case XorCompositeOp:
-      mode = "xor";
-      break;
-    default:
-      break;
-    }
-
+  mode = CompositeOperatorToString(composite_operator);
   media_type = MagickToMime( image->magick );
 
   if( media_type != NULL )
@@ -2575,9 +2477,7 @@ MagickExport void DrawLine(DrawContext context,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawMatte() paints on the image's opacity channel in order to set effected
-%  pixels to transparent.
-%  to influence the opacity of pixels. The available paint
-%  methods are:
+%  pixels to transparent.  The available paint methods are:
 %
 %    PointMethod: Select the target pixel
 %    ReplaceMethod: Select any pixel that matches the target pixel.
@@ -4912,8 +4812,8 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
 %  an even number of values. To remove an existing dash array, pass a zero
-%  num_elems argument and null dasharray.
-%  A typical strokeDashArray_ array might contain the members 5 3 2.
+%  num_elems argument and null dasharray. A typical stroke dash array might
+%  contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %

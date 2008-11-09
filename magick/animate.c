@@ -53,7 +53,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   X M a g i c k C o m m a n d                                               %
++   M a g i c k X M a g i c k C o m m a n d                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -193,7 +193,8 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
         if (number_files <= 5)
           continue;
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+        if (!MagickMonitorFormatted(i,number_files,&image->exception,
+                                    LoadImageText,image->filename))
           break;
       }
       DestroyExceptionInfo(&exception);
@@ -379,7 +380,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X A n i m a t e B a c k g r o u n d I m a g e                             %
+%   M a g i c k X A n i m a t e B a c k g r o u n d I m a g e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -605,7 +606,7 @@ MagickExport void MagickXAnimateBackgroundImage(Display *display,
               (next->colors > (unsigned long) visual_info->colormap_size))
             break;
           for (i=0; i < (long) images->colors; i++)
-            if (!ColorMatch(next->colormap+i,images->colormap+i))
+            if (NotColorMatch(next->colormap+i,images->colormap+i))
               break;
           if (i < (long) images->colors)
             break;
@@ -886,7 +887,7 @@ MagickExport void MagickXAnimateBackgroundImage(Display *display,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   X A n i m a t e I m a g e                                                 %
+%   M a g i c k X A n i m a t e I m a g e s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1243,7 +1244,7 @@ MagickExport Image *MagickXAnimateImages(Display *display,
               (next->colors > (unsigned long) visual_info->colormap_size))
             break;
           for (i=0; i < (long) images->colors; i++)
-            if (!ColorMatch(next->colormap+i,images->colormap+i))
+            if (NotColorMatch(next->colormap+i,images->colormap+i))
               break;
           if (i < (long) images->colors)
             break;

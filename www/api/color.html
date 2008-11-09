@@ -1,332 +1,392 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>color - Color related functions</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:bfriesen@freddy.simplesystems.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>color</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
+<body>
 
-<body style="background-color: white">
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-<P><a name="__index__"></a></P>
-<!-- INDEX BEGIN -->
-
+<div class="navmenu">
 <ul>
-
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
-
-		<li><a href="#getcolorinfoarray">GetColorInfoArray</a></li>
-		<li><a href="#getcolorhistogram">GetColorHistogram</a></li>
-		<li><a href="#getcolorlist">GetColorlist</a></li>
-		<li><a href="#getnumbercolors">GetNumberColors</a></li>
-		<li><a href="#isgrayimage">IsGrayImage</a></li>
-		<li><a href="#ismonochromeimage">IsMonochromeImage</a></li>
-		<li><a href="#isopaqueimage">IsOpaqueImage</a></li>
-		<li><a href="#ispaletteimage">IsPaletteImage</a></li>
-		<li><a href="#listcolorinfo">ListColorInfo</a></li>
-		<li><a href="#querycolordatabase">QueryColorDatabase</a></li>
-		<li><a href="#querycolorname">QueryColorname</a></li>
-	</ul>
-
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
 </ul>
-<!-- INDEX END -->
-
-<hr />
-<P>
-</P>
-<h1><a name="name">NAME</a></h1>
-<P>color - Color related functions</P>
-<P>
-</P>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>HistogramColorPacket * <strong>GetColorHistogram</strong>( const Image *, unsigned long *colors, ExceptionInfo *);</P>
-<P>ColorInfo **  <strong>GetColorInfoArray</strong>( ExceptionInfo *exception );</P>
-<P>unsigned long  <strong>GetNumberColors</strong>( const Image *image, FILE *file, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsGrayImage</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsMonochromeImage</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>IsOpaqueImage</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>MagickBool  <strong>IsPaletteImage</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>ListColorInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>QueryColorDatabase</strong>( const char *name, PixelPacket *color, ExceptionInfo *exception );</P>
-<P>unsigned int  <strong>QueryColorname</strong>( const Image *image, const PixelPacket *color, const ComplianceType compliance, char *name, ExceptionInfo *exception );</P>
-<P>
-</P>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<P>
-</P>
-<h2><a name="getcolorinfoarray">GetColorInfoArray</a></h2>
-<blockquote>GetColorInfoArray() returns a sorted null-terminated array of ColorInfo pointers corresponding to the available color definitions. This function should be used to access the entire list rather than GetColorInfo since the list returned by GetColorInfo may be re-ordered every time it is invoked. GetColorList may be used if only a list of color names is desired. The array should be deallocated by the user once it is no longer needed. Do not attempt to deallocate members of the array. </blockquote><P>The format of the GetMagickList method is:</P>
-<blockquote>ColorInfo **GetColorInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="color">
+<h1 class="title">color</h1>
+<h2 class="subtitle" id="color-related-functions">Color related functions</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#getcolorinfoarray" id="id21" name="id21">GetColorInfoArray</a></li>
+<li><a class="reference" href="#getcolorhistogram" id="id22" name="id22">GetColorHistogram</a></li>
+<li><a class="reference" href="#getcolorlist" id="id23" name="id23">GetColorList</a></li>
+<li><a class="reference" href="#getnumbercolors" id="id24" name="id24">GetNumberColors</a></li>
+<li><a class="reference" href="#isgrayimage" id="id25" name="id25">IsGrayImage</a></li>
+<li><a class="reference" href="#ismonochromeimage" id="id26" name="id26">IsMonochromeImage</a></li>
+<li><a class="reference" href="#isopaqueimage" id="id27" name="id27">IsOpaqueImage</a></li>
+<li><a class="reference" href="#ispaletteimage" id="id28" name="id28">IsPaletteImage</a></li>
+<li><a class="reference" href="#listcolorinfo" id="id29" name="id29">ListColorInfo</a></li>
+<li><a class="reference" href="#querycolordatabase" id="id30" name="id30">QueryColorDatabase</a></li>
+<li><a class="reference" href="#querycolorname" id="id31" name="id31">QueryColorname</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id21" id="getcolorinfoarray" name="getcolorinfoarray">GetColorInfoArray</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<pre class="literal-block">
+ColorInfo ** GetColorInfoArray( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>GetColorInfoArray() returns a sorted null-terminated array of ColorInfo
+pointers corresponding to the available color definitions. This function
+should be used to access the entire list rather than GetColorInfo since
+the list returned by GetColorInfo may be re-ordered every time it is
+invoked. GetColorList may be used if only a list of color names is desired.
+The array should be deallocated by the user once it is no longer needed.
+Do not attempt to deallocate members of the array.</p>
+<p>The format of the GetMagickList method is:</p>
+<pre class="literal-block">
+ColorInfo ** GetColorInfoArray( <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getcolorhistogram">GetColorHistogram</a></h2>
-<P>Method GetColorHistogram returns an array of HistogramColorPacket structures which specify the number of times each unique color occurs in the image.  The referenced colors parameter is updated with the number of unique colors in the image.  The returned array should be deallocated by the user once it is no longer ndded.</P>
-<P>The format of the GetColorHistogram method is:</P>
-<blockquote>HistogramColorPacket *GetColorHistogram ( const <A HREF="types.html#Image">Image</A> *, unsigned long *colors, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong><a name="item_o_image_3a">image:</a></strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_colors_3a">colors:</a></strong>
-
-<DD>
-<P>The referenced value is updated with the with the number of unique colors.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id22" id="getcolorhistogram" name="getcolorhistogram">GetColorHistogram</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<pre class="literal-block">
+HistogramColorPacket *GetColorHistogram( const <a class="reference" href="types.html#image">Image</a> *, unsigned long *colors,
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *);
+</pre>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>Method GetColorHistogram returns an array of HistogramColorPacket structures
+which specify the number of times each unique color occurs in the image.
+The referenced colors parameter is updated with the number of unique colors
+in the image. The returned array should be deallocated by the user once it
+is no longer ndded.</p>
+<p>The format of the GetColorHistogram method is:</p>
+<pre class="literal-block">
+HistogramColorPacket *GetColorHistogram( const <a class="reference" href="types.html#image">Image</a> *, unsigned long *colors,
+                                         <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *);
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>colors:</dt>
+<dd>The referenced value is updated with the with the number of
+unique colors.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getcolorlist">GetColorlist</a></h2>
-<P>Method GetColorList returns any colors that match the specified pattern and color standard.</P>
-<P>The format of the GetColorList function is:</P>
-<pre>
-    filelist=GetColorList(const char *pattern,unsigned long *number_colors)</pre>
-<P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_filelist_3a">filelist:</a></strong>
-
-<DD>
-<P>Method GetColorList returns a list of colors that match the specified pattern and color standard.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_pattern_3a">pattern:</a></strong>
-
-<DD>
-<P>Specifies a pointer to a text string containing a pattern.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_number_colors_3a">number_colors:</a></strong>
-
-<DD>
-<P>This integer returns the number of colors in the list.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id23" id="getcolorlist" name="getcolorlist">GetColorList</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<pre class="literal-block">
+filelist=GetColorList( const char *pattern, unsigned long *number_colors );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>Method GetColorList returns any colors that match the specified pattern
+and color standard.</p>
+<p>The format of the GetColorList function is:</p>
+<pre class="literal-block">
+filelist=GetColorList( const char *pattern, unsigned long *number_colors );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>filelist:</dt>
+<dd>Method GetColorList returns a list of colors that match the
+specified pattern and color standard.</dd>
+<dt>pattern:</dt>
+<dd>Specifies a pointer to a text string containing a pattern.</dd>
+<dt>number_colors:</dt>
+<dd>This integer returns the number of colors in the list.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="getnumbercolors">GetNumberColors</a></h2>
-<P>Method GetNumberColors returns the number of unique colors in an image.</P>
-<P>The format of the GetNumberColors method is:</P>
-<blockquote>unsigned long GetNumberColors ( const <A HREF="types.html#Image">Image</A> *image, FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_file_3a">file:</a></strong>
-
-<DD>
-<P>Write a histogram of the color distribution to this file handle.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id24" id="getnumbercolors" name="getnumbercolors">GetNumberColors</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned long GetNumberColors( const <a class="reference" href="types.html#image">Image</a> *image, FILE *file,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>Method GetNumberColors returns the number of unique colors in an image.</p>
+<p>The format of the GetNumberColors method is:</p>
+<pre class="literal-block">
+unsigned long GetNumberColors( const <a class="reference" href="types.html#image">Image</a> *image, FILE *file,
+                               <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>file:</dt>
+<dd>Write a histogram of the color distribution to this file handle.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="isgrayimage">IsGrayImage</a></h2>
-<blockquote>IsGrayImage() returns True if all the pixels in the image have the same red, green, and blue intensities. </blockquote><P>The format of the IsGrayImage method is:</P>
-<blockquote>unsigned int IsGrayImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_status_3a">status:</a></strong>
-
-<DD>
-<P>Method IsGrayImage returns True if the image is grayscale otherwise False is returned.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id25" id="isgrayimage" name="isgrayimage">IsGrayImage</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int IsGrayImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>IsGrayImage() returns True if all the pixels in the image have the same
+red, green, and blue intensities.</p>
+<p>The format of the IsGrayImage method is:</p>
+<pre class="literal-block">
+unsigned int IsGrayImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Method IsGrayImage returns True if the image is grayscale
+otherwise False is returned.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="ismonochromeimage">IsMonochromeImage</a></h2>
-<blockquote>IsMonochromeImage() returns True if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or MaxRGB. </blockquote><P>The format of the IsMonochromeImage method is:</P>
-<blockquote>unsigned int IsMonochromeImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id26" id="ismonochromeimage" name="ismonochromeimage">IsMonochromeImage</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int IsMonochromeImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>IsMonochromeImage() returns True if all the pixels in the image have
+the same red, green, and blue intensities and the intensity is either
+0 or MaxRGB.</p>
+<p>The format of the IsMonochromeImage method is:</p>
+<pre class="literal-block">
+unsigned int IsMonochromeImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="isopaqueimage">IsOpaqueImage</a></h2>
-<blockquote>IsOpaqueImage() returns True if none of the pixels in the image have an opacity value other than opaque ( 0 ) . </blockquote><P>The format of the IsOpaqueImage method is:</P>
-<blockquote>unsigned int IsOpaqueImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>status:</strong>
-
-<DD>
-<P>Method IsOpaqueImage returns False if the image has one or more pixels that are transparent otherwise True is returned.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id27" id="isopaqueimage" name="isopaqueimage">IsOpaqueImage</a></h1>
+<div class="section">
+<h2><a id="id11" name="id11">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int IsOpaqueImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id12" name="id12">Description</a></h2>
+<p>IsOpaqueImage() returns True if none of the pixels in the image have an
+opacity value other than opaque (0).</p>
+<p>The format of the IsOpaqueImage method is:</p>
+<pre class="literal-block">
+unsigned int IsOpaqueImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Method IsOpaqueImage returns False if the image has one or more
+pixels that are transparent otherwise True is returned.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="ispaletteimage">IsPaletteImage</a></h2>
-<P>Method IsPaletteImage returns True if the image is PseudoClass and has 256 unique colors or less.</P>
-<P>The format of the IsPaletteImage method is:</P>
-<blockquote>MagickBool IsPaletteImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong>status:</strong>
-
-<DD>
-<P>Method IsPaletteImage returns True is the image is PseudoClass or has 256 color or less.</P>
-</dd>
-</li>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id28" id="ispaletteimage" name="ispaletteimage">IsPaletteImage</a></h1>
+<div class="section">
+<h2><a id="id13" name="id13">Synopsis</a></h2>
+<pre class="literal-block">
+MagickBool IsPaletteImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id14" name="id14">Description</a></h2>
+<p>Method IsPaletteImage returns True if the image is PseudoClass and has 256
+unique colors or less.</p>
+<p>The format of the IsPaletteImage method is:</p>
+<pre class="literal-block">
+MagickBool IsPaletteImage( const <a class="reference" href="types.html#image">Image</a> *image, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<p>A description of each parameter follows.</p>
+<dl class="docutils">
+<dt>status:</dt>
+<dd>Method IsPaletteImage returns True is the image is
+PseudoClass or has 256 color or less.</dd>
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="listcolorinfo">ListColorInfo</a></h2>
-<blockquote>ListColorInfo() lists color names to the specified file. Color names are a convenience. Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow. </blockquote><P>The format of the ListColorInfo method is:</P>
-<blockquote>unsigned int ListColorInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong>file:</strong>
-
-<DD>
-<P>List color names to this file handle.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id29" id="listcolorinfo" name="listcolorinfo">ListColorInfo</a></h1>
+<div class="section">
+<h2><a id="id15" name="id15">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int ListColorInfo( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id16" name="id16">Description</a></h2>
+<p>ListColorInfo() lists color names to the specified file.  Color names
+are a convenience.  Rather than defining a color by its red, green, and
+blue intensities just use a color name such as white, blue, or yellow.</p>
+<p>The format of the ListColorInfo method is:</p>
+<pre class="literal-block">
+unsigned int ListColorInfo( FILE *file, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<p>A description of each parameter follows.</p>
+<dl class="docutils">
+<dt>file:</dt>
+<dd>List color names to this file handle.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="querycolordatabase">QueryColorDatabase</a></h2>
-<blockquote>QueryColorDatabase() returns the red, green, blue, and opacity intensities for a given color name. </blockquote><P>The format of the QueryColorDatabase method is:</P>
-<blockquote>unsigned int QueryColorDatabase ( const char *name, <A HREF="types.html#PixelPacket">PixelPacket</A> *color, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong><a name="item_o_name_3a">name:</a></strong>
-
-<DD>
-<P>The color name (e.g.  white, blue, yellow).</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_color_3a">color:</a></strong>
-
-<DD>
-<P>The red, green, blue, and opacity intensities values of the named color in this structure.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
-</li>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id30" id="querycolordatabase" name="querycolordatabase">QueryColorDatabase</a></h1>
+<div class="section">
+<h2><a id="id17" name="id17">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int QueryColorDatabase( const char *name, <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *color,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id18" name="id18">Description</a></h2>
+<p>QueryColorDatabase() returns the red, green, blue, and opacity intensities
+for a given color name.</p>
+<p>The format of the QueryColorDatabase method is:</p>
+<pre class="literal-block">
+unsigned int QueryColorDatabase( const char *name, <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *color,
+                                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>name:</dt>
+<dd>The color name (e.g. white, blue, yellow).</dd>
+<dt>color:</dt>
+<dd>The red, green, blue, and opacity intensities values of the
+named color in this structure.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
-<P>
-</P>
-<h2><a name="querycolorname">QueryColorname</a></h2>
-<blockquote>QueryColorname() returns a named color for the given color intensity. If an exact match is not found, a hex value is return instead. For example an intensity of rgb: ( 0, 0, 0 ) returns black whereas rgb: ( 223, 223, 223 ) returns #dfdfdf. </blockquote><P>The format of the QueryColorname method is:</P>
-<blockquote>unsigned int QueryColorname ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> *color, const <A HREF="types.html#ComplianceType">ComplianceType</A> compliance, char *name, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
-<dl>
-<dt><strong>image:</strong>
-
-<DD>
-<P>The image.</P>
-</dd>
-</li>
-<dt><strong>color:</strong>
-
-<DD>
-<P>The color intensities.</P>
-</dd>
-</li>
-<dt><strong><a name="item_o_compliance_3a">Compliance:</a></strong>
-
-<DD>
-<P>Adhere to this color standard: SVG, X11, or XPM.</P>
-</dd>
-</li>
-<dt><strong>name:</strong>
-
-<DD>
-<P>Return the color name or hex value.</P>
-</dd>
-</li>
-<dt><strong>exception:</strong>
-
-<DD>
-<P>Return any errors or warnings in this structure.</P>
-</dd>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id31" id="querycolorname" name="querycolorname">QueryColorname</a></h1>
+<div class="section">
+<h2><a id="id19" name="id19">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int QueryColorname( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *color,
+                             const <a class="reference" href="types.html#compliancetype">ComplianceType</a> compliance, char *name,
+                             <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id20" name="id20">Description</a></h2>
+<p>QueryColorname() returns a named color for the given color intensity.  If
+an exact match is not found, a hex value is return instead.  For example
+an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223)
+returns #dfdfdf.</p>
+<p>The format of the QueryColorname method is:</p>
+<pre class="literal-block">
+unsigned int QueryColorname( const <a class="reference" href="types.html#image">Image</a> *image, const <a class="reference" href="types.html#pixelpacket">PixelPacket</a> *color,
+                             const <a class="reference" href="types.html#compliancetype">ComplianceType</a> compliance, char *name,
+                             <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>color:</dt>
+<dd>The color intensities.</dd>
+<dt>Compliance:</dt>
+<dd>Adhere to this color standard: SVG, X11, or XPM.</dd>
+<dt>name:</dt>
+<dd>Return the color name or hex value.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 00:14 UTC.
 
+</div>
 </body>
-
 </html>

@@ -124,6 +124,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->stealth=MagickTrue;
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("HTML");
@@ -132,6 +133,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("SHTML");
@@ -140,6 +142,7 @@ ModuleExport void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description="Hypertext Markup Language and a client-side image map";
   entry->module="HTML";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -349,8 +352,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             }
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
-        (void) TransparentImage(image,GetOnePixel(image,0,0),
-          TransparentOpacity);
+        {
+          PixelPacket
+            transparent_color;
+
+          (void) AcquireOnePixelByReference(image,&transparent_color,0,0,&image->exception);
+          (void) TransparentImage(image,transparent_color,TransparentOpacity);
+        }
       (void) strlcpy(filename,image->filename,MaxTextExtent);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");

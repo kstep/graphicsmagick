@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-zip dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-bzip2 dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -63,23 +63,21 @@ RUNENV = $(SHELL) `pwd`/rungm.sh
 TESTS_ENVIRONMENT = \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
-	GM="$(RUNENV) `pwd`/utilities/gm"
+	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
 
 # Tests to run
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
+	$(WAND_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
-	$(TESTS_XFAIL_TESTS)
+	$(TESTS_XFAIL_TESTS) \
+	$(UTILITIES_XFAIL_TESTS)
 
-TOP_EXTRA_DIST = \
-	AUTHORS.txt \
-	BENCHMARKS.txt \
-	BUGS.txt \
-	CONTRIBUTE.txt \
+CHANGELOGS = \
 	ChangeLog \
 	ChangeLog.2001 \
 	ChangeLog.2002 \
@@ -87,18 +85,16 @@ TOP_EXTRA_DIST = \
 	ChangeLog.2004 \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
-	ChangeLog.2007 \
+	ChangeLog.2007
+
+TOP_EXTRA_DIST = \
+	$(CHANGELOGS) \
 	Copyright.txt \
-	FAQ.txt \
 	INSTALL-unix.txt \
 	INSTALL-windows.txt \
-	MISSION.txt \
 	NEWS.txt \
-	PLATFORMS.txt \
-	PROCESS.txt \
 	README.txt \
 	TODO.txt \
-	index.html \
 	lndir.sh \
 	version.sh \
 	winpath.sh
@@ -112,7 +108,9 @@ EXTRA_DIST = \
 	$(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) \
 	$(UTILITIES_EXTRA_DIST) \
-	$(WAND_EXTRA_DIST)
+	$(WAND_EXTRA_DIST) \
+	$(WWWW_EXTRA_DIST) \
+	$(WWWAPI_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
 
@@ -135,6 +133,8 @@ include filters/Makefile.am
 include Magick++/Makefile.am
 include tests/Makefile.am
 include wand/Makefile.am
+include www/Makefile.am
+include www/api/Makefile.am
 include utilities/Makefile.am
 include PerlMagick/Makefile.am
 
@@ -154,24 +154,38 @@ man_MANS = \
 	$(UTILITIES_MANS) \
 	$(WAND_MANS)
 
-# Architecture independent data files installed in the package's data directory
-docdir = $(MagickSharePath)
+# Files to install in the package's doc directory
 doc_DATA = \
 	Copyright.txt \
-	ChangeLog \
+	$(CHANGELOGS) \
 	NEWS.txt
 
 if MAINTAINER_MODE
-MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
+MAINTAINER_TARGETS = \
+	magick-version \
+	$(WWW_MAINTAINER_TARGETS) \
+	$(WWWAPI_MAINTAINER_TARGETS)
+
+# Target to build just the web pages.
+.PHONY: www
+www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+
 endif
 
-all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
+all-local: $(MAGICKPP_LOCAL_TARGETS) \
+	$(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
 
-install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS)
+install-exec-local: $(PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS) \
+	$(UTILITIES_INSTALL_EXEC_LOCAL_TARGETS)
 
-install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) $(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) $(HTML_INSTALL_DATA_TARGETS)
+install-data-local: $(MAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS) \
+	$(HTML_INSTALL_DATA_TARGETS)
 
-uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) $(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) $(HTML_UNINSTALL_DATA_TARGETS)
+uninstall-local: $(MAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(PERLMAGICK_UNINSTALL_LOCAL_TARGETS) \
+	$(HTML_UNINSTALL_DATA_TARGETS) \
+	$(UTILITIES_UNINSTALL_LOCAL_TARGETS)
 
 clean-local: $(PERLMAGICK_CLEAN_LOCAL_TARGETS)
 
@@ -181,6 +195,9 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+memcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
 dist-hook:
@@ -189,7 +206,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
@@ -198,29 +215,6 @@ dist-hook:
 #
 # Additional install rules
 #
-
-# Install HTML files
-pkgdocdir = $(MagickSharePath)
-DOCDIRS = images www www/api www/Magick++
-HTML_INSTALL_DATA_TARGETS = install-data-html
-install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
-	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
-	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
-	  done ; \
-	done
-
-# Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
-uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
-	for dir in $(DOCDIRS) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
-	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
 magick-version: magick/version.h
@@ -238,94 +232,11 @@ magick-version: magick/version.h
 
 magick/version.h: $(top_srcdir)/ChangeLog $(top_srcdir)/version.sh
 
-if HasRST2HTML
-RST2HTML_COMMAND = $(RST2HTML) --stylesheet=$(srcdir)/www/magick.css --date --time
-RST2HTML_TARGETS = \
-	$(top_srcdir)/www/AUTHORS.html \
-	$(top_srcdir)/www/BUGS.html \
-	$(top_srcdir)/www/BENCHMARKS.html \
-	$(top_srcdir)/www/contribute.html \
-	$(top_srcdir)/www/Copyright.html \
-	$(top_srcdir)/www/development.html \
-	$(top_srcdir)/www/FAQ.html \
-	$(top_srcdir)/www/INSTALL-unix.html \
-	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/mission.html \
-	$(top_srcdir)/www/NEWS.html \
-	$(top_srcdir)/www/PLATFORMS.html \
-	$(top_srcdir)/www/README.html
-endif # HasRST2HTML
-
-if WITH_PERL
-# txt2html requires perl.
-TXT2HTML_TARGETS = \
-	$(top_srcdir)/www/Changelog.html
-endif # WITH_PERL
 
 # Automatically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-
-# Build HTML version of AUTHORS.txt
-$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/AUTHORS.txt $(top_srcdir)/www/AUTHORS.html
-
-# Build HTML version of BUGS.txt
-$(top_srcdir)/www/BUGS.html: $(top_srcdir)/BUGS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BUGS.txt $(top_srcdir)/www/BUGS.html
-
-# Build HTML version of BENCHMARKS.txt
-$(top_srcdir)/www/BENCHMARKS.html: $(top_srcdir)/BENCHMARKS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/BENCHMARKS.txt $(top_srcdir)/www/BENCHMARKS.html
-
-# Build HTML version of CONTRIBUTE.txt
-$(top_srcdir)/www/contribute.html: $(top_srcdir)/CONTRIBUTE.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/CONTRIBUTE.txt $(top_srcdir)/www/contribute.html
-
-# Build HTML version of Copyright.txt
-$(top_srcdir)/www/Copyright.html: $(top_srcdir)/Copyright.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/Copyright.txt $(top_srcdir)/www/Copyright.html
-
-# Build HTML version of PROCESS.txt
-$(top_srcdir)/www/development.html: $(top_srcdir)/PROCESS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PROCESS.txt $(top_srcdir)/www/development.html
-
-# Build HTML version of FAQ.txt
-$(top_srcdir)/www/FAQ.html: $(top_srcdir)/FAQ.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/FAQ.txt $(top_srcdir)/www/FAQ.html
-
-# Build HTML version of ChangeLog
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of INSTALL-unix.txt
-$(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-unix.txt $(top_srcdir)/www/INSTALL-unix.html
-
-# Build HTML version of INSTALL-windows.txt
-$(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/INSTALL-windows.txt $(top_srcdir)/www/INSTALL-windows.html
-
-# Build HTML version of mission
-$(top_srcdir)/www/mission.html: $(top_srcdir)/MISSION.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/MISSION.txt $(top_srcdir)/www/mission.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/NEWS.txt $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of PLATFORMS
-$(top_srcdir)/www/PLATFORMS.html: $(top_srcdir)/PLATFORMS.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/PLATFORMS.txt $(top_srcdir)/www/PLATFORMS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	$(RST2HTML_COMMAND) $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
-
-# Format C API documentation
-format_c_api_docs:
-	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 
 #
 # Build Windows source Zip and 7Zip balls
@@ -340,16 +251,12 @@ DIST_WINDOWS_SRC_7ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDEND
 else
 DIST_WINDOWS_SRC_7ZIP=
 endif
-$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+$(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
 	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
-if HAS_ZIP
-	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	$(ZIP) -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
-endif # HAS_ZIP
 if HAS_P7ZIP
 	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
@@ -363,7 +270,7 @@ endif # HAS_P7ZIP
 if HAS_RPM
 
 DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
-PHONY: srpm
+.PHONY: srpm
 $(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 	rm -f $(DIST_ARCHIVE_SRPM)
 	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
@@ -381,7 +288,7 @@ DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
 
-PHONY: rpm
+.PHONY: rpm
 rpm:
 	rm -rf $(RPMDIR)
 	mkdir $(RPMDIR)
@@ -401,7 +308,21 @@ endif # HAS_RPM
 #
 # Build a validated snapshot release and move to the snapshots directory.
 #
+SNAPSHOT_DIRECTORY=/ftp/pub/GraphicsMagick/snapshots
 snapshot: distcheck
 	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
+	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIRECTORY)/
+	cp -p $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)/ChangeLog.txt
+	cp -p $(top_srcdir)/www/Changelog.html $(SNAPSHOT_DIRECTORY)/ChangeLog.html
+
+# Rules for a profiled build (according to Paolo Bonzini <bonzini@gnu.org>)
+#.PHONY: profile
+#profile:
+#	$(MAKE) clean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-generate"
+#	$(MAKE) check
+#	$(MAKE) mostlyclean
+#	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-use"
+#
+#CLEANFILES = *.gcda *.gcno

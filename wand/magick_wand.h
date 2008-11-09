@@ -46,16 +46,6 @@ extern WandExport int
 extern WandExport size_t
   CopyMagickString(char *,const char *,const size_t);
 
-typedef enum
-{
-  UndefinedMetric,
-  MeanAbsoluteErrorMetric,
-  MeanSquaredErrorMetric,
-  PeakAbsoluteErrorMetric,
-  PeakSignalToNoiseRatioMetric,
-  RootMeanSquaredErrorMetric
-} MetricType;
-
 typedef struct _MagickWand
   MagickWand;
 
@@ -267,6 +257,7 @@ extern WandExport unsigned int
   MagickSetImageGreenPrimary(MagickWand *,const double,const double),
   MagickSetImageGamma(MagickWand *,const double),
   MagickSetImageFilename(MagickWand *,const char *),
+  MagickSetImageFormat(MagickWand *wand,const char *format),
   MagickSetImageIndex(MagickWand *,const long),
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
   MagickSetImageIterations(MagickWand *,const unsigned long),

@@ -22,7 +22,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                            Christopher R. Hawks                             %
-                               December 2001                                 %
+%                               December 2001                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -466,6 +466,23 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   transparentIndex = ReadBlobByte(image);
   compressionType = ReadBlobByte(image);
   (void) ReadBlobMSBShort(image); /* pad */
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Size=%lux%lu, bytes_per_row=%lu, flags=%lu, bits_per_pixel=%lu",
+                        image->columns, image->rows, bytes_per_row, flags, bits_per_pixel);
+  
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "transparentIndex=%lu, compressionType=%lu",
+                        transparentIndex, compressionType);
+
+  /*
+    Validate bits per pixel.
+  */
+  if ((bits_per_pixel < 1) ||
+      ((bits_per_pixel > 8) && (bits_per_pixel != 16)))
+    ThrowReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
 
   /*
     Initialize image colormap.
@@ -479,6 +496,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         (void) ReadBlobMSBLong(image); /* size */
       else
         (void) ReadBlobMSBShort(image); /* size */
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
   else  /* is color */
     if(bits_per_pixel == 8)
@@ -490,9 +509,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             for(i = 0; i < (long) count; i++)
               {
                 (void) ReadBlobByte(image);
-                image->colormap[255 - i].red = ScaleCharToQuantum(ReadBlobByte(image));
-                image->colormap[255 - i].green = ScaleCharToQuantum(ReadBlobByte(image));
-                image->colormap[255 - i].blue = ScaleCharToQuantum(ReadBlobByte(image));
+                index=255 - i;
+                VerifyColormapIndex(image,index);
+                image->colormap[index].red = ScaleCharToQuantum(ReadBlobByte(image));
+                image->colormap[index].green = ScaleCharToQuantum(ReadBlobByte(image));
+                image->colormap[index].blue = ScaleCharToQuantum(ReadBlobByte(image));
+                if (EOFBlob(image))
+                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
               }
           }
         for(; i < (long) (1L << bits_per_pixel); i++)
@@ -508,9 +531,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 transpix.green = (unsigned char) (ReadBlobByte(image) * MaxRGB / 63);
                 transpix.blue = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
               }
-            image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
-            image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
-            image->colormap[255 - i].blue = ScaleCharToQuantum(PalmPalette[i][2]);
+            index=255 - i;
+            VerifyColormapIndex(image,index);
+            image->colormap[index].red = ScaleCharToQuantum(PalmPalette[i][0]);
+            image->colormap[index].green = ScaleCharToQuantum(PalmPalette[i][1]);
+            image->colormap[index].blue = ScaleCharToQuantum(PalmPalette[i][2]);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
           }
       }
 
@@ -579,7 +606,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       q = SetImagePixels(image, 0, y, image->columns, 1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       if(bits_per_pixel == 16)
         {
           if (image->columns > 2*bytes_per_row)
@@ -603,6 +630,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               if ((unsigned long) (ptr - one_row) >= bytes_per_row)
                 ThrowReaderException(CorruptImageError,CorruptImage,image);
               index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
+              VerifyColormapIndex(image,index);
               indexes[x] = index;
               *q++ = image->colormap[index];
               if (!bit)
@@ -618,6 +646,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           if (!SyncImagePixels(image))
             break;
         }
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
 
   if(flags & PALM_HAS_TRANSPARENCY_FLAG)
@@ -671,6 +701,7 @@ ModuleExport void RegisterPALMImage(void)
   entry->seekable_stream=True;
   entry->description="Palm pixmap";
   entry->module="PALM";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -894,7 +925,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           for(y = 0; y < (long) image->rows; y++)
             {
               p = GetImagePixels(image, 0, y, image->columns, 1);
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for(x = 0; x < (long) image->columns; x++)
                 indexes[x] = FindColor(&image->colormap[indexes[x]]);
             }
@@ -916,7 +947,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessMutableIndexes(image);
       if(bits_per_pixel == 16)
         {
           for (x=0; x < (int) image->columns; x++)

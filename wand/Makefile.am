@@ -52,7 +52,9 @@ WAND_EXTRA_DIST = \
 	wand/input_bilevel.miff \
 	wand/input_gray.miff \
 	wand/input_truecolor.miff \
-	wand/sequence.miff
+	wand/sequence.miff \
+	wand/common.sh \
+	$(WAND_TESTS)
 
 wand_drawtest_LDADD        = $(LIBWAND)
 wand_drawtest_LDFLAGS      = $(LDFLAGS)
@@ -66,6 +68,9 @@ WAND_CHECK_PGRMS = \
 	wand/drawtest \
 	wand/wandtest
 
+WAND_TESTS = \
+	wand/drawtest.sh \
+	wand/wandtest.sh
+
 WAND_CLEANFILES = \
-        wand/*_out.* \
-        wand/image.miff
+        wand/*_out.*

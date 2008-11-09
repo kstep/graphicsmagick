@@ -152,7 +152,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessMutableIndexes(image);
     bit=0;
     byte=0;
     for (x=0; x < (long) image->columns; x++)
@@ -171,7 +171,8 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         break;
   }
   (void) SyncImage(image);
@@ -284,7 +285,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -338,7 +339,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=AccessImmutableIndexes(image);
     bit=0;
     byte=0;
     for (x=0; x < (long) image->columns; x++)
@@ -356,7 +357,8 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
     if (bit != 0)
       (void) WriteBlobByte(image,byte);
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  SaveImageText,image->filename))
         break;
   }
   CloseBlob(image);

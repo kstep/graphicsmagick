@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
+#include "magick/enum_strings.h"
 #include "magick/pixel_cache.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -48,10 +49,10 @@
 #include "magick/profile.h"
 #include "magick/utility.h"
 #if defined(HasZLIB)
-#include "zlib.h"
+#  include "zlib.h"
 #endif
 #if defined(HasBZLIB)
-#include "bzlib.h"
+#  include "bzlib.h"
 #endif
 
 /*
@@ -171,10 +172,10 @@ static unsigned int PushImageRLEPixels(Image *image,
          ((quantum_type == RGBQuantum) && (image->storage_class == DirectClass) && !image->matte));
 
   p=source;
-  q=GetPixels(image);
+  q=AccessMutablePixels(image);
   length=0;
   index=0;
-  indexes=GetIndexes(image);
+  indexes=AccessMutableIndexes(image);
 
   pixel.red=0;
   pixel.green=0;
@@ -1022,7 +1023,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"resolution") == 0)
                   {
                     (void) GetMagickDimension(values,&image->x_resolution,
-                      &image->y_resolution);
+                                              &image->y_resolution,NULL,NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
@@ -1343,7 +1344,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           break;
@@ -1394,7 +1396,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           break;
@@ -1422,7 +1425,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
 
             }
@@ -1442,7 +1446,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,image->filename))
                     break;
             }
           break;
@@ -1492,8 +1497,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=SyncNextImageInList(image);
-        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
-          exception);
+        status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                      exception,LoadImagesText,
+                                      image->filename);
         if (status == False)
           break;
       }
@@ -1554,6 +1560,7 @@ ModuleExport void RegisterMIFFImage(void)
   if (*version != '\0')
     entry->version=version;
   entry->module="MIFF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1770,7 +1777,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register long
@@ -2200,7 +2207,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=AccessImmutableIndexes(image);
       q=pixels;
       switch (compression)
       {
@@ -2336,7 +2343,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                      SaveImageText,image->filename))
             break;
     }
     MagickFreeMemory(pixels);
@@ -2344,8 +2352,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
+    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                  &image->exception,SaveImagesText,
+                                  image->filename);
     if (status == False)
       break;
   } while (image_info->adjoin);

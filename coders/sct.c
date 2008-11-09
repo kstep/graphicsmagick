@@ -33,7 +33,7 @@
 */
 
 /*
-  The citex HandShake data format is specified in the document
+  The Scitex HandShake data format is specified in the document
 
   HandShake Foreign File Transfer Protocol, Scitex Corporation, Ltd.,
   Revision A: April 1988, Document No. 788-37898A, Catalog No. 399Z37898
@@ -235,7 +235,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->columns % 2) != 0)
       (void) ReadBlobByte(image);  /* pad */
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+      if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                  image->filename))
         break;
   }
   if (EOFBlob(image))
@@ -279,6 +280,7 @@ ModuleExport void RegisterSCTImage(void)
   entry->adjoin=False;
   entry->description="Scitex HandShake";
   entry->module="SCT";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

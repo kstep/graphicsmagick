@@ -137,7 +137,7 @@ typedef struct _StreamInfo
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const unsigned int compression,
+static MagickPassFail DecodeImage(Image *image,const unsigned int compression,
   unsigned char *pixels)
 {
   int
@@ -166,16 +166,16 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   {
     if (q < pixels || q  >= end)
       break;
-    count=ReadBlobByte(image);
-    if (count == EOF)
-      break;
+    if ((count=ReadBlobByte(image)) == EOF)
+        goto unexpected_eof;
     if (count != 0)
       {
         count=Min(count, end - q);
         /*
           Encoded mode.
         */
-        byte=ReadBlobByte(image);
+        if ((byte=ReadBlobByte(image)) == EOF)
+          goto unexpected_eof;
         for (i=0; i < count; i++)
         {
           if (compression == 1)
@@ -191,9 +191,10 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
         /*
           Escape mode.
         */
-        count=ReadBlobByte(image);
+        if ((count=ReadBlobByte(image)) == EOF)
+          goto unexpected_eof;
         if (count == 0x01)
-          return(True);
+          return(MagickPass);
         switch (count)
         {
           case 0x00:
@@ -211,8 +212,17 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             /*
               Delta mode.
             */
-            x+=ReadBlobByte(image);
-            y+=ReadBlobByte(image);
+            if ((byte=ReadBlobByte(image)) == EOF)
+              goto unexpected_eof;
+            x+=byte;
+            if ((byte=ReadBlobByte(image)) == EOF)
+              goto unexpected_eof;
+            y+=byte;
+            if ((x >= (long) image->columns) || (y >= (long) image->rows))
+              {
+                ThrowException(&image->exception,CorruptImageError,CorruptImage,NULL);
+                return MagickFail;
+              }
             q=pixels+y*image->columns+x;
             break;
           }
@@ -225,11 +235,18 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             for (i=0; i < count; i++)
             {
               if (compression == 1)
-                *q++=ReadBlobByte(image);
+                {
+                  if ((byte=ReadBlobByte(image)) == EOF)
+                    goto unexpected_eof;
+                  *q++=byte;
+                }
               else
                 {
                   if ((i & 0x01) == 0)
-                    byte=ReadBlobByte(image);
+                    {
+                      if ((byte=ReadBlobByte(image)) == EOF)
+                        goto unexpected_eof;
+                    }
                   *q++=(unsigned char)
                     ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
                 }
@@ -241,22 +258,35 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             if (compression == 1)
               {
                 if (count & 0x01)
-                  (void) ReadBlobByte(image);
+                  {
+                    if (ReadBlobByte(image) == EOF)
+                      goto unexpected_eof;
+                  }
               }
             else
               if (((count & 0x03) == 1) || ((count & 0x03) == 2))
-                (void) ReadBlobByte(image);
+                {
+                  if (ReadBlobByte(image) == EOF)
+                    goto unexpected_eof;
+                }
             break;
           }
         }
       }
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                  LoadImageText,image->filename))
         break;
   }
-  (void) ReadBlobByte(image);  /* end of line */
-  (void) ReadBlobByte(image);
-  return(True);
+  if (ReadBlobByte(image) == EOF)  /* end of line */
+    goto unexpected_eof;
+  if (ReadBlobByte(image) == EOF)
+    goto unexpected_eof;
+  return(MagickPass);
+  
+ unexpected_eof:
+  ThrowException(&image->exception,CorruptImageError,UnexpectedEndOfFile,NULL);
+  return MagickFail;
 }
 
 /*
@@ -383,6 +413,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count,
     number_colors;
 
+  MagickBool
+    first_chunk;
+
   /*
     Open image file.
   */
@@ -398,13 +431,22 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&bmp_info,0,sizeof(BMPInfo));
   colormap=(PixelPacket *) NULL;
   number_colors=0;
+  first_chunk=MagickTrue;
   for ( ; ; )
   {
     count=ReadBlob(image,4,id);
-    if (count == 0)
-      break;
+    if (count != 4)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     id[4]='\0';
+    if (first_chunk)
+      {
+        if (memcmp(id,"RIFF",4) != 0)
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        first_chunk=MagickFalse;
+      }
     chunk_size=ReadBlobLSBLong(image);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     if (chunk_size == 0)
       break;
     if (chunk_size & 0x01)
@@ -422,7 +464,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               bmp_info.compression);
             ThrowException2(exception,CorruptImageError,message,image->filename);
             for ( ; chunk_size != 0; chunk_size--)
-              (void) ReadBlobByte(image);
+              if (ReadBlobByte(image) == EOF)
+                ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             continue;
           }
         /*
@@ -450,11 +493,18 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (LocaleCompare(id,"00db") == 0)
-          (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);
+          {
+            size_t
+              size;
+
+            size=bytes_per_line*image->rows;
+            if (ReadBlob(image,bytes_per_line*image->rows,(char *) pixels) != size)
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+          }
         else
           {
             status=DecodeImage(image,1,pixels);
-            if (status == False)
+            if (status == MagickFail)
               ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,image);
           }
         /*
@@ -473,7 +523,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < ((long) image->columns-7); x+=8)
               {
                 for (bit=0; bit < 8; bit++)
@@ -499,8 +549,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -518,7 +569,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < ((long) image->columns-1); x+=2)
               {
                 index=(IndexPacket) ((*p >> 4) & 0xf);
@@ -544,8 +595,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -564,7 +616,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=AccessMutableIndexes(image);
               for (x=0; x < (long) image->columns; x++)
               {
                 index=(IndexPacket) (*p);
@@ -579,8 +631,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -617,8 +670,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -652,8 +706,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   {
-                    status=MagickMonitor(LoadImageText,image->rows-y-1,
-                      image->rows,exception);
+                    status=MagickMonitorFormatted(image->rows-y-1,
+                                                  image->rows,exception,
+                                                  LoadImageText,image->filename);
                     if (status == False)
                       break;
                   }
@@ -678,8 +733,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 return((Image *) NULL);
               }
             image=SyncNextImageInList(image);
-            status=MagickMonitor(LoadImagesText,TellBlob(image),
-              GetBlobSize(image),exception);
+            status=MagickMonitorFormatted(TellBlob(image),
+                                          GetBlobSize(image),exception,
+                                          LoadImagesText,image->filename);
             if (status == False)
               break;
           }
@@ -706,18 +762,22 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         avi_info.data_rate=ReadBlobLSBLong(image);
         avi_info.start_time=ReadBlobLSBLong(image);
         avi_info.data_length=ReadBlobLSBLong(image);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     if (LocaleCompare(id,"idx1") == 0)
       {
         for ( ; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     if (LocaleCompare(id,"JUNK") == 0)
       {
         for ( ; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     if (LocaleCompare(id,"LIST") == 0)
@@ -725,7 +785,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           List of chunks.
         */
-        (void) ReadBlob(image,4,id);
+        if (ReadBlob(image,4,id) != 4)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         if (image_info->verbose)
           (void) fprintf(stdout,"  List type %.1024s\n",id);
         continue;
@@ -735,7 +796,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           File header.
         */
-        (void) ReadBlob(image,4,id);
+        if (ReadBlob(image,4,id) != 4)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         if (image_info->verbose)
           (void) fprintf(stdout,"  RIFF form type %.1024s\n",id);
         continue;
@@ -754,13 +816,16 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.height=ReadBlobLSBLong(image);
             bmp_info.planes=ReadBlobLSBShort(image);
             bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
-            (void) ReadBlob(image,4,bmp_info.compression);
+            if (ReadBlob(image,4,bmp_info.compression) != 4)
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             bmp_info.compression[4]='\0';
             bmp_info.image_size=ReadBlobLSBLong(image);
             bmp_info.x_pixels=ReadBlobLSBLong(image);
             bmp_info.y_pixels=ReadBlobLSBLong(image);
             bmp_info.number_colors=ReadBlobLSBLong(image);
             bmp_info.important_colors=ReadBlobLSBLong(image);
+            if (EOFBlob(image))
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             chunk_size-=40;
             number_colors=bmp_info.number_colors;
             if ((number_colors == 0) && (bmp_info.bits_per_pixel <= 8))
@@ -776,28 +841,33 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   colormap[i].blue=ScaleCharToQuantum(ReadBlobByte(image));
                   colormap[i].green=ScaleCharToQuantum(ReadBlobByte(image));
                   colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
-                  (void) ReadBlobByte(image);
+                  if (ReadBlobByte(image) == EOF)
+                    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
                   chunk_size-=4;
                 }
               }
             for ( ; chunk_size != 0; chunk_size--)
-              (void) ReadBlobByte(image);
+              if (ReadBlobByte(image) == EOF)
+                ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             if (image_info->verbose)
               (void) fprintf(stdout,"Video compression: %.1024s\n",
                 bmp_info.compression);
             continue;
           }
         for ( ; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     if (LocaleCompare(id,"strh") == 0)
       {
         if (image_info->verbose)
           (void) fprintf(stdout,"  Stream header\n");
-        (void) ReadBlob(image,4,stream_info.data_type);
+        if (ReadBlob(image,4,stream_info.data_type) != 4)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         stream_info.data_type[4]='\0';
-        (void) ReadBlob(image,4,stream_info.data_handler);
+        if (ReadBlob(image,4,stream_info.data_handler) != 4)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         stream_info.data_handler[4]='\0';
         stream_info.flags=ReadBlobLSBLong(image);
         stream_info.priority=ReadBlobLSBLong(image);
@@ -809,10 +879,13 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info.buffer_size=ReadBlobLSBLong(image);
         stream_info.quality=ReadBlobLSBLong(image);
         stream_info.sample_size=ReadBlobLSBLong(image);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         if (chunk_size & 0x01)
           chunk_size++;
         for (chunk_size-=48; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         if (image_info->verbose)
           (void) fprintf(stdout,"AVI Test handler: %.1024s\n",
             stream_info.data_handler);
@@ -821,19 +894,22 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(id,"strn") == 0)
       {
         for ( ; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     if (LocaleCompare(id,"vedt") == 0)
       {
         for ( ; chunk_size != 0; chunk_size--)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         continue;
       }
     FormatString(message,"AVI chunk %.1024s not yet supported",id);
     ThrowException2(exception,CorruptImageError,message,image->filename);
     for ( ; chunk_size != 0; chunk_size--)
-      (void) ReadBlobByte(image);
+      if (ReadBlobByte(image) == EOF)
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     continue;
   }
   while (image->previous != (Image *) NULL)
@@ -880,6 +956,7 @@ ModuleExport void RegisterAVIImage(void)
   entry->magick=(MagickHandler) IsAVI;
   entry->description="Microsoft Audio/Visual Interleaved";
   entry->module="AVI";
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

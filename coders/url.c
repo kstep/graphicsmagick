@@ -45,8 +45,9 @@
 #if defined(MSWINDOWS)
 #  if defined(__MINGW32__)
 #    define _MSC_VER
+#  else
+#    include <win32config.h>
 #  endif
-#  include <win32config.h>
 #endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
@@ -223,6 +224,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (http://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("FTP");
@@ -230,6 +232,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (ftp://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=UnstableCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("FILE");
@@ -237,6 +240,7 @@ ModuleExport void RegisterURLImage(void)
   entry->description="Uniform Resource Locator (file://)";
   entry->module="URL";
   entry->stealth=True;
+  entry->coder_class=StableCoderClass;
   (void) RegisterMagickInfo(entry);
 #endif /* defined(HasXML) */
 }

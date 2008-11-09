@@ -56,11 +56,11 @@ int main( int /*argc*/, char ** argv)
       //
       cout << "Creating thumbnails..." << endl;
     
-      // Construct initial list containing five copies of a null image
+      // Construct initial list containing seven copies of a null image
       Image null;
       null.size( Geometry(70,70) );
       null.read( "NULL:black" );
-      list<Image> images( 5, null );
+      list<Image> images( 7, null );
     
       Image example = model;
     
@@ -73,6 +73,11 @@ int main( int /*argc*/, char ** argv)
       cout << "  add noise ..." << endl;
       example.label( "Add Noise" );
       example.addNoise( LaplacianNoise );
+      images.push_back( example );
+
+      cout << "  add noise (blue) ..." << endl;
+      example.label( "Add Noise\n(Blue Channel)" );
+      example.addNoiseChannel( BlueChannel, PoissonNoise );
       images.push_back( example );
 
       cout << "  annotate ..." << endl;
@@ -92,6 +97,12 @@ int main( int /*argc*/, char ** argv)
       example.blur( 0, 1.5 );
       images.push_back( example );
 
+      cout << "  blur red channel ..." << endl;
+      example = model;
+      example.label( "Blur Channel\n(Red Channel)" );
+      example.blurChannel( RedChannel, 0, 3.0 );
+      images.push_back( example );
+
       cout << "  border ..." << endl;
       example = model;
       example.label( "Border" );
@@ -101,7 +112,7 @@ int main( int /*argc*/, char ** argv)
 
       cout << "  channel ..." << endl;
       example = model;
-      example.label( "Channel" );
+      example.label( "Channel\n(Red Channel)" );
       example.channel( RedChannel );
       images.push_back( example );
 
@@ -208,6 +219,12 @@ int main( int /*argc*/, char ** argv)
       example.label( "Gaussian Blur" );
       example.gaussianBlur( 0.0, 1.5 );
       images.push_back( example );
+
+      cout << "  gaussian blur channel ..." << endl;
+      example = model;
+      example.label( "Gaussian Blur\n(Green Channel)" );
+      example.gaussianBlurChannel( GreenChannel, 0.0, 1.5 );
+      images.push_back( example );
     
       cout << "  gradient ..." << endl;
       Image gradient;
@@ -237,7 +254,7 @@ int main( int /*argc*/, char ** argv)
 
       cout << "  level red channel ..." << endl;
       example = model;
-      example.label( "Level Red" );
+      example.label( "Level Channel\n(Red Channel)" );
       example.levelChannel( RedChannel, 0.20*MaxRGB, 0.90*MaxRGB, 1.20 );
       images.push_back( example );
 
@@ -261,6 +278,12 @@ int main( int /*argc*/, char ** argv)
       example.quantizeDither( false );
       example.quantize( );
       images.push_back( example );
+
+      cout << "  motion blur ..." << endl;
+      example = model;
+      example.label( "Motion Blur" );
+      example.motionBlur( 0.0, 7.0,45 );
+      images.push_back( example );
     
       cout << "  negate ..." << endl;
       example = model;
@@ -279,7 +302,31 @@ int main( int /*argc*/, char ** argv)
       example.label( "Oil Paint" );
       example.oilPaint( );
       images.push_back( example );
+
+      cout << "  ordered dither 2x2 ..." << endl;
+      example = model;
+      example.label( "Ordered Dither\n(2x2)" );
+      example.randomThreshold( Geometry(2,2) );
+      images.push_back( example );
+
+      cout << "  ordered dither 3x3..." << endl;
+      example = model;
+      example.label( "Ordered Dither\n(3x3)" );
+      example.randomThreshold( Geometry(3,3) );
+      images.push_back( example );
+
+      cout << "  ordered dither 4x4..." << endl;
+      example = model;
+      example.label( "Ordered Dither\n(4x4)" );
+      example.randomThreshold( Geometry(4,4) );
+      images.push_back( example );
     
+      cout << "  ordered dither red 4x4..." << endl;
+      example = model;
+      example.label( "Ordered Dither\n(Red 4x4)" );
+      example.randomThresholdChannel( Geometry(4,4), RedChannel);
+      images.push_back( example );
+
       cout << "  plasma ..." << endl;
       Image plasma;
       plasma.size( "130x194" );
@@ -292,6 +339,24 @@ int main( int /*argc*/, char ** argv)
       example.label( "Quantize" );
       example.quantize( );
       images.push_back( example );
+
+      cout << "  quantum operator ..." << endl;
+      example = model;
+      example.label( "Quantum Operator\nRed * 0.4" );
+      example.quantumOperator( RedChannel,MultiplyQuantumOp,0.40 );
+      images.push_back( example );
+
+      cout << "  quantum operator ..." << endl;
+      example = model;
+      example.label( "Quantum Operator\nNoise Region" );
+      example.quantumOperator( 30,40,68,112,GreenChannel,NoiseGaussianQuantumOp,0.80*MaxRGB );
+      images.push_back( example );
+
+      cout << "  quantum operator ..." << endl;
+      example = model;
+      example.label( "Quantum Operator\nTheshold Region" );
+      example.quantumOperator( 30,40,68,112,GrayChannel,ThresholdQuantumOp,0.35*MaxRGB );
+      images.push_back( example );
     
       cout << "  raise ..." << endl;
       example = model;
@@ -302,7 +367,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  reduce noise ..." << endl;
       example = model;
       example.label( "Reduce Noise" );
-      example.reduceNoise( );
+      example.reduceNoise( 1.0 );
       images.push_back( example );
     
       cout << "  resize ..." << endl;
@@ -333,7 +398,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  segment ..." << endl;
       example = model;
       example.label( "Segment" );
-      example.segment( );
+      example.segment( 0.5, 0.25 );
       images.push_back( example );
     
       cout << "  shade ..." << endl;
@@ -364,7 +429,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  spread ..." << endl;
       example = model;
       example.label( "Spread" );
-      example.spread( );
+      example.spread( 3 );
       images.push_back( example );
     
       cout << "  solarize ..." << endl;
@@ -378,6 +443,18 @@ int main( int /*argc*/, char ** argv)
       example.backgroundColor( "#000000FF" );
       example.label( "Swirl" );
       example.swirl( 90 );
+      images.push_back( example );
+
+      cout << "  threshold ..." << endl;
+      example = model;
+      example.label( "Threshold" );
+      example.threshold( MaxRGB/2.0 );
+      images.push_back( example );
+
+      cout << "  threshold random ..." << endl;
+      example = model;
+      example.label( "Random\nThreshold" );
+      example.randomThreshold( Geometry(0.3*MaxRGB,0.85*MaxRGB) );
       images.push_back( example );
     
       cout << "  unsharp mask ..." << endl;
@@ -408,7 +485,7 @@ int main( int /*argc*/, char ** argv)
       montageOpts.gravity( CenterGravity );
       montageOpts.borderColor( "green" );
       montageOpts.borderWidth( 1 );
-      montageOpts.tile( "5x1000" );
+      montageOpts.tile( "7x4" );
       montageOpts.compose( OverCompositeOp );
       montageOpts.backgroundColor( "#ffffff" );
       montageOpts.font( font );
@@ -435,7 +512,7 @@ int main( int /*argc*/, char ** argv)
     cout << "Writing image \"demo_out.miff\" ..." << endl;
     montage_image.matte( false );
     montage_image.compressType( RLECompression );
-    montage_image.write( "demo_out.miff" );
+    writeImages(montage.begin(),montage.end(),"demo_out.miff");
 
     // Uncomment following lines to display image to screen
     //    cout <<  "Display image..." << endl;

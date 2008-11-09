@@ -54,18 +54,8 @@ Retrieve Install Package
 
     ::
 
-      GraphicsMagick-1.2-Q8-windows-dll.exe
-      GraphicsMagick-1.2-Q16-windows-dll.exe
-
-  Windows Static-Multithread package including the utilities (gm.exe,
-  gmdisplay.exe, and MagickCMD.exe), the `ImageMagickObject
-  <ImageMagickObject.html>`_ COM object, and the web pages. This package
-  does not include PerlMagick.
-
-    ::
-
-      GraphicsMagick-1.2-Q8-windows-static.exe
-      GraphicsMagick-1.2-Q16-windows-static.exe
+      GraphicsMagick-1.3-Q8-windows-dll.exe
+      GraphicsMagick-1.3-Q16-windows-dll.exe
 
   Note that the QuantumDepth=8 version (Q8) which provides industry
   standard 24/32 bit pixels consumes half the memory and about 30% less
@@ -99,7 +89,7 @@ Select Destination Directory
   message at the bottom of the screen will tell you exactly how much
   space is required to install the complete package. The default
   installation directory is similar to ``C:\Program
-  Files\GraphicsMagick-1.2-Q8``. Once you have entered the desired
+  Files\GraphicsMagick-1.3-Q8``. Once you have entered the desired
   installation directory, then select "*Next>*" to continue.
 
 Select Start Menu Folder

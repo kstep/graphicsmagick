@@ -23,10 +23,36 @@ typedef unsigned int
   (*EncoderHandler)(const ImageInfo *,Image *),
   (*MagickHandler)(const unsigned char *,const size_t);
 
+/*
+  Stability and usefulness of the coder.
+*/
+typedef enum
+{
+  UnstableCoderClass = 0,
+  StableCoderClass,
+  PrimaryCoderClass
+} CoderClass;
+
+/*
+  How the file extension should be treated (e.g. in SetImageInfo()).
+*/
+typedef enum
+{
+  HintExtensionTreatment = 0, /* Extension is a useful hint to indicate format */
+  ObeyExtensionTreatment,     /* Extension must be obeyed as format indicator */
+  IgnoreExtensionTreatment    /* Extension has no associated format. */
+} ExtensionTreatment;
+
 typedef struct _MagickInfo
 {
+  struct _MagickInfo
+    *next,              /* private, next member in list */
+    *previous;          /* private, previous member in list */
+
   const char
-    *name,              /* format ID ("magick") */
+    *name;              /* format ID ("magick") */
+
+  const char
     *description,       /* format description */
     *note,              /* usage note for user */
     *version,           /* support library version */
@@ -47,8 +73,8 @@ typedef struct _MagickInfo
   MagickBool
     adjoin,             /* coder may read/write multiple frames (default True) */
     raw,                /* coder requires that size be set (default False) */
-    stealth,            /* coder should not appear in formats listing (default False) */
-    seekable_stream,    /* coder requires BLOB "seek" and "tell" APIs (default False)
+    stealth,            /* coder should not appear in formats listing (default MagickFalse) */
+    seekable_stream,    /* coder requires BLOB "seek" and "tell" APIs (default MagickFalse)
                          *   Note that SetImageInfo() currently always copies input
                          *   from a pipe, .gz, or .bz2 file, to a temporary file so
                          *   that it can retrieve a bit of the file header in order to
@@ -57,12 +83,15 @@ typedef struct _MagickInfo
     blob_support,	/* coder uses BLOB APIs (default True) */
     thread_support;     /* coder is thread safe (default True) */
 
+  CoderClass
+    coder_class;        /* Coder usefulness/stability level */
+
+  ExtensionTreatment
+    extension_treatment; /* How much faith should be placed on file extension? */
+
   unsigned long
     signature;          /* private, structure validator */
 
-  struct _MagickInfo
-    *previous,          /* private, previous member in list */
-    *next;              /* private, next member in list */
 } MagickInfo;
 
 /*

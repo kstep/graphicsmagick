@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/pixel_cache.h"
 #include "magick/gem.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,6 +138,152 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e n e r a t e D i f f e r e n t i a l N o i s e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GenerateDifferentialNoise generates a differential floating-point
+%  noise value which will produce in the final result when added to the
+%  original pixel.  The floating point differential value is useful since
+%  it allows scaling without loss of precision and avoids clipping.
+%
+%  The format of the GenerateDifferentialNoise method is:
+%
+%      double GenerateDifferentialNoise(const Quantum pixel,
+%                                       const NoiseType noise_type)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: A structure of type Quantum.
+%
+%    o noise_type:  The type of noise: Uniform, gaussian,
+%      multiplicative Gaussian, impulse, laplacian, or Poisson.
+%
+%    o seed: Seed for random number generator.  Should be initialized
+%      with a semi-random value once (e.g. from time()) and then simply
+%      passed thereafter.   If 'seed' is NULL, then the global seed
+%      value is used.
+%
+*/
+#define NoiseEpsilon   1.0e-5
+#define SigmaUniform   4.0
+#define SigmaGaussian  4.0
+#define SigmaImpulse   0.10
+#define SigmaLaplacian 10.0
+#define SigmaMultiplicativeGaussian  0.5
+#define SigmaPoisson   0.05
+#define TauGaussian    20.0
+
+MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
+                                              const NoiseType noise_type,
+                                              unsigned int *seed)
+{
+  double
+    alpha,
+    beta,
+    pixel,
+    sigma,
+    value;
+
+  pixel=(double) quantum_pixel;
+
+#if QuantumDepth > 8
+  pixel /= MaxRGBDouble/255.0;
+#endif
+
+  alpha=(double) MagickRandReentrant(seed)/RAND_MAX;
+  if (alpha == 0.0)
+    alpha=1.0;
+  switch (noise_type)
+  {
+    case UniformNoise:
+    default:
+    {
+      value=SigmaUniform*(alpha-0.5);
+      break;
+    }
+    case GaussianNoise:
+    {
+      double
+        tau;
+
+      beta=(double) MagickRandReentrant(seed)/RAND_MAX;
+      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
+      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
+      value=sqrt((double) pixel)*SigmaGaussian*sigma+TauGaussian*tau;
+      break;
+    }
+    case MultiplicativeGaussianNoise:
+    {
+      if (alpha <= NoiseEpsilon)
+        sigma=255.0;
+      else
+        sigma=sqrt(-2.0*log(alpha));
+      beta=(double) MagickRandReentrant(seed)/RAND_MAX;
+      value=pixel*SigmaMultiplicativeGaussian*sigma*cos(2.0*MagickPI*beta);
+      break;
+    }
+    case ImpulseNoise:
+    {
+      if (alpha < (SigmaImpulse/2.0))
+        value=-pixel;
+       else
+         if (alpha >= (1.0-(SigmaImpulse/2.0)))
+           value=255.0-pixel;
+         else
+           value=0.0;
+      break;
+    }
+    case LaplacianNoise:
+    {
+      if (alpha <= 0.5)
+        {
+          if (alpha <= NoiseEpsilon)
+            value=-255.0;
+          else
+            value=SigmaLaplacian*log(2.0*alpha);
+          break;
+        }
+      beta=1.0-alpha;
+      if (beta <= (0.5*NoiseEpsilon))
+        value=255.0;
+      else
+        value=-(SigmaLaplacian*log(2.0*beta));
+      break;
+    }
+    case PoissonNoise:
+    {
+      double
+        limit;
+
+      register long
+        i;
+
+      limit=exp(-SigmaPoisson*(double) pixel);
+      for (i=0; alpha > limit; i++)
+      {
+        beta=(double) MagickRandReentrant(seed)/RAND_MAX;
+        alpha=alpha*beta;
+      }
+      value=pixel-((double) i/SigmaPoisson);
+      break;
+    }
+  }
+
+#if QuantumDepth > 8
+  value *= (MaxRGBFloat/255.0);
+#endif
+
+  return value;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e n e r a t e N o i s e                                                 %
 %                                                                             %
 %                                                                             %
@@ -153,107 +300,19 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 %    o pixel: A structure of type Quantum.
 %
-%    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
-%      impulse, laplacian, or Poisson.
+%    o noise_type:  The type of noise: Uniform, gaussian,
+%      multiplicative Gaussian, impulse, laplacian, or Poisson.
 %
 %
 */
-#define NoiseScale     ((double) MaxRGB/255)
-#define NoiseEpsilon   1.0e-5
-#define SigmaUniform   4.0*NoiseScale
-#define SigmaGaussian  4.0*NoiseScale
-#define SigmaImpulse   0.10
-#define SigmaLaplacian 10.0*NoiseScale
-#define SigmaMultiplicativeGaussian  0.5*NoiseScale
-#define SigmaPoisson   0.05
-#define TauGaussian    20.0*NoiseScale
-
 MagickExport Quantum GenerateNoise(const Quantum pixel,
-  const NoiseType noise_type)
+                                   const NoiseType noise_type)
 {
   double
-    alpha,
-    beta,
-    sigma,
     value;
 
-  alpha=(double) rand()/RAND_MAX;
-  if (alpha == 0.0)
-    alpha=1.0;
-  switch (noise_type)
-  {
-    case UniformNoise:
-    default:
-    {
-      value=(double) pixel+SigmaUniform*(alpha-0.5);
-      break;
-    }
-    case GaussianNoise:
-    {
-      double
-        tau;
-
-      beta=(double) rand()/RAND_MAX;
-      sigma=sqrt(-2.0*log(alpha))*cos(2.0*MagickPI*beta);
-      tau=sqrt(-2.0*log(alpha))*sin(2.0*MagickPI*beta);
-      value=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
-        TauGaussian*tau;
-      break;
-    }
-    case MultiplicativeGaussianNoise:
-    {
-      if (alpha <= NoiseEpsilon)
-        sigma=MaxRGB;
-      else
-        sigma=sqrt(-2.0*log(alpha));
-      beta=(double) rand()/RAND_MAX;
-      value=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma*
-        cos(2.0*MagickPI*beta);
-      break;
-    }
-    case ImpulseNoise:
-    {
-      if (alpha < (SigmaImpulse/2.0))
-        value=0;
-       else
-         if (alpha >= (1.0-(SigmaImpulse/2.0)))
-           value=MaxRGB;
-         else
-           value=pixel;
-      break;
-    }
-    case LaplacianNoise:
-    {
-      if (alpha <= 0.5)
-        {
-          if (alpha <= NoiseEpsilon)
-            value=(double) pixel-MaxRGB;
-          else
-            value=(double) pixel+SigmaLaplacian*log(2.0*alpha);
-          break;
-        }
-      beta=1.0-alpha;
-      if (beta <= (0.5*NoiseEpsilon))
-        value=(double) pixel+MaxRGB;
-      else
-        value=(double) pixel-SigmaLaplacian*log(2.0*beta);
-      break;
-    }
-    case PoissonNoise:
-    {
-      register long
-        i;
-
-      for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
-      {
-        beta=(double) rand()/RAND_MAX;
-        alpha=alpha*beta;
-      }
-      value=(i/SigmaPoisson)*NoiseScale;
-      break;
-    }
-  }
-  return (RoundSignedToQuantum(value));
+  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type,NULL);
+  return (RoundDoubleToQuantum(value));
 }
 
 /*
@@ -309,7 +368,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       normalize+=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma);
     u=width/2;
     value=exp(-((double) u*u)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma)/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGBDouble*value) <= 0)
       break;
     width+=2;
   }
@@ -345,7 +404,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp(-((double) v*v)/(2.0*sigma*sigma))/(MagickSQ2PI*sigma)/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if ((long) (MaxRGBDouble*value) <= 0)
       break;
     width+=2;
   }
@@ -397,8 +456,8 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   assert(blue != (Quantum *) NULL);
   if (saturation == 0.0)
     {
-      double l = MaxRGB*luminosity;
-      *red=*green=*blue= RoundToQuantum(l);
+      double l = MaxRGBDouble*luminosity;
+      *red=*green=*blue= RoundDoubleToQuantum(l);
     }
   else
     {
@@ -439,12 +498,12 @@ MagickExport void HSLTransform(const double hue,const double saturation,
         case 5: r=v; g=y; b=z; break;
         default: r=v; g=x; b=y; break;
         }
-      r *= MaxRGB;
-      *red=RoundToQuantum(r);
-      g *= MaxRGB;
-      *green=RoundToQuantum(g);
-      b *= MaxRGB;
-      *blue=RoundToQuantum(b);
+      r *= MaxRGBDouble;
+      *red=RoundDoubleToQuantum(r);
+      g *= MaxRGBDouble;
+      *green=RoundDoubleToQuantum(g);
+      b *= MaxRGBDouble;
+      *blue=RoundDoubleToQuantum(b);
     }
 }
 
@@ -503,13 +562,12 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == 0.0)
     {
-      *red=(Quantum) (MaxRGB*v+0.5);
-      *green=(Quantum) (MaxRGB*v+0.5);
-      *blue=(Quantum) (MaxRGB*v+0.5);
+      v *= MaxRGBDouble;
+      *red=*green=*blue=RoundDoubleToQuantum(v);
       return;
     }
-  i=(unsigned int) floor(hue);
-  f=hue-i;
+  i=(unsigned int) (6.0*hue);
+  f=6.0*hue-i;
   if (i & 0x01)
     f=1.0-f;
   n=whiteness+f*(v-whiteness);  /* linear interpolation */
@@ -524,9 +582,12 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=(Quantum) (MaxRGB*r+0.5);
-  *green=(Quantum) (MaxRGB*g+0.5);
-  *blue=(Quantum) (MaxRGB*b+0.5);
+  r *= MaxRGBDouble;
+  g *= MaxRGBDouble;
+  b *= MaxRGBDouble;
+  *red=RoundDoubleToQuantum(r);
+  *green=RoundDoubleToQuantum(g);
+  *blue=RoundDoubleToQuantum(b);
 }
 
 /*
@@ -696,7 +757,7 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n t e r p o l a t e C o l o r                                           %
++   I n t e r p o l a t e C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -719,39 +780,59 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %
 */
-MagickExport PixelPacket InterpolateColor(const Image *image,
-  const double x_offset,const double y_offset,ExceptionInfo *exception)
+MagickExport void
+InterpolateViewColor(const ViewInfo *view,
+                     PixelPacket *color,
+                     const double x_offset,
+                     const double y_offset,
+                     ExceptionInfo *exception)
 {
-  double
-    alpha,
-    beta,
-    one_minus_alpha,
-    one_minus_beta;
-
-  PixelPacket
-    color;
-
   register const PixelPacket
     *p;
 
+  p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
+  if (p == (const PixelPacket *) NULL)
+    {
+      (void) AcquireOneCacheViewPixel(view,color,(long) x_offset,
+                                      (long) y_offset,exception);
+    }
+  else
+    {
+      double
+        alpha,
+        beta,
+        one_minus_alpha,
+        one_minus_beta;
+
+      alpha=x_offset-floor(x_offset);
+      beta=y_offset-floor(y_offset);
+      one_minus_alpha=1.0-alpha;
+      one_minus_beta=1.0-beta;
+      color->red=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].red+alpha*p[1].red)+
+         beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
+      color->green=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].green+alpha*p[1].green)+
+         beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
+      color->blue=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].blue+alpha*p[1].blue)+
+         beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
+      color->opacity=(Quantum)
+        (one_minus_beta*(one_minus_alpha*p[0].opacity+alpha*p[1].opacity)+
+         beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
+    }
+}
+MagickExport PixelPacket InterpolateColor(const Image *image,
+  const double x_offset,const double y_offset,ExceptionInfo *exception)
+{
+  PixelPacket
+    color;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  p=AcquireImagePixels(image,(long) x_offset,(long) y_offset,2,2,exception);
-  if (p == (const PixelPacket *) NULL)
-    return(AcquireOnePixel(image,(long) x_offset,(long) y_offset,exception));
-  alpha=x_offset-floor(x_offset);
-  beta=y_offset-floor(y_offset);
-  one_minus_alpha=1.0-alpha;
-  one_minus_beta=1.0-beta;
-  color.red=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].red+
-    alpha*p[1].red)+beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
-  color.green=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].green+
-    alpha*p[1].green)+beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
-  color.blue=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].blue+
-    alpha*p[1].blue)+beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
-  color.opacity=(Quantum) (one_minus_beta*(one_minus_alpha*p[0].opacity+
-    alpha*p[1].opacity)+beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
-  return(color);
+  InterpolateViewColor(AccessDefaultCacheView(image),&color,
+                       x_offset,y_offset,exception);
+  return color;
 }
 
 /*
@@ -868,9 +949,9 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
   assert(saturation_result != (double *) NULL);
   assert(luminosity_result != (double *) NULL);
 
-  r=(double) red/MaxRGB;
-  g=(double) green/MaxRGB;
-  b=(double) blue/MaxRGB;
+  r=(double) red/MaxRGBDouble;
+  g=(double) green/MaxRGBDouble;
+  b=(double) blue/MaxRGBDouble;
   max=Max(r,Max(g,b));
   min=Min(r,Min(g,b));
   hue=0.0;
@@ -928,45 +1009,38 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 %
 */
-MagickExport void TransformHWB(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue_result,double *whiteness_result,double *blackness_result)
+MagickExport void TransformHWB(const Quantum red,const Quantum green, const Quantum blue,
+                               double *hue,double *whiteness,double *blackness)
 {
   double
-    blackness,
     f,
-    hue,
-    whiteness;
+    v,
+    w;
 
   register long
     i;
 
-  Quantum
-    v,
-    w;
-
   /*
     Convert RGB to HWB colorspace.
   */
-  assert(hue_result != (double *) NULL);
-  assert(whiteness_result != (double *) NULL);
-  assert(blackness_result != (double *) NULL);
-  w=Min(red,Min(green,blue));
-  v=Max(red,Max(green,blue));
-  blackness=(double) (MaxRGB-v)/MaxRGB;
+  assert(hue != (double *) NULL);
+  assert(whiteness != (double *) NULL);
+  assert(blackness != (double *) NULL);
+  w=(double) Min(red,Min(green,blue));
+  v=(double) Max(red,Max(green,blue));
+  *blackness=((double) MaxRGBDouble-v)/MaxRGBDouble;
   if (v == w)
     {
-      hue=0.0;
-      whiteness=1.0-(blackness);
+      *hue=0.0;
+      *whiteness=1.0-(*blackness);
     }
   else
     {
-      f=(red == w) ? (double) green-blue : ((green == w) ? (double) blue-red :
-                                            (double) red-green);
+      f=(red == w) ? (double) green-blue :
+        ((green == w) ? (double) blue-red :
+         (double) red-green);
       i=(red == w) ? 3 : ((green == w) ? 5 : 1);
-      hue=i-f/(v-w);
-      whiteness=(double) w/MaxRGB;
+      *hue=((double) i-f/(v-w))/6.0;
+      *whiteness=((double) w/MaxRGBDouble);
     }
-  *hue_result=ConstrainToRange(0.0,1.0,hue);
-  *whiteness_result=ConstrainToRange(0.0,1.0,whiteness);
-  *blackness_result=ConstrainToRange(0.0,1.0,blackness);
 }

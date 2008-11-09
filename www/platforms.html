@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>Platform Notes</title>
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="platform-notes">
+<h1 class="title">Platform Notes</h1>
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<div class="contents local topic">
+<ul class="simple">
+<li><a class="reference" href="#overview" id="id1" name="id1">Overview</a></li>
+<li><a class="reference" href="#apple-os-x-intel" id="id2" name="id2">Apple OS X (Intel)</a></li>
+<li><a class="reference" href="#cygwin" id="id3" name="id3">Cygwin</a></li>
+<li><a class="reference" href="#sgi-irix" id="id4" name="id4">SGI Irix</a></li>
+<li><a class="reference" href="#linux-6-1" id="id5" name="id5">Linux 6.1</a></li>
+<li><a class="reference" href="#freebsd-3-x-and-4-x" id="id6" name="id6">FreeBSD 3.X and 4.X</a></li>
+<li><a class="reference" href="#digital-unix-and-osf-1" id="id7" name="id7">Digital Unix and OSF/1</a></li>
+<li><a class="reference" href="#solaris-2-x" id="id8" name="id8">Solaris 2.X</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="overview" name="overview">Overview</a></h1>
+<p>This file provides platform specific portability notes which don't
+belong in README.txt. Usually GraphicsMagick compiles fine according to the
+procedures described in README.txt, but sometimes a platform related
+oddity causes a failure.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="apple-os-x-intel" name="apple-os-x-intel">Apple OS X (Intel)</a></h1>
+<blockquote>
+<p>A GraphicsMagick user submitted these steps for how to get
+GraphicsMagick up and going on an Intel Mac:</p>
+<p>The first few steps should be done as an administrator, or with
+proper use of &quot;sudo&quot;</p>
+<ol class="arabic">
+<li><p class="first">Install Fink (a package manager). The default setup will create a
+/sw directory on your main hard drive. It will also make sure
+/sw/bin is in your path.</p>
+</li>
+<li><p class="first">Install the latest X-Code from Apple.</p>
+</li>
+<li><p class="first">Make a link in /Developer/SDKs/MacOSX10.4u.sdk/ to /sw:</p>
+<p>&quot;cd /Developer/SDKs/MacOSX10.4u.sdk; ln -s sw /sw&quot;</p>
+</li>
+<li><p class="first">Use Fink, or FinkCommander to install libjpeg and libtiff and any
+other libraries you might want.</p>
+</li>
+</ol>
+<p>As a regular user or administrator:</p>
+<ol class="arabic" start="5">
+<li><p class="first">Download the GM snapshot.</p>
+</li>
+<li><p class="first">Unpack and cd into the source directory.</p>
+</li>
+<li><p class="first">Set your CFLAGS environment variable to (command varies by shell):</p>
+<p>&quot;-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk/ -arch i386 -I/sw/include/&quot;</p>
+</li>
+<li><p class="first">Set your LDFLAGS environment variable to:</p>
+<p>&quot;-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk/,-L/sw/lib/&quot;</p>
+</li>
+<li><p class="first">I used the following ./configure line:</p>
+</li>
+</ol>
+<blockquote>
+./configure --prefix=/sw --with-quantum-depth=16 --disable-dependency-tracking \
+--with-x=yes --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ --without-perl</blockquote>
+<ol class="arabic simple" start="10">
+<li>Issue make</li>
+<li>Test the binaries as necessary and when satisfied:</li>
+</ol>
+<blockquote>
+sudo make install</blockquote>
+<ol class="arabic simple" start="12">
+<li>start X11 and in a new shell: (or source your .profile or .login)</li>
+</ol>
+<blockquote>
+gm display</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="cygwin" name="cygwin">Cygwin</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+PerlMagick fails to link.</blockquote>
+<p>Indications</p>
+<blockquote>
+libperl.a is not found.</blockquote>
+<p>Solution</p>
+<blockquote>
+<p>Configure like</p>
+<blockquote>
+./configure --enable-shared</blockquote>
+<p>or</p>
+<blockquote>
+./configure --enable-shared --with-modules</blockquote>
+<p>Cygwin doesn't normally come with a libperl.a but it does come with the
+equivalent DLL.  Using a shared build gets PerlMagick over the hurdle.</p>
+</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="sgi-irix" name="sgi-irix">SGI Irix</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+How to successfully configure GraphicsMagick using SGI's commercial
+compiler (e.g. IRIX C/C++ v7.3.1.X)?</blockquote>
+<p>Indications</p>
+<blockquote>
+Compiling C++ code fails with the error:
+#error directive:  This header file requires the -LANG:std option</blockquote>
+<p>Solution</p>
+<blockquote>
+<p>Configure like</p>
+<blockquote>
+./configure CC=cc CFLAGS=&quot;-O2 -OPT:Olimit=0&quot; CXX=CC CXXFLAGS=&quot;-LANG:std -Wl,-woff,84 -O2&quot; CXXCPP=&quot;CC -LANG:std -E&quot; --with-modules --with-threads ...</blockquote>
+<p>with the following in /etc/compiler.defaults</p>
+<blockquote>
+-DEFAULT:abi=n32:isa=mips3</blockquote>
+</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id5" id="linux-6-1" name="linux-6-1">Linux 6.1</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+When '-rpath /somedir' is added to LDFLAGS in order to tell the
+linker to apply a run-time linker path, configure fails.</blockquote>
+<p>Indications</p>
+<blockquote>
+<p>The configure script prints the error message</p>
+<blockquote>
+<dl class="docutils">
+<dt>checking for executable suffix...</dt>
+<dd>configure: error: cannot compute EXEEXT:</dd>
+</dl>
+</blockquote>
+<p>and the error message</p>
+<blockquote>
+gcc: unrecognized option '-rpath'</blockquote>
+<p>is written to config.log</p>
+</blockquote>
+<p>Solution</p>
+<blockquote>
+Use 'LDFLAGS=-Wl,-rpath,/somedir' instead to pass the options through
+to the linker.</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id6" id="freebsd-3-x-and-4-x" name="freebsd-3-x-and-4-x">FreeBSD 3.X and 4.X</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+GraphicsMagick does not run after it is installed. The system does not
+see an installed shared library until the 'ldconfig' command has
+been executed (as root) using the correct options.</blockquote>
+<p>Indications</p>
+<blockquote>
+System fails to find shared library needed by GraphicsMagick.</blockquote>
+<p>Solution</p>
+<blockquote>
+<p>Either reboot the system (which automatically runs ldconfig) or
+execute</p>
+<blockquote>
+/sbin/ldconfig -m ${PREFIX}/lib</blockquote>
+<p>where ${PREFIX} is the prefix used when configuring GraphicsMagick
+(default /usr/local).</p>
+</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="digital-unix-and-osf-1" name="digital-unix-and-osf-1">Digital Unix and OSF/1</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+Digital Unix provides an outdated JPEG shared library as part of the
+system.</blockquote>
+<p>Indications</p>
+<blockquote>
+GraphicsMagick fails to link.</blockquote>
+<p>Solution</p>
+<blockquote>
+Ensure that the JPEG library you installed is used. Be sure to
+install the JPEG library as a shared library.</blockquote>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id8" id="solaris-2-x" name="solaris-2-x">Solaris 2.X</a></h1>
+<blockquote>
+<p>Problem</p>
+<blockquote>
+An outdated delegate library is used rather than the one just
+installed.</blockquote>
+<p>Indications</p>
+<blockquote>
+<ul class="simple">
+<li>Failure to link due to unresolved symbols</li>
+<li>Failure to run properly</li>
+<li>The command 'ldd <cite>which convert</cite>' lists the wrong library.</li>
+</ul>
+</blockquote>
+<p>Solution</p>
+<blockquote>
+<p>If the problem library is a shared library (.so extension) then
+install your own library as a shared library. Then add the required
+-L and -R options to find your shared library at both link and run
+time. For example, if your library is is installed in /usr/local/lib:</p>
+<blockquote>
+configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'</blockquote>
+</blockquote>
+<p>Problem</p>
+<blockquote>
+An outdated libtiff.so (libtiff.so.3) is installed in
+/usr/openwin/lib. This library may be used by accident rather than
+the intended libtiff.so, or libtiff.a. In particular, the linker
+generally considers linking against a shared library before it
+considers static libraries, so the system libtiff.so may be used
+even though there is an installed libtiff.a earlier in the linker
+search path.</blockquote>
+<p>Indications</p>
+<blockquote>
+GraphicsMagick fails to link or load TIFF files.</blockquote>
+<p>Solution</p>
+<blockquote>
+<ul>
+<li><p class="first">Install libtiff as a shared library, and make sure that LDFLAGS
+contains the required -L and -R options to find your shared
+library at both link and run time. For example, if libtiff.so is
+installed in /usr/local/lib:</p>
+<p>configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'</p>
+</li>
+</ul>
+<p>or</p>
+<ul class="simple">
+<li>Remove /usr/openwin/lib/libtiff.so.3. Note that if you take this
+step, some tools like 'imagetool' and 'pageview' will stop working.</li>
+</ul>
+</blockquote>
+<p>Problem</p>
+<blockquote>
+When using gcc 3.0.X, configure decides that the compiler is insufficient
+to compile Magick++.</blockquote>
+<p>Indications</p>
+<blockquote>
+Fails ISO C++ test.</blockquote>
+<p>Solution</p>
+<blockquote>
+<p>The problem is due to gcc provided headers undefining
+Solaris-provided defines for 64-bit versions of stdio functions. The
+solution is to either configure with --disable-largefile or edit the
+installed g++-v3/bits/std_cstdio.h to bracket the offending undefs
+(for fgetpos, fopen, freopen, fsetpos, &amp; tmpfile) like:</p>
+<pre class="literal-block">
+#if _FILE_OFFSET_BITS != 64
+#undef fopen
+#endif
+</pre>
+<p>or</p>
+<p>Install gcc 3.1 (or later) instead.</p>
+</blockquote>
+<p>Problem</p>
+<blockquote>
+A static library was used in a shared library build.</blockquote>
+<p>Indications</p>
+<blockquote>
+<p>Linker prints a warning similar to:</p>
+<p>&quot;ld: fatal: relocations remain against allocatable but non-writable
+sections&quot;</p>
+</blockquote>
+<p>Solution</p>
+<blockquote>
+All libraries used in a shared library build <em>must</em> also be shared
+libraries. Check all libraries referenced in the libtool link
+command line and verify that all of the referenced libraries are
+indeed shared libraries. All system libraries are available as
+shared libraries so it is likely that any static library is locally
+installed.</blockquote>
+</blockquote>
+<hr class="docutils" />
+<div class="line-block">
+<div class="line">Copyright (C) 2003 - 2008 GraphicsMagick Group</div>
+<div class="line">Copyright (C) 2002 ImageMagick Studio</div>
+<div class="line">Copyright (C) 1999 E. I. du Pont de Nemours and Company</div>
+</div>
+<p>This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 20:27 UTC.
+
+</div>
+</body>
+</html>

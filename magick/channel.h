@@ -29,6 +29,9 @@ extern MagickExport MagickPassFail
   ImportImageChannel(const Image *src_image,
                      Image *dst_image,
                      const ChannelType channel),
+  ImportImageChannelsMasked(const Image *source_image,
+                            Image *update_image,
+                            const ChannelType channels),
   SetImageChannelDepth(Image *image,
                        const ChannelType channel,
                        const unsigned int depth);

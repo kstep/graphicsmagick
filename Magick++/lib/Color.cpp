@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2008
 //
 // Color Implementation
 //
@@ -76,6 +76,7 @@ int Magick::operator <= ( const Magick::Color& left_,
 Magick::Color::Color ( void )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
+    _isValid(false),
     _pixelType(RGBPixel)
 {
   initPixel();
@@ -87,6 +88,7 @@ Magick::Color::Color ( Quantum red_,
                        Quantum blue_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
+    _isValid(true),
     _pixelType(RGBPixel)
 {
   redQuantum   ( red_   );
@@ -102,6 +104,7 @@ Magick::Color::Color ( Quantum red_,
                        Quantum alpha_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
+    _isValid(true),
     _pixelType(RGBAPixel)
 {
   redQuantum   ( red_   );
@@ -114,6 +117,7 @@ Magick::Color::Color ( Quantum red_,
 Magick::Color::Color ( const Magick::Color & color_ )
   : _pixel( new PixelPacket ),
     _pixelOwn( true ),
+    _isValid( color_._isValid ),
     _pixelType( color_._pixelType )
 {
   *_pixel    = *color_._pixel;
@@ -123,6 +127,7 @@ Magick::Color::Color ( const Magick::Color & color_ )
 Magick::Color::Color ( const std::string &x11color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
+    _isValid(true),
     _pixelType(RGBPixel)
 {
   initPixel();
@@ -135,6 +140,7 @@ Magick::Color::Color ( const std::string &x11color_ )
 Magick::Color::Color ( const char * x11color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
+    _isValid(true),
     _pixelType(RGBPixel)
 {
   initPixel();
@@ -147,6 +153,7 @@ Magick::Color::Color ( const char * x11color_ )
 Magick::Color::Color ( const PixelPacket &color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),	    // We allocated this pixel
+    _isValid(true),
     _pixelType(RGBPixel)  // RGB pixel by default
 {
   *_pixel = color_;
@@ -160,6 +167,7 @@ Magick::Color::Color ( const PixelPacket &color_ )
 Magick::Color::Color ( PixelPacket* rep_, PixelType pixelType_  )
   : _pixel(rep_),
     _pixelOwn(false),
+    _isValid(true),
     _pixelType(pixelType_)
 {
 }
@@ -180,6 +188,9 @@ Magick::Color& Magick::Color::operator = ( const Magick::Color& color_ )
     {
       // Copy pixel value
       *_pixel = *color_._pixel;
+
+      // Validity
+      _isValid =  color_._isValid;
 
       // Copy pixel type
       _pixelType = color_._pixelType;
@@ -207,7 +218,10 @@ const Magick::Color& Magick::Color::operator = ( const std::string &x11color_ )
 	_pixelType = RGBPixel;
     }
   else
-    throwException(exception);
+    {
+      _isValid = false;
+      throwException(exception);
+    }
   DestroyExceptionInfo( &exception );
 
   return *this;
@@ -255,16 +269,14 @@ void Magick::Color::pixel ( PixelPacket* rep_, PixelType pixelType_ )
     delete _pixel;
   _pixel = rep_;
   _pixelOwn = false;
+  _isValid = true;
   _pixelType = pixelType_;
 }
 
 // Does object contain valid color?
 bool Magick::Color::isValid ( void ) const
 {
-  return( _pixel->opacity != TransparentOpacity ||
-          _pixel->red != 0 ||
-          _pixel->green != 0 ||
-          _pixel->blue != 0 );
+  return( _isValid );
 }
 void Magick::Color::isValid ( bool valid_ )
 {
@@ -276,6 +288,8 @@ void Magick::Color::isValid ( bool valid_ )
       _pixel = new PixelPacket;
       _pixelOwn = true;
     }
+
+  _isValid=valid_;
 
   initPixel();
 }

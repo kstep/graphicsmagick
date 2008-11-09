@@ -71,6 +71,12 @@ Pixel cache is not open
 .
 
 MessageId       = +1
+SymbolicName    = CacheErrorUnableToAllocateCacheView
+Language        = English
+Unable to allocate cache view
+.
+
+MessageId       = +1
 SymbolicName    = CacheErrorUnableToCloneCache
 Language        = English
 Unable to clone cache
@@ -1673,6 +1679,12 @@ Unrecognized gravity type
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedHighlightStyle
+Language        = English
+Unrecognized highlight style
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedImageCompression
 Language        = English
 Unrecognized image compression
@@ -1718,6 +1730,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedListType
 Language        = English
 Unrecognized list type
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedMetric
+Language        = English
+Unrecognized error metric
 .
 
 MessageId       = +1

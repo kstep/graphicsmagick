@@ -773,7 +773,7 @@ print q(	<STYLE>
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
+		A:link { color: #00B04F }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
@@ -781,13 +781,13 @@ print q(	<STYLE>
 
         print "</HEAD>\n";
 
-	print q(<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">) . "\n";
+	print q(<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">) . "\n";
 
         if ($title) {
 	    print q(<table BORDER=0 WIDTH="100%" >) . "\n";
 	    print q(<tr>) . "\n";
-	    print q(<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>) . "\n";
-	    print q(<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">);
+	    print q(<td BGCOLOR="#ffffff"><img SRC="images/right_triangle.png" ALT=">" height=14 width=15>) . "\n";
+	    print q(<b><font face="Helvetica, Arial"><font color="#00B04F"><font size="+1">);
 	    print "$title";
             print q(</font></font></font></b></td>) . "\n";
 	    print q(</tr>) . "\n";
@@ -880,7 +880,7 @@ print q(	<STYLE>
         print q(<hr>) . "\n";
 	print q(<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P>);
+GraphicsMagick Group 2002 - 2008</FONT></P>);
 
     }
 

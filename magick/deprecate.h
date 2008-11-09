@@ -15,9 +15,9 @@
 extern "C" {
 #endif
 
-/*
-  Legacy names for (possibly) large integral types
-*/
+  /*
+    Legacy names for (possibly) large integral types
+  */
 
 #if !defined(ExtendedSignedIntegralType)
 #  define ExtendedSignedIntegralType magick_int64_t
@@ -26,12 +26,12 @@ extern "C" {
 #  define ExtendedUnsignedIntegralType magick_uint64_t
 #endif
 
-/*
-  Compatibility definitions to handle the renaming of
-  ExtendedSignedIntegralType and ExtendedUnsignedIntegralType to
-  MagickSignedType and MagickUnsignedType which occured in ImageMagick
-  5.5.8.  ImageMagick 5.5.8 also introduced MagickRationalType.
-*/
+  /*
+    Compatibility definitions to handle the renaming of
+    ExtendedSignedIntegralType and ExtendedUnsignedIntegralType to
+    MagickSignedType and MagickUnsignedType which occured in ImageMagick
+    5.5.8.  ImageMagick 5.5.8 also introduced MagickRationalType.
+  */
 #if !defined(MagickSignedType)
 #  define MagickSignedType magick_int64_t
 #endif
@@ -46,23 +46,39 @@ extern "C" {
 #  endif
 #endif
 
-extern MagickExport unsigned int
+  extern MagickExport unsigned int
   PopImagePixels(const Image *,const QuantumType,unsigned char *) __attribute__ ((deprecated));
 
-extern MagickExport unsigned int
+  extern MagickExport unsigned int
   PushImagePixels(Image *,const QuantumType,const unsigned char *) __attribute__ ((deprecated));
 
-extern MagickExport void
+  extern MagickExport void
   *AcquireMemory(const size_t) __attribute__ ((deprecated));
 
-extern MagickExport void
+  extern MagickExport void
   *CloneMemory(void *,const void *,const size_t) __attribute__ ((deprecated));
 
-extern MagickExport void
+  extern MagickExport void
   LiberateMemory(void **) __attribute__ ((deprecated));
 
-extern MagickExport void
+  extern MagickExport void
   ReacquireMemory(void **,const size_t) __attribute__ ((deprecated));
+
+  extern MagickExport const PixelPacket
+  *AcquireCacheView(const ViewInfo *view,
+                    const long x,const long y,const unsigned long columns,
+                    const unsigned long rows,ExceptionInfo *exception) __attribute__ ((deprecated));
+
+  extern MagickExport PixelPacket
+  *GetCacheView(ViewInfo *view,const long x,const long y,
+                const unsigned long columns,const unsigned long rows)  __attribute__ ((deprecated));
+
+  extern MagickExport PixelPacket
+  *SetCacheView(ViewInfo *view,const long x,const long y,
+                const unsigned long columns,const unsigned long rows) __attribute__ ((deprecated));
+
+  extern MagickExport MagickPassFail
+  SyncCacheView(ViewInfo *view) __attribute__ ((deprecated));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

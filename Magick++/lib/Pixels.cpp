@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2008
 //
 // Pixels Implementation
 //
@@ -28,6 +28,8 @@ Magick::Pixels::Pixels( Magick::Image &image_ )
     _columns(0),
     _rows(0)
 {
+  GetExceptionInfo( &_exception );
+
   if (!_view)
     _image.throwImageException();
 }
@@ -52,11 +54,11 @@ Magick::PixelPacket* Magick::Pixels::get ( const int x_,
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = GetCacheView( _view, x_, y_, columns_, rows_ );
-
+  PixelPacket* pixels = GetCacheViewPixels( _view, x_, y_, columns_, rows_,
+                                            &_exception );
   if ( !pixels )
-    _image.throwImageException();
-  
+    throwException( _exception );
+
   return pixels;
 }
 
@@ -71,25 +73,20 @@ const Magick::PixelPacket* Magick::Pixels::getConst ( const int x_, const int y_
   _columns = columns_;
   _rows = rows_;
 
-  ExceptionInfo exception;
-  GetExceptionInfo( &exception );
-
   const PixelPacket* pixels =
-    AcquireCacheView(_view, x_, y_, columns_, rows_, &exception );
+    AcquireCacheViewPixels(_view, x_, y_, columns_, rows_, &_exception );
 
   if ( !pixels )
-    throwException( exception );
-
-  DestroyExceptionInfo( &exception );
-
-    return pixels;
+    throwException( _exception );
+  
+  return pixels;
 }
 
 // Transfers the image view pixels to the image.
 void Magick::Pixels::sync ( void )
 {
-  if( !SyncCacheView( _view ) )
-    _image.throwImageException();
+  if( !SyncCacheViewPixels( _view, &_exception ) )
+    throwException( _exception );
 }
     
 // Allocate a pixel view region to store image pixels as defined
@@ -105,10 +102,10 @@ Magick::PixelPacket* Magick::Pixels::set ( const int x_,
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = SetCacheView( _view, static_cast<long>(x_), static_cast<long>(y_),
-                                      columns_, rows_ );
+  PixelPacket* pixels = SetCacheViewPixels( _view, static_cast<long>(x_), static_cast<long>(y_),
+                                            columns_, rows_ , &_exception);
   if ( !pixels )
-    _image.throwImageException();
+    throwException( _exception );
   
   return pixels;
 }

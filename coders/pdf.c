@@ -43,6 +43,8 @@
 #include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/shear.h"
@@ -154,6 +156,8 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
 
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
+                        &image->exception);
 
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
@@ -296,7 +300,7 @@ static unsigned int IsPDF(const unsigned char *magick,const size_t offset)
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MediaBox  "/MediaBox"
-#define RenderPostscriptText  "  Rendering postscript...  "
+#define RenderPostscriptText  "[%s] Rendering postscript..."
 
   char
     density[MaxTextExtent],
@@ -325,6 +329,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     count,
+    rotate,
     status;
 
   unsigned int
@@ -343,9 +348,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   SegmentInfo
     bounds;
-
-  unsigned int
-    portrait;
 
   unsigned long
     height,
@@ -383,17 +385,23 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=GetMagickDimension(density,&image->x_resolution,&image->y_resolution);
+      count=GetMagickDimension(density,&image->x_resolution,&image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
   /*
     Determine page geometry from the PDF media box.
+
+    Note that we can use Ghostscript to obtain the bounding box info like
+
+    gs -q -dBATCH -dNOPAUSE -sDEVICE=bbox ENV.003.01.pdf
+    %%BoundingBox: 70 61 2089 2954
+    %%HiResBoundingBox: 70.737537 61.199998 2088.587889 2953.601629
   */
+  rotate=0;
   (void) memset(&page,0,sizeof(RectangleInfo));
   (void) memset(&box,0,sizeof(RectangleInfo));
-  portrait=True;
   for (p=command; ; )
   {
     c=ReadBlobByte(image);
@@ -408,8 +416,15 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Continue unless this is a MediaBox statement.
     */
-    if (LocaleNCompare(command,"/Rotate 90",10) == 0)
-      portrait=False;
+    if (LocaleNCompare(command,"/Rotate ",8) == 0)
+      {
+        count=sscanf(command,"/Rotate %d",&rotate);
+        if (count > 0)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Rotate by %d degrees",rotate);
+          }
+      }
     q=strstr(command,MediaBox);
     if (q == (char *) NULL)
       continue;
@@ -418,6 +433,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (count != 4)
       count=sscanf(q,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
         &bounds.x2,&bounds.y2);
+    if (count == 4)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Parsed: MediaBox %lf %lf %lf %lf",
+                              bounds.x1,bounds.y1,
+                              bounds.x2,bounds.y2);
+      }
     if (count != 4)
       continue;
     if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
@@ -433,6 +455,18 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page.height=height;
     box=page;
   }
+  /*
+    If page is rotated right or left, then swap width and height values.
+  */
+  if ((90 == AbsoluteValue(rotate)) || (270 == AbsoluteValue(rotate)))
+    {
+      double
+        value;
+
+      value=page.width;
+      page.width=page.height;
+      page.height=value;
+    }
   if ((page.width == 0) || (page.height == 0))
     {
       SetGeometry(image,&page);
@@ -442,6 +476,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
+  geometry[0]='\0';
   FormatString(geometry,"%lux%lu",
     (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
@@ -473,9 +508,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info->commands,antialias,
     antialias,geometry,density,options,clone_info->filename,
     postscript_filename);
-  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
+  (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   status=InvokePostscriptDelegate(clone_info->verbose,command);
-  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
+  (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
+                                image->filename);
   if ((status) || (!IsAccessibleAndNotEmpty(clone_info->filename)))
     {
       DestroyImageInfo(clone_info);
@@ -496,21 +533,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PDF");
     (void) strlcpy(image->filename,filename,MaxTextExtent);
-    if (!image_info->ping && !portrait)
-      {
-        Image
-          *rotate_image;
-
-        /*
-          Rotate image.
-        */
-        rotate_image=RotateImage(image,90,exception);
-        if (rotate_image != (Image *) NULL)
-          {
-            DestroyImage(image);
-            image=rotate_image;
-          }
-      }
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;
@@ -556,6 +578,7 @@ ModuleExport void RegisterPDFImage(void)
   entry->seekable_stream=True;
   entry->description="Encapsulated Portable Document Format";
   entry->module="PDF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PDF");
@@ -566,6 +589,7 @@ ModuleExport void RegisterPDFImage(void)
   entry->seekable_stream=True;
   entry->description="Portable Document Format";
   entry->module="PDF";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -697,7 +721,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
+  register const IndexPacket
     *indexes;
 
   register unsigned char
@@ -928,12 +952,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       dy_resolution=72.0;
       x_resolution=72.0;
       (void) strcpy(density,PSDensityGeometry);
-      count=GetMagickDimension(density,&x_resolution,&y_resolution);
+      count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
       if (count != 2)
         y_resolution=x_resolution;
       if (image_info->density != (char *) NULL)
         {
-          count=GetMagickDimension(image_info->density,&x_resolution,&y_resolution);
+          count=GetMagickDimension(image_info->density,&x_resolution,&y_resolution,NULL,NULL);
           if (count != 2)
             y_resolution=x_resolution;
         }
@@ -1213,8 +1237,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
                         {
-                          status=MagickMonitor(SaveImageText,y,image->rows,
-                                               &image->exception);
+                          status=MagickMonitorFormatted(y,image->rows,
+                                                        &image->exception,
+                                                        SaveImageText,
+                                                        image->filename);
                           if (status == False)
                             break;
                         }
@@ -1257,8 +1283,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
                         {
-                          status=MagickMonitor(SaveImageText,y,image->rows,
-                                               &image->exception);
+                          status=MagickMonitorFormatted(y,image->rows,
+                                                        &image->exception,
+                                                        SaveImageText,
+                                                        image->filename);
                           if (status == False)
                             break;
                         }
@@ -1340,8 +1368,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
                         {
-                          status=MagickMonitor(SaveImageText,y,image->rows,
-                                               &image->exception);
+                          status=MagickMonitorFormatted(y,image->rows,
+                                                        &image->exception,
+                                                        SaveImageText,
+                                                        image->filename);
                           if (status == False)
                             break;
                         }
@@ -1394,8 +1424,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
                         {
-                          status=MagickMonitor(SaveImageText,y,image->rows,
-                                               &image->exception);
+                          status=MagickMonitorFormatted(y,image->rows,
+                                                        &image->exception,
+                                                        SaveImageText,
+                                                        image->filename);
                           if (status == False)
                             break;
                         }
@@ -1431,14 +1463,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                            &image->exception);
                       if (p == (const PixelPacket *) NULL)
                         break;
-                      indexes=GetIndexes(image);
+                      indexes=AccessImmutableIndexes(image);
                       for (x=0; x < (long) image->columns; x++)
                         *q++=indexes[x];
                       if (image->previous == (Image *) NULL)
                         if (QuantumTick(y,image->rows))
                           {
-                            status=MagickMonitor(SaveImageText,y,image->rows,
-                                                 &image->exception);
+                            status=MagickMonitorFormatted(y,image->rows,
+                                                          &image->exception,
+                                                          SaveImageText,
+                                                          image->filename);
                             if (status == False)
                               break;
                           }
@@ -1472,14 +1506,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                            &image->exception);
                       if (p == (const PixelPacket *) NULL)
                         break;
-                      indexes=GetIndexes(image);
+                      indexes=AccessImmutableIndexes(image);
                       for (x=0; x < (long) image->columns; x++)
                         Ascii85Encode(image,indexes[x]);
                       if (image->previous == (Image *) NULL)
                         if (QuantumTick(y,image->rows))
                           {
-                            status=MagickMonitor(SaveImageText,y,image->rows,
-                                                 &image->exception);
+                            status=MagickMonitorFormatted(y,image->rows,
+                                                          &image->exception,
+                                                          SaveImageText,
+                                                          image->filename);
                             if (status == False)
                               break;
                           }
@@ -1873,7 +1909,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                                &tile_image->exception);
                           if (p == (const PixelPacket *) NULL)
                             break;
-                          indexes=GetIndexes(tile_image);
+                          indexes=AccessImmutableIndexes(tile_image);
                           for (x=0; x < (long) tile_image->columns; x++)
                             *q++=indexes[x];
                         }
@@ -1906,7 +1942,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                                                &tile_image->exception);
                           if (p == (const PixelPacket *) NULL)
                             break;
-                          indexes=GetIndexes(tile_image);
+                          indexes=AccessImmutableIndexes(tile_image);
                           for (x=0; x < (long) tile_image->columns; x++)
                             Ascii85Encode(image,indexes[x]);
                         }
@@ -1982,8 +2018,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-                           &image->exception);
+      status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                    &image->exception,SaveImagesText,
+                                    image->filename);
       if (status == False)
         break;
     } while (image_info->adjoin);

@@ -5193,6 +5193,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="Granite texture";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("H");
@@ -5202,6 +5203,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="Internal format";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IMAGE");
@@ -5209,6 +5211,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->adjoin=False;
   entry->description="GraphicsMagick Embedded Image";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("LOGO");
@@ -5218,6 +5221,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="GraphicsMagick Logo";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("NETSCAPE");
@@ -5226,6 +5230,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="Netscape 216 color cube";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PATTERN");
@@ -5234,6 +5239,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="Tiled pattern image";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ROSE");
@@ -5242,6 +5248,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->stealth=True;
   entry->description="70x46 Truecolor rose";
   entry->module="LOGO";
+  entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 }
 

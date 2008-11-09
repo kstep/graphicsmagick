@@ -151,12 +151,12 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     {
       for (x=0; (x < image->columns) && (j < QuantumDepth); x++)
       {
-        pixel=AcquireOnePixel(watermark,k % watermark->columns,
+        (void) AcquireOnePixelByReference(watermark,&pixel,k % watermark->columns,
           k/watermark->columns,exception);
         q=GetImagePixels(image,x,y,1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=AccessMutableIndexes(image);
         switch (c)
         {
           case 0:
@@ -186,7 +186,8 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
           j++;
       }
     }
-    if (!MagickMonitor(LoadImagesText,i,QuantumDepth,&image->exception))
+    if (!MagickMonitorFormatted(i,QuantumDepth,&image->exception,
+                                LoadImagesText,image->filename))
       break;
   }
   DestroyImage(watermark);
@@ -226,6 +227,8 @@ ModuleExport void RegisterSTEGANOImage(void)
   entry->decoder=(DecoderHandler) ReadSTEGANOImage;
   entry->description="Steganographic image";
   entry->module="STEGANO";
+  entry->coder_class=PrimaryCoderClass;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   (void) RegisterMagickInfo(entry);
 }
 

@@ -1,0 +1,41 @@
+#
+# What is for API source files
+#
+animate.c          Interactively animate an image sequence
+annotate.c         Annotate an image with text
+attribute.c        Access key,value image attributes
+blob.c             Read or write formatted images in memory (BLOBs)
+channel.c          Image channel functions
+color.c            Color related functions
+constitute.c       Read or write an image
+compare.c          Compare images
+composite.c        Merge image pixels using a specified algorithm
+decorate.c         Add decorative frames and borders
+deprecate.c        Methods which should no longer be used
+display.c          Interactively display and edit an image
+render.c           Low-level methods to draw on an image
+draw.c             User-friendly methods to draw on an image
+effect.c           Image effects methods
+fx.c               Image special effects methods
+enhance.c          Methods to enhance or adjust an image
+error.c            Error reporting methods
+image.c            Miscellaneous image methods
+list.c             Image list support
+magick.c           Image format support interfaces
+memory.c           Memory allocation/deallocation functions
+monitor.c          Progress monitor support
+montage.c          Create a thumbnail image mosaic
+operator.c         Methods to apply mathematic or boolean operators to pixels.
+paint.c            Methods to fill image pixel regions
+pixel_cache.c      Image pixel cache (working pixels).
+pixel_iterator.c   Pixel iterator pattern support functions
+profile.c          Manipulate embedded profiles
+quantize.c         Reduce the number of colors in an image
+registry.c         In-memory image registration interface
+resource.c         Set resource consumption limits (e.g. memory)
+segment.c          Segment and image with thresholding using the fuzzy c-means method
+shear.c            Rotate image, shear image, or apply a 2D affine transformation
+signature.c        Add a digital signature to the image
+transform.c        Crop, flip, flop, roll, coalesce, etc.
+resize.c           Resize an image
+widget.c           X11 Widgets'

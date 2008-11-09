@@ -1,117 +1,100 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>GraphicsMagick Programming Interfaces</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris x86)">
-	<META NAME="CREATED" CONTENT="20020823;18090800">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20080208;15231100">
-	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<STYLE TYPE="text/css">
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2 STYLE="page-break-before: always">
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<FONT COLOR="#ffffff"><FONT FACE="Helvetica, Arial"><B>GraphicsMagick
-			Programming Interfaces</B></FONT></FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P STYLE="margin-bottom: 0in"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><I>GraphicsMagick</I>
-capabilities may be accessed from many languages and scripting
-environments via programming APIs as shown in the following table: </FONT></FONT>
-</P>
-<DL>
-	<DD>
-	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=6 CELLSPACING=0>
-		<COL WIDTH=48*>
-		<COL WIDTH=208*>
-		<TR VALIGN=TOP>
-			<TH WIDTH=19% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><SPAN STYLE="background: transparent">Language</SPAN></FONT></FONT></FONT></P>
-			</TH>
-			<TH WIDTH=81% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><SPAN STYLE="background: transparent">Description</SPAN></FONT></FONT></FONT></P>
-			</TH>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="api.html">C</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>C is the core programming interface for <EM>GraphicsMagick</EM>
-								</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="Magick++/index.html">C++</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>Magick++ provides an object-oriented C++ interface.</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="perl.html">Perl</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>PerlMagick provides an object-oriented Perl interface<EM>.</EM></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://rmagick.rubyforge.org/" TARGET="_top">Ruby</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RMagick
-				provides a Ruby language extension </FONT></FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.graphicsmagick.org/TclMagick/doc/">Tcl/Tk</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>TclMagick
-				provides a scripting environment based on Tcl or Tcl/Tk.</FONT></FONT></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="ImageMagickObject.html">Windows OLE</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>The <A HREF="ImageMagickObject.html">ImageMagickObject OLE
-				control</A> supports utility-style access via a COM+ object from
-				C++, C#, Visual Basic, Windows Script Host, ASP, and Delphi,
-				programs under Microsoft Windows.</P>
-			</TD>
-		</TR>
-	</TABLE>
-</DL>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><I>Some
-of these languages and scripting environments are supported by the
-GraphicsMagick Group while others are developed and supported by
-third parties.</I></FONT></FONT></P>
-<HR>
-<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</P>
-</BODY>
-</HTML>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>GraphicsMagick Programming Interfaces</title>
+<meta content="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD. With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format. " name="description" />
+<meta content="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++" name="keywords" />
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Installation</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="graphicsmagick-programming-interfaces">
+<h1 class="title">GraphicsMagick Programming Interfaces</h1>
+<p>GraphicsMagick capabilities may be accessed from many languages and scripting
+environments via programming APIs as shown in the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Language</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a class="reference" href="api/api.html">C</a></td>
+<td>C is the core programming interface for GraphicsMagick</td>
+</tr>
+<tr><td><a class="reference" href="Magick++/index.html">C++</a></td>
+<td>Magick++ provides an object-oriented C++ interface.</td>
+</tr>
+<tr><td><a class="reference" href="perl.html">Perl</a></td>
+<td>PerlMagick provides an object-oriented Perl interface.</td>
+</tr>
+<tr><td><a class="reference" href="http://rmagick.rubyforge.org/">Ruby</a></td>
+<td>RMagick provides a Ruby language extension</td>
+</tr>
+<tr><td><a class="reference" href="http://www.graphicsmagick.org/TclMagick/doc/">Tcl/Tk</a></td>
+<td>TclMagick provides a scripting environment based on Tcl or Tcl/Tk.</td>
+</tr>
+<tr><td><a class="reference" href="ImageMagickObject.html">Windows OLE</a></td>
+<td>The ImageMagickObject OLE control supports utility-style access via
+a COM+ object from C++, C#, Visual Basic, Windows Script Host, ASP,
+and Delphi, programs under Microsoft Windows.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Some of these languages and scripting environments are supported by the
+GraphicsMagick Group while others are developed and supported by third parties.</em></p>
+<p>Copyright © GraphicsMagick Group 2002, 2003, 2004</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2008-11-09 20:27 UTC.
+
+</div>
+</body>
+</html>

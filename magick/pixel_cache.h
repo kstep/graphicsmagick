@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2008 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -33,10 +33,7 @@ extern "C" {
   /*
     Typedef declaractions.
   */
-
   typedef _CacheInfoPtr_ Cache;
-  typedef void *ViewInfo;
-
 
   /*****
    *
@@ -53,42 +50,67 @@ extern "C" {
                       const unsigned long rows,ExceptionInfo *exception);
 
   /*
-    Return one pixel at the the specified (x,y) location.
+    AccessImmutableIndexes() returns the read-only indexes
+    associated with a rectangular pixel region already selected via
+    AcquireImagePixels().
+  */
+  extern MagickExport const IndexPacket
+  *AccessImmutableIndexes(const Image *image);
+
+  /*
+    Return one DirectClass pixel at the the specified (x,y) location.
+    Similar function as GetOnePixel().  Note that the value returned
+    by GetIndexes() may or may not be influenced by this function.
   */
   extern MagickExport PixelPacket
   AcquireOnePixel(const Image *image,const long x,const long y,
                   ExceptionInfo *exception);
 
-  /*
-    DestroyImagePixels() deallocates memory associated with the pixel cache.
-
-    Used only by DestroyImage().
-  */
-  extern MagickExport void
-  DestroyImagePixels(Image *image);
 
   /*
-    GetImagePixels() obtains a pixel region for read/write access.
+    GetImagePixels() and GetImagePixelsEx() obtains a pixel region for
+    read/write access.
   */
   extern MagickExport PixelPacket
   *GetImagePixels(Image *image,const long x,const long y,
                   const unsigned long columns,const unsigned long rows);
+  extern MagickExport PixelPacket
+  *GetImagePixelsEx(Image *image,const long x,const long y,
+                    const unsigned long columns,const unsigned long rows,
+                    ExceptionInfo *exception);
 
   /*
-    GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image.
+    GetImageVirtualPixelMethod() gets the "virtual pixels" method for
+    the image.
   */
   extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *image);
 
   /*
-    GetIndexes() returns the colormap indexes associated with the last
-    call to SetImagePixels() or GetImagePixels().
+    GetPixels() and AccessMutablePixels() return the pixels associated
+    with the last call to SetImagePixels() or GetImagePixels().
+  */
+  extern MagickExport PixelPacket
+  *GetPixels(const Image *image);
+  extern MagickExport PixelPacket
+  *AccessMutablePixels(Image *image);
+
+  /*
+    GetIndexes() and AccessMutableIndexes() return the colormap
+    indexes associated with the last call to SetImagePixels() or
+    GetImagePixels().
   */
   extern MagickExport IndexPacket
   *GetIndexes(const Image *image);
+  extern MagickExport IndexPacket
+  *AccessMutableIndexes(Image *image);
 
   /*
-    GetOnePixel() returns a single pixel at the specified (x,y) location.
+    GetOnePixel() returns a single DirectClass pixel at the specified
+    (x,y) location.  Similar to AcquireOnePixel().  It is preferred to
+    use AcquireOnePixel() since it allows reporting to a specified
+    exception structure. Note that the value returned by GetIndexes()
+    is not reliably influenced by this function.
   */
   extern MagickExport PixelPacket
   GetOnePixel(Image *image,const long x,const long y);
@@ -101,27 +123,16 @@ extern "C" {
   GetPixelCacheArea(const Image *image);
 
   /*
-    GetPixels() returns the pixels associated with the last call to
-    SetImagePixels() or GetImagePixels().
-  */
-  extern MagickExport PixelPacket
-  *GetPixels(const Image *image);
-
-  /*
-    PersistCache() attaches to or initializes a persistent pixel cache.
-
-    Used only by ReadMPCImage() and WriteMPCImage().
-  */
-  extern MagickExport MagickPassFail
-  PersistCache(Image *image,const char *filename,const MagickBool attach,
-               magick_off_t *offset,ExceptionInfo *exception);
-
-  /*
-    SetImagePixels() initializes a pixel region for write-only access.
+    SetImagePixels() and SetImagePixelsEx() initialize a pixel region
+    for write-only access.
   */
   extern MagickExport PixelPacket
   *SetImagePixels(Image *image,const long x,const long y,
                   const unsigned long columns,const unsigned long rows);
+  extern MagickExport PixelPacket
+  *SetImagePixelsEx(Image *image,const long x,const long y,
+                    const unsigned long columns,const unsigned long rows,
+                    ExceptionInfo *exception);
 
   /*
     SetImageVirtualPixelMethod() sets the "virtual pixels" method for
@@ -132,87 +143,117 @@ extern "C" {
                              const VirtualPixelMethod method);
 
   /*
-    SyncImagePixels() saves the image pixels to the in-memory or disk
-    cache.
+    SyncImagePixels() and SyncImagePixelsEx() save the image pixels to
+    the in-memory or disk cache.
   */
   extern MagickExport MagickPassFail
   SyncImagePixels(Image *image);
+  extern MagickExport MagickPassFail
+  SyncImagePixelsEx(Image *image,ExceptionInfo *exception);
 
   /****
    *
-   * Cache view interfaces.
+   * Cache view interfaces
    *
    ****/
 
   /*
-    AcquireCacheView() obtains a pixel region from a cache view for read-only access.
+    OpenCacheView() opens a cache view.
   */
-  extern MagickExport const PixelPacket
-  *AcquireCacheView(const ViewInfo *,const long,const long,const unsigned long,
-                    const unsigned long,ExceptionInfo *);
+  extern MagickExport ViewInfo
+  *OpenCacheView(Image *image);
 
   /*
     CloseCacheView() closes a cache view.
   */
   extern MagickExport void
-  CloseCacheView(ViewInfo *);
+  CloseCacheView(ViewInfo *view);
+
 
   /*
-    GetCacheView() obtains a pixel region from a cache view for read/write access.
+    AccessCacheViewPixels() returns the pixels associated with the
+    last request to select a view pixel region
+    (i.e. AcquireCacheViewPixels() or GetCacheViewPixels()).
   */
   extern MagickExport PixelPacket
-  *GetCacheView(ViewInfo *,const long,const long,const unsigned long,
-                const unsigned long);
+  *AccessCacheViewPixels(const ViewInfo *view);
+
+  /*
+    AcquireCacheViewIndexes() returns read-only indexes associated
+    with a cache view.
+  */
+  extern MagickExport const IndexPacket
+  *AcquireCacheViewIndexes(const ViewInfo *view);
+
+  /*
+    AcquireCacheViewPixels() obtains a pixel region from a cache view
+    for read-only access.
+  */
+  extern MagickExport const PixelPacket
+  *AcquireCacheViewPixels(const ViewInfo *view,
+                          const long x,const long y,
+                          const unsigned long columns,
+                          const unsigned long rows,
+                          ExceptionInfo *exception);
+
+  /*
+    AcquireOneCacheViewPixel() returns one DirectClass pixel from a
+    cache view. Note that the value returned by GetCacheViewIndexes()
+    is not reliably influenced by this function.
+  */
+  extern MagickExport MagickPassFail
+  AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
+                           const long x,const long y,ExceptionInfo *exception);
+
+  /*
+    GetCacheViewArea() returns the area (width * height in pixels)
+    currently consumed by the pixel cache view.
+  */
+  extern MagickExport magick_off_t
+  GetCacheViewArea(const ViewInfo *view);
+
+  /*
+    GetCacheViewImage() obtains the image used to allocate the cache view.
+  */
+  extern Image *
+  GetCacheViewImage(const ViewInfo *view);
 
   /*
     GetCacheViewIndexes() returns the indexes associated with a cache view.
   */
   extern MagickExport IndexPacket
-  *GetCacheViewIndexes(const ViewInfo *);
+  *GetCacheViewIndexes(const ViewInfo *view);
 
   /*
-     OpenCacheView() opens a view into the pixel cache.
-  */
-  extern MagickExport ViewInfo
-  *OpenCacheView(Image *);
-
-  /*
-    SetCacheView() gets blank pixels from the pixel cache view.
+    GetCacheViewPixels() obtains a pixel region from a cache view for
+    read/write access.
   */
   extern MagickExport PixelPacket
-  *SetCacheView(ViewInfo *,const long,const long,const unsigned long,
-                const unsigned long);
+  *GetCacheViewPixels(const ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
 
   /*
-    SyncCacheView() saves any changes to the pixel cache view.
+    Obtain the offset and size of the selected region.
+  */
+  extern MagickExport RectangleInfo
+  GetCacheViewRegion(const ViewInfo *view);
+
+
+  /*
+    SetCacheViewPixels() gets blank writeable pixels from the pixel
+    cache view.
+  */
+  extern MagickExport PixelPacket
+  *SetCacheViewPixels(const ViewInfo *view,const long x,const long y,
+                      const unsigned long columns,const unsigned long rows,
+                      ExceptionInfo *exception);
+
+  /*
+    SyncCacheViewPixels() saves any changes to the pixel cache view.
   */
   extern MagickExport MagickPassFail
-  SyncCacheView(ViewInfo *);
-
-
-  /*
-    Stream interfaces.
-  */
-  
-  /*
-    ReadStream() makes the image pixels available to a user supplied
-    callback method immediately upon reading a scanline with the
-    ReadImage() method.
-
-    Used only by ReadXTRNImage(), PingBlob(), and PingImage().
-  */
-  extern MagickExport Image
-  *ReadStream(const ImageInfo *,StreamHandler,ExceptionInfo *);
-  
-  /*
-    WriteStream() makes the image pixels available to a user supplied
-    callback method immediately upon writing pixel data with the
-    WriteImage() method.
-
-    Used only by WriteXTRNImage()
-  */
-  extern MagickExport MagickPassFail
-  WriteStream(const ImageInfo *,Image *,StreamHandler);
+  SyncCacheViewPixels(const ViewInfo *view,ExceptionInfo *exception);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
@@ -223,17 +264,46 @@ extern "C" {
    ****/
 
   /*
-    ClonePixelCacheMethods() clones the pixel cache methods from one cache to another
-
-    Used only by AllocateImage() in the case where a pixel cache is passed via ImageInfo.
+    Access the default view
   */
-  extern void
-  ClonePixelCacheMethods(Cache clone_info,const Cache cache_info);
+  extern MagickExport ViewInfo
+  *AccessDefaultCacheView(const Image *image);
 
   /*
-    DestroyCacheInfo() deallocates memory associated with the pixel cache.
+    Destroy a thread view set.
+  */
+  extern MagickExport void
+  DestroyThreadViewSet(_ThreadViewSetPtr_ view_set);
 
-    Used only by DestroyImageInfo() to destroy a pixel cache associated with ImageInfo.
+  /*
+    Allocate a thread view set.
+  */
+  extern MagickExport _ThreadViewSetPtr_
+  AllocateThreadViewSet(Image *image,ExceptionInfo *exception);
+
+  /*
+    Return one pixel at the the specified (x,y) location via a pointer
+    reference.
+  */
+  extern MagickExport MagickPassFail
+  AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
+                             const long x,const long y,
+                             ExceptionInfo *exception);
+
+  /*
+    DestroyImagePixels() deallocates memory associated with the pixel cache.
+
+    Used only by DestroyImage().
+  */
+  extern MagickExport void
+  DestroyImagePixels(Image *image);
+
+  /*
+    DestroyCacheInfo() deallocates memory associated with the pixel
+    cache.
+
+    Used only by DestroyImageInfo() to destroy a pixel cache
+    associated with ImageInfo.
   */
   extern void
   DestroyCacheInfo(Cache cache);
@@ -254,14 +324,22 @@ extern "C" {
   GetPixelCachePresent(const Image *image);
 
   /*
+    PersistCache() attaches to or initializes a persistent pixel cache.
+
+    Used only by ReadMPCImage() and WriteMPCImage().
+  */
+  extern MagickExport MagickPassFail
+  PersistCache(Image *image,const char *filename,const MagickBool attach,
+               magick_off_t *offset,ExceptionInfo *exception);
+
+  /*
     ReferenceCache() increments the reference count associated with
-    the pixel cache.
+    the pixel cache.  Thread safe.
 
     Used only by CloneImage() and CloneImageInfo().
   */
   extern Cache
   ReferenceCache(Cache cache);
-
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
