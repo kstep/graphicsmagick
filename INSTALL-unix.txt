@@ -68,7 +68,7 @@ Build Configuration
 -------------------
 Use 'configure' to automatically configure, build, and install
 GraphicsMagick. The configure script may be executed from the
-GraphicsMagick source directory (e.g ./configure) or from a seperate
+GraphicsMagick source directory (e.g ./configure) or from a separate
 build directory by specifying the full path to configure (e.g.
 /src/GraphicsMagick-1.2/configure). The advantage of using a seperate
 build directory is that multiple GraphicsMagick builds may share the
