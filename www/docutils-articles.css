@@ -607,6 +607,44 @@ th.field-name {
 	text-align : left;
 }
 
+table.option-list {
+	border : none;
+	padding : none;
+	background-color : #FFFFFF;
+	border-collapse : collapse;
+	border : none;
+}
+
+table.option-list {
+	border : none;
+	padding : none;
+	background-color : #FFFFFF;
+	border-collapse : collapse;
+	border : none;
+}
+
+table.option-list tr {
+	border : none;
+	margin : 0;
+	padding : 0;
+}
+
+table.option-list td {
+	border : none;
+	background-color : #FFFFFF;
+}
+
+table.option-list td.option-group {
+	background-color : #FFFFFF;
+}
+
+span.option {
+	font-weight : bold;
+	background-color : #E8F8F0;
+}
+
+kbd { font-family : monospace; }
+
 h1 tt,
 h2 tt,
 h3 tt,

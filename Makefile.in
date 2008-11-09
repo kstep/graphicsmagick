@@ -9871,6 +9871,7 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@$(RST2HTML_TARGETS) : \
 @MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/html_fragments.py \
 @MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/rst2htmldeco.py \
+@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/omp_decimal_align.py \
 @MAINTAINER_MODE_TRUE@	$(WWWDIR)/Makefile.am
 
 # Build HTML version of RST file

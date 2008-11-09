@@ -163,6 +163,7 @@ endif # WITH_PERL
 $(RST2HTML_TARGETS) : \
 	$(top_srcdir)/scripts/html_fragments.py \
 	$(top_srcdir)/scripts/rst2htmldeco.py \
+	$(top_srcdir)/scripts/omp_decimal_align.py \
 	$(WWWDIR)/Makefile.am
 
 # Build HTML version of RST file
