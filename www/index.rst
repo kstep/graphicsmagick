@@ -21,20 +21,22 @@ GraphicsMagick Image Processing System
 .. _download GraphicsMagic-1.1 : http://sourceforge.net/project/showfiles.php?group_id=73485
 .. _GraphicsMagic-1.2 : http://www.graphicsmagick.org/1.2/
 .. _download GraphicsMagic-1.2 : http://sourceforge.net/project/showfiles.php?group_id=73485
-.. _download GraphicsMagic-1.3 : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/
+.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/
+.. _download GraphicsMagic-1.3 : http://sourceforge.net/project/showfiles.php?group_id=73485
 
 .. _programming : programming.html
 
-======================   ===========================================
-Legacy Stable Branch:    1.1.14__ (Released June 5, 2008) download__
-Current Stable Branch:   1.2.5__ (Released July 25, 2008) download__
-Development Branch:      1.3 (snapshots only) download__
-======================   ===========================================
+========================  ============================================
+Legacy Stable Branch:     1.1.14__ (Released June 5, 2008) download__
+Previous Stable Branch:   1.2.5__ (Released July 25, 2008) download__
+Current StableBranch:     1.3__ (Released November 9, 2008) download__
+========================  ============================================
 
 __ `GraphicsMagic-1.1`_
 __ `download GraphicsMagic-1.1`_
 __ `GraphicsMagic-1.2`_
 __ `download GraphicsMagic-1.2`_
+__ `GraphicsMagic-1.3`_
 __ `download GraphicsMagic-1.3`_
 
 
@@ -123,7 +125,7 @@ GraphicsMagick is available for virtually any Unix or Unix-like system,
 including Linux. It also runs under `Windows <INSTALL-windows.html>`_ '98
 and later ('98, ME, NT 4.0, 2000, and XP), and MacOS-X.
 
-Major developments appearing in GraphicsMagick 1.3:
+Major developments which appeared in GraphicsMagick 1.3:
 
   * Algorithms are re-written so that they are accelerated via OpenMP_.
     OpenMP_ allows you to take advantage of those extra cores in your
