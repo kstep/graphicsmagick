@@ -42,6 +42,11 @@ extern "C" {
                              const Image *image,
                              ExceptionInfo *exception);
 
+  extern MagickExport ThreadViewDataSet *
+  AllocateThreadViewDataArray(const Image *image,
+                              ExceptionInfo *exception,
+                              size_t count,size_t size);
+
   extern MagickExport unsigned int
   GetThreadViewDataSetAllocatedViews(ThreadViewDataSet *data_set);
 

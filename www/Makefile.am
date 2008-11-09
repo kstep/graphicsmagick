@@ -151,6 +151,7 @@ if MAINTAINER_MODE
 NAMED_COLORS=$(top_srcdir)/scripts/named_colors.py
 RST2HTMLDECO=$(top_srcdir)/scripts/rst2htmldeco.py
 RELPATH=$(top_srcdir)/scripts/relpath.py
+OMP_DECIMAL_ALIGN=$(top_srcdir)/scripts/omp_decimal_align.py
 RST2HTML_COMMAND = $(RST2HTMLDECO) --link-stylesheet=docutils-articles.css
 
 if WITH_PERL
@@ -171,11 +172,11 @@ $(top_srcdir)/www/%.html: $(top_srcdir)/%.txt
 
 $(top_srcdir)/%.html: $(top_srcdir)/%.rst
 	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
-	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 $(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
 	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
-	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 # Build HTML version of ChangeLog
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html

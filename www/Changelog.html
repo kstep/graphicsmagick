@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2008-11-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pnm.c (ReadPNMImage): Sequential multi-thread the PNM raw
+        format readers. Can improve read performance quite substantially
+        for large PBM and PGM files, and less so for PPM.  There is most
+        benefit for systems with more I/O than one CPU core will support.
+        Systems with slow I/O and a relatively fast CPU may see somewhat
+        diminished read performance with more CPU consumption.  As such,
+        this is effectively a verification that multi-threading the reader
+        is possible, and may be of benefit to power-users.
+  <LI> magick/omp_data_view.c (AllocateThreadViewDataArray): New
+        function to allocate a thread view data array.  Updated modules
+        using similar code to use this function in order eliminate
+        useless redundancy.
+
+</UL>
+<p>
 2008-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

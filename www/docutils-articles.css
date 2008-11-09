@@ -545,8 +545,8 @@ table.docutils td {
 	border-color : #C8C8C8;
 	border-style : solid;
 	vertical-align : top;
-	text-align : left;
 }
+
 
 table.docutils th {
 	border-top : 1px solid black;
@@ -556,6 +556,11 @@ table.docutils th {
 
 table.docutils td {
 	background-color : #F8F8F8;
+}
+
+table.docutils td.decimal {
+	background-color : #F8F8F8;
+	text-align : right;
 }
 
 table.citation {

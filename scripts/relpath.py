@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4:sw=4:expandtab:
 
-# Copyright 2008 Mark Mitchell <mmitchell@visteya.net>
+# Copyright 2008 Mark Mitchell
 # All rights reserved.
 # License:  same as Python itself
 

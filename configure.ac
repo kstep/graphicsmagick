@@ -1304,8 +1304,8 @@ then
   else
     # Sun CC
     AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
-    # AIX xlc
-    AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    # AIX xlc (this links, but impact on performance is undetermined).
+    # AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
   fi
   LIBS="$LIB_OMP $LIBS"
 fi

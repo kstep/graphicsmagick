@@ -586,36 +586,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
 
   is_grayscale=image->is_grayscale;
 
-  data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
+  data_set=AllocateThreadViewDataArray(image,exception,image->columns,sizeof(PixelPacket));
   if (data_set == (ThreadViewDataSet *) NULL)
     status=MagickFail;
-
-  if (data_set != (ThreadViewDataSet *) NULL)
-    {
-      unsigned int
-        i,
-        views;
-
-      views=GetThreadViewDataSetAllocatedViews(data_set);
-      for (i=0; i < views; i++)
-        {
-          void
-            *scanline;
-
-          scanline=MagickAllocateMemory(PixelPacket *,image->columns*sizeof(PixelPacket));
-          if (scanline == (PixelPacket *) NULL)
-            {
-              ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
-                             MagickMsg(OptionError,UnableToBlurImage));
-              status=MagickFail;
-              break;
-            }
-          else
-            {
-              AssignThreadViewData(data_set,i,scanline);
-            }
-        }
-    }
 
   if (status != MagickFail)
     {

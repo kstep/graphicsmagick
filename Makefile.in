@@ -4472,6 +4472,7 @@ WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color
 @MAINTAINER_MODE_TRUE@NAMED_COLORS = $(top_srcdir)/scripts/named_colors.py
 @MAINTAINER_MODE_TRUE@RST2HTMLDECO = $(top_srcdir)/scripts/rst2htmldeco.py
 @MAINTAINER_MODE_TRUE@RELPATH = $(top_srcdir)/scripts/relpath.py
+@MAINTAINER_MODE_TRUE@OMP_DECIMAL_ALIGN = $(top_srcdir)/scripts/omp_decimal_align.py
 @MAINTAINER_MODE_TRUE@RST2HTML_COMMAND = $(RST2HTMLDECO) --link-stylesheet=docutils-articles.css
 
 # txt2html requires perl.
@@ -9879,11 +9880,11 @@ uninstall-data-html:
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/%.html: $(top_srcdir)/%.rst
 @MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
-@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
 @MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
-@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 # Build HTML version of ChangeLog
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html

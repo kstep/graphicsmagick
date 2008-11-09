@@ -147,8 +147,9 @@ def make_html(src, dest, embed_stylesheet=False,
         # for linked stylesheet
         args.append('--stylesheet=%s' % stylesheet)
         args.append('--link-stylesheet')
-    args.append(src)
-    if dest:
+    if src is not None:
+        args.append(src)
+    if dest is not None:
         args.append(dest)
 
     # Invoke docutils processing of the reST document.  This call
@@ -202,13 +203,19 @@ def main(argv=None):
         if opt in ("-u", "--url-prefix"):
             url_prefix = val
 
-    if len(posn_args) != 2:
-        print >> sys.stderr, 'Missing arguments'
-        print >> sys.stderr, __doc__
-        return 1
+    #if len(posn_args) != 2:
+    #    print >> sys.stderr, 'Missing arguments'
+    #    print >> sys.stderr, __doc__
+    #    return 1
 
-    srcfile_path = posn_args[0]
-    outfile_path = posn_args[1]
+    try:
+        srcfile_path = posn_args[0]
+    except IndexError:
+        srcfile_path = None
+    try:
+        outfile_path = posn_args[1]
+    except IndexError:
+        outfile_path = None
 
     make_html(srcfile_path, outfile_path, embed_stylesheet=embed_stylesheet,
               stylesheet=stylesheet, url_prefix=url_prefix)

@@ -25,7 +25,7 @@ chdir 't/x' || die 'Cd failed';
 #
 # 1) Test rendering text using common X11 font
 #
-if ( defined($ENV{'DISPLAY'}) ) {
+if ( defined($ENV{'DISPLAY'}) && ($ENV{'DISPLAY'} ne '') ) {
 
   $font   = '-*-courier-bold-r-normal--14-100-100-100-m-90-iso8859-1';
 

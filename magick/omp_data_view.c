@@ -43,7 +43,9 @@ extern "C" {
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
-
+/*
+  Destroy a thread view data set.
+*/
 MagickExport void
 DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
 {
@@ -68,6 +70,10 @@ DestroyThreadViewDataSet(ThreadViewDataSet *data_set)
       MagickFreeMemory(data_set);
     }
 }
+
+/*
+  Allocate an empty thread view data set.
+*/
 MagickExport ThreadViewDataSet *
 AllocateThreadViewDataSet(const MagickFreeFunc destructor,
                           const Image *image,
@@ -88,7 +94,7 @@ AllocateThreadViewDataSet(const MagickFreeFunc destructor,
   data_set->view_data=MagickAllocateArray(void *,data_set->nviews,sizeof(void *));
   if (data_set->view_data == (void *) NULL)
     {
-      ThrowException(exception,CacheError,UnableToAllocateCacheView,
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
                      image->filename);
       status=MagickFail;
     }
@@ -105,6 +111,64 @@ AllocateThreadViewDataSet(const MagickFreeFunc destructor,
   return data_set;
 }
 
+/*
+  Allocate a thread view data set containing data elements with
+  allocation size dictated by 'count' and 'size'.
+*/
+MagickExport ThreadViewDataSet *
+AllocateThreadViewDataArray(const Image *image,
+                            ExceptionInfo *exception,
+                            size_t count,size_t size)
+{
+  /*
+    Allocate per-thread-view memory.
+  */
+  ThreadViewDataSet
+    *data_set;
+  
+  MagickPassFail
+    alloc_status=MagickFail;
+          
+  data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
+  if (data_set != (ThreadViewDataSet *) NULL)
+    {
+      unsigned int
+        allocated_views;
+
+      unsigned int
+        i;
+              
+      alloc_status=MagickPass;
+      allocated_views=GetThreadViewDataSetAllocatedViews(data_set);
+              
+      for (i=0; i < allocated_views; i++)
+        {
+          unsigned char
+            *data;
+                  
+          data=MagickAllocateArray(unsigned char *,count,size);
+          if (data == (unsigned char *) NULL)
+            {
+              ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+                             image->filename);
+              alloc_status=MagickFail;
+              break;
+            }
+          AssignThreadViewData(data_set,i,data);
+        }
+      if (alloc_status == MagickFail)
+        {
+          DestroyThreadViewDataSet(data_set);
+          data_set=(ThreadViewDataSet *) NULL;
+        }
+    }
+
+  return data_set;
+}
+
+/*
+  Access allocated thread data.
+*/
 MagickExport void *
 AccessThreadViewData(ThreadViewDataSet *data_set)
 {
@@ -116,6 +180,9 @@ AccessThreadViewData(ThreadViewDataSet *data_set)
   return data_set->view_data[thread_num];
 }
 
+/*
+  Associate data with a thread data view.
+*/
 MagickExport void AssignThreadViewData
 (ThreadViewDataSet *data_set, unsigned int index, void *data)
 {
@@ -124,7 +191,9 @@ MagickExport void AssignThreadViewData
   data_set->view_data[index]=data;
 }
 
-
+/*
+  Obtain the nuber of thread data views.
+*/
 MagickExport unsigned int
 GetThreadViewDataSetAllocatedViews
 (ThreadViewDataSet *data_set)

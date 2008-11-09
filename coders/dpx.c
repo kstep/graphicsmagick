@@ -2048,87 +2048,29 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickFreeMemory(map_Y);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
-
-  {
-    /*
-      Allocate per-thread-view row samples.
-    */
-    MagickPassFail
-      alloc_status=MagickFail;
-
-    samples_set=AllocateThreadViewDataSet(MagickFree,image,exception);
-    if (samples_set != (ThreadViewDataSet *) NULL)
-      {
-        unsigned int
-          allocated_views;
-
-        alloc_status=MagickPass;
-        allocated_views=GetThreadViewDataSetAllocatedViews(samples_set);
-
-        for (i=0; i < allocated_views; i++)
-          {
-            sample_t
-              *samples;
-    
-            samples=MagickAllocateArray(sample_t *,image->columns,
-                                        max_samples_per_pixel*sizeof(sample_t));
-            if (samples == (sample_t *) NULL)
-              {
-                alloc_status=MagickFail;
-                break;
-              }
-            AssignThreadViewData(samples_set,i,samples);
-          }
-      }
-    if (alloc_status == MagickFail)
-      {
-        DestroyThreadViewDataSet(samples_set);
-        MagickFreeMemory(map_CbCr);
-        MagickFreeMemory(map_Y);
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      }
-  }
-  {
-    /*
-      Allocate per-thread-view scanline storage.
-    */
-    MagickPassFail
-      alloc_status=MagickFail;
-
-    scanline_set=AllocateThreadViewDataSet(MagickFree,image,exception);
-    if (scanline_set != (ThreadViewDataSet *) NULL)
-      {
-        unsigned int
-          allocated_views;
-
-        alloc_status=MagickPass;
-        allocated_views=GetThreadViewDataSetAllocatedViews(scanline_set);
-
-        for (i=0; i < allocated_views; i++)
-          {
-            unsigned char
-              *scanline;
- 
-            scanline=MagickAllocateArray(unsigned char *,image->columns,
-                                         max_samples_per_pixel*sizeof(U32));
-            if (scanline == (unsigned char *) NULL)
-              {
-                alloc_status=MagickFail;
-                break;
-              }
-            AssignThreadViewData(scanline_set,i,scanline);
-          }
-        if (alloc_status == MagickFail)
-          {
-            DestroyThreadViewDataSet(scanline_set);
-            DestroyThreadViewDataSet(samples_set);
-            MagickFreeMemory(map_CbCr);
-            MagickFreeMemory(map_Y);
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-          }
-      }
-  }
-
+  /*
+    Allocate per-thread-view row samples.
+  */
+  samples_set=AllocateThreadViewDataArray(image,exception,image->columns,
+                                          max_samples_per_pixel*sizeof(sample_t));
+  if (samples_set == (ThreadViewDataSet *) NULL)
+    {
+      MagickFreeMemory(map_CbCr);
+      MagickFreeMemory(map_Y);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  /*
+    Allocate per-thread-view scanline storage.
+  */
+  scanline_set=AllocateThreadViewDataArray(image,exception,image->columns,
+                                           max_samples_per_pixel*sizeof(U32));
+  if (scanline_set == (ThreadViewDataSet *) NULL)
+    {
+      DestroyThreadViewDataSet(samples_set);
+      MagickFreeMemory(map_CbCr);
+      MagickFreeMemory(map_Y);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   /*
     Allow user to over-ride pixel endianness.
   */

@@ -1263,15 +1263,6 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (source_image == (Image *) NULL)
     return ((Image *) NULL);
 
-  view_data_set=AllocateThreadViewDataSet(MagickFree,image,exception);
-  if (view_data_set == (ThreadViewDataSet *) NULL)
-    {
-      DestroyThreadViewDataSet(view_data_set);
-      DestroyImage(resize_image);
-      DestroyImage(source_image);
-      return (Image *) NULL;
-    }
-
   /*
     Allocate filter contribution info.
   */
@@ -1297,34 +1288,19 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   support=Max(x_support,y_support);
   if (support < filters[i].support)
     support=filters[i].support;
-
-  {
-    unsigned int
-      i,
-      views;
-    
-    views=GetThreadViewDataSetAllocatedViews(view_data_set);
-    for (i=0; i < views; i++)
-      {
-        ContributionInfo
-          *contribution;
-        
-        contribution=MagickAllocateMemory(ContributionInfo *,
-                                          (size_t) (2.0*Max(support,0.5)+3)*
-                                          sizeof(ContributionInfo));
-        if (contribution == (ContributionInfo *) NULL)
-          {
-            DestroyThreadViewDataSet(view_data_set);
-            DestroyImage(resize_image);
-            DestroyImage(source_image);
-            ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-                                 UnableToResizeImage);
-          }
-
-        AssignThreadViewData(view_data_set,i,contribution);
-      }
-  }
-
+  /*
+    Allocate view data set.
+  */
+  view_data_set=AllocateThreadViewDataArray(image,exception,
+                                            (size_t) (2.0*Max(support,0.5)+3),
+                                            sizeof(ContributionInfo));
+  if (view_data_set == (ThreadViewDataSet *) NULL)
+    {
+      DestroyImage(resize_image);
+      DestroyImage(source_image);
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                           UnableToResizeImage);
+    }
   /*
     Resize image.
   */

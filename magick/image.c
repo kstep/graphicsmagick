@@ -754,39 +754,11 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     Allocate sum accumulation buffer.
   */
   number_pixels=image->columns;
-  pixels_sums=AllocateThreadViewDataSet(MagickFree,image,exception);
+  pixels_sums=AllocateThreadViewDataArray(image,exception,number_pixels,
+                                          sizeof(DoublePixelPacket));
   if (pixels_sums == (ThreadViewDataSet *) NULL)
     ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
                          UnableToAverageImageSequence);
-  {
-    unsigned int
-      allocated_views;
-
-    unsigned int
-      i;
-
-    allocated_views=GetThreadViewDataSetAllocatedViews(pixels_sums);
-    for (i=0 ; i < allocated_views; i++)
-      {
-        DoublePixelPacket
-          *pixels_sum;
-
-        pixels_sum=MagickAllocateArray(DoublePixelPacket *,
-                                       number_pixels,sizeof(DoublePixelPacket));
-        if (pixels_sum == (DoublePixelPacket *) NULL)
-          {
-            status=MagickFail;
-            break;
-          }
-        AssignThreadViewData(pixels_sums,i,pixels_sum);
-      }
-    if (status == MagickFail)
-      {
-        DestroyThreadViewDataSet(pixels_sums);
-        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-                             UnableToAverageImageSequence);
-      }
-  }
   /*
     Initialize average next attributes.
   */

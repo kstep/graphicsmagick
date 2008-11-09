@@ -1,6 +1,7 @@
 # vim:ts=4:sw=4:expandtab:tw=100:
 
 #* Author: Mark Mitchell
+#* License: Same as GraphicsMagick.
 
 __doc__ = """
 HTML fragments which are used as the banner and navigation menu in

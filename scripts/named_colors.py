@@ -2,7 +2,8 @@
 # vim:ts=4:sw=4:expandtab
 
 #* Author: Mark Mitchell
-#* Copyright 2008  Mark Mitchell, All Rights Reserved
+#* Copyright 2008  Mark Mitchell
+#* License: see __license__ below.
 
 import sys
 import re
@@ -24,7 +25,7 @@ __license__ = """
 Copyright 2008, Mark Mitchell
 
 Permission is hereby granted, free of charge, to any person obtaining
-a copy of this oftware and associated documentation files (the
+a copy of this Software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
 without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
