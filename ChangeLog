@@ -1,5 +1,7 @@
 2008-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/OpenMP.rst: Updated with latest measurement data.
+	* www/benchmarks.rst: Updated with latest benchmark data.
 	* coders/url.c (RegisterURLImage): Register HTTP and FTP URL
 	support in the "unstable" category since these are capable of
 	accessing the network and therefore represent a potential security
