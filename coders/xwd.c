@@ -386,7 +386,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!SyncImagePixels(image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                           LoadImageText,image->filename))
                 break;
           }
         else
@@ -409,7 +410,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!SyncImagePixels(image))
               break;
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename))
                 break;
           }
         break;
@@ -433,7 +435,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
             index=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
@@ -444,7 +446,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+            if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
+                                        image->filename))
               break;
         }
         break;
@@ -711,10 +714,10 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 
     if (image->storage_class == PseudoClass)
       {
-        register IndexPacket
+        register const IndexPacket
           *indexes;
 
-        indexes=GetIndexes(image);
+        indexes=AccessImmutableIndexes(image);
         for (x=(long) image->columns; x > 0; x--)
           *q++=(unsigned char) *indexes++;
       }
@@ -734,7 +737,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,(size_t) (q-pixels),(char *) pixels);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        if (!MagickMonitorFormatted(y,image->rows,&image->exception,
+                                    SaveImageText,image->filename))
           break;
   }
   MagickFreeMemory(pixels);
