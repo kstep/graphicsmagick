@@ -21,7 +21,7 @@ GraphicsMagick Image Processing System
 .. _download GraphicsMagic-1.1 : http://sourceforge.net/project/showfiles.php?group_id=73485
 .. _GraphicsMagic-1.2 : http://www.graphicsmagick.org/1.2/
 .. _download GraphicsMagic-1.2 : http://sourceforge.net/project/showfiles.php?group_id=73485
-.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/
+.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/1.3/
 .. _download GraphicsMagic-1.3 : http://sourceforge.net/project/showfiles.php?group_id=73485
 
 .. _programming : programming.html
