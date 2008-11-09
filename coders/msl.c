@@ -47,6 +47,7 @@
 #include "magick/decorate.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
+#include "magick/enum_strings.h"
 #include "magick/fx.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -59,8 +60,9 @@
 #if defined(MSWINDOWS)
 #  if defined(__MINGW32__)
 #    define _MSC_VER
+#  else
+#    include <win32config.h>
 #  endif
-#  include <win32config.h>
 #endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
@@ -544,9 +546,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (char *) name);
           break;
         }
-        /*
-        NOTE: blur can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -614,9 +613,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (char *) name);
           break;
         }
-        /*
-        NOTE: border can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -718,9 +714,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: charcoal can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -913,66 +906,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(keyword, "compose") == 0)
               {
-                if (LocaleCompare(value, "Over") == 0)
-                  compositeOp = OverCompositeOp;
-                else if (LocaleCompare(value, "In") == 0)
-                  compositeOp = InCompositeOp;
-                else if (LocaleCompare(value, "Out") == 0)
-                  compositeOp = OutCompositeOp;
-                else if (LocaleCompare(value, "Atop") == 0)
-                  compositeOp = AtopCompositeOp;
-                else if (LocaleCompare(value, "Xor") == 0)
-                  compositeOp = XorCompositeOp;
-                else if (LocaleCompare(value, "Plus") == 0)
-                  compositeOp = PlusCompositeOp;
-                else if (LocaleCompare(value, "Minus") == 0)
-                  compositeOp = MinusCompositeOp;
-                else if (LocaleCompare(value, "Add") == 0)
-                  compositeOp = AddCompositeOp;
-                else if (LocaleCompare(value, "Subtract") == 0)
-                  compositeOp = SubtractCompositeOp;
-                else if (LocaleCompare(value, "Difference") == 0)
-                  compositeOp = DifferenceCompositeOp;
-                else if (LocaleCompare(value, "Multiply") == 0)
-                  compositeOp = MultiplyCompositeOp;
-                else if (LocaleCompare(value, "Bumpmap") == 0)
-                  compositeOp = BumpmapCompositeOp;
-                else if (LocaleCompare(value, "Copy") == 0)
-                  compositeOp = CopyCompositeOp;
-                else if (LocaleCompare(value, "CopyRed") == 0)
-                  compositeOp = CopyRedCompositeOp;
-                else if (LocaleCompare(value, "CopyGreen") == 0)
-                  compositeOp = CopyGreenCompositeOp;
-                else if (LocaleCompare(value, "CopyBlue") == 0)
-                  compositeOp = CopyBlueCompositeOp;
-                else if (LocaleCompare(value, "CopyOpacity") == 0)
-                  compositeOp = CopyOpacityCompositeOp;
-                else if (LocaleCompare(value, "Dissolve") == 0)
-                  compositeOp = DissolveCompositeOp;
-                else if (LocaleCompare(value, "Clear") == 0)
-                  compositeOp = ClearCompositeOp;
-                else if (LocaleCompare(value, "Displace") == 0)
-                  compositeOp = DisplaceCompositeOp;
-                else if (LocaleCompare(value, "Modulate") == 0)
-                  compositeOp = ModulateCompositeOp;
-                else if (LocaleCompare(value, "Threshold") == 0)
-                  compositeOp = ThresholdCompositeOp;
-                else if (LocaleCompare(value, "Darken") == 0)
-                  compositeOp = DarkenCompositeOp;
-                else if (LocaleCompare(value, "Lighten") == 0)
-                  compositeOp = LightenCompositeOp;
-                else if (LocaleCompare(value, "Hue") == 0)
-                  compositeOp = HueCompositeOp;
-                else if (LocaleCompare(value, "Saturate") == 0)
-                  compositeOp = SaturateCompositeOp;
-                else if (LocaleCompare(value, "Colorize") == 0)
-                  compositeOp = ColorizeCompositeOp;
-                else if (LocaleCompare(value, "Luminize") == 0)
-                  compositeOp = LuminizeCompositeOp;
-                else if (LocaleCompare(value, "Screen") == 0)
-                  compositeOp = ScreenCompositeOp;
-                else if (LocaleCompare(value, "Overlay") == 0)
-                  compositeOp = OverlayCompositeOp;
+                compositeOp = StringToCompositeOperator(value);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
@@ -984,6 +918,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"geometry") == 0)
               {
                 (void) GetMagickGeometry(value,&x,&y,&width,&height);
+                gravity=ForgetGravity;
                 break;
               }
               else if (LocaleCompare(keyword,"gravity") == 0)
@@ -1037,6 +972,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"x") == 0)
               {
                 x = atoi( value );
+                gravity=ForgetGravity;
                 break;
               }
               ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
@@ -1048,6 +984,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"y") == 0)
               {
                 y = atoi( value );
+                gravity=ForgetGravity;
                 break;
               }
               ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
@@ -1286,9 +1223,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: edge can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1343,9 +1277,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: emboss can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1525,9 +1456,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: frame can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -1732,6 +1660,8 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         (void) GammaImage ( msl_info->image[n], gamma );
       }
+
+      break;
     }
       else if (LocaleCompare((char *) name,"get") == 0)
         {
@@ -2802,7 +2732,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                           msl_info->image_info[n]->density);
                 j=GetMagickDimension(msl_info->image_info[n]->density,
                       &msl_info->image[n]->x_resolution,
-                      &msl_info->image[n]->y_resolution);
+                                     &msl_info->image[n]->y_resolution,NULL,NULL);
                 if (j != 2)
                   msl_info->image[n]->y_resolution = msl_info->image[n]->x_resolution;
                 break;
@@ -2868,9 +2798,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
-        /*
-        NOTE: sharpen can have no attributes, since we use all the defaults!
-        */
         if (attributes != (const xmlChar **) NULL)
         {
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -3520,7 +3447,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 PixelPacket
                   target;
 
-                target=GetOnePixel(msl_info->image[n],0,0);
+                (void) AcquireOnePixelByReference(msl_info->image[n],&target,0,0,&(msl_info->image[n])->exception);
                 (void) QueryColorDatabase(value,&target,&exception);
                 (void) TransparentImage(msl_info->image[n],target,TransparentOpacity);
                 break;
