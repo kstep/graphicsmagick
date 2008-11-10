@@ -2089,6 +2089,7 @@ MagickExport MagickPassFail SetImageAttribute(Image *image,const char *key,
   assert(image->signature == MagickSignature);
   if ((key == (const char *) NULL) || (*key == '\0'))
     return(MagickFail);
+
   if (value == (const char *) NULL)
     {
       /*
