@@ -25,7 +25,7 @@ chdir 't/x' || die 'Cd failed';
 #
 # 1) Test reading and displaying an image
 #
-if ( defined($ENV{'DISPLAY'}) ) {
+if ( defined($ENV{'DISPLAY'}) && ($ENV{'DISPLAY'} ne '') ) {
   $image=Graphics::Magick->new;
   $x=$image->ReadImage('congrats.miff');
   if( "$x" ) {

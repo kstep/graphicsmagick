@@ -472,6 +472,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
   while (attribute != (const ImageAttribute *) NULL)
   {
+    (void) SetImageAttribute(msl_info->attributes[n],attribute->key,NULL);
     (void) SetImageAttribute(msl_info->attributes[n],attribute->key,
       attribute->value);
     attribute=attribute->next;
@@ -1743,6 +1744,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 if (LocaleCompare(keyword,"height") == 0)
                   {
                     FormatString(value,"%ld",msl_info->image[n]->rows);
+                    (void) SetImageAttribute(msl_info->attributes[n],key,NULL);
                     (void) SetImageAttribute(msl_info->attributes[n],key,value);
                     break;
                   }
@@ -1754,6 +1756,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 if (LocaleCompare(keyword,"width") == 0)
                   {
                     FormatString(value,"%ld",msl_info->image[n]->columns);
+                    (void) SetImageAttribute(msl_info->attributes[n],key,NULL);
                     (void) SetImageAttribute(msl_info->attributes[n],key,value);
                     break;
                   }
