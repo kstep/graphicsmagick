@@ -10,5 +10,5 @@
 
 #define public MagickPackageName "GraphicsMagick"
 #define public MagickPackageVersion "1.4"
-#define public MagickPackageVersionAddendum ".020081110"
+#define public MagickPackageVersionAddendum ".020081111"
 #define public MagickPackageReleaseDate "unreleased"

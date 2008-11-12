@@ -1076,6 +1076,7 @@ MagickExport MagickPassFail TransformColorspace(Image *image,
       (colorspace == TransparentColorspace))
       {
         status &= TransformRGBImage(image,image->colorspace);
+        image->colorspace=colorspace;
         return  (status);
       }
 

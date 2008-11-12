@@ -182,6 +182,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644, root, man) %{_mandir}/man1/gm.1.gz
 %attr(644, root, man) %{_mandir}/man4/*gz
 %attr(644, root, man) %{_mandir}/man5/*gz
+%docdir %{_datadir}/doc/%{name}
+%{_datadir}/doc/%{name}/*
 
 %files devel
 %defattr(644, root, root, 755)
@@ -197,9 +199,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.la
 %{_libdir}/pkgconfig/%{name}.pc
 %{_libdir}/pkgconfig/%{name}Wand.pc
-%{_bindir}/%{name}-config
+#%{_bindir}/%{name}-config
 %attr(755, root, root) %{_bindir}/%{name}-config
-%{_bindir}/%{name}Wand-config
+#%{_bindir}/%{name}Wand-config
 %attr(755, root, root) %{_bindir}/%{name}Wand-config
 %attr(644, root, man) %{_mandir}/man1/%{name}-config.1.gz
 %attr(644, root, man) %{_mandir}/man1/%{name}Wand-config.1.gz
@@ -227,12 +229,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}++.*a
 %{_libdir}/lib%{name}++.so
 %{_libdir}/pkgconfig/%{name}++.pc
-%{_bindir}/%{name}++-config
+#%{_bindir}/%{name}++-config
 %attr(755, root, root) %{_bindir}/%{name}++-config
 %attr(644, root, man) %{_mandir}/man1/%{name}++-config.1.gz
 %endif
 
 %changelog
+* Tue Nov 11 2008 Giacomo Tenaglia 1.3 <gtenagli at sf . net>.
+- The *-config scripts were listed twice.
+- Add definition for %{_datadir}/doc directory
+
 * Wed Jun 02 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.2
 - Install *-config scripts with mode 755 rather than default 644.
 

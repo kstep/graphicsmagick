@@ -1,3 +1,15 @@
+2008-11-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/wandtest.c: Eliminate memory leak.
+	* wand/drawing_wand.c (DestroyDrawingWand): Eliminate memory
+	leaks.
+	* coders/xwd.c (WriteXWDImage): Force colormapped images with more
+	than 256 colors to DirectClass.
+	* magick/enhance.c (ModulateImage): Improve progress message.
+	* coders/msl.c: Eliminate memory leaks.
+	* GraphicsMagick.spec.in: Apply RPM spec file fixes from Giacomo
+	Tenaglia for Red Hat Linux 4.
+
 2008-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/msl.c: Fix bug with attributes becoming appended to

@@ -85,8 +85,7 @@ typedef struct _MSLInfo
 
   long
     n,
-
-  nGroups;
+    nGroups;
 
   ImageInfo
     **image_info;
@@ -375,8 +374,8 @@ MSLElementDeclaration(void *context,const xmlChar *name,int type,
 
 static void
 MSLNotationDeclaration(void *context,const xmlChar *name,
-                                   const xmlChar *public_id,
-                                   const xmlChar *system_id)
+                       const xmlChar *public_id,
+                       const xmlChar *system_id)
 {
   MSLInfo
     *msl_info;
@@ -405,9 +404,9 @@ MSLNotationDeclaration(void *context,const xmlChar *name,
 
 static void
 MSLUnparsedEntityDeclaration(void *context,const xmlChar *name,
-                                         const xmlChar *public_id,
-                                         const xmlChar *system_id,
-                                         const xmlChar *notation)
+                             const xmlChar *public_id,
+                             const xmlChar *system_id,
+                             const xmlChar *notation)
 {
   MSLInfo
     *msl_info;
@@ -532,12 +531,22 @@ MSLPopImage(MSLInfo *msl_info)
   /*
     only dispose of images when they aren't in a group
   */
-  if ( msl_info->nGroups == 0 )
+  if ( (msl_info->nGroups == 0) && (msl_info->n > 0) )
     {
       if (msl_info->image[msl_info->n] != (Image *) NULL)
-        DestroyImage(msl_info->image[msl_info->n]);
+        {
+          DestroyImage(msl_info->image[msl_info->n]);
+          msl_info->image[msl_info->n]=(Image *) NULL;
+        }
+
+      DestroyDrawInfo(msl_info->draw_info[msl_info->n]);
+      msl_info->draw_info[msl_info->n]=(DrawInfo *) NULL;
+
       DestroyImage(msl_info->attributes[msl_info->n]);
+      msl_info->attributes[msl_info->n]=(Image *) NULL;
+
       DestroyImageInfo(msl_info->image_info[msl_info->n]);
+      msl_info->image_info[msl_info->n]=(ImageInfo *) NULL;
       msl_info->n--;
     }
 }
@@ -601,10 +610,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'R':
@@ -638,6 +650,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -674,10 +687,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'F':
@@ -739,6 +755,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -788,10 +805,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'R':
@@ -825,6 +845,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -862,10 +883,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -935,6 +959,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -983,10 +1008,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'C':
@@ -1076,6 +1104,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -1186,10 +1215,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -1259,6 +1291,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -1337,10 +1370,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'R':
@@ -1362,6 +1398,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -1397,10 +1434,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'R':
@@ -1434,6 +1474,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -1595,10 +1636,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'F':
@@ -1707,6 +1751,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -1903,10 +1948,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'B':
@@ -2000,6 +2048,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -2019,10 +2068,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'A':
@@ -2044,6 +2096,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2109,10 +2162,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'R':
@@ -2134,6 +2190,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2231,10 +2288,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'R':
@@ -2256,6 +2316,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2289,10 +2350,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'O':
@@ -2315,6 +2379,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -2331,10 +2396,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'F':
@@ -2393,6 +2461,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -2412,10 +2481,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'R':
@@ -2437,6 +2509,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2474,10 +2547,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'B':
@@ -2497,38 +2573,10 @@ MSLStartElement(void *context,const xmlChar *name,
                     {
                       if (LocaleCompare(keyword, "filter") == 0)
                         {
-                          FilterTypes  newFilter = UndefinedFilter;
-                          if (LocaleCompare(value, "Point") == 0 )
-                            newFilter = PointFilter;
-                          else if (LocaleCompare(value, "Box") == 0 )
-                            newFilter = BoxFilter;
-                          else if (LocaleCompare(value, "Triangle") == 0 )
-                            newFilter = TriangleFilter;
-                          else if (LocaleCompare(value, "Hermite") == 0 )
-                            newFilter = HermiteFilter;
-                          else if (LocaleCompare(value, "Hanning") == 0 )
-                            newFilter = HanningFilter;
-                          else if (LocaleCompare(value, "Hamming") == 0 )
-                            newFilter = HammingFilter;
-                          else if (LocaleCompare(value, "Blackman") == 0 )
-                            newFilter = BlackmanFilter;
-                          else if (LocaleCompare(value, "Gaussian") == 0 )
-                            newFilter = GaussianFilter;
-                          else if (LocaleCompare(value, "Quadratic") == 0 )
-                            newFilter = QuadraticFilter;
-                          else if (LocaleCompare(value, "Cubic") == 0 )
-                            newFilter = CubicFilter;
-                          else if (LocaleCompare(value, "Catrom") == 0 )
-                            newFilter = CatromFilter;
-                          else if (LocaleCompare(value, "Mitchell") == 0 )
-                            newFilter = MitchellFilter;
-                          else if (LocaleCompare(value, "Lanczos") == 0 )
-                            newFilter = LanczosFilter;
-                          else if (LocaleCompare(value, "Bessel") == 0 )
-                            newFilter = BesselFilter;
-                          else if (LocaleCompare(value, "Sinc") == 0 )
-                            newFilter = SincFilter;
+                          FilterTypes
+                            newFilter;
 
+                          newFilter=StringToFilterTypes(value);
                           msl_info->image[n]->filter = newFilter;
                           break;
                         }
@@ -2579,6 +2627,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2619,10 +2668,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -2668,6 +2720,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2703,10 +2756,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'D':
@@ -2728,6 +2784,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2771,10 +2828,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -2820,6 +2880,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2857,10 +2918,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -2906,6 +2970,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -2939,10 +3004,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'B':
@@ -3015,9 +3083,9 @@ MSLStartElement(void *context,const xmlChar *name,
                       if (LocaleCompare(keyword, "density") == 0)
                         {
                           (void) CloneString(&msl_info->image_info[n]->density,
-                                                    (char*)NULL);
+                                             (char*)NULL);
                           (void) CloneString(&msl_info->image_info[n]->density,
-                                                    value);
+                                             value);
                           (void) CloneString
                             (&msl_info->draw_info[n]->density,
                              msl_info->image_info[n]->density);
@@ -3086,6 +3154,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -3105,10 +3174,13 @@ MSLStartElement(void *context,const xmlChar *name,
                 for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
                   {
                     keyword=(const char *) attributes[i++];
-                    (void) CloneString(&value,
-                                       TranslateText(msl_info->image_info[n],
-                                                     msl_info->attributes[n],
-                                                     (char *) attributes[i]));
+                    value=TranslateText(msl_info->image_info[n],
+                                        msl_info->attributes[n],
+                                        (char *) attributes[i]);
+                    if (value == NULL)
+                      MagickFatalError3(ResourceLimitFatalError,
+                                        MemoryAllocationFailed,
+                                        UnableToAllocateString);
                     switch (*keyword)
                       {
                       case 'R':
@@ -3142,6 +3214,7 @@ MSLStartElement(void *context,const xmlChar *name,
                           break;
                         }
                       }
+                    MagickFreeMemory(value);
                   }
               }
 
@@ -3178,10 +3251,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'G':
@@ -3227,6 +3303,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3272,10 +3349,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'X':
@@ -3309,6 +3389,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3344,10 +3425,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'T':
@@ -3369,6 +3453,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3395,10 +3480,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'R':
@@ -3420,6 +3508,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3454,10 +3543,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'I':
@@ -3490,6 +3582,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3527,10 +3620,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'I':
@@ -3563,6 +3659,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3600,10 +3697,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'D':
@@ -3625,6 +3725,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3690,10 +3791,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'I':
@@ -3726,6 +3830,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3756,10 +3861,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'T':
@@ -3781,6 +3889,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
 
             /*
@@ -3807,10 +3916,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'C':
@@ -3841,6 +3953,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -3894,10 +4007,13 @@ MSLStartElement(void *context,const xmlChar *name,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
               {
                 keyword=(const char *) attributes[i++];
-                (void) CloneString(&value,
-                                   TranslateText(msl_info->image_info[n],
-                                                 msl_info->attributes[n],
-                                                 (char *) attributes[i]));
+                value=TranslateText(msl_info->image_info[n],
+                                    msl_info->attributes[n],
+                                    (char *) attributes[i]);
+                if (value == NULL)
+                  MagickFatalError3(ResourceLimitFatalError,
+                                    MemoryAllocationFailed,
+                                    UnableToAllocateString);
                 switch (*keyword)
                   {
                   case 'F':
@@ -3921,6 +4037,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       break;
                     }
                   }
+                MagickFreeMemory(value);
               }
             break;
           }
@@ -3962,12 +4079,24 @@ MSLEndElement(void *context,const xmlChar *name)
               {
                 long  i = (long)
                   (msl_info->group_info[msl_info->nGroups-1].numImages);
-                while ( i-- )
+
+                while ( (i--) && (msl_info->n > 0) )
                   {
                     if (msl_info->image[msl_info->n] != (Image *) NULL)
-                      DestroyImage(msl_info->image[msl_info->n]);
+                      {
+                        DestroyImage(msl_info->image[msl_info->n]);
+                        msl_info->image[msl_info->n]=(Image *) NULL;
+                      }
+                    
+                    DestroyDrawInfo(msl_info->draw_info[msl_info->n]);
+                    msl_info->draw_info[msl_info->n]=(DrawInfo *) NULL;
+
                     DestroyImage(msl_info->attributes[msl_info->n]);
+                    msl_info->attributes[msl_info->n]=(Image *) NULL;
+
                     DestroyImageInfo(msl_info->image_info[msl_info->n]);
+                    msl_info->image_info[msl_info->n]=(ImageInfo *) NULL;
+
                     msl_info->n--;
                   }
               }
@@ -4298,14 +4427,15 @@ ProcessMSLScript(const ImageInfo *image_info,Image **image,
   msl_info.group_info=MagickAllocateMemory(MSLGroupInfo *,
                                            sizeof(MSLGroupInfo));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
+      (msl_info.draw_info == (DrawInfo **) NULL) ||
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToInterpretMSLImage);
-  *msl_info.image_info=CloneImageInfo(image_info);
-  *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);
+  msl_info.image_info[0]=CloneImageInfo(image_info);
+  msl_info.draw_info[0]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  msl_info.attributes[0]=CloneImage(image_info->attributes,0,0,True,exception);
   msl_info.group_info[0].numImages=0;
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;
@@ -4361,11 +4491,40 @@ ProcessMSLScript(const ImageInfo *image_info,Image **image,
     (void) xmlParseChunk(msl_info.parser," ",1,True);
   xmlFreeParserCtxt(msl_info.parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
+
+
+  xmlFreeDoc(msl_info.document);
   xmlCleanupParser();
-  MagickFreeMemory(msl_info.group_info);
+
+/*   printf("ProcessMSLScript(msl_info->n=%ld\n",msl_info.n); */
+
   if (*image == (Image *) NULL)
     *image=*msl_info.image;
-  return((*msl_info.image)->exception.severity == UndefinedException);
+
+  if (msl_info.draw_info[0] != (DrawInfo *) NULL)
+    {
+      DestroyDrawInfo(msl_info.draw_info[0]);
+      msl_info.draw_info[0]=(DrawInfo *) NULL;
+    }
+  if (msl_info.attributes[0] != (Image *) NULL)
+    {
+      DestroyImage(msl_info.attributes[0]);
+      msl_info.attributes[0]=(Image *) NULL;
+    }
+  if (msl_info.image_info[0] != (ImageInfo *) NULL)
+    {
+      DestroyImageInfo(msl_info.image_info[0]);
+      msl_info.image_info[0]=(ImageInfo *) NULL;
+    }
+
+  MagickFreeMemory(msl_info.image_info);
+  MagickFreeMemory(msl_info.draw_info);
+  MagickFreeMemory(msl_info.attributes);
+  MagickFreeMemory(msl_info.image);
+  MagickFreeMemory(msl_info.group_info);
+
+  return((*image != (Image *) NULL) && 
+         ((*image)->exception.severity == UndefinedException));
 }
 
 static Image *
