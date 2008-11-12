@@ -816,9 +816,10 @@ ModulateImagePixels(void *mutable_data,         /* User provided mutable data */
   return MagickPass;
 }
 
-#define ModulateImageText  "[%s] Modulating image..."
 MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 {
+  char
+    progress_message[MaxTextExtent];
 
   ModulateImageParameters_t
     param;
@@ -847,6 +848,10 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
   param.percent_saturation=AbsoluteValue(param.percent_saturation);
   param.percent_hue=AbsoluteValue(param.percent_hue);
 
+  FormatString(progress_message,"[%%s] Modulate %g/%g/%g image...",
+               param.percent_brightness,param.percent_saturation,
+               param.percent_hue);
+  TransformColorspace(image,RGBColorspace);
   if (image->storage_class == PseudoClass)
     {
       (void) ModulateImagePixels(NULL,&param,image,image->colormap,
@@ -856,7 +861,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
     }
   else
     {
-      status=PixelIterateMonoModify(ModulateImagePixels,NULL,ModulateImageText,
+      status=PixelIterateMonoModify(ModulateImagePixels,NULL,progress_message,
                                     NULL,&param,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }

@@ -610,6 +610,11 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
   /*
+    XWD does not support more than 256 colors.
+  */
+  if ((image->storage_class == PseudoClass) && (image->colors > 256))
+    SetImageType(image,TrueColorType);
+  /*
     Initialize XWD file header.
   */
   xwd_info.header_size=(CARD32) (sz_XWDheader+strlen(image->filename)+1);
@@ -718,8 +723,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
           *indexes;
 
         indexes=AccessImmutableIndexes(image);
-        for (x=(long) image->columns; x > 0; x--)
-          *q++=(unsigned char) *indexes++;
+        for (x=0; x < (long) image->columns; x++)
+          *q++=(unsigned char) indexes[x];
       }
     else
       {
