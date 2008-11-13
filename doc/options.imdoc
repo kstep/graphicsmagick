@@ -1078,6 +1078,24 @@ setting. The default quality setting of 75 results in a rate value of
 0.06641.
 </dd>
 
+<dt>jpeg:dct-method=<value></dt>
+<dd>Selects the IJG JPEG library DCT encoding implementation to use. The
+encoding implementations vary in speed and encoding error. The available
+choices for <s>value</s> are <s>islow</s>, <s>ifast</s>, <s>float</s>,
+<s>default</s> and <s>fastest</s>. Note that <s>fastest</s> might not
+necessarily be fastest on your CPU, depending on the choices made when
+the JPEG library was built and how your CPU behaves.
+</dd>
+
+<dt>jpeg:optimize-coding={true|false}</dt>
+<dd>
+Selects if huffman encoding should be used. Huffman encoding is enabled
+by default, but may be disabled for very large images since it encoding
+requires that the entire image be buffered in memory. Huffman encoding
+produces smaller JPEG files at the expense of added compression time and
+memory consumption.
+</dd>
+
 <dt>jpeg:preserve-settings</dt>
 <dd>If the jpeg:preserve-settings flag is defined, the JPEG encoder will
 use the same "quality" and "sampling-factor" settings that were found

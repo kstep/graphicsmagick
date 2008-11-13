@@ -1704,25 +1704,61 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
-  jpeg_info.dct_method=JDCT_FLOAT;
 
-   /*
-     Huffman optimization requires that the whole image be buffered in
-     memory.  Since this is such a large consumer, obtain a memory
-     resource for the memory to be consumed.  If the memory resource
-     fails to be acquired, then don't enable huffman optimization.
-   */
-  huffman_memory=(magick_int64_t) jpeg_info.input_components*
-    image->columns*image->rows*sizeof(JSAMPLE);
-  jpeg_info.optimize_coding=AcquireMagickResource(MemoryResource,huffman_memory);
+  {
+    const char
+      *value;
+
+    /*
+      Allow the user to select the DCD encoding algorithm.
+    */
+    jpeg_info.dct_method=JDCT_DEFAULT;
+    if ((value=AccessDefinition(image_info,"jpeg","dct-method")))
+      {
+        if (LocaleCompare(value,"ISLOW") == 0)
+          jpeg_info.dct_method=JDCT_ISLOW;
+        else if (LocaleCompare(value,"IFAST") == 0)
+          jpeg_info.dct_method=JDCT_IFAST;
+        else if (LocaleCompare(value,"FLOAT") == 0)
+          jpeg_info.dct_method=JDCT_FLOAT;
+        else if (LocaleCompare(value,"DEFAULT") == 0)
+          jpeg_info.dct_method=JDCT_DEFAULT;
+        else if (LocaleCompare(value,"FASTEST") == 0)
+          jpeg_info.dct_method=JDCT_FASTEST;
+      }
+  }
+
+{
+  const char
+    *value;
+  
+  huffman_memory=0;
+  if ((value=AccessDefinition(image_info,"jpeg","optimize-coding")))
+    {
+      if (LocaleCompare(value,"FALSE") == 0)
+        jpeg_info.optimize_coding=MagickFalse;
+      else
+        jpeg_info.optimize_coding=MagickTrue;
+    }
+  else
+    {
+      /*
+        Huffman optimization requires that the whole image be buffered in
+        memory.  Since this is such a large consumer, obtain a memory
+        resource for the memory to be consumed.  If the memory resource
+        fails to be acquired, then don't enable huffman optimization.
+      */
+      huffman_memory=(magick_int64_t) jpeg_info.input_components*
+        image->columns*image->rows*sizeof(JSAMPLE);
+      jpeg_info.optimize_coding=AcquireMagickResource(MemoryResource,huffman_memory);
+    }
   if (!jpeg_info.optimize_coding)
     huffman_memory=0;
-/*   jpeg_info.optimize_coding=(((magick_uint64_t) image->columns * image->rows) < */
-/*                              (magick_uint64_t) 1024UL*1024UL*16UL); */
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Huffman optimization is %s",
                           (jpeg_info.optimize_coding ? "enabled" : "disabled"));
+ }
 
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)

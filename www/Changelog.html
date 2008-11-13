@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2008-11-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c: Allow the user to specify the DCT method
+        (jpeg:dct-method), or if huffman encoding should be enabled
+        (jpeg:optimize-coding=true).  Default the DCT method to the
+        libjpeg default rather than forcing it to JDCT_FLOAT since float
+        is slower on some systems.
+
+</UL>
+<p>
 2008-11-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
