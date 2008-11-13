@@ -1,4 +1,4 @@
-.TH gm 1 "2008/11/02" "GraphicsMagick"
+.TH gm 1 "2008/11/13" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1142,6 +1142,32 @@ ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
 compression. If defined, this value overrides the -quality
 setting. The default quality setting of 75 results in a rate value of
 0.06641.
+
+.in 15
+.in 15
+.B "jpeg:dct-method=<value>"
+.in 20
+ \fR
+.in 20
+Selects the IJG JPEG library DCT encoding implementation to use. The
+encoding implementations vary in speed and encoding error. The available
+choices for \fBvalue\fP are \fBislow\fP, \fBifast\fP, \fBfloat\fP,
+\fBdefault\fP and \fBfastest\fP. Note that \fBfastest\fP might not
+necessarily be fastest on your CPU, depending on the choices made when
+the JPEG library was built and how your CPU behaves.
+
+.in 15
+.in 15
+.B "jpeg:optimize-coding={true|false}"
+.in 20
+ \fR
+.in 20
+
+Selects if huffman encoding should be used. Huffman encoding is enabled
+by default, but may be disabled for very large images since it encoding
+requires that the entire image be buffered in memory. Huffman encoding
+produces smaller JPEG files at the expense of added compression time and
+memory consumption.
 
 .in 15
 .in 15
