@@ -245,6 +245,7 @@ static int BlobClose(jas_stream_obj_t *object)
     *source = (StreamManager *) object;
 
   CloseBlob(source->image);
+  MagickFreeMemory(source);
   return (0);
 }
 

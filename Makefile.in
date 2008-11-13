@@ -4384,7 +4384,8 @@ UTILITIES_TESTS = \
 	utilities/tests/swirl.sh \
 	utilities/tests/unsharpmask.sh \
 	utilities/tests/wave.sh \
-	utilities/tests/montage.sh
+	utilities/tests/montage.sh \
+	utilities/tests/msl_composite.sh
 
 UTILITIES_MANS = \
 	utilities/gm.1 \

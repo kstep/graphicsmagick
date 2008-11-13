@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2008-11-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jp2.c (BlobClose): Leak a little bit less memory when
+        reading a JP2 file.<BR>
+  <LI> magick/effect.c (InitializeMedianList): Quench valgrind warning
+        about use of uninitialized memory.
+  <LI> coders/msl.c: Backport implementation from CVS head.  Eliminates
+        memory leaks and fixes gravity placement when performing
+        composition.
+
+</UL>
+<p>
 2008-11-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

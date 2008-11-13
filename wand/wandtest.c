@@ -210,9 +210,9 @@ int main(int argc,char **argv)
   (void) DrawPopGraphicContext(drawing_wand);
   (void) MagickSetImageIndex(magick_wand,1);
   status=MagickDrawImage(magick_wand,drawing_wand);
+  DestroyDrawingWand(drawing_wand);
   if (status == False)
     ThrowAPIException(magick_wand);
-  DestroyDrawingWand(drawing_wand);
   {
     unsigned char
       pixels[27],

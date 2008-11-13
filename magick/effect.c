@@ -1473,14 +1473,16 @@ static int InitializeMedianList(MedianPixelList *pixel_list,long width)
   pixel_list->signature=MagickSignature;
   (void) memset((void *) pixel_list->lists,0,4*sizeof(MedianSkipList));
   for(i=0;i<4;i++)
-  {
-    pixel_list->lists[i].nodes = MagickAllocateMemory(MedianListNode *,65537 * sizeof(MedianListNode));
-	if(!pixel_list->lists[i].nodes)
+    {
+      pixel_list->lists[i].nodes =
+        MagickAllocateMemory(MedianListNode *,65537 * sizeof(MedianListNode));
+      if(!pixel_list->lists[i].nodes)
 	{
 	  assert(0);
 	  return (False);
 	}
-  }
+      (void) memset(pixel_list->lists[i].nodes,0,65537U*sizeof(MedianListNode));
+    }
   return (True);
 }
 
@@ -1488,10 +1490,10 @@ static void CleanMedianList(MedianPixelList *pixel_list)
 {
   register int i;
   for(i=0;i<4;i++)
-  {
-	if(pixel_list->lists[i].nodes)
-	  MagickFreeMemory(pixel_list->lists[i].nodes);
-  }
+    {
+      if(pixel_list->lists[i].nodes)
+        MagickFreeMemory(pixel_list->lists[i].nodes);
+    }
 }
 
 static inline void InsertMedianList(MedianPixelList *pixel_list,

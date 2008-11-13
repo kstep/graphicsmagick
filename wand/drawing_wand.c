@@ -277,6 +277,8 @@ __attribute__ ((format (printf, 2, 3)))
 ;
 static void
   MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color);
+
+static const char *dummy_image_filename = "[MagickDrawingWandDummyImage]";
 
 
 /* "Printf" for MVG commands */
@@ -503,7 +505,11 @@ WandExport void DestroyDrawingWand(DrawingWand *drawing_wand)
   drawing_wand->mvg=(char *) RelinquishMagickMemory(drawing_wand->mvg);
   drawing_wand->mvg_alloc=0;
   drawing_wand->mvg_length=0;
-  drawing_wand->image=(Image*)NULL;
+  /* A crummy way to determine if this image can be deleted. */
+  if ((drawing_wand->image != (Image*) NULL) &&
+      strcmp(drawing_wand->image->filename,dummy_image_filename) == 0)
+    DestroyImage(drawing_wand->image);
+  drawing_wand->image=(Image*) NULL;
   drawing_wand->signature=0;
   drawing_wand=(DrawingWand *) RelinquishMagickMemory(drawing_wand);
 }
@@ -5507,5 +5513,7 @@ WandExport DrawingWand *NewDrawingWand(void)
     *image;
 
   image=AllocateImage((const ImageInfo *) NULL);
+  /* A crummy way to determine that this image can be deleted. */
+  strlcpy(image->filename,dummy_image_filename,MaxTextExtent);
   return(DrawAllocateWand((const DrawInfo *) NULL,image));
 }

@@ -1841,7 +1841,7 @@ WandExport unsigned int MagickDisplayImages(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawImage() draw an image the specified number of degrees.
+%  MagickDrawImage() draws vectors on the image as described by DrawingWand.
 %
 %  The format of the MagickDrawImage method is:
 %
