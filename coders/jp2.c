@@ -245,6 +245,7 @@ static int BlobClose(jas_stream_obj_t *object)
     *source = (StreamManager *) object;
 
   CloseBlob(source->image);
+  MagickFreeMemory(source);
   return (0);
 }
 
@@ -571,15 +572,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
     jas_cmprof_t
       *cm_profile;
     
-    /* Obtain a pointer to the exiting jas_cmprof_t profile handle. */
+    /* Obtain a pointer to the existing jas_cmprof_t profile handle. */
     cm_profile=jas_image_cmprof(jp2_image);
     if (cm_profile != (jas_cmprof_t *) NULL)
       {
         jas_iccprof_t
           *icc_profile;
-        
+
         /* Obtain a copy of the jas_iccprof_t ICC profile handle */
         icc_profile=jas_iccprof_createfromcmprof(cm_profile);
+        /* or maybe just icc_profile=cm_profile->iccprof */
         if (icc_profile != (jas_iccprof_t *) NULL)
           {
             jas_stream_t
