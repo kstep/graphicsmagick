@@ -320,6 +320,15 @@ CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 #LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
 AC_SUBST(OPENMP_CFLAGS)
 
+# Allow the user to disable use of OpenMP where algorithms sometimes run slower.
+AC_ARG_ENABLE(openmp-slow,
+	      [  --disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower],
+	      [with_openmp_slow=$enableval],
+	      [with_openmp_slow='yes'])
+if test "$with_openmp_slow" = 'no'
+then
+  AC_DEFINE(DisableSlowOpenMP,1,[Disable OpenMP for algorithms which sometimes run slower])
+fi
 
 ########
 #

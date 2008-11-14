@@ -2353,7 +2353,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -2418,7 +2418,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             if (!SyncImagePixelsEx(blur_image,exception))
               thread_status=MagickFail;
           }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
         {
@@ -3564,7 +3564,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     MagickPassFail
       status=MagickPass;
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3656,7 +3656,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
             if (!SyncImagePixelsEx(spread_image,exception))
               thread_status=MagickFail;
           }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
         {
@@ -3754,7 +3754,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
     unsigned long
       row_count=0;
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -3815,7 +3815,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
               if (!SyncImagePixelsEx(image,&image->exception))
                 thread_status=MagickFail;
           }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
         {

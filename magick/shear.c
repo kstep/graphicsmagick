@@ -354,7 +354,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           row_count=0;
 
         (void) strlcpy(message,"[%s] Rotate image 0 degrees...",sizeof(message));
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -395,7 +395,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 if (!SyncImagePixelsEx(rotate_image,exception))
                   thread_status=MagickFail;
               }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
             {
@@ -414,7 +414,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     case 1:
       {
         /*
-          Rotate 90 degrees (not a candidate for OpenMP).
+          Rotate 90 degrees.
         */
         magick_int64_t
           tile;
@@ -429,10 +429,20 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));        
         tile=0;
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp parallel for shared(status, tile)
+#endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
             long
               tile_x;
+
+            MagickPassFail
+              thread_status;
+
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
 
             for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
               {
@@ -468,7 +478,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                                                tile_width,tile_height,exception);
                 if (tile_pixels == (const PixelPacket *) NULL)
                   {
-                    status=MagickFail;
+                    thread_status=MagickFail;
                     break;
                   }
                 /*
@@ -496,11 +506,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     register long
                       x;
 
-                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,
-                                     tile_height,1);
+                    q=SetImagePixelsEx(rotate_image,dest_tile_x,dest_tile_y+y,
+                                       tile_height,1,exception);
                     if (q == (PixelPacket *) NULL)
                       {
-                        status=MagickFail;
+                        thread_status=MagickFail;
                         break;
                       }
                     /*
@@ -538,21 +548,26 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                               }
                           }
                       }
-                    if (!SyncImagePixels(rotate_image))
+                    if (!SyncImagePixelsEx(rotate_image,exception))
                       {
-                        status=MagickFail;
+                        thread_status=MagickFail;
                         break;
                       }
                   }
 
-                tile++;
-                if (QuantumTick(tile,total_tiles))
-                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
-                                              message,image->filename))
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical
+#endif
+                {
+                  tile++;
+                  if (QuantumTick(tile,total_tiles))
+                    if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                                message,image->filename))
+                      thread_status=MagickFail;
+                  
+                  if (thread_status == MagickFail)
                     status=MagickFail;
- 
-                if (status == MagickFail)
-                  break;
+                }
               }
           }
         Swap(page.width,page.height);
@@ -572,7 +587,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           row_count=0;
 
         (void) strlcpy(message,"[%s] Rotate image 180 degrees...",sizeof(message));
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -618,7 +633,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 if (!SyncImagePixelsEx(rotate_image,exception))
                   thread_status=MagickFail;
               }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
             {
@@ -639,7 +654,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     case 3:
       {
         /*
-          Rotate 270 degrees (not a candidate for OpenMP).
+          Rotate 270 degrees.
         */
 
         magick_int64_t
@@ -655,11 +670,20 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));
         tile=0;
-        status=MagickPass;
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp parallel for shared(status, tile)
+#endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
             long
               tile_x;
+
+            MagickPassFail
+              thread_status;
+
+            thread_status=status;
+            if (thread_status == MagickFail)
+              continue;
 
             for (tile_x=0; tile_x < (long) image->columns; tile_x+=tile_width_max)
               {
@@ -677,7 +701,6 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 const PixelPacket
                   *tile_pixels;
                     
-                tile++;
                 /*
                   Compute image region corresponding to tile.
                 */
@@ -696,7 +719,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                                                tile_width,tile_height,exception);
                 if (tile_pixels == (const PixelPacket *) NULL)
                   {
-                    status=MagickFail;
+                    thread_status=MagickFail;
                     break;
                   }
                 /*
@@ -724,10 +747,11 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                     IndexPacket
                       *rotate_indexes;
 
-                    q=SetImagePixels(rotate_image,dest_tile_x,dest_tile_y+y,tile_height,1);
+                    q=SetImagePixelsEx(rotate_image,dest_tile_x,dest_tile_y+y,
+                                       tile_height,1,exception);
                     if (q == (PixelPacket *) NULL)
                       {
-                        status=MagickFail;
+                        thread_status=MagickFail;
                         break;
                       }
                     /*
@@ -765,21 +789,30 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                               }
                           }
                       }
-                    if (!SyncImagePixels(rotate_image))
+                    if (!SyncImagePixelsEx(rotate_image,exception))
                       {
-                        status=MagickFail;
+                        thread_status=MagickFail;
                         break;
                       }
                   }
-                if (QuantumTick(tile,total_tiles))
-                  if (!MagickMonitorFormatted(tile,total_tiles,exception,
-                                              message,image->filename))
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical
+#endif
+                {
+                  tile++;
+                  if (QuantumTick(tile,total_tiles))
+                    if (!MagickMonitorFormatted(tile,total_tiles,exception,
+                                                message,image->filename))
+                      thread_status=MagickFail;
+                }
+
+                if (thread_status == MagickFail)
+                  {
                     status=MagickFail;
-                if (status == MagickFail)
-                  break;
+                    break;
+                  }
               }
-            if (status == MagickFail)
-              break;
           }
         Swap(page.width,page.height);
         Swap(page.x,page.y);

@@ -55,20 +55,11 @@ struct _SemaphoreInfo
 #if defined(HAVE_PTHREAD)
   pthread_mutex_t
     mutex;		/* POSIX thread mutex */
-
-  pthread_t
-    owner_thread_id;    /* ID of thread which holds the lock */
 #endif
 #if defined(MSWINDOWS)
   CRITICAL_SECTION
     mutex;		/* Windows critical section */
-
-  DWORD
-    owner_thread_id;    /* ID of thread which holds the lock */
 #endif
-
-  unsigned int
-    lock_depth;         /* Number of times lock is held by same thread */
 
   unsigned long
     signature;		/* Used to validate structure */
@@ -230,7 +221,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         errno=status;
         return((SemaphoreInfo *) NULL);
       }
-#if 0
+#if 1
 #if defined(PTHREAD_MUTEX_RECURSIVE)
     (void) pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
 #endif /* PTHREAD_MUTEX_RECURSIVE */
@@ -244,14 +235,11 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
       }
 
     (void) pthread_mutexattr_destroy(&mutexattr);
-
-    semaphore_info->owner_thread_id=0;
   }
 #endif
 #if defined(MSWINDOWS)
   InitializeCriticalSection(&semaphore_info->mutex);
 #endif
-  semaphore_info->lock_depth=0;
   
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
@@ -411,10 +399,11 @@ MagickExport void InitializeSemaphore(void)
 MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  if (*semaphore_info == (SemaphoreInfo *) NULL)
-    return;
-  assert((*semaphore_info)->signature == MagickSignature);
-  (void) UnlockSemaphoreInfo(*semaphore_info);
+  if (*semaphore_info != (SemaphoreInfo *) NULL)
+    {
+      assert((*semaphore_info)->signature == MagickSignature);
+      (void) UnlockSemaphoreInfo(*semaphore_info);
+    }
 }
 
 /*
@@ -445,44 +434,27 @@ MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
+  MagickPassFail
+    status=MagickPass;
+
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
-  /* fprintf(stderr,"lock %p\n", semaphore_info); */
+/*   assert(semaphore_info->signature == MagickSignature); */
 #if defined(HAVE_PTHREAD)
   {
     int
-      status;
+      err_status;
 
-    pthread_t
-      self;
-
-    self=pthread_self();
-
-    if ((semaphore_info->lock_depth > 0) &&
-        (semaphore_info->owner_thread_id == self))
+    if ((err_status = pthread_mutex_lock(&semaphore_info->mutex)) != 0)
       {
-        fprintf(stderr,
-                "Warning: recursive semaphore lock detected (depth=%u p=%p)!\n",
-                semaphore_info->lock_depth,semaphore_info);
-        fflush(stderr);
+        errno=err_status;
+        status=MagickFail;
       }
-    
-    if ((status = pthread_mutex_lock(&semaphore_info->mutex)) != 0)
-      {
-        errno=status;
-        return(MagickFail);
-      }
-    /* Record the thread ID of the locking thread */
-    semaphore_info->owner_thread_id=self;
   }
 #endif
 #if defined(MSWINDOWS)
   EnterCriticalSection(&semaphore_info->mutex);
-  /* Record the thread ID of the locking thread */
-  semaphore_info->owner_thread_id=GetCurrentThreadId();
 #endif
-  semaphore_info->lock_depth++;
-  return(MagickPass);
+  return(status);
 }
 
 /*
@@ -513,33 +485,18 @@ MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 */
 MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
+  MagickPassFail
+    status=MagickPass;
+
   assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
-  if (semaphore_info->lock_depth == 0)
-    {
-      fprintf(stderr,
-              "Warning: unlock on unlocked semaphore (p=%p)!\n",
-              semaphore_info);
-      fflush(stderr);
-      return (MagickFail);
-    }
-
-  /* fprintf(stderr,"unlock %p\n", semaphore_info); */
-
-  semaphore_info->lock_depth--;
+  /* assert(semaphore_info->signature == MagickSignature); */
 
 #if defined(HAVE_PTHREAD)
-  /* Enforce that unlocking thread is the same as the locking thread */
-  assert(pthread_equal(semaphore_info->owner_thread_id,pthread_self()));
-  if (semaphore_info->lock_depth == 0)
-    semaphore_info->owner_thread_id=-1;
   if (pthread_mutex_unlock(&semaphore_info->mutex))
-    return(MagickFail);
+    status=MagickFail;
 #endif
 #if defined(MSWINDOWS)
-  /* Enforce that unlocking thread is the same as the locking thread */
-  assert(GetCurrentThreadId() == semaphore_info->owner_thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);
 #endif
-  return(MagickPass);
+  return(status);
 }

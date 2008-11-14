@@ -1436,6 +1436,8 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
     is_monochrome,
     status = MagickPass;
 
+  PixelIteratorOptions
+    options;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1443,7 +1445,12 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
   is_monochrome=image->is_monochrome;
   if (image->storage_class == DirectClass)
     (void) SetImageType(image,PaletteType);
-  status=PixelIterateMonoModify(CycleColormapCallBack,NULL,
+
+  InitializePixelIteratorOptions(&options,&image->exception);
+#if defined(HAVE_OPENMP) && defined(DisableSlowOpenMP)
+  options.max_threads=1;
+#endif
+  status=PixelIterateMonoModify(CycleColormapCallBack,&options,
                                 CycleColormapImageText,
                                 NULL,&amount,0,0,image->columns,image->rows,
                                 image,&image->exception);
@@ -5644,7 +5651,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   get_pixels=GetPixelCachePresent(image);
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(static,16) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
@@ -5725,7 +5732,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
           if (!SyncImagePixelsEx(image,&image->exception))
             thread_status=MagickFail;
         }
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
       {
