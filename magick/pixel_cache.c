@@ -4200,14 +4200,35 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
+      register IndexPacket
+        *cache_indexes;
+
       /*
         Write indexes to memory.
       */
-      for (y=0; y < (long) rows; y++)
+
+      cache_indexes=cache_info->indexes+offset;
+      if (length < 257)
         {
-          (void) memcpy(cache_info->indexes+offset,indexes,length);
-          indexes+=nexus_info->region.width;
-          offset+=cache_info->columns;
+          for (y=0; y < (long) rows; y++)
+            {
+              register long
+                x;
+
+              for (x=0; x < (long) nexus_info->region.width; x++)
+                cache_indexes[x]=indexes[x];
+              indexes+=nexus_info->region.width;
+              cache_indexes+=cache_info->columns;
+            }
+        }
+      else
+        {
+          for (y=0; y < (long) rows; y++)
+            {
+              (void) memcpy(cache_indexes,indexes,length);
+              indexes+=nexus_info->region.width;
+              cache_indexes+=cache_info->columns;
+            }
         }
       return(MagickPass);
     }
@@ -4324,14 +4345,34 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
+      register PixelPacket
+        *cache_pixels;
+
       /*
         Write pixels to memory.
       */
-      for (y=0; y < (long) rows; y++)
+      cache_pixels=cache_info->pixels+offset;
+      if (length < 257)
         {
-          (void) memcpy(cache_info->pixels+offset,pixels,length);
-          pixels+=nexus_info->region.width;
-          offset+=cache_info->columns;
+          for (y=0; y < (long) rows; y++)
+            {
+              register long
+                x;
+
+              for (x=0; x < (long) nexus_info->region.width; x++)
+                cache_pixels[x]=pixels[x];
+              pixels+=nexus_info->region.width;
+              cache_pixels+=cache_info->columns;
+            }
+        }
+      else
+        {
+          for (y=0; y < (long) rows; y++)
+            {
+              (void) memcpy(cache_pixels,pixels,length);
+              pixels+=nexus_info->region.width;
+              cache_pixels+=cache_info->columns;
+            }
         }
       return(MagickPass);
     }

@@ -559,7 +559,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
             ImportPixelAreaOptionsInit(&import_options);
             import_options.grayscale_miniswhite=MagickTrue;
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(dynamic,1) shared(row_count,status)
 #endif
             for (y=0; y < (long) image->rows; y++)
@@ -578,7 +578,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   continue;
 
                 pixels=AccessThreadViewData(scanline_set);
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                 {
@@ -611,7 +611,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 if (thread_status == MagickFail)
                   {
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                     status=MagickFail;
@@ -651,7 +651,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (scanline_set == (ThreadViewDataSet *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(dynamic,1) shared(is_monochrome,row_count,status)
 #endif
             for (y=0; y < (long) image->rows; y++)
@@ -681,7 +681,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 thread_is_monochrome=is_monochrome;
                 pixels=AccessThreadViewData(scanline_set);
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                 {
@@ -729,7 +729,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!SyncImagePixels(image))
                     thread_status=MagickFail;
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                 {
@@ -777,7 +777,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (scanline_set == (ThreadViewDataSet *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 #if 1
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp parallel for schedule(dynamic,1) shared(is_grayscale,is_monochrome,row_count,status)
 #endif
 #endif
@@ -810,7 +810,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 thread_is_monochrome=is_monochrome;
                 pixels=AccessThreadViewData(scanline_set);
             
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                 {
@@ -857,7 +857,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!SyncImagePixels(image))
                     thread_status=MagickFail;
 
-#if defined(HAVE_OPENMP)
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
 #  pragma omp critical
 #endif
                 {

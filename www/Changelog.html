@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2008-11-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (IntegralRotateImage): Added OpenMP acceleration
+        for rotate by 90 and 270 degrees.
+  <LI> configure.ac: New --disable-openmp-slow configure for disabling
+        use of OpenMP for algorithms which may run slower on operating
+        systems with crummy thread libraries.  This still allows gaining
+        the benefits from OpenMP for CPU hogs.  Verified to help with
+        FreeBSD 7.0 and Apple OS-X Leopard.
+  <LI> magick/semaphore.c: Trimmed out the debug code in order to
+        obtain a bit more performance.
+
+</UL>
+<p>
 2008-11-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

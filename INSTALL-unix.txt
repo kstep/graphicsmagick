@@ -173,7 +173,9 @@ Optional Features
 
 --disable-largefile     disable support for large (64 bit) file offsets
 
---disable-openmp        disable use of OpenMP (automatic multi-threaded loops)
+--disable-openmp        disable use of OpenMP (automatic multi-threaded loops) at all
+
+--disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower
 
 --enable-symbol-prefix  enable prefixing library symbols with "Gm"
 
@@ -205,7 +207,7 @@ Optional Packages/Options
     set pixel cache threshhold (defaults to available memory)
 
 --without-threads
-    disable threads support
+    disable threads support.
 
 --with-frozenpaths
     enable frozen delegate paths
@@ -498,13 +500,11 @@ Several configure options require special note:
 --disable-openmp
   By default, GraphicsMagick is compiled with support for OpenMP
   (http://www.openmp.org/) if the compilation environment supports it.
-  OpenMP automatically parallizes loops across concurrent threads based
-  on instructions in pragmas. OpenMP is relatively new and was introduced
-  in GCC 4.2. OpenMP is a standard and was implemented in some other
-  compilers long before its appearance in GCC. OpenMP adds additional
-  build and linkage requirements. While OpenMP accelerated code may
-  complete faster on multi-core systems, the total CPU consumption is
-  may be greater so it may not be the best choice for busy servers.
+  OpenMP automatically parallizes loops across concurrent threads
+  based on instructions in pragmas. OpenMP is relatively new to GCC
+  and was introduced in GCC 4.2. OpenMP is a standard and was
+  implemented in some other compilers long before its appearance in
+  GCC. OpenMP adds additional build and linkage requirements.
 
   The OpenMP support provided by GCC ("GOMP") automatically enables use
   of OpenMP with the number of threads equal to the number of CPU cores
@@ -513,6 +513,18 @@ Several configure options require special note:
   OMP_NUM_THREADS environment variable specifies how many threads should
   be used. In order to obtain the best single-user performance, set
   OMP_NUM_THREADS equal to the number of available CPU cores.
+
+--disable-openmp-slow
+  Some operating systems provide a rather weak thread implementation
+  where relatively fast algorithms actually run slower as threads are
+  added via OpenMP.  Algorithms which are severe CPU hogs still
+  substantially benefit from OpenMP on these systems.  If many
+  algorithms run slower as threads are added, then add the
+  --disable-openmp-slow configure option to disable use of OpenMP for
+  algorithms which are known to become slower.  This option is
+  recommended for FreeBSD 7.0 and Apple's OS-X Leopard and earlier due
+  to weak thread support.  It should not be necessary for AIX, Linux,
+  or Solaris.
 
 --without-perl
   By default, PerlMagick is conveniently compiled and installed as part

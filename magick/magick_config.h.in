@@ -6,6 +6,9 @@
 /* Define if coders and filters are to be built as modules. */
 #undef BuildMagickModules
 
+/* Disable OpenMP for algorithms which sometimes run slower */
+#undef DisableSlowOpenMP
+
 /* C compiler used for compilation */
 #undef GM_BUILD_CC
 

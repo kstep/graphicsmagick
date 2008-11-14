@@ -241,7 +241,11 @@ follows (execute 'configure --help' to see all options).</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--disable-openmp</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>disable use of OpenMP (automatic multi-threaded loops)</td></tr>
+<tr><td>&nbsp;</td><td>disable use of OpenMP (automatic multi-threaded loops) at all</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--disable-openmp-slow</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>disable OpenMP for algorithms which sometimes run slower</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--enable-symbol-prefix</span></kbd></td>
 </tr>
@@ -288,7 +292,7 @@ follows (execute 'configure --help' to see all options).</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--without-threads</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>disable threads support</td></tr>
+<tr><td>&nbsp;</td><td>disable threads support.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--with-frozenpaths</span></kbd></td>
 </tr>
@@ -638,13 +642,11 @@ library.</td></tr>
 </tr>
 <tr><td>&nbsp;</td><td><p class="first">By default, GraphicsMagick is compiled with support for OpenMP
 (<a class="reference" href="http://www.openmp.org/">http://www.openmp.org/</a>) if the compilation environment supports it.
-OpenMP automatically parallizes loops across concurrent threads based
-on instructions in pragmas. OpenMP is relatively new and was introduced
-in GCC 4.2. OpenMP is a standard and was implemented in some other
-compilers long before its appearance in GCC. OpenMP adds additional
-build and linkage requirements. While OpenMP accelerated code may
-complete faster on multi-core systems, the total CPU consumption is
-may be greater so it may not be the best choice for busy servers.</p>
+OpenMP automatically parallizes loops across concurrent threads
+based on instructions in pragmas. OpenMP is relatively new to GCC
+and was introduced in GCC 4.2. OpenMP is a standard and was
+implemented in some other compilers long before its appearance in
+GCC. OpenMP adds additional build and linkage requirements.</p>
 <p class="last">The OpenMP support provided by GCC (&quot;GOMP&quot;) automatically enables use
 of OpenMP with the number of threads equal to the number of CPU cores
 in the system. Other implementations of OpenMP do not enable
@@ -653,6 +655,19 @@ OMP_NUM_THREADS environment variable specifies how many threads should
 be used. In order to obtain the best single-user performance, set
 OMP_NUM_THREADS equal to the number of available CPU cores.</p>
 </td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--disable-openmp-slow</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Some operating systems provide a rather weak thread implementation
+where relatively fast algorithms actually run slower as threads are
+added via OpenMP.  Algorithms which are severe CPU hogs still
+substantially benefit from OpenMP on these systems.  If many
+algorithms run slower as threads are added, then add the
+--disable-openmp-slow configure option to disable use of OpenMP for
+algorithms which are known to become slower.  This option is
+recommended for FreeBSD 7.0 and Apple's OS-X Leopard and earlier due
+to weak thread support.  It should not be necessary for AIX, Linux,
+or Solaris.</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--without-perl</span></kbd></td>
 <td>By default, PerlMagick is conveniently compiled and installed as part
@@ -907,7 +922,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 21:52 UTC.
+Generated on: 2008-11-14 04:45 UTC.
 
 </div>
 </body>
