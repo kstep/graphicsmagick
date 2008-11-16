@@ -1712,7 +1712,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     /*
       Allow the user to select the DCD encoding algorithm.
     */
-    jpeg_info.dct_method=JDCT_DEFAULT;
+    /* jpeg_info.dct_method=JDCT_DEFAULT; */
     if ((value=AccessDefinition(image_info,"jpeg","dct-method")))
       {
         if (LocaleCompare(value,"ISLOW") == 0)

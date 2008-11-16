@@ -355,7 +355,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 
         (void) strlcpy(message,"[%s] Rotate image 0 degrees...",sizeof(message));
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
         for (y=0; y < (long) image->rows; y++)
           {
@@ -430,7 +430,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                      ((image->columns/tile_width_max)+1));        
         tile=0;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for shared(status, tile)
+#  pragma omp parallel for schedule(static,1) shared(status, tile)
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -588,7 +588,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 
         (void) strlcpy(message,"[%s] Rotate image 180 degrees...",sizeof(message));
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
         for (y=0; y < (long) image->rows; y++)
           {
@@ -671,7 +671,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                      ((image->columns/tile_width_max)+1));
         tile=0;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for shared(status, tile)
+#  pragma omp parallel for schedule(static,1) shared(status, tile)
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -883,7 +883,7 @@ static void XShearImage(Image *image,const double degrees,
   is_grayscale=image->is_grayscale;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
 #endif
   for (y=0; y < (long) height; y++)
     {
@@ -1141,7 +1141,7 @@ static void YShearImage(Image *image,const double degrees,
   is_grayscale=image->is_grayscale;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
 #endif
   for (y=0; y < (long) width; y++)
     {

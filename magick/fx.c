@@ -405,7 +405,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
@@ -594,7 +594,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       row_count=0;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -942,7 +942,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     Paint each row of the image.
   */
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -1476,7 +1476,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       row_count=0;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -1666,7 +1666,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       row_count=0;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) wave_image->rows; y++)
       {

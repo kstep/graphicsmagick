@@ -863,7 +863,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
   if (canvas_image == (Image *) NULL)
     return canvas_image;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) canvas_image->rows; y++)
     {
