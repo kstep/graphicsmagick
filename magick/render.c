@@ -1071,7 +1071,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
   y_min=(long) ceil(edge.y1-0.5);
   y_max=(long) floor(edge.y2+0.5);
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
 #endif
   for (y=y_min; y <= y_max; y++)
     {

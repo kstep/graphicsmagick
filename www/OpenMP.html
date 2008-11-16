@@ -52,6 +52,22 @@
 <h1 class="title">OpenMP in GraphicsMagick</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<div class="contents local topic">
+<ul class="simple">
+<li><a class="reference" href="#overview" id="id1" name="id1">Overview</a></li>
+<li><a class="reference" href="#results" id="id2" name="id2">Results</a><ul>
+<li><a class="reference" href="#sun-solaris-amd-opteron" id="id3" name="id3">Sun Solaris / AMD Opteron</a></li>
+<li><a class="reference" href="#sun-solaris-ultrasparc-iii" id="id4" name="id4">Sun Solaris / UltraSPARC III</a></li>
+<li><a class="reference" href="#ibm-aix-ibm-power5" id="id5" name="id5">IBM AIX / IBM Power5+</a></li>
+<li><a class="reference" href="#linux-opteron" id="id6" name="id6">Linux Opteron</a></li>
+<li><a class="reference" href="#apple-os-x-ibm-g5" id="id7" name="id7">Apple OS-X/IBM G5</a></li>
+<li><a class="reference" href="#freebsd-intel-xeon" id="id8" name="id8">FreeBSD / Intel Xeon</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="overview" name="overview">Overview</a></h1>
 <p>GraphicsMagick has been transformed to use <a class="reference" href="http://openmp.org/">OpenMP</a> for the 1.3 release. OpenMP is a portable
 framework for accelerating CPU-bound and memory-bound operations using
 multiple threads. OpenMP originates in the super-computing world and
@@ -107,40 +123,46 @@ multiple threads may safely and efficiently work on the pixels in one
 image. The re-write also makes the pixel cache thread safe if a
 multi-threaded application uses an OpenMP-fortified library.</p>
 <p>The following is an example of per-core speed-up due to OpenMP on a
-four-core system.  All the pixel quantum values are divided by 2:</p>
+four-core system.  All the pixel quantum values have 30% gaussian
+noise added:</p>
 <pre class="literal-block">
 % for threads in 1 2 3 4
 do
   env OMP_NUM_THREADS=$threads gm benchmark -duration 10 convert \
-    -size 2048x1080 pattern:granite -operator all divide 2.0 null:
+    -size 2048x1080 pattern:granite -operator all Noise-Gaussian 30% null:
 done
-Results: 220 iter 10.04s user 10.04s total 21.912 iter/s (21.912 iter/s cpu)
-Results: 392 iter 19.41s user 10.02s total 39.122 iter/s (20.196 iter/s cpu)
-Results: 531 iter 27.73s user 10.01s total 53.047 iter/s (19.149 iter/s cpu)
-Results: 701 iter 36.65s user 10.00s total 70.100 iter/s (19.127 iter/s cpu)
+Results: 4 iter 10.93s user 10.93s total 0.366 iter/s (0.366 iter/s cpu)
+Results: 7 iter 21.10s user 10.59s total 0.661 iter/s (0.332 iter/s cpu)
+Results: 10 iter 30.12s user 10.09s total 0.991 iter/s (0.332 iter/s cpu)
+Results: 14 iter 42.29s user 10.72s total 1.306 iter/s (0.331 iter/s cpu)
 </pre>
 <p>Note that the &quot;iter/s cpu&quot; value is a measure of the number of iterations
 given the amount of reported CPU time consumed. It is an effective
 measure of relative efficacy. In the above example, the total speedup was
-over 3X with only a small loss of CPU efficiency as threads are added.</p>
+about 3.6X with only a slight loss of CPU efficiency as threads are added.</p>
 <p>According to the OpenMP specification, the OMP_NUM_THREADS evironment
 variable (used above) may be used to specify the number of threads
 available to the application. Typically this is set to the number of
 processor cores on the system but may be set lower to limit resource
 consumption or (in some cases) to improve execution efficiency.</p>
-<p>The   following   table   shows   the   performance  boost  in  development
-GraphicsMagick  1.3  as threads are added on a four-core AMD Opteron system
-running  Sun  Solaris  10:</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="results" name="results">Results</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="sun-solaris-amd-opteron" name="sun-solaris-amd-opteron">Sun Solaris / AMD Opteron</a></h2>
+<p>The following table shows the performance boost in GraphicsMagick
+1.3.1 as threads are added on a four-core AMD Opteron 3.0GHz system
+running Sun Solaris 10:</p>
 <table border="1" class="docutils">
 <caption>Performance Boost On Four Core AMD Operon System</caption>
 <colgroup>
-<col width="52%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="11%" />
-<col width="6%" />
+<col width="69%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="4%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Operation</th>
@@ -155,655 +177,1895 @@ running  Sun  Solaris  10:</p>
 <tbody valign="top">
 <tr><td>-noop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.01</td>
-<td class="decimal">1.24</td>
-<td class="decimal">1.25</td>
-<td class="decimal">162.40</td>
+<td class="decimal">1.14</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.35</td>
+<td class="decimal">177.20</td>
 <td>4</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.86</td>
-<td class="decimal">2.66</td>
-<td class="decimal">3.25</td>
-<td class="decimal">14.29</td>
+<td class="decimal">1.89</td>
+<td class="decimal">2.75</td>
+<td class="decimal">3.52</td>
+<td class="decimal">15.48</td>
 <td>4</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.35</td>
-<td class="decimal">1.73</td>
-<td class="decimal">1.74</td>
-<td class="decimal">87.80</td>
+<td class="decimal">1.46</td>
+<td class="decimal">1.86</td>
+<td class="decimal">1.98</td>
+<td class="decimal">99.00</td>
 <td>4</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.42</td>
-<td class="decimal">1.72</td>
-<td class="decimal">1.87</td>
-<td class="decimal">8.05</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.36</td>
+<td class="decimal">2.60</td>
+<td class="decimal">11.55</td>
 <td>4</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.27</td>
-<td class="decimal">6.59</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.54</td>
+<td class="decimal">3.01</td>
+<td class="decimal">8.91</td>
 <td>4</td>
 </tr>
 <tr><td>-border 6x6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.98</td>
-<td class="decimal">1.23</td>
 <td class="decimal">1.24</td>
-<td class="decimal">72.00</td>
+<td class="decimal">1.46</td>
+<td class="decimal">1.49</td>
+<td class="decimal">81.00</td>
+<td>4</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.21</td>
+<td class="decimal">1.47</td>
+<td class="decimal">1.55</td>
+<td class="decimal">99.00</td>
 <td>4</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.68</td>
-<td class="decimal">2.22</td>
-<td class="decimal">2.67</td>
-<td class="decimal">3.35</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.51</td>
+<td class="decimal">3.06</td>
+<td class="decimal">3.85</td>
 <td>4</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.24</td>
-<td class="decimal">1.59</td>
-<td class="decimal">1.66</td>
-<td class="decimal">119.40</td>
+<td class="decimal">1.43</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.85</td>
+<td class="decimal">127.20</td>
 <td>4</td>
+</tr>
+<tr><td>-colors 16</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.86</td>
+<td class="decimal">0.86</td>
+<td class="decimal">0.86</td>
+<td class="decimal">0.75</td>
+<td>1</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.38</td>
-<td class="decimal">1.58</td>
-<td class="decimal">1.72</td>
-<td class="decimal">82.04</td>
+<td class="decimal">1.54</td>
+<td class="decimal">1.87</td>
+<td class="decimal">2.04</td>
+<td class="decimal">91.00</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.63</td>
-<td class="decimal">2.22</td>
-<td class="decimal">2.60</td>
-<td class="decimal">57.69</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.38</td>
+<td class="decimal">2.84</td>
+<td class="decimal">61.68</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace HSL</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.93</td>
-<td class="decimal">2.79</td>
-<td class="decimal">3.52</td>
-<td class="decimal">17.73</td>
+<td class="decimal">2.82</td>
+<td class="decimal">3.66</td>
+<td class="decimal">18.53</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace HWB</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.70</td>
-<td class="decimal">3.34</td>
-<td class="decimal">25.10</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.76</td>
+<td class="decimal">3.54</td>
+<td class="decimal">26.64</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
-<td class="decimal">2.26</td>
-<td class="decimal">2.59</td>
-<td class="decimal">57.60</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.39</td>
+<td class="decimal">2.85</td>
+<td class="decimal">61.80</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.64</td>
-<td class="decimal">2.24</td>
-<td class="decimal">2.59</td>
-<td class="decimal">57.28</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.36</td>
+<td class="decimal">2.86</td>
+<td class="decimal">62.40</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.65</td>
-<td class="decimal">2.25</td>
-<td class="decimal">2.56</td>
-<td class="decimal">56.69</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.32</td>
+<td class="decimal">2.79</td>
+<td class="decimal">61.88</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YUV</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.65</td>
-<td class="decimal">2.26</td>
-<td class="decimal">2.60</td>
-<td class="decimal">57.40</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.31</td>
+<td class="decimal">2.81</td>
+<td class="decimal">61.88</td>
 <td>4</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.97</td>
-<td class="decimal">2.93</td>
-<td class="decimal">3.81</td>
-<td class="decimal">2.89</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.97</td>
+<td class="decimal">3.91</td>
+<td class="decimal">2.94</td>
 <td>4</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.98</td>
-<td class="decimal">2.95</td>
-<td class="decimal">3.75</td>
-<td class="decimal">3.10</td>
+<td class="decimal">2.96</td>
+<td class="decimal">3.89</td>
+<td class="decimal">3.21</td>
 <td>4</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.72</td>
-<td class="decimal">3.34</td>
-<td class="decimal">19.05</td>
+<td class="decimal">1.89</td>
+<td class="decimal">2.76</td>
+<td class="decimal">3.55</td>
+<td class="decimal">20.40</td>
 <td>4</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
-<td class="decimal">2.48</td>
-<td class="decimal">2.95</td>
-<td class="decimal">44.71</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.51</td>
+<td class="decimal">3.14</td>
+<td class="decimal">48.40</td>
 <td>4</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.04</td>
-<td class="decimal">1.28</td>
 <td class="decimal">1.24</td>
-<td class="decimal">84.43</td>
-<td>3</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.49</td>
+<td class="decimal">93.20</td>
+<td>4</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.88</td>
+<td class="decimal">0.89</td>
+<td class="decimal">0.89</td>
+<td class="decimal">0.66</td>
+<td>1</td>
 </tr>
 <tr><td>-despeckle</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.49</td>
-<td class="decimal">2.85</td>
-<td class="decimal">2.85</td>
-<td class="decimal">1.64</td>
-<td>3</td>
+<td class="decimal">1.48</td>
+<td class="decimal">2.81</td>
+<td class="decimal">2.81</td>
+<td class="decimal">1.63</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.03</td>
+<td class="decimal">8.73</td>
+<td>4</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">7.30</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.05</td>
+<td class="decimal">1.06</td>
+<td class="decimal">17.13</td>
+<td>4</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.05</td>
+<td class="decimal">13.57</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.08</td>
+<td class="decimal">1.09</td>
+<td class="decimal">22.86</td>
+<td>4</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.04</td>
+<td class="decimal">16.50</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.04</td>
+<td class="decimal">13.83</td>
+<td>4</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.04</td>
+<td class="decimal">12.97</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.06</td>
+<td class="decimal">1.06</td>
+<td class="decimal">27.94</td>
+<td>4</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.06</td>
+<td class="decimal">1.07</td>
+<td class="decimal">25.60</td>
+<td>4</td>
 </tr>
 <tr><td>-edge 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.91</td>
-<td class="decimal">2.81</td>
-<td class="decimal">3.60</td>
-<td class="decimal">9.94</td>
+<td class="decimal">1.93</td>
+<td class="decimal">2.85</td>
+<td class="decimal">3.72</td>
+<td class="decimal">10.18</td>
 <td>4</td>
 </tr>
 <tr><td>-emboss 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.80</td>
-<td class="decimal">2.49</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.48</td>
 <td class="decimal">3.06</td>
-<td class="decimal">7.50</td>
+<td class="decimal">7.58</td>
 <td>4</td>
 </tr>
 <tr><td>-enhance</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.91</td>
-<td class="decimal">3.87</td>
-<td class="decimal">2.58</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.97</td>
+<td class="decimal">3.93</td>
+<td class="decimal">2.64</td>
 <td>4</td>
 </tr>
 <tr><td>-equalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.26</td>
-<td class="decimal">1.39</td>
-<td class="decimal">1.50</td>
-<td class="decimal">31.34</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.44</td>
+<td class="decimal">30.48</td>
 <td>4</td>
 </tr>
 <tr><td>-flip</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.11</td>
-<td class="decimal">1.35</td>
-<td class="decimal">1.33</td>
-<td class="decimal">73.65</td>
-<td>3</td>
+<td class="decimal">1.15</td>
+<td class="decimal">1.31</td>
+<td class="decimal">1.40</td>
+<td class="decimal">81.40</td>
+<td>4</td>
 </tr>
 <tr><td>-flop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.33</td>
-<td class="decimal">1.59</td>
-<td class="decimal">1.57</td>
-<td class="decimal">72.06</td>
-<td>3</td>
+<td class="decimal">1.35</td>
+<td class="decimal">1.64</td>
+<td class="decimal">1.77</td>
+<td class="decimal">82.60</td>
+<td>4</td>
 </tr>
 <tr><td>-frame 15x15+3+3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.07</td>
-<td class="decimal">1.28</td>
-<td class="decimal">1.26</td>
-<td class="decimal">69.26</td>
-<td>3</td>
+<td class="decimal">1.14</td>
+<td class="decimal">1.34</td>
+<td class="decimal">1.38</td>
+<td class="decimal">80.00</td>
+<td>4</td>
 </tr>
 <tr><td>-gamma 1.6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.20</td>
-<td class="decimal">1.33</td>
-<td class="decimal">1.39</td>
-<td class="decimal">27.09</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.37</td>
+<td class="decimal">1.43</td>
+<td class="decimal">27.80</td>
 <td>4</td>
 </tr>
 <tr><td>-gaussian 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">2.81</td>
-<td class="decimal">3.62</td>
-<td class="decimal">10.28</td>
+<td class="decimal">1.93</td>
+<td class="decimal">2.85</td>
+<td class="decimal">3.72</td>
+<td class="decimal">10.54</td>
 <td>4</td>
 </tr>
 <tr><td>-gaussian 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">2.87</td>
-<td class="decimal">3.79</td>
-<td class="decimal">4.05</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.91</td>
+<td class="decimal">3.80</td>
+<td class="decimal">4.07</td>
 <td>4</td>
 </tr>
 <tr><td>-implode 0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.51</td>
-<td class="decimal">2.19</td>
-<td class="decimal">2.50</td>
-<td class="decimal">3.52</td>
+<td class="decimal">1.64</td>
+<td class="decimal">2.55</td>
+<td class="decimal">2.95</td>
+<td class="decimal">4.07</td>
 <td>4</td>
 </tr>
 <tr><td>-implode -1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.39</td>
-<td class="decimal">2.03</td>
-<td class="decimal">2.29</td>
-<td class="decimal">3.98</td>
+<td class="decimal">1.55</td>
+<td class="decimal">2.44</td>
+<td class="decimal">2.70</td>
+<td class="decimal">4.63</td>
 <td>4</td>
 </tr>
 <tr><td>-lat 10x10-5%</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.95</td>
-<td class="decimal">2.85</td>
-<td class="decimal">3.74</td>
-<td class="decimal">3.10</td>
+<td class="decimal">2.90</td>
+<td class="decimal">3.79</td>
+<td class="decimal">3.16</td>
 <td>4</td>
 </tr>
 <tr><td>-level 10%,1.2,90%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.35</td>
+<td class="decimal">1.39</td>
 <td class="decimal">1.67</td>
-<td class="decimal">1.69</td>
-<td class="decimal">50.30</td>
+<td class="decimal">1.84</td>
+<td class="decimal">55.80</td>
 <td>4</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.01</td>
+<td class="decimal">4.59</td>
+<td>3</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.85</td>
+<td class="decimal">0.85</td>
+<td class="decimal">0.85</td>
+<td class="decimal">0.82</td>
+<td>1</td>
 </tr>
 <tr><td>-median 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.88</td>
-<td class="decimal">1.22</td>
-<td class="decimal">1.34</td>
-<td class="decimal">0.52</td>
+<td class="decimal">0.89</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.57</td>
+<td class="decimal">0.59</td>
 <td>4</td>
 </tr>
 <tr><td>-median 2</td>
 <td class="decimal">1.00</td>
 <td class="decimal">0.96</td>
-<td class="decimal">1.30</td>
-<td class="decimal">1.53</td>
-<td class="decimal">0.23</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.74</td>
+<td class="decimal">0.25</td>
+<td>4</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.51</td>
+<td class="decimal">3.11</td>
+<td class="decimal">48.70</td>
 <td>4</td>
 </tr>
 <tr><td>-modulate 110/100/95</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.94</td>
-<td class="decimal">2.84</td>
-<td class="decimal">3.64</td>
-<td class="decimal">12.50</td>
+<td class="decimal">2.85</td>
+<td class="decimal">3.72</td>
+<td class="decimal">12.92</td>
 <td>4</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.90</td>
+<td class="decimal">0.90</td>
+<td class="decimal">0.90</td>
+<td class="decimal">0.59</td>
+<td>1</td>
 </tr>
 <tr><td>-motion-blur 0x3+30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.90</td>
-<td class="decimal">1.31</td>
-<td class="decimal">1.17</td>
-<td class="decimal">0.28</td>
+<td class="decimal">0.96</td>
+<td class="decimal">1.84</td>
+<td class="decimal">1.38</td>
+<td class="decimal">0.38</td>
 <td>3</td>
 </tr>
 <tr><td>-negate</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.17</td>
-<td class="decimal">1.34</td>
-<td class="decimal">1.59</td>
+<td class="decimal">1.25</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.60</td>
 <td class="decimal">100.60</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Uniform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.52</td>
-<td class="decimal">2.19</td>
-<td class="decimal">2.89</td>
+<td class="decimal">1.54</td>
+<td class="decimal">2.25</td>
+<td class="decimal">2.90</td>
 <td class="decimal">6.64</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Gaussian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.79</td>
-<td class="decimal">2.65</td>
-<td class="decimal">3.50</td>
-<td class="decimal">1.34</td>
+<td class="decimal">1.80</td>
+<td class="decimal">2.70</td>
+<td class="decimal">3.56</td>
+<td class="decimal">1.36</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.69</td>
-<td class="decimal">2.47</td>
-<td class="decimal">3.28</td>
-<td class="decimal">2.06</td>
+<td class="decimal">1.70</td>
+<td class="decimal">2.53</td>
+<td class="decimal">3.31</td>
+<td class="decimal">2.10</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Impulse</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.51</td>
-<td class="decimal">2.17</td>
-<td class="decimal">2.80</td>
-<td class="decimal">6.50</td>
+<td class="decimal">1.52</td>
+<td class="decimal">2.20</td>
+<td class="decimal">2.86</td>
+<td class="decimal">6.63</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Laplacian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.62</td>
-<td class="decimal">2.36</td>
-<td class="decimal">3.06</td>
-<td class="decimal">4.13</td>
+<td class="decimal">1.64</td>
+<td class="decimal">2.41</td>
+<td class="decimal">3.16</td>
+<td class="decimal">4.26</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Poisson</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.45</td>
-<td class="decimal">2.06</td>
-<td class="decimal">2.78</td>
-<td class="decimal">1.87</td>
+<td class="decimal">1.46</td>
+<td class="decimal">2.17</td>
+<td class="decimal">2.86</td>
+<td class="decimal">1.92</td>
 <td>4</td>
 </tr>
 <tr><td>-noise 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.90</td>
-<td class="decimal">1.17</td>
-<td class="decimal">1.36</td>
-<td class="decimal">0.53</td>
+<td class="decimal">0.89</td>
+<td class="decimal">1.31</td>
+<td class="decimal">1.56</td>
+<td class="decimal">0.60</td>
 <td>4</td>
 </tr>
 <tr><td>-noise 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.95</td>
-<td class="decimal">1.31</td>
-<td class="decimal">1.55</td>
-<td class="decimal">0.23</td>
+<td class="decimal">0.97</td>
+<td class="decimal">1.42</td>
+<td class="decimal">1.73</td>
+<td class="decimal">0.25</td>
 <td>4</td>
 </tr>
 <tr><td>-normalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.21</td>
-<td class="decimal">1.38</td>
-<td class="decimal">1.43</td>
-<td class="decimal">30.54</td>
+<td class="decimal">1.26</td>
+<td class="decimal">1.41</td>
+<td class="decimal">1.49</td>
+<td class="decimal">31.47</td>
 <td>4</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
+<td class="decimal">1.66</td>
+<td class="decimal">2.24</td>
+<td class="decimal">2.70</td>
+<td class="decimal">85.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.35</td>
+<td class="decimal">2.84</td>
+<td class="decimal">72.25</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.28</td>
+<td class="decimal">1.56</td>
+<td class="decimal">1.64</td>
+<td class="decimal">100.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.24</td>
+<td class="decimal">1.48</td>
+<td class="decimal">1.53</td>
+<td class="decimal">99.40</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.56</td>
+<td class="decimal">2.03</td>
 <td class="decimal">2.33</td>
-<td class="decimal">2.94</td>
-<td class="decimal">91.40</td>
+<td class="decimal">83.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.35</td>
+<td class="decimal">2.88</td>
+<td class="decimal">67.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.41</td>
+<td class="decimal">1.69</td>
+<td class="decimal">1.85</td>
+<td class="decimal">51.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.45</td>
+<td class="decimal">1.60</td>
+<td class="decimal">100.80</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.63</td>
+<td class="decimal">1.72</td>
+<td class="decimal">97.80</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.29</td>
+<td class="decimal">2.79</td>
+<td class="decimal">72.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.31</td>
+<td class="decimal">1.58</td>
+<td class="decimal">1.66</td>
+<td class="decimal">100.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.66</td>
+<td class="decimal">1.80</td>
+<td class="decimal">98.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.36</td>
+<td class="decimal">2.85</td>
+<td class="decimal">70.26</td>
+<td>4</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.30</td>
+<td class="decimal">1.57</td>
+<td class="decimal">1.65</td>
+<td class="decimal">99.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.34</td>
+<td class="decimal">1.64</td>
+<td class="decimal">1.81</td>
+<td class="decimal">98.80</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.39</td>
+<td class="decimal">1.74</td>
+<td class="decimal">1.97</td>
+<td class="decimal">111.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.81</td>
+<td class="decimal">2.02</td>
+<td class="decimal">109.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.63</td>
+<td class="decimal">1.60</td>
+<td class="decimal">97.20</td>
+<td>3</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.80</td>
+<td class="decimal">2.70</td>
+<td class="decimal">3.53</td>
+<td class="decimal">1.38</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">2.28</td>
+<td class="decimal">2.96</td>
+<td class="decimal">7.03</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">2.46</td>
+<td class="decimal">3.24</td>
+<td class="decimal">4.43</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.71</td>
+<td class="decimal">2.55</td>
+<td class="decimal">3.36</td>
+<td class="decimal">2.15</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.46</td>
+<td class="decimal">2.18</td>
+<td class="decimal">2.87</td>
+<td class="decimal">1.96</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.55</td>
+<td class="decimal">2.28</td>
+<td class="decimal">2.99</td>
+<td class="decimal">7.02</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.55</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.25</td>
+<td class="decimal">82.80</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.61</td>
+<td class="decimal">2.10</td>
+<td class="decimal">2.45</td>
+<td class="decimal">80.84</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">2.12</td>
+<td class="decimal">2.43</td>
+<td class="decimal">80.60</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.18</td>
+<td class="decimal">83.40</td>
 <td>4</td>
 </tr>
 <tr><td>-paint 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">2.86</td>
-<td class="decimal">3.79</td>
-<td class="decimal">5.18</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.95</td>
+<td class="decimal">3.88</td>
+<td class="decimal">5.71</td>
 <td>4</td>
 </tr>
 <tr><td>-raise 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.17</td>
-<td class="decimal">1.33</td>
-<td class="decimal">1.35</td>
-<td class="decimal">131.60</td>
+<td class="decimal">1.20</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.48</td>
+<td class="decimal">144.80</td>
+<td>4</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.78</td>
+<td class="decimal">2.29</td>
+<td class="decimal">22.27</td>
 <td>4</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.72</td>
-<td class="decimal">2.56</td>
-<td class="decimal">3.33</td>
-<td class="decimal">9.92</td>
+<td class="decimal">1.86</td>
+<td class="decimal">2.67</td>
+<td class="decimal">3.47</td>
+<td class="decimal">11.27</td>
 <td>4</td>
 </tr>
 <tr><td>-resize 10%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.83</td>
-<td class="decimal">2.63</td>
-<td class="decimal">3.26</td>
-<td class="decimal">23.35</td>
+<td class="decimal">1.88</td>
+<td class="decimal">2.68</td>
+<td class="decimal">3.41</td>
+<td class="decimal">24.10</td>
 <td>4</td>
 </tr>
 <tr><td>-resize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">2.78</td>
-<td class="decimal">3.53</td>
-<td class="decimal">16.21</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.79</td>
+<td class="decimal">3.56</td>
+<td class="decimal">17.26</td>
 <td>4</td>
 </tr>
 <tr><td>-resize 150%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.72</td>
-<td class="decimal">2.42</td>
-<td class="decimal">3.49</td>
-<td class="decimal">2.72</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.47</td>
+<td class="decimal">3.17</td>
+<td class="decimal">2.62</td>
 <td>4</td>
 </tr>
 <tr><td>-roll +20+10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.04</td>
-<td class="decimal">1.23</td>
-<td class="decimal">1.10</td>
-<td class="decimal">68.86</td>
-<td>3</td>
+<td class="decimal">1.12</td>
+<td class="decimal">1.30</td>
+<td class="decimal">1.36</td>
+<td class="decimal">75.80</td>
+<td>4</td>
 </tr>
 <tr><td>-rotate 0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.14</td>
-<td class="decimal">1.41</td>
-<td class="decimal">1.35</td>
-<td class="decimal">74.05</td>
-<td>3</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.33</td>
+<td class="decimal">1.59</td>
+<td class="decimal">88.20</td>
+<td>4</td>
 </tr>
 <tr><td>-rotate 45</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.68</td>
-<td class="decimal">2.28</td>
-<td class="decimal">2.82</td>
-<td class="decimal">0.95</td>
+<td class="decimal">2.38</td>
+<td class="decimal">2.98</td>
+<td class="decimal">1.09</td>
 <td>4</td>
 </tr>
 <tr><td>-rotate 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.97</td>
-<td class="decimal">1.00</td>
-<td class="decimal">0.99</td>
-<td class="decimal">24.80</td>
-<td>1</td>
+<td class="decimal">1.28</td>
+<td class="decimal">1.55</td>
+<td class="decimal">1.58</td>
+<td class="decimal">41.72</td>
+<td>4</td>
 </tr>
 <tr><td>-rotate 180</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.12</td>
-<td class="decimal">1.39</td>
-<td class="decimal">1.33</td>
-<td class="decimal">71.00</td>
-<td>3</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.73</td>
+<td class="decimal">88.80</td>
+<td>4</td>
 </tr>
 <tr><td>-rotate 270</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.99</td>
-<td class="decimal">0.99</td>
+<td class="decimal">1.25</td>
+<td class="decimal">1.53</td>
+<td class="decimal">1.55</td>
+<td class="decimal">41.40</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 5%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">21.76</td>
+<td class="decimal">1.21</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.44</td>
+<td class="decimal">167.20</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.12</td>
+<td class="decimal">1.12</td>
+<td class="decimal">73.60</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.04</td>
+<td class="decimal">17.66</td>
+<td>4</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.02</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.06</td>
+<td class="decimal">1.06</td>
+<td class="decimal">24.06</td>
+<td>4</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.03</td>
+<td class="decimal">11.53</td>
+<td>4</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.12</td>
 <td>4</td>
 </tr>
 <tr><td>-shade 30x30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
+<td class="decimal">1.91</td>
 <td class="decimal">2.76</td>
-<td class="decimal">3.62</td>
-<td class="decimal">15.14</td>
+<td class="decimal">3.57</td>
+<td class="decimal">14.74</td>
 <td>4</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">2.81</td>
-<td class="decimal">3.60</td>
-<td class="decimal">10.18</td>
+<td class="decimal">1.94</td>
+<td class="decimal">2.86</td>
+<td class="decimal">3.71</td>
+<td class="decimal">10.43</td>
 <td>4</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">2.87</td>
-<td class="decimal">3.64</td>
-<td class="decimal">3.90</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.91</td>
+<td class="decimal">3.82</td>
+<td class="decimal">4.07</td>
 <td>4</td>
 </tr>
 <tr><td>-shave 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.13</td>
 <td class="decimal">1.37</td>
-<td class="decimal">1.28</td>
-<td class="decimal">77.20</td>
-<td>3</td>
+<td class="decimal">1.60</td>
+<td class="decimal">1.65</td>
+<td class="decimal">82.00</td>
+<td>4</td>
 </tr>
 <tr><td>-shear 45x45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.59</td>
-<td class="decimal">2.20</td>
-<td class="decimal">2.73</td>
-<td class="decimal">1.19</td>
+<td class="decimal">1.66</td>
+<td class="decimal">2.28</td>
+<td class="decimal">2.94</td>
+<td class="decimal">1.38</td>
 <td>4</td>
 </tr>
 <tr><td>-solarize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.27</td>
-<td class="decimal">1.58</td>
-<td class="decimal">1.63</td>
-<td class="decimal">86.83</td>
+<td class="decimal">1.37</td>
+<td class="decimal">1.71</td>
+<td class="decimal">1.81</td>
+<td class="decimal">96.20</td>
 <td>4</td>
 </tr>
 <tr><td>-spread 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.55</td>
-<td class="decimal">2.15</td>
-<td class="decimal">2.35</td>
-<td class="decimal">64.00</td>
+<td class="decimal">1.62</td>
+<td class="decimal">2.16</td>
+<td class="decimal">2.53</td>
+<td class="decimal">68.86</td>
 <td>4</td>
 </tr>
 <tr><td>-spread 3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.48</td>
-<td class="decimal">2.04</td>
-<td class="decimal">2.23</td>
-<td class="decimal">55.20</td>
+<td class="decimal">1.57</td>
+<td class="decimal">2.14</td>
+<td class="decimal">2.50</td>
+<td class="decimal">59.68</td>
 <td>4</td>
 </tr>
 <tr><td>-swirl 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.51</td>
-<td class="decimal">2.18</td>
-<td class="decimal">2.29</td>
-<td class="decimal">3.98</td>
+<td class="decimal">1.55</td>
+<td class="decimal">2.46</td>
+<td class="decimal">2.72</td>
+<td class="decimal">4.70</td>
 <td>4</td>
 </tr>
 <tr><td>-threshold 35%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.58</td>
-<td class="decimal">2.07</td>
-<td class="decimal">2.31</td>
-<td class="decimal">72.60</td>
+<td class="decimal">1.61</td>
+<td class="decimal">2.12</td>
+<td class="decimal">2.48</td>
+<td class="decimal">78.80</td>
 <td>4</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">2.20</td>
-<td class="decimal">2.57</td>
-<td class="decimal">69.00</td>
+<td class="decimal">1.70</td>
+<td class="decimal">2.32</td>
+<td class="decimal">2.79</td>
+<td class="decimal">73.40</td>
 <td>4</td>
 </tr>
 <tr><td>-trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.81</td>
-<td class="decimal">2.60</td>
-<td class="decimal">3.18</td>
-<td class="decimal">38.12</td>
+<td class="decimal">1.87</td>
+<td class="decimal">2.68</td>
+<td class="decimal">3.38</td>
+<td class="decimal">40.32</td>
+<td>4</td>
+</tr>
+<tr><td>-fuzz 5% -trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.75</td>
+<td class="decimal">3.53</td>
+<td class="decimal">28.49</td>
 <td>4</td>
 </tr>
 <tr><td>-unsharp 0x0.5+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.45</td>
-<td class="decimal">1.78</td>
-<td class="decimal">2.00</td>
-<td class="decimal">7.53</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.36</td>
+<td class="decimal">2.73</td>
+<td class="decimal">10.63</td>
 <td>4</td>
 </tr>
 <tr><td>-unsharp 0x1.0+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.59</td>
-<td class="decimal">2.03</td>
-<td class="decimal">2.36</td>
-<td class="decimal">6.20</td>
+<td class="decimal">1.78</td>
+<td class="decimal">2.54</td>
+<td class="decimal">3.06</td>
+<td class="decimal">8.25</td>
 <td>4</td>
 </tr>
 <tr><td>-wave 25x150</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
-<td class="decimal">1.73</td>
-<td class="decimal">1.97</td>
-<td class="decimal">3.86</td>
-<td>4</td>
+<td class="decimal">1.27</td>
+<td class="decimal">2.00</td>
+<td class="decimal">1.95</td>
+<td class="decimal">3.93</td>
+<td>3</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.29</td>
-<td class="decimal">1.60</td>
-<td class="decimal">1.81</td>
-<td class="decimal">102.60</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.95</td>
+<td class="decimal">110.60</td>
 <td>4</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id4" id="sun-solaris-ultrasparc-iii" name="sun-solaris-ultrasparc-iii">Sun Solaris / UltraSPARC III</a></h2>
+<p>The following table shows the performance boostas threads are added on
+2 CPU Sun SPARC 1.2GHz workstation running Sun Solaris 10.  This
+system obtains quite substantial benefit for most key algorithms:</p>
+<table border="1" class="docutils">
+<caption>Performance Boost On Two CPU SPARC System</caption>
+<colgroup>
+<col width="77%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="4%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">iter/s</th>
+<th class="head">thds</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>-noop</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.29</td>
+<td class="decimal">68.00</td>
+<td>2</td>
+</tr>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.91</td>
+<td class="decimal">1.88</td>
+<td>2</td>
+</tr>
+<tr><td>-black-threshold 20%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">16.04</td>
+<td>2</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.76</td>
+<td class="decimal">2.08</td>
+<td>2</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.78</td>
+<td class="decimal">1.54</td>
+<td>2</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">28.80</td>
+<td>2</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.62</td>
+<td class="decimal">21.76</td>
+<td>2</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.85</td>
+<td class="decimal">0.60</td>
+<td>2</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.39</td>
+<td class="decimal">31.47</td>
+<td>2</td>
+</tr>
+<tr><td>-colors 16</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.80</td>
+<td class="decimal">0.23</td>
+<td>1</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">16.37</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.92</td>
+<td class="decimal">7.00</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.93</td>
+<td class="decimal">2.81</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.91</td>
+<td class="decimal">3.20</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">7.00</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">6.99</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.78</td>
+<td class="decimal">7.00</td>
+<td>2</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.85</td>
+<td class="decimal">7.00</td>
+<td>2</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.96</td>
+<td class="decimal">0.46</td>
+<td>2</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.97</td>
+<td class="decimal">0.48</td>
+<td>2</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.49</td>
+<td>2</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.88</td>
+<td class="decimal">6.85</td>
+<td>2</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">34.40</td>
+<td>2</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.84</td>
+<td class="decimal">0.20</td>
+<td>1</td>
+</tr>
+<tr><td>-despeckle</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.56</td>
+<td class="decimal">0.17</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td>2</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.30</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">3.32</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">2.41</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">4.33</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">2.92</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">2.64</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">2.42</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">5.74</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">5.10</td>
+<td>2</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.99</td>
+<td class="decimal">1.44</td>
+<td>2</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.81</td>
+<td class="decimal">1.08</td>
+<td>2</td>
+</tr>
+<tr><td>-enhance</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.96</td>
+<td class="decimal">0.46</td>
+<td>2</td>
+</tr>
+<tr><td>-equalize</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.25</td>
+<td class="decimal">5.91</td>
+<td>2</td>
+</tr>
+<tr><td>-flip</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">30.08</td>
+<td>1</td>
+</tr>
+<tr><td>-flop</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">15.00</td>
+<td>2</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">27.94</td>
+<td>2</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.28</td>
+<td class="decimal">7.14</td>
+<td>2</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.99</td>
+<td class="decimal">1.34</td>
+<td>2</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">0.52</td>
+<td>2</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.84</td>
+<td class="decimal">0.90</td>
+<td>2</td>
+</tr>
+<tr><td>-implode -1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">1.13</td>
+<td>2</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.15</td>
+<td class="decimal">0.50</td>
+<td>2</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.43</td>
+<td class="decimal">12.20</td>
+<td>2</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.97</td>
+<td class="decimal">1.21</td>
+<td>1</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.80</td>
+<td class="decimal">0.25</td>
+<td>1</td>
+</tr>
+<tr><td>-median 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.50</td>
+<td class="decimal">0.26</td>
+<td>2</td>
+</tr>
+<tr><td>-median 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
+<td class="decimal">0.11</td>
+<td>2</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.86</td>
+<td class="decimal">9.45</td>
+<td>2</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.95</td>
+<td class="decimal">1.52</td>
+<td>2</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.86</td>
+<td class="decimal">0.18</td>
+<td>1</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.88</td>
+<td class="decimal">0.14</td>
+<td>2</td>
+</tr>
+<tr><td>-negate</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.58</td>
+<td class="decimal">21.03</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.58</td>
+<td class="decimal">1.46</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.84</td>
+<td class="decimal">0.31</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.76</td>
+<td class="decimal">0.47</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">1.41</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.77</td>
+<td class="decimal">0.81</td>
+<td>2</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">0.42</td>
+<td>2</td>
+</tr>
+<tr><td>-noise 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">0.25</td>
+<td>2</td>
+</tr>
+<tr><td>-noise 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">0.11</td>
+<td>2</td>
+</tr>
+<tr><td>-normalize</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.21</td>
+<td class="decimal">6.63</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.93</td>
+<td class="decimal">8.86</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.89</td>
+<td class="decimal">6.89</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">21.27</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.36</td>
+<td class="decimal">23.46</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.71</td>
+<td class="decimal">18.69</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.94</td>
+<td class="decimal">5.43</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.41</td>
+<td class="decimal">12.82</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">21.07</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.49</td>
+<td class="decimal">21.27</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.89</td>
+<td class="decimal">6.86</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.49</td>
+<td class="decimal">21.23</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.50</td>
+<td class="decimal">21.23</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.91</td>
+<td class="decimal">7.17</td>
+<td>2</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.55</td>
+<td class="decimal">22.27</td>
+<td>2</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.74</td>
+<td class="decimal">16.30</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">16.57</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.70</td>
+<td class="decimal">16.44</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">21.27</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.81</td>
+<td class="decimal">0.31</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.62</td>
+<td class="decimal">1.46</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.78</td>
+<td class="decimal">0.82</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.76</td>
+<td class="decimal">0.47</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">0.43</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.49</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.61</td>
+<td class="decimal">13.46</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">12.25</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">12.35</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.97</td>
+<td class="decimal">0.83</td>
+<td>2</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.19</td>
+<td class="decimal">51.40</td>
+<td>2</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.49</td>
+<td class="decimal">5.23</td>
+<td>2</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.93</td>
+<td class="decimal">1.72</td>
+<td>2</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">3.52</td>
+<td>2</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.87</td>
+<td class="decimal">2.31</td>
+<td>2</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.75</td>
+<td class="decimal">0.64</td>
+<td>2</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">27.80</td>
+<td>1</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">29.28</td>
+<td>2</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">0.34</td>
+<td>2</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">11.66</td>
+<td>2</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.37</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.40</td>
+<td class="decimal">11.86</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.22</td>
+<td class="decimal">63.47</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">24.15</td>
+<td>1</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.09</td>
+<td class="decimal">4.71</td>
+<td>2</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.00</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">4.95</td>
+<td>2</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">3.47</td>
+<td>2</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.98</td>
+<td class="decimal">1.19</td>
+<td>1</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.27</td>
+<td>2</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.96</td>
+<td class="decimal">1.35</td>
+<td>2</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.97</td>
+<td class="decimal">0.52</td>
+<td>2</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">29.88</td>
+<td>2</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.34</td>
+<td class="decimal">0.64</td>
+<td>2</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">20.52</td>
+<td>2</td>
+</tr>
+<tr><td>-spread 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.86</td>
+<td class="decimal">12.13</td>
+<td>2</td>
+</tr>
+<tr><td>-spread 3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">10.67</td>
+<td>2</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">1.12</td>
+<td>2</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.77</td>
+<td class="decimal">12.62</td>
+<td>2</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.95</td>
+<td class="decimal">8.60</td>
+<td>2</td>
+</tr>
+<tr><td>-trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">4.18</td>
+<td>2</td>
+</tr>
+<tr><td>-fuzz 5% -trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.94</td>
+<td class="decimal">3.43</td>
+<td>2</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.81</td>
+<td class="decimal">1.59</td>
+<td>2</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.89</td>
+<td class="decimal">1.28</td>
+<td>2</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.08</td>
+<td>2</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.69</td>
+<td class="decimal">16.53</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id5" id="ibm-aix-ibm-power5" name="ibm-aix-ibm-power5">IBM AIX / IBM Power5+</a></h2>
 <p>The following table shows the boost on a four core IBM P5+ server
-system running AIX.  The maximum per-core boost has dropped since we
-previously benchmarked on this system, but the overall performance is
-usually better (perhaps a sign of improved CPU efficiency). Note that
-I don't have exclusive use to this system, and there were other users
-logged in, so it is possible that performance was reduced by other
-users:</p>
+system (IBM System p5 505 Express with (2) 2.1Ghz CPUs) running AIX:</p>
 <table border="1" class="docutils">
 <caption>Performance Boost On Four Core IBM P5+ System</caption>
 <colgroup>
-<col width="52%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="11%" />
-<col width="6%" />
+<col width="69%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="4%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Operation</th>
@@ -818,666 +2080,1075 @@ users:</p>
 <tbody valign="top">
 <tr><td>-noop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.76</td>
-<td class="decimal">1.57</td>
-<td class="decimal">1.89</td>
-<td class="decimal">340.80</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.65</td>
+<td class="decimal">276.20</td>
 <td>4</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.99</td>
-<td class="decimal">2.17</td>
-<td class="decimal">2.93</td>
-<td class="decimal">4.21</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.55</td>
+<td class="decimal">3.06</td>
+<td class="decimal">7.27</td>
 <td>4</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">1.73</td>
-<td class="decimal">2.17</td>
-<td class="decimal">117.20</td>
+<td class="decimal">1.83</td>
+<td class="decimal">2.06</td>
+<td class="decimal">2.23</td>
+<td class="decimal">103.40</td>
 <td>4</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.83</td>
-<td class="decimal">2.05</td>
-<td class="decimal">2.54</td>
-<td class="decimal">3.65</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.71</td>
+<td class="decimal">3.46</td>
+<td class="decimal">2.77</td>
 <td>4</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.76</td>
-<td class="decimal">2.12</td>
-<td class="decimal">2.66</td>
-<td class="decimal">3.23</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.83</td>
+<td class="decimal">3.66</td>
+<td class="decimal">1.92</td>
 <td>4</td>
 </tr>
 <tr><td>-border 6x6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.68</td>
-<td class="decimal">1.50</td>
-<td class="decimal">1.77</td>
-<td class="decimal">154.80</td>
+<td class="decimal">1.62</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.67</td>
+<td class="decimal">141.80</td>
+<td>3</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.76</td>
+<td class="decimal">1.82</td>
+<td class="decimal">161.00</td>
 <td>4</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.78</td>
-<td class="decimal">2.13</td>
-<td class="decimal">2.71</td>
-<td class="decimal">1.39</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.79</td>
+<td class="decimal">3.57</td>
+<td class="decimal">0.87</td>
 <td>4</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.54</td>
-<td class="decimal">1.64</td>
-<td class="decimal">2.03</td>
-<td class="decimal">226.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">1.82</td>
+<td class="decimal">1.85</td>
+<td class="decimal">193.20</td>
 <td>4</td>
 </tr>
 <tr><td>-colors 16</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.02</td>
-<td class="decimal">1.03</td>
-<td class="decimal">1.03</td>
-<td class="decimal">0.24</td>
-<td>3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">0.35</td>
+<td>4</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
 <td class="decimal">1.66</td>
-<td class="decimal">1.47</td>
-<td class="decimal">1.64</td>
-<td class="decimal">66.60</td>
-<td>2</td>
+<td class="decimal">1.61</td>
+<td class="decimal">69.40</td>
+<td>3</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">2.27</td>
-<td class="decimal">2.83</td>
-<td class="decimal">16.44</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.45</td>
+<td class="decimal">2.96</td>
+<td class="decimal">17.13</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace HSL</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.98</td>
-<td class="decimal">2.13</td>
-<td class="decimal">2.86</td>
-<td class="decimal">8.40</td>
+<td class="decimal">2.48</td>
+<td class="decimal">2.96</td>
+<td class="decimal">8.13</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace HWB</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.40</td>
-<td class="decimal">3.08</td>
-<td class="decimal">8.63</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.55</td>
+<td class="decimal">3.13</td>
+<td class="decimal">8.55</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.16</td>
-<td class="decimal">2.83</td>
-<td class="decimal">16.40</td>
+<td class="decimal">1.88</td>
+<td class="decimal">2.44</td>
+<td class="decimal">2.94</td>
+<td class="decimal">17.17</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.89</td>
-<td class="decimal">2.27</td>
-<td class="decimal">2.83</td>
-<td class="decimal">16.44</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.45</td>
+<td class="decimal">2.94</td>
+<td class="decimal">17.13</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.27</td>
-<td class="decimal">2.84</td>
-<td class="decimal">16.47</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.43</td>
+<td class="decimal">2.94</td>
+<td class="decimal">17.13</td>
 <td>4</td>
 </tr>
 <tr><td>-colorspace YUV</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">2.22</td>
-<td class="decimal">2.85</td>
-<td class="decimal">16.53</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.47</td>
+<td class="decimal">2.94</td>
+<td class="decimal">17.10</td>
 <td>4</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.18</td>
-<td class="decimal">2.94</td>
-<td class="decimal">1.91</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.45</td>
+<td class="decimal">2.87</td>
+<td class="decimal">1.95</td>
 <td>4</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">2.45</td>
+<td class="decimal">2.86</td>
 <td class="decimal">2.00</td>
-<td class="decimal">2.23</td>
-<td class="decimal">2.95</td>
-<td class="decimal">1.94</td>
 <td>4</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.85</td>
-<td class="decimal">2.16</td>
-<td class="decimal">2.79</td>
-<td class="decimal">5.21</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.80</td>
+<td class="decimal">3.59</td>
+<td class="decimal">3.65</td>
 <td>4</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.97</td>
-<td class="decimal">2.73</td>
-<td class="decimal">3.60</td>
-<td class="decimal">15.08</td>
+<td class="decimal">1.94</td>
+<td class="decimal">2.77</td>
+<td class="decimal">3.55</td>
+<td class="decimal">11.75</td>
 <td>4</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.74</td>
-<td class="decimal">1.56</td>
-<td class="decimal">1.89</td>
-<td class="decimal">189.60</td>
+<td class="decimal">1.60</td>
+<td class="decimal">1.64</td>
+<td class="decimal">1.69</td>
+<td class="decimal">167.20</td>
 <td>4</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.03</td>
+<td class="decimal">0.31</td>
+<td>3</td>
 </tr>
 <tr><td>-despeckle</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.48</td>
-<td class="decimal">2.64</td>
-<td class="decimal">2.67</td>
-<td class="decimal">0.29</td>
+<td class="decimal">1.49</td>
+<td class="decimal">2.78</td>
+<td class="decimal">2.78</td>
+<td class="decimal">0.27</td>
+<td>3</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">4.44</td>
+<td>2</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.84</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.02</td>
+<td class="decimal">8.05</td>
 <td>4</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">4.56</td>
+<td>3</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">9.29</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">4.99</td>
+<td>3</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.93</td>
+<td>3</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.09</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.03</td>
+<td class="decimal">15.80</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.01</td>
+<td class="decimal">12.15</td>
+<td>2</td>
 </tr>
 <tr><td>-edge 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.00</td>
-<td class="decimal">2.16</td>
-<td class="decimal">2.82</td>
-<td class="decimal">5.86</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.78</td>
+<td class="decimal">3.58</td>
+<td class="decimal">3.84</td>
 <td>4</td>
 </tr>
 <tr><td>-emboss 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.93</td>
-<td class="decimal">2.08</td>
-<td class="decimal">2.70</td>
-<td class="decimal">2.59</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.72</td>
+<td class="decimal">3.44</td>
+<td class="decimal">1.62</td>
 <td>4</td>
 </tr>
 <tr><td>-enhance</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.99</td>
-<td class="decimal">2.35</td>
-<td class="decimal">3.12</td>
-<td class="decimal">1.14</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.76</td>
+<td class="decimal">3.51</td>
+<td class="decimal">0.90</td>
 <td>4</td>
 </tr>
 <tr><td>-equalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.20</td>
-<td class="decimal">1.09</td>
-<td class="decimal">1.15</td>
-<td class="decimal">34.20</td>
-<td>2</td>
+<td class="decimal">1.19</td>
+<td class="decimal">1.24</td>
+<td class="decimal">1.17</td>
+<td class="decimal">35.26</td>
+<td>3</td>
 </tr>
 <tr><td>-flip</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.70</td>
-<td class="decimal">1.52</td>
-<td class="decimal">1.80</td>
-<td class="decimal">157.80</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.66</td>
+<td class="decimal">1.71</td>
+<td class="decimal">145.40</td>
 <td>4</td>
 </tr>
 <tr><td>-flop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.84</td>
-<td class="decimal">1.63</td>
-<td class="decimal">2.05</td>
-<td class="decimal">141.60</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.78</td>
+<td class="decimal">1.82</td>
+<td class="decimal">135.00</td>
 <td>4</td>
 </tr>
 <tr><td>-frame 15x15+3+3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.69</td>
-<td class="decimal">1.50</td>
-<td class="decimal">1.79</td>
-<td class="decimal">152.80</td>
+<td class="decimal">1.45</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.71</td>
+<td class="decimal">141.40</td>
 <td>4</td>
 </tr>
 <tr><td>-gamma 1.6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.44</td>
-<td class="decimal">1.20</td>
-<td class="decimal">1.35</td>
-<td class="decimal">71.40</td>
+<td class="decimal">1.39</td>
+<td class="decimal">1.39</td>
+<td class="decimal">1.34</td>
+<td class="decimal">70.00</td>
 <td>2</td>
 </tr>
 <tr><td>-gaussian 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.89</td>
-<td class="decimal">2.20</td>
-<td class="decimal">2.91</td>
-<td class="decimal">2.87</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.83</td>
+<td class="decimal">3.66</td>
+<td class="decimal">1.76</td>
 <td>4</td>
 </tr>
 <tr><td>-gaussian 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.99</td>
-<td class="decimal">2.17</td>
-<td class="decimal">2.71</td>
-<td class="decimal">1.22</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.87</td>
+<td class="decimal">3.74</td>
+<td class="decimal">0.65</td>
 <td>4</td>
 </tr>
 <tr><td>-implode 0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.85</td>
-<td class="decimal">2.05</td>
-<td class="decimal">2.71</td>
-<td class="decimal">2.80</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.53</td>
+<td class="decimal">3.06</td>
+<td class="decimal">3.03</td>
 <td>4</td>
 </tr>
 <tr><td>-implode -1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.10</td>
-<td class="decimal">2.72</td>
-<td class="decimal">2.81</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.54</td>
+<td class="decimal">3.04</td>
+<td class="decimal">3.02</td>
 <td>4</td>
 </tr>
 <tr><td>-lat 10x10-5%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.00</td>
-<td class="decimal">2.38</td>
-<td class="decimal">3.15</td>
-<td class="decimal">1.07</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.41</td>
+<td class="decimal">2.82</td>
+<td class="decimal">1.17</td>
 <td>4</td>
 </tr>
 <tr><td>-level 10%,1.2,90%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.43</td>
-<td class="decimal">1.21</td>
-<td class="decimal">1.33</td>
-<td class="decimal">71.46</td>
+<td class="decimal">1.40</td>
+<td class="decimal">1.39</td>
+<td class="decimal">1.36</td>
+<td class="decimal">69.86</td>
 <td>2</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">0.71</td>
+<td>2</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.38</td>
+<td>1</td>
 </tr>
 <tr><td>-median 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.85</td>
-<td class="decimal">2.09</td>
-<td class="decimal">2.30</td>
-<td class="decimal">0.68</td>
+<td class="decimal">1.86</td>
+<td class="decimal">2.29</td>
+<td class="decimal">2.71</td>
+<td class="decimal">0.78</td>
 <td>4</td>
 </tr>
 <tr><td>-median 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.17</td>
-<td class="decimal">2.45</td>
-<td class="decimal">0.27</td>
+<td class="decimal">1.58</td>
+<td class="decimal">2.38</td>
+<td class="decimal">2.66</td>
+<td class="decimal">0.29</td>
+<td>4</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.83</td>
+<td class="decimal">3.64</td>
+<td class="decimal">9.70</td>
 <td>4</td>
 </tr>
 <tr><td>-modulate 110/100/95</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.99</td>
-<td class="decimal">2.18</td>
-<td class="decimal">2.87</td>
-<td class="decimal">6.20</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.39</td>
+<td class="decimal">2.82</td>
+<td class="decimal">6.46</td>
 <td>4</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.04</td>
+<td class="decimal">0.29</td>
+<td>3</td>
 </tr>
 <tr><td>-motion-blur 0x3+30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.33</td>
-<td class="decimal">0.27</td>
+<td class="decimal">1.87</td>
+<td class="decimal">2.21</td>
+<td class="decimal">2.56</td>
+<td class="decimal">0.30</td>
 <td>4</td>
 </tr>
 <tr><td>-negate</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.86</td>
-<td class="decimal">1.64</td>
-<td class="decimal">2.06</td>
-<td class="decimal">174.40</td>
+<td class="decimal">1.74</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.83</td>
+<td class="decimal">161.00</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Uniform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.41</td>
-<td class="decimal">3.11</td>
-<td class="decimal">4.09</td>
+<td class="decimal">1.95</td>
+<td class="decimal">2.64</td>
+<td class="decimal">3.34</td>
+<td class="decimal">4.85</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Gaussian</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.52</td>
+<td class="decimal">3.07</td>
 <td class="decimal">1.94</td>
-<td class="decimal">2.32</td>
-<td class="decimal">3.01</td>
-<td class="decimal">1.35</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.97</td>
-<td class="decimal">2.47</td>
-<td class="decimal">3.19</td>
-<td class="decimal">1.66</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.70</td>
+<td class="decimal">3.39</td>
+<td class="decimal">2.10</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Impulse</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">2.24</td>
-<td class="decimal">2.89</td>
-<td class="decimal">3.93</td>
+<td class="decimal">1.70</td>
+<td class="decimal">2.60</td>
+<td class="decimal">3.21</td>
+<td class="decimal">4.84</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Laplacian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.35</td>
-<td class="decimal">3.07</td>
-<td class="decimal">2.84</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.74</td>
+<td class="decimal">3.51</td>
+<td class="decimal">3.30</td>
 <td>4</td>
 </tr>
 <tr><td>+noise Poisson</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.40</td>
-<td class="decimal">3.10</td>
-<td class="decimal">1.13</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.67</td>
+<td class="decimal">3.36</td>
+<td class="decimal">1.93</td>
 <td>4</td>
 </tr>
 <tr><td>-noise 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.86</td>
-<td class="decimal">2.06</td>
-<td class="decimal">2.42</td>
-<td class="decimal">0.70</td>
+<td class="decimal">1.88</td>
+<td class="decimal">2.18</td>
+<td class="decimal">2.65</td>
+<td class="decimal">0.75</td>
 <td>4</td>
 </tr>
 <tr><td>-noise 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">2.20</td>
-<td class="decimal">2.51</td>
-<td class="decimal">0.28</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.25</td>
+<td class="decimal">2.67</td>
+<td class="decimal">0.29</td>
 <td>4</td>
 </tr>
 <tr><td>-normalize</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.21</td>
-<td class="decimal">1.08</td>
-<td class="decimal">1.16</td>
-<td class="decimal">34.33</td>
-<td>2</td>
+<td class="decimal">1.25</td>
+<td class="decimal">1.18</td>
+<td class="decimal">36.53</td>
+<td>3</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.42</td>
+<td class="decimal">2.88</td>
+<td class="decimal">38.92</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.75</td>
+<td class="decimal">3.55</td>
+<td class="decimal">15.57</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.76</td>
+<td class="decimal">1.81</td>
+<td class="decimal">160.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.77</td>
+<td class="decimal">1.82</td>
+<td class="decimal">168.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.74</td>
+<td class="decimal">1.81</td>
+<td class="decimal">1.85</td>
+<td class="decimal">132.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.78</td>
+<td class="decimal">3.58</td>
+<td class="decimal">15.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
 <td class="decimal">1.60</td>
-<td class="decimal">2.21</td>
-<td class="decimal">2.92</td>
-<td class="decimal">25.00</td>
+<td class="decimal">1.62</td>
+<td class="decimal">1.67</td>
+<td class="decimal">103.80</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.70</td>
+<td class="decimal">1.74</td>
+<td class="decimal">1.78</td>
+<td class="decimal">158.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.81</td>
+<td class="decimal">160.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.78</td>
+<td class="decimal">3.58</td>
+<td class="decimal">15.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.18</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.75</td>
+<td class="decimal">155.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.78</td>
+<td class="decimal">158.40</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.74</td>
+<td class="decimal">3.49</td>
+<td class="decimal">16.73</td>
+<td>4</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.06</td>
+<td class="decimal">163.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.82</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.00</td>
+<td class="decimal">111.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.78</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.00</td>
+<td class="decimal">117.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.31</td>
+<td class="decimal">2.03</td>
+<td class="decimal">2.20</td>
+<td class="decimal">117.00</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.16</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.79</td>
+<td class="decimal">159.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.55</td>
+<td class="decimal">3.11</td>
+<td class="decimal">1.97</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.65</td>
+<td class="decimal">3.29</td>
+<td class="decimal">5.04</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.79</td>
+<td class="decimal">3.56</td>
+<td class="decimal">3.38</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.95</td>
+<td class="decimal">2.72</td>
+<td class="decimal">3.42</td>
+<td class="decimal">2.13</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.69</td>
+<td class="decimal">3.39</td>
+<td class="decimal">1.97</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.92</td>
+<td class="decimal">3.04</td>
+<td class="decimal">3.89</td>
+<td class="decimal">5.03</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.68</td>
+<td class="decimal">53.89</td>
 <td>4</td>
 </tr>
 <tr><td>-ordered-dither all 3x3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">1.36</td>
+<td class="decimal">1.60</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.79</td>
+<td class="decimal">48.10</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.70</td>
+<td class="decimal">1.78</td>
+<td class="decimal">1.79</td>
+<td class="decimal">48.20</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.48</td>
 <td class="decimal">1.71</td>
-<td class="decimal">25.40</td>
-<td>2</td>
+<td class="decimal">1.69</td>
+<td class="decimal">54.60</td>
+<td>3</td>
 </tr>
 <tr><td>-paint 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.00</td>
-<td class="decimal">1.79</td>
-<td class="decimal">2.40</td>
-<td class="decimal">2.80</td>
+<td class="decimal">2.03</td>
+<td class="decimal">2.24</td>
+<td class="decimal">2.27</td>
+<td class="decimal">5.94</td>
 <td>4</td>
 </tr>
 <tr><td>-raise 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">1.81</td>
-<td class="decimal">2.08</td>
-<td class="decimal">175.40</td>
+<td class="decimal">1.60</td>
+<td class="decimal">2.03</td>
+<td class="decimal">2.20</td>
+<td class="decimal">156.40</td>
+<td>4</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">2.33</td>
+<td class="decimal">2.78</td>
+<td class="decimal">19.60</td>
 <td>4</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.15</td>
-<td class="decimal">2.82</td>
-<td class="decimal">4.52</td>
-<td>4</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.14</td>
+<td class="decimal">1.43</td>
+<td class="decimal">2.66</td>
+<td>3</td>
 </tr>
 <tr><td>-resize 10%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.48</td>
-<td class="decimal">12.28</td>
+<td class="decimal">1.93</td>
+<td class="decimal">2.55</td>
+<td class="decimal">3.34</td>
+<td class="decimal">9.36</td>
 <td>4</td>
 </tr>
 <tr><td>-resize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.96</td>
-<td class="decimal">2.18</td>
-<td class="decimal">2.73</td>
-<td class="decimal">6.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.56</td>
+<td class="decimal">3.35</td>
+<td class="decimal">5.49</td>
 <td>4</td>
 </tr>
 <tr><td>-resize 150%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
 <td class="decimal">1.93</td>
-<td class="decimal">2.44</td>
-<td class="decimal">1.46</td>
+<td class="decimal">2.25</td>
+<td class="decimal">2.84</td>
+<td class="decimal">1.39</td>
 <td>4</td>
 </tr>
 <tr><td>-roll +20+10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.73</td>
-<td class="decimal">1.55</td>
-<td class="decimal">1.82</td>
-<td class="decimal">138.40</td>
+<td class="decimal">1.58</td>
+<td class="decimal">1.66</td>
+<td class="decimal">1.74</td>
+<td class="decimal">132.80</td>
 <td>4</td>
 </tr>
 <tr><td>-rotate 0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">1.90</td>
-<td class="decimal">2.36</td>
-<td class="decimal">140.60</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.56</td>
+<td class="decimal">1.67</td>
+<td class="decimal">143.60</td>
 <td>4</td>
 </tr>
 <tr><td>-rotate 45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.56</td>
-<td class="decimal">1.43</td>
-<td class="decimal">1.56</td>
-<td class="decimal">0.41</td>
-<td>4</td>
+<td class="decimal">1.78</td>
+<td class="decimal">1.22</td>
+<td class="decimal">1.72</td>
+<td class="decimal">0.49</td>
+<td>2</td>
 </tr>
 <tr><td>-rotate 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.08</td>
-<td class="decimal">1.06</td>
-<td class="decimal">1.05</td>
-<td class="decimal">31.01</td>
+<td class="decimal">1.71</td>
+<td class="decimal">1.69</td>
+<td class="decimal">1.70</td>
+<td class="decimal">50.10</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 180</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.33</td>
-<td class="decimal">1.66</td>
-<td class="decimal">2.05</td>
-<td class="decimal">146.20</td>
+<td class="decimal">1.42</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.84</td>
+<td class="decimal">135.40</td>
 <td>4</td>
 </tr>
 <tr><td>-rotate 270</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.08</td>
+<td class="decimal">1.70</td>
+<td class="decimal">1.68</td>
+<td class="decimal">1.80</td>
+<td class="decimal">52.60</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.48</td>
+<td class="decimal">1.56</td>
+<td class="decimal">1.61</td>
+<td class="decimal">259.80</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.26</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.28</td>
+<td class="decimal">118.20</td>
+<td>4</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
 <td class="decimal">1.05</td>
+<td class="decimal">1.07</td>
+<td class="decimal">1.04</td>
+<td class="decimal">31.54</td>
+<td>3</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.01</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
 <td class="decimal">1.03</td>
-<td class="decimal">30.62</td>
-<td>2</td>
+<td class="decimal">1.02</td>
+<td class="decimal">7.62</td>
+<td>3</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">7.44</td>
+<td>3</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.01</td>
+<td>3</td>
 </tr>
 <tr><td>-shade 30x30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.63</td>
-<td class="decimal">2.33</td>
-<td class="decimal">3.02</td>
-<td class="decimal">7.47</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.62</td>
+<td class="decimal">3.24</td>
+<td class="decimal">10.41</td>
 <td>4</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.00</td>
-<td class="decimal">2.22</td>
-<td class="decimal">2.89</td>
-<td class="decimal">2.84</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.83</td>
+<td class="decimal">3.66</td>
+<td class="decimal">1.76</td>
 <td>4</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.70</td>
-<td class="decimal">2.10</td>
-<td class="decimal">2.76</td>
-<td class="decimal">1.24</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.87</td>
+<td class="decimal">3.75</td>
+<td class="decimal">0.66</td>
 <td>4</td>
 </tr>
 <tr><td>-shave 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.71</td>
-<td class="decimal">1.53</td>
-<td class="decimal">1.83</td>
-<td class="decimal">163.40</td>
+<td class="decimal">1.59</td>
+<td class="decimal">1.65</td>
+<td class="decimal">1.68</td>
+<td class="decimal">146.00</td>
 <td>4</td>
 </tr>
 <tr><td>-shear 45x45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.29</td>
-<td class="decimal">1.62</td>
-<td class="decimal">1.91</td>
-<td class="decimal">0.98</td>
+<td class="decimal">2.05</td>
+<td class="decimal">2.29</td>
+<td class="decimal">2.38</td>
+<td class="decimal">1.27</td>
 <td>4</td>
 </tr>
 <tr><td>-solarize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.91</td>
-<td class="decimal">1.81</td>
-<td class="decimal">2.32</td>
-<td class="decimal">127.80</td>
+<td class="decimal">1.83</td>
+<td class="decimal">2.05</td>
+<td class="decimal">2.24</td>
+<td class="decimal">109.40</td>
 <td>4</td>
 </tr>
 <tr><td>-spread 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.84</td>
-<td class="decimal">1.79</td>
-<td class="decimal">2.21</td>
-<td class="decimal">57.80</td>
+<td class="decimal">1.85</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.07</td>
+<td class="decimal">58.48</td>
 <td>4</td>
 </tr>
 <tr><td>-spread 3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.91</td>
-<td class="decimal">1.74</td>
-<td class="decimal">2.20</td>
-<td class="decimal">54.29</td>
+<td class="decimal">1.81</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.07</td>
+<td class="decimal">56.20</td>
 <td>4</td>
 </tr>
 <tr><td>-swirl 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.97</td>
-<td class="decimal">2.02</td>
-<td class="decimal">2.66</td>
-<td class="decimal">3.02</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.46</td>
+<td class="decimal">3.00</td>
+<td class="decimal">3.31</td>
 <td>4</td>
 </tr>
 <tr><td>-threshold 35%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.80</td>
-<td class="decimal">1.67</td>
-<td class="decimal">1.80</td>
-<td class="decimal">49.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">1.70</td>
+<td class="decimal">1.71</td>
+<td class="decimal">50.30</td>
 <td>4</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.26</td>
-<td class="decimal">2.92</td>
-<td class="decimal">24.50</td>
+<td class="decimal">1.95</td>
+<td class="decimal">2.23</td>
+<td class="decimal">2.54</td>
+<td class="decimal">33.40</td>
 <td>4</td>
 </tr>
 <tr><td>-trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.98</td>
-<td class="decimal">2.04</td>
+<td class="decimal">1.78</td>
+<td class="decimal">2.30</td>
 <td class="decimal">2.66</td>
-<td class="decimal">29.62</td>
+<td class="decimal">28.49</td>
 <td>4</td>
 </tr>
-<tr><td>-unsharp 0x0.5</td>
+<tr><td>-fuzz 5% -trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">2.17</td>
-<td class="decimal">2.72</td>
-<td class="decimal">2.80</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.66</td>
+<td class="decimal">3.33</td>
+<td class="decimal">9.49</td>
 <td>4</td>
 </tr>
-<tr><td>-unsharp 0x1.0</td>
+<tr><td>-unsharp 0x0.5+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">2.21</td>
-<td class="decimal">2.79</td>
-<td class="decimal">2.46</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.74</td>
+<td class="decimal">3.53</td>
+<td class="decimal">2.31</td>
+<td>4</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">2.85</td>
+<td class="decimal">3.68</td>
+<td class="decimal">1.68</td>
 <td>4</td>
 </tr>
 <tr><td>-wave 25x150</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">1.94</td>
-<td class="decimal">2.37</td>
-<td class="decimal">2.67</td>
+<td class="decimal">1.88</td>
+<td class="decimal">2.43</td>
+<td class="decimal">2.88</td>
+<td class="decimal">2.73</td>
 <td>4</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">1.59</td>
-<td class="decimal">2.02</td>
-<td class="decimal">113.00</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.91</td>
+<td class="decimal">2.00</td>
+<td class="decimal">114.40</td>
 <td>4</td>
 </tr>
 </tbody>
 </table>
-<p>The following table shows the boost on a two core AMD64 Linux system.
-Clearly OpenMP works well for this system.  Note that I don't have
-exclusive use to this system, and there were other users logged in, so
-it is possible that performance was reduced by other users:</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id6" id="linux-opteron" name="linux-opteron">Linux Opteron</a></h2>
+<p>The following table shows the boost on a two core 2.7GHz AMD64 Linux system.
+Clearly OpenMP works well for this system:</p>
 <table border="1" class="docutils">
 <caption>Performance Boost On Two Core AMD64 System</caption>
 <colgroup>
-<col width="62%" />
-<col width="9%" />
-<col width="9%" />
-<col width="13%" />
-<col width="7%" />
+<col width="77%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="4%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Operation</th>
@@ -1490,494 +3161,803 @@ it is possible that performance was reduced by other users:</p>
 <tbody valign="top">
 <tr><td>-noop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.52</td>
-<td class="decimal">146.00</td>
+<td class="decimal">1.58</td>
+<td class="decimal">120.40</td>
 <td>2</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.41</td>
-<td class="decimal">7.75</td>
+<td class="decimal">2.12</td>
+<td class="decimal">9.96</td>
 <td>2</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.52</td>
-<td class="decimal">71.71</td>
+<td class="decimal">1.73</td>
+<td class="decimal">59.60</td>
 <td>2</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.43</td>
-<td class="decimal">4.72</td>
+<td class="decimal">1.70</td>
+<td class="decimal">5.11</td>
 <td>2</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.54</td>
-<td class="decimal">3.63</td>
+<td class="decimal">1.80</td>
+<td class="decimal">3.82</td>
 <td>2</td>
 </tr>
 <tr><td>-border 6x6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.20</td>
-<td class="decimal">56.89</td>
+<td class="decimal">1.53</td>
+<td class="decimal">20.96</td>
+<td>2</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">66.00</td>
 <td>2</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">1.74</td>
+<td class="decimal">1.80</td>
+<td class="decimal">1.77</td>
 <td>2</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.26</td>
-<td class="decimal">101.20</td>
+<td class="decimal">1.56</td>
+<td class="decimal">87.23</td>
 <td>2</td>
 </tr>
 <tr><td>-colors 16</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.01</td>
-<td class="decimal">0.86</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.04</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.38</td>
-<td class="decimal">63.60</td>
+<td class="decimal">7.18</td>
+<td class="decimal">58.28</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.67</td>
-<td class="decimal">30.60</td>
+<td class="decimal">2.09</td>
+<td class="decimal">29.94</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace HSL</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.93</td>
-<td class="decimal">12.38</td>
+<td class="decimal">1.15</td>
+<td class="decimal">7.57</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace HWB</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">13.07</td>
+<td class="decimal">1.74</td>
+<td class="decimal">14.91</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
-<td class="decimal">31.47</td>
+<td class="decimal">1.69</td>
+<td class="decimal">30.14</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.78</td>
-<td class="decimal">32.60</td>
+<td class="decimal">1.90</td>
+<td class="decimal">23.51</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.77</td>
-<td class="decimal">32.47</td>
+<td class="decimal">1.92</td>
+<td class="decimal">29.80</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YUV</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.80</td>
-<td class="decimal">32.01</td>
+<td class="decimal">1.70</td>
+<td class="decimal">26.10</td>
 <td>2</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">2.38</td>
+<td class="decimal">2.21</td>
+<td class="decimal">2.23</td>
 <td>2</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.93</td>
-<td class="decimal">2.40</td>
+<td class="decimal">2.08</td>
+<td class="decimal">2.48</td>
 <td>2</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.04</td>
-<td class="decimal">9.13</td>
+<td class="decimal">2.01</td>
+<td class="decimal">9.20</td>
 <td>2</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.68</td>
-<td class="decimal">15.28</td>
+<td class="decimal">1.55</td>
+<td class="decimal">13.64</td>
 <td>2</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.33</td>
-<td class="decimal">71.00</td>
+<td class="decimal">1.16</td>
+<td class="decimal">45.80</td>
 <td>2</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.52</td>
+<td class="decimal">0.88</td>
+<td>1</td>
 </tr>
 <tr><td>-despeckle</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.50</td>
-<td class="decimal">0.92</td>
+<td class="decimal">1.54</td>
+<td class="decimal">0.83</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.87</td>
+<td class="decimal">8.18</td>
+<td>1</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">7.74</td>
+<td>1</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.10</td>
+<td class="decimal">12.72</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.47</td>
+<td class="decimal">11.78</td>
+<td>1</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">22.20</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.09</td>
+<td class="decimal">16.47</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">15.68</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">14.34</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.19</td>
+<td class="decimal">22.46</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.07</td>
+<td class="decimal">23.73</td>
 <td>2</td>
 </tr>
 <tr><td>-edge 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">2.06</td>
-<td class="decimal">8.71</td>
+<td class="decimal">1.80</td>
+<td class="decimal">7.54</td>
 <td>2</td>
 </tr>
 <tr><td>-emboss 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">4.16</td>
+<td class="decimal">2.04</td>
+<td class="decimal">3.92</td>
 <td>2</td>
 </tr>
 <tr><td>-enhance</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.95</td>
-<td class="decimal">1.35</td>
+<td class="decimal">1.96</td>
+<td class="decimal">1.38</td>
 <td>2</td>
 </tr>
 <tr><td>-equalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.27</td>
-<td class="decimal">23.55</td>
+<td class="decimal">1.25</td>
+<td class="decimal">23.66</td>
 <td>2</td>
 </tr>
 <tr><td>-flip</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.47</td>
-<td class="decimal">22.40</td>
+<td class="decimal">1.42</td>
+<td class="decimal">22.00</td>
 <td>2</td>
 </tr>
 <tr><td>-flop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.49</td>
-<td class="decimal">22.11</td>
+<td class="decimal">1.46</td>
+<td class="decimal">21.36</td>
 <td>2</td>
 </tr>
 <tr><td>-frame 15x15+3+3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.27</td>
-<td class="decimal">57.20</td>
+<td class="decimal">1.20</td>
+<td class="decimal">58.68</td>
 <td>2</td>
 </tr>
 <tr><td>-gamma 1.6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.05</td>
-<td class="decimal">19.48</td>
+<td class="decimal">1.25</td>
+<td class="decimal">22.95</td>
 <td>2</td>
 </tr>
 <tr><td>-gaussian 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.74</td>
-<td class="decimal">4.40</td>
+<td class="decimal">1.96</td>
+<td class="decimal">5.00</td>
 <td>2</td>
 </tr>
 <tr><td>-gaussian 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.99</td>
-<td class="decimal">1.98</td>
+<td class="decimal">1.93</td>
+<td class="decimal">1.92</td>
 <td>2</td>
 </tr>
 <tr><td>-implode 0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
-<td class="decimal">2.88</td>
+<td class="decimal">1.91</td>
+<td class="decimal">3.17</td>
 <td>2</td>
 </tr>
 <tr><td>-implode -1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
+<td class="decimal">1.59</td>
 <td class="decimal">3.58</td>
 <td>2</td>
 </tr>
 <tr><td>-lat 10x10-5%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.85</td>
-<td class="decimal">1.32</td>
+<td class="decimal">1.90</td>
+<td class="decimal">1.38</td>
 <td>2</td>
 </tr>
 <tr><td>-level 10%,1.2,90%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.42</td>
+<td class="decimal">1.38</td>
 <td class="decimal">40.80</td>
+<td>2</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.88</td>
+<td>1</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.29</td>
 <td>2</td>
 </tr>
 <tr><td>-median 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.84</td>
-<td class="decimal">0.72</td>
+<td class="decimal">1.92</td>
+<td class="decimal">0.74</td>
 <td>2</td>
 </tr>
 <tr><td>-median 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.84</td>
-<td class="decimal">0.26</td>
+<td class="decimal">1.95</td>
+<td class="decimal">0.28</td>
+<td>2</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.39</td>
+<td class="decimal">18.65</td>
 <td>2</td>
 </tr>
 <tr><td>-modulate 110/100/95</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.84</td>
-<td class="decimal">8.10</td>
+<td class="decimal">8.58</td>
+<td>2</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">0.90</td>
 <td>2</td>
 </tr>
 <tr><td>-motion-blur 0x3+30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.19</td>
-<td class="decimal">0.36</td>
+<td class="decimal">1.80</td>
+<td class="decimal">0.62</td>
 <td>2</td>
 </tr>
 <tr><td>-negate</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.12</td>
-<td class="decimal">53.20</td>
+<td class="decimal">1.42</td>
+<td class="decimal">72.00</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Uniform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.59</td>
-<td class="decimal">5.64</td>
+<td class="decimal">1.55</td>
+<td class="decimal">5.51</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Gaussian</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.93</td>
-<td class="decimal">0.91</td>
+<td class="decimal">0.82</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.82</td>
-<td class="decimal">1.29</td>
+<td class="decimal">1.77</td>
+<td class="decimal">1.25</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Impulse</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.63</td>
-<td class="decimal">5.83</td>
+<td class="decimal">1.59</td>
+<td class="decimal">5.80</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Laplacian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.70</td>
-<td class="decimal">2.14</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.05</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Poisson</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.89</td>
-<td class="decimal">1.66</td>
+<td class="decimal">1.92</td>
 <td>2</td>
 </tr>
 <tr><td>-noise 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.70</td>
-<td class="decimal">0.66</td>
+<td class="decimal">1.86</td>
+<td class="decimal">0.72</td>
 <td>2</td>
 </tr>
 <tr><td>-noise 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.79</td>
-<td class="decimal">0.25</td>
+<td class="decimal">1.91</td>
+<td class="decimal">0.28</td>
 <td>2</td>
 </tr>
 <tr><td>-normalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.20</td>
-<td class="decimal">24.25</td>
+<td class="decimal">1.29</td>
+<td class="decimal">24.75</td>
 <td>2</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.26</td>
+<td class="decimal">1.62</td>
+<td class="decimal">61.68</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.75</td>
+<td class="decimal">44.80</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">71.60</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.20</td>
+<td class="decimal">71.26</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.47</td>
+<td class="decimal">52.10</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.84</td>
+<td class="decimal">41.12</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.25</td>
 <td class="decimal">35.73</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.40</td>
+<td class="decimal">73.85</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.46</td>
+<td class="decimal">70.46</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.74</td>
+<td class="decimal">44.71</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.35</td>
+<td class="decimal">73.00</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.39</td>
+<td class="decimal">70.06</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">42.00</td>
+<td>2</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">74.60</td>
+<td>2</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.55</td>
+<td class="decimal">69.26</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">75.45</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.53</td>
+<td class="decimal">67.93</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.33</td>
+<td class="decimal">73.00</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.99</td>
+<td class="decimal">0.86</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.86</td>
+<td class="decimal">8.75</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.97</td>
+<td class="decimal">2.31</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.88</td>
+<td class="decimal">1.39</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.96</td>
+<td class="decimal">2.11</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
+<td class="decimal">7.31</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.54</td>
+<td class="decimal">53.29</td>
 <td>2</td>
 </tr>
 <tr><td>-ordered-dither all 3x3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.02</td>
-<td class="decimal">32.20</td>
+<td class="decimal">1.50</td>
+<td class="decimal">49.90</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.61</td>
+<td class="decimal">52.20</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">54.69</td>
 <td>2</td>
 </tr>
 <tr><td>-paint 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.49</td>
-<td class="decimal">4.26</td>
+<td class="decimal">2.00</td>
+<td class="decimal">5.89</td>
 <td>2</td>
 </tr>
 <tr><td>-raise 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.21</td>
-<td class="decimal">98.20</td>
+<td class="decimal">1.35</td>
+<td class="decimal">112.80</td>
+<td>2</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.84</td>
+<td class="decimal">24.50</td>
 <td>2</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.82</td>
-<td class="decimal">3.78</td>
+<td class="decimal">1.81</td>
+<td class="decimal">5.01</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 10%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">9.05</td>
+<td class="decimal">1.95</td>
+<td class="decimal">11.90</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.72</td>
-<td class="decimal">5.30</td>
+<td class="decimal">1.88</td>
+<td class="decimal">9.05</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 150%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.91</td>
-<td class="decimal">1.43</td>
+<td class="decimal">1.79</td>
+<td class="decimal">1.62</td>
 <td>2</td>
 </tr>
 <tr><td>-roll +20+10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.42</td>
-<td class="decimal">21.07</td>
+<td class="decimal">1.38</td>
+<td class="decimal">21.27</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.08</td>
-<td class="decimal">17.00</td>
+<td class="decimal">1.43</td>
+<td class="decimal">21.87</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.71</td>
-<td class="decimal">0.80</td>
+<td class="decimal">1.50</td>
+<td class="decimal">0.94</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.00</td>
-<td class="decimal">11.53</td>
-<td>1</td>
+<td class="decimal">1.28</td>
+<td class="decimal">14.34</td>
+<td>2</td>
 </tr>
 <tr><td>-rotate 180</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.06</td>
-<td class="decimal">15.94</td>
+<td class="decimal">1.44</td>
+<td class="decimal">21.07</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 270</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.37</td>
+<td class="decimal">15.60</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.05</td>
+<td class="decimal">102.00</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">57.09</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">8.43</td>
+<td>1</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.02</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.97</td>
+<td class="decimal">20.36</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.06</td>
+<td class="decimal">14.71</td>
+<td>2</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
 <td class="decimal">1.01</td>
-<td class="decimal">11.90</td>
+<td class="decimal">3.49</td>
 <td>2</td>
 </tr>
 <tr><td>-shade 30x30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.62</td>
-<td class="decimal">9.09</td>
+<td class="decimal">1.74</td>
+<td class="decimal">10.22</td>
 <td>2</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">3.91</td>
+<td class="decimal">1.61</td>
+<td class="decimal">4.07</td>
 <td>2</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
-<td class="decimal">1.74</td>
+<td class="decimal">1.99</td>
+<td class="decimal">2.00</td>
 <td>2</td>
 </tr>
 <tr><td>-shave 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.12</td>
-<td class="decimal">58.60</td>
+<td class="decimal">1.26</td>
+<td class="decimal">61.88</td>
 <td>2</td>
 </tr>
 <tr><td>-shear 45x45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.45</td>
-<td class="decimal">0.77</td>
+<td class="decimal">1.44</td>
+<td class="decimal">1.38</td>
 <td>2</td>
 </tr>
 <tr><td>-solarize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.29</td>
-<td class="decimal">58.48</td>
+<td class="decimal">1.42</td>
+<td class="decimal">65.20</td>
 <td>2</td>
 </tr>
 <tr><td>-spread 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">19.72</td>
+<td class="decimal">1.45</td>
+<td class="decimal">18.36</td>
 <td>2</td>
 </tr>
 <tr><td>-spread 3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.56</td>
+<td class="decimal">1.47</td>
 <td class="decimal">17.66</td>
 <td>2</td>
 </tr>
 <tr><td>-swirl 90</td>
 <td class="decimal">1.00</td>
 <td class="decimal">1.55</td>
-<td class="decimal">3.34</td>
+<td class="decimal">3.50</td>
 <td>2</td>
 </tr>
 <tr><td>-threshold 35%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">53.49</td>
+<td class="decimal">1.31</td>
+<td class="decimal">43.31</td>
 <td>2</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.71</td>
-<td class="decimal">49.60</td>
+<td class="decimal">1.64</td>
+<td class="decimal">57.20</td>
 <td>2</td>
 </tr>
 <tr><td>-trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.79</td>
-<td class="decimal">33.53</td>
+<td class="decimal">1.81</td>
+<td class="decimal">34.40</td>
 <td>2</td>
 </tr>
-<tr><td>-unsharp 0x0.5</td>
+<tr><td>-fuzz 5% -trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.42</td>
-<td class="decimal">3.93</td>
+<td class="decimal">1.78</td>
+<td class="decimal">20.16</td>
 <td>2</td>
 </tr>
-<tr><td>-unsharp 0x1.0</td>
+<tr><td>-unsharp 0x0.5+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.59</td>
-<td class="decimal">3.17</td>
+<td class="decimal">1.72</td>
+<td class="decimal">4.85</td>
+<td>2</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">3.19</td>
 <td>2</td>
 </tr>
 <tr><td>-wave 25x150</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.20</td>
-<td class="decimal">3.06</td>
+<td class="decimal">1.84</td>
+<td class="decimal">5.02</td>
 <td>2</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.37</td>
-<td class="decimal">70.20</td>
+<td class="decimal">1.62</td>
+<td class="decimal">74.20</td>
 <td>2</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id7" id="apple-os-x-ibm-g5" name="apple-os-x-ibm-g5">Apple OS-X/IBM G5</a></h2>
 <p>The following table shows the boost on a two core Apple PowerPC G5
-system running OS-X Leopard. It can be seen that this system only
+system (2.5GHz) running OS-X Leopard. It can be seen that this system only
 benefits from OpenMP for CPU-intensive operations and that normally
 &quot;fast&quot; operations often become somewhat slower (but are still fast) as
 threads are added.  Thread locking and context switching seems to be
@@ -1985,11 +3965,11 @@ unusually slow on PowerPC OS-X:</p>
 <table border="1" class="docutils">
 <caption>Performance Boost On Two Core PowerPC G5 System</caption>
 <colgroup>
-<col width="62%" />
-<col width="9%" />
-<col width="9%" />
-<col width="13%" />
-<col width="7%" />
+<col width="77%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="4%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Operation</th>
@@ -2002,128 +3982,146 @@ unusually slow on PowerPC OS-X:</p>
 <tbody valign="top">
 <tr><td>-noop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.79</td>
-<td class="decimal">25.10</td>
+<td class="decimal">0.99</td>
+<td class="decimal">25.00</td>
 <td>1</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.53</td>
-<td class="decimal">3.36</td>
+<td class="decimal">1.54</td>
+<td class="decimal">3.37</td>
 <td>2</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.90</td>
-<td class="decimal">18.09</td>
-<td>1</td>
+<td class="decimal">1.07</td>
+<td class="decimal">19.36</td>
+<td>2</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.40</td>
-<td class="decimal">2.36</td>
+<td class="decimal">1.45</td>
+<td class="decimal">2.50</td>
 <td>2</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.53</td>
-<td class="decimal">1.90</td>
+<td class="decimal">1.57</td>
+<td class="decimal">1.97</td>
 <td>2</td>
 </tr>
 <tr><td>-border 6x6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.80</td>
-<td class="decimal">12.00</td>
-<td>1</td>
+<td class="decimal">1.03</td>
+<td class="decimal">12.05</td>
+<td>2</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">19.01</td>
+<td>2</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">0.86</td>
+<td class="decimal">1.64</td>
+<td class="decimal">0.88</td>
 <td>2</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.84</td>
-<td class="decimal">18.76</td>
+<td class="decimal">1.00</td>
+<td class="decimal">18.73</td>
+<td>2</td>
+</tr>
+<tr><td>-colors 16</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.77</td>
+<td class="decimal">0.56</td>
 <td>1</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.95</td>
-<td class="decimal">14.74</td>
-<td>1</td>
+<td class="decimal">1.11</td>
+<td class="decimal">16.14</td>
+<td>2</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.34</td>
-<td class="decimal">8.86</td>
+<td class="decimal">1.47</td>
+<td class="decimal">9.72</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace HSL</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.65</td>
-<td class="decimal">5.16</td>
+<td class="decimal">1.73</td>
+<td class="decimal">5.30</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace HWB</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.62</td>
-<td class="decimal">5.47</td>
+<td class="decimal">1.75</td>
+<td class="decimal">5.81</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.34</td>
-<td class="decimal">8.82</td>
+<td class="decimal">1.49</td>
+<td class="decimal">9.84</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.35</td>
-<td class="decimal">8.82</td>
+<td class="decimal">1.47</td>
+<td class="decimal">9.65</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.35</td>
-<td class="decimal">8.91</td>
+<td class="decimal">1.47</td>
+<td class="decimal">9.78</td>
 <td>2</td>
 </tr>
 <tr><td>-colorspace YUV</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.34</td>
-<td class="decimal">8.78</td>
+<td class="decimal">1.47</td>
+<td class="decimal">9.74</td>
 <td>2</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.88</td>
-<td class="decimal">1.28</td>
+<td class="decimal">1.92</td>
+<td class="decimal">1.31</td>
 <td>2</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">1.31</td>
+<td class="decimal">1.94</td>
+<td class="decimal">1.34</td>
 <td>2</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.67</td>
-<td class="decimal">3.63</td>
+<td class="decimal">1.71</td>
+<td class="decimal">3.71</td>
 <td>2</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.33</td>
-<td class="decimal">7.83</td>
+<td class="decimal">1.44</td>
+<td class="decimal">8.35</td>
 <td>2</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
 <td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">14.09</td>
+<td>2</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
 <td class="decimal">0.80</td>
-<td class="decimal">13.92</td>
+<td class="decimal">0.49</td>
 <td>1</td>
 </tr>
 <tr><td>-despeckle</td>
@@ -2132,347 +4130,1742 @@ unusually slow on PowerPC OS-X:</p>
 <td class="decimal">0.24</td>
 <td>2</td>
 </tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.92</td>
+<td>2</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">4.58</td>
+<td>1</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">9.25</td>
+<td>1</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">6.92</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">11.07</td>
+<td>1</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.91</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">8.22</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.50</td>
+<td>1</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">13.37</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">12.20</td>
+<td>1</td>
+</tr>
 <tr><td>-edge 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
-<td class="decimal">3.65</td>
+<td class="decimal">1.73</td>
+<td class="decimal">3.76</td>
 <td>2</td>
 </tr>
 <tr><td>-emboss 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.71</td>
-<td class="decimal">1.68</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.74</td>
 <td>2</td>
 </tr>
 <tr><td>-enhance</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">0.60</td>
+<td class="decimal">1.96</td>
+<td class="decimal">0.62</td>
 <td>2</td>
 </tr>
 <tr><td>-equalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.89</td>
-<td class="decimal">11.55</td>
-<td>1</td>
+<td class="decimal">1.01</td>
+<td class="decimal">11.48</td>
+<td>2</td>
 </tr>
 <tr><td>-flip</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.83</td>
-<td class="decimal">11.95</td>
+<td class="decimal">0.99</td>
+<td class="decimal">11.90</td>
 <td>1</td>
 </tr>
 <tr><td>-flop</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.82</td>
-<td class="decimal">11.81</td>
+<td class="decimal">0.99</td>
+<td class="decimal">11.68</td>
 <td>1</td>
 </tr>
 <tr><td>-frame 15x15+3+3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.82</td>
+<td class="decimal">1.03</td>
 <td class="decimal">11.80</td>
-<td>1</td>
+<td>2</td>
 </tr>
 <tr><td>-gamma 1.6</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.91</td>
-<td class="decimal">11.60</td>
-<td>1</td>
+<td class="decimal">1.02</td>
+<td class="decimal">11.66</td>
+<td>2</td>
 </tr>
 <tr><td>-gaussian 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.81</td>
-<td class="decimal">2.00</td>
+<td class="decimal">1.83</td>
+<td class="decimal">2.05</td>
 <td>2</td>
 </tr>
 <tr><td>-gaussian 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">0.78</td>
+<td class="decimal">1.96</td>
+<td class="decimal">0.80</td>
 <td>2</td>
 </tr>
 <tr><td>-implode 0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">1.68</td>
+<td class="decimal">1.75</td>
+<td class="decimal">1.89</td>
 <td>2</td>
 </tr>
 <tr><td>-implode -1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.47</td>
-<td class="decimal">2.03</td>
+<td class="decimal">1.65</td>
+<td class="decimal">2.33</td>
 <td>2</td>
 </tr>
 <tr><td>-lat 10x10-5%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.92</td>
-<td class="decimal">0.43</td>
+<td class="decimal">1.93</td>
+<td class="decimal">0.44</td>
 <td>2</td>
 </tr>
 <tr><td>-level 10%,1.2,90%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.85</td>
-<td class="decimal">15.40</td>
+<td class="decimal">1.01</td>
+<td class="decimal">15.68</td>
+<td>2</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.46</td>
+<td>2</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.75</td>
+<td class="decimal">0.61</td>
 <td>1</td>
 </tr>
 <tr><td>-median 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.98</td>
-<td class="decimal">0.34</td>
-<td>1</td>
+<td class="decimal">1.35</td>
+<td class="decimal">0.47</td>
+<td>2</td>
 </tr>
 <tr><td>-median 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.93</td>
-<td class="decimal">0.14</td>
-<td>1</td>
+<td class="decimal">1.22</td>
+<td class="decimal">0.16</td>
+<td>2</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">6.97</td>
+<td>2</td>
 </tr>
 <tr><td>-modulate 110/100/95</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.75</td>
-<td class="decimal">3.68</td>
+<td class="decimal">1.83</td>
+<td class="decimal">3.79</td>
 <td>2</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.75</td>
+<td class="decimal">0.46</td>
+<td>1</td>
 </tr>
 <tr><td>-motion-blur 0x3+30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.41</td>
-<td class="decimal">0.28</td>
+<td class="decimal">1.01</td>
+<td class="decimal">0.20</td>
 <td>2</td>
 </tr>
 <tr><td>-negate</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.80</td>
-<td class="decimal">19.28</td>
+<td class="decimal">0.98</td>
+<td class="decimal">19.16</td>
 <td>1</td>
 </tr>
 <tr><td>+noise Uniform</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
-<td class="decimal">2.56</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.62</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Gaussian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.87</td>
-<td class="decimal">0.85</td>
+<td class="decimal">1.86</td>
+<td class="decimal">0.87</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.82</td>
-<td class="decimal">1.15</td>
+<td class="decimal">1.88</td>
+<td class="decimal">1.18</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Impulse</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
-<td class="decimal">2.46</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.53</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Laplacian</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.76</td>
-<td class="decimal">1.68</td>
+<td class="decimal">1.82</td>
+<td class="decimal">1.71</td>
 <td>2</td>
 </tr>
 <tr><td>+noise Poisson</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.85</td>
-<td class="decimal">0.94</td>
+<td class="decimal">1.91</td>
+<td class="decimal">0.95</td>
 <td>2</td>
 </tr>
 <tr><td>-noise 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.87</td>
-<td class="decimal">0.34</td>
-<td>1</td>
+<td class="decimal">1.02</td>
+<td class="decimal">0.35</td>
+<td>2</td>
 </tr>
 <tr><td>-noise 2</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.91</td>
-<td class="decimal">0.13</td>
-<td>1</td>
+<td class="decimal">1.43</td>
+<td class="decimal">0.19</td>
+<td>2</td>
 </tr>
 <tr><td>-normalize</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.89</td>
-<td class="decimal">11.86</td>
-<td>1</td>
+<td class="decimal">1.01</td>
+<td class="decimal">11.98</td>
+<td>2</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.19</td>
-<td class="decimal">12.53</td>
+<td class="decimal">1.36</td>
+<td class="decimal">14.46</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.51</td>
+<td class="decimal">10.06</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">19.20</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.11</td>
+<td class="decimal">18.16</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">18.36</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.56</td>
+<td class="decimal">9.54</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">15.81</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">19.12</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.98</td>
+<td class="decimal">18.89</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">10.10</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.98</td>
+<td class="decimal">19.09</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">19.09</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.56</td>
+<td class="decimal">10.24</td>
+<td>2</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">18.89</td>
+<td>2</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">18.45</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.09</td>
+<td class="decimal">20.92</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.05</td>
+<td class="decimal">20.04</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.98</td>
+<td class="decimal">19.25</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.92</td>
+<td class="decimal">0.94</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.85</td>
+<td class="decimal">3.01</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.86</td>
+<td class="decimal">1.87</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.94</td>
+<td class="decimal">1.27</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.98</td>
+<td class="decimal">1.03</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.82</td>
+<td class="decimal">3.08</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.09</td>
+<td class="decimal">15.48</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.15</td>
+<td class="decimal">15.28</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.13</td>
+<td class="decimal">15.08</td>
+<td>2</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.08</td>
+<td class="decimal">15.31</td>
 <td>2</td>
 </tr>
 <tr><td>-paint 0x1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">3.94</td>
+<td class="decimal">1.82</td>
+<td class="decimal">4.05</td>
 <td>2</td>
 </tr>
 <tr><td>-raise 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.80</td>
-<td class="decimal">23.21</td>
-<td>1</td>
+<td class="decimal">1.01</td>
+<td class="decimal">22.86</td>
+<td>2</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.46</td>
+<td class="decimal">8.20</td>
+<td>2</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.57</td>
-<td class="decimal">2.08</td>
+<td class="decimal">1.59</td>
+<td class="decimal">2.12</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 10%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.62</td>
-<td class="decimal">5.14</td>
+<td class="decimal">1.71</td>
+<td class="decimal">5.43</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.58</td>
-<td class="decimal">3.09</td>
+<td class="decimal">1.64</td>
+<td class="decimal">3.19</td>
 <td>2</td>
 </tr>
 <tr><td>-resize 150%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.65</td>
+<td class="decimal">1.66</td>
 <td class="decimal">0.55</td>
 <td>2</td>
 </tr>
 <tr><td>-roll +20+10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.86</td>
-<td class="decimal">11.13</td>
+<td class="decimal">0.91</td>
+<td class="decimal">11.33</td>
 <td>1</td>
 </tr>
 <tr><td>-rotate 0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.81</td>
-<td class="decimal">12.08</td>
+<td class="decimal">0.99</td>
+<td class="decimal">11.98</td>
 <td>1</td>
 </tr>
 <tr><td>-rotate 45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.66</td>
+<td class="decimal">1.69</td>
 <td class="decimal">0.24</td>
 <td>2</td>
 </tr>
 <tr><td>-rotate 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.88</td>
-<td class="decimal">8.64</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.82</td>
 <td>1</td>
 </tr>
 <tr><td>-rotate 180</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.83</td>
-<td class="decimal">11.71</td>
+<td class="decimal">1.00</td>
+<td class="decimal">11.83</td>
 <td>1</td>
 </tr>
 <tr><td>-rotate 270</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.88</td>
-<td class="decimal">8.66</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.78</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">24.30</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.03</td>
+<td class="decimal">18.00</td>
+<td>2</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">6.65</td>
+<td>2</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.01</td>
 <td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.04</td>
+<td>2</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">5.25</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">2.10</td>
+<td>2</td>
 </tr>
 <tr><td>-shade 30x30</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.55</td>
-<td class="decimal">5.13</td>
+<td class="decimal">1.61</td>
+<td class="decimal">5.39</td>
 <td>2</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.80</td>
-<td class="decimal">2.00</td>
+<td class="decimal">1.85</td>
+<td class="decimal">2.08</td>
 <td>2</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.90</td>
-<td class="decimal">0.78</td>
+<td class="decimal">1.92</td>
+<td class="decimal">0.79</td>
 <td>2</td>
 </tr>
 <tr><td>-shave 10x10</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.80</td>
-<td class="decimal">12.28</td>
+<td class="decimal">0.97</td>
+<td class="decimal">12.05</td>
 <td>1</td>
 </tr>
 <tr><td>-shear 45x45</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.61</td>
-<td class="decimal">0.27</td>
+<td class="decimal">1.64</td>
+<td class="decimal">0.28</td>
 <td>2</td>
 </tr>
 <tr><td>-solarize 50%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.90</td>
-<td class="decimal">17.73</td>
-<td>1</td>
+<td class="decimal">1.05</td>
+<td class="decimal">18.69</td>
+<td>2</td>
 </tr>
 <tr><td>-spread 1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.88</td>
-<td class="decimal">10.87</td>
+<td class="decimal">1.00</td>
+<td class="decimal">10.60</td>
 <td>1</td>
 </tr>
 <tr><td>-spread 3</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.98</td>
-<td class="decimal">9.96</td>
-<td>1</td>
+<td class="decimal">1.01</td>
+<td class="decimal">9.80</td>
+<td>2</td>
 </tr>
 <tr><td>-swirl 90</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.71</td>
-<td class="decimal">2.05</td>
+<td class="decimal">1.66</td>
+<td class="decimal">2.02</td>
 <td>2</td>
 </tr>
 <tr><td>-threshold 35%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.98</td>
-<td class="decimal">14.14</td>
-<td>1</td>
+<td class="decimal">1.01</td>
+<td class="decimal">14.48</td>
+<td>2</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.19</td>
-<td class="decimal">12.40</td>
+<td class="decimal">1.36</td>
+<td class="decimal">14.23</td>
 <td>2</td>
 </tr>
 <tr><td>-trim</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.58</td>
-<td class="decimal">6.28</td>
+<td class="decimal">1.72</td>
+<td class="decimal">6.67</td>
+<td>2</td>
+</tr>
+<tr><td>-fuzz 5% -trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.80</td>
+<td class="decimal">4.09</td>
 <td>2</td>
 </tr>
 <tr><td>-unsharp 0x0.5+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.52</td>
-<td class="decimal">1.92</td>
+<td class="decimal">1.56</td>
+<td class="decimal">1.98</td>
 <td>2</td>
 </tr>
 <tr><td>-unsharp 0x1.0+20+1</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.59</td>
-<td class="decimal">1.58</td>
+<td class="decimal">1.62</td>
+<td class="decimal">1.64</td>
 <td>2</td>
 </tr>
 <tr><td>-wave 25x150</td>
 <td class="decimal">1.00</td>
-<td class="decimal">1.32</td>
-<td class="decimal">1.76</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.79</td>
 <td>2</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
 <td class="decimal">1.00</td>
-<td class="decimal">0.88</td>
-<td class="decimal">19.44</td>
+<td class="decimal">1.07</td>
+<td class="decimal">20.56</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id8" id="freebsd-intel-xeon" name="freebsd-intel-xeon">FreeBSD / Intel Xeon</a></h2>
+<p>The following shows the performance boost on a 2003 vintage 2-CPU
+hyperthreaded Intel Xeon system running at 2.4GHz.  The operating
+system used is FreeBSD 7.0.  Due to the hyperthreading support, this
+system thinks it has four CPUs even though it really only has two
+cores.  This can lead to very strange results since sometimes it seems
+that the first two threads allocated may be from the same CPU,
+resulting in much less boost than expected, but obtaining full boost
+with four threads.  While the threading on this system behaves quite
+poorly for &quot;fast&quot; algorithms, it is clear that OpenMP works well for
+&quot;slow&quot; algorithms, and some algorithms show clear benefit from
+hyperthreading since otherwise the maximum performance gain would be
+2.0 rather than up to 2.85:</p>
+<table border="1" class="docutils">
+<caption>Performance Boost On Two CPU Xeon System</caption>
+<colgroup>
+<col width="69%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="4%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Operation</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">iter/s</th>
+<th class="head">thds</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>-noop</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">18.40</td>
+<td>2</td>
+</tr>
+<tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.22</td>
+<td class="decimal">1.30</td>
+<td class="decimal">1.30</td>
+<td class="decimal">2.44</td>
+<td>4</td>
+</tr>
+<tr><td>-black-threshold 20%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.10</td>
+<td class="decimal">1.13</td>
+<td class="decimal">1.14</td>
+<td class="decimal">14.31</td>
+<td>4</td>
+</tr>
+<tr><td>-blur 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.40</td>
+<td class="decimal">1.44</td>
+<td class="decimal">2.67</td>
+<td>4</td>
+</tr>
+<tr><td>-blur 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.58</td>
+<td class="decimal">2.30</td>
+<td>4</td>
+</tr>
+<tr><td>-border 6x6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.57</td>
+<td>4</td>
+</tr>
+<tr><td>-channel red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-charcoal 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.42</td>
+<td class="decimal">1.68</td>
+<td class="decimal">1.77</td>
+<td class="decimal">0.94</td>
+<td>4</td>
+</tr>
+<tr><td>-chop 800x600+200+300</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">14.07</td>
+<td>3</td>
+</tr>
+<tr><td>-colors 16</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.24</td>
 <td>1</td>
+</tr>
+<tr><td>-colorspace CMYK</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.87</td>
+<td class="decimal">0.87</td>
+<td class="decimal">0.85</td>
+<td class="decimal">11.22</td>
+<td>1</td>
+</tr>
+<tr><td>-colorspace GRAY</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.37</td>
+<td class="decimal">1.47</td>
+<td class="decimal">1.47</td>
+<td class="decimal">7.84</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace HSL</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.45</td>
+<td class="decimal">1.89</td>
+<td class="decimal">2.03</td>
+<td class="decimal">4.84</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace HWB</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.55</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.08</td>
+<td class="decimal">6.70</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace OHTA</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.35</td>
+<td class="decimal">1.51</td>
+<td class="decimal">1.57</td>
+<td class="decimal">8.10</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace YCbCr</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.40</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.57</td>
+<td class="decimal">8.07</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace YIQ</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.58</td>
+<td class="decimal">8.11</td>
+<td>4</td>
+</tr>
+<tr><td>-colorspace YUV</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.53</td>
+<td class="decimal">1.57</td>
+<td class="decimal">8.04</td>
+<td>4</td>
+</tr>
+<tr><td>-contrast -contrast -contrast</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.84</td>
+<td class="decimal">2.29</td>
+<td class="decimal">2.62</td>
+<td class="decimal">1.16</td>
+<td>4</td>
+</tr>
+<tr><td>+contrast +contrast +contrast</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.74</td>
+<td class="decimal">2.27</td>
+<td class="decimal">2.58</td>
+<td class="decimal">1.18</td>
+<td>4</td>
+</tr>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.48</td>
+<td class="decimal">1.86</td>
+<td class="decimal">2.05</td>
+<td class="decimal">3.80</td>
+<td>4</td>
+</tr>
+<tr><td>-colorize 30%/20%/50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.48</td>
+<td class="decimal">1.59</td>
+<td class="decimal">6.65</td>
+<td>4</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">10.00</td>
+<td>1</td>
+</tr>
+<tr><td>-cycle 200</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.22</td>
+<td>1</td>
+</tr>
+<tr><td>-despeckle</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">2.11</td>
+<td class="decimal">2.08</td>
+<td class="decimal">0.38</td>
+<td>3</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">3.33</td>
+<td>1</td>
+</tr>
+<tr><td>-fill green -stroke gold -draw 'circle 800,500 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.81</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">5.69</td>
+<td>1</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'rectangle 400,200 1100,800'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">4.47</td>
+<td>4</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">6.87</td>
+<td>1</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">5.46</td>
+<td>1</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">4.59</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">4.29</td>
+<td>2</td>
+</tr>
+<tr><td>-fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.49</td>
+<td>2</td>
+</tr>
+<tr><td>-fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.94</td>
+<td>2</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.89</td>
+<td class="decimal">2.11</td>
+<td class="decimal">3.74</td>
+<td>4</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.87</td>
+<td class="decimal">1.99</td>
+<td class="decimal">1.87</td>
+<td>4</td>
+</tr>
+<tr><td>-enhance</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.87</td>
+<td class="decimal">2.01</td>
+<td class="decimal">2.08</td>
+<td class="decimal">0.66</td>
+<td>4</td>
+</tr>
+<tr><td>-equalize</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">6.92</td>
+<td>4</td>
+</tr>
+<tr><td>-flip</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.71</td>
+<td>2</td>
+</tr>
+<tr><td>-flop</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.80</td>
+<td>4</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.46</td>
+<td>1</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.33</td>
+<td>3</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">2.06</td>
+<td class="decimal">2.25</td>
+<td class="decimal">2.45</td>
+<td>4</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">2.09</td>
+<td class="decimal">2.22</td>
+<td class="decimal">1.08</td>
+<td>4</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.69</td>
+<td class="decimal">2.06</td>
+<td class="decimal">2.39</td>
+<td class="decimal">1.24</td>
+<td>4</td>
+</tr>
+<tr><td>-implode -1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
+<td class="decimal">1.73</td>
+<td class="decimal">2.09</td>
+<td class="decimal">1.83</td>
+<td>4</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.49</td>
+<td class="decimal">1.94</td>
+<td class="decimal">2.06</td>
+<td class="decimal">0.93</td>
+<td>4</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.03</td>
+<td class="decimal">1.02</td>
+<td class="decimal">9.54</td>
+<td>3</td>
+</tr>
+<tr><td>-magnify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">2.06</td>
+<td>4</td>
+</tr>
+<tr><td>-map netscape:</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.26</td>
+<td>1</td>
+</tr>
+<tr><td>-median 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.67</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.07</td>
+<td class="decimal">0.29</td>
+<td>3</td>
+</tr>
+<tr><td>-median 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.75</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.11</td>
+<td class="decimal">0.09</td>
+<td>3</td>
+</tr>
+<tr><td>-minify</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.58</td>
+<td class="decimal">1.67</td>
+<td class="decimal">8.15</td>
+<td>4</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.65</td>
+<td class="decimal">2.08</td>
+<td class="decimal">2.30</td>
+<td class="decimal">3.52</td>
+<td>4</td>
+</tr>
+<tr><td>-monochrome</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">0.21</td>
+<td>4</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.98</td>
+<td class="decimal">0.10</td>
+<td>1</td>
+</tr>
+<tr><td>-negate</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.40</td>
+<td>1</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
+<td class="decimal">1.90</td>
+<td class="decimal">2.09</td>
+<td class="decimal">2.55</td>
+<td>4</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.82</td>
+<td class="decimal">2.27</td>
+<td class="decimal">2.63</td>
+<td class="decimal">0.84</td>
+<td>4</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.81</td>
+<td class="decimal">2.23</td>
+<td class="decimal">2.57</td>
+<td class="decimal">1.17</td>
+<td>4</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.52</td>
+<td class="decimal">1.74</td>
+<td class="decimal">1.55</td>
+<td class="decimal">2.45</td>
+<td>3</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.21</td>
+<td class="decimal">2.53</td>
+<td class="decimal">1.83</td>
+<td>4</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.75</td>
+<td class="decimal">2.15</td>
+<td class="decimal">2.42</td>
+<td class="decimal">0.88</td>
+<td>4</td>
+</tr>
+<tr><td>-noise 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.67</td>
+<td class="decimal">1.57</td>
+<td class="decimal">0.99</td>
+<td class="decimal">0.26</td>
+<td>3</td>
+</tr>
+<tr><td>-noise 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.76</td>
+<td class="decimal">1.50</td>
+<td class="decimal">1.11</td>
+<td class="decimal">0.09</td>
+<td>3</td>
+</tr>
+<tr><td>-normalize</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.02</td>
+<td class="decimal">7.33</td>
+<td>4</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.20</td>
+<td class="decimal">1.27</td>
+<td class="decimal">1.31</td>
+<td class="decimal">13.60</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Add 2%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.20</td>
+<td class="decimal">1.35</td>
+<td class="decimal">1.38</td>
+<td class="decimal">12.36</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all And 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">13.40</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Assign 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">13.54</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Depth 6</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.23</td>
+<td>3</td>
+</tr>
+<tr><td>-operator all Divide 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.32</td>
+<td class="decimal">1.51</td>
+<td class="decimal">1.52</td>
+<td class="decimal">9.17</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Gamma 0.7</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.77</td>
+<td>1</td>
+</tr>
+<tr><td>-operator all Negate 1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.45</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all LShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.47</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Multiply 0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.21</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.38</td>
+<td class="decimal">12.32</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Or 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all RShift 2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.47</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Subtract 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.22</td>
+<td class="decimal">1.41</td>
+<td class="decimal">1.45</td>
+<td class="decimal">12.25</td>
+<td>4</td>
+</tr>
+<tr><td>-operator red Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.49</td>
+<td>3</td>
+</tr>
+<tr><td>-operator gray Threshold 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.05</td>
+<td class="decimal">1.04</td>
+<td class="decimal">13.54</td>
+<td>3</td>
+</tr>
+<tr><td>-operator all Threshold-White 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.07</td>
+<td class="decimal">1.11</td>
+<td class="decimal">1.11</td>
+<td class="decimal">15.23</td>
+<td>3</td>
+</tr>
+<tr><td>-operator all Threshold-Black 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.08</td>
+<td class="decimal">1.10</td>
+<td class="decimal">1.12</td>
+<td class="decimal">15.06</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Xor 233</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-operator all Noise-Gaussian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.80</td>
+<td class="decimal">2.33</td>
+<td class="decimal">2.73</td>
+<td class="decimal">0.90</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Impulse 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.59</td>
+<td class="decimal">1.92</td>
+<td class="decimal">2.01</td>
+<td class="decimal">3.21</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Laplacian 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.79</td>
+<td class="decimal">2.40</td>
+<td class="decimal">2.85</td>
+<td class="decimal">2.20</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Multiplicative 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.81</td>
+<td class="decimal">2.38</td>
+<td class="decimal">2.77</td>
+<td class="decimal">1.29</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Poisson 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.23</td>
+<td class="decimal">2.53</td>
+<td class="decimal">0.95</td>
+<td>4</td>
+</tr>
+<tr><td>-operator all Noise-Uniform 30%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.71</td>
+<td class="decimal">2.11</td>
+<td class="decimal">2.36</td>
+<td class="decimal">3.22</td>
+<td>4</td>
+</tr>
+<tr><td>-ordered-dither all 2x2</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.93</td>
+<td class="decimal">0.93</td>
+<td class="decimal">0.88</td>
+<td class="decimal">10.48</td>
+<td>1</td>
+</tr>
+<tr><td>-ordered-dither all 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.02</td>
+<td class="decimal">1.11</td>
+<td class="decimal">1.07</td>
+<td class="decimal">9.94</td>
+<td>3</td>
+</tr>
+<tr><td>-ordered-dither intensity 3x3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.11</td>
+<td class="decimal">1.07</td>
+<td class="decimal">9.95</td>
+<td>3</td>
+</tr>
+<tr><td>-ordered-dither all 4x4</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.93</td>
+<td class="decimal">0.93</td>
+<td class="decimal">0.87</td>
+<td class="decimal">10.50</td>
+<td>1</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.41</td>
+<td class="decimal">1.85</td>
+<td class="decimal">2.02</td>
+<td class="decimal">1.72</td>
+<td>4</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">17.15</td>
+<td>3</td>
+</tr>
+<tr><td>-random-threshold all 20x80</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.37</td>
+<td class="decimal">1.68</td>
+<td class="decimal">1.76</td>
+<td class="decimal">7.48</td>
+<td>4</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.47</td>
+<td class="decimal">1.73</td>
+<td class="decimal">1.82</td>
+<td class="decimal">1.86</td>
+<td>4</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.45</td>
+<td class="decimal">1.51</td>
+<td class="decimal">1.65</td>
+<td class="decimal">3.94</td>
+<td>4</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.48</td>
+<td class="decimal">1.63</td>
+<td class="decimal">1.71</td>
+<td class="decimal">2.44</td>
+<td>4</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.49</td>
+<td class="decimal">1.69</td>
+<td class="decimal">1.69</td>
+<td class="decimal">0.58</td>
+<td>3</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.79</td>
+<td class="decimal">0.67</td>
+<td class="decimal">0.62</td>
+<td class="decimal">8.43</td>
+<td>1</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.64</td>
+<td>3</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.19</td>
+<td class="decimal">1.29</td>
+<td class="decimal">1.32</td>
+<td class="decimal">0.31</td>
+<td>4</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">6.74</td>
+<td>1</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">8.93</td>
+<td>2</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">6.99</td>
+<td>3</td>
+</tr>
+<tr><td>-sample 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">18.17</td>
+<td>1</td>
+</tr>
+<tr><td>-sample 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.65</td>
+<td>3</td>
+</tr>
+<tr><td>-sample 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">5.53</td>
+<td>4</td>
+</tr>
+<tr><td>-segment 0.5x0.25</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.01</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 5%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">9.74</td>
+<td>1</td>
+</tr>
+<tr><td>-scale 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.04</td>
+<td class="decimal">1.03</td>
+<td class="decimal">6.74</td>
+<td>2</td>
+</tr>
+<tr><td>-scale 150%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.06</td>
+<td class="decimal">0.98</td>
+<td class="decimal">1.04</td>
+<td class="decimal">2.36</td>
+<td>2</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.71</td>
+<td class="decimal">2.21</td>
+<td class="decimal">2.59</td>
+<td class="decimal">3.67</td>
+<td>4</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.54</td>
+<td class="decimal">2.06</td>
+<td class="decimal">2.24</td>
+<td class="decimal">2.45</td>
+<td>4</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.66</td>
+<td class="decimal">2.08</td>
+<td class="decimal">2.21</td>
+<td class="decimal">1.07</td>
+<td>4</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">8.76</td>
+<td>2</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.18</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.27</td>
+<td class="decimal">0.37</td>
+<td>4</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">13.49</td>
+<td>2</td>
+</tr>
+<tr><td>-spread 1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.45</td>
+<td>2</td>
+</tr>
+<tr><td>-spread 3</td>
+<td class="decimal">1.00</td>
+<td class="decimal">0.99</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.00</td>
+<td class="decimal">7.51</td>
+<td>3</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.67</td>
+<td class="decimal">1.80</td>
+<td class="decimal">2.19</td>
+<td class="decimal">1.81</td>
+<td>4</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.01</td>
+<td class="decimal">1.00</td>
+<td class="decimal">9.88</td>
+<td>2</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.19</td>
+<td class="decimal">1.29</td>
+<td class="decimal">1.31</td>
+<td class="decimal">13.18</td>
+<td>4</td>
+</tr>
+<tr><td>-trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.38</td>
+<td class="decimal">1.61</td>
+<td class="decimal">1.66</td>
+<td class="decimal">7.59</td>
+<td>4</td>
+</tr>
+<tr><td>-fuzz 5% -trim</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.60</td>
+<td class="decimal">2.00</td>
+<td class="decimal">2.23</td>
+<td class="decimal">5.85</td>
+<td>4</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.36</td>
+<td class="decimal">1.56</td>
+<td class="decimal">1.64</td>
+<td class="decimal">2.31</td>
+<td>4</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.37</td>
+<td class="decimal">1.64</td>
+<td class="decimal">1.72</td>
+<td class="decimal">2.01</td>
+<td>4</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.25</td>
+<td class="decimal">1.23</td>
+<td class="decimal">1.41</td>
+<td class="decimal">1.50</td>
+<td>4</td>
+</tr>
+<tr><td>-white-threshold 80%</td>
+<td class="decimal">1.00</td>
+<td class="decimal">1.08</td>
+<td class="decimal">1.10</td>
+<td class="decimal">1.10</td>
+<td class="decimal">15.23</td>
+<td>4</td>
 </tr>
 </tbody>
 </table>
@@ -2484,9 +5877,11 @@ unusually slow on PowerPC OS-X:</p>
 Copyright.txt. You should have received a copy of Copyright.txt with this
 package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
+</div>
+</div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2008-11-16 20:40 UTC.
 
 </div>
 </body>

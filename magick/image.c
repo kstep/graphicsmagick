@@ -2612,7 +2612,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   (void) AcquireOnePixelByReference(image,&corners[1],(long) image->columns-1,0,exception);
   (void) AcquireOnePixelByReference(image,&corners[2],0,(long) image->rows-1,exception);
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -5652,7 +5652,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
   is_grayscale=image->is_grayscale;
   image->storage_class=DirectClass;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,16) shared(row_count, status)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

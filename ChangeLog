@@ -1,3 +1,10 @@
+2008-11-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteJPEGImage): Use DCT algorithm default from
+	the library rather than the header file.
+	* magick: Adjust OpenMP scheduling options based on observed
+	behavior.
+
 2008-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Added OpenMP acceleration
