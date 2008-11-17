@@ -246,24 +246,67 @@ A.leftcolnav:VISITED  {
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on July 26, 2008</p>
+<p>This file was last updated on November 17, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#july-26-2008" id="id1" name="id1">1.2.5 (July 26, 2008)</a></li>
-<li><a class="reference" href="#june-29-2008" id="id2" name="id2">1.2.4 (June 29, 2008)</a></li>
-<li><a class="reference" href="#june-5-2008" id="id3" name="id3">1.2.3 (June 5, 2008)</a></li>
-<li><a class="reference" href="#may-28-2008" id="id4" name="id4">1.2.2 (May 28, 2008)</a></li>
-<li><a class="reference" href="#may-5-2008" id="id5" name="id5">1.2.1 (May 5, 2008)</a></li>
-<li><a class="reference" href="#april-29-2008" id="id6" name="id6">1.2 (April 29, 2008)</a></li>
-<li><a class="reference" href="#released-april-4-2004" id="id7" name="id7">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference" href="#released-in-may-2003" id="id8" name="id8">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference" href="#november-17-2008" id="id1" name="id1">1.2.6 (November 17, 2008)</a></li>
+<li><a class="reference" href="#july-26-2008" id="id2" name="id2">1.2.5 (July 26, 2008)</a></li>
+<li><a class="reference" href="#june-29-2008" id="id3" name="id3">1.2.4 (June 29, 2008)</a></li>
+<li><a class="reference" href="#june-5-2008" id="id4" name="id4">1.2.3 (June 5, 2008)</a></li>
+<li><a class="reference" href="#may-28-2008" id="id5" name="id5">1.2.2 (May 28, 2008)</a></li>
+<li><a class="reference" href="#may-5-2008" id="id6" name="id6">1.2.1 (May 5, 2008)</a></li>
+<li><a class="reference" href="#april-29-2008" id="id7" name="id7">1.2 (April 29, 2008)</a></li>
+<li><a class="reference" href="#released-april-4-2004" id="id8" name="id8">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference" href="#released-in-may-2003" id="id9" name="id9">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="july-26-2008" name="july-26-2008">1.2.5 (July 26, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id1" id="november-17-2008" name="november-17-2008">1.2.6 (November 17, 2008)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>None.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>RPM build, Fixes to successfully build binary RPMs for Red Hat
+Linux 4.</li>
+<li>MSL/conjure, Fix bug with attributes becoming appended to
+themselves.  Fix composite gravity handling. Fix memory leaks. Fix
+return status.</li>
+<li>Fix client name growth bug in benchmark command.</li>
+<li>Add progress indication for rotations of 90 and 270 degrees.</li>
+<li>+page now resets page offsets as one would expect.</li>
+<li>The Magick++ build was supposed to be optional, now it really is.</li>
+<li>Fix computation of MAGICK_LIB_VERSION so that it does not produce
+wrong results when a field becomes greater than '9'.</li>
+<li>JP2: Leak a bit less memory.  Does not fix existing leak in
+libJasper itself.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Resource listing output is more complete.</li>
+</ul>
+</blockquote>
+<p>Performance improvments:</p>
+<blockquote>
+<ul class="simple">
+<li>Removed a poorly-placed memset() which considerably diminished the
+performance of some algorithms.</li>
+<li>Fixed FuzzyColorMatch() so that it does not waste CPU time.  Should
+speed 'trim' and floodfill.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="july-26-2008" name="july-26-2008">1.2.5 (July 26, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -293,7 +336,7 @@ updates.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id2" id="june-29-2008" name="june-29-2008">1.2.4 (June 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id3" id="june-29-2008" name="june-29-2008">1.2.4 (June 29, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -321,7 +364,7 @@ by the Makefiles (SourceForge bug 2005883).</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="june-5-2008" name="june-5-2008">1.2.3 (June 5, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id4" id="june-5-2008" name="june-5-2008">1.2.3 (June 5, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -348,7 +391,7 @@ collection cause crashes in Jasper. This is not GraphicsMagick's fault.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id4" id="may-28-2008" name="may-28-2008">1.2.2 (May 28, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id5" id="may-28-2008" name="may-28-2008">1.2.2 (May 28, 2008)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -394,7 +437,7 @@ so that everything just works.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id5" id="may-5-2008" name="may-5-2008">1.2.1 (May 5, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id6" id="may-5-2008" name="may-5-2008">1.2.1 (May 5, 2008)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -425,7 +468,7 @@ considerably faster than the static or shared builds.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id6" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id7" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -681,7 +724,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id7" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id8" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -921,7 +964,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section">
-<h1><a class="toc-backref" href="#id8" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id9" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1077,7 +1120,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-07-25 22:40 UTC.
+Generated on: 2008-11-17 18:11 UTC.
 
 </div>
 </body>

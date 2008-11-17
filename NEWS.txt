@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on July 26, 2008
+This file was last updated on November 17, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,48 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.6 (November 17, 2008)
+=========================
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * RPM build, Fixes to successfully build binary RPMs for Red Hat
+    Linux 4.
+
+  * MSL/conjure, Fix bug with attributes becoming appended to
+    themselves.  Fix composite gravity handling. Fix memory leaks. Fix
+    return status.
+
+  * Fix client name growth bug in benchmark command.
+
+  * Add progress indication for rotations of 90 and 270 degrees.
+
+  * +page now resets page offsets as one would expect.
+
+  * The Magick++ build was supposed to be optional, now it really is.
+
+  * Fix computation of MAGICK_LIB_VERSION so that it does not produce
+    wrong results when a field becomes greater than '9'.
+
+  * JP2: Leak a bit less memory.  Does not fix existing leak in
+    libJasper itself.
+
+Feature improvements:
+
+  * Resource listing output is more complete.
+
+Performance improvments:
+
+  * Removed a poorly-placed memset() which considerably diminished the
+    performance of some algorithms.
+
+  * Fixed FuzzyColorMatch() so that it does not waste CPU time.  Should
+    speed 'trim' and floodfill.
 
 1.2.5 (July 26, 2008)
 =====================

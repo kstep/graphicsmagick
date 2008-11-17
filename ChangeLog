@@ -1,3 +1,8 @@
+2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.2.6 released.
+	* NEWS.txt: Updated news for release.
+
 2008-11-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (BlobClose): Leak a little bit less memory when
