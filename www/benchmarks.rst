@@ -516,6 +516,101 @@ Operation                          GM real    IM real    IM/GM ratio
 -white-threshold 80%                 0:01.798   0:07.193    4.00
 ================================== ========== ========== ===========
 
+Intel Pentium IV / Cygwin
+-------------------------
+
+This system is a 2000 vintage 2.0GHz Pentium IV system with Windows XP
+SP3 and latest Cygwin.  This system has only one CPU core and the
+compiler does not support OpenMP so this is a single-threaded
+configuration.  It can be seen that ImageMagick takes much longer to
+generate its tiled input image and to even get started (first -noop
+entry).  GraphicsMagick is considerably faster for all but one
+algorithm:
+
+================================== ========== ========== ===========
+Operation                          GM real    IM real    IM/GM ratio
+================================== ========== ========== ===========
+-noop                                0:01.890   0:09.844    5.21
+-affine 1,0,0.785,1,0,0 -transform   0:15.594  18:43.828   72.07
+-black-threshold 20%                 0:02.641   0:11.390    4.31
+-blur 0x0.5                          0:18.157   1:03.484    3.50
+-blur 0x1.0                          0:22.781   1:07.969    2.98
+-border 6x6                          0:03.015   0:29.391    9.75
+-charcoal 0x1                        0:49.250   1:47.687    2.19
+-chop 800x600+200+300                0:02.250   0:10.360    4.60
+-colorspace CMYK                     0:02.578   0:16.844    6.53
+-colorspace GRAY                     0:05.563   0:15.797    2.84
+-colorspace HSL                      0:12.343   0:19.719    1.60
+-colorspace HWB                      0:09.344   0:17.375    1.86
+-colorspace OHTA                     0:05.656   0:15.969    2.82
+-colorspace YCbCr                    0:05.703   0:15.953    2.80
+-colorspace YIQ                      0:05.703   0:15.953    2.80
+-colorspace YUV                      0:05.703   0:15.969    2.80
+-contrast -contrast -contrast        0:59.281   1:14.859    1.26
++contrast +contrast +contrast        0:54.453   1:09.563    1.28
+-convolve 1,1,1,1,4,1,1,1,1          0:12.296   0:25.063    2.04
+-colorize 30%/20%/50%                0:06.281   0:14.984    2.39
+-crop 1700x900+100+100               0:02.719   0:11.047    4.06
+-despeckle                           2:01.453   2:39.109    1.31
+-edge 0x1                            0:11.953   0:36.625    3.06
+-emboss 0x1                          0:24.328   1:20.875    3.32
+-enhance                             1:22.437   1:18.203    0.95
+-equalize                            0:03.812   0:16.141    4.23
+-flip                                0:03.000   0:11.375    3.79
+-flop                                0:02.937   0:11.375    3.87
+-frame 15x15+3+3                     0:03.047   0:24.532    8.05
+-gamma 1.6                           0:06.515   0:14.125    2.17
+-gaussian 0x0.5                      0:21.453   0:36.156    1.69
+-gaussian 0x1.0                      0:50.218   1:12.578    1.45
+-implode 0.5                         0:56.781   1:29.281    1.57
+-implode -1                          0:34.437   1:05.266    1.90
+-lat 10x10-5%                        0:40.110   0:59.829    1.49
+-level 10%,1.2,90%                   0:03.547   5:39.188   95.63
+-median 1                            2:33.250   3:02.422    1.19
+-median 2                            7:09.047   7:45.500    1.08
+-modulate 110/100/95                 0:15.328   0:23.047    1.50
+-motion-blur 0x3+30                  3:24.844   5:41.734    1.67
+-negate                              0:02.344   0:10.218    4.36
++noise Uniform                       0:17.875   9:11.109   30.83
++noise Gaussian                      2:02.844  19:43.375    9.63
++noise Multiplicative                1:20.766  18:52.515   14.02
++noise Impulse                       0:18.157   9:04.594   29.99
++noise Laplacian                     0:43.016   9:34.875   13.36
++noise Poisson                       1:14.063  38:41.797   31.35
+-noise 1                             2:37.500   3:07.234    1.19
+-noise 2                             7:14.844   7:52.125    1.09
+-normalize                           0:03.781   0:17.906    4.74
+-fill blue -fuzz 35% -opaque red     0:03.031   0:12.906    4.26
+-paint 0x1                           0:24.687   1:31.546    3.71
+-raise 10x10                         0:02.078   0:10.063    4.84
+-density 75x75 -resample 50x50       0:19.204   0:38.859    2.02
+-resize 10%                          0:10.016   0:24.094    2.41
+-resize 50%                          0:14.375   0:30.735    2.14
+-resize 150%                         0:45.547   1:30.375    1.98
+-roll +20+10                         0:03.094   2:23.000   46.22
+-rotate 0                            0:03.000   0:11.422    3.81
+-rotate 45                           1:27.391   2:21.672    1.62
+-rotate 90                           0:04.437   0:11.640    2.62
+-rotate 180                          0:02.828   0:11.313    4.00
+-rotate 270                          0:04.375   0:11.640    2.66
+-shade 30x30                         0:15.875   0:18.579    1.17
+-sharpen 0x0.5                       0:20.937   0:36.063    1.72
+-sharpen 0x1.0                       0:49.391   1:12.344    1.46
+-shave 10x10                         0:02.875   0:11.266    3.92
+-shear 45x45                         1:01.453   3:08.703    3.07
+-solarize 50%                        0:02.219   0:10.406    4.69
+-spread 1                            0:03.094   6:50.234  132.59
+-spread 3                            0:03.172   6:50.516  129.42
+-swirl 90                            0:29.797   1:00.421    2.03
+-threshold 35%                       0:02.750   0:11.391    4.14
+-fuzz 35% -transparent red           0:03.016   0:13.297    4.41
+-trim                                0:03.703   0:11.766    3.18
+-unsharp 0x0.5+20+1                  0:22.141   1:08.578    3.10
+-unsharp 0x1.0+20+1                  0:26.515   1:13.141    2.76
+-wave 25x150                         0:27.641   1:11.859    2.60
+-white-threshold 80%                 0:02.297   0:11.031    4.80
+================================== ========== ========== ===========
+
 
 --------------------------------------------------------------------------
 

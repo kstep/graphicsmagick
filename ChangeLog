@@ -1,3 +1,9 @@
+2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/fits.c: Impose a limit on the length of the row PDU.
+	Make sure that GraphicsMagick version information does not
+	overflow the length allowed by a row PDU.
+
 2008-11-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (WriteJPEGImage): Use DCT algorithm default from
