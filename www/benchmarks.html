@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
-<title>GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report</title>
+<title>GraphicsMagick 1.3.1 vs ImageMagick 6.4.5 Benchmark Report</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -48,8 +48,8 @@
 <li><a href="links.html">Links</a></li>
 </ul>
 </div>
-<div class="document" id="graphicsmagick-1-3-vs-imagemagick-6-4-5-benchmark-report">
-<h1 class="title">GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report</h1>
+<div class="document" id="graphicsmagick-1-3-1-vs-imagemagick-6-4-5-benchmark-report">
+<h1 class="title">GraphicsMagick 1.3.1 vs ImageMagick 6.4.5 Benchmark Report</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <div class="contents local topic">
@@ -69,10 +69,10 @@
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id1" id="introduction" name="introduction">Introduction</a></h1>
-<p>GraphicsMagick 1.3 has been benchmarked against the most recent
+<p>GraphicsMagick 1.3.1 has been benchmarked against the most recent
 ImageMagick release available at time of release. ImageMagick has
 recently been significantly updated to use OpenMP as has GraphicsMagick
-1.3. Several disparate types of systems were used in our testing. We are
+1.3.1. Several disparate types of systems were used in our testing. We are
 pleased to see that ImageMagick's performance has improved significantly
 on the benchmark that we posted earlier (see <a class="reference" href="benchmarks-1.2.html">GraphicsMagick 1.2
 Benchmarks</a>). It seems that access to the useful benchmark and
@@ -88,23 +88,23 @@ hardware. ImageMagick 6.4.5 only runs adequately on the latest high-end
 hardware with large caches, and runs poorly on most of the installed
 computing base. Even on the latest high-end hardware, GraphicsMagick is
 much more efficient than ImageMagick.</p>
-<p>The often extreme difference in the results is difficult to believe until
-one inspects the source code from both packages and sees that
+<p>The often extreme difference in the results is difficult to believe
+until one inspects the source code from both packages and sees that
 GraphicsMagick uses streamlined straight-forward code paths while
-ImageMagick uses convoluted and arcane code paths in an apparent attempt
-to defeat human comprehension. While the ImageMagick approach does
-successfully defeat human comprehension, it also seems to largely defeat
-C compiler comprehension as well, resulting in slow code. If time and
-money are important to you, then you should use GraphicsMagick rather
-than ImageMagick. If time and money are not important to you, then you
-should use ImageMagick.</p>
+ImageMagick uses convoluted and arcane code paths in an apparent
+attempt to defeat human comprehension. While the ImageMagick approach
+does successfully defeat human comprehension, it also seems to largely
+defeat C compiler comprehension (and the CPU's cache) as well,
+resulting in slow code. If time and money are important to you, then
+you should use GraphicsMagick rather than ImageMagick. If time and
+money are not important to you, then you should use ImageMagick.</p>
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id3" id="strategy" name="strategy">Strategy</a></h1>
 <p>For this benchmark cycle, we used a completely different benchmark
 approach. Instead of testing single-shot performance with large
 uncompressed files, we focused on the ability to process many medium
-sized (2048x1024 pixels) images. In order to prevent disk I/O from being
+sized (1920x1080 pixels) images. In order to prevent disk I/O from being
 a factor, we used a small input image and tiled it to create a larger
 input image via the &quot;tile:&quot; coder. The processed image is send to the
 &quot;null:&quot; coder so that file writes to a slow disk are also not a factor.
@@ -124,7 +124,7 @@ typical user observes.</p>
 </blockquote>
 <p>The software involved in the testing identified itself as:</p>
 <pre class="literal-block">
-GraphicsMagick 1.3 unreleased Q16 http://www.GraphicsMagick.org/
+GraphicsMagick 1.3.1 unreleased Q16 http://www.GraphicsMagick.org/
 
 ImageMagick 6.4.5 2008-11-03 Q16 OpenMP http://www.imagemagick.org
 </pre>
@@ -223,399 +223,399 @@ and running Solaris 10 U5. The compiler used identifies itself as &quot;gcc
 </thead>
 <tbody valign="top">
 <tr><td>-noop</td>
-<td>0:00.771</td>
-<td>0:01.268</td>
-<td class="decimal">1.64</td>
+<td>0:00.736</td>
+<td>0:01.269</td>
+<td class="decimal">1.72</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
-<td>0:02.418</td>
-<td>4:08.961</td>
-<td class="decimal">102.96</td>
+<td>0:02.326</td>
+<td>4:07.251</td>
+<td class="decimal">106.30</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
-<td>0:00.865</td>
-<td>0:01.564</td>
-<td class="decimal">1.81</td>
+<td>0:00.840</td>
+<td>0:01.537</td>
+<td class="decimal">1.83</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
-<td>0:04.178</td>
-<td>0:07.982</td>
-<td class="decimal">1.91</td>
+<td>0:03.254</td>
+<td>0:08.076</td>
+<td class="decimal">2.48</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
-<td>0:04.710</td>
-<td>0:08.464</td>
-<td class="decimal">1.80</td>
+<td>0:03.820</td>
+<td>0:08.569</td>
+<td class="decimal">2.24</td>
 </tr>
 <tr><td>-border 6x6</td>
-<td>0:01.277</td>
-<td>0:02.886</td>
-<td class="decimal">2.26</td>
+<td>0:01.196</td>
+<td>0:02.949</td>
+<td class="decimal">2.47</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
-<td>0:08.169</td>
-<td>0:12.602</td>
-<td class="decimal">1.54</td>
+<td>0:07.233</td>
+<td>0:12.720</td>
+<td class="decimal">1.76</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
-<td>0:00.938</td>
-<td>0:01.574</td>
-<td class="decimal">1.68</td>
+<td>0:00.904</td>
+<td>0:01.530</td>
+<td class="decimal">1.69</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
-<td>0:00.980</td>
-<td>0:02.538</td>
-<td class="decimal">2.59</td>
+<td>0:00.952</td>
+<td>0:02.543</td>
+<td class="decimal">2.67</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
-<td>0:01.145</td>
-<td>0:02.665</td>
-<td class="decimal">2.33</td>
+<td>0:01.096</td>
+<td>0:02.635</td>
+<td class="decimal">2.40</td>
 </tr>
 <tr><td>-colorspace HSL</td>
-<td>0:01.743</td>
-<td>0:02.856</td>
-<td class="decimal">1.64</td>
+<td>0:01.677</td>
+<td>0:02.838</td>
+<td class="decimal">1.69</td>
 </tr>
 <tr><td>-colorspace HWB</td>
-<td>0:01.423</td>
-<td>0:02.638</td>
-<td class="decimal">1.85</td>
+<td>0:01.368</td>
+<td>0:02.587</td>
+<td class="decimal">1.89</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
-<td>0:01.134</td>
-<td>0:02.659</td>
-<td class="decimal">2.34</td>
+<td>0:01.077</td>
+<td>0:02.645</td>
+<td class="decimal">2.46</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
-<td>0:01.123</td>
-<td>0:02.674</td>
+<td>0:01.101</td>
+<td>0:02.619</td>
 <td class="decimal">2.38</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
-<td>0:01.131</td>
-<td>0:02.685</td>
-<td class="decimal">2.37</td>
+<td>0:01.068</td>
+<td>0:02.646</td>
+<td class="decimal">2.48</td>
 </tr>
 <tr><td>-colorspace YUV</td>
-<td>0:01.147</td>
-<td>0:02.696</td>
-<td class="decimal">2.35</td>
+<td>0:01.091</td>
+<td>0:02.639</td>
+<td class="decimal">2.42</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
-<td>0:07.199</td>
-<td>0:08.193</td>
-<td class="decimal">1.14</td>
+<td>0:07.085</td>
+<td>0:08.332</td>
+<td class="decimal">1.18</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
-<td>0:06.703</td>
-<td>0:07.687</td>
-<td class="decimal">1.15</td>
+<td>0:06.580</td>
+<td>0:07.748</td>
+<td class="decimal">1.18</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
-<td>0:01.939</td>
-<td>0:03.236</td>
-<td class="decimal">1.67</td>
+<td>0:01.944</td>
+<td>0:03.168</td>
+<td class="decimal">1.63</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
-<td>0:01.422</td>
-<td>0:02.398</td>
+<td>0:01.382</td>
+<td>0:02.341</td>
 <td class="decimal">1.69</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
-<td>0:01.151</td>
-<td>0:01.934</td>
-<td class="decimal">1.68</td>
-</tr>
-<tr><td>-despeckle</td>
-<td>0:12.933</td>
-<td>0:39.125</td>
-<td class="decimal">3.03</td>
-</tr>
-<tr><td>-edge 0x1</td>
-<td>0:02.822</td>
-<td>0:04.381</td>
-<td class="decimal">1.55</td>
-</tr>
-<tr><td>-emboss 0x1</td>
-<td>0:03.681</td>
-<td>0:10.004</td>
-<td class="decimal">2.72</td>
-</tr>
-<tr><td>-enhance</td>
-<td>0:08.396</td>
-<td>0:08.667</td>
-<td class="decimal">1.03</td>
-</tr>
-<tr><td>-equalize</td>
-<td>0:01.467</td>
-<td>0:02.624</td>
+<td>0:01.088</td>
+<td>0:01.952</td>
 <td class="decimal">1.79</td>
 </tr>
-<tr><td>-flip</td>
-<td>0:01.261</td>
-<td>0:02.073</td>
-<td class="decimal">1.64</td>
+<tr><td>-despeckle</td>
+<td>0:12.892</td>
+<td>0:39.312</td>
+<td class="decimal">3.05</td>
 </tr>
-<tr><td>-flop</td>
-<td>0:01.268</td>
-<td>0:02.062</td>
-<td class="decimal">1.63</td>
-</tr>
-<tr><td>-frame 15x15+3+3</td>
-<td>0:01.294</td>
-<td>0:02.944</td>
-<td class="decimal">2.28</td>
-</tr>
-<tr><td>-gamma 1.6</td>
-<td>0:01.387</td>
-<td>0:01.579</td>
-<td class="decimal">1.14</td>
-</tr>
-<tr><td>-gaussian 0x0.5</td>
-<td>0:02.795</td>
-<td>0:04.343</td>
-<td class="decimal">1.55</td>
-</tr>
-<tr><td>-gaussian 0x1.0</td>
-<td>0:05.652</td>
-<td>0:08.287</td>
-<td class="decimal">1.47</td>
-</tr>
-<tr><td>-implode 0.5</td>
-<td>0:05.961</td>
-<td>0:09.684</td>
-<td class="decimal">1.62</td>
-</tr>
-<tr><td>-implode -1</td>
-<td>0:05.337</td>
-<td>0:09.117</td>
-<td class="decimal">1.71</td>
-</tr>
-<tr><td>-lat 10x10-5%</td>
-<td>0:07.884</td>
-<td>0:09.727</td>
-<td class="decimal">1.23</td>
-</tr>
-<tr><td>-level 10%,1.2,90%</td>
-<td>0:01.046</td>
-<td>0:05.877</td>
-<td class="decimal">5.62</td>
-</tr>
-<tr><td>-median 1</td>
-<td>0:37.968</td>
-<td>0:33.680</td>
-<td class="decimal">0.89</td>
-</tr>
-<tr><td>-median 2</td>
-<td>1:26.258</td>
-<td>1:16.682</td>
-<td class="decimal">0.89</td>
-</tr>
-<tr><td>-modulate 110/100/95</td>
-<td>0:02.171</td>
-<td>0:02.601</td>
-<td class="decimal">1.20</td>
-</tr>
-<tr><td>-motion-blur 0x3+30</td>
-<td>1:16.428</td>
-<td>1:10.434</td>
-<td class="decimal">0.92</td>
-</tr>
-<tr><td>-negate</td>
-<td>0:00.870</td>
-<td>0:01.347</td>
-<td class="decimal">1.55</td>
-</tr>
-<tr><td>+noise Uniform</td>
-<td>0:04.391</td>
-<td>0:32.861</td>
-<td class="decimal">7.48</td>
-</tr>
-<tr><td>+noise Gaussian</td>
-<td>0:15.442</td>
-<td>1:36.048</td>
-<td class="decimal">6.22</td>
-</tr>
-<tr><td>+noise Multiplicative</td>
-<td>0:10.623</td>
-<td>1:16.379</td>
-<td class="decimal">7.19</td>
-</tr>
-<tr><td>+noise Impulse</td>
-<td>0:04.394</td>
-<td>0:31.481</td>
-<td class="decimal">7.16</td>
-</tr>
-<tr><td>+noise Laplacian</td>
-<td>0:06.013</td>
-<td>0:40.154</td>
-<td class="decimal">6.68</td>
-</tr>
-<tr><td>+noise Poisson</td>
-<td>0:11.523</td>
-<td>2:05.476</td>
-<td class="decimal">10.89</td>
-</tr>
-<tr><td>-noise 1</td>
-<td>0:38.296</td>
-<td>0:33.930</td>
-<td class="decimal">0.89</td>
-</tr>
-<tr><td>-noise 2</td>
-<td>1:27.124</td>
-<td>1:17.289</td>
-<td class="decimal">0.89</td>
-</tr>
-<tr><td>-normalize</td>
-<td>0:01.383</td>
-<td>0:03.084</td>
-<td class="decimal">2.23</td>
-</tr>
-<tr><td>-fill blue -fuzz 35% -opaque red</td>
-<td>0:00.994</td>
-<td>0:01.663</td>
-<td class="decimal">1.67</td>
-</tr>
-<tr><td>-paint 0x1</td>
-<td>0:04.643</td>
-<td>0:10.331</td>
-<td class="decimal">2.23</td>
-</tr>
-<tr><td>-raise 10x10</td>
-<td>0:00.826</td>
-<td>0:01.334</td>
-<td class="decimal">1.62</td>
-</tr>
-<tr><td>-density 75x75 -resample 50x50</td>
-<td>0:03.010</td>
-<td>0:04.279</td>
-<td class="decimal">1.42</td>
-</tr>
-<tr><td>-resize 10%</td>
-<td>0:01.562</td>
-<td>0:02.220</td>
-<td class="decimal">1.42</td>
-</tr>
-<tr><td>-resize 50%</td>
-<td>0:02.157</td>
-<td>0:03.309</td>
+<tr><td>-edge 0x1</td>
+<td>0:02.848</td>
+<td>0:04.363</td>
 <td class="decimal">1.53</td>
 </tr>
-<tr><td>-resize 150%</td>
-<td>0:09.212</td>
-<td>0:13.249</td>
-<td class="decimal">1.44</td>
+<tr><td>-emboss 0x1</td>
+<td>0:03.636</td>
+<td>0:09.993</td>
+<td class="decimal">2.75</td>
 </tr>
-<tr><td>-roll +20+10</td>
-<td>0:01.292</td>
-<td>0:31.909</td>
-<td class="decimal">24.70</td>
+<tr><td>-enhance</td>
+<td>0:08.157</td>
+<td>0:09.324</td>
+<td class="decimal">1.14</td>
 </tr>
-<tr><td>-rotate 0</td>
-<td>0:01.313</td>
-<td>0:02.098</td>
-<td class="decimal">1.60</td>
+<tr><td>-equalize</td>
+<td>0:01.434</td>
+<td>0:02.614</td>
+<td class="decimal">1.82</td>
 </tr>
-<tr><td>-rotate 45</td>
-<td>0:26.130</td>
-<td>0:29.426</td>
-<td class="decimal">1.13</td>
+<tr><td>-flip</td>
+<td>0:01.196</td>
+<td>0:02.054</td>
+<td class="decimal">1.72</td>
 </tr>
-<tr><td>-rotate 90</td>
-<td>0:02.065</td>
-<td>0:02.610</td>
-<td class="decimal">1.26</td>
+<tr><td>-flop</td>
+<td>0:01.232</td>
+<td>0:02.049</td>
+<td class="decimal">1.66</td>
 </tr>
-<tr><td>-rotate 180</td>
-<td>0:01.301</td>
-<td>0:02.051</td>
-<td class="decimal">1.58</td>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:01.243</td>
+<td>0:02.932</td>
+<td class="decimal">2.36</td>
 </tr>
-<tr><td>-rotate 270</td>
-<td>0:02.173</td>
-<td>0:02.644</td>
+<tr><td>-gamma 1.6</td>
+<td>0:01.346</td>
+<td>0:01.559</td>
+<td class="decimal">1.16</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:02.782</td>
+<td>0:04.227</td>
+<td class="decimal">1.52</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:05.635</td>
+<td>0:08.219</td>
+<td class="decimal">1.46</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:05.889</td>
+<td>0:09.388</td>
+<td class="decimal">1.59</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:05.230</td>
+<td>0:08.784</td>
+<td class="decimal">1.68</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:07.761</td>
+<td>0:09.705</td>
+<td class="decimal">1.25</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:01.017</td>
+<td>0:05.903</td>
+<td class="decimal">5.80</td>
+</tr>
+<tr><td>-median 1</td>
+<td>0:34.255</td>
+<td>0:33.785</td>
+<td class="decimal">0.99</td>
+</tr>
+<tr><td>-median 2</td>
+<td>1:18.256</td>
+<td>1:16.800</td>
+<td class="decimal">0.98</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:02.105</td>
+<td>0:02.576</td>
 <td class="decimal">1.22</td>
 </tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>1:07.478</td>
+<td>1:35.953</td>
+<td class="decimal">1.42</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:00.839</td>
+<td>0:01.322</td>
+<td class="decimal">1.58</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:04.364</td>
+<td>0:33.349</td>
+<td class="decimal">7.64</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>0:15.340</td>
+<td>1:36.815</td>
+<td class="decimal">6.31</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:10.494</td>
+<td>1:17.915</td>
+<td class="decimal">7.42</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:04.317</td>
+<td>0:31.894</td>
+<td class="decimal">7.39</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:05.898</td>
+<td>0:40.838</td>
+<td class="decimal">6.92</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:11.311</td>
+<td>2:05.923</td>
+<td class="decimal">11.13</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>0:32.742</td>
+<td>0:33.759</td>
+<td class="decimal">1.03</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>1:14.809</td>
+<td>1:16.895</td>
+<td class="decimal">1.03</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:01.320</td>
+<td>0:03.012</td>
+<td class="decimal">2.28</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:00.955</td>
+<td>0:01.620</td>
+<td class="decimal">1.70</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:04.342</td>
+<td>0:10.323</td>
+<td class="decimal">2.38</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:00.767</td>
+<td>0:01.279</td>
+<td class="decimal">1.67</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:02.757</td>
+<td>0:04.318</td>
+<td class="decimal">1.57</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:01.522</td>
+<td>0:02.134</td>
+<td class="decimal">1.40</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:02.058</td>
+<td>0:03.198</td>
+<td class="decimal">1.55</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:08.699</td>
+<td>0:12.722</td>
+<td class="decimal">1.46</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:01.229</td>
+<td>0:32.646</td>
+<td class="decimal">26.56</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:01.216</td>
+<td>0:02.051</td>
+<td class="decimal">1.69</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>0:23.668</td>
+<td>0:29.266</td>
+<td class="decimal">1.24</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:01.673</td>
+<td>0:02.637</td>
+<td class="decimal">1.58</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:01.211</td>
+<td>0:02.032</td>
+<td class="decimal">1.68</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:01.687</td>
+<td>0:02.568</td>
+<td class="decimal">1.52</td>
+</tr>
 <tr><td>-shade 30x30</td>
-<td>0:02.300</td>
-<td>0:03.190</td>
+<td>0:02.287</td>
+<td>0:03.185</td>
 <td class="decimal">1.39</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
-<td>0:02.849</td>
-<td>0:04.324</td>
-<td class="decimal">1.52</td>
+<td>0:02.903</td>
+<td>0:04.282</td>
+<td class="decimal">1.48</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
-<td>0:05.703</td>
-<td>0:08.308</td>
-<td class="decimal">1.46</td>
+<td>0:05.709</td>
+<td>0:08.228</td>
+<td class="decimal">1.44</td>
 </tr>
 <tr><td>-shave 10x10</td>
-<td>0:01.248</td>
-<td>0:02.219</td>
+<td>0:01.219</td>
+<td>0:02.167</td>
 <td class="decimal">1.78</td>
 </tr>
 <tr><td>-shear 45x45</td>
-<td>0:21.007</td>
-<td>0:42.378</td>
-<td class="decimal">2.02</td>
+<td>0:18.835</td>
+<td>0:42.231</td>
+<td class="decimal">2.24</td>
 </tr>
 <tr><td>-solarize 50%</td>
-<td>0:00.879</td>
-<td>0:01.356</td>
-<td class="decimal">1.54</td>
+<td>0:00.833</td>
+<td>0:01.348</td>
+<td class="decimal">1.62</td>
 </tr>
 <tr><td>-spread 1</td>
-<td>0:01.313</td>
-<td>1:16.925</td>
-<td class="decimal">58.59</td>
+<td>0:01.235</td>
+<td>1:16.682</td>
+<td class="decimal">62.09</td>
 </tr>
 <tr><td>-spread 3</td>
-<td>0:01.373</td>
-<td>1:17.254</td>
-<td class="decimal">56.27</td>
+<td>0:01.362</td>
+<td>1:17.973</td>
+<td class="decimal">57.25</td>
 </tr>
 <tr><td>-swirl 90</td>
-<td>0:05.326</td>
-<td>0:09.057</td>
-<td class="decimal">1.70</td>
+<td>0:04.990</td>
+<td>0:08.702</td>
+<td class="decimal">1.74</td>
 </tr>
 <tr><td>-threshold 35%</td>
-<td>0:01.009</td>
-<td>0:01.482</td>
-<td class="decimal">1.47</td>
+<td>0:00.970</td>
+<td>0:01.447</td>
+<td class="decimal">1.49</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
-<td>0:01.024</td>
-<td>0:01.758</td>
-<td class="decimal">1.72</td>
+<td>0:00.975</td>
+<td>0:01.731</td>
+<td class="decimal">1.78</td>
 </tr>
 <tr><td>-trim</td>
-<td>0:01.152</td>
-<td>0:02.231</td>
-<td class="decimal">1.94</td>
+<td>0:01.145</td>
+<td>0:02.172</td>
+<td class="decimal">1.90</td>
 </tr>
 <tr><td>-unsharp 0x0.5+20+1</td>
-<td>0:04.312</td>
-<td>0:08.341</td>
-<td class="decimal">1.93</td>
+<td>0:03.428</td>
+<td>0:08.365</td>
+<td class="decimal">2.44</td>
 </tr>
 <tr><td>-unsharp 0x1.0+20+1</td>
-<td>0:04.878</td>
-<td>0:08.814</td>
-<td class="decimal">1.81</td>
+<td>0:03.964</td>
+<td>0:08.809</td>
+<td class="decimal">2.22</td>
 </tr>
 <tr><td>-wave 25x150</td>
-<td>0:06.168</td>
-<td>0:11.686</td>
-<td class="decimal">1.89</td>
+<td>0:05.830</td>
+<td>0:11.381</td>
+<td class="decimal">1.95</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
-<td>0:00.865</td>
-<td>0:01.529</td>
-<td class="decimal">1.77</td>
+<td>0:00.831</td>
+<td>0:01.534</td>
+<td class="decimal">1.85</td>
 </tr>
 </tbody>
 </table>
@@ -641,399 +641,399 @@ and running Solaris 10 U5. The compiler used identifies itself as &quot;gcc
 </thead>
 <tbody valign="top">
 <tr><td>-noop</td>
-<td>0:01.559</td>
-<td>0:07.682</td>
-<td class="decimal">4.93</td>
+<td>0:01.568</td>
+<td>0:07.589</td>
+<td class="decimal">4.84</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
-<td>0:11.955</td>
-<td>5:16.076</td>
-<td class="decimal">26.44</td>
+<td>0:11.798</td>
+<td>5:15.828</td>
+<td class="decimal">26.77</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
-<td>0:02.533</td>
-<td>0:09.371</td>
-<td class="decimal">3.70</td>
+<td>0:02.462</td>
+<td>0:09.356</td>
+<td class="decimal">3.80</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
-<td>0:13.241</td>
-<td>0:33.991</td>
-<td class="decimal">2.57</td>
+<td>0:11.380</td>
+<td>0:33.502</td>
+<td class="decimal">2.94</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
-<td>0:16.528</td>
-<td>0:37.005</td>
-<td class="decimal">2.24</td>
+<td>0:14.582</td>
+<td>0:36.937</td>
+<td class="decimal">2.53</td>
 </tr>
 <tr><td>-border 6x6</td>
-<td>0:02.360</td>
-<td>0:18.196</td>
-<td class="decimal">7.71</td>
+<td>0:02.377</td>
+<td>0:18.054</td>
+<td class="decimal">7.60</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
-<td>0:36.755</td>
-<td>1:09.377</td>
-<td class="decimal">1.89</td>
+<td>0:34.292</td>
+<td>1:09.127</td>
+<td class="decimal">2.02</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
-<td>0:02.035</td>
-<td>0:08.176</td>
-<td class="decimal">4.02</td>
+<td>0:02.013</td>
+<td>0:08.168</td>
+<td class="decimal">4.06</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
-<td>0:02.516</td>
-<td>0:12.927</td>
-<td class="decimal">5.14</td>
+<td>0:02.410</td>
+<td>0:12.921</td>
+<td class="decimal">5.36</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
-<td>0:04.249</td>
-<td>0:12.848</td>
-<td class="decimal">3.02</td>
+<td>0:04.102</td>
+<td>0:12.813</td>
+<td class="decimal">3.12</td>
 </tr>
 <tr><td>-colorspace HSL</td>
-<td>0:08.076</td>
-<td>0:14.373</td>
-<td class="decimal">1.78</td>
+<td>0:07.988</td>
+<td>0:14.302</td>
+<td class="decimal">1.79</td>
 </tr>
 <tr><td>-colorspace HWB</td>
-<td>0:07.243</td>
-<td>0:13.889</td>
-<td class="decimal">1.92</td>
+<td>0:07.340</td>
+<td>0:13.869</td>
+<td class="decimal">1.89</td>
 </tr>
 <tr><td>-colorspace OHTA</td>
-<td>0:04.230</td>
-<td>0:12.784</td>
-<td class="decimal">3.02</td>
+<td>0:04.114</td>
+<td>0:12.919</td>
+<td class="decimal">3.14</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
-<td>0:04.238</td>
-<td>0:12.844</td>
-<td class="decimal">3.03</td>
+<td>0:04.103</td>
+<td>0:12.738</td>
+<td class="decimal">3.10</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
-<td>0:04.274</td>
-<td>0:12.825</td>
-<td class="decimal">3.00</td>
+<td>0:04.128</td>
+<td>0:12.837</td>
+<td class="decimal">3.11</td>
 </tr>
 <tr><td>-colorspace YUV</td>
-<td>0:04.236</td>
-<td>0:12.942</td>
-<td class="decimal">3.06</td>
+<td>0:04.103</td>
+<td>0:12.917</td>
+<td class="decimal">3.15</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
-<td>0:42.309</td>
-<td>0:49.859</td>
+<td>0:42.407</td>
+<td>0:49.965</td>
 <td class="decimal">1.18</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
-<td>0:40.519</td>
-<td>0:47.918</td>
-<td class="decimal">1.18</td>
+<td>0:40.475</td>
+<td>0:48.020</td>
+<td class="decimal">1.19</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
-<td>0:09.011</td>
-<td>0:19.148</td>
-<td class="decimal">2.12</td>
+<td>0:09.254</td>
+<td>0:19.168</td>
+<td class="decimal">2.07</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
-<td>0:04.434</td>
-<td>0:12.208</td>
-<td class="decimal">2.75</td>
+<td>0:04.494</td>
+<td>0:12.240</td>
+<td class="decimal">2.72</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
-<td>0:02.169</td>
-<td>0:08.325</td>
+<td>0:02.171</td>
+<td>0:08.333</td>
 <td class="decimal">3.84</td>
 </tr>
 <tr><td>-despeckle</td>
-<td>1:49.201</td>
-<td>3:39.506</td>
-<td class="decimal">2.01</td>
+<td>1:49.368</td>
+<td>3:38.388</td>
+<td class="decimal">2.00</td>
 </tr>
 <tr><td>-edge 0x1</td>
-<td>0:14.793</td>
-<td>0:26.531</td>
+<td>0:14.833</td>
+<td>0:26.556</td>
 <td class="decimal">1.79</td>
 </tr>
 <tr><td>-emboss 0x1</td>
-<td>0:19.629</td>
-<td>1:02.875</td>
-<td class="decimal">3.20</td>
+<td>0:19.484</td>
+<td>1:03.558</td>
+<td class="decimal">3.26</td>
 </tr>
 <tr><td>-enhance</td>
-<td>0:42.450</td>
-<td>0:42.911</td>
+<td>0:42.730</td>
+<td>0:43.000</td>
 <td class="decimal">1.01</td>
 </tr>
 <tr><td>-equalize</td>
-<td>0:04.663</td>
-<td>0:14.824</td>
-<td class="decimal">3.18</td>
+<td>0:04.543</td>
+<td>0:14.539</td>
+<td class="decimal">3.20</td>
 </tr>
 <tr><td>-flip</td>
-<td>0:02.356</td>
-<td>0:08.622</td>
-<td class="decimal">3.66</td>
+<td>0:02.373</td>
+<td>0:08.643</td>
+<td class="decimal">3.64</td>
 </tr>
 <tr><td>-flop</td>
-<td>0:02.950</td>
-<td>0:09.365</td>
-<td class="decimal">3.17</td>
+<td>0:03.008</td>
+<td>0:09.557</td>
+<td class="decimal">3.18</td>
 </tr>
 <tr><td>-frame 15x15+3+3</td>
-<td>0:02.435</td>
-<td>0:18.431</td>
-<td class="decimal">7.57</td>
+<td>0:02.410</td>
+<td>0:18.543</td>
+<td class="decimal">7.69</td>
 </tr>
 <tr><td>-gamma 1.6</td>
-<td>0:04.051</td>
-<td>0:11.224</td>
-<td class="decimal">2.77</td>
+<td>0:03.939</td>
+<td>0:11.092</td>
+<td class="decimal">2.82</td>
 </tr>
 <tr><td>-gaussian 0x0.5</td>
-<td>0:15.661</td>
-<td>0:27.420</td>
+<td>0:15.682</td>
+<td>0:27.393</td>
 <td class="decimal">1.75</td>
 </tr>
 <tr><td>-gaussian 0x1.0</td>
-<td>0:37.816</td>
-<td>0:55.493</td>
-<td class="decimal">1.47</td>
+<td>0:37.851</td>
+<td>0:54.938</td>
+<td class="decimal">1.45</td>
 </tr>
 <tr><td>-implode 0.5</td>
-<td>0:23.256</td>
-<td>0:43.107</td>
-<td class="decimal">1.85</td>
+<td>0:22.628</td>
+<td>0:42.806</td>
+<td class="decimal">1.89</td>
 </tr>
 <tr><td>-implode -1</td>
-<td>0:19.071</td>
-<td>0:37.880</td>
-<td class="decimal">1.99</td>
+<td>0:18.455</td>
+<td>0:37.726</td>
+<td class="decimal">2.04</td>
 </tr>
 <tr><td>-lat 10x10-5%</td>
-<td>0:48.049</td>
-<td>1:37.183</td>
-<td class="decimal">2.02</td>
+<td>0:39.769</td>
+<td>1:36.573</td>
+<td class="decimal">2.43</td>
 </tr>
 <tr><td>-level 10%,1.2,90%</td>
-<td>0:02.931</td>
-<td>5:21.276</td>
-<td class="decimal">109.61</td>
+<td>0:02.859</td>
+<td>5:20.154</td>
+<td class="decimal">111.98</td>
 </tr>
 <tr><td>-median 1</td>
-<td>1:20.197</td>
-<td>1:17.407</td>
-<td class="decimal">0.97</td>
+<td>1:15.361</td>
+<td>1:17.136</td>
+<td class="decimal">1.02</td>
 </tr>
 <tr><td>-median 2</td>
-<td>3:12.218</td>
-<td>2:50.628</td>
-<td class="decimal">0.89</td>
+<td>2:56.672</td>
+<td>2:50.296</td>
+<td class="decimal">0.96</td>
 </tr>
 <tr><td>-modulate 110/100/95</td>
-<td>0:13.765</td>
-<td>0:20.993</td>
-<td class="decimal">1.53</td>
+<td>0:13.694</td>
+<td>0:20.879</td>
+<td class="decimal">1.52</td>
 </tr>
 <tr><td>-motion-blur 0x3+30</td>
-<td>2:56.312</td>
-<td>3:19.321</td>
-<td class="decimal">1.13</td>
+<td>2:21.951</td>
+<td>3:18.113</td>
+<td class="decimal">1.40</td>
 </tr>
 <tr><td>-negate</td>
-<td>0:02.259</td>
-<td>0:08.321</td>
-<td class="decimal">3.68</td>
+<td>0:02.189</td>
+<td>0:08.480</td>
+<td class="decimal">3.87</td>
 </tr>
 <tr><td>+noise Uniform</td>
-<td>0:15.522</td>
-<td>1:17.669</td>
-<td class="decimal">5.00</td>
+<td>0:14.847</td>
+<td>1:17.781</td>
+<td class="decimal">5.24</td>
 </tr>
 <tr><td>+noise Gaussian</td>
-<td>1:04.580</td>
-<td>3:41.353</td>
-<td class="decimal">3.43</td>
+<td>1:03.014</td>
+<td>3:42.374</td>
+<td class="decimal">3.53</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
-<td>0:42.506</td>
-<td>2:58.412</td>
-<td class="decimal">4.20</td>
+<td>0:42.599</td>
+<td>2:58.011</td>
+<td class="decimal">4.18</td>
 </tr>
 <tr><td>+noise Impulse</td>
-<td>0:15.893</td>
-<td>1:17.551</td>
-<td class="decimal">4.88</td>
+<td>0:15.240</td>
+<td>1:18.049</td>
+<td class="decimal">5.12</td>
 </tr>
 <tr><td>+noise Laplacian</td>
-<td>0:25.900</td>
-<td>1:41.173</td>
-<td class="decimal">3.91</td>
+<td>0:25.233</td>
+<td>1:41.187</td>
+<td class="decimal">4.01</td>
 </tr>
 <tr><td>+noise Poisson</td>
-<td>0:47.410</td>
-<td>4:52.765</td>
-<td class="decimal">6.18</td>
+<td>0:46.670</td>
+<td>4:52.140</td>
+<td class="decimal">6.26</td>
 </tr>
 <tr><td>-noise 1</td>
-<td>1:22.076</td>
-<td>1:19.480</td>
-<td class="decimal">0.97</td>
+<td>1:17.504</td>
+<td>1:19.084</td>
+<td class="decimal">1.02</td>
 </tr>
 <tr><td>-noise 2</td>
-<td>3:14.165</td>
-<td>2:52.093</td>
-<td class="decimal">0.89</td>
+<td>2:59.061</td>
+<td>2:52.232</td>
+<td class="decimal">0.96</td>
 </tr>
 <tr><td>-normalize</td>
-<td>0:04.315</td>
-<td>0:15.490</td>
-<td class="decimal">3.59</td>
+<td>0:04.233</td>
+<td>0:15.509</td>
+<td class="decimal">3.66</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
-<td>0:03.683</td>
-<td>0:26.441</td>
-<td class="decimal">7.18</td>
+<td>0:03.507</td>
+<td>0:26.551</td>
+<td class="decimal">7.57</td>
 </tr>
 <tr><td>-paint 0x1</td>
-<td>0:24.394</td>
-<td>0:47.091</td>
+<td>0:24.353</td>
+<td>0:47.092</td>
 <td class="decimal">1.93</td>
 </tr>
 <tr><td>-raise 10x10</td>
-<td>0:01.650</td>
-<td>0:07.759</td>
-<td class="decimal">4.70</td>
+<td>0:01.673</td>
+<td>0:07.777</td>
+<td class="decimal">4.65</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
-<td>0:12.610</td>
-<td>0:23.159</td>
+<td>0:12.631</td>
+<td>0:23.225</td>
 <td class="decimal">1.84</td>
 </tr>
 <tr><td>-resize 10%</td>
-<td>0:06.737</td>
-<td>0:13.820</td>
-<td class="decimal">2.05</td>
+<td>0:06.733</td>
+<td>0:13.767</td>
+<td class="decimal">2.04</td>
 </tr>
 <tr><td>-resize 50%</td>
-<td>0:09.930</td>
-<td>0:19.380</td>
-<td class="decimal">1.95</td>
+<td>0:09.798</td>
+<td>0:19.219</td>
+<td class="decimal">1.96</td>
 </tr>
 <tr><td>-resize 150%</td>
-<td>0:32.559</td>
-<td>0:53.872</td>
-<td class="decimal">1.65</td>
+<td>0:32.331</td>
+<td>0:53.710</td>
+<td class="decimal">1.66</td>
 </tr>
 <tr><td>-roll +20+10</td>
-<td>0:02.422</td>
-<td>0:30.244</td>
-<td class="decimal">12.49</td>
+<td>0:02.409</td>
+<td>0:30.234</td>
+<td class="decimal">12.55</td>
 </tr>
 <tr><td>-rotate 0</td>
-<td>0:02.341</td>
-<td>0:08.596</td>
-<td class="decimal">3.67</td>
+<td>0:02.327</td>
+<td>0:08.673</td>
+<td class="decimal">3.73</td>
 </tr>
 <tr><td>-rotate 45</td>
-<td>0:57.382</td>
-<td>1:22.235</td>
-<td class="decimal">1.43</td>
+<td>0:58.778</td>
+<td>1:22.576</td>
+<td class="decimal">1.40</td>
 </tr>
 <tr><td>-rotate 90</td>
-<td>0:04.159</td>
-<td>0:09.543</td>
-<td class="decimal">2.29</td>
+<td>0:03.301</td>
+<td>0:09.738</td>
+<td class="decimal">2.95</td>
 </tr>
 <tr><td>-rotate 180</td>
-<td>0:02.934</td>
-<td>0:09.402</td>
-<td class="decimal">3.20</td>
+<td>0:02.955</td>
+<td>0:09.431</td>
+<td class="decimal">3.19</td>
 </tr>
 <tr><td>-rotate 270</td>
-<td>0:04.181</td>
-<td>0:09.754</td>
-<td class="decimal">2.33</td>
+<td>0:03.323</td>
+<td>0:09.812</td>
+<td class="decimal">2.95</td>
 </tr>
 <tr><td>-shade 30x30</td>
-<td>0:09.911</td>
-<td>0:17.263</td>
-<td class="decimal">1.74</td>
+<td>0:10.043</td>
+<td>0:17.376</td>
+<td class="decimal">1.73</td>
 </tr>
 <tr><td>-sharpen 0x0.5</td>
-<td>0:15.625</td>
-<td>0:27.502</td>
-<td class="decimal">1.76</td>
+<td>0:15.716</td>
+<td>0:27.123</td>
+<td class="decimal">1.73</td>
 </tr>
 <tr><td>-sharpen 0x1.0</td>
-<td>0:37.826</td>
-<td>0:55.054</td>
-<td class="decimal">1.46</td>
+<td>0:37.969</td>
+<td>0:54.999</td>
+<td class="decimal">1.45</td>
 </tr>
 <tr><td>-shave 10x10</td>
-<td>0:02.312</td>
-<td>0:08.769</td>
-<td class="decimal">3.79</td>
+<td>0:02.364</td>
+<td>0:08.697</td>
+<td class="decimal">3.68</td>
 </tr>
 <tr><td>-shear 45x45</td>
-<td>0:32.595</td>
-<td>1:19.643</td>
-<td class="decimal">2.44</td>
+<td>0:34.908</td>
+<td>1:19.305</td>
+<td class="decimal">2.27</td>
 </tr>
 <tr><td>-solarize 50%</td>
-<td>0:02.304</td>
-<td>0:08.967</td>
-<td class="decimal">3.89</td>
+<td>0:02.201</td>
+<td>0:08.897</td>
+<td class="decimal">4.04</td>
 </tr>
 <tr><td>-spread 1</td>
-<td>0:03.253</td>
-<td>1:19.224</td>
-<td class="decimal">24.35</td>
+<td>0:03.302</td>
+<td>1:19.018</td>
+<td class="decimal">23.93</td>
 </tr>
 <tr><td>-spread 3</td>
-<td>0:03.410</td>
-<td>1:19.282</td>
-<td class="decimal">23.25</td>
+<td>0:03.502</td>
+<td>1:19.670</td>
+<td class="decimal">22.75</td>
 </tr>
 <tr><td>-swirl 90</td>
-<td>0:19.158</td>
-<td>0:35.971</td>
-<td class="decimal">1.88</td>
+<td>0:18.456</td>
+<td>0:36.213</td>
+<td class="decimal">1.96</td>
 </tr>
 <tr><td>-threshold 35%</td>
-<td>0:02.854</td>
-<td>0:09.409</td>
-<td class="decimal">3.30</td>
+<td>0:02.779</td>
+<td>0:09.431</td>
+<td class="decimal">3.39</td>
 </tr>
 <tr><td>-fuzz 35% -transparent red</td>
-<td>0:03.882</td>
-<td>0:11.185</td>
-<td class="decimal">2.88</td>
+<td>0:03.674</td>
+<td>0:11.203</td>
+<td class="decimal">3.05</td>
 </tr>
 <tr><td>-trim</td>
-<td>0:05.854</td>
-<td>0:09.697</td>
+<td>0:05.837</td>
+<td>0:09.707</td>
 <td class="decimal">1.66</td>
 </tr>
 <tr><td>-unsharp 0x0.5+20+1</td>
-<td>0:15.696</td>
-<td>0:38.765</td>
-<td class="decimal">2.47</td>
+<td>0:13.865</td>
+<td>0:38.966</td>
+<td class="decimal">2.81</td>
 </tr>
 <tr><td>-unsharp 0x1.0+20+1</td>
-<td>0:19.230</td>
-<td>0:42.428</td>
-<td class="decimal">2.21</td>
+<td>0:16.786</td>
+<td>0:42.511</td>
+<td class="decimal">2.53</td>
 </tr>
 <tr><td>-wave 25x150</td>
-<td>0:19.527</td>
-<td>0:37.623</td>
-<td class="decimal">1.93</td>
+<td>0:18.974</td>
+<td>0:37.838</td>
+<td class="decimal">1.99</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
-<td>0:02.488</td>
-<td>0:09.448</td>
-<td class="decimal">3.80</td>
+<td>0:02.486</td>
+<td>0:09.429</td>
+<td class="decimal">3.79</td>
 </tr>
 </tbody>
 </table>
@@ -1041,7 +1041,7 @@ and running Solaris 10 U5. The compiler used identifies itself as &quot;gcc
 <div class="section">
 <h2><a class="toc-backref" href="#id8" id="apple-powerpc-g5-os-x-tiger" name="apple-powerpc-g5-os-x-tiger">Apple PowerPC G5/OS-X Tiger</a></h2>
 <p>This system is an Apple G5 system with two 2.5GHz CPUs and running the
-Tiger release of OS-X. The compiler used identifies itself as &quot;gcc-4.3.2
+Leopard release of OS-X. The compiler used identifies itself as &quot;gcc-4.3.2
 (GCC) 4.3.2&quot;.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1059,399 +1059,399 @@ Tiger release of OS-X. The compiler used identifies itself as &quot;gcc-4.3.2
 </thead>
 <tbody valign="top">
 <tr><td>-noop</td>
-<td>0:02.113</td>
-<td>0:04.835</td>
-<td class="decimal">2.29</td>
+<td>0:02.022</td>
+<td>0:04.960</td>
+<td class="decimal">2.45</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
-<td>0:06.906</td>
-<td>31:21.385</td>
-<td class="decimal">272.43</td>
+<td>0:06.883</td>
+<td>30:43.655</td>
+<td class="decimal">267.86</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
-<td>0:02.345</td>
-<td>0:06.078</td>
-<td class="decimal">2.59</td>
+<td>0:03.467</td>
+<td>0:06.982</td>
+<td class="decimal">2.01</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
-<td>0:09.122</td>
-<td>0:28.368</td>
-<td class="decimal">3.11</td>
+<td>0:09.248</td>
+<td>0:31.915</td>
+<td class="decimal">3.45</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
-<td>0:11.150</td>
-<td>0:33.660</td>
-<td class="decimal">3.02</td>
+<td>0:11.508</td>
+<td>0:37.316</td>
+<td class="decimal">3.24</td>
 </tr>
 <tr><td>-border 6x6</td>
-<td>0:03.145</td>
-<td>0:09.460</td>
-<td class="decimal">3.01</td>
+<td>0:03.157</td>
+<td>0:10.530</td>
+<td class="decimal">3.34</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
-<td>0:23.201</td>
-<td>0:59.822</td>
-<td class="decimal">2.58</td>
+<td>0:25.140</td>
+<td>1:08.414</td>
+<td class="decimal">2.72</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
-<td>0:02.427</td>
-<td>0:05.163</td>
+<td>0:02.596</td>
+<td>0:05.518</td>
 <td class="decimal">2.13</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
-<td>0:02.562</td>
-<td>0:07.694</td>
-<td class="decimal">3.00</td>
+<td>0:02.494</td>
+<td>0:08.131</td>
+<td class="decimal">3.26</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
-<td>0:03.328</td>
-<td>0:07.835</td>
-<td class="decimal">2.35</td>
+<td>0:03.241</td>
+<td>0:08.233</td>
+<td class="decimal">2.54</td>
 </tr>
 <tr><td>-colorspace HSL</td>
-<td>0:04.887</td>
-<td>0:08.314</td>
-<td class="decimal">1.70</td>
-</tr>
-<tr><td>-colorspace HWB</td>
-<td>0:04.663</td>
-<td>0:08.214</td>
+<td>0:05.026</td>
+<td>0:08.858</td>
 <td class="decimal">1.76</td>
 </tr>
+<tr><td>-colorspace HWB</td>
+<td>0:04.638</td>
+<td>0:08.688</td>
+<td class="decimal">1.87</td>
+</tr>
 <tr><td>-colorspace OHTA</td>
-<td>0:03.349</td>
-<td>0:07.807</td>
-<td class="decimal">2.33</td>
+<td>0:03.206</td>
+<td>0:08.276</td>
+<td class="decimal">2.58</td>
 </tr>
 <tr><td>-colorspace YCbCr</td>
-<td>0:03.343</td>
-<td>0:07.836</td>
-<td class="decimal">2.34</td>
+<td>0:03.408</td>
+<td>0:08.350</td>
+<td class="decimal">2.45</td>
 </tr>
 <tr><td>-colorspace YIQ</td>
-<td>0:03.340</td>
-<td>0:07.852</td>
-<td class="decimal">2.35</td>
+<td>0:03.404</td>
+<td>0:08.411</td>
+<td class="decimal">2.47</td>
 </tr>
 <tr><td>-colorspace YUV</td>
-<td>0:03.377</td>
-<td>0:07.884</td>
-<td class="decimal">2.33</td>
+<td>0:03.297</td>
+<td>0:08.340</td>
+<td class="decimal">2.53</td>
 </tr>
 <tr><td>-contrast -contrast -contrast</td>
-<td>0:16.037</td>
-<td>0:24.245</td>
-<td class="decimal">1.51</td>
+<td>0:16.890</td>
+<td>0:27.220</td>
+<td class="decimal">1.61</td>
 </tr>
 <tr><td>+contrast +contrast +contrast</td>
-<td>0:15.641</td>
-<td>0:23.931</td>
-<td class="decimal">1.53</td>
+<td>0:17.743</td>
+<td>0:28.310</td>
+<td class="decimal">1.60</td>
 </tr>
 <tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
-<td>0:06.481</td>
-<td>0:13.546</td>
-<td class="decimal">2.09</td>
+<td>0:08.263</td>
+<td>0:15.515</td>
+<td class="decimal">1.88</td>
 </tr>
 <tr><td>-colorize 30%/20%/50%</td>
-<td>0:03.619</td>
-<td>0:07.725</td>
+<td>0:03.953</td>
+<td>0:08.429</td>
 <td class="decimal">2.13</td>
 </tr>
 <tr><td>-crop 1700x900+100+100</td>
-<td>0:02.888</td>
-<td>0:05.684</td>
-<td class="decimal">1.97</td>
+<td>0:02.604</td>
+<td>0:05.811</td>
+<td class="decimal">2.23</td>
 </tr>
 <tr><td>-despeckle</td>
-<td>1:19.996</td>
-<td>3:04.596</td>
-<td class="decimal">2.31</td>
+<td>1:21.989</td>
+<td>3:04.578</td>
+<td class="decimal">2.25</td>
 </tr>
 <tr><td>-edge 0x1</td>
-<td>0:06.371</td>
-<td>0:24.836</td>
-<td class="decimal">3.90</td>
+<td>0:06.411</td>
+<td>0:24.952</td>
+<td class="decimal">3.89</td>
 </tr>
 <tr><td>-emboss 0x1</td>
-<td>0:12.608</td>
-<td>1:09.318</td>
-<td class="decimal">5.50</td>
+<td>0:12.255</td>
+<td>1:09.693</td>
+<td class="decimal">5.69</td>
 </tr>
 <tr><td>-enhance</td>
-<td>0:32.758</td>
-<td>0:46.010</td>
-<td class="decimal">1.40</td>
+<td>0:32.050</td>
+<td>0:46.376</td>
+<td class="decimal">1.45</td>
 </tr>
 <tr><td>-equalize</td>
-<td>0:03.009</td>
-<td>0:07.880</td>
-<td class="decimal">2.62</td>
+<td>0:02.868</td>
+<td>0:08.042</td>
+<td class="decimal">2.80</td>
 </tr>
 <tr><td>-flip</td>
-<td>0:03.116</td>
-<td>0:05.940</td>
-<td class="decimal">1.91</td>
+<td>0:02.839</td>
+<td>0:06.096</td>
+<td class="decimal">2.15</td>
 </tr>
 <tr><td>-flop</td>
-<td>0:03.161</td>
-<td>0:05.972</td>
-<td class="decimal">1.89</td>
-</tr>
-<tr><td>-frame 15x15+3+3</td>
-<td>0:03.147</td>
-<td>0:09.491</td>
-<td class="decimal">3.02</td>
-</tr>
-<tr><td>-gamma 1.6</td>
-<td>0:02.995</td>
-<td>0:05.977</td>
-<td class="decimal">2.00</td>
-</tr>
-<tr><td>-gaussian 0x0.5</td>
-<td>0:10.781</td>
-<td>0:25.032</td>
-<td class="decimal">2.32</td>
-</tr>
-<tr><td>-gaussian 0x1.0</td>
-<td>0:25.533</td>
-<td>1:04.499</td>
-<td class="decimal">2.53</td>
-</tr>
-<tr><td>-implode 0.5</td>
-<td>0:12.509</td>
-<td>0:22.421</td>
-<td class="decimal">1.79</td>
-</tr>
-<tr><td>-implode -1</td>
-<td>0:08.896</td>
-<td>0:21.422</td>
-<td class="decimal">2.41</td>
-</tr>
-<tr><td>-lat 10x10-5%</td>
-<td>0:45.599</td>
-<td>1:09.555</td>
-<td class="decimal">1.53</td>
-</tr>
-<tr><td>-level 10%,1.2,90%</td>
-<td>0:02.627</td>
-<td>0:11.884</td>
-<td class="decimal">4.52</td>
-</tr>
-<tr><td>-median 1</td>
-<td>1:07.882</td>
-<td>1:23.062</td>
-<td class="decimal">1.22</td>
-</tr>
-<tr><td>-median 2</td>
-<td>2:37.578</td>
-<td>3:07.499</td>
-<td class="decimal">1.19</td>
-</tr>
-<tr><td>-modulate 110/100/95</td>
-<td>0:06.312</td>
-<td>0:08.662</td>
-<td class="decimal">1.37</td>
-</tr>
-<tr><td>-motion-blur 0x3+30</td>
-<td>1:43.441</td>
-<td>2:10.654</td>
-<td class="decimal">1.26</td>
-</tr>
-<tr><td>-negate</td>
-<td>0:02.387</td>
-<td>0:05.055</td>
+<td>0:02.881</td>
+<td>0:06.107</td>
 <td class="decimal">2.12</td>
 </tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:02.864</td>
+<td>0:09.594</td>
+<td class="decimal">3.35</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:02.827</td>
+<td>0:06.096</td>
+<td class="decimal">2.16</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:10.522</td>
+<td>0:25.181</td>
+<td class="decimal">2.39</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:25.330</td>
+<td>1:05.189</td>
+<td class="decimal">2.57</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:12.156</td>
+<td>0:22.707</td>
+<td class="decimal">1.87</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:08.586</td>
+<td>0:21.671</td>
+<td class="decimal">2.52</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:44.989</td>
+<td>1:09.993</td>
+<td class="decimal">1.56</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:02.431</td>
+<td>0:12.173</td>
+<td class="decimal">5.01</td>
+</tr>
+<tr><td>-median 1</td>
+<td>1:09.370</td>
+<td>1:22.857</td>
+<td class="decimal">1.19</td>
+</tr>
+<tr><td>-median 2</td>
+<td>2:46.354</td>
+<td>3:07.653</td>
+<td class="decimal">1.13</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:06.201</td>
+<td>0:08.827</td>
+<td class="decimal">1.42</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>1:38.525</td>
+<td>2:08.928</td>
+<td class="decimal">1.31</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:02.192</td>
+<td>0:05.163</td>
+<td class="decimal">2.36</td>
+</tr>
 <tr><td>+noise Uniform</td>
-<td>0:08.629</td>
-<td>0:58.280</td>
-<td class="decimal">6.75</td>
+<td>0:08.530</td>
+<td>0:58.352</td>
+<td class="decimal">6.84</td>
 </tr>
 <tr><td>+noise Gaussian</td>
-<td>0:23.570</td>
-<td>2:10.043</td>
-<td class="decimal">5.52</td>
+<td>0:22.906</td>
+<td>2:10.226</td>
+<td class="decimal">5.69</td>
 </tr>
 <tr><td>+noise Multiplicative</td>
-<td>0:17.679</td>
-<td>1:55.541</td>
-<td class="decimal">6.54</td>
+<td>0:17.390</td>
+<td>1:55.859</td>
+<td class="decimal">6.66</td>
 </tr>
 <tr><td>+noise Impulse</td>
-<td>0:08.849</td>
-<td>0:55.627</td>
-<td class="decimal">6.29</td>
+<td>0:08.713</td>
+<td>0:55.739</td>
+<td class="decimal">6.40</td>
 </tr>
 <tr><td>+noise Laplacian</td>
-<td>0:12.525</td>
-<td>1:10.048</td>
-<td class="decimal">5.59</td>
+<td>0:12.599</td>
+<td>1:10.342</td>
+<td class="decimal">5.58</td>
 </tr>
 <tr><td>+noise Poisson</td>
-<td>0:21.462</td>
-<td>3:33.880</td>
+<td>0:21.506</td>
+<td>3:34.477</td>
 <td class="decimal">9.97</td>
 </tr>
 <tr><td>-noise 1</td>
-<td>1:05.736</td>
-<td>1:28.922</td>
-<td class="decimal">1.35</td>
+<td>1:08.805</td>
+<td>1:28.986</td>
+<td class="decimal">1.29</td>
 </tr>
 <tr><td>-noise 2</td>
-<td>2:34.986</td>
-<td>3:15.250</td>
-<td class="decimal">1.26</td>
+<td>2:39.773</td>
+<td>3:15.389</td>
+<td class="decimal">1.22</td>
 </tr>
 <tr><td>-normalize</td>
-<td>0:02.997</td>
-<td>0:08.789</td>
-<td class="decimal">2.93</td>
+<td>0:02.765</td>
+<td>0:08.914</td>
+<td class="decimal">3.22</td>
 </tr>
 <tr><td>-fill blue -fuzz 35% -opaque red</td>
-<td>0:02.865</td>
-<td>0:06.204</td>
-<td class="decimal">2.17</td>
+<td>0:02.673</td>
+<td>0:06.286</td>
+<td class="decimal">2.35</td>
 </tr>
 <tr><td>-paint 0x1</td>
-<td>0:06.013</td>
-<td>0:39.713</td>
-<td class="decimal">6.60</td>
+<td>0:05.731</td>
+<td>0:39.947</td>
+<td class="decimal">6.97</td>
 </tr>
 <tr><td>-raise 10x10</td>
-<td>0:02.202</td>
-<td>0:04.965</td>
-<td class="decimal">2.25</td>
+<td>0:02.079</td>
+<td>0:05.166</td>
+<td class="decimal">2.48</td>
 </tr>
 <tr><td>-density 75x75 -resample 50x50</td>
-<td>0:10.351</td>
-<td>0:21.290</td>
-<td class="decimal">2.06</td>
+<td>0:10.017</td>
+<td>0:21.748</td>
+<td class="decimal">2.17</td>
 </tr>
 <tr><td>-resize 10%</td>
-<td>0:04.895</td>
-<td>0:11.801</td>
-<td class="decimal">2.41</td>
-</tr>
-<tr><td>-resize 50%</td>
-<td>0:07.391</td>
-<td>0:14.959</td>
-<td class="decimal">2.02</td>
-</tr>
-<tr><td>-resize 150%</td>
-<td>0:36.102</td>
-<td>0:47.760</td>
-<td class="decimal">1.32</td>
-</tr>
-<tr><td>-roll +20+10</td>
-<td>0:03.134</td>
-<td>6:41.949</td>
-<td class="decimal">128.25</td>
-</tr>
-<tr><td>-rotate 0</td>
-<td>0:03.071</td>
-<td>0:05.963</td>
-<td class="decimal">1.94</td>
-</tr>
-<tr><td>-rotate 45</td>
-<td>1:22.150</td>
-<td>1:28.017</td>
-<td class="decimal">1.07</td>
-</tr>
-<tr><td>-rotate 90</td>
-<td>0:03.675</td>
-<td>0:06.352</td>
-<td class="decimal">1.73</td>
-</tr>
-<tr><td>-rotate 180</td>
-<td>0:03.181</td>
-<td>0:05.966</td>
-<td class="decimal">1.88</td>
-</tr>
-<tr><td>-rotate 270</td>
-<td>0:03.662</td>
-<td>0:06.363</td>
-<td class="decimal">1.74</td>
-</tr>
-<tr><td>-shade 30x30</td>
-<td>0:04.847</td>
-<td>0:13.986</td>
-<td class="decimal">2.89</td>
-</tr>
-<tr><td>-sharpen 0x0.5</td>
-<td>0:10.815</td>
-<td>0:24.956</td>
-<td class="decimal">2.31</td>
-</tr>
-<tr><td>-sharpen 0x1.0</td>
-<td>0:25.466</td>
-<td>1:04.602</td>
-<td class="decimal">2.54</td>
-</tr>
-<tr><td>-shave 10x10</td>
-<td>0:03.091</td>
-<td>0:05.920</td>
-<td class="decimal">1.92</td>
-</tr>
-<tr><td>-shear 45x45</td>
-<td>1:10.711</td>
-<td>1:58.775</td>
-<td class="decimal">1.68</td>
-</tr>
-<tr><td>-solarize 50%</td>
-<td>0:02.388</td>
-<td>0:05.853</td>
-<td class="decimal">2.45</td>
-</tr>
-<tr><td>-spread 1</td>
-<td>0:03.174</td>
-<td>13:06.351</td>
-<td class="decimal">247.75</td>
-</tr>
-<tr><td>-spread 3</td>
-<td>0:03.049</td>
-<td>13:11.856</td>
-<td class="decimal">259.71</td>
-</tr>
-<tr><td>-swirl 90</td>
-<td>0:11.048</td>
-<td>0:23.120</td>
-<td class="decimal">2.09</td>
-</tr>
-<tr><td>-threshold 35%</td>
-<td>0:02.573</td>
-<td>0:06.111</td>
-<td class="decimal">2.38</td>
-</tr>
-<tr><td>-fuzz 35% -transparent red</td>
-<td>0:02.853</td>
-<td>0:06.742</td>
-<td class="decimal">2.36</td>
-</tr>
-<tr><td>-trim</td>
-<td>0:04.237</td>
-<td>0:06.664</td>
-<td class="decimal">1.57</td>
-</tr>
-<tr><td>-unsharp 0x0.5+20+1</td>
-<td>0:11.155</td>
-<td>0:31.857</td>
-<td class="decimal">2.86</td>
-</tr>
-<tr><td>-unsharp 0x1.0+20+1</td>
-<td>0:13.117</td>
-<td>0:37.215</td>
-<td class="decimal">2.84</td>
-</tr>
-<tr><td>-wave 25x150</td>
-<td>0:09.968</td>
-<td>0:25.263</td>
+<td>0:04.727</td>
+<td>0:11.976</td>
 <td class="decimal">2.53</td>
 </tr>
+<tr><td>-resize 50%</td>
+<td>0:07.146</td>
+<td>0:15.122</td>
+<td class="decimal">2.12</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:35.528</td>
+<td>0:47.838</td>
+<td class="decimal">1.35</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:03.078</td>
+<td>6:24.426</td>
+<td class="decimal">124.89</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:02.782</td>
+<td>0:06.047</td>
+<td class="decimal">2.17</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>1:18.419</td>
+<td>1:26.977</td>
+<td class="decimal">1.11</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:03.360</td>
+<td>0:06.426</td>
+<td class="decimal">1.91</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:02.825</td>
+<td>0:06.059</td>
+<td class="decimal">2.14</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:03.363</td>
+<td>0:06.521</td>
+<td class="decimal">1.94</td>
+</tr>
+<tr><td>-shade 30x30</td>
+<td>0:04.748</td>
+<td>0:14.180</td>
+<td class="decimal">2.99</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:10.534</td>
+<td>0:25.122</td>
+<td class="decimal">2.38</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:25.289</td>
+<td>1:05.088</td>
+<td class="decimal">2.57</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:02.809</td>
+<td>0:06.005</td>
+<td class="decimal">2.14</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>1:07.169</td>
+<td>1:57.570</td>
+<td class="decimal">1.75</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:02.218</td>
+<td>0:05.908</td>
+<td class="decimal">2.66</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:03.002</td>
+<td>12:50.601</td>
+<td class="decimal">256.70</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:03.122</td>
+<td>13:06.375</td>
+<td class="decimal">251.88</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:10.412</td>
+<td>0:23.170</td>
+<td class="decimal">2.23</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:02.528</td>
+<td>0:06.270</td>
+<td class="decimal">2.48</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:02.680</td>
+<td>0:06.867</td>
+<td class="decimal">2.56</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:04.096</td>
+<td>0:06.752</td>
+<td class="decimal">1.65</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td>0:10.698</td>
+<td>0:31.634</td>
+<td class="decimal">2.96</td>
+</tr>
+<tr><td>-unsharp 0x1.0+20+1</td>
+<td>0:12.680</td>
+<td>0:37.070</td>
+<td class="decimal">2.92</td>
+</tr>
+<tr><td>-wave 25x150</td>
+<td>0:09.668</td>
+<td>0:25.747</td>
+<td class="decimal">2.66</td>
+</tr>
 <tr><td>-white-threshold 80%</td>
-<td>0:02.303</td>
-<td>0:06.109</td>
-<td class="decimal">2.65</td>
+<td>0:02.145</td>
+<td>0:06.270</td>
+<td class="decimal">2.92</td>
 </tr>
 </tbody>
 </table>
@@ -1477,399 +1477,399 @@ running FreeBSD 7.0. The compiler used identifies itself as &quot;gcc (GCC)
 </thead>
 <tbody valign="top">
 <tr><td>-noop</td>
-<td>0:03.062</td>
-<td>0:06.686</td>
-<td class="decimal">2.18</td>
+<td>0:01.575</td>
+<td>0:06.729</td>
+<td class="decimal">4.27</td>
 </tr>
 <tr><td>-affine 1,0,0.785,1,0,0 -transform</td>
-<td>0:09.984</td>
-<td>20:20.902</td>
-<td class="decimal">122.29</td>
+<td>0:08.414</td>
+<td>20:26.384</td>
+<td class="decimal">145.76</td>
 </tr>
 <tr><td>-black-threshold 20%</td>
-<td>0:03.370</td>
-<td>0:07.191</td>
-<td class="decimal">2.13</td>
+<td>0:01.888</td>
+<td>0:07.232</td>
+<td class="decimal">3.83</td>
 </tr>
 <tr><td>-blur 0x0.5</td>
-<td>0:09.223</td>
-<td>0:26.028</td>
-<td class="decimal">2.82</td>
+<td>0:07.689</td>
+<td>0:25.976</td>
+<td class="decimal">3.38</td>
 </tr>
 <tr><td>-blur 0x1.0</td>
-<td>0:10.488</td>
-<td>0:26.883</td>
-<td class="decimal">2.56</td>
+<td>0:08.920</td>
+<td>0:26.720</td>
+<td class="decimal">3.00</td>
 </tr>
 <tr><td>-border 6x6</td>
-<td>0:05.745</td>
-<td>0:11.386</td>
-<td class="decimal">1.98</td>
+<td>0:02.827</td>
+<td>0:11.598</td>
+<td class="decimal">4.10</td>
 </tr>
 <tr><td>-charcoal 0x1</td>
-<td>0:22.435</td>
-<td>0:41.492</td>
-<td class="decimal">1.85</td>
+<td>0:20.800</td>
+<td>0:41.973</td>
+<td class="decimal">2.02</td>
 </tr>
 <tr><td>-chop 800x600+200+300</td>
-<td>0:03.702</td>
-<td>0:07.125</td>
-<td class="decimal">1.92</td>
+<td>0:01.895</td>
+<td>0:07.300</td>
+<td class="decimal">3.85</td>
 </tr>
 <tr><td>-colorspace CMYK</td>
-<td>0:03.964</td>
-<td>0:09.739</td>
-<td class="decimal">2.46</td>
+<td>0:02.563</td>
+<td>0:09.861</td>
+<td class="decimal">3.85</td>
 </tr>
 <tr><td>-colorspace GRAY</td>
-<td>0:04.715</td>
-<td>0:10.096</td>
-<td class="decimal">2.14</td>
+<td>0:03.146</td>
+<td>0:10.237</td>
+<td class="decimal">3.25</td>
 </tr>
 <tr><td>-colorspace HSL</td>
-<td>0:05.981</td>
-<td>0:10.400</td>
-<td class="decimal">1.74</td>
-</tr>
-<tr><td>-colorspace HWB</td>
-<td>0:05.033</td>
-<td>0:09.996</td>
-<td class="decimal">1.99</td>
-</tr>
-<tr><td>-colorspace OHTA</td>
-<td>0:04.575</td>
-<td>0:10.093</td>
-<td class="decimal">2.21</td>
-</tr>
-<tr><td>-colorspace YCbCr</td>
-<td>0:04.604</td>
-<td>0:10.022</td>
-<td class="decimal">2.18</td>
-</tr>
-<tr><td>-colorspace YIQ</td>
-<td>0:04.644</td>
-<td>0:10.090</td>
-<td class="decimal">2.17</td>
-</tr>
-<tr><td>-colorspace YUV</td>
-<td>0:04.644</td>
-<td>0:10.125</td>
-<td class="decimal">2.18</td>
-</tr>
-<tr><td>-contrast -contrast -contrast</td>
-<td>0:18.583</td>
-<td>0:30.318</td>
-<td class="decimal">1.63</td>
-</tr>
-<tr><td>+contrast +contrast +contrast</td>
-<td>0:18.469</td>
-<td>0:29.994</td>
-<td class="decimal">1.62</td>
-</tr>
-<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
-<td>0:07.019</td>
-<td>0:10.939</td>
-<td class="decimal">1.56</td>
-</tr>
-<tr><td>-colorize 30%/20%/50%</td>
-<td>0:04.886</td>
-<td>0:09.859</td>
-<td class="decimal">2.02</td>
-</tr>
-<tr><td>-crop 1700x900+100+100</td>
-<td>0:05.013</td>
-<td>0:07.939</td>
-<td class="decimal">1.58</td>
-</tr>
-<tr><td>-despeckle</td>
-<td>0:54.080</td>
-<td>3:04.901</td>
-<td class="decimal">3.42</td>
-</tr>
-<tr><td>-edge 0x1</td>
-<td>0:07.031</td>
-<td>0:14.044</td>
-<td class="decimal">2.00</td>
-</tr>
-<tr><td>-emboss 0x1</td>
-<td>0:12.291</td>
-<td>0:28.677</td>
+<td>0:04.478</td>
+<td>0:10.414</td>
 <td class="decimal">2.33</td>
 </tr>
-<tr><td>-enhance</td>
-<td>0:31.499</td>
-<td>0:32.292</td>
-<td class="decimal">1.03</td>
+<tr><td>-colorspace HWB</td>
+<td>0:03.393</td>
+<td>0:10.111</td>
+<td class="decimal">2.98</td>
 </tr>
-<tr><td>-equalize</td>
-<td>0:04.789</td>
-<td>0:10.343</td>
-<td class="decimal">2.16</td>
+<tr><td>-colorspace OHTA</td>
+<td>0:03.077</td>
+<td>0:10.122</td>
+<td class="decimal">3.29</td>
 </tr>
-<tr><td>-flip</td>
-<td>0:05.759</td>
-<td>0:08.425</td>
-<td class="decimal">1.46</td>
+<tr><td>-colorspace YCbCr</td>
+<td>0:03.100</td>
+<td>0:10.170</td>
+<td class="decimal">3.28</td>
 </tr>
-<tr><td>-flop</td>
-<td>0:05.685</td>
-<td>0:08.386</td>
-<td class="decimal">1.48</td>
+<tr><td>-colorspace YIQ</td>
+<td>0:03.068</td>
+<td>0:10.137</td>
+<td class="decimal">3.30</td>
 </tr>
-<tr><td>-frame 15x15+3+3</td>
-<td>0:05.757</td>
-<td>0:11.413</td>
-<td class="decimal">1.98</td>
+<tr><td>-colorspace YUV</td>
+<td>0:03.102</td>
+<td>0:10.182</td>
+<td class="decimal">3.28</td>
 </tr>
-<tr><td>-gamma 1.6</td>
-<td>0:05.636</td>
-<td>0:08.414</td>
-<td class="decimal">1.49</td>
+<tr><td>-contrast -contrast -contrast</td>
+<td>0:16.936</td>
+<td>0:30.461</td>
+<td class="decimal">1.80</td>
 </tr>
-<tr><td>-gaussian 0x0.5</td>
-<td>0:09.874</td>
-<td>0:14.185</td>
-<td class="decimal">1.44</td>
+<tr><td>+contrast +contrast +contrast</td>
+<td>0:16.592</td>
+<td>0:30.291</td>
+<td class="decimal">1.83</td>
 </tr>
-<tr><td>-gaussian 0x1.0</td>
-<td>0:19.989</td>
-<td>0:23.831</td>
-<td class="decimal">1.19</td>
-</tr>
-<tr><td>-implode 0.5</td>
-<td>0:17.646</td>
-<td>0:30.169</td>
-<td class="decimal">1.71</td>
-</tr>
-<tr><td>-implode -1</td>
-<td>0:12.688</td>
-<td>0:25.236</td>
-<td class="decimal">1.99</td>
-</tr>
-<tr><td>-lat 10x10-5%</td>
-<td>0:23.205</td>
-<td>0:23.264</td>
-<td class="decimal">1.00</td>
-</tr>
-<tr><td>-level 10%,1.2,90%</td>
-<td>0:04.053</td>
-<td>1:44.927</td>
-<td class="decimal">25.89</td>
-</tr>
-<tr><td>-median 1</td>
-<td>1:52.061</td>
-<td>1:10.238</td>
-<td class="decimal">0.63</td>
-</tr>
-<tr><td>-median 2</td>
-<td>4:21.560</td>
-<td>2:57.114</td>
-<td class="decimal">0.68</td>
-</tr>
-<tr><td>-modulate 110/100/95</td>
-<td>0:07.556</td>
-<td>0:11.125</td>
-<td class="decimal">1.47</td>
-</tr>
-<tr><td>-motion-blur 0x3+30</td>
-<td>2:52.798</td>
-<td>3:05.292</td>
-<td class="decimal">1.07</td>
-</tr>
-<tr><td>-negate</td>
-<td>0:03.449</td>
-<td>0:07.057</td>
-<td class="decimal">2.05</td>
-</tr>
-<tr><td>+noise Uniform</td>
-<td>0:09.627</td>
-<td>1:03.274</td>
-<td class="decimal">6.57</td>
-</tr>
-<tr><td>+noise Gaussian</td>
-<td>0:24.818</td>
-<td>2:31.631</td>
-<td class="decimal">6.11</td>
-</tr>
-<tr><td>+noise Multiplicative</td>
-<td>0:18.528</td>
-<td>2:13.855</td>
-<td class="decimal">7.22</td>
-</tr>
-<tr><td>+noise Impulse</td>
-<td>0:09.630</td>
-<td>1:03.560</td>
-<td class="decimal">6.60</td>
-</tr>
-<tr><td>+noise Laplacian</td>
-<td>0:12.425</td>
-<td>1:16.709</td>
-<td class="decimal">6.17</td>
-</tr>
-<tr><td>+noise Poisson</td>
-<td>0:23.689</td>
-<td>4:18.182</td>
-<td class="decimal">10.90</td>
-</tr>
-<tr><td>-noise 1</td>
-<td>1:52.276</td>
-<td>1:09.558</td>
-<td class="decimal">0.62</td>
-</tr>
-<tr><td>-noise 2</td>
-<td>4:21.392</td>
-<td>2:54.387</td>
-<td class="decimal">0.67</td>
-</tr>
-<tr><td>-normalize</td>
-<td>0:04.641</td>
-<td>0:11.449</td>
-<td class="decimal">2.47</td>
-</tr>
-<tr><td>-fill blue -fuzz 35% -opaque red</td>
-<td>0:03.555</td>
-<td>0:07.730</td>
-<td class="decimal">2.17</td>
-</tr>
-<tr><td>-paint 0x1</td>
-<td>0:12.365</td>
-<td>0:32.416</td>
-<td class="decimal">2.62</td>
-</tr>
-<tr><td>-raise 10x10</td>
-<td>0:03.193</td>
-<td>0:06.878</td>
-<td class="decimal">2.15</td>
-</tr>
-<tr><td>-density 75x75 -resample 50x50</td>
-<td>0:12.312</td>
-<td>0:16.263</td>
-<td class="decimal">1.32</td>
-</tr>
-<tr><td>-resize 10%</td>
-<td>0:06.933</td>
-<td>0:10.746</td>
-<td class="decimal">1.55</td>
-</tr>
-<tr><td>-resize 50%</td>
-<td>0:10.018</td>
-<td>0:13.556</td>
-<td class="decimal">1.35</td>
-</tr>
-<tr><td>-resize 150%</td>
-<td>0:34.986</td>
-<td>0:38.774</td>
-<td class="decimal">1.11</td>
-</tr>
-<tr><td>-roll +20+10</td>
-<td>0:05.676</td>
-<td>3:26.954</td>
-<td class="decimal">36.46</td>
-</tr>
-<tr><td>-rotate 0</td>
-<td>0:05.746</td>
-<td>0:08.375</td>
-<td class="decimal">1.46</td>
-</tr>
-<tr><td>-rotate 45</td>
-<td>1:16.289</td>
-<td>1:19.710</td>
-<td class="decimal">1.04</td>
-</tr>
-<tr><td>-rotate 90</td>
-<td>0:04.844</td>
-<td>0:08.918</td>
-<td class="decimal">1.84</td>
-</tr>
-<tr><td>-rotate 180</td>
-<td>0:05.666</td>
-<td>0:08.327</td>
-<td class="decimal">1.47</td>
-</tr>
-<tr><td>-rotate 270</td>
-<td>0:04.933</td>
-<td>0:08.912</td>
-<td class="decimal">1.81</td>
-</tr>
-<tr><td>-shade 30x30</td>
-<td>0:07.066</td>
-<td>0:10.716</td>
-<td class="decimal">1.52</td>
-</tr>
-<tr><td>-sharpen 0x0.5</td>
-<td>0:09.926</td>
-<td>0:14.088</td>
-<td class="decimal">1.42</td>
-</tr>
-<tr><td>-sharpen 0x1.0</td>
-<td>0:20.076</td>
-<td>0:23.853</td>
-<td class="decimal">1.19</td>
-</tr>
-<tr><td>-shave 10x10</td>
-<td>0:05.632</td>
-<td>0:08.311</td>
-<td class="decimal">1.48</td>
-</tr>
-<tr><td>-shear 45x45</td>
-<td>1:06.502</td>
-<td>1:48.034</td>
-<td class="decimal">1.62</td>
-</tr>
-<tr><td>-solarize 50%</td>
-<td>0:03.441</td>
-<td>0:06.946</td>
-<td class="decimal">2.02</td>
-</tr>
-<tr><td>-spread 1</td>
-<td>0:05.491</td>
-<td>5:29.590</td>
-<td class="decimal">60.02</td>
-</tr>
-<tr><td>-spread 3</td>
-<td>0:05.838</td>
-<td>5:25.804</td>
-<td class="decimal">55.81</td>
-</tr>
-<tr><td>-swirl 90</td>
-<td>0:12.811</td>
-<td>0:24.858</td>
-<td class="decimal">1.94</td>
-</tr>
-<tr><td>-threshold 35%</td>
-<td>0:03.977</td>
-<td>0:07.195</td>
-<td class="decimal">1.81</td>
-</tr>
-<tr><td>-fuzz 35% -transparent red</td>
-<td>0:03.591</td>
-<td>0:08.098</td>
-<td class="decimal">2.26</td>
-</tr>
-<tr><td>-trim</td>
-<td>0:04.534</td>
-<td>0:09.102</td>
+<tr><td>-convolve 1,1,1,1,4,1,1,1,1</td>
+<td>0:05.485</td>
+<td>0:11.023</td>
 <td class="decimal">2.01</td>
 </tr>
-<tr><td>-unsharp 0x0.5+20+1</td>
-<td>0:10.476</td>
-<td>0:28.267</td>
+<tr><td>-colorize 30%/20%/50%</td>
+<td>0:03.402</td>
+<td>0:09.849</td>
+<td class="decimal">2.90</td>
+</tr>
+<tr><td>-crop 1700x900+100+100</td>
+<td>0:02.468</td>
+<td>0:07.984</td>
+<td class="decimal">3.24</td>
+</tr>
+<tr><td>-despeckle</td>
+<td>0:51.741</td>
+<td>3:04.871</td>
+<td class="decimal">3.57</td>
+</tr>
+<tr><td>-edge 0x1</td>
+<td>0:05.581</td>
+<td>0:13.908</td>
+<td class="decimal">2.49</td>
+</tr>
+<tr><td>-emboss 0x1</td>
+<td>0:10.720</td>
+<td>0:28.741</td>
+<td class="decimal">2.68</td>
+</tr>
+<tr><td>-enhance</td>
+<td>0:29.384</td>
+<td>0:32.385</td>
+<td class="decimal">1.10</td>
+</tr>
+<tr><td>-equalize</td>
+<td>0:03.327</td>
+<td>0:10.392</td>
+<td class="decimal">3.12</td>
+</tr>
+<tr><td>-flip</td>
+<td>0:02.724</td>
+<td>0:08.420</td>
+<td class="decimal">3.09</td>
+</tr>
+<tr><td>-flop</td>
+<td>0:02.700</td>
+<td>0:08.450</td>
+<td class="decimal">3.13</td>
+</tr>
+<tr><td>-frame 15x15+3+3</td>
+<td>0:02.807</td>
+<td>0:11.337</td>
+<td class="decimal">4.04</td>
+</tr>
+<tr><td>-gamma 1.6</td>
+<td>0:04.138</td>
+<td>0:08.447</td>
+<td class="decimal">2.04</td>
+</tr>
+<tr><td>-gaussian 0x0.5</td>
+<td>0:08.408</td>
+<td>0:14.191</td>
+<td class="decimal">1.69</td>
+</tr>
+<tr><td>-gaussian 0x1.0</td>
+<td>0:18.204</td>
+<td>0:24.125</td>
+<td class="decimal">1.33</td>
+</tr>
+<tr><td>-implode 0.5</td>
+<td>0:15.799</td>
+<td>0:30.206</td>
+<td class="decimal">1.91</td>
+</tr>
+<tr><td>-implode -1</td>
+<td>0:10.734</td>
+<td>0:25.254</td>
+<td class="decimal">2.35</td>
+</tr>
+<tr><td>-lat 10x10-5%</td>
+<td>0:21.068</td>
+<td>0:23.295</td>
+<td class="decimal">1.11</td>
+</tr>
+<tr><td>-level 10%,1.2,90%</td>
+<td>0:02.576</td>
+<td>1:45.138</td>
+<td class="decimal">40.81</td>
+</tr>
+<tr><td>-median 1</td>
+<td>1:57.267</td>
+<td>1:09.904</td>
+<td class="decimal">0.60</td>
+</tr>
+<tr><td>-median 2</td>
+<td>4:32.584</td>
+<td>2:56.154</td>
+<td class="decimal">0.65</td>
+</tr>
+<tr><td>-modulate 110/100/95</td>
+<td>0:05.965</td>
+<td>0:11.339</td>
+<td class="decimal">1.90</td>
+</tr>
+<tr><td>-motion-blur 0x3+30</td>
+<td>3:02.254</td>
+<td>3:03.829</td>
+<td class="decimal">1.01</td>
+</tr>
+<tr><td>-negate</td>
+<td>0:01.975</td>
+<td>0:07.151</td>
+<td class="decimal">3.62</td>
+</tr>
+<tr><td>+noise Uniform</td>
+<td>0:08.031</td>
+<td>1:03.146</td>
+<td class="decimal">7.86</td>
+</tr>
+<tr><td>+noise Gaussian</td>
+<td>0:23.215</td>
+<td>2:30.842</td>
+<td class="decimal">6.50</td>
+</tr>
+<tr><td>+noise Multiplicative</td>
+<td>0:17.001</td>
+<td>2:12.535</td>
+<td class="decimal">7.80</td>
+</tr>
+<tr><td>+noise Impulse</td>
+<td>0:08.029</td>
+<td>1:01.383</td>
+<td class="decimal">7.65</td>
+</tr>
+<tr><td>+noise Laplacian</td>
+<td>0:10.925</td>
+<td>1:16.020</td>
+<td class="decimal">6.96</td>
+</tr>
+<tr><td>+noise Poisson</td>
+<td>0:22.518</td>
+<td>4:15.572</td>
+<td class="decimal">11.35</td>
+</tr>
+<tr><td>-noise 1</td>
+<td>1:58.910</td>
+<td>1:08.945</td>
+<td class="decimal">0.58</td>
+</tr>
+<tr><td>-noise 2</td>
+<td>4:35.641</td>
+<td>2:54.957</td>
+<td class="decimal">0.63</td>
+</tr>
+<tr><td>-normalize</td>
+<td>0:03.166</td>
+<td>0:11.422</td>
+<td class="decimal">3.61</td>
+</tr>
+<tr><td>-fill blue -fuzz 35% -opaque red</td>
+<td>0:02.056</td>
+<td>0:07.857</td>
+<td class="decimal">3.82</td>
+</tr>
+<tr><td>-paint 0x1</td>
+<td>0:10.874</td>
+<td>0:32.299</td>
+<td class="decimal">2.97</td>
+</tr>
+<tr><td>-raise 10x10</td>
+<td>0:01.656</td>
+<td>0:06.795</td>
+<td class="decimal">4.10</td>
+</tr>
+<tr><td>-density 75x75 -resample 50x50</td>
+<td>0:10.816</td>
+<td>0:16.277</td>
+<td class="decimal">1.50</td>
+</tr>
+<tr><td>-resize 10%</td>
+<td>0:05.437</td>
+<td>0:10.868</td>
+<td class="decimal">2.00</td>
+</tr>
+<tr><td>-resize 50%</td>
+<td>0:08.403</td>
+<td>0:13.642</td>
+<td class="decimal">1.62</td>
+</tr>
+<tr><td>-resize 150%</td>
+<td>0:32.995</td>
+<td>0:38.774</td>
+<td class="decimal">1.18</td>
+</tr>
+<tr><td>-roll +20+10</td>
+<td>0:04.223</td>
+<td>3:27.736</td>
+<td class="decimal">49.19</td>
+</tr>
+<tr><td>-rotate 0</td>
+<td>0:02.766</td>
+<td>0:08.454</td>
+<td class="decimal">3.06</td>
+</tr>
+<tr><td>-rotate 45</td>
+<td>1:01.114</td>
+<td>1:19.892</td>
+<td class="decimal">1.31</td>
+</tr>
+<tr><td>-rotate 90</td>
+<td>0:03.405</td>
+<td>0:08.957</td>
+<td class="decimal">2.63</td>
+</tr>
+<tr><td>-rotate 180</td>
+<td>0:02.693</td>
+<td>0:08.437</td>
+<td class="decimal">3.13</td>
+</tr>
+<tr><td>-rotate 270</td>
+<td>0:03.314</td>
+<td>0:08.944</td>
 <td class="decimal">2.70</td>
 </tr>
+<tr><td>-shade 30x30</td>
+<td>0:05.761</td>
+<td>0:10.767</td>
+<td class="decimal">1.87</td>
+</tr>
+<tr><td>-sharpen 0x0.5</td>
+<td>0:08.406</td>
+<td>0:14.197</td>
+<td class="decimal">1.69</td>
+</tr>
+<tr><td>-sharpen 0x1.0</td>
+<td>0:18.233</td>
+<td>0:24.260</td>
+<td class="decimal">1.33</td>
+</tr>
+<tr><td>-shave 10x10</td>
+<td>0:02.713</td>
+<td>0:08.369</td>
+<td class="decimal">3.08</td>
+</tr>
+<tr><td>-shear 45x45</td>
+<td>0:51.964</td>
+<td>1:48.776</td>
+<td class="decimal">2.09</td>
+</tr>
+<tr><td>-solarize 50%</td>
+<td>0:01.968</td>
+<td>0:06.992</td>
+<td class="decimal">3.55</td>
+</tr>
+<tr><td>-spread 1</td>
+<td>0:03.109</td>
+<td>5:34.925</td>
+<td class="decimal">107.73</td>
+</tr>
+<tr><td>-spread 3</td>
+<td>0:03.075</td>
+<td>5:31.330</td>
+<td class="decimal">107.75</td>
+</tr>
+<tr><td>-swirl 90</td>
+<td>0:10.836</td>
+<td>0:25.069</td>
+<td class="decimal">2.31</td>
+</tr>
+<tr><td>-threshold 35%</td>
+<td>0:02.467</td>
+<td>0:07.273</td>
+<td class="decimal">2.95</td>
+</tr>
+<tr><td>-fuzz 35% -transparent red</td>
+<td>0:02.099</td>
+<td>0:08.221</td>
+<td class="decimal">3.92</td>
+</tr>
+<tr><td>-trim</td>
+<td>0:03.767</td>
+<td>0:09.037</td>
+<td class="decimal">2.40</td>
+</tr>
+<tr><td>-unsharp 0x0.5+20+1</td>
+<td>0:08.806</td>
+<td>0:28.404</td>
+<td class="decimal">3.23</td>
+</tr>
 <tr><td>-unsharp 0x1.0+20+1</td>
-<td>0:11.669</td>
-<td>0:29.142</td>
-<td class="decimal">2.50</td>
+<td>0:10.089</td>
+<td>0:29.624</td>
+<td class="decimal">2.94</td>
 </tr>
 <tr><td>-wave 25x150</td>
-<td>0:16.225</td>
-<td>0:32.366</td>
-<td class="decimal">1.99</td>
+<td>0:13.477</td>
+<td>0:32.566</td>
+<td class="decimal">2.42</td>
 </tr>
 <tr><td>-white-threshold 80%</td>
-<td>0:03.352</td>
-<td>0:07.238</td>
-<td class="decimal">2.16</td>
+<td>0:01.798</td>
+<td>0:07.193</td>
+<td class="decimal">4.00</td>
 </tr>
 </tbody>
 </table>
@@ -1885,7 +1885,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2008-11-17 17:03 UTC.
 
 </div>
 </body>
