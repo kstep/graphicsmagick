@@ -21,16 +21,16 @@ GraphicsMagick Image Processing System
 .. _download GraphicsMagic-1.1 : http://sourceforge.net/project/showfiles.php?group_id=73485
 .. _GraphicsMagic-1.2 : http://www.graphicsmagick.org/1.2/
 .. _download GraphicsMagic-1.2 : http://sourceforge.net/project/showfiles.php?group_id=73485
-.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/
+.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/1.3/
 .. _download GraphicsMagic-1.3 : http://sourceforge.net/project/showfiles.php?group_id=73485
 
 .. _programming : programming.html
 
-========================  ============================================
+========================  ===============================================
 Legacy Stable Branch:     1.1.14__ (Released June 5, 2008) download__
-Previous Stable Branch:   1.2.5__ (Released July 25, 2008) download__
-Current StableBranch:     1.3__ (Released November 9, 2008) download__
-========================  ============================================
+Previous Stable Branch:   1.2.6__ (Released November 17, 2008) download__
+Current StableBranch:     1.3.1__ (Released November 17, 2008) download__
+========================  ===============================================
 
 __ `GraphicsMagic-1.1`_
 __ `download GraphicsMagic-1.1`_

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -516,15 +516,25 @@ ModuleExport void UnregisterFITSImage(void)
 }
 
 
-/* This functions inserts one row into a HDU */
+/*
+  This functions inserts one row into a HDU. Note that according to
+  FITS spec a card image contains 80 bytes of ASCII data.
+  
+  buffer - 2880 byte logical FITS record.
+  data   - string data to append
+  offset - offset into FITS record to write the data.
+*/
 int InsertRowHDU(char *buffer, const char *data, int offset)
 {
-int len;
+  int
+    len;
 
-  if(data==NULL) return offset;
+  if (data == NULL)
+    return offset;
   len = strlen(data);
+  len = Min(len,80); /* Each card image is 80 bytes max */
 
-  if(len > 2880-offset) len = 2880-offset;
+  if (len > 2880-offset) len = 2880-offset;
 
   (void) strncpy(buffer+offset,data,len);
   return offset +80;
@@ -644,7 +654,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,      "BZERO   =           %10u", (quantum_size <= 16) ? 32768U : 2147483648U);
     y = InsertRowHDU(fits_info, buffer, y);
   }
-  (void) FormatString(buffer, "HISTORY Created by %s.",GetMagickVersion((unsigned long *) NULL));
+  /* Magick version data can only be 60 bytes. */
+  (void) FormatString(buffer, "HISTORY Created by %.60s.",MagickPackageName " " MagickLibVersionText);
   y = InsertRowHDU(fits_info, buffer, y);
   y = InsertRowHDU(fits_info, "END", y);        
   (void) WriteBlob(image,2880,(char *) fits_info);
