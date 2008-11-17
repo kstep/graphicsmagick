@@ -1,9 +1,9 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-========================================================
-GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report
-========================================================
+==========================================================
+GraphicsMagick 1.3.1 vs ImageMagick 6.4.5 Benchmark Report
+==========================================================
 
 .. _`GraphicsMagick 1.2 Benchmarks` : benchmarks-1.2.html
 
@@ -13,10 +13,10 @@ GraphicsMagick 1.3 vs ImageMagick 6.4.5 Benchmark Report
 Introduction
 ============
 
-GraphicsMagick 1.3 has been benchmarked against the most recent
+GraphicsMagick 1.3.1 has been benchmarked against the most recent
 ImageMagick release available at time of release. ImageMagick has
 recently been significantly updated to use OpenMP as has GraphicsMagick
-1.3. Several disparate types of systems were used in our testing. We are
+1.3.1. Several disparate types of systems were used in our testing. We are
 pleased to see that ImageMagick's performance has improved significantly
 on the benchmark that we posted earlier (see `GraphicsMagick 1.2
 Benchmarks`_). It seems that access to the useful benchmark and
@@ -34,16 +34,16 @@ hardware with large caches, and runs poorly on most of the installed
 computing base. Even on the latest high-end hardware, GraphicsMagick is
 much more efficient than ImageMagick.
 
-The often extreme difference in the results is difficult to believe until
-one inspects the source code from both packages and sees that
+The often extreme difference in the results is difficult to believe
+until one inspects the source code from both packages and sees that
 GraphicsMagick uses streamlined straight-forward code paths while
-ImageMagick uses convoluted and arcane code paths in an apparent attempt
-to defeat human comprehension. While the ImageMagick approach does
-successfully defeat human comprehension, it also seems to largely defeat
-C compiler comprehension as well, resulting in slow code. If time and
-money are important to you, then you should use GraphicsMagick rather
-than ImageMagick. If time and money are not important to you, then you
-should use ImageMagick.
+ImageMagick uses convoluted and arcane code paths in an apparent
+attempt to defeat human comprehension. While the ImageMagick approach
+does successfully defeat human comprehension, it also seems to largely
+defeat C compiler comprehension (and the CPU's cache) as well,
+resulting in slow code. If time and money are important to you, then
+you should use GraphicsMagick rather than ImageMagick. If time and
+money are not important to you, then you should use ImageMagick.
 
 Strategy
 ========
@@ -51,7 +51,7 @@ Strategy
 For this benchmark cycle, we used a completely different benchmark
 approach. Instead of testing single-shot performance with large
 uncompressed files, we focused on the ability to process many medium
-sized (2048x1024 pixels) images. In order to prevent disk I/O from being
+sized (1920x1080 pixels) images. In order to prevent disk I/O from being
 a factor, we used a small input image and tiled it to create a larger
 input image via the "tile:" coder. The processed image is send to the
 "null:" coder so that file writes to a slow disk are also not a factor.
@@ -72,7 +72,7 @@ This new benchmark reveals the following performance criteria:
 
 The software involved in the testing identified itself as::
 
-  GraphicsMagick 1.3 unreleased Q16 http://www.GraphicsMagick.org/
+  GraphicsMagick 1.3.1 unreleased Q16 http://www.GraphicsMagick.org/
 
   ImageMagick 6.4.5 2008-11-03 Q16 OpenMP http://www.imagemagick.org
 
@@ -162,88 +162,86 @@ and running Solaris 10 U5. The compiler used identifies itself as "gcc
 ================================== ========== ========== ===========
 Operation                          GM real    IM real    IM/GM ratio
 ================================== ========== ========== ===========
--noop                                0:00.771   0:01.268    1.64
--affine 1,0,0.785,1,0,0 -transform   0:02.418   4:08.961  102.96
--black-threshold 20%                 0:00.865   0:01.564    1.81
--blur 0x0.5                          0:04.178   0:07.982    1.91
--blur 0x1.0                          0:04.710   0:08.464    1.80
--border 6x6                          0:01.277   0:02.886    2.26
--charcoal 0x1                        0:08.169   0:12.602    1.54
--chop 800x600+200+300                0:00.938   0:01.574    1.68
--colorspace CMYK                     0:00.980   0:02.538    2.59
--colorspace GRAY                     0:01.145   0:02.665    2.33
--colorspace HSL                      0:01.743   0:02.856    1.64
--colorspace HWB                      0:01.423   0:02.638    1.85
--colorspace OHTA                     0:01.134   0:02.659    2.34
--colorspace YCbCr                    0:01.123   0:02.674    2.38
--colorspace YIQ                      0:01.131   0:02.685    2.37
--colorspace YUV                      0:01.147   0:02.696    2.35
--contrast -contrast -contrast        0:07.199   0:08.193    1.14
-+contrast +contrast +contrast        0:06.703   0:07.687    1.15
--convolve 1,1,1,1,4,1,1,1,1          0:01.939   0:03.236    1.67
--colorize 30%/20%/50%                0:01.422   0:02.398    1.69
--crop 1700x900+100+100               0:01.151   0:01.934    1.68
--despeckle                           0:12.933   0:39.125    3.03
--edge 0x1                            0:02.822   0:04.381    1.55
--emboss 0x1                          0:03.681   0:10.004    2.72
--enhance                             0:08.396   0:08.667    1.03
--equalize                            0:01.467   0:02.624    1.79
--flip                                0:01.261   0:02.073    1.64
--flop                                0:01.268   0:02.062    1.63
--frame 15x15+3+3                     0:01.294   0:02.944    2.28
--gamma 1.6                           0:01.387   0:01.579    1.14
--gaussian 0x0.5                      0:02.795   0:04.343    1.55
--gaussian 0x1.0                      0:05.652   0:08.287    1.47
--implode 0.5                         0:05.961   0:09.684    1.62
--implode -1                          0:05.337   0:09.117    1.71
--lat 10x10-5%                        0:07.884   0:09.727    1.23
--level 10%,1.2,90%                   0:01.046   0:05.877    5.62
--median 1                            0:37.968   0:33.680    0.89
--median 2                            1:26.258   1:16.682    0.89
--modulate 110/100/95                 0:02.171   0:02.601    1.20
--motion-blur 0x3+30                  1:16.428   1:10.434    0.92
--negate                              0:00.870   0:01.347    1.55
-+noise Uniform                       0:04.391   0:32.861    7.48
-+noise Gaussian                      0:15.442   1:36.048    6.22
-+noise Multiplicative                0:10.623   1:16.379    7.19
-+noise Impulse                       0:04.394   0:31.481    7.16
-+noise Laplacian                     0:06.013   0:40.154    6.68
-+noise Poisson                       0:11.523   2:05.476   10.89
--noise 1                             0:38.296   0:33.930    0.89
--noise 2                             1:27.124   1:17.289    0.89
--normalize                           0:01.383   0:03.084    2.23
--fill blue -fuzz 35% -opaque red     0:00.994   0:01.663    1.67
--paint 0x1                           0:04.643   0:10.331    2.23
--raise 10x10                         0:00.826   0:01.334    1.62
--density 75x75 -resample 50x50       0:03.010   0:04.279    1.42
--resize 10%                          0:01.562   0:02.220    1.42
--resize 50%                          0:02.157   0:03.309    1.53
--resize 150%                         0:09.212   0:13.249    1.44
--roll +20+10                         0:01.292   0:31.909   24.70
--rotate 0                            0:01.313   0:02.098    1.60
--rotate 45                           0:26.130   0:29.426    1.13
--rotate 90                           0:02.065   0:02.610    1.26
--rotate 180                          0:01.301   0:02.051    1.58
--rotate 270                          0:02.173   0:02.644    1.22
--shade 30x30                         0:02.300   0:03.190    1.39
--sharpen 0x0.5                       0:02.849   0:04.324    1.52
--sharpen 0x1.0                       0:05.703   0:08.308    1.46
--shave 10x10                         0:01.248   0:02.219    1.78
--shear 45x45                         0:21.007   0:42.378    2.02
--solarize 50%                        0:00.879   0:01.356    1.54
--spread 1                            0:01.313   1:16.925   58.59
--spread 3                            0:01.373   1:17.254   56.27
--swirl 90                            0:05.326   0:09.057    1.70
--threshold 35%                       0:01.009   0:01.482    1.47
--fuzz 35% -transparent red           0:01.024   0:01.758    1.72
--trim                                0:01.152   0:02.231    1.94
--unsharp 0x0.5+20+1                  0:04.312   0:08.341    1.93
--unsharp 0x1.0+20+1                  0:04.878   0:08.814    1.81
--wave 25x150                         0:06.168   0:11.686    1.89
--white-threshold 80%                 0:00.865   0:01.529    1.77
+-noop                                0:00.736   0:01.269    1.72
+-affine 1,0,0.785,1,0,0 -transform   0:02.326   4:07.251  106.30
+-black-threshold 20%                 0:00.840   0:01.537    1.83
+-blur 0x0.5                          0:03.254   0:08.076    2.48
+-blur 0x1.0                          0:03.820   0:08.569    2.24
+-border 6x6                          0:01.196   0:02.949    2.47
+-charcoal 0x1                        0:07.233   0:12.720    1.76
+-chop 800x600+200+300                0:00.904   0:01.530    1.69
+-colorspace CMYK                     0:00.952   0:02.543    2.67
+-colorspace GRAY                     0:01.096   0:02.635    2.40
+-colorspace HSL                      0:01.677   0:02.838    1.69
+-colorspace HWB                      0:01.368   0:02.587    1.89
+-colorspace OHTA                     0:01.077   0:02.645    2.46
+-colorspace YCbCr                    0:01.101   0:02.619    2.38
+-colorspace YIQ                      0:01.068   0:02.646    2.48
+-colorspace YUV                      0:01.091   0:02.639    2.42
+-contrast -contrast -contrast        0:07.085   0:08.332    1.18
++contrast +contrast +contrast        0:06.580   0:07.748    1.18
+-convolve 1,1,1,1,4,1,1,1,1          0:01.944   0:03.168    1.63
+-colorize 30%/20%/50%                0:01.382   0:02.341    1.69
+-crop 1700x900+100+100               0:01.088   0:01.952    1.79
+-despeckle                           0:12.892   0:39.312    3.05
+-edge 0x1                            0:02.848   0:04.363    1.53
+-emboss 0x1                          0:03.636   0:09.993    2.75
+-enhance                             0:08.157   0:09.324    1.14
+-equalize                            0:01.434   0:02.614    1.82
+-flip                                0:01.196   0:02.054    1.72
+-flop                                0:01.232   0:02.049    1.66
+-frame 15x15+3+3                     0:01.243   0:02.932    2.36
+-gamma 1.6                           0:01.346   0:01.559    1.16
+-gaussian 0x0.5                      0:02.782   0:04.227    1.52
+-gaussian 0x1.0                      0:05.635   0:08.219    1.46
+-implode 0.5                         0:05.889   0:09.388    1.59
+-implode -1                          0:05.230   0:08.784    1.68
+-lat 10x10-5%                        0:07.761   0:09.705    1.25
+-level 10%,1.2,90%                   0:01.017   0:05.903    5.80
+-median 1                            0:34.255   0:33.785    0.99
+-median 2                            1:18.256   1:16.800    0.98
+-modulate 110/100/95                 0:02.105   0:02.576    1.22
+-motion-blur 0x3+30                  1:07.478   1:35.953    1.42
+-negate                              0:00.839   0:01.322    1.58
++noise Uniform                       0:04.364   0:33.349    7.64
++noise Gaussian                      0:15.340   1:36.815    6.31
++noise Multiplicative                0:10.494   1:17.915    7.42
++noise Impulse                       0:04.317   0:31.894    7.39
++noise Laplacian                     0:05.898   0:40.838    6.92
++noise Poisson                       0:11.311   2:05.923   11.13
+-noise 1                             0:32.742   0:33.759    1.03
+-noise 2                             1:14.809   1:16.895    1.03
+-normalize                           0:01.320   0:03.012    2.28
+-fill blue -fuzz 35% -opaque red     0:00.955   0:01.620    1.70
+-paint 0x1                           0:04.342   0:10.323    2.38
+-raise 10x10                         0:00.767   0:01.279    1.67
+-density 75x75 -resample 50x50       0:02.757   0:04.318    1.57
+-resize 10%                          0:01.522   0:02.134    1.40
+-resize 50%                          0:02.058   0:03.198    1.55
+-resize 150%                         0:08.699   0:12.722    1.46
+-roll +20+10                         0:01.229   0:32.646   26.56
+-rotate 0                            0:01.216   0:02.051    1.69
+-rotate 45                           0:23.668   0:29.266    1.24
+-rotate 90                           0:01.673   0:02.637    1.58
+-rotate 180                          0:01.211   0:02.032    1.68
+-rotate 270                          0:01.687   0:02.568    1.52
+-shade 30x30                         0:02.287   0:03.185    1.39
+-sharpen 0x0.5                       0:02.903   0:04.282    1.48
+-sharpen 0x1.0                       0:05.709   0:08.228    1.44
+-shave 10x10                         0:01.219   0:02.167    1.78
+-shear 45x45                         0:18.835   0:42.231    2.24
+-solarize 50%                        0:00.833   0:01.348    1.62
+-spread 1                            0:01.235   1:16.682   62.09
+-spread 3                            0:01.362   1:17.973   57.25
+-swirl 90                            0:04.990   0:08.702    1.74
+-threshold 35%                       0:00.970   0:01.447    1.49
+-fuzz 35% -transparent red           0:00.975   0:01.731    1.78
+-trim                                0:01.145   0:02.172    1.90
+-unsharp 0x0.5+20+1                  0:03.428   0:08.365    2.44
+-unsharp 0x1.0+20+1                  0:03.964   0:08.809    2.22
+-wave 25x150                         0:05.830   0:11.381    1.95
+-white-threshold 80%                 0:00.831   0:01.534    1.85
 ================================== ========== ========== ===========
-
-
 
 Sun SPARC/Solaris 10
 --------------------
@@ -255,179 +253,177 @@ and running Solaris 10 U5. The compiler used identifies itself as "gcc
 ================================== ========== ========== ===========
 Operation                          GM real    IM real    IM/GM ratio
 ================================== ========== ========== ===========
--noop                                0:01.559   0:07.682    4.93
--affine 1,0,0.785,1,0,0 -transform   0:11.955   5:16.076   26.44
--black-threshold 20%                 0:02.533   0:09.371    3.70
--blur 0x0.5                          0:13.241   0:33.991    2.57
--blur 0x1.0                          0:16.528   0:37.005    2.24
--border 6x6                          0:02.360   0:18.196    7.71
--charcoal 0x1                        0:36.755   1:09.377    1.89
--chop 800x600+200+300                0:02.035   0:08.176    4.02
--colorspace CMYK                     0:02.516   0:12.927    5.14
--colorspace GRAY                     0:04.249   0:12.848    3.02
--colorspace HSL                      0:08.076   0:14.373    1.78
--colorspace HWB                      0:07.243   0:13.889    1.92
--colorspace OHTA                     0:04.230   0:12.784    3.02
--colorspace YCbCr                    0:04.238   0:12.844    3.03
--colorspace YIQ                      0:04.274   0:12.825    3.00
--colorspace YUV                      0:04.236   0:12.942    3.06
--contrast -contrast -contrast        0:42.309   0:49.859    1.18
-+contrast +contrast +contrast        0:40.519   0:47.918    1.18
--convolve 1,1,1,1,4,1,1,1,1          0:09.011   0:19.148    2.12
--colorize 30%/20%/50%                0:04.434   0:12.208    2.75
--crop 1700x900+100+100               0:02.169   0:08.325    3.84
--despeckle                           1:49.201   3:39.506    2.01
--edge 0x1                            0:14.793   0:26.531    1.79
--emboss 0x1                          0:19.629   1:02.875    3.20
--enhance                             0:42.450   0:42.911    1.01
--equalize                            0:04.663   0:14.824    3.18
--flip                                0:02.356   0:08.622    3.66
--flop                                0:02.950   0:09.365    3.17
--frame 15x15+3+3                     0:02.435   0:18.431    7.57
--gamma 1.6                           0:04.051   0:11.224    2.77
--gaussian 0x0.5                      0:15.661   0:27.420    1.75
--gaussian 0x1.0                      0:37.816   0:55.493    1.47
--implode 0.5                         0:23.256   0:43.107    1.85
--implode -1                          0:19.071   0:37.880    1.99
--lat 10x10-5%                        0:48.049   1:37.183    2.02
--level 10%,1.2,90%                   0:02.931   5:21.276  109.61
--median 1                            1:20.197   1:17.407    0.97
--median 2                            3:12.218   2:50.628    0.89
--modulate 110/100/95                 0:13.765   0:20.993    1.53
--motion-blur 0x3+30                  2:56.312   3:19.321    1.13
--negate                              0:02.259   0:08.321    3.68
-+noise Uniform                       0:15.522   1:17.669    5.00
-+noise Gaussian                      1:04.580   3:41.353    3.43
-+noise Multiplicative                0:42.506   2:58.412    4.20
-+noise Impulse                       0:15.893   1:17.551    4.88
-+noise Laplacian                     0:25.900   1:41.173    3.91
-+noise Poisson                       0:47.410   4:52.765    6.18
--noise 1                             1:22.076   1:19.480    0.97
--noise 2                             3:14.165   2:52.093    0.89
--normalize                           0:04.315   0:15.490    3.59
--fill blue -fuzz 35% -opaque red     0:03.683   0:26.441    7.18
--paint 0x1                           0:24.394   0:47.091    1.93
--raise 10x10                         0:01.650   0:07.759    4.70
--density 75x75 -resample 50x50       0:12.610   0:23.159    1.84
--resize 10%                          0:06.737   0:13.820    2.05
--resize 50%                          0:09.930   0:19.380    1.95
--resize 150%                         0:32.559   0:53.872    1.65
--roll +20+10                         0:02.422   0:30.244   12.49
--rotate 0                            0:02.341   0:08.596    3.67
--rotate 45                           0:57.382   1:22.235    1.43
--rotate 90                           0:04.159   0:09.543    2.29
--rotate 180                          0:02.934   0:09.402    3.20
--rotate 270                          0:04.181   0:09.754    2.33
--shade 30x30                         0:09.911   0:17.263    1.74
--sharpen 0x0.5                       0:15.625   0:27.502    1.76
--sharpen 0x1.0                       0:37.826   0:55.054    1.46
--shave 10x10                         0:02.312   0:08.769    3.79
--shear 45x45                         0:32.595   1:19.643    2.44
--solarize 50%                        0:02.304   0:08.967    3.89
--spread 1                            0:03.253   1:19.224   24.35
--spread 3                            0:03.410   1:19.282   23.25
--swirl 90                            0:19.158   0:35.971    1.88
--threshold 35%                       0:02.854   0:09.409    3.30
--fuzz 35% -transparent red           0:03.882   0:11.185    2.88
--trim                                0:05.854   0:09.697    1.66
--unsharp 0x0.5+20+1                  0:15.696   0:38.765    2.47
--unsharp 0x1.0+20+1                  0:19.230   0:42.428    2.21
--wave 25x150                         0:19.527   0:37.623    1.93
--white-threshold 80%                 0:02.488   0:09.448    3.80
+-noop                                0:01.568   0:07.589    4.84
+-affine 1,0,0.785,1,0,0 -transform   0:11.798   5:15.828   26.77
+-black-threshold 20%                 0:02.462   0:09.356    3.80
+-blur 0x0.5                          0:11.380   0:33.502    2.94
+-blur 0x1.0                          0:14.582   0:36.937    2.53
+-border 6x6                          0:02.377   0:18.054    7.60
+-charcoal 0x1                        0:34.292   1:09.127    2.02
+-chop 800x600+200+300                0:02.013   0:08.168    4.06
+-colorspace CMYK                     0:02.410   0:12.921    5.36
+-colorspace GRAY                     0:04.102   0:12.813    3.12
+-colorspace HSL                      0:07.988   0:14.302    1.79
+-colorspace HWB                      0:07.340   0:13.869    1.89
+-colorspace OHTA                     0:04.114   0:12.919    3.14
+-colorspace YCbCr                    0:04.103   0:12.738    3.10
+-colorspace YIQ                      0:04.128   0:12.837    3.11
+-colorspace YUV                      0:04.103   0:12.917    3.15
+-contrast -contrast -contrast        0:42.407   0:49.965    1.18
++contrast +contrast +contrast        0:40.475   0:48.020    1.19
+-convolve 1,1,1,1,4,1,1,1,1          0:09.254   0:19.168    2.07
+-colorize 30%/20%/50%                0:04.494   0:12.240    2.72
+-crop 1700x900+100+100               0:02.171   0:08.333    3.84
+-despeckle                           1:49.368   3:38.388    2.00
+-edge 0x1                            0:14.833   0:26.556    1.79
+-emboss 0x1                          0:19.484   1:03.558    3.26
+-enhance                             0:42.730   0:43.000    1.01
+-equalize                            0:04.543   0:14.539    3.20
+-flip                                0:02.373   0:08.643    3.64
+-flop                                0:03.008   0:09.557    3.18
+-frame 15x15+3+3                     0:02.410   0:18.543    7.69
+-gamma 1.6                           0:03.939   0:11.092    2.82
+-gaussian 0x0.5                      0:15.682   0:27.393    1.75
+-gaussian 0x1.0                      0:37.851   0:54.938    1.45
+-implode 0.5                         0:22.628   0:42.806    1.89
+-implode -1                          0:18.455   0:37.726    2.04
+-lat 10x10-5%                        0:39.769   1:36.573    2.43
+-level 10%,1.2,90%                   0:02.859   5:20.154  111.98
+-median 1                            1:15.361   1:17.136    1.02
+-median 2                            2:56.672   2:50.296    0.96
+-modulate 110/100/95                 0:13.694   0:20.879    1.52
+-motion-blur 0x3+30                  2:21.951   3:18.113    1.40
+-negate                              0:02.189   0:08.480    3.87
++noise Uniform                       0:14.847   1:17.781    5.24
++noise Gaussian                      1:03.014   3:42.374    3.53
++noise Multiplicative                0:42.599   2:58.011    4.18
++noise Impulse                       0:15.240   1:18.049    5.12
++noise Laplacian                     0:25.233   1:41.187    4.01
++noise Poisson                       0:46.670   4:52.140    6.26
+-noise 1                             1:17.504   1:19.084    1.02
+-noise 2                             2:59.061   2:52.232    0.96
+-normalize                           0:04.233   0:15.509    3.66
+-fill blue -fuzz 35% -opaque red     0:03.507   0:26.551    7.57
+-paint 0x1                           0:24.353   0:47.092    1.93
+-raise 10x10                         0:01.673   0:07.777    4.65
+-density 75x75 -resample 50x50       0:12.631   0:23.225    1.84
+-resize 10%                          0:06.733   0:13.767    2.04
+-resize 50%                          0:09.798   0:19.219    1.96
+-resize 150%                         0:32.331   0:53.710    1.66
+-roll +20+10                         0:02.409   0:30.234   12.55
+-rotate 0                            0:02.327   0:08.673    3.73
+-rotate 45                           0:58.778   1:22.576    1.40
+-rotate 90                           0:03.301   0:09.738    2.95
+-rotate 180                          0:02.955   0:09.431    3.19
+-rotate 270                          0:03.323   0:09.812    2.95
+-shade 30x30                         0:10.043   0:17.376    1.73
+-sharpen 0x0.5                       0:15.716   0:27.123    1.73
+-sharpen 0x1.0                       0:37.969   0:54.999    1.45
+-shave 10x10                         0:02.364   0:08.697    3.68
+-shear 45x45                         0:34.908   1:19.305    2.27
+-solarize 50%                        0:02.201   0:08.897    4.04
+-spread 1                            0:03.302   1:19.018   23.93
+-spread 3                            0:03.502   1:19.670   22.75
+-swirl 90                            0:18.456   0:36.213    1.96
+-threshold 35%                       0:02.779   0:09.431    3.39
+-fuzz 35% -transparent red           0:03.674   0:11.203    3.05
+-trim                                0:05.837   0:09.707    1.66
+-unsharp 0x0.5+20+1                  0:13.865   0:38.966    2.81
+-unsharp 0x1.0+20+1                  0:16.786   0:42.511    2.53
+-wave 25x150                         0:18.974   0:37.838    1.99
+-white-threshold 80%                 0:02.486   0:09.429    3.79
 ================================== ========== ========== ===========
-
 
 Apple PowerPC G5/OS-X Tiger
 ---------------------------
 
 This system is an Apple G5 system with two 2.5GHz CPUs and running the
-Tiger release of OS-X. The compiler used identifies itself as "gcc-4.3.2
+Leopard release of OS-X. The compiler used identifies itself as "gcc-4.3.2
 (GCC) 4.3.2".
 
 ================================== ========== ========== ===========
 Operation                          GM real    IM real    IM/GM ratio
 ================================== ========== ========== ===========
--noop                                0:02.113   0:04.835    2.29
--affine 1,0,0.785,1,0,0 -transform   0:06.906  31:21.385  272.43
--black-threshold 20%                 0:02.345   0:06.078    2.59
--blur 0x0.5                          0:09.122   0:28.368    3.11
--blur 0x1.0                          0:11.150   0:33.660    3.02
--border 6x6                          0:03.145   0:09.460    3.01
--charcoal 0x1                        0:23.201   0:59.822    2.58
--chop 800x600+200+300                0:02.427   0:05.163    2.13
--colorspace CMYK                     0:02.562   0:07.694    3.00
--colorspace GRAY                     0:03.328   0:07.835    2.35
--colorspace HSL                      0:04.887   0:08.314    1.70
--colorspace HWB                      0:04.663   0:08.214    1.76
--colorspace OHTA                     0:03.349   0:07.807    2.33
--colorspace YCbCr                    0:03.343   0:07.836    2.34
--colorspace YIQ                      0:03.340   0:07.852    2.35
--colorspace YUV                      0:03.377   0:07.884    2.33
--contrast -contrast -contrast        0:16.037   0:24.245    1.51
-+contrast +contrast +contrast        0:15.641   0:23.931    1.53
--convolve 1,1,1,1,4,1,1,1,1          0:06.481   0:13.546    2.09
--colorize 30%/20%/50%                0:03.619   0:07.725    2.13
--crop 1700x900+100+100               0:02.888   0:05.684    1.97
--despeckle                           1:19.996   3:04.596    2.31
--edge 0x1                            0:06.371   0:24.836    3.90
--emboss 0x1                          0:12.608   1:09.318    5.50
--enhance                             0:32.758   0:46.010    1.40
--equalize                            0:03.009   0:07.880    2.62
--flip                                0:03.116   0:05.940    1.91
--flop                                0:03.161   0:05.972    1.89
--frame 15x15+3+3                     0:03.147   0:09.491    3.02
--gamma 1.6                           0:02.995   0:05.977    2.00
--gaussian 0x0.5                      0:10.781   0:25.032    2.32
--gaussian 0x1.0                      0:25.533   1:04.499    2.53
--implode 0.5                         0:12.509   0:22.421    1.79
--implode -1                          0:08.896   0:21.422    2.41
--lat 10x10-5%                        0:45.599   1:09.555    1.53
--level 10%,1.2,90%                   0:02.627   0:11.884    4.52
--median 1                            1:07.882   1:23.062    1.22
--median 2                            2:37.578   3:07.499    1.19
--modulate 110/100/95                 0:06.312   0:08.662    1.37
--motion-blur 0x3+30                  1:43.441   2:10.654    1.26
--negate                              0:02.387   0:05.055    2.12
-+noise Uniform                       0:08.629   0:58.280    6.75
-+noise Gaussian                      0:23.570   2:10.043    5.52
-+noise Multiplicative                0:17.679   1:55.541    6.54
-+noise Impulse                       0:08.849   0:55.627    6.29
-+noise Laplacian                     0:12.525   1:10.048    5.59
-+noise Poisson                       0:21.462   3:33.880    9.97
--noise 1                             1:05.736   1:28.922    1.35
--noise 2                             2:34.986   3:15.250    1.26
--normalize                           0:02.997   0:08.789    2.93
--fill blue -fuzz 35% -opaque red     0:02.865   0:06.204    2.17
--paint 0x1                           0:06.013   0:39.713    6.60
--raise 10x10                         0:02.202   0:04.965    2.25
--density 75x75 -resample 50x50       0:10.351   0:21.290    2.06
--resize 10%                          0:04.895   0:11.801    2.41
--resize 50%                          0:07.391   0:14.959    2.02
--resize 150%                         0:36.102   0:47.760    1.32
--roll +20+10                         0:03.134   6:41.949  128.25
--rotate 0                            0:03.071   0:05.963    1.94
--rotate 45                           1:22.150   1:28.017    1.07
--rotate 90                           0:03.675   0:06.352    1.73
--rotate 180                          0:03.181   0:05.966    1.88
--rotate 270                          0:03.662   0:06.363    1.74
--shade 30x30                         0:04.847   0:13.986    2.89
--sharpen 0x0.5                       0:10.815   0:24.956    2.31
--sharpen 0x1.0                       0:25.466   1:04.602    2.54
--shave 10x10                         0:03.091   0:05.920    1.92
--shear 45x45                         1:10.711   1:58.775    1.68
--solarize 50%                        0:02.388   0:05.853    2.45
--spread 1                            0:03.174  13:06.351  247.75
--spread 3                            0:03.049  13:11.856  259.71
--swirl 90                            0:11.048   0:23.120    2.09
--threshold 35%                       0:02.573   0:06.111    2.38
--fuzz 35% -transparent red           0:02.853   0:06.742    2.36
--trim                                0:04.237   0:06.664    1.57
--unsharp 0x0.5+20+1                  0:11.155   0:31.857    2.86
--unsharp 0x1.0+20+1                  0:13.117   0:37.215    2.84
--wave 25x150                         0:09.968   0:25.263    2.53
--white-threshold 80%                 0:02.303   0:06.109    2.65
+-noop                                0:02.022   0:04.960    2.45
+-affine 1,0,0.785,1,0,0 -transform   0:06.883  30:43.655  267.86
+-black-threshold 20%                 0:03.467   0:06.982    2.01
+-blur 0x0.5                          0:09.248   0:31.915    3.45
+-blur 0x1.0                          0:11.508   0:37.316    3.24
+-border 6x6                          0:03.157   0:10.530    3.34
+-charcoal 0x1                        0:25.140   1:08.414    2.72
+-chop 800x600+200+300                0:02.596   0:05.518    2.13
+-colorspace CMYK                     0:02.494   0:08.131    3.26
+-colorspace GRAY                     0:03.241   0:08.233    2.54
+-colorspace HSL                      0:05.026   0:08.858    1.76
+-colorspace HWB                      0:04.638   0:08.688    1.87
+-colorspace OHTA                     0:03.206   0:08.276    2.58
+-colorspace YCbCr                    0:03.408   0:08.350    2.45
+-colorspace YIQ                      0:03.404   0:08.411    2.47
+-colorspace YUV                      0:03.297   0:08.340    2.53
+-contrast -contrast -contrast        0:16.890   0:27.220    1.61
++contrast +contrast +contrast        0:17.743   0:28.310    1.60
+-convolve 1,1,1,1,4,1,1,1,1          0:08.263   0:15.515    1.88
+-colorize 30%/20%/50%                0:03.953   0:08.429    2.13
+-crop 1700x900+100+100               0:02.604   0:05.811    2.23
+-despeckle                           1:21.989   3:04.578    2.25
+-edge 0x1                            0:06.411   0:24.952    3.89
+-emboss 0x1                          0:12.255   1:09.693    5.69
+-enhance                             0:32.050   0:46.376    1.45
+-equalize                            0:02.868   0:08.042    2.80
+-flip                                0:02.839   0:06.096    2.15
+-flop                                0:02.881   0:06.107    2.12
+-frame 15x15+3+3                     0:02.864   0:09.594    3.35
+-gamma 1.6                           0:02.827   0:06.096    2.16
+-gaussian 0x0.5                      0:10.522   0:25.181    2.39
+-gaussian 0x1.0                      0:25.330   1:05.189    2.57
+-implode 0.5                         0:12.156   0:22.707    1.87
+-implode -1                          0:08.586   0:21.671    2.52
+-lat 10x10-5%                        0:44.989   1:09.993    1.56
+-level 10%,1.2,90%                   0:02.431   0:12.173    5.01
+-median 1                            1:09.370   1:22.857    1.19
+-median 2                            2:46.354   3:07.653    1.13
+-modulate 110/100/95                 0:06.201   0:08.827    1.42
+-motion-blur 0x3+30                  1:38.525   2:08.928    1.31
+-negate                              0:02.192   0:05.163    2.36
++noise Uniform                       0:08.530   0:58.352    6.84
++noise Gaussian                      0:22.906   2:10.226    5.69
++noise Multiplicative                0:17.390   1:55.859    6.66
++noise Impulse                       0:08.713   0:55.739    6.40
++noise Laplacian                     0:12.599   1:10.342    5.58
++noise Poisson                       0:21.506   3:34.477    9.97
+-noise 1                             1:08.805   1:28.986    1.29
+-noise 2                             2:39.773   3:15.389    1.22
+-normalize                           0:02.765   0:08.914    3.22
+-fill blue -fuzz 35% -opaque red     0:02.673   0:06.286    2.35
+-paint 0x1                           0:05.731   0:39.947    6.97
+-raise 10x10                         0:02.079   0:05.166    2.48
+-density 75x75 -resample 50x50       0:10.017   0:21.748    2.17
+-resize 10%                          0:04.727   0:11.976    2.53
+-resize 50%                          0:07.146   0:15.122    2.12
+-resize 150%                         0:35.528   0:47.838    1.35
+-roll +20+10                         0:03.078   6:24.426  124.89
+-rotate 0                            0:02.782   0:06.047    2.17
+-rotate 45                           1:18.419   1:26.977    1.11
+-rotate 90                           0:03.360   0:06.426    1.91
+-rotate 180                          0:02.825   0:06.059    2.14
+-rotate 270                          0:03.363   0:06.521    1.94
+-shade 30x30                         0:04.748   0:14.180    2.99
+-sharpen 0x0.5                       0:10.534   0:25.122    2.38
+-sharpen 0x1.0                       0:25.289   1:05.088    2.57
+-shave 10x10                         0:02.809   0:06.005    2.14
+-shear 45x45                         1:07.169   1:57.570    1.75
+-solarize 50%                        0:02.218   0:05.908    2.66
+-spread 1                            0:03.002  12:50.601  256.70
+-spread 3                            0:03.122  13:06.375  251.88
+-swirl 90                            0:10.412   0:23.170    2.23
+-threshold 35%                       0:02.528   0:06.270    2.48
+-fuzz 35% -transparent red           0:02.680   0:06.867    2.56
+-trim                                0:04.096   0:06.752    1.65
+-unsharp 0x0.5+20+1                  0:10.698   0:31.634    2.96
+-unsharp 0x1.0+20+1                  0:12.680   0:37.070    2.92
+-wave 25x150                         0:09.668   0:25.747    2.66
+-white-threshold 80%                 0:02.145   0:06.270    2.92
 ================================== ========== ========== ===========
-
 
 Intel Xeon / FreeBSD 7.0
 ------------------------
@@ -439,87 +435,86 @@ running FreeBSD 7.0. The compiler used identifies itself as "gcc (GCC)
 ================================== ========== ========== ===========
 Operation                          GM real    IM real    IM/GM ratio
 ================================== ========== ========== ===========
--noop                                0:03.062   0:06.686    2.18
--affine 1,0,0.785,1,0,0 -transform   0:09.984  20:20.902  122.29
--black-threshold 20%                 0:03.370   0:07.191    2.13
--blur 0x0.5                          0:09.223   0:26.028    2.82
--blur 0x1.0                          0:10.488   0:26.883    2.56
--border 6x6                          0:05.745   0:11.386    1.98
--charcoal 0x1                        0:22.435   0:41.492    1.85
--chop 800x600+200+300                0:03.702   0:07.125    1.92
--colorspace CMYK                     0:03.964   0:09.739    2.46
--colorspace GRAY                     0:04.715   0:10.096    2.14
--colorspace HSL                      0:05.981   0:10.400    1.74
--colorspace HWB                      0:05.033   0:09.996    1.99
--colorspace OHTA                     0:04.575   0:10.093    2.21
--colorspace YCbCr                    0:04.604   0:10.022    2.18
--colorspace YIQ                      0:04.644   0:10.090    2.17
--colorspace YUV                      0:04.644   0:10.125    2.18
--contrast -contrast -contrast        0:18.583   0:30.318    1.63
-+contrast +contrast +contrast        0:18.469   0:29.994    1.62
--convolve 1,1,1,1,4,1,1,1,1          0:07.019   0:10.939    1.56
--colorize 30%/20%/50%                0:04.886   0:09.859    2.02
--crop 1700x900+100+100               0:05.013   0:07.939    1.58
--despeckle                           0:54.080   3:04.901    3.42
--edge 0x1                            0:07.031   0:14.044    2.00
--emboss 0x1                          0:12.291   0:28.677    2.33
--enhance                             0:31.499   0:32.292    1.03
--equalize                            0:04.789   0:10.343    2.16
--flip                                0:05.759   0:08.425    1.46
--flop                                0:05.685   0:08.386    1.48
--frame 15x15+3+3                     0:05.757   0:11.413    1.98
--gamma 1.6                           0:05.636   0:08.414    1.49
--gaussian 0x0.5                      0:09.874   0:14.185    1.44
--gaussian 0x1.0                      0:19.989   0:23.831    1.19
--implode 0.5                         0:17.646   0:30.169    1.71
--implode -1                          0:12.688   0:25.236    1.99
--lat 10x10-5%                        0:23.205   0:23.264    1.00
--level 10%,1.2,90%                   0:04.053   1:44.927   25.89
--median 1                            1:52.061   1:10.238    0.63
--median 2                            4:21.560   2:57.114    0.68
--modulate 110/100/95                 0:07.556   0:11.125    1.47
--motion-blur 0x3+30                  2:52.798   3:05.292    1.07
--negate                              0:03.449   0:07.057    2.05
-+noise Uniform                       0:09.627   1:03.274    6.57
-+noise Gaussian                      0:24.818   2:31.631    6.11
-+noise Multiplicative                0:18.528   2:13.855    7.22
-+noise Impulse                       0:09.630   1:03.560    6.60
-+noise Laplacian                     0:12.425   1:16.709    6.17
-+noise Poisson                       0:23.689   4:18.182   10.90
--noise 1                             1:52.276   1:09.558    0.62
--noise 2                             4:21.392   2:54.387    0.67
--normalize                           0:04.641   0:11.449    2.47
--fill blue -fuzz 35% -opaque red     0:03.555   0:07.730    2.17
--paint 0x1                           0:12.365   0:32.416    2.62
--raise 10x10                         0:03.193   0:06.878    2.15
--density 75x75 -resample 50x50       0:12.312   0:16.263    1.32
--resize 10%                          0:06.933   0:10.746    1.55
--resize 50%                          0:10.018   0:13.556    1.35
--resize 150%                         0:34.986   0:38.774    1.11
--roll +20+10                         0:05.676   3:26.954   36.46
--rotate 0                            0:05.746   0:08.375    1.46
--rotate 45                           1:16.289   1:19.710    1.04
--rotate 90                           0:04.844   0:08.918    1.84
--rotate 180                          0:05.666   0:08.327    1.47
--rotate 270                          0:04.933   0:08.912    1.81
--shade 30x30                         0:07.066   0:10.716    1.52
--sharpen 0x0.5                       0:09.926   0:14.088    1.42
--sharpen 0x1.0                       0:20.076   0:23.853    1.19
--shave 10x10                         0:05.632   0:08.311    1.48
--shear 45x45                         1:06.502   1:48.034    1.62
--solarize 50%                        0:03.441   0:06.946    2.02
--spread 1                            0:05.491   5:29.590   60.02
--spread 3                            0:05.838   5:25.804   55.81
--swirl 90                            0:12.811   0:24.858    1.94
--threshold 35%                       0:03.977   0:07.195    1.81
--fuzz 35% -transparent red           0:03.591   0:08.098    2.26
--trim                                0:04.534   0:09.102    2.01
--unsharp 0x0.5+20+1                  0:10.476   0:28.267    2.70
--unsharp 0x1.0+20+1                  0:11.669   0:29.142    2.50
--wave 25x150                         0:16.225   0:32.366    1.99
--white-threshold 80%                 0:03.352   0:07.238    2.16
+-noop                                0:01.575   0:06.729    4.27
+-affine 1,0,0.785,1,0,0 -transform   0:08.414  20:26.384  145.76
+-black-threshold 20%                 0:01.888   0:07.232    3.83
+-blur 0x0.5                          0:07.689   0:25.976    3.38
+-blur 0x1.0                          0:08.920   0:26.720    3.00
+-border 6x6                          0:02.827   0:11.598    4.10
+-charcoal 0x1                        0:20.800   0:41.973    2.02
+-chop 800x600+200+300                0:01.895   0:07.300    3.85
+-colorspace CMYK                     0:02.563   0:09.861    3.85
+-colorspace GRAY                     0:03.146   0:10.237    3.25
+-colorspace HSL                      0:04.478   0:10.414    2.33
+-colorspace HWB                      0:03.393   0:10.111    2.98
+-colorspace OHTA                     0:03.077   0:10.122    3.29
+-colorspace YCbCr                    0:03.100   0:10.170    3.28
+-colorspace YIQ                      0:03.068   0:10.137    3.30
+-colorspace YUV                      0:03.102   0:10.182    3.28
+-contrast -contrast -contrast        0:16.936   0:30.461    1.80
++contrast +contrast +contrast        0:16.592   0:30.291    1.83
+-convolve 1,1,1,1,4,1,1,1,1          0:05.485   0:11.023    2.01
+-colorize 30%/20%/50%                0:03.402   0:09.849    2.90
+-crop 1700x900+100+100               0:02.468   0:07.984    3.24
+-despeckle                           0:51.741   3:04.871    3.57
+-edge 0x1                            0:05.581   0:13.908    2.49
+-emboss 0x1                          0:10.720   0:28.741    2.68
+-enhance                             0:29.384   0:32.385    1.10
+-equalize                            0:03.327   0:10.392    3.12
+-flip                                0:02.724   0:08.420    3.09
+-flop                                0:02.700   0:08.450    3.13
+-frame 15x15+3+3                     0:02.807   0:11.337    4.04
+-gamma 1.6                           0:04.138   0:08.447    2.04
+-gaussian 0x0.5                      0:08.408   0:14.191    1.69
+-gaussian 0x1.0                      0:18.204   0:24.125    1.33
+-implode 0.5                         0:15.799   0:30.206    1.91
+-implode -1                          0:10.734   0:25.254    2.35
+-lat 10x10-5%                        0:21.068   0:23.295    1.11
+-level 10%,1.2,90%                   0:02.576   1:45.138   40.81
+-median 1                            1:57.267   1:09.904    0.60
+-median 2                            4:32.584   2:56.154    0.65
+-modulate 110/100/95                 0:05.965   0:11.339    1.90
+-motion-blur 0x3+30                  3:02.254   3:03.829    1.01
+-negate                              0:01.975   0:07.151    3.62
++noise Uniform                       0:08.031   1:03.146    7.86
++noise Gaussian                      0:23.215   2:30.842    6.50
++noise Multiplicative                0:17.001   2:12.535    7.80
++noise Impulse                       0:08.029   1:01.383    7.65
++noise Laplacian                     0:10.925   1:16.020    6.96
++noise Poisson                       0:22.518   4:15.572   11.35
+-noise 1                             1:58.910   1:08.945    0.58
+-noise 2                             4:35.641   2:54.957    0.63
+-normalize                           0:03.166   0:11.422    3.61
+-fill blue -fuzz 35% -opaque red     0:02.056   0:07.857    3.82
+-paint 0x1                           0:10.874   0:32.299    2.97
+-raise 10x10                         0:01.656   0:06.795    4.10
+-density 75x75 -resample 50x50       0:10.816   0:16.277    1.50
+-resize 10%                          0:05.437   0:10.868    2.00
+-resize 50%                          0:08.403   0:13.642    1.62
+-resize 150%                         0:32.995   0:38.774    1.18
+-roll +20+10                         0:04.223   3:27.736   49.19
+-rotate 0                            0:02.766   0:08.454    3.06
+-rotate 45                           1:01.114   1:19.892    1.31
+-rotate 90                           0:03.405   0:08.957    2.63
+-rotate 180                          0:02.693   0:08.437    3.13
+-rotate 270                          0:03.314   0:08.944    2.70
+-shade 30x30                         0:05.761   0:10.767    1.87
+-sharpen 0x0.5                       0:08.406   0:14.197    1.69
+-sharpen 0x1.0                       0:18.233   0:24.260    1.33
+-shave 10x10                         0:02.713   0:08.369    3.08
+-shear 45x45                         0:51.964   1:48.776    2.09
+-solarize 50%                        0:01.968   0:06.992    3.55
+-spread 1                            0:03.109   5:34.925  107.73
+-spread 3                            0:03.075   5:31.330  107.75
+-swirl 90                            0:10.836   0:25.069    2.31
+-threshold 35%                       0:02.467   0:07.273    2.95
+-fuzz 35% -transparent red           0:02.099   0:08.221    3.92
+-trim                                0:03.767   0:09.037    2.40
+-unsharp 0x0.5+20+1                  0:08.806   0:28.404    3.23
+-unsharp 0x1.0+20+1                  0:10.089   0:29.624    2.94
+-wave 25x150                         0:13.477   0:32.566    2.42
+-white-threshold 80%                 0:01.798   0:07.193    4.00
 ================================== ========== ========== ===========
-
 
 
 --------------------------------------------------------------------------

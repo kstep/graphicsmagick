@@ -189,6 +189,9 @@ a utility to read and manipulate raw images from digital cameras.
 `LPROF <http://lprof.sourceforge.net/index.html>`_,
 an open source ICC profiler with graphical user interface.
 
+`Gallery <http://gallery.menalto.com/>`_,
+a facinating web-based photo album organizer.  Works with GraphicsMagick!.
+
 Stock Photos
 =============
 
