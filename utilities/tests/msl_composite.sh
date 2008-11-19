@@ -57,7 +57,7 @@ draw_text ()
 #    $CONVERT_CMD $TEMPFILE $TARGET || exit 1
 
     $CONVERT_CMD -size 100x100 xc:white -draw "font-size 20 font '${GENERIC_TTF}' gravity center text 0,0 '$TEXT'" $TARGET
-    rm -f $TEMPFILE
+#    rm -f $TEMPFILE
 }
 
 draw_blank ()
@@ -76,7 +76,7 @@ draw_blank ()
 
 #    $CONVERT_CMD $TEMPFILE $TARGET || exit 2
     $CONVERT_CMD -size 500x500 xc:white $TARGET
-    rm -f $TEMPFILE
+#   rm -f $TEMPFILE
 }
 
 ########################## PREPARE TEST OBJECTS ###########################
