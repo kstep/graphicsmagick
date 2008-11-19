@@ -1,3 +1,18 @@
+2008-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c (BuildChannelHistograms): EnhanceImage() and
+	NormalizeImage() now share one common function for generating the
+	histogram.
+	* magick/enhance.c (ModulateImage): Improve performance a bit.
+	(ContrastImage): Improve performance a bit.
+	(GammaImage): Improve performance a bit.
+
+2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/authors.rst: List Mark Mitchell as an author.
+	* utilities/tests/msl_composite.sh: Fix 'rm -f' without a valid
+	argument which annoyed NetBSD.
+
 2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.3.1 released.

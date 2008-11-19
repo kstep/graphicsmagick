@@ -43,9 +43,88 @@
 #include "magick/color.h"
 #include "magick/enhance.h"
 #include "magick/gem.h"
+#include "magick/omp_data_view.h"
 #include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
+
+static MagickPassFail
+BuildChannelHistogramsCB(void *mutable_data,          /* User provided mutable data */
+                         const void *immutable_data,  /* User provided immutable data */
+                         const Image *const_image,    /* Input image */
+                         const PixelPacket *pixels,   /* Pixel row */
+                         const IndexPacket *indexes,  /* Pixel indexes */
+                         const long npixels,          /* Number of pixels in row */
+                         ExceptionInfo *exception     /* Exception report */
+                         )
+{
+  /*
+    Built an image histogram in the supplied table.
+
+    Should be executed by just one thread in order to avoid contention
+    for the histogram table.
+  */
+  DoublePixelPacket
+    *histogram = (DoublePixelPacket *) mutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      histogram[ScaleQuantumToMap(pixels[i].red)].red++;
+      histogram[ScaleQuantumToMap(pixels[i].green)].green++;
+      histogram[ScaleQuantumToMap(pixels[i].blue)].blue++;
+      if (const_image->matte)
+        histogram[ScaleQuantumToMap(pixels[i].opacity)].opacity++;
+    }
+
+  return MagickPass;
+}
+
+static DoublePixelPacket *
+BuildChannelHistograms(const Image *image, ExceptionInfo *exception)
+{
+  MagickPassFail
+    status = MagickPass;
+
+  DoublePixelPacket
+    *histogram;
+  
+  histogram=MagickAllocateArray(DoublePixelPacket *,(MaxMap+1),
+                                sizeof(DoublePixelPacket));
+  if (histogram == (DoublePixelPacket *) NULL)
+    {
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+                     image->filename);
+      return (DoublePixelPacket *) NULL;
+    }
+
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
+
+  {
+    PixelIteratorOptions
+      iterator_options;
+    
+    InitializePixelIteratorOptions(&iterator_options,exception);
+    iterator_options.max_threads=1;
+    status=PixelIterateMonoRead(BuildChannelHistogramsCB,
+                                &iterator_options,
+                                "[%s] Building image histogram...",
+                                histogram,NULL,
+                                0,0,image->columns,image->rows,
+                                image,exception);
+  }
+
+  if (status == MagickFail)
+    MagickFreeMemory(histogram);
+  
+  return histogram;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,9 +164,12 @@ ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
   /*
     Modulate pixels contrast.
   */
-  int
-    sign = *((const int *) immutable_data);
+  const double
+    sign = *((const double *) immutable_data);
 
+  static const double
+    alpha=0.5+MagickEpsilon;
+      
   register long
     i;
   
@@ -97,7 +179,23 @@ ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
-    Contrast(sign,&pixels[i].red,&pixels[i].green,&pixels[i].blue);
+    {
+      double
+        brightness,
+        hue,
+        saturation;
+
+      TransformHSL(pixels[i].red,pixels[i].green,pixels[i].blue,
+                   &hue,&saturation,&brightness);
+      brightness+=
+        alpha*sign*(alpha*(sin(MagickPI*(brightness-alpha))+1.0)-brightness);
+      if (brightness > 1.0)
+        brightness=1.0;
+      if (brightness < 0.0)
+        brightness=0.0;
+      HSLTransform(hue,saturation,brightness,&pixels[i].red,
+                   &pixels[i].green,&pixels[i].blue);
+    }
 
   return MagickPass;
 }
@@ -105,7 +203,7 @@ ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
 #define SharpenContrastImageText  "[%s] Sharpening image contrast..."
 MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpen)
 {
-  int
+  double
     sign;
 
   const char
@@ -120,7 +218,7 @@ MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpe
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  sign=sharpen ? 1 : -1;
+  sign=sharpen ? 1.0 : -1.0;
   progress_message=sharpen ? SharpenContrastImageText : DullContrastImageText;
   if (image->storage_class == PseudoClass)
     {
@@ -219,43 +317,6 @@ ApplyLevels(void *mutable_data,          /* User provided mutable data */
   return MagickPass;
 }
 
-static MagickPassFail
-BuildHistogram(void *mutable_data,          /* User provided mutable data */
-               const void *immutable_data,  /* User provided immutable data */
-               const Image *const_image,    /* Input image */
-               const PixelPacket *pixels,   /* Pixel row */
-               const IndexPacket *indexes,  /* Pixel indexes */
-               const long npixels,          /* Number of pixels in row */
-               ExceptionInfo *exception     /* Exception report */
-               )
-{
-  /*
-    Built an image histogram in the supplied table.
-
-    Should be executed by just one thread in order to avoid contention
-    for the histogram table.
-  */
-  DoublePixelPacket
-    *histogram = (DoublePixelPacket *) mutable_data;
-
-  register long
-    i;
-
-  ARG_NOT_USED(immutable_data);
-  ARG_NOT_USED(indexes);
-  ARG_NOT_USED(exception);
-
-  for (i=0; i < npixels; i++)
-    {
-      histogram[ScaleQuantumToMap(pixels[i].red)].red++;
-      histogram[ScaleQuantumToMap(pixels[i].green)].green++;
-      histogram[ScaleQuantumToMap(pixels[i].blue)].blue++;
-      if (const_image->matte)
-        histogram[ScaleQuantumToMap(pixels[i].opacity)].opacity++;
-    }
-
-  return MagickPass;
-}
 #define EqualizeImageText  "Equalizing image...  "
 MagickExport MagickPassFail EqualizeImage(Image *image)
 {
@@ -279,37 +340,31 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
     status=MagickPass;
 
   /*
-    Allocate and initialize histogram arrays.
+    Allocate and initialize arrays.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=MagickAllocateMemory(DoublePixelPacket *,
-    (MaxMap+1)*sizeof(DoublePixelPacket));
   map=MagickAllocateMemory(DoublePixelPacket *,(MaxMap+1)*sizeof(DoublePixelPacket));
   levels.map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
-  if ((histogram == (DoublePixelPacket *) NULL) ||
-      (map == (DoublePixelPacket *) NULL) ||
+  if ((map == (DoublePixelPacket *) NULL) ||
       (levels.map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-      MagickMsg(OptionError,UnableToEqualizeImage));
+    {
+      MagickFreeMemory(map);
+      MagickFreeMemory(levels.map);
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+                           MagickMsg(OptionError,UnableToEqualizeImage));
+    }
   /*
     Build histogram.
   */
-  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  {
-    PixelIteratorOptions
-      options;
-
-    InitializePixelIteratorOptions(&options,&image->exception);
-    options.max_threads=1;
-    status=PixelIterateMonoRead(BuildHistogram,
-                                &options,
-                                "[%s] Building image histogram...",
-                                histogram,NULL,
-                                0,0,image->columns,image->rows,
-                                image,&image->exception);
-  }
+  histogram=BuildChannelHistograms(image,&image->exception);
+  if (histogram == (DoublePixelPacket *) NULL)
+    {
+      MagickFreeMemory(map);
+      MagickFreeMemory(levels.map);
+      return MagickFail;
+    }
   /*
     Integrate the histogram to get the equalization map.
   */
@@ -453,6 +508,9 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
   levels.level_green = (gamma.green != 0.0);
   levels.level_blue = (gamma.blue != 0.0);
   levels.level_opacity = MagickFalse;
+#if (MaxMap > 256) && defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(guided)
+#endif
   for (i=0; i <= (long) MaxMap; i++)
   {
     if (levels.level_red)
@@ -799,7 +857,7 @@ ModulateImagePixels(void *mutable_data,         /* User provided mutable data */
     Modulate image pixels according to options.
   */
   const ModulateImageParameters_t
-    *param = (const ModulateImageParameters_t *) immutable_data;
+    param = *(const ModulateImageParameters_t *) immutable_data;
 
   register long
     i;
@@ -810,8 +868,29 @@ ModulateImagePixels(void *mutable_data,         /* User provided mutable data */
   ARG_NOT_USED(exception);
 
   for (i=0; i < npixels; i++)
-    Modulate(param->percent_hue,param->percent_saturation,param->percent_brightness,
-             &pixels[i].red,&pixels[i].green,&pixels[i].blue);
+    {
+      double
+        brightness,
+        hue,
+        saturation;
+
+      TransformHSL(pixels[i].red,pixels[i].green,pixels[i].blue,
+                   &hue,&saturation,&brightness);
+      brightness*=(0.01+MagickEpsilon)*param.percent_brightness;
+      if (brightness > 1.0)
+        brightness=1.0;
+      saturation*=(0.01+MagickEpsilon)*param.percent_saturation;
+      if (saturation > 1.0)
+        saturation=1.0;
+      
+      hue += (param.percent_hue/200.0 - 0.5);
+      while (hue < 0.0)
+        hue += 1.0;
+      while (hue > 1.0)
+        hue -= 1.0;
+      HSLTransform(hue,saturation,brightness,
+                   &pixels[i].red,&pixels[i].green,&pixels[i].blue);
+    }
 
   return MagickPass;
 }
@@ -1036,30 +1115,19 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=MagickAllocateMemory(DoublePixelPacket *,
-                                 (MaxMap+1)*sizeof(DoublePixelPacket));
   levels.map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
-  if ((histogram == (DoublePixelPacket *) NULL) ||
-      (levels.map == (PixelPacket *) NULL))
+  if (levels.map == (PixelPacket *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                           UnableToNormalizeImage);
   /*
     Form histogram.
   */
-  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
-  {
-    PixelIteratorOptions
-      options;
-
-    InitializePixelIteratorOptions(&options,&image->exception);
-    options.max_threads=1;
-    status=PixelIterateMonoRead(BuildHistogram,
-                                &options,
-                                "[%s] Building image histogram...",
-                                histogram,NULL,
-                                0,0,image->columns,image->rows,
-                                image,&image->exception);
-  }
+  histogram=BuildChannelHistograms(image,&image->exception);
+  if (histogram == (DoublePixelPacket *) NULL)
+    {
+      MagickFreeMemory(levels.map);
+      return MagickFail;
+    }
   /*
     Find the histogram boundaries by locating the 0.1 percent levels.
   */

@@ -49,6 +49,11 @@ Rolf Schroedter
 David N. Welton
 		Co-author of TclMagick, particularly in the Unix environment.
 
+Mark Mitchell
+                Contributed a new design for the web pages, including the
+                formatting scripts, and converted many pages to the new
+                format.
+
 
 Former GraphicsMagick Contributors
 ==================================
