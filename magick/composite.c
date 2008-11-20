@@ -851,26 +851,30 @@ CopyCompositePixels(void *mutable_data,                /* User provided mutable 
 {
   ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(immutable_data);
-  ARG_NOT_USED(source_image);
   ARG_NOT_USED(exception);
 
   /*
     The resulting image is base-image replaced with change-image. Here
     the matte information is ignored.
-
-    Unlike most other composition operators, we copy the colormap
-    indexes if they are available.  If the source indexes are not
-    available yet the image is indicated to be CMYK(A) then the
-    indexes (matte channel) are initialized to Opaque.
   */
-  (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
-  if ((update_indexes != (IndexPacket *) NULL) &&
-      (source_indexes != (IndexPacket *) NULL))
-    (void) memcpy(update_indexes,source_indexes,npixels*sizeof(IndexPacket));
-  else if ((update_indexes != (IndexPacket *) NULL) &&
-           (update_image->colorspace == CMYKColorspace) &&
-           (update_image->matte))
-    (void) memset(update_indexes,OpaqueOpacity,npixels*sizeof(IndexPacket));
+  if ((update_image->colorspace == CMYKColorspace) &&
+      (update_image->matte))
+    {
+      if (source_image->matte)
+        {
+          (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
+          (void) memcpy(update_indexes,source_indexes,npixels*sizeof(IndexPacket));
+        }
+      else
+        {
+          (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
+          (void) memset(update_indexes,OpaqueOpacity,npixels*sizeof(IndexPacket));
+        }
+    }
+  else
+    {
+      (void) memcpy(update_pixels,source_pixels,npixels*sizeof(PixelPacket));
+    }
       
   return MagickPass;
 }
@@ -2377,8 +2381,7 @@ CompositeImageRegion(const CompositeOperator compose,
   if (compose == NoCompositeOp)
     return(MagickPass);
 
-  if (compose != CopyCompositeOp)
-    canvas_image->storage_class=DirectClass;
+  canvas_image->storage_class=DirectClass;
 
   call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
   if (call_back != (PixelIteratorDualModifyCallback) NULL)
