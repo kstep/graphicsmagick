@@ -1,3 +1,11 @@
+2008-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/preview.c (WritePreviewImage): Solarize requires a
+	threshold argument.
+	* coders/vid.c (WriteVIDImage): Eliminate memory leak.
+	* magick/montage.c (MontageImages): Fix continued use of freed
+	memory.
+
 2008-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (BuildChannelHistograms): EnhanceImage() and

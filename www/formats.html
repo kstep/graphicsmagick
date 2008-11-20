@@ -744,10 +744,10 @@ following table lists these pseudo image formats:</p>
 <table border="1" class="docutils">
 <caption>Pseudo Image Formats</caption>
 <colgroup>
-<col width="14%" />
+<col width="13%" />
 <col width="6%" />
-<col width="28%" />
-<col width="52%" />
+<col width="25%" />
+<col width="56%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>Tag</td>
@@ -774,10 +774,12 @@ following table lists these pseudo image formats:</p>
 <td>R</td>
 <td>Gradual passing from
 one shade to another</td>
-<td>Returns a rendered gradient image using the
+<td><p class="first">Returns a rendered gradient image using the
 specified image size. Specify the desired
-shading as part of the filename (e.g.
-&quot;gradient:red-blue&quot;or &quot;gradient:#F00-#00F&quot;).</td>
+shading as part of the filename.  For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gradient:red-blue</span></tt> or <tt class="docutils literal"><span class="pre">gradient:#F00-#00F</span></tt></blockquote>
+</td>
 </tr>
 <tr><td>HISTOGRAM</td>
 <td>W</td>
@@ -785,7 +787,8 @@ shading as part of the filename (e.g.
 <td><p class="first">Generate an RGB histogram of the input image.
 The output format is always ImageMagick <a class="reference" href="miff.html">MIFF</a>
 (regardless of file extension). For example:</p>
-<p class="last">gm convert file.tiff histogram:file.miff</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.tiff</span> <span class="pre">histogram:file.miff</span></tt></blockquote>
 </td>
 </tr>
 <tr><td>LABEL</td>
@@ -819,7 +822,8 @@ when evaluating image read performance.</td>
 <td>Plasma fractal image</td>
 <td><p class="first">Creates an image using the plasma fractal. For
 example:</p>
-<p class="last">gm convert -size 640x480 plasma: file.miff</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">640x480</span> <span class="pre">plasma:</span> <span class="pre">file.miff</span></tt></blockquote>
 </td>
 </tr>
 <tr><td>PREVIEW</td>
@@ -834,8 +838,8 @@ preview type via the -preview option). The
 output file is always written in the
 ImageMagick <a class="reference" href="miff.html">MIFF</a> format.</p>
 <p>For example:</p>
-<p class="last">gm convert file.tiff -preview gamma
-preview:file.miff</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.tiff</span> <span class="pre">-preview</span> <span class="pre">gamma</span> <span class="pre">preview:file.miff</span></tt></blockquote>
 </td>
 </tr>
 <tr><td>PRINT</td>
@@ -851,8 +855,7 @@ select the desired printer.</td>
 <td>Import image from a
 scanner device</td>
 <td>Requires <a class="reference" href="http://www.mostang.com/sane/">SANE</a> Specify the device name and path
-as the filename (e.g. &quot;scan:mustek:/dev/
-scanner&quot;).</td>
+as the filename (e.g. &quot;scan:mustek:/dev/scanner&quot;).</td>
 </tr>
 <tr><td>STEGANO</td>
 <td>R</td>
@@ -863,43 +866,60 @@ height, and offset of the steganographic image</td>
 <tr><td>TILE</td>
 <td>R</td>
 <td>Tiled image</td>
-<td>Create a tiled version of an image at by tiling
+<td><p class="first">Create a tiled version of an image at by tiling
 a image. Use -size to specify the tiled image
 size. The image is specified similar to
-&quot;TILE:image.miff&quot;.</td>
+&quot;TILE:image.miff&quot;.
+For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">800x600</span> <span class="pre">tile:image.jpg</span> <span class="pre">out.jpg</span></tt></blockquote>
+</td>
 </tr>
 <tr><td>VID</td>
 <td>RW</td>
 <td>Visual Image Directory</td>
-<td>Used to create a thumbnailed directory (tiled
+<td><p class="first">Used to create a thumbnailed directory (tiled
 thumbnails) of a set of images which may be
 used to select images to view via the display
-program, or saved to a <a class="reference" href="miff.html">MIFF</a> or SHTML file.</td>
+program, or saved to a <a class="reference" href="miff.html">MIFF</a> or SHTML file.
+For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">vid:&quot;*.jpg&quot;</span> <span class="pre">index.miff</span></tt></blockquote>
+</td>
 </tr>
 <tr><td>WIN</td>
 <td>RW</td>
 <td>Select image from or
 display image to your
 computer screen</td>
-<td>Only supported under Microsoft Windows.</td>
+<td><p class="first">Only supported under Microsoft Windows. For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.jpg</span> <span class="pre">-rotate</span> <span class="pre">90</span> <span class="pre">win:</span></tt></blockquote>
+</td>
 </tr>
 <tr><td>X</td>
 <td>RW</td>
 <td>Select image from or
 display image to your X
 server screen</td>
-<td>Also see the import and display programs.</td>
+<td><p class="first">Also see the import and display programs. For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.jpg</span> <span class="pre">-rotate</span> <span class="pre">90</span> <span class="pre">x:</span></tt></blockquote>
+</td>
 </tr>
 <tr><td>XC</td>
 <td>R</td>
 <td>Canvas image of
 specified color</td>
-<td>Useful to create solid color &quot;canvas&quot; images.
+<td><p class="first">Useful to create solid color &quot;canvas&quot; images.
 Use -size and -depth to specify the image
 width, height, and depth. Example XC color
 specifications include &quot;XC:red&quot; and &quot;XC:#
 FF0000&quot;.  See the <a class="reference" href="color.html">color</a> reference for the
-numeric values used for named colors.</td>
+numeric values used for named colors.  For example:</p>
+<blockquote class="last">
+<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">640x480</span> <span class="pre">xc:red</span> <span class="pre">red.jpg</span></tt></blockquote>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1240,7 +1260,7 @@ and the image is subsequently read.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2008-11-20 00:48 UTC.
 
 </div>
 </body>
