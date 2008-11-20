@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileRotate_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -rotate 45 \
-        -transparent black -label Rotate Rotate_out.miff
+        -transparent black -label Rotate ${OUTFILE}

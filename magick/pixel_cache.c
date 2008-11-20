@@ -263,9 +263,6 @@ static MagickPassFail
   SyncCache(Image *image,ExceptionInfo *exception),
   WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info),
   WriteCachePixels(Cache cache,const NexusInfo *nexus_info);
-
-static MagickPassFail
-  ModifyCache(Image *image, ExceptionInfo *exception);
 
 /*
 
@@ -2542,7 +2539,7 @@ GetPixelCachePresent(const Image *image)
 %    o exception: Errors are reported here.
 %
 */
-static MagickPassFail
+MagickPassFail
 ModifyCache(Image *image, ExceptionInfo *exception)
 {
   CacheInfo

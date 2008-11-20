@@ -423,92 +423,102 @@ following table lists these pseudo image formats:
 
 .. table:: Pseudo Image Formats
 
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | Tag          | Mode |       Description         |                      Notes                       |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | CAPTION      | R    | Image caption             | fixme                                            |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | CLIPBOARD    | RW   | Windows Clipboard         | Only available under Microsoft Windows.          |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | FRACTAL      | R    | Plasma fractal image      |                                                  |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Returns a rendered gradient image using the      |
-   | GRADIENT     | R    | Gradual passing from      | specified image size. Specify the desired        |
-   |              |      | one shade to another      | shading as part of the filename (e.g.            |
-   |              |      |                           | "gradient:red-blue"or "gradient:#F00-#00F").     |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Generate an RGB histogram of the input image.    |
-   |              |      |                           | The output format is always ImageMagick MIFF_    |
-   | HISTOGRAM    | W    | Histogram of the image    | (regardless of file extension). For example:     |
-   |              |      |                           |                                                  |
-   |              |      |                           | gm convert file.tiff histogram:file.miff         |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.   |
-   |              |      |                           | "label:This is a label").                        |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Colormap intensities      | Set -depth to set the sample size of the         |
-   | MAP          | RW   | and indices               | intensities; indices are 16-bit if colors >      |
-   |              |      |                           | 256.                                             |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | MATTE        | W    | MATTE format              | Write only.                                      |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Useful for creating blank tiles with montage     |
-   | NULL         | RW   | NULL image                | (use "NULL:"). Also useful as an output format   |
-   |              |      |                           | when evaluating image read performance.          |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Creates an image using the plasma fractal. For   |
-   | PLASMA       | R    | Plasma fractal image      | example:                                         |
-   |              |      |                           |                                                  |
-   |              |      |                           | gm convert -size 640x480 plasma: file.miff       |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Creates a preview montage of images prepared     |
-   |              |      |                           | over a parameteric range in order to assist      |
-   |              |      |                           | with parameter selection. Specify the desired    |
-   |              |      |                           | preview type via the -preview option). The       |
-   |              |      | Show a preview an image   | output file is always written in the             |
-   | PREVIEW      | W    | enhancement, effect, or   | ImageMagick MIFF_ format.                        |
-   |              |      | f/x                       |                                                  |
-   |              |      |                           | For example:                                     |
-   |              |      |                           |                                                  |
-   |              |      |                           | gm convert file.tiff -preview gamma              |
-   |              |      |                           | preview:file.miff                                |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Send image to your        | Unix users may set the PRINTER (for 'lp') or     |
-   | PRINT        | W    | computer printer          | LPDEST (for 'lpr') environment variables to      |
-   |              |      |                           | select the desired printer.                      |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Import image from a       | Requires SANE_ Specify the device name and path  |
-   | SCAN         | R    | scanner device            | as the filename (e.g. "scan:mustek:/dev/         |
-   |              |      |                           | scanner").                                       |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   | STEGANO      | R    | Steganographic image      | Use -size command line option to specify width,  |
-   |              |      |                           | height, and offset of the steganographic image   |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Create a tiled version of an image at by tiling  |
-   | TILE         | R    | Tiled image               | a image. Use -size to specify the tiled image    |
-   |              |      |                           | size. The image is specified similar to          |
-   |              |      |                           | "TILE:image.miff".                               |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Used to create a thumbnailed directory (tiled    |
-   | VID          | RW   | Visual Image Directory    | thumbnails) of a set of images which may be      |
-   |              |      |                           | used to select images to view via the display    |
-   |              |      |                           | program, or saved to a MIFF_ or SHTML file.      |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Select image from or      |                                                  |
-   | WIN          | RW   | display image to your     | Only supported under Microsoft Windows.          |
-   |              |      | computer screen           |                                                  |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      | Select image from or      |                                                  |
-   | X            | RW   | display image to your X   | Also see the import and display programs.        |
-   |              |      | server screen             |                                                  |
-   +--------------+------+---------------------------+--------------------------------------------------+
-   |              |      |                           | Useful to create solid color "canvas" images.    |
-   |              |      | Canvas image of           | Use -size and -depth to specify the image        |
-   | XC           | R    | specified color           | width, height, and depth. Example XC color       |
-   |              |      |                           | specifications include "XC:red" and "XC:#        |
-   |              |      |                           | FF0000".  See the color_ reference for the       |
-   |              |      |                           | numeric values used for named colors.            |
-   +--------------+------+---------------------------+--------------------------------------------------+
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | Tag          | Mode |       Description         |                      Notes                                  |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | CAPTION      | R    | Image caption             | fixme                                                       |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | CLIPBOARD    | RW   | Windows Clipboard         | Only available under Microsoft Windows.                     |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | FRACTAL      | R    | Plasma fractal image      |                                                             |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Returns a rendered gradient image using the                 |
+   | GRADIENT     | R    | Gradual passing from      | specified image size. Specify the desired                   |
+   |              |      | one shade to another      | shading as part of the filename.  For example:              |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gradient:red-blue`` or ``gradient:#F00-#00F``           |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Generate an RGB histogram of the input image.               |
+   |              |      |                           | The output format is always ImageMagick MIFF_               |
+   | HISTOGRAM    | W    | Histogram of the image    | (regardless of file extension). For example:                |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gm convert file.tiff histogram:file.miff``              |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.              |
+   |              |      |                           | "label:This is a label").                                   |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      | Colormap intensities      | Set -depth to set the sample size of the                    |
+   | MAP          | RW   | and indices               | intensities; indices are 16-bit if colors >                 |
+   |              |      |                           | 256.                                                        |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | MATTE        | W    | MATTE format              | Write only.                                                 |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Useful for creating blank tiles with montage                |
+   | NULL         | RW   | NULL image                | (use "NULL:"). Also useful as an output format              |
+   |              |      |                           | when evaluating image read performance.                     |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Creates an image using the plasma fractal. For              |
+   | PLASMA       | R    | Plasma fractal image      | example:                                                    |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gm convert -size 640x480 plasma: file.miff``            |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Creates a preview montage of images prepared                |
+   |              |      |                           | over a parameteric range in order to assist                 |
+   |              |      |                           | with parameter selection. Specify the desired               |
+   |              |      |                           | preview type via the -preview option). The                  |
+   |              |      | Show a preview an image   | output file is always written in the                        |
+   | PREVIEW      | W    | enhancement, effect, or   | ImageMagick MIFF_ format.                                   |
+   |              |      | f/x                       |                                                             |
+   |              |      |                           | For example:                                                |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gm convert file.tiff -preview gamma preview:file.miff`` |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      | Send image to your        | Unix users may set the PRINTER (for 'lp') or                |
+   | PRINT        | W    | computer printer          | LPDEST (for 'lpr') environment variables to                 |
+   |              |      |                           | select the desired printer.                                 |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      | Import image from a       | Requires SANE_ Specify the device name and path             |
+   | SCAN         | R    | scanner device            | as the filename (e.g. "scan:mustek:/dev/scanner").          |
+   |              |      |                           |                                                             |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | STEGANO      | R    | Steganographic image      | Use -size command line option to specify width,             |
+   |              |      |                           | height, and offset of the steganographic image              |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Create a tiled version of an image at by tiling             |
+   | TILE         | R    | Tiled image               | a image. Use -size to specify the tiled image               |
+   |              |      |                           | size. The image is specified similar to                     |
+   |              |      |                           | "TILE:image.miff".                                          |
+   |              |      |                           | For example:                                                |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gm convert -size 800x600 tile:image.jpg out.jpg``       |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Used to create a thumbnailed directory (tiled               |
+   | VID          | RW   | Visual Image Directory    | thumbnails) of a set of images which may be                 |
+   |              |      |                           | used to select images to view via the display               |
+   |              |      |                           | program, or saved to a MIFF_ or SHTML file.                 |
+   |              |      |                           | For example:                                                |
+   |              |      |                           |                                                             |
+   |              |      |                           |    ``gm convert vid:"*.jpg" index.miff``                    |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      | Select image from or      |                                                             |
+   | WIN          | RW   | display image to your     | Only supported under Microsoft Windows. For example:        |
+   |              |      | computer screen           |                                                             |
+   |              |      |                           |   ``gm convert file.jpg -rotate 90 win:``                   |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      | Select image from or      |                                                             |
+   | X            | RW   | display image to your X   | Also see the import and display programs. For example:      |
+   |              |      | server screen             |                                                             |
+   |              |      |                           |   ``gm convert file.jpg -rotate 90 x:``                     |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   |              |      |                           | Useful to create solid color "canvas" images.               |
+   |              |      | Canvas image of           | Use -size and -depth to specify the image                   |
+   | XC           | R    | specified color           | width, height, and depth. Example XC color                  |
+   |              |      |                           | specifications include "XC:red" and "XC:#                   |
+   |              |      |                           | FF0000".  See the color_ reference for the                  |
+   |              |      |                           | numeric values used for named colors.  For example:         |
+   |              |      |                           |                                                             |
+   |              |      |                           |   ``gm convert -size 640x480 xc:red red.jpg``               |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
 
 
 GraphicsMagick includes a number of built-in (embedded) images which may

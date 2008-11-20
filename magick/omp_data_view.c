@@ -114,6 +114,7 @@ AllocateThreadViewDataSet(const MagickFreeFunc destructor,
 /*
   Allocate a thread view data set containing data elements with
   allocation size dictated by 'count' and 'size'.
+  The allocated data is initialized to zero.
 */
 MagickExport ThreadViewDataSet *
 AllocateThreadViewDataArray(const Image *image,
@@ -154,6 +155,7 @@ AllocateThreadViewDataArray(const Image *image,
               alloc_status=MagickFail;
               break;
             }
+          (void) memset(data,0,count*size);
           AssignThreadViewData(data_set,i,data);
         }
       if (alloc_status == MagickFail)
@@ -173,11 +175,20 @@ MagickExport void *
 AccessThreadViewData(ThreadViewDataSet *data_set)
 {
   unsigned int
-    thread_num=0;
+    index=0;
 
-  thread_num=omp_get_thread_num();
-  assert(thread_num < data_set->nviews);
-  return data_set->view_data[thread_num];
+  index=omp_get_thread_num();
+  assert(index < data_set->nviews);
+  return data_set->view_data[index];
+}
+
+MagickExport void *
+AccessThreadViewDataById(ThreadViewDataSet *data_set,
+                         unsigned int index)
+{
+  index=omp_get_thread_num();
+  assert(index < data_set->nviews);
+  return data_set->view_data[index];
 }
 
 /*

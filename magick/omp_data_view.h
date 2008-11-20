@@ -54,6 +54,10 @@ extern "C" {
   *AccessThreadViewData(ThreadViewDataSet *data_set);
 
   extern MagickExport void
+  *AccessThreadViewDataById(ThreadViewDataSet *data_set,
+                            unsigned int index);
+
+  extern MagickExport void
   AssignThreadViewData(ThreadViewDataSet *data_set, unsigned int index,
                        void *data);
 

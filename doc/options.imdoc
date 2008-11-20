@@ -3669,7 +3669,7 @@ from these previews:</pp>
      Quantize
      Despeckle
      ReduceNoise
-     Add Noise
+     AddNoise
      Sharpen
      Blur
      Threshold

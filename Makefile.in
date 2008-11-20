@@ -4650,7 +4650,35 @@ UTILITIES_TESTS = \
 	utilities/tests/wave.sh \
 	utilities/tests/white-threshold.sh \
 	utilities/tests/montage.sh \
-	utilities/tests/msl_composite.sh
+	utilities/tests/msl_composite.sh \
+        utilities/tests/preview_addnoise.sh \
+        utilities/tests/preview_blur.sh \
+        utilities/tests/preview_brightness.sh \
+        utilities/tests/preview_charcoal.sh \
+        utilities/tests/preview_despeckle.sh \
+        utilities/tests/preview_dull.sh \
+        utilities/tests/preview_edgedetect.sh \
+        utilities/tests/preview_gamma.sh \
+        utilities/tests/preview_grayscale.sh \
+        utilities/tests/preview_hue.sh \
+        utilities/tests/preview_implode.sh \
+        utilities/tests/preview_oilpaint.sh \
+        utilities/tests/preview_quantize.sh \
+        utilities/tests/preview_raise.sh \
+        utilities/tests/preview_reducenoise.sh \
+        utilities/tests/preview_roll.sh \
+        utilities/tests/preview_rotate.sh \
+        utilities/tests/preview_saturation.sh \
+        utilities/tests/preview_segment.sh \
+        utilities/tests/preview_shade.sh \
+        utilities/tests/preview_sharpen.sh \
+        utilities/tests/preview_shear.sh \
+        utilities/tests/preview_solarize.sh \
+        utilities/tests/preview_spiff.sh \
+        utilities/tests/preview_spread.sh \
+        utilities/tests/preview_swirl.sh \
+        utilities/tests/preview_threshold.sh \
+        utilities/tests/preview_wave.sh
 
 UTILITIES_MANS = \
 	utilities/gm.1 \

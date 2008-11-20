@@ -324,6 +324,13 @@ extern "C" {
   GetPixelCachePresent(const Image *image);
 
   /*
+    Modify cache ensures that there is only one reference to the
+    pixel cache so that it may be safely modified.
+  */
+  extern MagickPassFail
+  ModifyCache(Image *image, ExceptionInfo *exception);
+
+  /*
     PersistCache() attaches to or initializes a persistent pixel cache.
 
     Used only by ReadMPCImage() and WriteMPCImage().

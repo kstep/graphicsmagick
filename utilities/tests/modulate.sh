@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -modulate 110/110/110 -label Modulate Mod_out.miff
+OUTFILE=TileModulate_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -modulate 110/110/110 -label Modulate ${OUTFILE}

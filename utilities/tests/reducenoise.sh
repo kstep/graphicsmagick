@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -noise 0x1 -label ReduceNoise RedN_out.miff
+OUTFILE=TileReduceNoise_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -noise 0x1 -label ReduceNoise ${OUTFILE}

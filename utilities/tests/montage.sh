@@ -14,7 +14,7 @@ set -e # Exit on any error
 ${GM} montage ${MONTAGE_FLAGS} -geometry '130x194+10+5>' -gravity 'Center' \
   -bordercolor 'green' -borderwidth 1x1 -tile '7x4' -compose 'over' \
   -background '#ffffff' -font ${GENERIC_TTF} -pointsize 18 -fill '#600' \
-  -stroke 'none' null: null: null: null: null: null: null: 'tmp:[A-Z]*_out.miff' \
+  -stroke 'none' null: null: null: null: null: null: null: 'Tile*_out.miff' \
   -compress rle montage_out.miff
 ${GM} convert ${CONVERT_FLAGS} logo: -resize 40% logo_out.miff
 ${GM} composite ${COMPOSITE_FLAGS} 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' -depth 8 demo-%d.miff

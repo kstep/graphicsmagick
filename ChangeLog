@@ -1,5 +1,29 @@
+2008-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (UTILITIES_TESTS): Add preview-based
+	tests.
+	* coders/preview.c (WritePreviewImage): Solarize requires a
+	threshold argument.
+	* coders/vid.c (WriteVIDImage): Eliminate memory leak.
+	* magick/montage.c (MontageImages): Fix continued use of freed
+	memory.
+
+2008-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/omp_data_view.c (AccessThreadViewDataById): New function
+	to allow retrieving data via the index it was registered with.
+	* magick/enhance.c (BuildChannelHistograms): EnhanceImage() and
+	NormalizeImage() now share one common function for generating the
+	histogram.
+	* magick/enhance.c (ModulateImage): Improve performance a bit.
+	(ContrastImage): Improve performance a bit.
+	(GammaImage): Improve performance a bit.
+
 2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/authors.rst: List Mark Mitchell as an author.
+	* utilities/tests/msl_composite.sh: Fix 'rm -f' without a valid
+	argument which annoyed NetBSD.
 	* coders/fits.c: Impose a limit on the length of the row PDU.
 	Make sure that GraphicsMagick version information does not
 	overflow the length allowed by a row PDU.

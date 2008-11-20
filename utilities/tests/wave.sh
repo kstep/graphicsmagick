@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileWave_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -background '#000000FF' \
-        -wave 25x150 -label Wave Wave_out.miff
+        -wave 25x150 -label Wave ${OUTFILE}

@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -paint 0x1 -label Oilpaint Oil_out.miff
+OUTFILE=TileOilPaint_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -paint 0x1 -label Oilpaint ${OUTFILE}

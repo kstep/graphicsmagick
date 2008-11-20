@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileSwirl_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -background '#000000FF' \
-        -swirl 90 -label Swirl Swirl_out.miff
+        -swirl 90 -label Swirl ${OUTFILE}
