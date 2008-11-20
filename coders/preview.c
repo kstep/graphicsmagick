@@ -363,7 +363,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         quantize_info.number_colors=colors;
         quantize_info.colorspace=preview_image->colorspace;
         quantize_info.dither=image_info->dither;
-        quantize_info.tree_depth=8;
+        /* quantize_info.tree_depth=8; */
         (void) QuantizeImage(&quantize_info,preview_image);
         colors<<=1;
         break;
@@ -473,7 +473,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%g",percentage);
         FormatString(label,"solarize %.1024s",factor);
-        (void) SolarizeImage(preview_image,percentage);
+        (void) SolarizeImage(preview_image,
+                             (percentage*((double) MaxRGB+1.0))/100);
         break;
       }
       case ShadePreview:

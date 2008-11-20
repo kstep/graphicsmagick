@@ -208,6 +208,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"creating montage");
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
+  montage_info=(MontageInfo *) NULL;
   if (montage_image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
@@ -330,6 +331,8 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
     (void) SetImageAttribute(p,"label",DefaultTileLabel);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImages(image,montage_info,&image->exception);
+  DestroyMontageInfo(montage_info);
+  montage_info=(MontageInfo *) NULL;
   if (montage_image == (Image *) NULL)
     ThrowWriterException2(CorruptImageError,image->exception.reason,image);
   FormatString(montage_image->filename,"miff:%.1024s",image->filename);
