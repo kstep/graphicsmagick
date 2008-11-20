@@ -1207,6 +1207,7 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
   roll_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
+  roll_image->storage_class=DirectClass;
   /*
     Roll image.
   */
