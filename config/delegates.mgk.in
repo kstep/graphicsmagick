@@ -71,7 +71,7 @@
  -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command='"@AutotraceDecodeDelegate@" -output-format svg -output-file "%o" "%i"' />
-  <delegate decode="browse" stealth="True" spawn="True" command='"@BrowseDelegate@" "http://www.GraphicsMagick.org/"'  />
+  <delegate decode="browse" stealth="True" command='"@BrowseDelegate@" "http://www.GraphicsMagick.org/" &'  />
   <delegate decode="cgm" command='"@CGMDecodeDelegate@" -d ps < "%i" > "%o" 2>/dev/null' />
   <delegate decode="dcraw" command='"@DCRAWDecodeDelegate@" -c -w "%i" > "%o"' />
   <delegate decode="dot" command='"@DOTDecodeDelegate@" -Tps "%i" -o "%o"' />
@@ -135,5 +135,5 @@
   <delegate decode="txt" encode="ps" mode="bi" command='"@TXTDelegate@" -o "%o" "%i"' />
   <!-- Render WMF file using wmf2eps (fallback in case libwmf not available) -->
   <delegate decode="wmf" command='"@WMFDecodeDelegate@" -o "%o" "%i"' />
-  <delegate encode="show" stealth="True" spawn="True" command='"@GMDelegate@" display -immutable -delay 0 -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="show" stealth="True" command='"@GMDelegate@" display -immutable -delay 0 -window_group %g -title "%l of %f" "tmp:%o" &' />
 </delegatemap>
