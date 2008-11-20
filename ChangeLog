@@ -2,10 +2,8 @@
 
 	* magick/transform.c (RollImage): Remove image storage class
 	alteration.
-	* magick/composite.c (CopyCompositePixels): Make copy composition
-	a deep copy, including colormap indexes.
 	(CompositeImageRegion): Ensure that the canvas image storage class
-	is correct for the composition operator used.
+	is correct.
 
 2008-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
