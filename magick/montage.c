@@ -747,11 +747,17 @@ MagickExport Image *MontageImages(const Image *images,
             (montage_info->shadow ? 4 : 0));
           max_height=0;
         }
-      DestroyImage(image);
       DestroyImage(image_list[tile]);
+      image_list[tile]=(Image *) NULL;
       (void) SetMonitorHandler(handler);
       if (!MagickMonitor(MontageImageText,tiles,total_tiles,&image->exception))
-        break;
+        {
+          DestroyImage(image);
+          image=(Image *) NULL;
+          break;
+        }
+      DestroyImage(image);
+      image=(Image *) NULL;
       tiles++;
     }
     if ((i+1) < (long) images_per_page)
@@ -763,6 +769,7 @@ MagickExport Image *MontageImages(const Image *images,
         if (montage->next == (Image *) NULL)
           {
             DestroyImageList(montage);
+            montage=(Image *) NULL;
             return((Image *) NULL);
           }
         montage=montage->next;
