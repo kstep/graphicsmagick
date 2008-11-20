@@ -1,5 +1,10 @@
 2008-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* config/delegates.mgk.in: Since we removed support for 'spawn' a
+	long time ago, and no longer execute using the Unix shell by
+	default, we need to add an ampersand to the end of the two entries
+	previously using 'spawn' so that the display program does not hang
+	when it invokes the external program.
 	* coders/preview.c (WritePreviewImage): Solarize requires a
 	threshold argument.
 	* coders/vid.c (WriteVIDImage): Eliminate memory leak.
