@@ -483,6 +483,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
         Remove an ICM, IPTC, or generic profile from the image.
       */
       char
+        arg_string[MaxTextExtent],
         profile_remove[MaxTextExtent];
 
       const char
@@ -497,6 +498,20 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
       ImageProfileIterator
         profile_iterator;
 
+      char
+        **argv;
+
+      int
+        argc;
+
+      long
+        i;
+
+      (void) strlcpy(arg_string,name,sizeof(arg_string));
+      for (i=0; arg_string[i] != '\0'; i++)
+        if (arg_string[i] == ',')
+          arg_string[i] = ' ';
+      argv=StringToArgv(arg_string,&argc);
       profile_iterator=AllocateImageProfileIterator(image);
       profile_remove[0]=0;
       while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
@@ -507,12 +522,25 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
               (void) DeleteImageProfile(image,profile_remove);
               profile_remove[0]=0;
             }
-          if (GlobExpression(profile_name,name))
-            (void) strlcpy(profile_remove,profile_name,sizeof(profile_remove));
+          for (i=1 ; i < argc ; i++)
+            {
+              if ((*argv[i] == '!') && (LocaleCompare(profile_name,argv[i]+1) == 0))
+                break;                
+              if (GlobExpression(profile_name,argv[i]))
+                {
+                  (void) strlcpy(profile_remove,profile_name,sizeof(profile_remove));
+                  break;
+                }
+            }
         }
       DeallocateImageProfileIterator(profile_iterator);
       if (strlen(profile_remove))
         (void) DeleteImageProfile(image,profile_remove);
+
+      for(i=0; argv[i] != NULL; i++)
+        MagickFreeMemory(argv[i]);
+      MagickFreeMemory(argv);
+
       return(MagickPass);
     }
   /*
