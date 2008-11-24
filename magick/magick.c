@@ -592,6 +592,16 @@ static Sigfunc *MagickCondSignal(int signo, Sigfunc *func)
 }
 
 /*
+  Signal handler which does nothing.
+*/
+#if 0
+static RETSIGTYPE MagickIgnoreSignalHandler(int signo)
+{
+  fprintf(stderr,"Caught ignored signal %d\n", signo);
+}
+#endif
+
+/*
   Signal handler to ensure that DestroyMagick is invoked in case the
   user aborts the program.
 
@@ -775,6 +785,13 @@ MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
 */
 MagickExport void InitializeMagickSignalHandlers(void)
 {
+#if 0
+  /* termination of child process */
+#if defined(SIGCHLD)
+  (void) MagickCondSignal(SIGCHLD,MagickIgnoreSignalHandler);
+#endif
+#endif
+
   /* hangup, default terminate */
 #if defined(SIGHUP)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);

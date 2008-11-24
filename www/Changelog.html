@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2008-11-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/profile.c (ProfileImage): +profile now supports a simple
+        exclusion syntax.  For example, to strip all of the profiles
+        except for the ICM profile use +profile '!icm,*'.  The new syntax
+        also allows multiple profile names to be listed at once.  The
+        primary requirement is that all excluded profiles must be listed
+        prior to those to be stripped.
+
+</UL>
+<p>
 2008-11-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

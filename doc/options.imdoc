@@ -3727,13 +3727,17 @@ option appears after all of the input images, all images are processed.</pp>
 
 <pp>
 <tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image</pp>.
-
+(newswire information), or a generic profile to the image
+</pp>.
 <pp>
-Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>,
-or <tt>+profile profile_name</tt> to remove the respective
-profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
-image file.  Use <tt>+profile "*"</tt> to remove all profiles.</pp>
+Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>, or
+<tt>+profile profile_name</tt> to remove the respective profile.
+Multiple profiles may be listed, separated by commas. Profiles may be
+excluded from subsequent listed matches by preceding their name with
+an exclamation point.  For example, <tt>+profile '!icm,*'</tt> strips
+all profiles except for the ICM profile.  Use <tt>identify
+-verbose</tt> to find out what profiles are in the image file.  Use
+<tt>+profile "*"</tt> to remove all profiles.</pp>
 <pp>
 To extract a profile, the <s>-profile</s> option is not used.  Instead,
 simply write the file to an image
