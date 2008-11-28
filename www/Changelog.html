@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2008-11-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/fx.c (ConvolveImage): Don't process opacity channel
+        unless image has one.<BR>
+  <LI> magick/effect.c (MotionBlurImage): Use
+        AcquireOnePixelByReference() rather than AcquireImagePixels() to
+        retrieve one pixel.  This is much more efficient.
+        (AdaptiveThresholdImage): Don't process opacity channel unless
+        image has one.<BR>
+        (BlurImage): Don't process opacity channel unless image has one.
+
+</UL>
+<p>
 2008-11-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

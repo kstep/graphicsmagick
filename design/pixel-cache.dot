@@ -1,0 +1,145 @@
+/*
+  Copyright (C) 2008 GraphicsMagick Group
+
+  This program is covered by multiple licenses, which are described in
+  Copyright.txt. You should have received a copy of Copyright.txt with
+  this package; otherwise see
+  http://www.graphicsmagick.org/www/Copyright.html.
+
+  Pixel Cache Call Diagram.
+  Written by Bob Friesenhahn, November 2008.
+
+  This file is in DOT format and may be viewed using GraphicsMagick if
+  'dot' is installed.  For example:
+
+    gm display -density 100  pixel-cache.dot
+*/
+
+digraph "pixel-cache" {
+  node [style=filled];
+  node [color="bisque"];
+  ratio=fill
+  size="18,8";
+  /* rankdir=LR; */
+  rankdir=TB;
+  {rank=same; AccessCacheViewPixels AcquireCacheViewPixels AcquireOneCacheViewPixel \
+                CloseCacheView GetCacheViewIndexes GetCacheViewPixels OpenCacheView \
+                SetCacheViewPixels SyncCacheViewPixels };
+
+  {rank=same; AccessImmutableIndexes AccessMutableIndexes AccessMutablePixels \
+                AcquireImagePixels AcquireOnePixelByReference GetImagePixels \
+                GetImagePixelsEx GetIndexes GetOnePixel GetPixels SetImagePixels \
+                SetImagePixelsEx SyncImagePixels SyncImagePixelsEx };
+
+  AccessCacheViewPixels [color="green"];
+  AccessMutableIndexes [color="green"];
+  AccessMutablePixels [color="green"];
+  AcquireCacheViewPixels [color="green"];
+  AcquireImagePixels [color="green"];
+  AccessImmutableIndexes  [color="green"];
+  AcquireOneCacheViewPixel [color="green"];
+  AcquireOnePixel [color="green"];
+  AcquireOnePixelByReference [color="green"];
+  CloseCacheView [color="green"];
+/*   DestroyCacheInfo [color="green"]; */
+/*   DestroyImagePixels [color="green"]; */
+/*   GetCacheInfo [color="green"]; */
+  GetCacheViewPixels [color="green"];
+  GetCacheViewIndexes [color="green"];
+  GetImagePixels [color="green"];
+  GetImagePixelsEx [color="green"];
+  GetIndexes [color="green"];
+  GetOnePixel [color="green"];
+  /* GetPixelCacheArea [color="green"]; */
+  /* GetPixelCachePresent [color="green"]; */
+  GetPixels [color="green"];
+  OpenCacheView [color="green"];
+  /* PersistCache [color="green"]; */
+/*   ReferenceCache [color="green"]; */
+  SetCacheViewPixels [color="green"];
+  SetImagePixels [color="green"];
+  SetImagePixelsEx [color="green"];
+  SyncCacheViewPixels [color="green"];
+  SyncImagePixels [color="green"];
+  SyncImagePixelsEx [color="green"];
+
+/*   DestroyCacheInfo [color="tomato"]; */
+  DestroyCacheNexus [color="tomato"];
+/*   DestroyPixelStream [color="tomato"]; */
+  AllocateCacheNexus [color="tomato"];
+  ModifyCache [color="tomato"];
+  /* PersistCache [color="tomato"]; */
+/*   ReferenceCache [color="tomato"]; */
+
+  AccessCacheViewPixels -> GetNexusPixels;
+  AcquireCacheNexus -> AcquireCacheNexus;
+  AcquireCacheNexus -> DestroyCacheNexus;
+  AcquireCacheNexus -> AllocateCacheNexus;
+  AcquireCacheNexus -> GetNexusIndexes;
+  AcquireCacheNexus -> IsNexusInCore;
+  AcquireCacheNexus -> ReadCacheIndexes;
+  AcquireCacheNexus -> ReadCachePixels;
+  AcquireCacheNexus -> SetNexus;
+  AcquireCacheViewPixels -> AcquireCacheNexus;
+  AcquireImagePixels -> AcquireCacheViewPixels;
+  AcquireOneCacheViewPixel -> AcquireCacheNexus;
+  AcquireOnePixel ->  AcquireOneCacheViewPixel;
+  AcquireOnePixelByReference -> AcquireOneCacheViewPixel;
+  ClipCacheNexus -> AcquireCacheNexus;
+  ClipCacheNexus -> DestroyCacheNexus;
+  ClipCacheNexus -> GetCacheNexus;
+  CloseCacheView -> DestroyCacheNexus;
+/*   DestroyCacheInfo -> DestroySemaphoreInfo; */
+/*   DestroyCacheInfo -> LockSemaphoreInfo; */
+/*   DestroyCacheInfo -> UnlockSemaphoreInfo; */
+/*   DestroyImagePixels -> DestroyCacheInfo; */
+/*   DestroyPixelStream -> DestroySemaphoreInfo; */
+/*   DestroyPixelStream -> LockSemaphoreInfo; */
+/*   DestroyPixelStream -> UnlockSemaphoreInfo; */
+/*   GetCacheInfo -> AllocateSemaphoreInfo; */
+  GetCacheNexus -> IsNexusInCore;
+  GetCacheNexus -> ReadCacheIndexes;
+  GetCacheNexus -> ReadCachePixels;
+  GetCacheNexus -> SetCacheNexus;
+  GetCacheViewPixels -> GetCacheNexus;
+  GetCacheViewIndexes -> GetNexusIndexes;
+  GetImagePixels -> GetCacheViewPixels;
+  GetImagePixelsEx -> GetCacheViewPixels;
+  GetIndexes -> GetCacheViewIndexes;
+  AccessMutableIndexes -> GetCacheViewIndexes;
+  AccessImmutableIndexes -> GetCacheViewIndexes;
+  GetOnePixel -> AcquireOneCacheViewPixel;
+  GetPixels -> AccessCacheViewPixels;
+  AccessMutablePixels -> AccessCacheViewPixels;
+  ModifyCache -> ClonePixelCache;
+/*   ModifyCache -> GetCacheInfo; */
+/*   ModifyCache -> LockSemaphoreInfo; */
+  ModifyCache -> OpenCache;
+/*   ModifyCache -> UnlockSemaphoreInfo; */
+  OpenCacheView -> AllocateCacheNexus;
+/*   PersistCache -> AcquireImagePixels; */
+/*   PersistCache -> GetIndexes; */
+/*   PersistCache -> LockSemaphoreInfo; */
+/*   PersistCache -> OpenCache; */
+/*   PersistCache -> ReferenceCache; */
+/*   PersistCache -> SetImagePixels; */
+/*   PersistCache -> SyncImagePixels; */
+/*   PersistCache -> UnlockSemaphoreInfo; */
+/*   ReferenceCache -> LockSemaphoreInfo; */
+/*   ReferenceCache -> UnlockSemaphoreInfo; */
+  SetCacheNexus -> ModifyCache;
+  SetCacheNexus -> SetNexus;
+  SetCacheViewPixels -> SetCacheNexus;
+  SetImagePixels -> SetCacheViewPixels;
+  SetImagePixelsEx -> SetCacheViewPixels;
+  SyncCacheNexus -> ClipCacheNexus;
+  SyncCacheNexus -> IsNexusInCore;
+  SyncCacheNexus -> WriteCachePixels;
+  SyncCacheNexus -> WriteCacheIndexes;
+  SyncCacheViewPixels -> SyncCacheNexus;
+  SyncImagePixels -> SyncCacheViewPixels;
+  SyncImagePixelsEx -> SyncCacheViewPixels;
+  WriteCacheIndexes -> IsNexusInCore;
+  WriteCachePixels -> IsNexusInCore;
+
+}
