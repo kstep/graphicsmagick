@@ -129,10 +129,12 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     unsigned long
       row_count=0;
 
-    DoublePixelPacket
-      zero;
+    const DoublePixelPacket
+      zero = { 0.0, 0.0, 0.0, 0.0 };
 
-    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+    const MagickBool
+      matte=((threshold_image->matte) || (threshold_image->colorspace == CMYKColorspace));
+
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(dynamic) shared(row_count, status)
 #endif
@@ -183,7 +185,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
                         pixel.red+=r[u].red;
                         pixel.green+=r[u].green;
                         pixel.blue+=r[u].blue;
-                        pixel.opacity+=r[u].opacity;
+                        if (matte)
+                          pixel.opacity+=r[u].opacity;
                       }
                     r+=image->columns+width;
                   }
@@ -191,12 +194,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
                 pixel.red=pixel.red/(width*height)+offset;
                 pixel.green=pixel.green/(width*height)+offset;
                 pixel.blue=pixel.blue/(width*height)+offset;
-                pixel.opacity=pixel.opacity/(width*height)+offset;
+                if (matte)
+                  pixel.opacity=pixel.opacity/(width*height)+offset;
 
                 q->red=q->red <= pixel.red ? 0 : MaxRGB;
                 q->green=q->green <= pixel.green ? 0 : MaxRGB;
                 q->blue=q->blue <= pixel.blue ? 0 : MaxRGB;
-                q->opacity=q->opacity <= pixel.opacity ? 0 : MaxRGB;
+                if (matte)
+                  q->opacity=q->opacity <= pixel.opacity ? 0 : MaxRGB;
                 p++;
                 q++;
               }
@@ -409,16 +414,19 @@ MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresho
 */
 #define BlurImageColumnsText  "[%s] Blur image columns..."
 #define BlurImageRowsText  "[%s] Blur image rows...  "
-static void BlurScanline(const double *kernel,const unsigned long width,
-  const PixelPacket *source,PixelPacket *destination,
-  const unsigned long columns)
+static void
+BlurScanline(const double *kernel,const unsigned long width,
+             const PixelPacket *source,PixelPacket *destination,
+             const unsigned long columns, const MagickBool matte)
 {
   double
     scale;
 
+  const DoublePixelPacket
+    zero = { 0.0, 0.0, 0.0, 0.0 };
+
   DoublePixelPacket
-    aggregate,
-    zero;
+    aggregate;
 
   register const double
     *p;
@@ -430,7 +438,6 @@ static void BlurScanline(const double *kernel,const unsigned long width,
     i,
     x;
 
-  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   if (width > columns)
     {
       for (x=0; x < (long) columns; x++)
@@ -447,7 +454,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
               aggregate.red+=(*p)*q->red;
               aggregate.green+=(*p)*q->green;
               aggregate.blue+=(*p)*q->blue;
-              aggregate.opacity+=(*p)*q->opacity;
+              if (matte)
+                aggregate.opacity+=(*p)*q->opacity;
             }
           if (((i+(long)(width/2)-x) >= 0) && ((i+width/2-x) < width))
             scale+=kernel[i+width/2-x];
@@ -458,7 +466,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
         destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
         destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
         destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
-        destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
+        if (matte)
+          destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
       }
       return;
     }
@@ -476,7 +485,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
       aggregate.blue+=(*p)*q->blue;
-      aggregate.opacity+=(*p)*q->opacity;
+      if (matte)
+        aggregate.opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
@@ -485,7 +495,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
     destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
     destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
     destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
-    destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
+    if (matte)
+      destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
   }
   for ( ; x < (long) (columns-width/2); x++)
   {
@@ -497,14 +508,16 @@ static void BlurScanline(const double *kernel,const unsigned long width,
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
       aggregate.blue+=(*p)*q->blue;
-      aggregate.opacity+=(*p)*q->opacity;
+      if (matte)
+        aggregate.opacity+=(*p)*q->opacity;
       p++;
       q++;
     }
     destination[x].red=(Quantum) (aggregate.red+0.5);
     destination[x].green=(Quantum) (aggregate.green+0.5);
     destination[x].blue=(Quantum) (aggregate.blue+0.5);
-    destination[x].opacity=(Quantum) (aggregate.opacity+0.5);
+    if (matte)
+      destination[x].opacity=(Quantum) (aggregate.opacity+0.5);
   }
   for ( ; x < (long) columns; x++)
   {
@@ -517,7 +530,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
       aggregate.blue+=(*p)*q->blue;
-      aggregate.opacity+=(*p)*q->opacity;
+      if (matte)
+        aggregate.opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
@@ -526,7 +540,8 @@ static void BlurScanline(const double *kernel,const unsigned long width,
     destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
     destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
     destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
-    destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
+    if (matte)
+      destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
   }
 }
 
@@ -584,6 +599,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
   MagickPassFail
     status=MagickPass;
 
+  const MagickBool
+    matte=((image->matte) || (image->colorspace == CMYKColorspace));
+
   is_grayscale=image->is_grayscale;
 
   data_set=AllocateThreadViewDataArray(image,exception,image->columns,sizeof(PixelPacket));
@@ -637,7 +655,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
               if (i != image->columns)
                 {
                   (void) memcpy(&scanline[i],&q[i],(image->columns-i)*sizeof(PixelPacket));
-                  BlurScanline(kernel,width,scanline,q,image->columns);
+                  BlurScanline(kernel,width,scanline,q,image->columns,matte);
                   if (!SyncImagePixelsEx(image,exception))
                     thread_status=MagickFail;
                 }
@@ -2365,6 +2383,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           x;
 
         MagickBool
+          matte=blur_image->matte;
+
+        MagickBool
           thread_status;
 
         thread_status=status;
@@ -2381,38 +2402,37 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
                 DoublePixelPacket
                   aggregate;
 
+                PixelPacket
+                  pixel;
+
                 register long
                   i;
 
                 aggregate=zero;
                 for (i=0; i < width; i++)
                   {
-                    const PixelPacket
-                      *p;
-
-                    long
-                      u,
-                      v;
-
-                    u=(long) x+offsets[i].x;
-                    v=(long) y+offsets[i].y;
-                    p=AcquireImagePixels(image,u,v,1,1,exception);
-                    if (p == (const PixelPacket *) NULL)
+                    if (AcquireOnePixelByReference(image,&pixel,
+                                                   (long) x+offsets[i].x,
+                                                   (long) y+offsets[i].y,
+                                                   exception)
+                        == MagickFail)
                       {
                         thread_status=MagickFail;
-                        break;
                       }
-                    aggregate.red+=kernel[i]*p->red;
-                    aggregate.green+=kernel[i]*p->green;
-                    aggregate.blue+=kernel[i]*p->blue;
-                    aggregate.opacity+=kernel[i]*p->opacity;
+
+                    aggregate.red+=kernel[i]*pixel.red;
+                    aggregate.green+=kernel[i]*pixel.green;
+                    aggregate.blue+=kernel[i]*pixel.blue;
+                    if (matte)
+                      aggregate.opacity+=kernel[i]*pixel.opacity;
                   }
                 if (thread_status == MagickFail)
                   break;
                 q->red=(Quantum) aggregate.red;
                 q->green=(Quantum) aggregate.green;
                 q->blue=(Quantum) aggregate.blue;
-                q->opacity=(Quantum) aggregate.opacity;
+                if (matte)
+                  q->opacity=(Quantum) aggregate.opacity;
                 q++;
               }
             if (!SyncImagePixelsEx(blur_image,exception))

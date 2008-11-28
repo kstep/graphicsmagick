@@ -108,56 +108,60 @@ typedef enum
 */
 typedef struct _CacheInfo
 {
-  ClassType
-    storage_class;      /* DirectClass/PseudoClass */
+  /* Image width */
+  unsigned long columns;
 
-  ColorspaceType
-    colorspace;         /* CMYKColorspace special due to indexes */
+  /* Image height */
+  unsigned long rows;
 
-  CacheType
-    type;               /* Memory, Disk, Map */
+  /* Offset to pixels in cache file */
+  magick_off_t offset;
+  
+  /* Length of pixels region */
+  magick_off_t length;
 
-  unsigned long
-    columns,            /* Image width */
-    rows;               /* Image height */
+  /* Image pixels if memory resident */
+  PixelPacket *pixels;
 
-  magick_off_t
-    offset,             /* Offset to pixels in cache file */
-    length;             /* Length of pixels region */
+  /* Image indexes if memory resident */
+  IndexPacket *indexes;
 
-  PixelPacket
-    *pixels;            /* Image pixels if memory resident */
+  /* Memory, Disk, Map */
+  CacheType type;
 
-  IndexPacket
-    *indexes;           /* Image indexes if memory resident */  
+  /* Image indexes are valid */
+  MagickBool indexes_valid;
 
-  VirtualPixelMethod
-    virtual_pixel_method;
+  /* The number of Image structures referencing this cache */
+  long reference_count;
 
-  PixelPacket
-    virtual_pixel;
+   /* Lock for updating reference count */
+  SemaphoreInfo *reference_semaphore;
 
-  int
-    file;               /* Open file handle for disk cache */
+  /* Lock for file I/O access */
+  SemaphoreInfo *file_semaphore;
 
-  char
-    filename[MaxTextExtent],       /* Image file name in form "filename[index]" */
-    cache_filename[MaxTextExtent]; /* Pixel cache file name */
+  /* DirectClass/PseudoClass */
+  ClassType storage_class;
 
-  long
-    reference_count;    /* The number of Image structures referencing cache */
+  /* CMYKColorspace special due to indexes */
+  ColorspaceType colorspace;
 
-  SemaphoreInfo
-    *reference_semaphore; /* Lock for updating reference count */
+  /* Method for dealing with pixels requested outside the image
+     boundaries. */
+  VirtualPixelMethod virtual_pixel_method;
 
-  SemaphoreInfo
-    *access_semaphore;  /* Lock for accessing this structure */
+  /* Open file handle for disk cache */
+  int file;
 
-  SemaphoreInfo
-    *file_semaphore;    /* Lock for file I/O access */
+  /* Image file name in form "filename[index]" (for use in logging) */
+  char filename[MaxTextExtent];
 
-  unsigned long
-    signature;          /* Unique number for structure validation */
+  /* Pixel cache file name */
+  char cache_filename[MaxTextExtent];
+
+  /* Unique number for structure validation */
+  unsigned long signature;
 } CacheInfo;
 
 /*
@@ -260,12 +264,8 @@ static PixelPacket
 static MagickPassFail
   ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,ExceptionInfo *exception),
   ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,ExceptionInfo *exception),
-  SyncCache(Image *image,ExceptionInfo *exception),
   WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info),
   WriteCachePixels(Cache cache,const NexusInfo *nexus_info);
-
-static MagickPassFail
-  ModifyCache(Image *image, ExceptionInfo *exception);
 
 /*
 
@@ -712,7 +712,8 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
     *nexus_indexes;
 
   PixelPacket
-    *pixels;
+    *pixels,
+    virtual_pixel;
 
   RectangleInfo
     region;
@@ -767,9 +768,8 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
         if (IsNexusInCore(cache_info,nexus_info))
           return(pixels);
         status=ReadCachePixels(cache_info,nexus_info,exception);
-        if ((image->storage_class == PseudoClass) ||
-            (image->colorspace == CMYKColorspace))
-          status&=ReadCacheIndexes(cache_info,nexus_info,exception);
+        if (cache_info->indexes_valid)
+          status &= ReadCacheIndexes(cache_info,nexus_info,exception);
         if (status == MagickFail)
           {
             ThrowException(exception,CacheError,UnableToReadPixelCache,
@@ -789,7 +789,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
                      image->filename);
       return((const PixelPacket *) NULL);
     }
-  cache_info->virtual_pixel=image->background_color;
+  virtual_pixel=image->background_color;
   q=pixels;
   for (v=0; v < (long) rows; v++)
     {
@@ -803,13 +803,14 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
                 Transfer a single pixel.
               */
               length=1;
+              p=(const PixelPacket *) NULL;
               switch (cache_info->virtual_pixel_method)
                 {
                 case ConstantVirtualPixelMethod:
                   {
                     (void) AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,
                                              image_nexus,exception);
-                    p=(&cache_info->virtual_pixel);
+                    p=(&virtual_pixel);
                     break;
                   }
                 case EdgeVirtualPixelMethod:
@@ -1044,36 +1045,21 @@ AcquireImagePixels(const Image *image,
 %
 %
 */
-MagickExport MagickPassFail
-AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
-                         const long x,const long y,
-                         ExceptionInfo *exception)
+static inline MagickPassFail
+AcquireOneCacheViewPixelInlined(const View *view_info,
+                                PixelPacket *pixel,
+                                const long x,const long y,
+                                ExceptionInfo *exception)
 {
-  const View
-    *view_info;
-
-  Image
-    *image;
+  const Image
+    *image=view_info->image;
 
   CacheInfo
-    *cache_info;
+    *cache_info=(CacheInfo *) image->cache;
 
   MagickPassFail
-    status;
+    status=MagickFail;
 
-  view_info = (const View *) view;
-  assert(view_info != (View *) NULL);
-  assert(view_info->signature == MagickSignature);
-
-  image=view_info->image;
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info != (CacheInfo *) NULL);
-  assert(cache_info->signature == MagickSignature);
-
-  status=MagickFail;
   if (((MemoryCache == cache_info->type) || (MapCache == cache_info->type)) &&
       ((x >= 0) && (y >= 0) &&
        ((unsigned long) x < cache_info->columns) &&
@@ -1083,15 +1069,10 @@ AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
         offset;
       
       offset=y*(magick_off_t) cache_info->columns+x;
-      if ((image->storage_class == PseudoClass) ||
-          (image->colorspace == CMYKColorspace))
-        {
-          *pixel=image->colormap[cache_info->indexes[offset]];
-        }
+      if (cache_info->indexes_valid)
+        *pixel=image->colormap[cache_info->indexes[offset]];
       else
-        {
-          *pixel=cache_info->pixels[offset];
-        }
+        *pixel=cache_info->pixels[offset];
       status=MagickPass;
     }
   else
@@ -1099,8 +1080,8 @@ AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
       const PixelPacket
         *pixels;
 
-      pixels=AcquireCacheNexus(image,x,y,1,1,view_info->nexus_info,exception);
-      if (pixels != (const PixelPacket *) NULL)
+      if ((pixels=AcquireCacheNexus(image,x,y,1,1,view_info->nexus_info,
+                                    exception)) != (const PixelPacket *) NULL)
         {
           *pixel=pixels[0];
           status=MagickPass;
@@ -1112,6 +1093,15 @@ AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
     }
 
   return status;
+}
+
+MagickExport MagickPassFail
+AcquireOneCacheViewPixel(const ViewInfo *view,PixelPacket *pixel,
+                         const long x,const long y,
+                         ExceptionInfo *exception)
+{
+  return AcquireOneCacheViewPixelInlined((const View *) view,pixel,x,y,
+                                         exception);
 }
 
 /*
@@ -1205,8 +1195,10 @@ AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
                            const long x,const long y,
                            ExceptionInfo *exception)
 {
-  return AcquireOneCacheViewPixel(AccessDefaultCacheView(image),
-                                  pixel,x,y,exception);
+  return
+    AcquireOneCacheViewPixelInlined((const View *) AccessDefaultCacheView(image),
+                                    pixel,x,y,
+                                    exception);
 }
 
 /*
@@ -1668,8 +1660,6 @@ DestroyCacheInfo(Cache cache_info)
     }
   if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->file_semaphore);
-  if (cache_info->access_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->access_semaphore);
   if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->reference_semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
@@ -1787,10 +1777,6 @@ GetCacheInfo(Cache *cache)
   if (cache_info->reference_semaphore == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheInfo);
-  cache_info->access_semaphore=AllocateSemaphoreInfo();
-  if (cache_info->access_semaphore == (SemaphoreInfo *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-                      UnableToAllocateCacheInfo);
   cache_info->file_semaphore=AllocateSemaphoreInfo();
   if (cache_info->file_semaphore == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -1839,6 +1825,9 @@ GetCacheNexus(Image *image,const long x,const long y,
               const unsigned long columns,const unsigned long rows,
               NexusInfo *nexus_info,ExceptionInfo *exception)
 {
+  CacheInfo
+    *cache_info;
+
   PixelPacket
     *pixels;
 
@@ -1850,15 +1839,21 @@ GetCacheNexus(Image *image,const long x,const long y,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  /*
+    SetCacheNexus() invokes SetCacheNexus() which may replace the
+    current image cache due to calling ModifyCache() so we obtain the
+    cache *after* invoking SetCacheNexus().
+  */
   pixels=SetCacheNexus(image,x,y,columns,rows,nexus_info,exception);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
-  if (IsNexusInCore(image->cache,nexus_info))
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  if (IsNexusInCore(cache_info,nexus_info))
     return(pixels);
-  status=ReadCachePixels(image->cache,nexus_info,exception);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    status&=ReadCacheIndexes(image->cache,nexus_info,exception);
+  status=ReadCachePixels(cache_info,nexus_info,exception);
+  if (cache_info->indexes_valid)
+    status&=ReadCacheIndexes(cache_info,nexus_info,exception);
   if (status == MagickFail)
     {
       ThrowException(exception,CacheError,UnableToGetPixelsFromCache,
@@ -2542,7 +2537,7 @@ GetPixelCachePresent(const Image *image)
 %    o exception: Errors are reported here.
 %
 */
-static MagickPassFail
+MagickPassFail
 ModifyCache(Image *image, ExceptionInfo *exception)
 {
   CacheInfo
@@ -2597,6 +2592,18 @@ ModifyCache(Image *image, ExceptionInfo *exception)
         }
     }
     UnlockSemaphoreInfo(cache_info->reference_semaphore);
+
+    /*
+      Make sure that pixel cache reflects key image parameters such as
+      storage class and colorspace.  Re-open cache if necessary.
+    */
+    if (status != MagickFail)
+      {
+        cache_info=(CacheInfo *) image->cache;
+        status=(((image->storage_class == cache_info->storage_class) &&
+                 (image->colorspace == cache_info->colorspace)) ||
+                (OpenCache(image,IOMode,exception)));
+      }
   }
   UnlockSemaphoreInfo(image->semaphore);
 
@@ -2765,12 +2772,18 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
     }
 
   /*
+    Indexes are valid if the image storage class is PseudoClass or the
+    colorspace is CMYK.
+  */
+  cache_info->indexes_valid=((image->storage_class == PseudoClass) ||
+                             (image->colorspace == CMYKColorspace));
+
+  /*
     Compute storage sizes.  Make sure that sizes fit within our
     numeric limits.
   */
   packet_size=sizeof(PixelPacket);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
+  if (cache_info->indexes_valid)
     packet_size+=sizeof(IndexPacket);
   offset=number_pixels*packet_size;
   if (cache_info->columns != (offset/cache_info->rows/packet_size))
@@ -2813,8 +2826,7 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
           cache_info->type=MemoryCache;
           cache_info->pixels=pixels;
           cache_info->indexes=(IndexPacket *) NULL;
-          if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace == CMYKColorspace))
+          if (cache_info->indexes_valid)
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
           FormatSize(cache_info->length,format);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -2903,8 +2915,7 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
           cache_info->type=MapCache;
           cache_info->pixels=pixels;
           cache_info->indexes=(IndexPacket *) NULL;
-          if ((cache_info->storage_class == PseudoClass) ||
-              (cache_info->colorspace == CMYKColorspace))
+          if (cache_info->indexes_valid)
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
         }
     }
@@ -3201,8 +3212,7 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if ((cache_info->storage_class != PseudoClass) &&
-      (cache_info->colorspace != CMYKColorspace))
+  if (!cache_info->indexes_valid)
     return(MagickFail);
   if (IsNexusInCore(cache,nexus_info))
     return(MagickPass);
@@ -3235,8 +3245,7 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
                 x;
               
               for (x=0; x < (long) nexus_info->region.width; x++)
-                indexes[x]=cache_indexes[x];
-              indexes+=nexus_info->region.width;
+                *indexes++=cache_indexes[x];
               cache_indexes+=cache_info->columns;
             }
         }
@@ -3379,8 +3388,7 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
                 x;
 
               for (x=0; x < (long) nexus_info->region.width; x++)
-                pixels[x]=cache_pixels[x];
-              pixels+=nexus_info->region.width;
+                *pixels++=cache_pixels[x];
               cache_pixels+=cache_info->columns;
             }
         }
@@ -3524,8 +3532,6 @@ SetCacheNexus(Image *image,const long x,const long y,
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   if (ModifyCache(image,exception) == MagickFail)
-    return((PixelPacket *) NULL);
-  if (SyncCache(image,exception) == MagickFail)
     return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
@@ -3832,8 +3838,7 @@ SetNexus(const Image *image,const RectangleInfo *region,
             */
             nexus_info->pixels=cache_info->pixels+offset;
             nexus_info->indexes=(IndexPacket *) NULL;
-            if ((cache_info->storage_class == PseudoClass) ||
-                (cache_info->colorspace == CMYKColorspace))
+            if (cache_info->indexes_valid)
               nexus_info->indexes=cache_info->indexes+offset;
             return(nexus_info->pixels);
           }
@@ -3844,8 +3849,7 @@ SetNexus(const Image *image,const RectangleInfo *region,
   number_pixels=(magick_uint64_t)
     Max(nexus_info->region.width*nexus_info->region.height,cache_info->columns);
   length=number_pixels*sizeof(PixelPacket);
-  if ((cache_info->storage_class == PseudoClass) ||
-      (cache_info->colorspace == CMYKColorspace))
+  if (cache_info->indexes_valid)
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
     {
@@ -3873,65 +3877,9 @@ SetNexus(const Image *image,const RectangleInfo *region,
                       UnableToAllocateCacheInfo);
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
-  if ((cache_info->storage_class == PseudoClass) ||
-      (cache_info->colorspace == CMYKColorspace))
+  if (cache_info->indexes_valid)
     nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
   return(nexus_info->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   S y n c C a c h e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SyncCache() synchronizes the image with the pixel cache.  In particular
-%  if the image storage class or colorspace has changed since the pixel
-%  cache was previously opened, the pixel cache is re-opened to match the
-%  new parameters.
-%
-%  The format of the SyncCache() method is:
-%
-%      MagickPassFail SyncCache(Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o status: SyncCache() returns MagickPass if the pixel cache is synchronized
-%      successfully otherwise MagickFail.
-%
-%    o image: The image.
-%
-%    o exception: any error is reported here.
-%
-%
-*/
-static MagickPassFail
-SyncCache(Image *image,ExceptionInfo *exception)
-{
-  CacheInfo
-    *cache_info;
-
-  MagickPassFail
-    status;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (void *) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  LockSemaphoreInfo(cache_info->access_semaphore);
-  {
-    status=(((image->storage_class == cache_info->storage_class) &&
-             (image->colorspace == cache_info->colorspace)) ||
-            (OpenCache(image,IOMode,exception)));
-  }
-  UnlockSemaphoreInfo(cache_info->access_semaphore);
-  return status;
 }
 
 /*
@@ -3973,13 +3921,17 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
   MagickPassFail
     status;
 
+  CacheInfo
+    *cache_info;
+
   /*
     Transfer pixels to the cache.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->cache == (Cache) NULL)
+  cache_info=(CacheInfo *) image->cache;
+  if (cache_info == (CacheInfo *) NULL)
     {
       ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
       return MagickFail;
@@ -3987,15 +3939,14 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
   image->taint=MagickTrue;
   image->is_grayscale=MagickFalse;
   image->is_monochrome=MagickFalse;
-  if (IsNexusInCore(image->cache,nexus_info))
+  if (IsNexusInCore(cache_info,nexus_info))
     return(MagickPass);
   if (image->clip_mask != (Image *) NULL)
     if (!ClipCacheNexus(image,nexus_info))
       return(MagickFail);
-  status=WriteCachePixels(image->cache,nexus_info);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    status&=WriteCacheIndexes(image->cache,nexus_info);
+  status=WriteCachePixels(cache_info,nexus_info);
+  if (cache_info->indexes_valid)
+    status&=WriteCacheIndexes(cache_info,nexus_info);
   if (status == MagickFail)
     {
       ThrowException(exception,CacheError,UnableToSyncCache,image->filename);
@@ -4181,8 +4132,7 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if ((cache_info->storage_class != PseudoClass) &&
-      (cache_info->colorspace != CMYKColorspace))
+  if (!cache_info->indexes_valid)
     return(MagickFail);
   if (IsNexusInCore(cache,nexus_info))
     return(MagickPass);
@@ -4216,8 +4166,7 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
                 x;
 
               for (x=0; x < (long) nexus_info->region.width; x++)
-                cache_indexes[x]=indexes[x];
-              indexes+=nexus_info->region.width;
+                cache_indexes[x]=*indexes++;
               cache_indexes+=cache_info->columns;
             }
         }
@@ -4360,8 +4309,7 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
                 x;
 
               for (x=0; x < (long) nexus_info->region.width; x++)
-                cache_pixels[x]=pixels[x];
-              pixels+=nexus_info->region.width;
+                cache_pixels[x]=*pixels++;
               cache_pixels+=cache_info->columns;
             }
         }

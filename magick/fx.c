@@ -305,6 +305,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   MagickPassFail
     status;
 
+  const MagickBool
+    matte=((image->matte) || (image->colorspace == CMYKColorspace));
+
   /*
     Initialize convolve image attributes.
   */
@@ -458,7 +461,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                         pixel.red+=(*k)*r[u].red;
                         pixel.green+=(*k)*r[u].green;
                         pixel.blue+=(*k)*r[u].blue;
-                        pixel.opacity+=(*k)*r[u].opacity;
+                        if (matte)
+                          pixel.opacity+=(*k)*r[u].opacity;
                         k++;
                       }
                     r+=image->columns+width;
