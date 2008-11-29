@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on November 17, 2008
+This file was last updated on November 29, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,35 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.2 (November 29, 2008)
+=========================
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * -roll was failing for colormapped images.
+
+  * VID: Memory leak fix.
+
+  * PREVIEW: Solarize parameter was wrong.
+
+  * Delegates previously using 'spawn' needed an ampersand so that
+    starting the child process does not hang the GUI.
+
+Feature improvements:
+
+  * +profile now supports an exclusion syntax.  For example ``+profile
+    '!icm,*'`` removes all of the profiles except for the ICM profile.
+    The new syntax also allows multiple profiles to be listed at once.
+
+Performance Improvements:
+
+  * AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
+    process the opacity channel unless the image has one.
 
 1.3.1 (November 17, 2008)
 =========================

@@ -29,7 +29,7 @@ GraphicsMagick Image Processing System
 ========================  ===============================================
 Legacy Stable Branch:     1.1.14__ (Released June 5, 2008) download__
 Previous Stable Branch:   1.2.6__ (Released November 17, 2008) download__
-Current StableBranch:     1.3.1__ (Released November 17, 2008) download__
+Current StableBranch:     1.3.2__ (Released November 29, 2008) download__
 ========================  ===============================================
 
 __ `GraphicsMagic-1.1`_

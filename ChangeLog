@@ -1,3 +1,8 @@
+2008-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.3.2 released.
+	* NEWS.txt: Updated news for release.
+
 2008-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/fx.c (ConvolveImage): Don't process opacity channel
