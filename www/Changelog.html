@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2008-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (ExpandFilenames): Remove some arbitrary
+        argument length limits.  Pass -convolve argument without any
+        additional checking.  Verify that strings are not truncated during
+        copy.<BR>
+        (ListFiles): Be more memory efficient.
+  <LI> magick/fx.c (ConvolveImage): Fix formatting problem when logging
+        the convolution kernel used.<BR>
+  <LI> magick/utility.c (TranslateTextEx): Support formatting huge
+        comment text.
+
+</UL>
+<p>
 2008-11-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
