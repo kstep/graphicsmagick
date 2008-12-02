@@ -1,3 +1,9 @@
+2008-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/segment.c (SegmentImage): Accelerate using OpenMP.  Still
+	excruciatingly slow but speedup is linear.  Maybe in ten years
+	this algorithm will be fast.
+
 2008-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (ExpandFilenames): Remove some arbitrary
