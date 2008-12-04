@@ -4206,13 +4206,17 @@ width=15><b><font face="Helvetica, Arial"
 Segment an image by analyzing the histograms of the color components and
 identifying units that are homogeneous with the fuzzy c-means technique.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Specify <em>cluster threshold</em> as the number of pixels in each cluster
-must exceed the the cluster threshold to be considered valid. <em>Smoothing
-threshold</em> eliminates noise in the second derivative of the histogram.
-As the value is increased, you can expect a smoother second derivative.
-The default is 1.5. See
-<a href="#segm">"Image Segmentation"</a>
-for details.</font></td></tr></table>
+Segmentation is a very useful fast and and approximate color quantization
+algorithm for scanned printed pages or scanned cartoons. It may also be
+used as a special effect. Specify <em>cluster threshold</em> as the minimum
+percentage of total pixels in a cluster before it is considered valid.
+For huge images containing small detail, this may need to be a tiny
+fraction of a percent (e.g. 0.015) so that important detail is not lost.
+<em>Smoothing threshold</em> eliminates noise in the second derivative of
+the histogram. As the value is increased, you can expect a smoother
+second derivative. The default is 1.5. Add the <em>-verbose</em> option to
+see a dump of cluster statistics given the parameters used. The
+statistics may be used as a guide to help fine tune the options.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
