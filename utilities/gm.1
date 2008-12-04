@@ -1,4 +1,4 @@
-.TH gm 1 "2008/11/23" "GraphicsMagick"
+.TH gm 1 "2008/12/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3266,13 +3266,17 @@ Set a named image attribute.  The attribute is set on the current
 Segment an image by analyzing the histograms of the color components and
 identifying units that are homogeneous with the fuzzy c-means technique.
 
-Specify \fIcluster threshold\fP as the number of pixels in each cluster
-must exceed the the cluster threshold to be considered valid. \fISmoothing
-threshold\fP eliminates noise in the second derivative of the histogram.
-As the value is increased, you can expect a smoother second derivative.
-The default is 1.5. See
-"Image Segmentation", below,
-for details.
+Segmentation is a very useful fast and and approximate color quantization
+algorithm for scanned printed pages or scanned cartoons. It may also be
+used as a special effect. Specify \fIcluster threshold\fP as the minimum
+percentage of total pixels in a cluster before it is considered valid.
+For huge images containing small detail, this may need to be a tiny
+fraction of a percent (e.g. 0.015) so that important detail is not lost.
+\fISmoothing threshold\fP eliminates noise in the second derivative of
+the histogram. As the value is increased, you can expect a smoother
+second derivative. The default is 1.5. Add the \fI-verbose\fP option to
+see a dump of cluster statistics given the parameters used. The
+statistics may be used as a guide to help fine tune the options.
 .TP
 .B "-shade \fI<azimuth>x<elevation>"\fP
 \fRshade the image using a distant light source
