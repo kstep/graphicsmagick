@@ -1,3 +1,7 @@
+2008-12-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Fix for 64 bit images.
+
 2008-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/segment.c (SegmentImage): Cluster threshold is expressed

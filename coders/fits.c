@@ -400,6 +400,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
       if(fits_info.bits_per_pixel==16) FixSignedMSBValues(fits_pixels, image->columns, 2);
       if(fits_info.bits_per_pixel==32) FixSignedMSBValues(fits_pixels, image->columns, 4);
+      if(fits_info.bits_per_pixel==64) FixSignedMSBValues(fits_pixels, image->columns, 8);
 
       if(ImportImagePixelArea(image, GrayQuantum, packet_size*8, fits_pixels, &import_options,0) == MagickFail)
       {
