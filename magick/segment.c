@@ -78,6 +78,8 @@
 */
 
 #include "magick/studio.h"
+#include "magick/color.h"
+#include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/quantize.h"
@@ -109,7 +111,7 @@
 */
 typedef struct _ExtentPacket
 {
-  magick_uint64_t
+  double
     center;
 
   int
@@ -317,6 +319,7 @@ Classify(Image *image,short **extrema,
               /*
                 Initialize a new class.
               */
+              (void) memset(cluster,0,sizeof(Cluster));
               cluster->count=0;
               cluster->red=red;
               cluster->green=green;
@@ -337,6 +340,7 @@ Classify(Image *image,short **extrema,
       /*
         Initialize a new class.
       */
+      (void) memset(cluster,0,sizeof(Cluster));
       cluster->count=0;
       cluster->red=red;
       cluster->green=green;
@@ -367,14 +371,14 @@ Classify(Image *image,short **extrema,
         }
       for (x=(long) image->columns; x != 0; x--)
         {
-          long
+          double
             r,
             g,
             b;
 
-          r=ScaleQuantumToChar(p->red);
-          g=ScaleQuantumToChar(p->green);
-          b=ScaleQuantumToChar(p->blue);
+          r=(double) ScaleQuantumToChar(p->red);
+          g=(double) ScaleQuantumToChar(p->green);
+          b=(double) ScaleQuantumToChar(p->blue);
 
           for (count=0 ; count < number_clusters; count++)
             {
@@ -397,13 +401,12 @@ Classify(Image *image,short **extrema,
                       (cluster_array[count]->count > cluster_array[count-1]->count))
                     {
                       Cluster
-                        *tmp;
+                        *tmp_cluster;
 
-                      tmp=cluster_array[count-1];
+                      tmp_cluster=cluster_array[count-1];
                       cluster_array[count-1]=cluster_array[count];
-                      cluster_array[count]=tmp;
+                      cluster_array[count]=tmp_cluster;
                     }
-
                   break;
                 }
             }
@@ -417,6 +420,7 @@ Classify(Image *image,short **extrema,
             break;
           }
     }
+
   /*
     Remove clusters that do not meet minimum cluster threshold.
   */
@@ -431,19 +435,15 @@ Classify(Image *image,short **extrema,
     {
       next_cluster=cluster->next;
       if ((cluster->count > 0) &&
-          ((double) cluster->count >= threshold)
-          )
+          ((double) cluster->count >= threshold))
         {
           /*
             Initialize cluster.
           */
           cluster->id=count;
-          cluster->red.center=
-            (cluster->red.center+(cluster->count >> 1))/cluster->count;
-          cluster->green.center=
-            (cluster->green.center+(cluster->count >> 1))/cluster->count;
-          cluster->blue.center=
-            (cluster->blue.center+(cluster->count >> 1))/cluster->count;
+          cluster->red.center=(cluster->red.center/((double) cluster->count));
+          cluster->green.center=(cluster->green.center/((double) cluster->count));
+          cluster->blue.center=(cluster->blue.center/((double) cluster->count));
           count++;
           last_cluster=cluster;
         }
@@ -456,63 +456,69 @@ Classify(Image *image,short **extrema,
             head=next_cluster;
           else
             last_cluster->next=next_cluster;
+
+          if (image->logging)
+            (void) LogMagickEvent
+              (TransformEvent,GetMagickModule(),
+               "Removing Cluster (usage count %lu, %.5f%%) %d-%d  %d-%d  %d-%d",
+               (unsigned long) cluster->count,
+               (((double) cluster->count/total_vectors) * 100.0),
+               cluster->red.left,cluster->red.right,
+               cluster->green.left,cluster->green.right,
+               cluster->blue.left,cluster->blue.right);
           MagickFreeMemory(cluster);
         }
     }
   number_clusters=count;
-  if (verbose)
+  if (verbose && (head != (Cluster *) NULL))
     {
       /*
         Print cluster statistics.
       */
-      (void) fprintf(stdout,"Fuzzy c-Means Statistics (cluster_threshold %g, weighting_exponent %g)\n",
-                     cluster_threshold,weighting_exponent);
-      (void) fprintf(stdout,"======================================================================\n");
-      (void) fprintf(stdout,"\tTotal Number of Clusters = %lu\n",
+      (void) fprintf(stdout,"===============================================\n");
+      (void) fprintf(stdout,"           Fuzzy c-Means Statistics\n");
+      (void) fprintf(stdout,"===============================================\n");
+      (void) fprintf(stdout,"Cluster Threshold        = %g%%\n", cluster_threshold);
+      (void) fprintf(stdout,"Weighting Exponent       = %g\n", weighting_exponent);
+      (void) fprintf(stdout,"Total Number of Clusters = %lu\n",
                      number_clusters);
-      (void) fprintf(stdout,"\tTotal Number of Vectors  = %g\n",
+      (void) fprintf(stdout,"Total Number of Vectors  = %g\n",
                      total_vectors);
-      (void) fprintf(stdout,"\tCluster Threshold        = %g vectors\n",
+      (void) fprintf(stdout,"Cluster Threshold        = %g vectors\n\n",
                      threshold);
       /*
         Print the total number of points per cluster.
       */
-      (void) fprintf(stdout,"\nNumber of Vectors Per Cluster:\n");
-      (void) fprintf(stdout,"==========================================\n");
-      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) fprintf(stdout,"\tCluster %3d = %10lu (%5.3f%%)\n",cluster->id,
-                       (unsigned long) cluster->count,
-                       ((double) cluster->count/total_vectors) * 100.0);
-      /*
-        Print the cluster extents.
-      */
-      (void) fprintf(stdout,
-                     "\nCluster Extents:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stdout,"================\n");
+      (void) fprintf(stdout,"Cluster          Usage                 Extents                  Center\n");
+      (void) fprintf(stdout,"=======  ====================  =======================  =====================\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
         {
-          (void) fprintf(stdout,"Cluster #%d\n",cluster->id);
-          (void) fprintf(stdout,"\t%d-%d  %d-%d  %d-%d\n",
+          PixelPacket
+            color;
+
+          char
+            tuple[MaxTextExtent];
+
+          color.red=ScaleCharToQuantum((unsigned int) (cluster->red.center + 0.5));
+          color.green=ScaleCharToQuantum((unsigned int) (cluster->green.center + 0.5));
+          color.blue=ScaleCharToQuantum((unsigned int) (cluster->blue.center + 0.5));
+          color.opacity=OpaqueOpacity;
+          /* (void) QueryColorname(image,&color,X11Compliance,colorname,&image->exception); */
+          GetColorTuple(&color,8,MagickFalse,MagickTrue,tuple);
+          (void) fprintf(stdout,"  %3d    %10lu (%6.3f%%)  %03d-%03d %03d-%03d %03d-%03d  %03.0f %03.0f %03.0f (%s)\n",
+                         cluster->id,
+                         (unsigned long) cluster->count,
+                         (((double) cluster->count/total_vectors) * 100.0),
                          cluster->red.left,cluster->red.right,
                          cluster->green.left,cluster->green.right,
-                         cluster->blue.left,cluster->blue.right);
-        }
-      /*
-        Print the cluster center values.
-      */
-      (void) fprintf(stdout,
-                     "\nCluster Center Values:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stdout,"=====================\n");
-      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        {
-          (void) fprintf(stdout,"Cluster #%d\n",cluster->id);
-          (void) fprintf(stdout," \t%lu  %lu  %lu\n",
-                         (unsigned long) cluster->red.center,
-                         (unsigned long) cluster->green.center,
-                         (unsigned long) cluster->blue.center);
+                         cluster->blue.left,cluster->blue.right,
+                         cluster->red.center,
+                         cluster->green.center,
+                         cluster->blue.center,
+                         tuple);
         }
     }
-  if (number_clusters > 256)
+  if ((number_clusters > 256) || (number_clusters == 0))
     ThrowBinaryException3(ImageError,UnableToSegmentImage,TooManyClusters);
   /*
     Speed up distance calculations.
@@ -543,9 +549,10 @@ Classify(Image *image,short **extrema,
   i=0;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
     {
-      image->colormap[i].red=ScaleCharToQuantum(cluster->red.center);
-      image->colormap[i].green=ScaleCharToQuantum(cluster->green.center);
-      image->colormap[i].blue=ScaleCharToQuantum(cluster->blue.center);
+      image->colormap[i].red=ScaleCharToQuantum((unsigned int) (cluster->red.center + 0.5));
+      image->colormap[i].green=ScaleCharToQuantum((unsigned int) (cluster->green.center + 0.5));
+      image->colormap[i].blue=ScaleCharToQuantum((unsigned int) (cluster->blue.center + 0.5));
+      image->colormap[i].opacity=OpaqueOpacity;
       i++;
     }
   /*
@@ -606,16 +613,16 @@ Classify(Image *image,short **extrema,
                     q[x]=image->colormap[indexes[x]];
                     classified=MagickTrue;
 
-                  if ((count > 0) &&
-                      (cluster_array[count]->count > cluster_array[count-1]->count))
-                    {
-                      Cluster
-                        *tmp_cluster;
+                    if ((count > 0) &&
+                        (cluster_array[count]->count > cluster_array[count-1]->count))
+                      {
+                        Cluster
+                          *tmp_cluster;
 
-                      tmp_cluster=cluster_array[count-1];
-                      cluster_array[count-1]=cluster_array[count];
-                      cluster_array[count]=tmp_cluster;
-                    }
+                        tmp_cluster=cluster_array[count-1];
+                        cluster_array[count-1]=cluster_array[count];
+                        cluster_array[count]=tmp_cluster;
+                      }
 
                     break;
                   }
@@ -940,7 +947,7 @@ DerivativeHistogram(const double *histogram,double *derivative)
     Compute derivative using central differencing.
   */
   for (i=1; i < n; i++)
-    derivative[i]=(histogram[i+1]-histogram[i-1])/2;
+    derivative[i]=((double) histogram[i+1]-histogram[i-1])/2.0;
   return;
 }
 

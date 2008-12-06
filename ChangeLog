@@ -1,3 +1,9 @@
+2008-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/segment.c (SegmentImage): Use 'double' rather than 64-bit
+	integer to accumulate totalized values.  Make the cluster summary
+	report more concise.
+
 2008-12-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c: Fix for 64 bit images.
