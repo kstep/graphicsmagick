@@ -222,7 +222,7 @@ typedef struct _Cluster
     green,
     blue;
   
-  magick_uint64_t
+  magick_int64_t
     count;
   
   short
