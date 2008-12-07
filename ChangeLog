@@ -1,3 +1,7 @@
+2008-12-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Proper signed to unsigned conversion for 64 bit LSB images.
+
 2008-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/Makefile.am: When X11 is disabled, don't compile the

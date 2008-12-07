@@ -54,13 +54,19 @@ static unsigned int
   WriteFITSImage(const ImageInfo *,Image *);
 
 
-static void FixSignedMSBValues(unsigned char *data, int size, unsigned step)
+/* Convert signed values to unsigned - and reverse. */
+static void FixSignedValues(unsigned char *data, int size, unsigned step, unsigned endian)
 {
+  if(endian != MSBEndian)
+  {
+    data += step - 1;  //LSB has most signifficant byte at the end
+  }		       //MSB has most signifficant byte first
+
   while(size-->0)
   {
-    *data ^= 0x80;
+    *data ^= 0x80;	
     data += step;
-  }
+  }     
 }
 
 /*
@@ -398,9 +404,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 	break; /* goto ExitLoop; */
       }
 
-      if(fits_info.bits_per_pixel==16) FixSignedMSBValues(fits_pixels, image->columns, 2);
-      if(fits_info.bits_per_pixel==32) FixSignedMSBValues(fits_pixels, image->columns, 4);
-      if(fits_info.bits_per_pixel==64) FixSignedMSBValues(fits_pixels, image->columns, 8);
+      switch(fits_info.bits_per_pixel)
+      {
+        case 16: FixSignedValues(fits_pixels, image->columns, 2, import_options.endian);
+		 break;
+        case 32: FixSignedValues(fits_pixels, image->columns, 4, import_options.endian);
+		 break;
+	case 64: FixSignedValues(fits_pixels, image->columns, 8, import_options.endian);
+		 break;
+      }
 
       if(ImportImagePixelArea(image, GrayQuantum, packet_size*8, fits_pixels, &import_options,0) == MagickFail)
       {
@@ -670,8 +682,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (p == (const PixelPacket *) NULL)
       break;
     (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels,&export_options,0);
-    if(quantum_size==16) FixSignedMSBValues(pixels, image->columns, 2);
-    if(quantum_size==32) FixSignedMSBValues(pixels, image->columns, 4);
+    if(quantum_size==16) FixSignedValues(pixels, image->columns, 2, export_options.endian);
+    if(quantum_size==32) FixSignedValues(pixels, image->columns, 4, export_options.endian);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {
