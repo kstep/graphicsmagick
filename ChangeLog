@@ -1,3 +1,9 @@
+2008-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/Makefile.am: When X11 is disabled, don't compile the
+	X11-specific source modules.  Don't ever install any X11-related
+	header files.
+
 2008-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/segment.c (SegmentImage): Use 'double' rather than 64-bit

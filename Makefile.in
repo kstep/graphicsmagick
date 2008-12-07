@@ -1013,34 +1013,31 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(ltdl_shl_load_la_LDFLAGS) $(LDFLAGS) -o $@
 am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
-	magick/alpha_composite.h magick/animate.c magick/animate.h \
-	magick/annotate.c magick/api.h magick/attribute.c \
-	magick/attribute.h magick/bit_stream.h magick/blob.c \
-	magick/blob.h magick/channel.c magick/channel.h \
+	magick/alpha_composite.h magick/annotate.c magick/api.h \
+	magick/attribute.c magick/attribute.h magick/bit_stream.h \
+	magick/blob.c magick/blob.h magick/channel.c magick/channel.h \
 	magick/compare.c magick/compare.h magick/color.c \
 	magick/color.h magick/colorspace.c magick/colorspace.h \
 	magick/command.c magick/command.h magick/composite.c \
 	magick/composite.h magick/compress.c magick/compress.h \
 	magick/constitute.c magick/constitute.h magick/decorate.c \
 	magick/decorate.h magick/delegate.c magick/delegate.h \
-	magick/deprecate.c magick/deprecate.h magick/display.c \
-	magick/display.h magick/draw.c magick/draw.h magick/effect.c \
-	magick/effect.h magick/enhance.c magick/enhance.h \
-	magick/enum_strings.c magick/enum_strings.h magick/error.c \
-	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
-	magick/gem.c magick/gem.h magick/image.c magick/image.h \
-	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
-	magick/log.c magick/log.h magick/magic.c magick/magic.h \
-	magick/magick.c magick/magick.h magick/magick_endian.c \
-	magick/magick_endian.h magick/map.c magick/map.h \
-	magick/memory.c magick/memory.h magick/module.c \
+	magick/deprecate.c magick/deprecate.h magick/draw.c \
+	magick/draw.h magick/effect.c magick/effect.h magick/enhance.c \
+	magick/enhance.h magick/enum_strings.c magick/enum_strings.h \
+	magick/error.c magick/error.h magick/forward.h magick/fx.c \
+	magick/fx.h magick/gem.c magick/gem.h magick/image.c \
+	magick/image.h magick/list.c magick/list.h magick/locale.c \
+	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
+	magick/magic.h magick/magick.c magick/magick.h \
+	magick/magick_endian.c magick/magick_endian.h magick/map.c \
+	magick/map.h magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
 	magick/paint.c magick/paint.h magick/pixel_cache.h \
 	magick/pixel_cache.c magick/pixel_iterator.c \
-	magick/pixel_iterator.h magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h magick/profile.c magick/profile.h \
+	magick/pixel_iterator.h magick/profile.c magick/profile.h \
 	magick/quantize.c magick/quantize.h magick/registry.c \
 	magick/registry.h magick/render.c magick/render.h \
 	magick/resize.c magick/resize.h magick/resource.c \
@@ -1052,7 +1049,9 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/timer.c magick/timer.h magick/transform.c \
 	magick/transform.h magick/tsd.c magick/tsd.h magick/type.c \
 	magick/unix_port.c magick/utility.c magick/utility.h \
-	magick/version.c magick/version.h magick/widget.c \
+	magick/version.c magick/version.h magick/animate.c \
+	magick/animate.h magick/display.c magick/display.h \
+	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/widget.c \
 	magick/widget.h magick/xwindow.c magick/xwindow.h \
 	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
 	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
@@ -1080,8 +1079,13 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
 	coders/ept.c coders/tiff.c coders/x.c coders/xwd.c \
 	filters/analyze.c
-am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
-	magick/magick_libGraphicsMagick_la-annotate.lo \
+@HasX11_TRUE@am__objects_2 =  \
+@HasX11_TRUE@	magick/magick_libGraphicsMagick_la-animate.lo \
+@HasX11_TRUE@	magick/magick_libGraphicsMagick_la-display.lo \
+@HasX11_TRUE@	magick/magick_libGraphicsMagick_la-PreRvIcccm.lo \
+@HasX11_TRUE@	magick/magick_libGraphicsMagick_la-widget.lo \
+@HasX11_TRUE@	magick/magick_libGraphicsMagick_la-xwindow.lo
+am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
@@ -1095,7 +1099,6 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-decorate.lo \
 	magick/magick_libGraphicsMagick_la-delegate.lo \
 	magick/magick_libGraphicsMagick_la-deprecate.lo \
-	magick/magick_libGraphicsMagick_la-display.lo \
 	magick/magick_libGraphicsMagick_la-draw.lo \
 	magick/magick_libGraphicsMagick_la-effect.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
@@ -1120,7 +1123,6 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-paint.lo \
 	magick/magick_libGraphicsMagick_la-pixel_cache.lo \
 	magick/magick_libGraphicsMagick_la-pixel_iterator.lo \
-	magick/magick_libGraphicsMagick_la-PreRvIcccm.lo \
 	magick/magick_libGraphicsMagick_la-profile.lo \
 	magick/magick_libGraphicsMagick_la-quantize.lo \
 	magick/magick_libGraphicsMagick_la-registry.lo \
@@ -1139,30 +1141,28 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-type.lo \
 	magick/magick_libGraphicsMagick_la-unix_port.lo \
 	magick/magick_libGraphicsMagick_la-utility.lo \
-	magick/magick_libGraphicsMagick_la-version.lo \
-	magick/magick_libGraphicsMagick_la-widget.lo \
-	magick/magick_libGraphicsMagick_la-xwindow.lo
-@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_3 = magick/magick_libGraphicsMagick_la-nt_feature.lo
-@WIN32_NATIVE_BUILD_TRUE@am__objects_3 = magick/magick_libGraphicsMagick_la-nt_base.lo \
+	magick/magick_libGraphicsMagick_la-version.lo $(am__objects_2)
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_4 = magick/magick_libGraphicsMagick_la-nt_feature.lo
+@WIN32_NATIVE_BUILD_TRUE@am__objects_4 = magick/magick_libGraphicsMagick_la-nt_base.lo \
 @WIN32_NATIVE_BUILD_TRUE@	magick/magick_libGraphicsMagick_la-nt_feature.lo
-@HasWINGDI32_TRUE@am__objects_4 = coders/magick_libGraphicsMagick_la-clipboard.lo \
+@HasWINGDI32_TRUE@am__objects_5 = coders/magick_libGraphicsMagick_la-clipboard.lo \
 @HasWINGDI32_TRUE@	coders/magick_libGraphicsMagick_la-emf.lo
-@HasFPX_TRUE@am__objects_5 =  \
+@HasFPX_TRUE@am__objects_6 =  \
 @HasFPX_TRUE@	coders/magick_libGraphicsMagick_la-fpx.lo
-@HasJBIG_TRUE@am__objects_6 =  \
+@HasJBIG_TRUE@am__objects_7 =  \
 @HasJBIG_TRUE@	coders/magick_libGraphicsMagick_la-jbig.lo
-@HasJPEG_TRUE@am__objects_7 =  \
+@HasJPEG_TRUE@am__objects_8 =  \
 @HasJPEG_TRUE@	coders/magick_libGraphicsMagick_la-jpeg.lo
-@HasJP2_TRUE@am__objects_8 =  \
+@HasJP2_TRUE@am__objects_9 =  \
 @HasJP2_TRUE@	coders/magick_libGraphicsMagick_la-jp2.lo
-@HasPNG_TRUE@am__objects_9 =  \
+@HasPNG_TRUE@am__objects_10 =  \
 @HasPNG_TRUE@	coders/magick_libGraphicsMagick_la-png.lo
-@HasTIFF_TRUE@am__objects_10 =  \
+@HasTIFF_TRUE@am__objects_11 =  \
 @HasTIFF_TRUE@	coders/magick_libGraphicsMagick_la-ept.lo \
 @HasTIFF_TRUE@	coders/magick_libGraphicsMagick_la-tiff.lo
-@HasX11_TRUE@am__objects_11 = coders/magick_libGraphicsMagick_la-x.lo \
+@HasX11_TRUE@am__objects_12 = coders/magick_libGraphicsMagick_la-x.lo \
 @HasX11_TRUE@	coders/magick_libGraphicsMagick_la-xwd.lo
-am__objects_12 = coders/magick_libGraphicsMagick_la-art.lo \
+am__objects_13 = coders/magick_libGraphicsMagick_la-art.lo \
 	coders/magick_libGraphicsMagick_la-avi.lo \
 	coders/magick_libGraphicsMagick_la-avs.lo \
 	coders/magick_libGraphicsMagick_la-bmp.lo \
@@ -1244,16 +1244,16 @@ am__objects_12 = coders/magick_libGraphicsMagick_la-art.lo \
 	coders/magick_libGraphicsMagick_la-xc.lo \
 	coders/magick_libGraphicsMagick_la-xcf.lo \
 	coders/magick_libGraphicsMagick_la-xpm.lo \
-	coders/magick_libGraphicsMagick_la-yuv.lo $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11)
-am__objects_13 = filters/magick_libGraphicsMagick_la-analyze.lo
+	coders/magick_libGraphicsMagick_la-yuv.lo $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
+	$(am__objects_12)
+am__objects_14 = filters/magick_libGraphicsMagick_la-analyze.lo
 @WITH_MODULES_FALSE@am_magick_libGraphicsMagick_la_OBJECTS =  \
-@WITH_MODULES_FALSE@	$(am__objects_2) $(am__objects_3) \
-@WITH_MODULES_FALSE@	$(am__objects_12) $(am__objects_13)
+@WITH_MODULES_FALSE@	$(am__objects_3) $(am__objects_4) \
+@WITH_MODULES_FALSE@	$(am__objects_13) $(am__objects_14)
 @WITH_MODULES_TRUE@am_magick_libGraphicsMagick_la_OBJECTS =  \
-@WITH_MODULES_TRUE@	$(am__objects_2) $(am__objects_3)
+@WITH_MODULES_TRUE@	$(am__objects_3) $(am__objects_4)
 magick_libGraphicsMagick_la_OBJECTS =  \
 	$(am_magick_libGraphicsMagick_la_OBJECTS)
 magick_libGraphicsMagick_la_LINK = $(LIBTOOL) --tag=CC \
@@ -1262,9 +1262,9 @@ magick_libGraphicsMagick_la_LINK = $(LIBTOOL) --tag=CC \
 	$(LDFLAGS) -o $@
 wand_libGraphicsMagickWand_la_DEPENDENCIES = $(LIBMAGICK) \
 	$(am__DEPENDENCIES_1)
-am__objects_14 = wand/drawing_wand.lo wand/magick_compat.lo \
+am__objects_15 = wand/drawing_wand.lo wand/magick_compat.lo \
 	wand/magick_wand.lo wand/pixel_wand.lo
-am_wand_libGraphicsMagickWand_la_OBJECTS = $(am__objects_14)
+am_wand_libGraphicsMagickWand_la_OBJECTS = $(am__objects_15)
 wand_libGraphicsMagickWand_la_OBJECTS =  \
 	$(am_wand_libGraphicsMagickWand_la_OBJECTS)
 wand_libGraphicsMagickWand_la_LINK = $(LIBTOOL) --tag=CC \
@@ -2141,8 +2141,8 @@ codersdir = $(MagickCoderModulesPath)
 @HasPNG_TRUE@MAGICK_PNG_SRCS = coders/png.c
 @HasTIFF_TRUE@MAGICK_TIFF_MODULES = coders/ept.la coders/tiff.la
 @HasTIFF_TRUE@MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
-@HasX11_TRUE@MAGICK_X11_MODULES = coders/x.la coders/xwd.la
-@HasX11_TRUE@MAGICK_X11_SRCS = coders/x.c coders/xwd.c
+@HasX11_TRUE@MAGICK_X11_CODER_MODULES = coders/x.la coders/xwd.la
+@HasX11_TRUE@MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 MAGICK_CODER_SRCS = \
 	coders/art.c \
 	coders/avi.c \
@@ -2234,7 +2234,7 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JP2_SRCS) \
 	$(MAGICK_PNG_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
-	$(MAGICK_X11_SRCS)
+	$(MAGICK_X11_CODER_SRCS)
 
 @WITH_MODULES_FALSE@coders_LTLIBRARIES = 
 @WITH_MODULES_TRUE@coders_LTLIBRARIES = \
@@ -2261,7 +2261,7 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_TRUE@	coders/xcf.la coders/xpm.la coders/yuv.la \
 @WITH_MODULES_TRUE@	$(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) $(MAGICK_JBIG_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) $(MAGICK_PNG_MODULES) \
-@WITH_MODULES_TRUE@	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_MODULES)
+@WITH_MODULES_TRUE@	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
 
 
 # ART coder module
@@ -2852,12 +2852,22 @@ magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 magick_libGraphicsMagick_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
+@HasX11_TRUE@MAGICK_X11_BASE_SRCS = \
+@HasX11_TRUE@	magick/animate.c \
+@HasX11_TRUE@	magick/animate.h \
+@HasX11_TRUE@	magick/display.c \
+@HasX11_TRUE@	magick/display.h \
+@HasX11_TRUE@	magick/PreRvIcccm.c \
+@HasX11_TRUE@	magick/PreRvIcccm.h \
+@HasX11_TRUE@	magick/widget.c \
+@HasX11_TRUE@	magick/widget.h \
+@HasX11_TRUE@	magick/xwindow.c \
+@HasX11_TRUE@	magick/xwindow.h
+
 
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
-	magick/animate.c \
-	magick/animate.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
@@ -2887,8 +2897,6 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
-	magick/display.c \
-	magick/display.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -2938,8 +2946,6 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
-	magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h \
 	magick/profile.c \
 	magick/profile.h \
 	magick/quantize.c \
@@ -2978,10 +2984,7 @@ MAGICK_BASE_SRCS = \
 	magick/utility.h \
 	magick/version.c \
 	magick/version.h \
-	magick/widget.c \
-	magick/widget.h \
-	magick/xwindow.c \
-	magick/xwindow.h
+	$(MAGICK_X11_BASE_SRCS)
 
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = \
@@ -2995,7 +2998,6 @@ MAGICK_BASE_SRCS = \
 @WIN32_NATIVE_BUILD_TRUE@	magick/nt_feature.h
 
 MAGICK_INCLUDE_HDRS = \
-	magick/PreRvIcccm.h \
 	magick/api.h \
 	magick/attribute.h \
 	magick/blob.h \
@@ -3044,9 +3046,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/timer.h \
 	magick/transform.h \
 	magick/utility.h \
-	magick/version.h \
-	magick/widget.h \
-	magick/xwindow.h
+	magick/version.h
 
 MAGICK_NOINST_HDRS = \
 	magick/alpha_composite.h \
@@ -3062,8 +3062,10 @@ MAGICK_NOINST_HDRS = \
 	magick/spinlock.h \
 	magick/static.h \
 	magick/studio.h \
+	magick/tempfile.h \
 	magick/unix_port.h \
-	magick/tempfile.h
+	magick/widget.h \
+	magick/xwindow.h
 
 MAGICK_EXTRA_DIST = \
 	magick/GraphicsMagick-config.in \
@@ -5467,8 +5469,6 @@ magick/$(am__dirstamp):
 magick/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) magick/$(DEPDIR)
 	@: > magick/$(DEPDIR)/$(am__dirstamp)
-magick/magick_libGraphicsMagick_la-animate.lo: magick/$(am__dirstamp) \
-	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-annotate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-attribute.lo:  \
@@ -5497,8 +5497,6 @@ magick/magick_libGraphicsMagick_la-delegate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-deprecate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
-magick/magick_libGraphicsMagick_la-display.lo: magick/$(am__dirstamp) \
-	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-draw.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-effect.lo: magick/$(am__dirstamp) \
@@ -5547,8 +5545,6 @@ magick/magick_libGraphicsMagick_la-pixel_cache.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-pixel_iterator.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
-magick/magick_libGraphicsMagick_la-PreRvIcccm.lo:  \
-	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-profile.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-quantize.lo:  \
@@ -5587,6 +5583,12 @@ magick/magick_libGraphicsMagick_la-utility.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-version.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-animate.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-display.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-PreRvIcccm.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-widget.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-xwindow.lo: magick/$(am__dirstamp) \
@@ -7740,13 +7742,6 @@ ltdl/ltdl_libltdlc_la-slist.lo: ltdl/slist.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
 
-magick/magick_libGraphicsMagick_la-animate.lo: magick/animate.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-animate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Tpo -c -o magick/magick_libGraphicsMagick_la-animate.lo `test -f 'magick/animate.c' || echo '$(srcdir)/'`magick/animate.c
-@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/animate.c' object='magick/magick_libGraphicsMagick_la-animate.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-animate.lo `test -f 'magick/animate.c' || echo '$(srcdir)/'`magick/animate.c
-
 magick/magick_libGraphicsMagick_la-annotate.lo: magick/annotate.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-annotate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Tpo -c -o magick/magick_libGraphicsMagick_la-annotate.lo `test -f 'magick/annotate.c' || echo '$(srcdir)/'`magick/annotate.c
 @am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Plo
@@ -7844,13 +7839,6 @@ magick/magick_libGraphicsMagick_la-deprecate.lo: magick/deprecate.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/deprecate.c' object='magick/magick_libGraphicsMagick_la-deprecate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-deprecate.lo `test -f 'magick/deprecate.c' || echo '$(srcdir)/'`magick/deprecate.c
-
-magick/magick_libGraphicsMagick_la-display.lo: magick/display.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-display.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Tpo -c -o magick/magick_libGraphicsMagick_la-display.lo `test -f 'magick/display.c' || echo '$(srcdir)/'`magick/display.c
-@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/display.c' object='magick/magick_libGraphicsMagick_la-display.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-display.lo `test -f 'magick/display.c' || echo '$(srcdir)/'`magick/display.c
 
 magick/magick_libGraphicsMagick_la-draw.lo: magick/draw.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-draw.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-draw.Tpo -c -o magick/magick_libGraphicsMagick_la-draw.lo `test -f 'magick/draw.c' || echo '$(srcdir)/'`magick/draw.c
@@ -8020,13 +8008,6 @@ magick/magick_libGraphicsMagick_la-pixel_iterator.lo: magick/pixel_iterator.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-pixel_iterator.lo `test -f 'magick/pixel_iterator.c' || echo '$(srcdir)/'`magick/pixel_iterator.c
 
-magick/magick_libGraphicsMagick_la-PreRvIcccm.lo: magick/PreRvIcccm.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-PreRvIcccm.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Tpo -c -o magick/magick_libGraphicsMagick_la-PreRvIcccm.lo `test -f 'magick/PreRvIcccm.c' || echo '$(srcdir)/'`magick/PreRvIcccm.c
-@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/PreRvIcccm.c' object='magick/magick_libGraphicsMagick_la-PreRvIcccm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-PreRvIcccm.lo `test -f 'magick/PreRvIcccm.c' || echo '$(srcdir)/'`magick/PreRvIcccm.c
-
 magick/magick_libGraphicsMagick_la-profile.lo: magick/profile.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-profile.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-profile.Tpo -c -o magick/magick_libGraphicsMagick_la-profile.lo `test -f 'magick/profile.c' || echo '$(srcdir)/'`magick/profile.c
 @am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-profile.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-profile.Plo
@@ -8159,6 +8140,27 @@ magick/magick_libGraphicsMagick_la-version.lo: magick/version.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/version.c' object='magick/magick_libGraphicsMagick_la-version.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-version.lo `test -f 'magick/version.c' || echo '$(srcdir)/'`magick/version.c
+
+magick/magick_libGraphicsMagick_la-animate.lo: magick/animate.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-animate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Tpo -c -o magick/magick_libGraphicsMagick_la-animate.lo `test -f 'magick/animate.c' || echo '$(srcdir)/'`magick/animate.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/animate.c' object='magick/magick_libGraphicsMagick_la-animate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-animate.lo `test -f 'magick/animate.c' || echo '$(srcdir)/'`magick/animate.c
+
+magick/magick_libGraphicsMagick_la-display.lo: magick/display.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-display.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Tpo -c -o magick/magick_libGraphicsMagick_la-display.lo `test -f 'magick/display.c' || echo '$(srcdir)/'`magick/display.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/display.c' object='magick/magick_libGraphicsMagick_la-display.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-display.lo `test -f 'magick/display.c' || echo '$(srcdir)/'`magick/display.c
+
+magick/magick_libGraphicsMagick_la-PreRvIcccm.lo: magick/PreRvIcccm.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-PreRvIcccm.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Tpo -c -o magick/magick_libGraphicsMagick_la-PreRvIcccm.lo `test -f 'magick/PreRvIcccm.c' || echo '$(srcdir)/'`magick/PreRvIcccm.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/PreRvIcccm.c' object='magick/magick_libGraphicsMagick_la-PreRvIcccm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-PreRvIcccm.lo `test -f 'magick/PreRvIcccm.c' || echo '$(srcdir)/'`magick/PreRvIcccm.c
 
 magick/magick_libGraphicsMagick_la-widget.lo: magick/widget.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-widget.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-widget.Tpo -c -o magick/magick_libGraphicsMagick_la-widget.lo `test -f 'magick/widget.c' || echo '$(srcdir)/'`magick/widget.c

@@ -37,11 +37,23 @@ magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 magick_libGraphicsMagick_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 
+if HasX11
+MAGICK_X11_BASE_SRCS = \
+	magick/animate.c \
+	magick/animate.h \
+	magick/display.c \
+	magick/display.h \
+	magick/PreRvIcccm.c \
+	magick/PreRvIcccm.h \
+	magick/widget.c \
+	magick/widget.h \
+	magick/xwindow.c \
+	magick/xwindow.h
+endif
+
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
-	magick/animate.c \
-	magick/animate.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
@@ -71,8 +83,6 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
-	magick/display.c \
-	magick/display.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -122,8 +132,6 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
-	magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h \
 	magick/profile.c \
 	magick/profile.h \
 	magick/quantize.c \
@@ -162,10 +170,7 @@ MAGICK_BASE_SRCS = \
 	magick/utility.h \
 	magick/version.c \
 	magick/version.h \
-	magick/widget.c \
-	magick/widget.h \
-	magick/xwindow.c \
-	magick/xwindow.h
+	$(MAGICK_X11_BASE_SRCS)
 
 if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = 	\
@@ -184,7 +189,6 @@ endif # if CYGWIN_BUILD
 endif # if WIN32_NATIVE_BUILD
 
 MAGICK_INCLUDE_HDRS = \
-	magick/PreRvIcccm.h \
 	magick/api.h \
 	magick/attribute.h \
 	magick/blob.h \
@@ -233,9 +237,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/timer.h \
 	magick/transform.h \
 	magick/utility.h \
-	magick/version.h \
-	magick/widget.h \
-	magick/xwindow.h
+	magick/version.h
 
 MAGICK_NOINST_HDRS = \
 	magick/alpha_composite.h \
@@ -251,8 +253,11 @@ MAGICK_NOINST_HDRS = \
 	magick/spinlock.h \
 	magick/static.h \
 	magick/studio.h \
+	magick/tempfile.h \
 	magick/unix_port.h \
-	magick/tempfile.h
+	magick/widget.h \
+	magick/xwindow.h
+
 
 MAGICK_EXTRA_DIST = \
 	magick/GraphicsMagick-config.in \

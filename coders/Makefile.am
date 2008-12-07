@@ -47,8 +47,8 @@ MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
 endif
 
 if HasX11
-MAGICK_X11_MODULES = coders/x.la coders/xwd.la
-MAGICK_X11_SRCS = coders/x.c coders/xwd.c
+MAGICK_X11_CODER_MODULES = coders/x.la coders/xwd.la
+MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 endif
 
 MAGICK_CODER_SRCS = \
@@ -142,7 +142,7 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JP2_SRCS) \
 	$(MAGICK_PNG_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
-	$(MAGICK_X11_SRCS)
+	$(MAGICK_X11_CODER_SRCS)
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
@@ -169,7 +169,7 @@ coders_LTLIBRARIES = \
 	coders/xcf.la coders/xpm.la coders/yuv.la \
 	$(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) $(MAGICK_JBIG_MODULES) \
 	$(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) $(MAGICK_PNG_MODULES) \
-	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_MODULES)
+	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
 else
 coders_LTLIBRARIES =
 endif # WITH_MODULES
