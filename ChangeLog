@@ -1,3 +1,7 @@
+2008-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fix bug with 'ping' mode.
+
 2008-12-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c: Proper signed to unsigned conversion for 64 bit LSB images.
