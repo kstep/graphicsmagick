@@ -24,6 +24,9 @@
 2008-12-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/pixel_cache.c (OpenCache): Fix a code ordering problem
+        which results in 'identify' throwing an assertion for PseudoClass
+        image files.  This bug was added in the 1.3.2 release.
   <LI> coders/tiff.c (ReadTIFFImage): Fix bug with 'ping' mode.
 
 </UL>
