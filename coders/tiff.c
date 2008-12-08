@@ -1623,13 +1623,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) SetImageAttribute(image,"kodak-36867",text);
 #endif
 
-      /*
-        Quit if in "ping" mode and we are outside of requested range.
-      */
-      if (image_info->ping && (image_info->subrange != 0))
-        if (image->scene >= (image_info->subimage+image_info->subrange-1))
-          break;
-
       if ((photometric == PHOTOMETRIC_PALETTE) ||
           ((PHOTOMETRIC_MINISWHITE || PHOTOMETRIC_MINISBLACK) && (1 == bits_per_sample)))
         {
@@ -1647,6 +1640,19 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 (void) LiberateTemporaryFile(filename);
               ThrowReaderException(CoderError,ColormapTooLarge,image);
             }
+        }
+
+      /*
+        Quit if in "ping" mode and we are outside of requested range,
+        otherwise continue to next frame.
+      */
+      if (image_info->ping)
+        {
+          if (image_info->subrange != 0)
+            if (image->scene >= (image_info->subimage+image_info->subrange-1))
+              break;
+
+          goto read_next_frame;
         }
       /*
         Determine which method to use for reading pixels.
@@ -2607,6 +2613,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         }
 
+    read_next_frame:
       if (status == MagickPass)
         {
           if (image->depth > QuantumDepth)
