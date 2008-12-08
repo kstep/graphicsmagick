@@ -765,9 +765,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"comment",text);
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
+      /*
+        Quit if in "ping" mode and we are outside of requested range,
+        otherwise continue to next frame.
+      */
+      if (image_info->ping)
+        {
+          if (image_info->subrange != 0)
+            if (image->scene >= (image_info->subimage+image_info->subrange-1))
+              break;
+
+          goto read_next_frame;
+        }
     method=PseudoClassMethod;
     if (image->storage_class == DirectClass)
       {
@@ -1387,6 +1396,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     /*
       Proceed to next image.
     */
+  read_next_frame:
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

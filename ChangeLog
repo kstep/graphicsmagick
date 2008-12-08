@@ -1,3 +1,7 @@
+2008-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fix bug with 'ping' mode.
+
 2008-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* config/delegates.mgk.in: Since we removed support for 'spawn' a
