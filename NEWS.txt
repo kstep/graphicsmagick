@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on November 14, 2008
+This file was last updated on December 9, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -25,6 +25,27 @@ Bug fixes:
   * MSL/conjure, Fix bug with attributes becoming appended to
     themselves.  Fix memory leaks.
 
+  * 'identify' was throwing an assertion when used on colormapped
+    files (this bug was introduced by 1.3.2).
+
+  * With the -segment option, eliminate trashing the image colors when
+    used on huge images.
+
+  * 'identify -format "%c"' now reports the entire comment regardless
+    of size.
+
+  * Argument to -convolve is no longer arbitrarily truncated so huge
+    convolution kernels may now be specified from the command line.
+
+  * -roll was failing for colormapped images.
+
+  * VID: Memory leak fix.
+
+  * PREVIEW: Solarize parameter was wrong.
+
+  * Delegates previously using 'spawn' needed an ampersand so that
+    starting the child process does not hang the GUI.
+
 Feature improvements:
 
   * New --disable-openmp-slow configure option for disabling use of
@@ -35,11 +56,25 @@ Feature improvements:
     jpeg:dct-method define.  Also allow control over whether huffman
     encoding is used via jpeg:optimize-coding define.
 
+  * +profile now supports an exclusion syntax.  For example ``+profile
+    '!icm,*'`` removes all of the profiles except for the ICM profile.
+    The new syntax also allows multiple profiles to be listed at once.
+
 Performance Improvements:
 
   * OpenMP (parallel processing) improvements for these functions:
 
     - Rotate by 90 and 270 degrees (-rotate)
+
+    - Segmentation (-segment)
+
+  * AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
+    process the opacity channel unless the image has one.
+
+  * 'identify "*"' now successfully works in a 32-bit application when
+    used in a directory containing a million files.
+
+  * 'identify' now executes quickly when used on TIFF files.
 
 1.3 (November 9, 2008)
 ======================

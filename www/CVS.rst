@@ -126,8 +126,8 @@ Or to save bandwidth get the compressed version, type::
 
   cvs -z3 co -P GraphicsMagick
 
-Note that adding ``-r GraphicsMagick-1_2`` requests the sources from the
-GraphicsMagick 1.2 release branch.
+Note that adding ``-r GraphicsMagick-1_3`` requests the sources from the
+GraphicsMagick 1.3 release branch.
 
 To update the sources within a checked out directory execute::
 
@@ -144,14 +144,14 @@ The available modules relating to GraphicsMagick are:
 To check out the GraphicsMagick source for Microsoft Windows, try this command
 line::
 
-  cvs -z3 co -P -r GraphicsMagick-1_2 GraphicsMagick-NT
+  cvs -z3 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 
-If you require a specific release of GraphicsMagick (e.g. 1.2.2), you may check
+If you require a specific release of GraphicsMagick (e.g. 1.3.3), you may check
 it out like::
 
- cvs -z3 co-r GraphicsMagick-1_2_2 -P GraphicsMagick
+ cvs -z3 co-r GraphicsMagick-1_3_3 -P GraphicsMagick
 
-where the ``GraphicsMagick-1_2_2`` is the release tag. You can use::
+where the ``GraphicsMagick-1_3_3`` is the release tag. You can use::
 
   cvs status -v README.txt
 
@@ -160,7 +160,7 @@ tags are available.
 
 You can use::
 
-  cvs -z3 update -r GraphicsMagick-1_2_2
+  cvs -z3 update -r GraphicsMagick-1_3_3
 
 from within an existing checked out directory to move it up (or down) to that
 branch or release tag.

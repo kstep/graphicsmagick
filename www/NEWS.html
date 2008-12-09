@@ -52,7 +52,7 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on November 14, 2008</p>
+<p>This file was last updated on December 9, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -74,6 +74,19 @@ ChangeLog file for full details.</p>
 Linux 4.</li>
 <li>MSL/conjure, Fix bug with attributes becoming appended to
 themselves.  Fix memory leaks.</li>
+<li>'identify' was throwing an assertion when used on colormapped
+files (this bug was introduced by 1.3.2).</li>
+<li>With the -segment option, eliminate trashing the image colors when
+used on huge images.</li>
+<li>'identify -format &quot;%c&quot;' now reports the entire comment regardless
+of size.</li>
+<li>Argument to -convolve is no longer arbitrarily truncated so huge
+convolution kernels may now be specified from the command line.</li>
+<li>-roll was failing for colormapped images.</li>
+<li>VID: Memory leak fix.</li>
+<li>PREVIEW: Solarize parameter was wrong.</li>
+<li>Delegates previously using 'spawn' needed an ampersand so that
+starting the child process does not hang the GUI.</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -85,6 +98,9 @@ with crummy thread libraries.</li>
 <li>JPEG, Allow user to specify DCT encoding method via
 jpeg:dct-method define.  Also allow control over whether huffman
 encoding is used via jpeg:optimize-coding define.</li>
+<li>+profile now supports an exclusion syntax.  For example <tt class="docutils literal"><span class="pre">+profile</span>
+<span class="pre">'!icm,*'</span></tt> removes all of the profiles except for the ICM profile.
+The new syntax also allows multiple profiles to be listed at once.</li>
 </ul>
 </blockquote>
 <p>Performance Improvements:</p>
@@ -92,8 +108,14 @@ encoding is used via jpeg:optimize-coding define.</li>
 <ul class="simple">
 <li>OpenMP (parallel processing) improvements for these functions:<ul>
 <li>Rotate by 90 and 270 degrees (-rotate)</li>
+<li>Segmentation (-segment)</li>
 </ul>
 </li>
+<li>AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
+process the opacity channel unless the image has one.</li>
+<li>'identify &quot;*&quot;' now successfully works in a 32-bit application when
+used in a directory containing a million files.</li>
+<li>'identify' now executes quickly when used on TIFF files.</li>
 </ul>
 </blockquote>
 </div>
@@ -958,7 +980,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-14 20:08 UTC.
+Generated on: 2008-12-09 17:52 UTC.
 
 </div>
 </body>
