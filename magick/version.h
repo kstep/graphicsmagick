@@ -39,7 +39,7 @@ extern "C" {
 #define MagickLibVersionText  "1.3.3"
 #define MagickLibVersionNumber 3,0,3
 #define MagickChangeDate   "20081209"
-#define MagickReleaseDate  "2008-12-09"
+#define MagickReleaseDate  "2008-12-08"
 
 
 #if (QuantumDepth == 8)
