@@ -3786,8 +3786,6 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
   double_scale=(double) MaxRGB/(double_maxvalue-double_minvalue);
   if (sample_type != FloatQuantumSampleType)
     {
-      
-      
       if (QuantumDepth == sample_bits)
         {
         }
