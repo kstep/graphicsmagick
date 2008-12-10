@@ -1,3 +1,10 @@
+2008-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ImportViewPixelArea): Add support for
+	importing 64-bit integer values.
+	(ImportViewPixelArea): Add support for exporting 64-bit integer
+	values.
+
 2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix bug with reading one bit per

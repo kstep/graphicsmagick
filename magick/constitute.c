@@ -147,6 +147,37 @@ static Image
       *q++=(unsigned char) (value_ >> 24); \
     } \
 }
+/*
+  Export a 32-bit unsigned quantum into a 64-bit storage size.  This
+  approach is used since 64-bits is not supported internally and some
+  CPUs may perform poorly if the quantum is a 64-bit type.
+*/
+#define ExportLongLongQuantum(endian,q,quantum) \
+{ \
+  register unsigned int value_ = (quantum); \
+  if (LSBEndian != endian) \
+    { \
+      *q++=(unsigned char) (value_ >> 24); \
+      *q++=(unsigned char) (value_ >> 16); \
+      *q++=(unsigned char) (value_ >> 8); \
+      *q++=(unsigned char) value_; \
+      *q++=(unsigned char) (value_ >> 24); \
+      *q++=(unsigned char) (value_ >> 16); \
+      *q++=(unsigned char) (value_ >> 8); \
+      *q++=(unsigned char) value_; \
+    } \
+  else \
+    { \
+      *q++=(unsigned char) value_; \
+      *q++=(unsigned char) (value_ >> 8); \
+      *q++=(unsigned char) (value_ >> 16); \
+      *q++=(unsigned char) (value_ >> 24); \
+      *q++=(unsigned char) value_; \
+      *q++=(unsigned char) (value_ >> 8); \
+      *q++=(unsigned char) (value_ >> 16); \
+      *q++=(unsigned char) (value_ >> 24); \
+    } \
+}
 #define ExportFloatQuantum(endian,q,quantum) \
 { \
   if (MyEndianType == endian) \
@@ -252,6 +283,31 @@ static Image
     } \
   else \
     { \
+      quantum=(*p++); \
+      quantum|=(*p++ << 8); \
+      quantum|=(*p++ << 16); \
+      quantum|=(*p++ << 24); \
+    } \
+}
+/*
+  Import a 64-bit unsigned value into a 32-bit quantum type.  This
+  approach is used since 64-bits is not supported internally and some
+  CPUs may perform poorly when using a true 64-bit type.  In this case
+  the least significant 32 bits are entirely ignored.
+*/
+#define ImportLongLongQuantum(endian,quantum,p) \
+{ \
+  if (LSBEndian != endian) \
+    { \
+      quantum=(*p++ << 24); \
+      quantum|=(*p++ << 16); \
+      quantum|=(*p++ << 8); \
+      quantum|=(*p++); \
+      p+=4; \
+    } \
+  else \
+    { \
+      p+=4; \
       quantum=(*p++); \
       quantum|=(*p++ << 8); \
       quantum|=(*p++ << 16); \
@@ -1401,7 +1457,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %  may be output as little (LSBEndian), big (MSBEndian), or host native
 %  (NativeEndian) endian values.  This function is quite powerful in that
 %  besides common native CPU type sizes, it can support any integer bit
-%  depth from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
+%  depth from 1 to 32 (e.g. 13), 64-bits as well as 32 and 64-bit float.
 %  
 %
 %  MagickPass is returned if the pixels are successfully transferred,
@@ -1469,7 +1525,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 %  output as little (LSBEndian), big (MSBEndian), or host native
 %  (NativeEndian) endian values.  This function is quite powerful in that
 %  besides common native CPU type sizes, it can support any integer bit depth
-%  from 1 to 32 (e.g. 13) as well as 32 and 64-bit float.
+%  from 1 to 32 (e.g. 13), 64-bits as well as 32 and 64-bit float.
 %  
 %
 %  MagickPass is returned if the pixels are successfully transferred,
@@ -1604,7 +1660,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
   /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
 
   double_scale=(double) (double_maxvalue-double_minvalue)/MaxRGB;
-  if (sample_type != FloatQuantumSampleType)
+  if ((sample_type != FloatQuantumSampleType) && (sample_bits <= 32U))
     {
       /* Maximum value which may be represented by a sample */
       unsigned_maxvalue=MaxValueGivenBits(sample_bits);
@@ -1721,6 +1777,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,*indexes);
+                      indexes++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -1777,6 +1842,17 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       ExportLongQuantum(endian,q,*indexes);
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      indexes++;
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,*indexes);
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       indexes++;
                       p++;
                     }
@@ -2021,6 +2097,48 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  if (image->is_grayscale)
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetGraySample(p)));
+                              p++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGraySample(p)));
+                              p++;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              p++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              p++;
+                            }
+                        }
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -2254,6 +2372,52 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  if (image->is_grayscale)
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetRedSample(p)));
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              p++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              p++;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              p++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              p++;
+                            }
+                        }
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -2387,6 +2551,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      p++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -2492,6 +2665,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
                       p++;
                     }
                   break;
@@ -2605,6 +2787,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      p++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -2708,6 +2899,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       for (x = number_pixels; x != 0; --x)
                         {
                           ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                          indexes++;
+                        }
+                      break;
+                    }
+                  case 64:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                           indexes++;
                         }
                       break;
@@ -2816,6 +3016,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      p++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -2917,6 +3126,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3029,6 +3247,17 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -3150,6 +3379,18 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3283,6 +3524,18 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      p++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -3410,6 +3663,20 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                      indexes++;
+                      p++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                       indexes++;
                       p++;
                     }
@@ -3583,7 +3850,7 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %  be output as little (LSBEndian), big (MSBEndian), or host native
 %  (NativeEndian) endian values.  This function is quite powerful in that
 %  besides common native CPU type sizes, it can support any integer bit
-%  depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.
+%  depth from 1 to 32 (e.g. 13), 64-bits, as well as 32 and 64-bit float.
 %
 %  MagickPass is returned if the pixels are successfully transferred,
 %  otherwise MagickFail.
@@ -3648,7 +3915,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
 %  values may be output as little (LSBEndian), big (MSBEndian), or host
 %  native (NativeEndian) endian values.  This function is quite powerful in
 %  that besides common native CPU type sizes, it can support any integer bit
-%  depth from 1 to 32 (e.g. 13)  as well as 32 and 64-bit float.
+%  depth from 1 to 32 (e.g. 13), 64-bits, as well as 32 and 64-bit float.
 %
 %  MagickPass is returned if the pixels are successfully transferred,
 %  otherwise MagickFail.
@@ -3784,7 +4051,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
   /* Maximum value which may be represented by a sample */
   unsigned_maxvalue=MaxValueGivenBits(sample_bits);
   double_scale=(double) MaxRGB/(double_maxvalue-double_minvalue);
-  if (sample_type != FloatQuantumSampleType)
+  if ((sample_type != FloatQuantumSampleType) && (sample_bits <= 32U))
     {
       if (QuantumDepth == sample_bits)
         {
@@ -3907,6 +4174,17 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,index,p);
+                      VerifyColormapIndex(image,index);
+                      *indexes++=index;
+                      *q++=image->colormap[index];
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -3976,6 +4254,21 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       *q=image->colormap[index];
                       
                       ImportLongQuantum(endian,unsigned_value,p);
+                      SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,index,p);
+                      VerifyColormapIndex(image,index);
+                      *indexes++=index;
+                      *q=image->colormap[index];
+                      
+                      ImportLongLongQuantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -4129,6 +4422,30 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         }
                       break;
                     }
+                  case 64:
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                              SetOpacitySample(q,OpaqueOpacity);
+                              q++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              SetGraySample(q,ScaleLongToQuantum(unsigned_value));
+                              SetOpacitySample(q,OpaqueOpacity);
+                              q++;
+                            }
+                        }
+                      break;
+                    }
                   default:
                     {
                       BitStreamReadHandle
@@ -4224,6 +4541,19 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       for (x = number_pixels; x != 0; --x)
                         {
                           ImportLongQuantum(endian,index,p);
+                          VerifyColormapIndex(image,index);
+                          if (grayscale_miniswhite)
+                            index=(image->colors-1)-index;
+                          *indexes++=index;
+                          *q++=image->colormap[index];
+                        }
+                      break;
+                    }
+                  case 64:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportLongLongQuantum(endian,index,p);
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
                             index=(image->colors-1)-index;
@@ -4379,6 +4709,32 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                               ImportLongQuantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleLongToQuantum(unsigned_value));
                               ImportLongQuantum(endian,unsigned_value,p);
+                              SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                              q++;
+                            }
+                        }
+                      break;
+                    }
+                  case 64:
+                    {
+                      if (grayscale_miniswhite)
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                              q++;
+                            }
+                        }
+                      else
+                        {
+                          for (x = number_pixels; x != 0; --x)
+                            {
+                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              SetGraySample(q,ScaleLongToQuantum(unsigned_value));
+                              ImportLongLongQuantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               q++;
                             }
@@ -4590,6 +4946,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -4691,6 +5057,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -4787,6 +5163,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   for (x = number_pixels; x != 0; --x)
                     {
                       ImportLongQuantum(endian,unsigned_value,p);
+                      SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5093,6 +5479,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -5204,6 +5600,21 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       ImportLongQuantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
                       ImportLongQuantum(endian,unsigned_value,p);
+                      SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                      SetOpacitySample(q,OpaqueOpacity);
+                      q++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
@@ -5349,6 +5760,22 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     }
                   break;
                 }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetRedSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
+                      q++;
+                    }
+                  break;
+                }
               default:
                 {
                   /*
@@ -5489,6 +5916,22 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       ImportLongQuantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
                       ImportLongQuantum(endian,unsigned_value,p);
+                      SetBlackSample(q,unsigned_value);
+                      q++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
                       SetBlackSample(q,unsigned_value);
                       q++;
                     }
@@ -5643,6 +6086,24 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       ImportLongQuantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
                       ImportLongQuantum(endian,unsigned_value,p);
+                      *indexes++=(IndexPacket) MaxRGB-ScaleLongToQuantum(unsigned_value);
+                      q++;
+                    }
+                  break;
+                }
+              case 64:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
+                      ImportLongLongQuantum(endian,unsigned_value,p);
                       *indexes++=(IndexPacket) MaxRGB-ScaleLongToQuantum(unsigned_value);
                       q++;
                     }
