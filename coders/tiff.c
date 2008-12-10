@@ -786,6 +786,10 @@ static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
   
   if (image->colors > 0)
     {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Allocating colormap with %u colors",
+                            image->colors);
+
       /*
         Allocate colormap.
       */
@@ -1619,7 +1623,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #endif
 
       if ((photometric == PHOTOMETRIC_PALETTE) ||
-          ((PHOTOMETRIC_MINISWHITE || PHOTOMETRIC_MINISBLACK) && (1 == bits_per_sample)))
+          ((photometric == PHOTOMETRIC_MINISWHITE ||
+            photometric == PHOTOMETRIC_MINISBLACK) && (1 == bits_per_sample)))
         {
           /*
             Palette image

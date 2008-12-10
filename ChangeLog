@@ -1,3 +1,8 @@
+2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fix bug with reading one bit per
+	sample RGB images.
+
 2008-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix bug with 'ping' mode.
