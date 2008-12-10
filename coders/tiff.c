@@ -3654,9 +3654,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             else
               {
                 /* Clamp maximum unsigned bits per sample to 32 bits */
-                bits_per_sample=Min(bits_per_sample,sizeof(unsigned int)*8);
+                if ((bits_per_sample < 1) ||
+                    ((bits_per_sample > 32) && (bits_per_sample != 64)))
+                bits_per_sample=old_value;
               }
-            if (logging)
+            if ((logging) && (old_value != bits_per_sample))
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "User override (bits-per-sample): %u bits per sample (was %u)",
                                     (unsigned int) bits_per_sample, old_value);
