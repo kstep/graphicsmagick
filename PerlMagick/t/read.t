@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..68\n"; }
+BEGIN { $| = 1; $test=1; print "1..69\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -72,6 +72,10 @@ testReadCompare('input_gray_msb_16bit.fits', 'reference/read/input_gray_msb_16bi
 print("Flexible Image Transport System MSB 32-bit ...\n");
 ++$test;
 testReadCompare('input_gray_msb_32bit.fits', 'reference/read/input_gray_msb_32bit_fits.miff', q//, 0.002, 0.004);
+
+print("Flexible Image Transport System MSB 64-bit ...\n");
+++$test;
+testReadCompare('input_gray_msb_64bit.fits', 'reference/read/input_gray_msb_64bit_fits.miff', q//, 0.002, 0.004);
 
 print("Flexible Image Transport System MSB float ...\n");
 ++$test;
