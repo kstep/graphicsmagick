@@ -3416,7 +3416,7 @@ static void CompositeUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-watermark geometry  percent brightness and saturation of a watermark",
       "-white-point point   chomaticity white point",
-      "-write filename      write images to this file",
+/*       "-write filename      write images to this file", */
       (char *) NULL
     };
 
@@ -5446,7 +5446,7 @@ static void ConvertUsage(void)
       "-white-point point   chomaticity white point",
       "-white-threshold value",
       "                     pixels above the threshold become white",
-      "-write filename      write images to this file",
+/*       "-write filename      write images to this file", */
       (char *) NULL
     };
 
@@ -10206,11 +10206,21 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       {
         if (LocaleCompare("write",option+1) == 0)
           {
-            clone_info=CloneImageInfo(image_info);
-            status&=WriteImages(clone_info,mogrify_images,argv[++i],
-              &mogrify_images->exception);
-            DestroyImageInfo(clone_info);
-            if (*option == '+')
+            /*
+              FIXME: It turns out that -write/+write support is
+              completely broken due to GraphicsMagick reading the
+              input images first, and then applying intermediate
+              commands in order.  If the command line was only
+              executed in the order specified then it would work.
+            */
+            if (option[0] == '-')
+              {
+                clone_info=CloneImageInfo(image_info);
+                status&=WriteImages(clone_info,mogrify_images,argv[++i],
+                                    &mogrify_images->exception);
+                DestroyImageInfo(clone_info);
+              }
+            else if (option[0] == '+')
               {
                 DestroyImageList(mogrify_images);
                 mogrify_images=clone_images;

@@ -1,3 +1,11 @@
+2008-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Removed mention of -write from composite and
+	convert help output since it can't work as specified with current
+	command line architecture.
+	* doc/options.imdoc: Removed documentation for composite and
+	convert since it doesn't work.
+
 2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix bug with reading one bit per

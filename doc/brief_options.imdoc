@@ -764,10 +764,6 @@ detect when image file is modified and redisplay.</abs>
 <opt>-window-group</opt>
 <abs>specify the window group</abs>
 </utils>
-<utils apps=composite,convert>
-<lopt>-write <filename></opt>
-<abs>write  an image sequence [<i>convert, composite</i>]</abs>
-</utils>
 <utils apps=display>
 <lopt>-write <filename></opt>
 <abs>write the image to a file [<i>display</i>]</abs>
