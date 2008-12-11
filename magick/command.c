@@ -2989,7 +2989,7 @@ static void CompositeUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-watermark geometry  percent brightness and saturation of a watermark",
       "-white-point point   chomaticity white point",
-      "-write filename      write images to this file",
+/*       "-write filename      write images to this file", */
       (char *) NULL
     };
 
@@ -5201,7 +5201,7 @@ static void ConvertUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
       "-white-point point   chomaticity white point",
-      "-write filename      write images to this file",
+/*       "-write filename      write images to this file", */
       (char *) NULL
     };
 

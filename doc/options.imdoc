@@ -4844,27 +4844,6 @@ unique colors than the target window colormap allows.  Use
 </utils>
 
 
-
-
-<!-- ------------ -write [convert]----------------------------------- -->
-
-<utils apps=composite,convert>
-<dopt>-write <filename></opt>
-
-<abs>write  an image sequence [<i>convert, composite</i>]</abs>
-
-<pp>
-The image sequence following the <s>-write</s> <i>filename</i>option is
-written out, and then processing continues with the
-same image in its current state if there are additional options.  To
-restore the image to its original state after writing it, use
-the <s>+write</s> <i>filename</i> option.</pp>
-
-</utils>
-
-
-
-
 <!-- ------------ -write [display] ---------------------------------- -->
 
 <utils apps=display>
