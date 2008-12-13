@@ -4705,13 +4705,16 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-write"></a>-write <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write  an image sequence [<em>convert, composite</em>]</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write an intermediate image [<em>convert, composite</em>]</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The image sequence following the <strong>-write</strong> <em>filename</em>option is
-written out, and then processing continues with the
-same image in its current state if there are additional options.  To
-restore the image to its original state after writing it, use
-the <strong>+write</strong> <em>filename</em> option.</font></td></tr></table>
+The current image is written to the specified filename and then
+processing continues using that image. The following is an example of how
+several sizes of an image may be generated in one command (repeat as
+often as needed):</font></td></tr></table>
+<pre>
+    gm convert input.jpg -resize 50% -write input50.jpg
+      -resize 25% input25.jpg
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

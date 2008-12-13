@@ -1,4 +1,4 @@
-.TH gm 1 "2008/11/02" "GraphicsMagick"
+.TH gm 1 "2008/12/12" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3383,13 +3383,15 @@ unique colors than the target window colormap allows.  Use
 \fRspecify the window group
 .TP
 .B "-write \fI<filename>"\fP
-\fRwrite  an image sequence [\fIconvert, composite\fP]
+\fRwrite an intermediate image [\fIconvert, composite\fP]
 
-The image sequence following the \fB-write\fP \fIfilename\fPoption is
-written out, and then processing continues with the
-same image in its current state if there are additional options.  To
-restore the image to its original state after writing it, use
-the \fB+write\fP \fIfilename\fP option.
+The current image is written to the specified filename and then
+processing continues using that image. The following is an example of how
+several sizes of an image may be generated in one command (repeat as
+often as needed):
+
+    gm convert input.jpg -resize 50% -write input50.jpg
+      -resize 25% input25.jpg
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]
@@ -4096,7 +4098,7 @@ Options, above.
 \fRchromaticity white point
 .TP
 .B "-write \fI<filename>"\fP
-\fRwrite  an image sequence [\fIconvert, composite\fP]
+\fRwrite an intermediate image [\fIconvert, composite\fP]
 
 For a more detailed description of each option, see
 Options, above.
@@ -5140,7 +5142,7 @@ Options, above.
 \fRchromaticity white point
 .TP
 .B "-write \fI<filename>"\fP
-\fRwrite  an image sequence [\fIconvert, composite\fP]
+\fRwrite an intermediate image [\fIconvert, composite\fP]
 
 For a more detailed description of each option, see
 Options, above.

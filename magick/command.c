@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004, 2007 GraphicsMagick Group
+% Copyright (C) 2003, 2004, 2007, 2008 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2989,7 +2989,7 @@ static void CompositeUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-watermark geometry  percent brightness and saturation of a watermark",
       "-white-point point   chomaticity white point",
-/*       "-write filename      write images to this file", */
+      "-write filename      write image to this file",
       (char *) NULL
     };
 
@@ -5201,7 +5201,7 @@ static void ConvertUsage(void)
       "                     Constant, Edge, Mirror, or Tile",
       "-wave geometry       alter an image along a sine wave",
       "-white-point point   chomaticity white point",
-/*       "-write filename      write images to this file", */
+      "-write filename      write image to this file",
       (char *) NULL
     };
 
@@ -9853,6 +9853,27 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               &(*image)->chromaticity.white_point.y);
             continue;
           }
+        if (LocaleCompare("write",option+1) == 0)
+          {
+            /*
+              Write current image to specified file.
+            */
+            Image
+              *clone_image;
+
+            ++i;
+            clone_image=CloneImage(*image,0,0,MagickTrue,&(*image)->exception);
+            if (clone_image != (Image *) NULL)
+              {
+                (void) strlcpy(clone_image->filename,argv[i],sizeof(clone_image->filename));
+                (void) WriteImage(clone_info,clone_image);
+                if (clone_info->verbose)
+                  (void) DescribeImage(clone_image,stdout,False);
+                DestroyImage(clone_image);
+                clone_image=(Image *) NULL;
+              }
+            continue;
+          }
         break;
       }
       default:
@@ -9960,12 +9981,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *option;
 
   Image
-    *clone_images,
     *image,
     *mogrify_images;
-
-  ImageInfo
-    *clone_info;
 
 /*   MonitorHandler */
 /*     handler; */
@@ -9986,7 +10003,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert((*images)->signature == MagickSignature);
   if ((argc <= 0) || (*argv == (char *) NULL))
     return(True);
-  clone_images=(Image *) NULL;
   scene=False;
   for (i=0; i < argc; i++)
   {
@@ -9999,12 +10015,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       {
         if (LocaleCompare("scene",option+1) == 0)
           scene=True;
-        break;
-      }
-      case 'w':
-      {
-        if (LocaleCompare("+write",option) == 0)
-          clone_images=CloneImageList(*images,&(*images)->exception);
         break;
       }
       default:
@@ -10213,23 +10223,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
               }
             MagickFreeMemory(token);
             continue;
-          }
-        break;
-      }
-      case 'w':
-      {
-        if (LocaleCompare("write",option+1) == 0)
-          {
-            clone_info=CloneImageInfo(image_info);
-            status&=WriteImages(clone_info,mogrify_images,argv[++i],
-              &mogrify_images->exception);
-            DestroyImageInfo(clone_info);
-            if (*option == '+')
-              {
-                DestroyImageList(mogrify_images);
-                mogrify_images=clone_images;
-              }
-            break;
           }
         break;
       }
