@@ -1,3 +1,10 @@
+2008-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): The -write option was not
+	implemented in a useful fashion and the +write option never worked
+	at all.  Re-implement -write and eliminate +write from the
+	documentation since +write is not needed.
+
 2008-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Removed mention of -write from composite and

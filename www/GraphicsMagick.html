@@ -4998,6 +4998,26 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-write"></a>-write <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write an intermediate image [<em>convert, composite</em>]</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The current image is written to the specified filename and then
+processing continues using that image. The following is an example of how
+several sizes of an image may be generated in one command (repeat as
+often as needed):</font></td></tr></table>
+<pre>
+    gm convert input.jpg -resize 50% -write input50.jpg
+      -resize 25% input25.jpg
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a name="details-write"></a>-write <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file [<em>display</em>]</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If <em>filename</em> already exists, you will be prompted as to whether it should

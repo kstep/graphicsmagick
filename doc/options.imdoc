@@ -5162,6 +5162,33 @@ unique colors than the target window colormap allows.  Use
 </utils>
 
 
+
+
+<!-- ------------ -write [convert]----------------------------------- -->
+
+<utils apps=composite,convert>
+<dopt>-write <filename></opt>
+
+<abs>write an intermediate image [<i>convert, composite</i>]</abs>
+
+<pp>
+The current image is written to the specified filename and then
+processing continues using that image. The following is an example of how
+several sizes of an image may be generated in one command (repeat as
+often as needed):</pp>
+
+<pre>
+    convert input.jpg -resize 50% -write input50.jpg
+      -resize 25% input25.jpg
+</pre>
+
+
+</utils>
+
+
+
+
+
 <!-- ------------ -write [display] ---------------------------------- -->
 
 <utils apps=display>
