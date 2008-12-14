@@ -3272,16 +3272,17 @@ result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
 <strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>, <strong>LShift</strong>,
-<strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>,
-<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
-<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
-<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
-<strong>Noise-Poisson</strong>, and <strong>Noise-Uniform</strong>.</font></td></tr></table>
+<strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>, <strong>Or</strong>,
+<strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Threshold</strong>,
+<strong>Threshold-White</strong>, <strong>Threshold-Black</strong>, <strong>Xor</strong>,
+<strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
+<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>, and
+<strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
 supported by the GraphicsMagick build (255, 65535, or 4294967295) but
-values outside this range may be useful for some arithmetic operations.
+values outside this range are useful for some arithmetic operations.
 Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (<strong>%</strong>) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.</font></td></tr></table>
@@ -3310,6 +3311,15 @@ stored in the specified number of bits without additional loss.
 <dt>LShift</dt>
 <dd>Result is channel value bitwise left shifted by rvalue bits.
 </dd>
+<dt>Log</dt>
+<dd>Result is computed as log(value*rvalue+1)/log(rvalue+1).
+</dd>
+<dt>Max</dt>
+<dd>Result is assigned to rvalue if rvalue is greater than value.
+</dd>
+<dt>Min</dt>
+<dd>Result is assigned to rvalue if rvalue is less than value.
+</dd>
 <dt>Multiply</dt>
 <dd>Result is channel value multiplied by rvalue.
 </dd>
@@ -3320,6 +3330,10 @@ results in the original image.
 </dd>
 <dt>Or</dt>
 <dd>Result is the logical OR of rvalue with channel value.
+</dd>
+<dt>Pow</dt>
+<dd>Result is computed as pow(value,rvalue). Similar to Gamma except that
+rvalue is not inverted.
 </dd>
 <dt>RShift</dt>
 <dd>Result is channel value bitwise right shifted by rvalue bits.
