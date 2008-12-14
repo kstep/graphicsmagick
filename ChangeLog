@@ -1,17 +1,23 @@
+2008-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage, WriteTIFFImage) Support reading
+	and writing 64-bit integer TIFF.
+	* magick/constitute.c (ImportViewPixelArea): Add support for
+	importing 64-bit integer values.
+	(ImportViewPixelArea): Add support for exporting 64-bit integer
+	values.
+	* magick/operator.h (enum QuantumOperator): Added LogQuantumOp,
+	MaxQuantumOp, MinQuantumOp, and PowQuantumOp enumerations as well
+	as "Log", "Max", "Min", and "Pow" options to -operator.
+	* coders/fits.c: Incorporated Fojtik Jaroslav's updates to support
+	64-bit integer FITS.
+
 2008-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): The -write option was not
 	implemented in a useful fashion and the +write option never worked
 	at all.  Re-implement -write and eliminate +write from the
 	documentation since +write is not needed.
-
-2008-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* magick/command.c: Removed mention of -write from composite and
-	convert help output since it can't work as specified with current
-	command line architecture.
-	* doc/options.imdoc: Removed documentation for composite and
-	convert since it doesn't work.
 
 2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

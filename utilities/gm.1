@@ -1,4 +1,4 @@
-.TH gm 1 "2008/12/12" "GraphicsMagick"
+.TH gm 1 "2008/12/14" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2522,16 +2522,17 @@ result is a gray image.
 
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
 \fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBNegate\fP, \fBLShift\fP,
-\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP,
-\fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
-\fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
-\fBNoise-Laplacian\fP, \fBNoise-Multiplicative\fP,
-\fBNoise-Poisson\fP, and \fBNoise-Uniform\fP.
+\fBLog\fP, \fBMax\fP, \fBMin\fP, \fBMultiply\fP, \fBOr\fP,
+\fBPow\fP \fBRShift\fP, \fBSubtract\fP, \fBThreshold\fP,
+\fBThreshold-White\fP, \fBThreshold-Black\fP, \fBXor\fP,
+\fBNoise-Gaussian\fP, \fBNoise-Impulse\fP, \fBNoise-Laplacian\fP,
+\fBNoise-Multiplicative\fP, \fBNoise-Poisson\fP, and
+\fBNoise-Uniform\fP.
 
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
 supported by the GraphicsMagick build (255, 65535, or 4294967295) but
-values outside this range may be useful for some arithmetic operations.
+values outside this range are useful for some arithmetic operations.
 Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (\fB%\fP) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.
@@ -2597,6 +2598,30 @@ Result is channel value bitwise left shifted by rvalue bits.
 
 .in 15
 .in 15
+.B "Log"
+.in 20
+ \fR
+.in 20
+Result is computed as log(value*rvalue+1)/log(rvalue+1).
+
+.in 15
+.in 15
+.B "Max"
+.in 20
+ \fR
+.in 20
+Result is assigned to rvalue if rvalue is greater than value.
+
+.in 15
+.in 15
+.B "Min"
+.in 20
+ \fR
+.in 20
+Result is assigned to rvalue if rvalue is less than value.
+
+.in 15
+.in 15
 .B "Multiply"
 .in 20
  \fR
@@ -2620,6 +2645,15 @@ results in the original image.
  \fR
 .in 20
 Result is the logical OR of rvalue with channel value.
+
+.in 15
+.in 15
+.B "Pow"
+.in 20
+ \fR
+.in 20
+Result is computed as pow(value,rvalue). Similar to Gamma except that
+rvalue is not inverted.
 
 .in 15
 .in 15

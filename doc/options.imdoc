@@ -3248,16 +3248,17 @@ result is a gray image.</pp>
 <pp>
 Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
 <s>Depth</s>, <s>Divide</s>, <s>Gamma</s>, <s>Negate</s>, <s>LShift</s>,
-<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>,
-<s>Threshold</s>, <s>Threshold-White</s>, <s>Threshold-Black</s>,
-<s>Xor</s>, <s>Noise-Gaussian</s>, <s>Noise-Impulse</s>,
-<s>Noise-Laplacian</s>, <s>Noise-Multiplicative</s>,
-<s>Noise-Poisson</s>, and <s>Noise-Uniform</s>.</pp>
+<s>Log</s>, <s>Max</s>, <s>Min</s>, <s>Multiply</s>, <s>Or</s>,
+<s>Pow</s> <s>RShift</s>, <s>Subtract</s>, <s>Threshold</s>,
+<s>Threshold-White</s>, <s>Threshold-Black</s>, <s>Xor</s>,
+<s>Noise-Gaussian</s>, <s>Noise-Impulse</s>, <s>Noise-Laplacian</s>,
+<s>Noise-Multiplicative</s>, <s>Noise-Poisson</s>, and
+<s>Noise-Uniform</s>.</pp>
 <pp>
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
 supported by the GraphicsMagick build (255, 65535, or 4294967295) but
-values outside this range may be useful for some arithmetic operations.
+values outside this range are useful for some arithmetic operations.
 Arguments to logical or bit-wise operations are rounded to a positive
 integral value prior to use. If a percent (<s>%</s>) symbol is appended
 to the argument, then the argument has a range of 0 to 100 percent.</pp>
@@ -3293,6 +3294,18 @@ stored in the specified number of bits without additional loss.
 <dd>Result is channel value bitwise left shifted by rvalue bits.
 </dd>
 
+<dt>Log</dt>
+<dd>Result is computed as log(value*rvalue+1)/log(rvalue+1).
+</dd>
+
+<dt>Max</dt>
+<dd>Result is assigned to rvalue if rvalue is greater than value.
+</dd>
+
+<dt>Min</dt>
+<dd>Result is assigned to rvalue if rvalue is less than value.
+</dd>
+
 <dt>Multiply</dt>
 <dd>Result is channel value multiplied by rvalue.
 </dd>
@@ -3305,6 +3318,11 @@ results in the original image.
 
 <dt>Or</dt>
 <dd>Result is the logical OR of rvalue with channel value.
+</dd>
+
+<dt>Pow</dt>
+<dd>Result is computed as pow(value,rvalue). Similar to Gamma except that
+rvalue is not inverted.
 </dd>
 
 <dt>RShift</dt>
