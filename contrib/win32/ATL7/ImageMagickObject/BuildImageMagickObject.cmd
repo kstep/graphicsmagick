@@ -74,14 +74,14 @@ if {%1}=={debug} (
     (@echo Problem - the lib subdirectory of VisualMagick is missing important libraries)
     goto :EOF
   )
-  cl /LDd /EHsc /I%PATH_TO_ROOT%\ /Zi /D_DEBUG /MTd ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_DB_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_DB_*.lib ImageMagickObject.def winmm.lib dxguid.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
+  cl /LDd /EHsc /I%PATH_TO_ROOT%\ /Zi /D_DEBUG /MTd ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_DB_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_DB_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
 )
 if {%1}=={release} (
   if not exist %PATH_TO_MAGICK%\lib\CORE_RL_magick_.lib (
     (@echo Problem - the lib subdirectory of VisualMagick is missing important libraries)
     goto :EOF
   )
-  cl /LD /EHsc /I%PATH_TO_ROOT%\ /Zi /MT ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_RL_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_RL_*.lib ImageMagickObject.def winmm.lib dxguid.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
+  cl /LD /EHsc /I%PATH_TO_ROOT%\ /Zi /MT ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_RL_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_RL_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
 )
 if not exist ImageMagickObject.dll (
   (@echo Problem - the ImageMagickObject DLL is missing. It did not build correctly)
