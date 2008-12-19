@@ -435,14 +435,18 @@ MagickExport void InitializeMagickResources(void)
         MEMORYSTATUSEX
           stat_ex;
 
+		(void) memset(&stat_ex,0,sizeof(stat_ex));
+		stat_ex.dwLength=sizeof(stat_ex);
         if (GlobalMemoryStatusEx(&stat_ex))
           {
             total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576UL);
             total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576UL);
-            (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                                  "GlobalMemoryStatusEx: Total physical memory %ld MB, Total virtual memory %ld MB",
-                                  total_physical_memory, total_virtual_memory);
           }
+		else
+		{
+            (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                  "GlobalMemoryStatusEx() call failed! (error %ld)",GetLastError());
+		}
       }
 #endif
 
@@ -454,16 +458,24 @@ MagickExport void InitializeMagickResources(void)
       GlobalMemoryStatus(&stat);
       total_physical_memory=stat.dwTotalPhys/1048576;
       total_virtual_memory=stat.dwTotalVirtual/1048576;
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-                            "GlobalMemoryStatus: Total physical memory %ld MB, Total virtual memory %ld MB",
-                            total_physical_memory, total_virtual_memory);
     }
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                          "Total physical memory %ld MB, Total virtual memory %ld MB",
+                          total_physical_memory, total_virtual_memory);
 
-    if (total_virtual_memory > 3*total_physical_memory)
-      max_memory=2*total_physical_memory;
-    else
-      max_memory=(long)(0.7*total_virtual_memory);
-    max_map=(long)(total_physical_memory);
+	max_memory=Min(total_physical_memory,total_virtual_memory);
+	/*
+      We will default to using at most 80% of available memory for image data.
+	*/
+    max_memory=(long)(0.8*max_memory);
+	/*
+	  Use the maximum memory as our default memory map limit.  Memory
+	  mapping files larger than available RAM can cause VM thrashing.  This implies
+	  that memory mapping won't get used much.  However, it is possible
+	  for heap memory allocations to fail (due to heap fragmentation) whereas
+	  memory mapping still succeeds.
+	*/
+    max_map=max_memory;
 
     /*
       Windows lowio level supports up to 2048 open files.
