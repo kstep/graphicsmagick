@@ -439,6 +439,9 @@ MagickExport void InitializeMagickResources(void)
           {
             total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576UL);
             total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576UL);
+            (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                                  "GlobalMemoryStatusEx: Total physical memory %ld MB, Total virtual memory %ld MB",
+                                  total_physical_memory, total_virtual_memory);
           }
       }
 #endif
@@ -451,16 +454,16 @@ MagickExport void InitializeMagickResources(void)
       GlobalMemoryStatus(&stat);
       total_physical_memory=stat.dwTotalPhys/1048576;
       total_virtual_memory=stat.dwTotalVirtual/1048576;
+      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                            "GlobalMemoryStatus: Total physical memory %ld MB, Total virtual memory %ld MB",
+                            total_physical_memory, total_virtual_memory);
     }
 
     if (total_virtual_memory > 3*total_physical_memory)
       max_memory=2*total_physical_memory;
     else
       max_memory=(long)(0.7*total_virtual_memory);
-    max_map=(long)(8*total_physical_memory);
-    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-      "Total physical memory %ld MB, Total virtual memory %ld MB",
-        total_physical_memory, total_virtual_memory);
+    max_map=(long)(total_physical_memory);
 
     /*
       Windows lowio level supports up to 2048 open files.
