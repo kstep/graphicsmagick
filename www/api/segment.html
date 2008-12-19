@@ -84,10 +84,6 @@ unsigned int SegmentImage( <a class="reference" href="types.html#image">Image</a
                            const double smoothing_threshold );
 </pre>
 <dl class="docutils">
-<dt>colors:</dt>
-<dd>The SegmentImage function returns this integer
-value.  It is the actual number of colors allocated in the
-colormap.</dd>
 <dt>image:</dt>
 <dd>Specifies a pointer to an Image structure;  returned from
 ReadImage.</dd>
@@ -100,13 +96,23 @@ reduction.</dd>
 <dt>verbose:</dt>
 <dd>A value greater than zero prints detailed information about
 the identified classes.</dd>
+<dt>cluster_threshold:</dt>
+<dd>The minimum number of total pixels contained
+in a hexahedra before it can be considered valid (expressed as a
+percentage of total pixels).  This is used to eliminate seldom
+used colors.</dd>
+<dt>smoothing_threshold:</dt>
+<dd>If the absolute value of a second derivative
+point is less than smoothing_threshold then that derivative point
+is ignored (i.e. set to 0) while evaluating zero crossings.  This
+causes small variations (could be noise) to be ignored.</dd>
 </dl>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-12-07 03:59 UTC.
+Generated on: 2008-12-15 22:13 UTC.
 
 </div>
 </body>
