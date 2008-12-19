@@ -1390,7 +1390,7 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 MagickExport MagickBool NTKernelAPISupported(const char *name)
 {
   return (GetProcAddress(GetModuleHandle("kernel32.dll"),name) == NULL ?
-	MagickFalse : MagickTrue);
+          MagickFalse : MagickTrue);
 }
 
 /*
