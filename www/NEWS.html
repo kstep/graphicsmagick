@@ -52,7 +52,7 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on December 9, 2008</p>
+<p>This file was last updated on December 20, 2008</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -87,6 +87,16 @@ convolution kernels may now be specified from the command line.</li>
 <li>PREVIEW: Solarize parameter was wrong.</li>
 <li>Delegates previously using 'spawn' needed an ampersand so that
 starting the child process does not hang the GUI.</li>
+<li>TIFF: Fix problem with reading one bit per sample RGB images.</li>
+<li>-write now works usefully as documented.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>Support reading/writing 16 and 24 bit float TIFF files.</li>
+<li>Support reading/writing 64 bit integer TIFF files.</li>
+<li>Added &quot;Log&quot;, &quot;Max&quot;, &quot;Min&quot;, and &quot;Pow&quot; options to -operator.</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -980,7 +990,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-12-09 17:52 UTC.
+Generated on: 2008-12-20 17:17 UTC.
 
 </div>
 </body>

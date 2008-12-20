@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 9, 2008
+This file was last updated on December 20, 2008
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -45,6 +45,18 @@ Bug fixes:
 
   * Delegates previously using 'spawn' needed an ampersand so that
     starting the child process does not hang the GUI.
+
+  * TIFF: Fix problem with reading one bit per sample RGB images.
+
+  * -write now works usefully as documented.
+
+New Features:
+
+  * Support reading/writing 16 and 24 bit float TIFF files.
+
+  * Support reading/writing 64 bit integer TIFF files.
+
+  * Added "Log", "Max", "Min", and "Pow" options to -operator.
 
 Feature improvements:
 

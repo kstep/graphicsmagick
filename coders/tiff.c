@@ -3647,8 +3647,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   If floating point is selected, ensure that valid
                   bits-per-sample values are specified.
                 */
-                
-                if ((bits_per_sample != 32) && (bits_per_sample != 64))
+                if ((bits_per_sample != 16) &&
+                    (bits_per_sample != 24) &&
+                    (bits_per_sample != 32) &&
+                    (bits_per_sample != 64))
                   bits_per_sample=32;
               }
             else

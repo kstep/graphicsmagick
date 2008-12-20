@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2008-12-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resource.c (InitializeMagickResources): Improve resource
+        estimation for Microsoft Windows systems with large memory.
+  <LI> magick/segment.c: Added some code to dump histograms with
+        '-verbose -verbose'.<BR>
+  <LI> coders/tiff.c: Support reading/writing 16 and 24 bit float TIFF
+        files.<BR>
+  <LI> magick/constitute.c (ExportViewPixelArea): Support exporting 16
+        and 24 bit short floats.  Relies on code developed for
+        GraphicsMagick by Richard Nolde.
+        (ImportViewPixelArea): Support importing 16 and 24 bit short
+        floats.  Relies on code developed for GraphicsMagick by Richard
+        Nolde.
+
+</UL>
+<p>
 2008-12-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
