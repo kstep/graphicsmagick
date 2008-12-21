@@ -167,17 +167,17 @@ need Ghostscript (see below).</p>
 <blockquote>
 <p><a class="reference" href="http://www.cybercom.net/~dcoffin/dcraw/">http://www.cybercom.net/~dcoffin/dcraw/</a></p>
 </blockquote>
-<p>to read raw images from digital cameras.  Use similar to:</p>
-<pre class="literal-block">
-gm convert dcraw:infile outfile
-</pre>
+<p>to read raw images from digital cameras.  Dcraw is invoked
+automatically when used to read files using a common RAW file format
+extension.</p>
 </li>
 <li><p class="first">GraphicsMagick requires 'fig2dev' provided in the transfig package
 from</p>
 <blockquote>
 <p><a class="reference" href="http://www.xfig.org/">http://www.xfig.org/</a></p>
 </blockquote>
-<p>to read the Fig image format.</p>
+<p>to read the Fig image format. Ghostscript (see below) is also
+required.</p>
 </li>
 <li><p class="first">GraphicsMagick requires the FreeType software, version 2.0 or above,
 available as</p>
@@ -227,7 +227,8 @@ compatibility with some Postscript files).</p>
 <p><a class="reference" href="http://www.gnu.org/software/hp2xx/hp2xx.html">http://www.gnu.org/software/hp2xx/hp2xx.html</a></p>
 </blockquote>
 <p>to read the HP-GL image format. Note that HPGL is a plotter file
-format. HP printers usually accept PCL format rather than HPGL format.</p>
+format. HP printers usually accept PCL format rather than HPGL
+format.  Ghostscript (see above) is also required.</p>
 </li>
 <li><p class="first">GraphicsMagick requires the LCMS library available from</p>
 <blockquote>
@@ -239,13 +240,21 @@ format. HP printers usually accept PCL format rather than HPGL format.</p>
 <blockquote>
 <p><a class="reference" href="http://gnuplot.sourceforge.net/">http://gnuplot.sourceforge.net/</a></p>
 </blockquote>
-<p>to read GNUPLOT plot files (with extension gplt).</p>
+<p>to read GNUPLOT plot files (with extension gplt).  Ghostscript (see
+above) is also required.</p>
+</li>
+<li><p class="first">GraphicsMagick requires Graphviz available from</p>
+<blockquote>
+<p><a class="reference" href="http://www.graphviz.org/">http://www.graphviz.org/</a></p>
+</blockquote>
+<p>to read Graphvis 'dot' digraph files (with extension dot).
+Ghostscript (see above) is also required.</p>
 </li>
 <li><p class="first">GraphicsMagick requires html2ps available from</p>
 <blockquote>
 <p><a class="reference" href="http://user.it.uu.se/~jan/html2ps.html">http://user.it.uu.se/~jan/html2ps.html</a></p>
 </blockquote>
-<p>to rasterize HTML files.</p>
+<p>to rasterize HTML files.  Ghostscript (see above) is also required.</p>
 </li>
 <li><p class="first">GraphicsMagick requires the JBIG-Kit software available via
 HTTP from</p>
@@ -432,7 +441,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2008-12-21 19:26 UTC.
 
 </div>
 </body>
