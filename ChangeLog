@@ -1,3 +1,11 @@
+2008-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/body.isx: They say that when in Rome
+	you should do as the Roman's do.  Based on this philosophy, all of
+	the coder and filter DLLs are now installed to the same directory
+	as the executables and DLLs which depend on them.  This eases
+	operation under Windows Vista.
+
 2008-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: First pass at supporting large file access under
