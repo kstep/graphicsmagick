@@ -1,3 +1,8 @@
+2008-12-28  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Ability to read extension blocks.
+	* coders/fits.c: Fixed MaxTextExtent limitation of blocks.
+
 2008-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/OpenMP.rst: Add results for Window Vista 64-bit / AMD Phenom
