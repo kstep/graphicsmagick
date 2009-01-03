@@ -21,6 +21,8 @@ an article about the PHP front-end to ImageMagick.
 
 `FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
+`GraphicsMagick on MinGW <http://ascendwiki.cheme.cmu.edu/Building_GraphicsMagick_on_MinGW>`_.
+
 
 ImageMagick/GraphicsMagick Vulnerabilities
 =============================================
@@ -45,6 +47,17 @@ __ Secunia_GraphicsMagick_
 .. _Secunia_ImageMagick : http://secunia.com/search/?search=ImageMagick
 
 __ Secunia_ImageMagick_
+
+Seach SecurityFocus Bugtraq for `GraphicsMagick`__ or `ImageMagick`__ vulnerabilities.
+
+__ Bugtraq_GraphicsMagick_
+
+.. _Bugtraq_GraphicsMagick : http://www.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
+
+__ Bugtraq_ImageMagick_
+
+.. _Bugtraq_ImageMagick : http://www.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=ImageMagick&x=0&y=0
+
 
 Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=GraphicsMagick&amp;searchon=names&amp;suite=all&amp;section=main>`_.
 

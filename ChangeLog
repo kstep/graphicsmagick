@@ -1,3 +1,22 @@
+2009-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Produce sprintf scaling strings for
+	platform-specific types.
+
+	* magick/magick_types.h.in: Include sprintf scaling strings for
+	platform-specific types.
+
+	* magick/constitute.c (WriteImage): If output stream is not
+	seekable and coder needs to use seek, then divert output to
+	temporary file, and then send file to stream.
+
+	* magick/blob.c (GetBlobSize): Simplify implementation.
+	(OpenBlob): Don't attempt to test header magic on file we are
+	writing.  Silly benign bug in obtuse code.
+
+	* coders/tiff.c (ReadTIFFImage,WriteTIFFImage): Strip out use of
+	temporary file.  Use TIFFClientOpen() for writing.
+
 2008-12-28  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c: Ability to read extension blocks.

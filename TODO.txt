@@ -6,9 +6,10 @@ See website for "wish list".
 For GM 1.4
 ===========
 
-* Look into use of _fstat64(), _fseeki64(), _ftelli64(), with the
-  __stat64 struct in order to support reading/writing large files
-  under Windows.
+* Update Windows libtiff to 4.0 Beta2
+
+* -random-threshold needs to have gamma 2.2 pre-applied to the pixels
+  for correct appearance.
 
 For Future
 ==========
