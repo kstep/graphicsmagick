@@ -1,3 +1,8 @@
+2009-01-04  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Fixed bug in scene count in extension block.
+	* coders/fits.c: Supported logging.
+
 2009-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Produce sprintf scaling strings for
