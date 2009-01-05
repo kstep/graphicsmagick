@@ -14548,7 +14548,12 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   PrintFeature("Thread Safe", supported);
 
   /* Large File Support */
-  supported=(sizeof(off_t) > 4);
+  {
+    MagickStatStruct_t
+      attributes;
+
+    supported=(sizeof(attributes.st_size) > 4);
+  }
   PrintFeature("Large Files (> 32 bit)", supported);
 
   /* Large Memory Support */

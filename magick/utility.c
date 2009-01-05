@@ -2869,12 +2869,12 @@ MagickExport MagickBool IsAccessibleAndNotEmpty(const char *path)
   int
     status;
 
-  struct stat
+  MagickStatStruct_t
     file_info;
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
-  status=stat(path,&file_info);
+  status=MagickStat(path,&file_info);
 
   if ((status == 0) && S_ISREG(file_info.st_mode) && (file_info.st_size > 0))
     return (MagickTrue);
@@ -2912,13 +2912,13 @@ MagickExport MagickBool IsAccessibleAndNotEmpty(const char *path)
 */
 static int IsDirectory(const char *path)
 {
-  struct stat
+  MagickStatStruct_t
     file_info;
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(False);
 
-  if ((stat(path,&file_info)) == 0)
+  if ((MagickStat(path,&file_info)) == 0)
     {
       if (S_ISREG(file_info.st_mode))
         return 0;

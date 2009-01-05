@@ -439,11 +439,13 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickFstat(fildes,stat_buff) _fstati64(fildes,/* struct _stati64 */ stat_buff)
 #  define MagickFtell(stream) /* __int64 */ _ftelli64(stream)
 #  define MagickStatStruct_t struct _stati64
+#  define MagickStat(path,stat_buff) _stati64(path,/* struct _stati64 */ stat_buff)
 #else
 #  define MagickFseek(stream,offset,whence) fseek(stream,offset,whence)
 #  define MagickFstat(fildes,stat_buff) fstat(fildes,stat_buff)
 #  define MagickFtell(stream) ftell(stream)
 #  define MagickStatStruct_t struct stat
+#  define MagickStat(path,stat_buff) stat(path,stat_buff)
 #endif
 
 #if !defined(HAVE_POPEN) && defined(HAVE__POPEN)

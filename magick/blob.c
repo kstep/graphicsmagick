@@ -1359,6 +1359,9 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 */
 MagickExport magick_off_t GetBlobSize(const Image *image)
 {
+  MagickStatStruct_t
+    attributes;
+
   magick_off_t
     offset;
 
@@ -1372,18 +1375,20 @@ MagickExport magick_off_t GetBlobSize(const Image *image)
     case UndefinedStream:
       offset=image->blob->size;
       break;
+    case FileStream:
+      {
+	offset=(MagickFstat(fileno(image->blob->file),&attributes) < 0 ? 0 :
+		attributes.st_size);
+	break;
+      }
     case StandardStream:
     case PipeStream:
       break;
-    case FileStream:
     case ZipStream:
     case BZipStream:
       {
-	MagickStatStruct_t
-	  attributes;
-
-	offset=MagickFstat(fileno(image->blob->file),&attributes) < 0 ? 0 :
-	  attributes.st_size;
+	offset=(MagickStat(image->filename,&attributes) < 0 ? 0 :
+		attributes.st_size);
 	break;
       }
     case BlobStream:

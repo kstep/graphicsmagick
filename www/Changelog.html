@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2009-01-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (GetBlobSize): It seems that under Windows, the
+        zip stream is not usable as a file handle.  Switch back to using
+        stat instead, but use _stati64 if available.
+
+</UL>
+<p>
+2009-01-04  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/fits.c: Fixed bug in scene count in extension block.
+  <LI> coders/fits.c: Supported logging.
+
+</UL>
+<p>
 2009-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

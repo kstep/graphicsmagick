@@ -1429,19 +1429,19 @@ SMaxSampleValue tag is not present, it may be necessary to
 (intelligently) use this parameter to properly read a file.
 </dd>
 <dt>tiff:min-sample-value=&lt;value&gt;</dt>
-<dd>If the tiff:min-sample-value key is defined, GraphicsMagick will use the
-assigned value as the minimum floating point value while reading or
+<dd>If the tiff:min-sample-value key is defined, GraphicsMagick will use
+the assigned value as the minimum floating point value while reading or
 writing IEEE floating point TIFFs. Otherwise the minimum value is 0.0 or
 the value obtained from the file's SMinSampleValue tag (if present).
 </dd>
 <dt>tiff:bits-per-sample=&lt;value&gt;</dt>
 <dd>If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 images with the specified bits per sample, overriding any existing depth
-value. The range of the value is 1 to 32 when the default 'unsigned'
-format is written, or 32/64 if IEEEFP format is written. Please note that
-the baseline TIFF 6.0 specification only requires readers to handle
-certain powers of two, and the values to be handled depend on the nature
-of the image (e.g. colormapped, grayscale, RGB, CMYK).
+value. Value may be any in the range of 1 to 32, or 64 when the default
+'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
+Please note that the baseline TIFF 6.0 specification only requires
+readers to handle certain powers of two, and the values to be handled
+depend on the nature of the image (e.g. colormapped, grayscale, RGB, CMYK).
 </dd>
 <dt>tiff:samples-per-pixel=&lt;value&gt;</dt>
 <dd>If the tiff:samples-per-pixel key is defined to a value, the TIFF coder
