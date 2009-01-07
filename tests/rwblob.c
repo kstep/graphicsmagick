@@ -345,7 +345,11 @@ int main ( int argc, char **argv )
   if (final)
     DestroyImageList( final );
   final = (Image*)NULL;
+  if (blob)
+    MagickFree(blob);
+  blob=0;
 
+  DestroyExceptionInfo(&exception);
   DestroyImageInfo( imageInfo );
   DestroyMagick();
 

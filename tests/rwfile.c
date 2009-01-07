@@ -327,6 +327,7 @@ int main ( int argc, char **argv )
     DestroyImageList( final );
   final = (Image*)NULL;
 
+  DestroyExceptionInfo(&exception);
   DestroyImageInfo( imageInfo );
   DestroyMagick();
 
