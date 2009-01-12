@@ -14735,22 +14735,17 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 
 #if defined(_VISUALC_)
 
-  (void) fprintf(stdout,"\nWindows Build Parameters:\n");
+  (void) fprintf(stdout,"\nWindows Build Parameters:\n\n");
 
 #  if defined(_MSC_VER)
-  (void) fprintf(stdout,"  MSVC Version    %s\n", _MSC_VER);
+  (void) fprintf(stdout,"  MSVC Version:            %d\n", _MSC_VER);
 #  endif /* defined(_MSC_VER) */
-
-#  if defined(__CLR_VER)
-  (void) fprintf(stdout,"  CLR Version     %s\n", __CLR_VER);
-#  endif /* defined(__CLR_VER) */
 
 #  if defined(_M_IX86)
   {
     const char
       *processor_target = "";
 
-    (void) strlcpy(processor_target,"80386",sizeof(processor_target));
     if (_M_IX86 >= 600)
       processor_target="Pentium Pro, Pentium II, and Pentium III";
     else if (_M_IX86 >= 500)
@@ -14760,8 +14755,8 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
     else if (_M_IX86 >= 300)
       processor_target="80386";
 
-    if (strlen(processor_target[0]) > 0)
-      (void) fprintf(stdout,"  Processor target %s\n", processor_target);
+    if (strlen(processor_target) > 0)
+      (void) fprintf(stdout,"  Processor target:        %s\n", processor_target);
   }
 #  endif /* defined(_M_IX86) */
 
