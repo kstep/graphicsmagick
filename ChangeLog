@@ -1,3 +1,8 @@
+2009-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (VersionCommand): Print some build information
+	for MSVC builds.
+
 2009-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (GetBlobSize): It seems that under Windows, the

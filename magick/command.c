@@ -14526,8 +14526,8 @@ static void PrintFeature(const char* feature,MagickBool support)
   PrintFeatureTextual(feature,support, NULL);
 }
 static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
-  int ARGUNUSED(argc),char **ARGUNUSED(argv),char **ARGUNUSED(metadata),
-  ExceptionInfo *ARGUNUSED(exception))
+				   int ARGUNUSED(argc),char **ARGUNUSED(argv),char **ARGUNUSED(metadata),
+				   ExceptionInfo *ARGUNUSED(exception))
 {
   MagickBool
     supported;
@@ -14732,6 +14732,40 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #if defined(GM_BUILD_LIBS)
   (void) fprintf(stdout,"  LIBS     = %.1024s\n", GM_BUILD_LIBS);
 #endif /* defined(GM_BUILD_LIBS) */
+
+#if defined(_VISUALC_)
+
+  (void) fprintf(stdout,"\nWindows Build Parameters:\n");
+
+#  if defined(_MSC_VER)
+  (void) fprintf(stdout,"  MSVC Version    %s\n", _MSC_VER);
+#  endif /* defined(_MSC_VER) */
+
+#  if defined(__CLR_VER)
+  (void) fprintf(stdout,"  CLR Version     %s\n", __CLR_VER);
+#  endif /* defined(__CLR_VER) */
+
+#  if defined(_M_IX86)
+  {
+    const char
+      *processor_target = "";
+
+    (void) strlcpy(processor_target,"80386",sizeof(processor_target));
+    if (_M_IX86 >= 600)
+      processor_target="Pentium Pro, Pentium II, and Pentium III";
+    else if (_M_IX86 >= 500)
+      processor_target="Pentium";
+    else if (_M_IX86 >= 400)
+      processor_target="80486";
+    else if (_M_IX86 >= 300)
+      processor_target="80386";
+
+    if (strlen(processor_target[0]) > 0)
+      (void) fprintf(stdout,"  Processor target %s\n", processor_target);
+  }
+#  endif /* defined(_M_IX86) */
+
+#endif /* defined(_VISUALC_) */
 
   return True;
 }
