@@ -1,5 +1,8 @@
 2009-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c: Update Richard Nolde's float 16 and 24
+	functions.
+
 	* magick/command.c (VersionCommand): Print some build information
 	for MSVC builds.
 
