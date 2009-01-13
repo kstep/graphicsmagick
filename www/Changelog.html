@@ -24,6 +24,10 @@
 2009-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/colorspace.c (XYZTransformPackets): Fix arithmetic
+        overflow problem noticed for Q32 build when using GCC on
+        big-endian systems.
+
   <LI> magick/constitute.c: Update Richard Nolde's float 16 and 24
         functions.
 
