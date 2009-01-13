@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 20, 2008
+This file was last updated on January 13, 2009
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -17,7 +17,15 @@ ChangeLog file for full details.
 1.4 (not yet released)
 ======================
 
+Security Fixes:
+
+  * None.
+
 Bug fixes:
+
+  * Now runs under Windows Vista (as a 32-bit application).
+
+  * Fix for colorspace transform math overflow in Q32 build.
 
   * RPM build, Fixes to successfully build binary RPMs for Red Hat
     Linux 4.
@@ -52,6 +60,11 @@ Bug fixes:
 
 New Features:
 
+  * Windows build supports OpenMP and requires Windows 2000 or later
+    (source code still supports Windows '98).
+
+  * Support large files under Windows.
+
   * Support reading/writing 16 and 24 bit float TIFF files.
 
   * Support reading/writing 64 bit integer TIFF files.
@@ -59,6 +72,8 @@ New Features:
   * Added "Log", "Max", "Min", and "Pow" options to -operator.
 
 Feature improvements:
+
+  * Debug logging now properly prints 64-bit offset values.
 
   * New --disable-openmp-slow configure option for disabling use of
     OpenMP for algorithms which may run slower on operating systems
@@ -73,6 +88,8 @@ Feature improvements:
     The new syntax also allows multiple profiles to be listed at once.
 
 Performance Improvements:
+
+  * Improve resource estimation for Microsoft Windows systems.
 
   * OpenMP (parallel processing) improvements for these functions:
 
@@ -915,7 +932,7 @@ The objectives of GraphicsMagick are to:
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2003 - 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
