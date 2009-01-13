@@ -54,6 +54,10 @@ Mark Mitchell
                 formatting scripts, and converted many pages to the new
                 format.
 
+Richard Nolde
+		Contributed code for converting between native floating
+		point types, and short (16/24) bit float types.
+
 
 Former GraphicsMagick Contributors
 ==================================
@@ -175,7 +179,7 @@ Thomas R Crimmins
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
