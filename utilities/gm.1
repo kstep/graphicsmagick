@@ -1,4 +1,4 @@
-.TH gm 1 "2008/12/14" "GraphicsMagick"
+.TH gm 1 "2009/01/13" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1261,8 +1261,8 @@ SMaxSampleValue tag is not present, it may be necessary to
 .in 20
  \fR
 .in 20
-If the tiff:min-sample-value key is defined, GraphicsMagick will use the
-assigned value as the minimum floating point value while reading or
+If the tiff:min-sample-value key is defined, GraphicsMagick will use
+the assigned value as the minimum floating point value while reading or
 writing IEEE floating point TIFFs. Otherwise the minimum value is 0.0 or
 the value obtained from the file's SMinSampleValue tag (if present).
 
@@ -1274,11 +1274,11 @@ the value obtained from the file's SMinSampleValue tag (if present).
 .in 20
 If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 images with the specified bits per sample, overriding any existing depth
-value. The range of the value is 1 to 32 when the default 'unsigned'
-format is written, or 32/64 if IEEEFP format is written. Please note that
-the baseline TIFF 6.0 specification only requires readers to handle
-certain powers of two, and the values to be handled depend on the nature
-of the image (e.g. colormapped, grayscale, RGB, CMYK).
+value. Value may be any in the range of 1 to 32, or 64 when the default
+'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
+Please note that the baseline TIFF 6.0 specification only requires
+readers to handle certain powers of two, and the values to be handled
+depend on the nature of the image (e.g. colormapped, grayscale, RGB, CMYK).
 
 .in 15
 .in 15
@@ -9122,7 +9122,7 @@ based on his Zoom program.
 spatial subdivision color reduction algorithm is based on his Img software.
 .SH COPYRIGHT
 
-\fBCopyright (C) 2002 - 2008 GraphicsMagick Group, an organization
+\fBCopyright (C) 2002 - 2009 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.\fP
 
 \fBPermission is hereby granted, free of charge, to any person obtaining a

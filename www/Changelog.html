@@ -21,6 +21,48 @@
 </tr>
 </table>
 <p>
+2009-01-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/colorspace.c (XYZTransformPackets): Fix arithmetic
+        overflow problem noticed for Q32 build when using GCC on
+        big-endian systems.<BR>
+  <LI> configure.ac: Produce sprintf scaling strings for
+        platform-specific types.<BR>
+  <LI> magick/magick_types.h.in: Include sprintf scaling strings for
+        platform-specific types.<BR>
+  <LI> magick/constitute.c (WriteImage): If output stream is not
+        seekable and coder needs to use seek, then divert output to
+        temporary file, and then send file to stream.
+  <LI> magick/blob.c (GetBlobSize): Simplify implementation.
+        (OpenBlob): Don't attempt to test header magic on file we are
+        writing.  Silly benign bug in obtuse code.
+  <LI> coders/tiff.c (ReadTIFFImage,WriteTIFFImage): Strip out use of
+        temporary file.  Use TIFFClientOpen() for writing.
+  <LI> coders/fits.c: Merged in updates from CVS head. Ability to read
+        extension blocks. Fixed MaxTextExtent limitation of blocks.  Fixed
+        bug in scene count in extension block.  Supported logging.
+  <LI> VisualMagick/installer/inc/body.isx: They say that when in Rome
+        you should do as the Roman's do.  Based on this philosophy, all of
+        the coder and filter DLLs are now installed to the same directory
+        as the executables and DLLs which depend on them.  This eases
+        operation under Windows Vista.<BR>
+  <LI> magick/blob.c: Support large file access under Windows.
+  <LI> magick/resource.c (InitializeMagickResources): Improve resource
+        estimation for Microsoft Windows systems with large memory.
+  <LI> magick/segment.c: Added some code to dump histograms with
+        '-verbose -verbose'.<BR>
+  <LI> coders/tiff.c: Support reading/writing 16 and 24 bit float TIFF
+        files.<BR>
+  <LI> magick/constitute.c (ExportViewPixelArea): Support exporting 16
+        and 24 bit short floats.  Relies on code developed for
+        GraphicsMagick by Richard Nolde.
+        (ImportViewPixelArea): Support importing 16 and 24 bit short
+        floats.  Relies on code developed for GraphicsMagick by Richard
+        Nolde.
+
+</UL>
+<p>
 2008-12-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

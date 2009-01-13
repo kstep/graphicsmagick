@@ -12169,7 +12169,7 @@ MagickExport Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *re
   static unsigned int
     number_windows;
 
-  struct stat
+  MagickStatStruct_t
     file_info;
 
   time_t
@@ -12804,7 +12804,7 @@ MagickExport Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *re
       /*
         Determine when file data was last modified.
       */
-      status=stat(display_image->filename,&file_info);
+      status=MagickStat(display_image->filename,&file_info);
       if (status == 0)
         update_time=file_info.st_mtime;
     }
@@ -12827,7 +12827,7 @@ MagickExport Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *re
                 /*
                   Determine if image file was modified.
                 */
-                status=stat(display_image->filename,&file_info);
+                status=MagickStat(display_image->filename,&file_info);
                 if (status == 0)
                   if (update_time != file_info.st_mtime)
                     {

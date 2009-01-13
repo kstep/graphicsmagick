@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -23,6 +23,14 @@
 %                             Software Design                                 %
 %                               John Cristy                                   %
 %                               October 1998                                  %
+%                                                                             %
+%                           Re-implemented By                                 %
+%                            Bob Friesenhahn                                  %
+%                               2003-2008                                     %
+%                                                                             %
+%                         Small Float Support By                              %
+%                             Richard Nolde                                   %
+%                             December, 2008                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -77,6 +85,18 @@ typedef enum {
 static const PixelPacket BlackPixel = {0, 0, 0, OpaqueOpacity};
 
 static const PixelPacket WhitePixel = {MaxRGB, MaxRGB, MaxRGB, OpaqueOpacity};
+
+#define RANGE_LIMITED 0
+#define ZERO_LIMITED  1
+#define STRICT_IEEE   2
+
+#define FP16_MANT_BITS 10
+#define FP24_MANT_BITS 16
+#define FP32_MANT_BITS 23
+#define FP64_MANT_BITS 52
+
+typedef unsigned char  fp_16bits[2];
+typedef unsigned char  fp_24bits[3];
 
 static SemaphoreInfo
   *constitute_semaphore = (SemaphoreInfo *) NULL;
@@ -99,269 +119,1290 @@ static Image
 #endif
 
 #if 0
-#define ExportModulo8Quantum(q,quantum_size,quantum) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  do \
-    { \
-      shift -= 8U; \
-      *q++=(unsigned char) (((unsigned int) quantum) >> shift); \
-    } while( shift > 0U); \
-}
+#define ExportModulo8Quantum(q,quantum_size,quantum)    \
+  {                                                     \
+    register unsigned int                               \
+      shift=quantum_size;                               \
+                                                        \
+    do                                                  \
+      {                                                 \
+        shift -= 8U;                                    \
+        *q++=(unsigned char)                            \
+          (((unsigned int) quantum) >> shift);          \
+      } while( shift > 0U);                             \
+  }
 #endif
-#define ExportCharQuantum(q,quantum) \
-{ \
-  *q++=(quantum); \
+#define ExportUInt8Quantum(q,quantum)           \
+  {                                             \
+    *q++=(quantum);                             \
+  }
+#define ExportUInt16Quantum(endian,q,quantum)   \
+  {                                             \
+    register unsigned int value_ = (quantum);   \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) value_;            \
+      }                                         \
+    else                                        \
+      {                                         \
+        *q++=(unsigned char) value_;            \
+        *q++=(unsigned char) (value_ >> 8);     \
+      }                                         \
 }
-#define ExportShortQuantum(endian,q,quantum) \
-{ \
-  register unsigned int value_ = (quantum); \
-  if (LSBEndian != endian) \
-    { \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) value_; \
-    } \
-  else \
-    { \
-      *q++=(unsigned char) value_; \
-      *q++=(unsigned char) (value_ >> 8); \
-    } \
-}
-#define ExportLongQuantum(endian,q,quantum) \
-{ \
-  register unsigned int value_ = (quantum); \
-  if (LSBEndian != endian) \
-    { \
-      *q++=(unsigned char) (value_ >> 24); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) value_; \
-    } \
-  else \
-    { \
-      *q++=(unsigned char) value_; \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 24); \
-    } \
-}
+#define ExportUInt32Quantum(endian,q,quantum)   \
+  {                                             \
+    register unsigned int value_ = (quantum);   \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        *q++=(unsigned char) (value_ >> 24);    \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) value_;            \
+      }                                         \
+    else                                        \
+      {                                         \
+        *q++=(unsigned char) value_;            \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 24);    \
+      }                                         \
+  }
 /*
   Export a 32-bit unsigned quantum into a 64-bit storage size.  This
   approach is used since 64-bits is not supported internally and some
   CPUs may perform poorly if the quantum is a 64-bit type.
 */
-#define ExportLongLongQuantum(endian,q,quantum) \
-{ \
-  register unsigned int value_ = (quantum); \
-  if (LSBEndian != endian) \
-    { \
-      *q++=(unsigned char) (value_ >> 24); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) value_; \
-      *q++=(unsigned char) (value_ >> 24); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) value_; \
-    } \
-  else \
-    { \
-      *q++=(unsigned char) value_; \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 24); \
-      *q++=(unsigned char) value_; \
-      *q++=(unsigned char) (value_ >> 8); \
-      *q++=(unsigned char) (value_ >> 16); \
-      *q++=(unsigned char) (value_ >> 24); \
-    } \
-}
-#define ExportFloatQuantum(endian,q,quantum) \
-{ \
-  if (MyEndianType == endian) \
-    { \
-      *((float *) q) = (float) (quantum); \
-      q += sizeof(float); \
-    } \
-   else \
-    { \
-      union \
-      { \
-        float f; \
-        unsigned char c[4]; \
-      } fu_; \
-      \
-      fu_.f=(float) (quantum); \
-      *q++=fu_.c[3]; \
-      *q++=fu_.c[2]; \
-      *q++=fu_.c[1]; \
-      *q++=fu_.c[0]; \
-    } \
-}
-#define ExportDoubleQuantum(endian,q,quantum) \
-{ \
-  if (MyEndianType == endian) \
-    { \
-      *((double *) q) = ((double) quantum); \
-      q += sizeof(double); \
-    } \
-  else \
-    { \
-      union \
-      { \
-        double d; \
-        unsigned char c[8]; \
-      } du_; \
-      \
-      du_.d = (double) (quantum); \
-      *q++=du_.c[7]; \
-      *q++=du_.c[6]; \
-      *q++=du_.c[5]; \
-      *q++=du_.c[4]; \
-      *q++=du_.c[3]; \
-      *q++=du_.c[2]; \
-      *q++=du_.c[1]; \
-      *q++=du_.c[0]; \
-    } \
-}
-#define ImportModulo8Quantum(quantum,quantum_size,p) \
-{ \
-  register unsigned int \
-    shift; \
-  \
-  quantum=0; \
-  if (LSBEndian != endian) \
-    { \
-      shift=quantum_size; \
-      do \
-        { \
-          shift -= 8U; \
-          quantum |= (*p++ << shift); \
-        } while( shift > 0U); \
-    } \
-  else \
-    { \
-      shift=0U; \
-      while ( shift < quantum_size ) \
-        { \
-          quantum |= (*p++ << shift); \
-          shift += 8U; \
-        } \
-    } \
-}
-#define ImportCharQuantum(quantum,p) \
-{ \
-  quantum=*p++; \
-}
-#define ImportShortQuantum(endian,quantum,p) \
-{ \
-  if (LSBEndian != endian) \
-    { \
-      quantum=(*p++ << 8); \
-      quantum|=(*p++); \
-    } \
-  else \
-    { \
-      quantum=(*p++); \
-      quantum|=(*p++ << 8); \
-    } \
-}
+#define ExportUInt64Quantum(endian,q,quantum)   \
+  {                                             \
+    register unsigned int value_ = (quantum);   \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        *q++=(unsigned char) (value_ >> 24);    \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) value_;            \
+        *q++=(unsigned char) (value_ >> 24);    \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) value_;            \
+      }                                         \
+    else                                        \
+      {                                         \
+        *q++=(unsigned char) value_;            \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 24);    \
+        *q++=(unsigned char) value_;            \
+        *q++=(unsigned char) (value_ >> 8);     \
+        *q++=(unsigned char) (value_ >> 16);    \
+        *q++=(unsigned char) (value_ >> 24);    \
+      }                                         \
+  }
+#define ExportFloat16Quantum(endian,q,quantum)  \
+  {                                             \
+    float float_val;                            \
+    unsigned char c[2];                         \
+                                                \
+    float_val=(float) (quantum);                \
+    (void) convert_fp32_to_fp16(&float_val,     \
+                                (fp_16bits *)c, \
+                                RANGE_LIMITED); \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        *q++=c[0];                              \
+        *q++=c[1];                              \
+      }                                         \
+    else                                        \
+      {                                         \
+        *q++=c[1];                              \
+        *q++=c[0];                              \
+      }                                         \
+  }
+#define ExportFloat24Quantum(endian,q,quantum)  \
+  {                                             \
+    float float_val;                            \
+    unsigned char c[3];                         \
+                                                \
+    float_val=(float) (quantum);                \
+    (void) convert_fp32_to_fp24(&float_val,     \
+                                (fp_24bits *)c, \
+                                RANGE_LIMITED); \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        *q++=c[0];                              \
+        *q++=c[1];                              \
+        *q++=c[2];                              \
+      }                                         \
+    else                                        \
+      {                                         \
+        *q++=c[2];                              \
+        *q++=c[1];                              \
+        *q++=c[0];                              \
+      }                                         \
+  }
+#define ExportFloat32Quantum(endian,q,quantum)  \
+  {                                             \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        *((float *) q) = (float) (quantum);     \
+        q += sizeof(float);                     \
+      }                                         \
+    else                                        \
+      {                                         \
+        union                                   \
+        {                                       \
+          float f;                              \
+          unsigned char c[4];                   \
+        } fu_;                                  \
+                                                \
+        fu_.f=(float) (quantum);                \
+        *q++=fu_.c[3];                          \
+        *q++=fu_.c[2];                          \
+        *q++=fu_.c[1];                          \
+        *q++=fu_.c[0];                          \
+      }                                         \
+  }
+#define ExportFloat64Quantum(endian,q,quantum)  \
+  {                                             \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        *((double *) q) = ((double) quantum);   \
+        q += sizeof(double);                    \
+      }                                         \
+    else                                        \
+      {                                         \
+        union                                   \
+        {                                       \
+          double d;                             \
+          unsigned char c[8];                   \
+        } du_;                                  \
+                                                \
+        du_.d = (double) (quantum);             \
+        *q++=du_.c[7];                          \
+        *q++=du_.c[6];                          \
+        *q++=du_.c[5];                          \
+        *q++=du_.c[4];                          \
+        *q++=du_.c[3];                          \
+        *q++=du_.c[2];                          \
+        *q++=du_.c[1];                          \
+        *q++=du_.c[0];                          \
+      }                                         \
+  }
+#define ImportModulo8Quantum(quantum,quantum_size,p)    \
+  {                                                     \
+    register unsigned int                               \
+      shift;                                            \
+                                                        \
+    quantum=0;                                          \
+    if (LSBEndian != endian)                            \
+      {                                                 \
+        shift=quantum_size;                             \
+        do                                              \
+          {                                             \
+            shift -= 8U;                                \
+            quantum |= (*p++ << shift);                 \
+          } while( shift > 0U);                         \
+      }                                                 \
+    else                                                \
+      {                                                 \
+        shift=0U;                                       \
+        while ( shift < quantum_size )                  \
+          {                                             \
+            quantum |= (*p++ << shift);                 \
+            shift += 8U;                                \
+          }                                             \
+      }                                                 \
+  }
+#define ImportUInt8Quantum(quantum,p)           \
+  {                                             \
+    quantum=*p++;                               \
+  }
+#define ImportUInt16Quantum(endian,quantum,p)   \
+  {                                             \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        quantum=(*p++ << 8);                    \
+        quantum|=(*p++);                        \
+      }                                         \
+    else                                        \
+      {                                         \
+        quantum=(*p++);                         \
+        quantum|=(*p++ << 8);                   \
+      }                                         \
+  }
 /*
   This algorithm has been compared with several others and did best
   overall on SPARC, PowerPC, and Intel Xeon.
 */
-#define ImportLongQuantum(endian,quantum,p) \
-{ \
-  if (LSBEndian != endian) \
-    { \
-      quantum=(*p++ << 24); \
-      quantum|=(*p++ << 16); \
-      quantum|=(*p++ << 8); \
-      quantum|=(*p++); \
-    } \
-  else \
-    { \
-      quantum=(*p++); \
-      quantum|=(*p++ << 8); \
-      quantum|=(*p++ << 16); \
-      quantum|=(*p++ << 24); \
-    } \
-}
+#define ImportUInt32Quantum(endian,quantum,p)   \
+  {                                             \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        quantum=(*p++ << 24);                   \
+        quantum|=(*p++ << 16);                  \
+        quantum|=(*p++ << 8);                   \
+        quantum|=(*p++);                        \
+      }                                         \
+    else                                        \
+      {                                         \
+        quantum=(*p++);                         \
+        quantum|=(*p++ << 8);                   \
+        quantum|=(*p++ << 16);                  \
+        quantum|=(*p++ << 24);                  \
+      }                                         \
+  }
 /*
   Import a 64-bit unsigned value into a 32-bit quantum type.  This
   approach is used since 64-bits is not supported internally and some
   CPUs may perform poorly when using a true 64-bit type.  In this case
   the least significant 32 bits are entirely ignored.
 */
-#define ImportLongLongQuantum(endian,quantum,p) \
-{ \
-  if (LSBEndian != endian) \
-    { \
-      quantum=(*p++ << 24); \
-      quantum|=(*p++ << 16); \
-      quantum|=(*p++ << 8); \
-      quantum|=(*p++); \
-      p+=4; \
-    } \
-  else \
-    { \
-      p+=4; \
-      quantum=(*p++); \
-      quantum|=(*p++ << 8); \
-      quantum|=(*p++ << 16); \
-      quantum|=(*p++ << 24); \
-    } \
+#define ImportUInt64Quantum(endian,quantum,p)   \
+  {                                             \
+    if (LSBEndian != endian)                    \
+      {                                         \
+        quantum=(*p++ << 24);                   \
+        quantum|=(*p++ << 16);                  \
+        quantum|=(*p++ << 8);                   \
+        quantum|=(*p++);                        \
+        p+=4;                                   \
+      }                                         \
+    else                                        \
+      {                                         \
+        p+=4;                                   \
+        quantum=(*p++);                         \
+        quantum|=(*p++ << 8);                   \
+        quantum|=(*p++ << 16);                  \
+        quantum|=(*p++ << 24);                  \
+      }                                         \
+  }
+#define ImportFloat16Quantum(endian,value,p)          \
+  {                                                   \
+    float float_value;                                \
+    unsigned char c[2];                               \
+    if (MyEndianType == endian)                       \
+      {                                               \
+        c[0]=*p++;                                    \
+        c[1]=*p++;                                    \
+      }                                               \
+    else                                              \
+      {                                               \
+        c[1]=*p++;                                    \
+        c[0]=*p++;                                    \
+      }                                               \
+    (void) convert_fp16_to_fp32((const fp_16bits *)c, \
+                                &float_value);        \
+    value=float_value;                                \
+  }
+#define ImportFloat24Quantum(endian,value,p)            \
+  {                                                     \
+    float float_value;                                  \
+    unsigned char c[3];                                 \
+    if (MyEndianType == endian)                         \
+      {                                                 \
+        c[0]=*p++;                                      \
+        c[1]=*p++;                                      \
+        c[2]=*p++;                                      \
+      }                                                 \
+    else                                                \
+      {                                                 \
+        c[2]=*p++;                                      \
+        c[1]=*p++;                                      \
+        c[0]=*p++;                                      \
+      }                                                 \
+    (void) convert_fp24_to_fp32((const fp_24bits *)c,   \
+                                &float_value,           \
+                                RANGE_LIMITED);         \
+    value=float_value;                                  \
 }
-#define ImportFloatQuantum(endian,value,p) \
-{ \
-  if (MyEndianType == endian) \
-    { \
-      value=*((float *) p); \
-      p += sizeof(float); \
-    } \
-  else \
-    { \
-      union \
-      { \
-        float f; \
-        unsigned char c[4]; \
-      } fu_; \
-      \
-      fu_.c[3]=*p++; \
-      fu_.c[2]=*p++; \
-      fu_.c[1]=*p++; \
-      fu_.c[0]=*p++; \
-      value=fu_.f; \
-    } \
-}
-#define ImportDoubleQuantum(endian,value,p) \
-{ \
-  if (MyEndianType == endian) \
-    { \
-      value=*((double *) p); \
-      p += sizeof(double); \
-    } \
-  else \
-    { \
-      union \
-      { \
-        double d; \
-        unsigned char c[8]; \
-      } du_; \
-      \
-      du_.c[7]=*p++; \
-      du_.c[6]=*p++; \
-      du_.c[5]=*p++; \
-      du_.c[4]=*p++; \
-      du_.c[3]=*p++; \
-      du_.c[2]=*p++; \
-      du_.c[1]=*p++; \
-      du_.c[0]=*p++; \
-      value=du_.d; \
-    } \
-}
+#define ImportFloat32Quantum(endian,value,p)    \
+  {                                             \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        value=*((float *) p);                   \
+        p += sizeof(float);                     \
+      }                                         \
+    else                                        \
+      {                                         \
+        union                                   \
+        {                                       \
+          float f;                              \
+          unsigned char c[4];                   \
+        } fu_;                                  \
+                                                \
+        fu_.c[3]=*p++;                          \
+        fu_.c[2]=*p++;                          \
+        fu_.c[1]=*p++;                          \
+        fu_.c[0]=*p++;                          \
+        value=fu_.f;                            \
+      }                                         \
+  }
+#define ImportFloat64Quantum(endian,value,p)    \
+  {                                             \
+    if (MyEndianType == endian)                 \
+      {                                         \
+        value=*((double *) p);                  \
+        p += sizeof(double);                    \
+      }                                         \
+    else                                        \
+      {                                         \
+        union                                   \
+        {                                       \
+          double d;                             \
+          unsigned char c[8];                   \
+        } du_;                                  \
+                                                \
+        du_.c[7]=*p++;                          \
+        du_.c[6]=*p++;                          \
+        du_.c[5]=*p++;                          \
+        du_.c[4]=*p++;                          \
+        du_.c[3]=*p++;                          \
+        du_.c[2]=*p++;                          \
+        du_.c[1]=*p++;                          \
+        du_.c[0]=*p++;                          \
+        value=du_.d;                            \
+      }                                         \
+  }
+
+static
+int convert_fp16_to_fp32 (const fp_16bits *fp16, float *fp32)
+{
+  unsigned char  sbit; /* sign bit */
+  unsigned char  expt; /* exponent bits */
+  unsigned char  m2, m1;  /* MSB to LSB of mantissa */
+  unsigned char  new_expt;
+  unsigned char  new_m3, new_m2, new_m1; 
+  unsigned int   little_endian = 1;
+  unsigned char *src;
+  unsigned char *dst;
+
+#ifdef DEBUG32
+  /* Debugging variables */
+  int            i, j, bit;
+  unsigned int  mant;
+  double         test  = 0.0; 
+  double         test2 = 0.0; 
+  double         accum = 0.0;
+
+  errno = 0;
+#endif
+
+  assert (sizeof(int) == 4);
+  if ((fp16 == NULL) || (fp32 == NULL))
+    {
+      fprintf (stderr, "Invalid src or destination pointers\n");
+      return (1);
+    }
+  sbit=0;
+  src = (unsigned char *)fp16;
+  dst = (unsigned char *)fp32;
+  new_expt = expt = 0;
+  new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
+
+  little_endian = *((unsigned char *)&little_endian) & '1';
+  if ((int)*fp16 != 0)
+    {
+      if (little_endian)
+	{
+	  sbit =  *(src + 1) & 0x80;
+	  expt = (*(src + 1) & 0x7F) >> 2;
+	  m2 =    *(src + 1) & 0x03;
+	  m1 = *src;
+	}
+      else
+	{
+	  sbit =  *src & 0x80;
+	  expt = (*src & 0x7F) >> 2;
+	  m2 =    *src & 0x03;
+	  m1 =  *(src + 1);
+	}
+
+      if (expt != 0)
+	new_expt = expt - 15 + 127;
+      new_m3  =  (m2 << 5) | (m1 & 0xF8) >> 3; 
+      new_m2  =  (m1 & 7) << 5;
+      new_m1  = 0;
+    }
+  if (little_endian)
+    {
+      *dst = new_m1;
+      *(dst + 1) = new_m2;
+      *(dst + 2) = ((new_expt & 1) << 7) | new_m3;
+      *(dst + 3) = sbit | (new_expt >> 1);
+    }
+  else
+    {
+      *dst = sbit | (new_expt >> 1);
+      *(dst + 1) = ((new_expt & 1) << 7) | new_m3;
+      *(dst + 2) = new_m2;
+      *(dst + 3) = new_m1;
+    }
+
+  /* Underflow and overflow will not be a problem 
+   * since target has more significant bits that
+   * the source.
+   */
+#ifdef DEBUG32
+  /* Debugging code for display only */
+  mant = ((unsigned int)new_m3 << 16) | ((unsigned int)new_m2 << 8) | (unsigned int)new_m1; 
+  if (new_expt == 0)
+    {
+      test = 0.0;
+      test2 = 0.0;
+      accum = 0.0;
+    }
+  else
+    {
+      accum = 0.0;
+      for (i = 22, j = 1; i >= 0; i--, j++)
+	{
+	  bit = mant & ((unsigned int)1 << i);
+	  if (bit)
+	    accum += (1.0 / ((unsigned int)1 << j));
+	}
+      accum += 1.0;
+      test = pow (2.0, 1.0 * (new_expt - 127));
+      switch (errno)
+	{
+	case 0:     break;
+	case EDOM: 
+	case ERANGE: 
+	default: perror ("Invalid value");
+	  break;
+	}
+      test2 = accum * test;
+      if (sbit)
+	test2 *= -1.0;
+    }
+  printf ("              Sign bit: %u, Expt biased to %5u,  2^%-5d = %8.1f  *  %10.8f = %18.10f\n\n",
+	  sbit > 0 ? 1 : 0, new_expt, new_expt > 0 ? new_expt - 127 : 0, test, accum, test2);
+#endif
+  return (0);
+} /* end convertfp16_to_fp32 */
+
+static
+int convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode)
+{
+  int            i, bit, rbits, rshift;
+  unsigned char  sbit = 0;   /* sign bit */
+  unsigned char  expt = 0;   /* exponent bits */
+  unsigned char  m3, m2, m1; /* MSB to LSB of mantissa */
+  signed   short new_expt;
+  unsigned short new_mant;
+  unsigned short mant;
+  unsigned int   little_endian = 1;
+  unsigned char *src;
+  unsigned char *dst;
+  unsigned char *mp;
+
+#ifdef DEBUG16
+  int     j, k;
+  double  test = 0.0; 
+  double  test2 = 0.0; 
+  double  accum = 0.0;
+  double  roundup = 0.0;
+
+  errno = 0;
+#endif
+
+  assert (sizeof(int) == 4);
+  if ((fp32 == NULL) || (fp16 == NULL))
+    {
+      fprintf (stderr, "Invalid src or destination pointers\n");
+      return (1);
+    }
+  little_endian = *((unsigned char *)&little_endian) & '1';
+
+  src = (unsigned char *)fp32;
+  dst = (unsigned char *)fp16;
+  mp  = (unsigned char *)&mant;
+
+  new_expt = expt = 0;
+  mant = new_mant = 0;
+  m2 = m1 = 0;
+  rbits = 0;
+
+  /* For zero, all bits except possibly sbit are zero */
+  if (*fp32 == 0)
+    *dst = 0;
+  else
+    {
+      if (little_endian)
+	{
+	  sbit =   *(src + 3) & 0x80;
+	  expt = ((*(src + 3) & 0x7F) << 1) | 
+	    ((*(src + 2) & 0x80) >> 7);
+	  /* Extract mantissa and left align bits */
+	  m3  = (((*(src + 2) & 0x7F)) << 1) |
+	    ((*(src + 1) & 0x80) >> 7);
+	  m2  = (((*(src + 1) & 0x7F)) << 1)  |
+	    ((*src & 0x80) >> 7);
+	  m1  =  (*src & 0x7F) << 1;
+	}
+      else
+	{
+	  sbit =   *src & 0x80;
+	  expt = ((*src & 0x7F) << 1) | 
+	    ((*(src + 1) & 0x80) >> 7);
+	  /* Extract mantissa and left align bits */
+	  m3  = (((*(src + 1) & 0x7F)) << 1) |
+	    ((*(src + 2) & 0x80) >> 7);
+	  m2  = (((*(src + 2) & 0x7F)) << 1)  |
+	    ((*(src + 3) & 0x80) >> 7);
+	  m1  =  (*(src + 3) & 0x7F) << 1;
+	}
+
+      /* Extract the 16 MSB from the mantissa */  
+      mant = (m3 << 8) | m2;
+      if (expt != 0)  /* Normal number */
+	new_expt = expt - 127 + 15;
+
+      /* Even if the new exponent is too small to represent, 
+       * the mantissa could have signficant digits that can
+       * be represented in the new value as a subnormal.
+       */
+      if (new_expt <= 0) /* Underflow */
+	{
+	  rshift = 1 - new_expt;
+	  switch (mode)
+	    {
+	    case STRICT_IEEE: /* NaN has all 1s in exponent plus 2 bits in Mantissa */
+	      if (rshift > FP16_MANT_BITS)
+		{
+		  new_expt = 31;
+		  new_mant = 513;
+		  errno = ERANGE;
+		  fflush (stdout);
+		  fprintf (stderr, "Underflow. Result clipped\n");
+		  fflush (stderr);
+		  return (1);  /* The number cannot be represented as fp16 */
+		}
+	      break;
+	    case RANGE_LIMITED: /* Clamp to smallest subnormal */
+	      new_expt = 0;
+	      new_mant = mant >> rshift;;
+	      mp = (unsigned char *)&new_mant;
+#ifdef DEBUG16
+	      if (mant != 0)
+		{
+		  fflush (stdout);
+		  fprintf (stderr, "Underflow. %18.10f Result clippped to subnormal value\n", *fp32);
+		  fflush (stderr);
+		}
+#endif
+	      break;        
+	    case ZERO_LIMITED:  /* Clamp to zero instead of using a subnormal */
+	      new_expt = 0;
+	      new_mant = 0;
+	      mp = (unsigned char *)&new_mant;
+#ifdef DEBUG16
+	      if (mant != 0)
+		{
+		  fflush (stdout);
+		  fprintf (stderr, "Underflow. %18.10f Result clippped to zero\n", *fp32);
+		  fflush (stderr);
+		}
+#endif
+	      break;        
+	    }
+	}
+      else /* Take the MSB from the old mantissa and left justify them */
+	{
+	  if (new_expt > 30) /* Overflow */
+	    {
+	      switch (mode)
+		{
+		case STRICT_IEEE: /* NaN has all 1s in exponent plus 2 bits in Mantissa */
+		  new_expt = 31;
+		  new_mant = 513;
+		  errno = ERANGE;
+		  fflush (stdout);
+		  fprintf (stderr, "Overflow. %18.10f Result clipped\n", *fp32);
+		  fflush (stderr);
+		  return (1);
+		case ZERO_LIMITED:
+		case RANGE_LIMITED:  /* Clamp to maximum allowed value for fp16 */
+		  new_expt = 30;
+		  new_mant = 1023;
+		  mp = (unsigned char *)&new_mant;
+#ifdef DEBUG16
+		  fflush (stdout);
+		  fprintf (stderr, "Overflow. %18.10f Result clippped\n", *fp32);
+		  fflush (stderr);
+#endif
+		  break;        
+		}
+	    }
+	  else /* Normal value within range of target type */
+	    {
+	      /* Check bits to the right of unit in last signficant place
+	       * for destination, eg first digit that cannot be stored.
+	       * Rounding of least significant retained bit falls to value
+	       * which will produce a zero in the LSB if the bounding values
+	       * are equidistant from the unrounded value.
+	       */
+	      rbits = mant & 0x3F;
+	      if (rbits >= 0x20)  /* Greater than or equal to 0.5 times LSB */
+		{
+		  if (rbits > 0x20) /* Rbits is greater than half of LSB */
+		    {
+		      /* Round up to next higher value of LSB */
+		      for (i = 6; i < 16; i++)
+			{
+			  bit = mant & (1 << i);
+			  if (bit == 0)
+			    {
+			      new_mant = (mant | ((unsigned short)1 << i)) & (0xFFFF << i);
+			      mp  = (unsigned char *)&new_mant;
+			      break;
+			    }
+			}
+		    }
+		  else    /* Rbits is exactly half of LSB */
+		    {
+		      if ((mant & 0x40)) /* LSB is one so we round up */
+			{
+			  /* Round up to next higher value of LSB */
+			  for (i = 6; i < 10; i++)
+			    {
+			      bit = mant & (1 << i);
+			      if (bit == 0)
+				{
+				  new_mant = (mant | ((unsigned short)1 << i)) & (0xFFFF << i);
+				  mp  = (unsigned char *)&new_mant;
+				  break;
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+ 
+      /* Extract bits into contiguous positions in bytes */
+      if (little_endian)
+	{
+	  m2 =  (*(mp + 1) & 0xC0) >> 6;
+	  m1 = ((*(mp + 1) & 0x3F) << 2) |
+	    ((*mp & 0xC0) >> 6);
+	  *dst = m1;
+	  *(dst + 1) = sbit | ((new_expt & 0x1F) << 2) | m2;
+	}
+      else
+	{
+	  m2 = (*mp & 0xC0) >> 6;
+	  m1 = ((*mp & 0x3F) << 2) |
+	    ((*(mp + 1) & 0xC0) >> 6);
+	  *dst = sbit | ((new_expt & 0x1F) << 2) | m2;
+	  *(dst + 1) = m1;
+	}
+    }
+
+#ifdef DEBUG16
+  /* Debugging code to display the result */
+  new_mant = (m2 << 8) | m1;
+  printf ("%10.10f mant%s ", *fp32, (rbits & 0x20) ? "+" : "-");
+  for (j = 0, k = 15; j < 16; j++, k--)
+    {
+      bit = mant & (1 << k);
+      printf ("%d", bit ? 1 : 0);
+      if (j == 9)
+	printf (" ");
+      if (bit && (j > 9))
+	roundup += (1.0 / (double)(1 << (j - 9)));
+    }
+  if (new_mant == 0)
+    {
+      printf (" Fract: %8.6f  m2m1 ", roundup);
+      for (j = 0, k = 1; j < 2; j++, k--)
+	{
+	  bit = m2 & (1 << k);
+	  printf ("%d", bit ? 1 : 0);
+	}
+      for (j = 0, k = 7; j < 8; j++, k--)
+	{
+	  bit = m1 & (1 << k);
+	  printf ("%d", bit ? 1 : 0);
+	}
+    }
+  else
+    {
+      printf (" Fract: %8.6f  Rbits Mant ", roundup);
+      for (j = 0, k = 9; j < 10; j++, k--)
+	{
+	  bit = new_mant & (1 << k);
+	  printf ("%d", bit ? 1 : 0);
+	}
+    }
+  printf (" Sbit + Exp ");
+  if (little_endian)
+    {
+      for (i = 1; i >= 0; i--)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      printf ("%d", bit ? 1 : 0);
+	      if (i == 1 && j == 5)
+		printf ("  Mant: ");
+	    }
+	}
+    }
+  else  
+    {
+      for (i = 0; i < 2; i++)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      printf ("%d", bit ? 1 : 0);
+	      if (i == 0 && j == 5)
+		printf ("  Mant: ");
+	    }
+	}
+    }
+  printf ("\n");
+
+  mant = ((unsigned short)m2 << 8) | (unsigned short)m1; 
+  if (*fp32 == 0)
+    {
+      test = 0.0;
+      test2 = 0.0;
+      accum = 0.0;
+    }
+  else
+    {
+      accum = 0.0;
+      for (i = 9, j = 1; i >= 0; i--, j++)
+	{
+	  bit = mant & ((unsigned int)1 << i);
+	  if (bit)
+	    accum += (1.0 / ((unsigned int)1 << j));
+	}
+      if (new_expt == 0)
+	{
+	  accum += 2.0;
+	  test = pow (2.0, 1.0 * (-15 - rshift));
+	}
+      else
+	{
+	  accum += 1.0;
+	  test = pow (2.0, 1.0 * (new_expt - 15));
+	}
+      switch (errno)
+	{
+	case 0:     break;
+	case EDOM: 
+	case ERANGE: 
+	default: perror ("Invalid value");
+	  break;
+	}
+      test2 = accum * test;
+      if (sbit)
+	test2 *= -1.0;
+    }
+  printf ("              Sign bit: %u, Expt biased to %5u,  2^%-5d = %8.10f  *  %10.8f = %18.10f\n\n",
+	  sbit > 0 ? 1 : 0, new_expt, new_expt > 0 ? new_expt - 15 : 0, test, accum, test2);
+#endif
+  return (0);
+} /* end convert_fp32_to_fp16 */
+
+static
+int convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode)
+{
+  unsigned char  sbit = 0;           /* sign bit */
+  unsigned char  expt = 0, new_expt; /* exponent bits */
+  unsigned char  m2, m1;    /* MSB to LSB of mantissa */
+  unsigned char  new_m3, new_m2, new_m1;
+  unsigned short mant;
+  unsigned int   new_mant;
+  unsigned int   little_endian = 1;
+  unsigned char *mp;
+  unsigned char *src;
+  unsigned char *dst;
+
+#ifdef DEBUG32
+  int      i, j, k, bit;
+  double   test  = 0.0; 
+  double   test2 = 0.0; 
+  double   accum = 0.0;
+  errno = 0;
+#endif
+
+  (void) mode;
+  assert (sizeof(int) == 4);
+  if ((fp24 == NULL) || (fp32 == NULL))
+    {
+      fprintf (stderr, "Invalid src or destination pointers\n");
+      return (1);
+    }
+  little_endian = *((unsigned char *)&little_endian) & '1';
+
+  src = (unsigned char *)fp24;
+  dst = (unsigned char *)fp32;
+  mp  = (unsigned char *)&mant;
+
+  new_expt = expt = 0;
+  new_mant = mant = 0;
+  new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
+
+  if ((int)*fp24 == 0)
+    {
+      *dst = 0;
+      *(dst + 1) = 0;
+      *(dst + 2) = 0;
+      *(dst + 3) = 0;
+    }
+  else
+    {
+      if (little_endian)
+	{
+	  sbit = *(src + 2) & 0x80;
+	  expt = *(src + 2) & 0x7F;
+	  m2  =  *(src + 1);
+	  m1  =  *src;
+	}
+      else
+	{
+	  sbit = *src & 0x80;
+	  expt = *src & 0x7F;
+	  m2  =  *(src + 1);
+	  m1  =  *(src + 2);
+	}
+
+      if (expt != 0)
+	new_expt = expt - 63 + 127;
+      mant = (m2 << 8) | m1;
+      new_m3  =  (m2 & 0xFE) >> 1;
+      new_m2  = ((m2 & 0x01) << 7) | ((m1 & 0xFE) >> 1);
+      new_m1  =  (m1 & 0x01) << 7;
+    }
+  /* We do not have to worry about underflow or overflow 
+   * since the target has more significant bits in the
+   * exponent and the significand.
+   */
+  if (little_endian)
+    {
+      *dst = new_m1;
+      *(dst + 1) = new_m2;
+      *(dst + 2) = ((new_expt & 1) << 7) | new_m3;
+      *(dst + 3) = sbit | (new_expt >> 1);
+    }
+  else
+    {
+      *dst = sbit | (new_expt >> 1);
+      *(dst + 1) = ((new_expt & 1) << 7) | new_m3;
+      *(dst + 2) = new_m2;
+      *(dst + 3) = new_m1;
+    }
+
+#ifdef DEBUG32
+  /* Debugging code for display only */
+  new_mant = (new_m3 << 16) | (new_m2 << 8) | new_m1;
+  printf ("  mant ");
+  for (j = 0, k = 15; j < 16; j++, k--)
+    {
+      bit = mant & (1 << k);
+      if ((j % 8) == 0)
+	printf(" ");
+      printf ("%d", bit ? 1 : 0);
+    }
+
+  printf (" New Mant ");
+  for (j = 0, k = 22; j < 23; j++, k--)
+    {
+      bit = new_mant & (1 << k);
+      printf ("%d", bit ? 1 : 0);
+      if ((k % 8) == 0)
+	printf(" ");
+    }
+
+  printf (" Sbit + Exp ");
+  if (little_endian)
+    {
+      for (i = 3; i >= 0; i--)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      if (i == 2 && j == 1)
+		printf ("  Mant: ");
+	      printf ("%d", bit ? 1 : 0);
+	    }
+	}
+    }
+  else  
+    {
+      for (i = 0; i < 4; i++)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      if (i == 1 && j == 1)
+		printf ("  Mant: ");
+	      printf ("%d", bit ? 1 : 0);
+	    }
+	}
+    }
+  printf ("\n");
+
+  new_mant = ((unsigned int)new_m3 << 16) | ((unsigned int)new_m2 << 8) | new_m1;
+  if ((int)*fp24 == 0.0)
+    {
+      test = 0.0;
+      test2 = 0.0;
+      accum = 0.0;
+    }
+  else
+    {
+      accum = 0.0;
+      for (i = 22, j = 1; i >= 0; i--, j++)
+	{
+	  bit = new_mant & ((unsigned int)1 << i);
+	  if (bit)
+	    accum += (1.0 / ((unsigned int)1 << j));
+	}
+      accum += 1.0;
+      test = pow (2.0, 1.0 * (new_expt - 127));
+      switch (errno)
+	{
+	case 0:     break;
+	case EDOM: 
+	case ERANGE: 
+	default: perror ("Invalid value");
+	  break;
+	}
+      test2 = accum * test;
+      if (sbit)
+	test2 *= -1.0;
+    }
+  printf ("              Sign bit: %u, Expt biased to %5u,  2^%-5d = %8.1f  *  %10.8f = %18.10f\n\n",
+	  sbit > 0 ? 1 : 0, new_expt, new_expt > 0 ? new_expt - 127 : 0, test, accum, test2);
+#endif
+
+  return (0);
+} /* end convertfp24_to_fp32 */
+
+static
+int convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode)
+{
+  int            i = 1;
+  int            rbits, rshift, bit;
+  unsigned char  sbit = 0;           /* sign bit */
+  unsigned char  expt = 0; /* exponent bits */
+  unsigned char  m3;   /* high order bits of mantissa */
+  unsigned char  m2;
+  unsigned char  m1;   /* low order bits of mantissa */
+  unsigned char  new_m2, new_m1;
+  signed   short new_expt;
+  unsigned int   mant, new_mant;
+  unsigned int   little_endian = 1;
+  unsigned char *mp;
+  unsigned char *src;
+  unsigned char *dst;
+
+#ifdef DEBUG24
+  int      j, k;
+  double   test  = 0.0; 
+  double   test2 = 0.0; 
+  double   accum = 0.0;
+  double   roundup = 0.0;
+#endif
+
+  errno = 0;
+  assert (sizeof(int) == 4);
+  if ((fp32 == NULL) || (fp24 == NULL))
+    {
+      fprintf (stderr, "Invalid src or destination pointers\n");
+      return (1);
+    }
+  little_endian = *((unsigned char *)&little_endian) & '1';
+
+  src = (unsigned char *)fp32;
+  dst = (unsigned char *)fp24;
+  mp  = (unsigned char *)&mant;
+
+  new_expt = expt = 0;
+  mant = new_mant = 0;
+  m2 = m1 = 0;
+  rbits = 0;
+
+  if (*fp32 != 0)
+    {
+      if (little_endian)
+	{
+	  sbit =   *(src + 3) & 0x80;
+	  expt = ((*(src + 3) & 0x7F) << 1) | 
+	    ((*(src + 2) & 0x80) >> 7);
+	  m3  = (((*(src + 2) & 0x7F)) << 1) |
+	    ((*(src + 1) & 0x80) >> 7);
+	  m2  = (((*(src + 1) & 0x7F)) << 1)  |
+	    ((*src & 0x80) >> 7);
+	  m1  =  (*src & 0x7F) << 1;
+	}
+      else
+	{
+	  sbit =   *src & 0x80;
+	  expt = ((*src & 0x7F) << 1) | 
+	    ((*(src + 1) & 0x80) >> 7);
+	  m3  = (((*(src + 1) & 0x7F)) << 1) |
+	    ((*(src + 2) & 0x80) >> 7);
+	  m2  = (((*(src + 2) & 0x7F)) << 1)  |
+	    ((*(src + 3) & 0x80) >> 7);
+	  m1  =  (*(src + 3) & 0x7F) << 1;
+	}
+  
+      mant = (m3 << 24) | (m2 << 16) |( m1 << 8); 
+      if (expt != 0)
+	new_expt = expt - 127 + 63;
+
+      /* Even if the new exponent is too small to represent, 
+       * the mantissa could have signficant digits that can
+       * be represented in the new value as a subnormal.
+       */
+      if (new_expt <= 0) /* Underflow */
+	{
+	  rshift = 0 - new_expt;
+	  switch (mode)
+	    {
+	    case STRICT_IEEE: /* NaN has all 1s in exponent plus 2 bits in Mantissa */
+	      if (rshift > FP24_MANT_BITS)
+		{
+		  new_expt = 0x7F;
+		  new_mant = 0x80010000;
+		  errno = ERANGE;
+		  fflush (stdout);
+		  fprintf (stderr, "Underflow. %18.10f Result clipped\n", *fp32);
+		  fflush (stderr);
+		  return (1);  /* The number cannot be represented as fp24 */
+		}
+	      break;
+	    case RANGE_LIMITED: /* Clamp to smallest subnormal */
+	      new_expt = 0;
+	      new_mant = mant >> rshift;;
+	      mp = (unsigned char *)&new_mant;
+#ifdef DEBUG24
+	      fflush (stdout);
+	      fprintf (stderr, "Underflow. %18.10f Result clippped to subnormal value\n", *fp32);
+	      fflush (stderr);
+#endif
+	      break;        
+	    case ZERO_LIMITED:  /* Clamp to zero instead of using a subnormal */
+	      new_expt = 0;
+	      new_mant = 0;
+	      mp = (unsigned char *)&new_mant;
+#ifdef DEBUG24
+	      fflush (stdout);
+	      fprintf (stderr, "Underflow. %18.10f Result clippped to zero\n", *fp32);
+	      fflush (stderr);
+#endif
+	      break;        
+	    }
+	}
+      else /* Take the MSB from the old mantissa and left justify them */
+	{
+	  if (new_expt > 126) /* Overflow */
+	    {
+	      switch (mode)
+		{
+		case STRICT_IEEE: /* NaN has all 1s in exponent plus 2 bits in Mantissa */
+		  new_expt = 0x7F;
+		  mant = 0x80010000;
+		  errno = ERANGE;
+		  fflush (stdout);
+		  fprintf (stderr, "Overflow. Result clipped\n");
+		  fflush (stderr);
+		  return (1);
+		case ZERO_LIMITED:
+		case RANGE_LIMITED:  /* Clamp to maximum allowed value for fp24 */
+		  new_expt = 126;
+		  new_mant = 0xFFFF0000;
+		  mp = (unsigned char *)&new_mant;
+#ifdef DEBUG24
+		  fflush (stdout);
+		  fprintf (stderr, "Overflow. Result clippped\n");
+		  fflush (stderr);
+#endif
+		  break;        
+		}
+	    }
+	  else /* Normal value within range of target type */
+	    { /* Remove the bits to the left of the binary point 
+	       * by shifting the fractional bits into the leftmost position
+	       */
+	      /* Check bits to the right of Unit in last signficant place.
+	       * Rounding of least significant retained bit falls to value
+	       * which will produce a zero in the LSB if the bounding values
+	       * are equidistant from the unrounded value.
+	       */
+
+	      rbits = mant & 0x0000FFFF;
+	      if (rbits >= 0x8000)  /* Greater than or equal to 0.5 times LSB */
+		{
+		  if (rbits > 0x8000) /* Rbits is greater than half of LSB */
+		    {
+		      /* Round up to next higher value of LSB */
+		      for (i = 16; i < 32; i++)
+			{
+			  bit = mant & (1 << i);
+			  if (bit == 0)
+			    { 
+			      /* Round up by inserting a 1 at first zero and 
+			       * clearing bits to the right
+			       */
+			      new_mant = (mant | ((unsigned int)1 << i)) &
+				(0xFFFF << i);
+			      mp  = (unsigned char *)&new_mant;
+			      break;
+			    }
+			}
+		    }
+		  else    /* Rbits is exactly half of LSB */
+		    {
+		      if ((mant & 0x010000)) /* LSB is one so we round up */
+			{
+			  /* Round up to next higher value of LSB */
+			  for (i = 16; i < 32; i++)
+			    {
+			      bit = mant & (1 << i);
+			      if (bit == 0)
+				{
+				  new_mant = (mant | ((unsigned int)1 << i)) &
+				    (0xFFFF << i);
+				  mp  = (unsigned char *)&new_mant;
+				  break;
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+  if (little_endian)
+    {
+      new_m2 = *(mp + 3);
+      new_m1 = *(mp + 2);
+      *dst = new_m1;
+      *(dst + 1) = new_m2;
+      *(dst + 2) = sbit | (new_expt & 0x7F);
+    }
+  else
+    {
+      new_m2 = *mp;
+      new_m1 = *(mp + 1);
+      *dst = sbit | (new_expt & 0x7F);
+      *(dst + 1) = new_m2;
+      *(dst + 2) = new_m1;
+    }
+
+#ifdef DEBUG24
+  /* Debugging code for display only */
+  printf ("%10.10f mant%s ", *fp32, (rbits & 0x8000) ? "+" : "-");
+  for (j = 0, k = 31; j < 23; j++, k--)
+    {
+      bit = mant & (1 << k);
+      if ((j % 8) == 0)
+	printf(" ");
+      printf ("%d", bit ? 1 : 0);
+      if (bit && (j > 15))
+	roundup += (1.0 / (double)(1 << (j - 15)));
+    }
+
+  if (new_mant == 0)
+    {
+      printf (" Fract: %8.6f  m2m1 ", roundup);
+      for (j = 0, k = 7; j < 8; j++, k--)
+	{
+	  bit = new_m2 & (1 << k);
+	  printf ("%d", bit ? 1 : 0);
+	}
+      printf(" ");
+      for (j = 0, k = 7; j < 8; j++, k--)
+	{
+	  bit = new_m1 & (1 << k);
+	  printf ("%d", bit ? 1 : 0);
+	}
+    }
+  else
+    {
+      printf (" Fract: %8.6f  Rbits Mant ", roundup);
+      for (j = 0, k = 31; j < 16; j++, k--)
+	{
+	  bit = new_mant & (1 << k);
+	  if (j == 8)
+	    printf(" ");
+	  printf ("%d", bit ? 1 : 0);
+	}
+    }
+  printf (" Sbit + Exp ");
+  if (little_endian)
+    {
+      for (i = 2; i >= 0; i--)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      if (i == 1 && j == 0)
+		printf ("  Mant: ");
+	      printf ("%d", bit ? 1 : 0);
+	    }
+	}
+    }
+  else  
+    {
+      for (i = 0; i < 3; i++)
+	{
+	  for (j = 0, k = 7; j < 8; j++, k--)
+	    {
+	      bit = *(dst + i) & (1 << k);
+	      if (i == 1 && j == 0)
+		printf ("  Mant: ");
+	      printf ("%d", bit ? 1 : 0);
+	    }
+	}
+    }
+  printf ("\n");
+
+  mant = ((unsigned int)new_m2 << 8) | (unsigned int)new_m1; 
+  if (*fp32 == 0.0)
+    {
+      test = 0.0;
+      test2 = 0.0;
+      accum = 0.0;
+    }
+  else
+    {
+      accum = 0.0;
+      for (i = 15, j = 1; i >= 0; i--, j++)
+	{
+	  bit = mant & ((unsigned int)1 << i);
+	  if (bit)
+	    accum += (1.0 / ((unsigned int)1 << j));
+	}
+      if (new_expt != 0)
+	accum += 1.0;
+      test = pow (2.0, 1.0 * (new_expt - 63));
+      switch (errno)
+	{
+	case 0:     break;
+	case EDOM: 
+	case ERANGE: 
+	default: perror ("Invalid value");
+	  break;
+	}
+      test2 = accum * test;
+      if (sbit)
+	test2 *= -1.0;
+    }
+  printf ("              Sign bit: %u, Expt biased to %5u,  2^%-5d = %8.10f  *  %10.8f = %18.10f\n\n",
+	  sbit > 0 ? 1 : 0, new_expt, new_expt > 0 ? new_expt - 63 : 0, test, accum, test2);
+#endif
+
+  return (0);
+} /* end convertfp32_to_fp24 */
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1754,7 +2795,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,*indexes);
+                      ExportUInt8Quantum(q,*indexes);
                       indexes++;
                     }
                   break;
@@ -1763,7 +2804,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,*indexes);
+                      ExportUInt16Quantum(endian,q,*indexes);
                       indexes++;
                     }
                   break;
@@ -1772,7 +2813,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,*indexes);
+                      ExportUInt32Quantum(endian,q,*indexes);
                       indexes++;
                     }
                   break;
@@ -1781,7 +2822,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,*indexes);
+                      ExportUInt64Quantum(endian,q,*indexes);
                       indexes++;
                     }
                   break;
@@ -1818,8 +2859,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,*indexes);
-                      ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt8Quantum(q,*indexes);
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                       indexes++;
                       p++;
                     }
@@ -1829,8 +2870,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,*indexes);
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt16Quantum(endian,q,*indexes);
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                       indexes++;
                       p++;
                     }
@@ -1840,8 +2881,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,*indexes);
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt32Quantum(endian,q,*indexes);
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       indexes++;
                       p++;
                     }
@@ -1851,8 +2892,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,*indexes);
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt64Quantum(endian,q,*indexes);
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       indexes++;
                       p++;
                     }
@@ -1979,7 +3020,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetGraySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetGraySample(p)));
                               p++;
                             }
                         }
@@ -1987,7 +3028,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(GetGraySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(GetGraySample(p)));
                               p++;
                             }
                         }
@@ -1998,7 +3039,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2006,7 +3047,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2021,7 +3062,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetGraySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2029,7 +3070,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(GetGraySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2040,7 +3081,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2048,7 +3089,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(PixelIntensityToQuantum(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2063,7 +3104,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetGraySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2071,7 +3112,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGraySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2082,7 +3123,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2090,7 +3131,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2105,7 +3146,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetGraySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2113,7 +3154,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGraySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetGraySample(p)));
                               p++;
                             }
                         }
@@ -2124,7 +3165,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2132,7 +3173,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
                               p++;
                             }
                         }
@@ -2204,11 +3245,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2217,7 +3276,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2242,8 +3301,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetRedSample(p)));
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetRedSample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2251,8 +3310,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(GetRedSample(p)));
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(GetRedSample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2263,8 +3322,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p)));
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2272,8 +3331,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportCharQuantum(q,ScaleQuantumToChar(PixelIntensityToQuantum(p)));
-                              ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+                              ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2288,8 +3347,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetRedSample(p)));
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetRedSample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2297,8 +3356,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2309,8 +3368,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p)));
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2318,8 +3377,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-                              ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(PixelIntensityToQuantum(p)));
+                              ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2334,8 +3393,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetRedSample(p)));
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetRedSample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2343,8 +3402,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2355,8 +3414,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2364,8 +3423,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
-                              ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2380,8 +3439,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetRedSample(p)));
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetRedSample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2389,8 +3448,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2401,8 +3460,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-PixelIntensityToQuantum(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2410,8 +3469,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
-                              ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+                              ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                               p++;
                             }
                         }
@@ -2488,22 +3547,42 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,(((double) MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,(((double) MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,(((double) MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
+                      ExportFloat32Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,(((double) MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue));
                       p++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,PixelIntensity(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2528,7 +3607,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetRedSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetRedSample(p)));
                       p++;
                     }
                   break;
@@ -2537,7 +3616,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
                       p++;
                     }
                   break;
@@ -2546,7 +3625,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
                       p++;
                     }
                   break;
@@ -2555,7 +3634,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
                       p++;
                     }
                   break;
@@ -2608,11 +3687,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2621,7 +3718,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2646,7 +3743,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetGreenSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetGreenSample(p)));
                       p++;
                     }
                   break;
@@ -2655,7 +3752,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
                       p++;
                     }
                   break;
@@ -2664,7 +3761,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
                       p++;
                     }
                   break;
@@ -2673,7 +3770,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
                       p++;
                     }
                   break;
@@ -2726,11 +3823,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2739,7 +3854,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2764,7 +3879,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlueSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -2773,7 +3888,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -2782,7 +3897,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -2791,7 +3906,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -2844,11 +3959,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2857,7 +3990,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -2880,7 +4013,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-*indexes));
+                          ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-*indexes));
                           indexes++;
                         }
                       break;
@@ -2889,7 +4022,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-*indexes));
+                          ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-*indexes));
                           indexes++;
                         }
                       break;
@@ -2898,7 +4031,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                          ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                           indexes++;
                         }
                       break;
@@ -2907,7 +4040,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                          ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                           indexes++;
                         }
                       break;
@@ -2960,11 +4093,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
               {
                 switch (quantum_size)
                   {
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ExportFloat16Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                          p++;
+                        }
+                      break;
+                    }
+                  case 24:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ExportFloat24Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                          p++;
+                        }
+                      break;
+                    }
                   case 32:
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportFloatQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                          ExportFloat32Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
                           p++;
                         }
                       break;
@@ -2973,7 +4124,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ExportDoubleQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                          ExportFloat64Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
                           p++;
                         }
                       break;
@@ -2993,7 +4144,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3002,7 +4153,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3011,7 +4162,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3020,7 +4171,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3073,11 +4224,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3086,7 +4255,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3107,7 +4276,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlackSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3116,7 +4285,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3125,7 +4294,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3134,7 +4303,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3187,11 +4356,29 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3200,7 +4387,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3222,9 +4409,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetRedSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetGreenSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlueSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetRedSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetGreenSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -3233,9 +4420,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -3244,9 +4431,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -3255,9 +4442,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
                       p++;
                     }
                   break;
@@ -3313,13 +4500,35 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3328,9 +4537,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3351,10 +4560,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetRedSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetGreenSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlueSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetRedSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetGreenSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlueSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3363,10 +4572,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetRedSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetGreenSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlueSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3375,10 +4584,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3387,10 +4596,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetRedSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetGreenSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlueSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-GetOpacitySample(p)));
                       p++;
                     }
                   break;
@@ -3452,14 +4661,38 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3468,10 +4701,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetRedSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetGreenSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlueSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,(MaxRGB-GetOpacitySample(p))*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3492,10 +4725,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetCyanSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetYellowSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlackSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetCyanSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetYellowSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3504,10 +4737,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3516,10 +4749,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3528,10 +4761,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
                       p++;
                     }
                   break;
@@ -3590,14 +4823,38 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3606,10 +4863,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3630,11 +4887,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetCyanSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetYellowSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(GetBlackSample(p)));
-                      ExportCharQuantum(q,ScaleQuantumToChar(MaxRGB-*indexes));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetCyanSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetMagentaSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetYellowSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(GetBlackSample(p)));
+                      ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-*indexes));
                       indexes++;
                       p++;
                     }
@@ -3644,11 +4901,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
-                      ExportShortQuantum(endian,q,ScaleQuantumToShort(MaxRGB-*indexes));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetCyanSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetMagentaSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetYellowSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(GetBlackSample(p)));
+                      ExportUInt16Quantum(endian,q,ScaleQuantumToShort(MaxRGB-*indexes));
                       indexes++;
                       p++;
                     }
@@ -3658,11 +4915,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
-                      ExportLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt32Quantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                       indexes++;
                       p++;
                     }
@@ -3672,11 +4929,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
-                      ExportLongLongQuantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetCyanSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetMagentaSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetYellowSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(GetBlackSample(p)));
+                      ExportUInt64Quantum(endian,q,ScaleQuantumToLong(MaxRGB-*indexes));
                       indexes++;
                       p++;
                     }
@@ -3744,15 +5001,41 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat16Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat16Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ExportFloat24Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat24Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                      p++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportFloatQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
-                      ExportFloatQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat32Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -3761,11 +5044,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ExportDoubleQuantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
-                      ExportDoubleQuantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetCyanSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetMagentaSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetYellowSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,GetBlackSample(p)*double_scale+double_minvalue);
+                      ExportFloat64Quantum(endian,q,(MaxRGB-*indexes)*double_scale+double_minvalue);
                       p++;
                     }
                   break;
@@ -4135,7 +5418,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportCharQuantum(index,p);
+                          ImportUInt8Quantum(index,p);
                           *indexes++=index;
                           *q++=image->colormap[index];
                         }
@@ -4144,7 +5427,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportCharQuantum(index,p);
+                          ImportUInt8Quantum(index,p);
                           VerifyColormapIndex(image,index);
                           *indexes++=index;
                           *q++=image->colormap[index];
@@ -4156,7 +5439,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,index,p);
+                      ImportUInt16Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q++=image->colormap[index];
@@ -4167,7 +5450,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,index,p);
+                      ImportUInt32Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q++=image->colormap[index];
@@ -4178,7 +5461,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,index,p);
+                      ImportUInt64Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q++=image->colormap[index];
@@ -4218,12 +5501,12 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportCharQuantum(index,p);
+                      ImportUInt8Quantum(index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q=image->colormap[index];
                       
-                      ImportCharQuantum(unsigned_value,p);
+                      ImportUInt8Quantum(unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(unsigned_value));
                       q++;
                     }
@@ -4233,12 +5516,12 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,index,p);
+                      ImportUInt16Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q=image->colormap[index];
                       
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -4248,12 +5531,12 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,index,p);
+                      ImportUInt32Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q=image->colormap[index];
                       
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -4263,12 +5546,12 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,index,p);
+                      ImportUInt64Quantum(endian,index,p);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q=image->colormap[index];
                       
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -4380,7 +5663,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4390,7 +5673,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleShortToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4404,7 +5687,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4414,7 +5697,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleLongToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4428,7 +5711,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4438,7 +5721,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleLongToQuantum(unsigned_value));
                               SetOpacitySample(q,OpaqueOpacity);
                               q++;
@@ -4514,7 +5797,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportCharQuantum(index,p);
+                          ImportUInt8Quantum(index,p);
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
                             index=(image->colors-1)-index;
@@ -4527,7 +5810,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportShortQuantum(endian,index,p);
+                          ImportUInt16Quantum(endian,index,p);
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
                             index=(image->colors-1)-index;
@@ -4540,7 +5823,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportLongQuantum(endian,index,p);
+                          ImportUInt32Quantum(endian,index,p);
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
                             index=(image->colors-1)-index;
@@ -4553,7 +5836,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportLongLongQuantum(endian,index,p);
+                          ImportUInt64Quantum(endian,index,p);
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
                             index=(image->colors-1)-index;
@@ -4596,30 +5879,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGraySample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -4643,9 +5950,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportCharQuantum(unsigned_value,p);
+                              ImportUInt8Quantum(unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleCharToQuantum(unsigned_value));
-                              ImportCharQuantum(unsigned_value,p);
+                              ImportUInt8Quantum(unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(unsigned_value));
                               q++;
                             }
@@ -4654,9 +5961,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportCharQuantum(unsigned_value,p);
+                              ImportUInt8Quantum(unsigned_value,p);
                               SetGraySample(q,ScaleCharToQuantum(unsigned_value));
-                              ImportCharQuantum(unsigned_value,p);
+                              ImportUInt8Quantum(unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(unsigned_value));
                               q++;
                             }
@@ -4669,9 +5976,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
                               q++;
                             }
@@ -4680,9 +5987,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleShortToQuantum(unsigned_value));
-                              ImportShortQuantum(endian,unsigned_value,p);
+                              ImportUInt16Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
                               q++;
                             }
@@ -4695,9 +6002,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               q++;
                             }
@@ -4706,9 +6013,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleLongToQuantum(unsigned_value));
-                              ImportLongQuantum(endian,unsigned_value,p);
+                              ImportUInt32Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               q++;
                             }
@@ -4721,9 +6028,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetGraySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               q++;
                             }
@@ -4732,9 +6039,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         {
                           for (x = number_pixels; x != 0; --x)
                             {
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetGraySample(q,ScaleLongToQuantum(unsigned_value));
-                              ImportLongLongQuantum(endian,unsigned_value,p);
+                              ImportUInt64Quantum(endian,unsigned_value,p);
                               SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                               q++;
                             }
@@ -4872,38 +6179,70 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGraySample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGraySample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGraySample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -4930,7 +6269,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -4940,7 +6279,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -4950,7 +6289,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -4991,30 +6330,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5041,7 +6404,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -5051,7 +6414,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5061,7 +6424,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5102,30 +6465,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5152,7 +6539,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -5162,7 +6549,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5172,7 +6559,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5214,30 +6601,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5314,28 +6725,50 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
               {
                 switch (quantum_size)
                   {
+                  case 16:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportFloat16Quantum(endian,double_value,p);
+                          double_value -= double_minvalue;
+                          double_value *= double_scale;
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
+                        }
+                      break;
+                    }
+                  case 24:
+                    {
+                      for (x = number_pixels; x != 0; --x)
+                        {
+                          ImportFloat24Quantum(endian,double_value,p);
+                          double_value -= double_minvalue;
+                          double_value *= double_scale;
+                          *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
+                        }
+                      break;
+                    }
                   case 32:
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportFloatQuantum(endian,double_value,p);
+                          ImportFloat32Quantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
                           *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
+                      break;
                     }
-                    break;
                   case 64:
                     {
                       for (x = number_pixels; x != 0; --x)
                         {
-                          ImportDoubleQuantum(endian,double_value,p);
+                          ImportFloat64Quantum(endian,double_value,p);
                           double_value -= double_minvalue;
                           double_value *= double_scale;
                           *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                         }
+                      break;
                     }
-                    break;
                   default:
                     break;
                   }
@@ -5414,30 +6847,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5463,7 +6920,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -5473,7 +6930,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5483,7 +6940,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5524,30 +6981,54 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5565,11 +7046,11 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportCharQuantum(unsigned_value,p);
+                      ImportUInt8Quantum(unsigned_value,p);
                       SetRedSample(q,ScaleCharToQuantum(unsigned_value));
-                      ImportCharQuantum(unsigned_value,p);
+                      ImportUInt8Quantum(unsigned_value,p);
                       SetGreenSample(q,ScaleCharToQuantum(unsigned_value));
-                      ImportCharQuantum(unsigned_value,p);
+                      ImportUInt8Quantum(unsigned_value,p);
                       SetBlueSample(q,ScaleCharToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
@@ -5580,11 +7061,11 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
@@ -5595,11 +7076,11 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
@@ -5610,11 +7091,11 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
@@ -5662,48 +7143,90 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      SetOpacitySample(q,OpaqueOpacity);
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      SetOpacitySample(q,OpaqueOpacity);
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
                       SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5732,13 +7255,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleShortToQuantum(unsigned_value));
                       q++;
                     }
@@ -5748,13 +7271,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5764,13 +7287,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetRedSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetGreenSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlueSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetOpacitySample(q,MaxRGB-ScaleLongToQuantum(unsigned_value));
                       q++;
                     }
@@ -5817,54 +7340,102 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetRedSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetGreenSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlueSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetRedSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetGreenSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlueSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetOpacitySample(q,MaxRGB-RoundDoubleToQuantum(double_value));
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -5893,13 +7464,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,unsigned_value);
                       q++;
                     }
@@ -5909,13 +7480,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,unsigned_value);
                       q++;
                     }
@@ -5925,13 +7496,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,unsigned_value);
                       q++;
                     }
@@ -5980,56 +7551,106 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      *indexes++=OpaqueOpacity;
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      *indexes++=OpaqueOpacity;
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetCyanSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetMagentaSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetYellowSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetCyanSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetMagentaSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetYellowSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
                       *indexes++=OpaqueOpacity;
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -6059,15 +7680,15 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleShortToQuantum(unsigned_value));
-                      ImportShortQuantum(endian,unsigned_value,p);
+                      ImportUInt16Quantum(endian,unsigned_value,p);
                       *indexes++=(IndexPacket) MaxRGB-ScaleShortToQuantum(unsigned_value);
                       q++;
                     }
@@ -6077,15 +7698,15 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongQuantum(endian,unsigned_value,p);
+                      ImportUInt32Quantum(endian,unsigned_value,p);
                       *indexes++=(IndexPacket) MaxRGB-ScaleLongToQuantum(unsigned_value);
                       q++;
                     }
@@ -6095,15 +7716,15 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetCyanSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetMagentaSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetYellowSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       SetBlackSample(q,ScaleLongToQuantum(unsigned_value));
-                      ImportLongLongQuantum(endian,unsigned_value,p);
+                      ImportUInt64Quantum(endian,unsigned_value,p);
                       *indexes++=(IndexPacket) MaxRGB-ScaleLongToQuantum(unsigned_value);
                       q++;
                     }
@@ -6152,62 +7773,118 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
           {
             switch (quantum_size)
               {
+              case 16:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat16Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
+                      q++;
+                    }
+                  break;
+                }
+              case 24:
+                {
+                  for (x = number_pixels; x != 0; --x)
+                    {
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetCyanSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetMagentaSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetYellowSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      SetBlackSample(q,RoundDoubleToQuantum(double_value));
+                      ImportFloat24Quantum(endian,double_value,p);
+                      double_value -= double_minvalue;
+                      double_value *= double_scale;
+                      *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
+                      q++;
+                    }
+                  break;
+                }
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetCyanSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetMagentaSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetYellowSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
+                  break;
                 }
-                break;
               case 64:
                 {
                   for (x = number_pixels; x != 0; --x)
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetCyanSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetMagentaSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetYellowSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       SetBlackSample(q,RoundDoubleToQuantum(double_value));
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       *indexes++=(IndexPacket) MaxRGB-RoundDoubleToQuantum(double_value);
                       q++;
                     }
+                  break;
                 }
-                break;
               default:
                 break;
               }
@@ -6233,16 +7910,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   default:
                   case 32:
                     {
-                      ImportFloatQuantum(endian,x_sample,p);
-                      ImportFloatQuantum(endian,y_sample,p);
-                      ImportFloatQuantum(endian,z_sample,p);
+                      ImportFloat32Quantum(endian,x_sample,p);
+                      ImportFloat32Quantum(endian,y_sample,p);
+                      ImportFloat32Quantum(endian,z_sample,p);
                       break;
                     }
                   case 64:
                     {
-                      ImportDoubleQuantum(endian,x_sample,p);
-                      ImportDoubleQuantum(endian,y_sample,p);
-                      ImportDoubleQuantum(endian,z_sample,p);
+                      ImportFloat64Quantum(endian,x_sample,p);
+                      ImportFloat64Quantum(endian,y_sample,p);
+                      ImportFloat64Quantum(endian,z_sample,p);
                       break;
                     }
                   }
@@ -6276,12 +7953,12 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   default:
                   case 32:
                     {
-                      ImportFloatQuantum(endian,double_value,p);
+                      ImportFloat32Quantum(endian,double_value,p);
                       break;
                     }
                     case 64:
                     {
-                      ImportDoubleQuantum(endian,double_value,p);
+                      ImportFloat64Quantum(endian,double_value,p);
                       break;
                     }
                   }
@@ -7303,7 +8980,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       (clone_info->page == (char *) NULL) && !IsTaintImage(image))
     {
       delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
-        &image->exception);
+				    &image->exception);
       if ((delegate_info != (const DelegateInfo *) NULL) &&
           (delegate_info->mode == 0) && IsAccessible(image->magick_filename))
         {
@@ -7311,13 +8988,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             Let our bi-modal delegate process the image.
           */
           (void) strlcpy(image->filename,image->magick_filename,
-            MaxTextExtent);
+			 MaxTextExtent);
           status=InvokeDelegate(clone_info,image,image->magick,
-            clone_info->magick,&image->exception);
+				clone_info->magick,&image->exception);
           DestroyImageInfo(clone_info);
           return(!status);
         }
-      }
+    }
 #endif
   /*
     Call appropriate image writer based on image type.
@@ -7327,10 +9004,39 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   if ((magick_info != (const MagickInfo *) NULL) &&
       (magick_info->encoder != NULL))
     {
+      char
+	tempfile[MaxTextExtent];
+
+      tempfile[0]='\0';
+
+      if (magick_info->seekable_stream == MagickTrue)
+	{
+	  /*
+	    Divert output to temporary file if coder requires a
+	    seekable stream and output is not seekable.
+	  */
+	  if (OpenBlob(clone_info,image,WriteBinaryBlobMode,&image->exception))
+	    {
+	      if (!BlobIsSeekable(image))
+		{
+		  if(!AcquireTemporaryFileName(tempfile))
+		    {
+		      ThrowException(&image->exception,FileOpenError,
+				     UnableToCreateTemporaryFile,image->filename);
+		      DestroyImageInfo(clone_info);
+		      return(False);
+		    }
+		  (void) strlcpy(image->filename,tempfile,sizeof(tempfile));
+		}
+	      CloseBlob(image);
+	    }
+	}
+
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking \"%.1024s\" encoder (%.1024s): monochrome=%s grayscale=%s class=%s colorspace=%s",
+			    "Invoking \"%.1024s\" encoder (%.1024s): "
+			    "monochrome=%s grayscale=%s class=%s colorspace=%s",
                             magick_info->name,
                             magick_info->description,
                             MagickBoolToString(image->is_monochrome),
@@ -7339,14 +9045,29 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
                             ColorspaceTypeToString(image->colorspace));
       status=(magick_info->encoder)(clone_info,image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Returned from \"%.1024s\" encoder",magick_info->name);
+			    "Returned from \"%.1024s\" encoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
+
+      if (tempfile[0] != '\0')
+	{
+	  /*
+	    Send temporary file to stream.
+	  */
+	  (void) strlcpy(image->filename,clone_info->filename,MaxTextExtent);	  
+	  if ((status &= OpenBlob(clone_info,image,WriteBinaryBlobMode,
+				  &image->exception)))
+	    {
+	      status &= WriteBlobFile(image,tempfile);
+	      CloseBlob(image);
+	    }
+	  LiberateTemporaryFile(tempfile);
+	}
     }
   else
     {
       delegate_info=GetDelegateInfo((char *) NULL,clone_info->magick,
-        &image->exception);
+				    &image->exception);
       if (delegate_info != (DelegateInfo *) NULL)
         {
           /*
@@ -7354,12 +9075,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           */
           if(!AcquireTemporaryFileName(image->filename))
             {
-              ThrowException(&image->exception,FileOpenError,UnableToCreateTemporaryFile,image->filename);
+              ThrowException(&image->exception,FileOpenError,
+			     UnableToCreateTemporaryFile,image->filename);
               DestroyImageInfo(clone_info);
               return(False);
             }
           status=InvokeDelegate(clone_info,image,(char *) NULL,
-            clone_info->magick,&image->exception);
+				clone_info->magick,&image->exception);
           (void) LiberateTemporaryFile(image->filename);
           DestroyImageInfo(clone_info);
           return(!status);
@@ -7372,8 +9094,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
-          ThrowBinaryException(MissingDelegateError,NoEncodeDelegateForThisImageFormat,image->filename)
-        }
+          ThrowBinaryException(MissingDelegateError,
+			       NoEncodeDelegateForThisImageFormat,
+			       image->filename)
+	    }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       status=(magick_info->encoder)(clone_info,image);
@@ -7384,7 +9108,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   DestroyImageInfo(clone_info);
   if (GetBlobStatus(image))
     ThrowBinaryException(CorruptImageError,AnErrorHasOccurredWritingToFile,
-      image->filename);
+			 image->filename);
   return(status);
 }
 

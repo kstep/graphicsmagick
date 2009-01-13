@@ -1947,10 +1947,10 @@ CompositeImage(Image *canvas_image,
     *change_image;
 
   double
-    amount,
-    percent_brightness,
-    percent_saturation,
-    threshold;
+    amount=0.0,
+    percent_brightness=0.0,
+    percent_saturation=0.0,
+    threshold=0.0;
 
   long
     y;

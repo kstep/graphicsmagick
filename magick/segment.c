@@ -168,6 +168,39 @@ static void
   ScaleSpace(const long *,const double,double *),
   ZeroCrossHistogram(double *,const double,short *);
 
+#if 0
+static void
+DumpDerivativeArray(FILE *stream,const unsigned int entries,
+                    const double *derivative)
+{
+  unsigned int
+    i;
+
+  for (i=0; i < entries; i++)
+    fprintf(stream,"  %03u: %g\n", i, derivative[i]);
+}
+#endif
+static void
+DumpExtremaArray(FILE *stream,const unsigned int entries,
+                 const short *extrema)
+{
+  unsigned int
+    i;
+
+  for (i=0; i < entries; i++)
+    fprintf(stream,"  %03u: %d\n", i, (int) extrema[i]);
+}
+static void
+DumpHistogramArray(FILE *stream,const unsigned int entries,
+                   const long *histogram)
+{
+  unsigned int
+    i;
+
+  for (i=0; i < entries; i++)
+    fprintf(stream,"  %03u: %ld\n", i, histogram[i]);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -186,9 +219,10 @@ static void
 %
 %  The format of the Classify method is:
 %
-%      unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
-%        const unsigned int verbose,const double cluster_threshold,
-%        const double smoothing_threshold)
+%      MagickPassFail Classify(Image *image,short **extrema,
+%                              const double cluster_threshold,
+%                              const double weighting_exponent,
+%                              const unsigned int verbose)
 %
 %  A description of each parameter follows.
 %
@@ -199,9 +233,10 @@ static void
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
-%    o cluster_threshold:  This double represents the minimum number of pixels
-%      contained in a hexahedra before it can be considered valid (expressed
-%      as a percentage).
+%    o cluster_threshold:  The minimum number of total pixels contained
+%      in a hexahedra before it can be considered valid (expressed as a
+%      percentage of total pixels).  This is used to eliminate seldom
+%      used colors.
 %
 %    o weighting_exponent: Specifies the membership weighting exponent.
 %
@@ -1032,8 +1067,8 @@ InitializeHistogram(Image *image,long **histogram)
 %
 %  The format of the InitializeIntervalTree method is:
 %
-%      InitializeIntervalTree(IntervalTree **list,int *number_nodes,
-%        IntervalTree *node
+%      InitializeIntervalTree(const ZeroCrossing *zero_crossing,
+%                             const unsigned int number_crossings)
 %
 %  A description of each parameter follows.
 %
@@ -1210,13 +1245,25 @@ InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %  The format of the OptimalTau method is:
 %
 %    double OptimalTau(const long *histogram,const double max_tau,
-%      const double min_tau,const double delta_tau,
-%      const double smoothing_threshold,short *extrema)
+%                      const double min_tau,const double delta_tau,
+%                      const double smoothing_threshold,
+%                      short *extrema)
 %
 %  A description of each parameter follows.
 %
 %    o histogram: Specifies an array of integers representing the number
 %      of pixels for each intensity of a particular color component.
+%
+%    o max_tau: (current 5.2f)
+%
+%    o min_tau: (current 0.2)
+%
+%    o delta_tau: (current 0.5f)
+%
+%    o smoothing_threshold: If the absolute value of a second derivative
+%       point is less than smoothing_threshold then that derivative point
+%       is ignored (i.e. set to 0) while evaluating zero crossings.  This
+%       causes small variations (could be noise) to be ignored.
 %
 %    o extrema:  Specifies a pointer to an array of integers.  They
 %      represent the peaks and valleys of the histogram for each color
@@ -1447,13 +1494,16 @@ OptimalTau(const long *histogram,const double max_tau,
 %  The format of the ScaleSpace method is:
 %
 %      ScaleSpace(const long *histogram,const double tau,
-%        double *scaled_histogram)
+%                 double *scaled_histogram)
 %
 %  A description of each parameter follows.
 %
 %    o histogram: Specifies an array of doubles representing the number of
 %      pixels for each intensity of a particular color component.
 %
+%    o tau:
+%
+%    o scaled_histogram:
 %
 */
 static void
@@ -1518,6 +1568,11 @@ ScaleSpace(const long *histogram,const double tau,double *scaled_histogram)
 %
 %    o second_derivative: Specifies an array of doubles representing the
 %      second derivative of the histogram of a particular color component.
+%
+%    o smoothing_threshold: If the absolute value of a second derivative
+%       point is less than smoothing_threshold then that derivative point
+%       is ignored (i.e. set to 0) while evaluating zero crossings.  This
+%       causes small variations (could be noise) to be ignored.
 %
 %    o crossings:  This array of integers is initialized with
 %      -1, 0, or 1 representing the slope of the first derivative of the
@@ -1594,10 +1649,6 @@ ZeroCrossHistogram(double *second_derivative,const double smoothing_threshold,
 %
 %  A description of each parameter follows.
 %
-%    o colors: The SegmentImage function returns this integer
-%      value.  It is the actual number of colors allocated in the
-%      colormap.
-%
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
@@ -1610,6 +1661,15 @@ ZeroCrossHistogram(double *second_derivative,const double smoothing_threshold,
 %    o verbose:  A value greater than zero prints detailed information about
 %      the identified classes.
 %
+%    o cluster_threshold: The minimum number of total pixels contained
+%      in a hexahedra before it can be considered valid (expressed as a
+%      percentage of total pixels).  This is used to eliminate seldom
+%      used colors.
+%
+%    o smoothing_threshold: If the absolute value of a second derivative
+%       point is less than smoothing_threshold then that derivative point
+%       is ignored (i.e. set to 0) while evaluating zero crossings.  This
+%       causes small variations (could be noise) to be ignored.
 %
 */
 MagickExport MagickPassFail
@@ -1663,6 +1723,27 @@ SegmentImage(Image *image,
                     extrema[Green]);
   (void) OptimalTau(histogram[Blue],Tau,0.2,DeltaTau,smoothing_threshold,
                     extrema[Blue]);
+  if (verbose > 1)
+    {
+      FILE
+        *stream;
+
+      stream=stdout;
+
+      fprintf(stream,"Red Histogram:\n");
+      DumpHistogramArray(stream,256,histogram[Red]);
+      fprintf(stream,"Green Histogram:\n");
+      DumpHistogramArray(stream,256,histogram[Green]);
+      fprintf(stream,"Blue Histogram:\n");
+      DumpHistogramArray(stream,256,histogram[Blue]);
+
+      fprintf(stream,"Red Extrema:\n");
+      DumpExtremaArray(stream,256,extrema[Red]);
+      fprintf(stream,"Green Extrema:\n");
+      DumpExtremaArray(stream,256,extrema[Green]);
+      fprintf(stream,"Blue Extrema:\n");
+      DumpExtremaArray(stream,256,extrema[Blue]);
+    }
   /*
     Classify using the fuzzy c-Means technique.
   */

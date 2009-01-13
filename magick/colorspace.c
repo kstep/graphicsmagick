@@ -305,9 +305,9 @@ XYZTransformPackets(void *mutable_data,          /* User provided mutable data *
       g = g < 0.0f ? 0.0f : g > MaxMapFloat ? MaxMapFloat : (g + 0.5f);
       b = b < 0.0f ? 0.0f : b > MaxMapFloat ? MaxMapFloat : (b + 0.5f);
 
-      pixels[i].red   = ScaleMapToQuantum(r);
-      pixels[i].green = ScaleMapToQuantum(g);
-      pixels[i].blue  = ScaleMapToQuantum(b);
+      pixels[i].red   = ScaleMapToQuantum((Quantum) r);
+      pixels[i].green = ScaleMapToQuantum((Quantum) g);
+      pixels[i].blue  = ScaleMapToQuantum((Quantum) b);
     }
 
   return MagickPass;
