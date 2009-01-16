@@ -837,7 +837,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
                   {
-                    image->compression=UndefinedCompression;
+                    image->compression=NoCompression;
                     if (LocaleCompare(values,"None") == 0)
                       image->compression=NoCompression;
                     else
@@ -1107,8 +1107,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "class=%s compression=%s matte=%s columns=%lu rows=%lu depth=%u",
-                          ClassTypeToString(image->storage_class),
+                          "id=\"%s\" class=%s compression=%s matte=%s "
+			  "columns=%lu rows=%lu depth=%u",
+                          id,ClassTypeToString(image->storage_class),
                           CompressionTypeToString(image->compression),
                           MagickBoolToString(image->matte),
                           image->columns, image->rows, image->depth);
