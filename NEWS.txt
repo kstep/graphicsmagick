@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on November 17, 2008
+This file was last updated on January 16, 2009
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,35 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+
+1.2.7 (January 16, 2009)
+=========================
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * VID: Eliminate memory leak.
+
+  * montage: Eliminate use of freed memory.
+
+  * delegates.mgk: Fix hang when co-process is invoked.
+
+  * identify: Return comment text of any size.
+
+  * ConvolveImage: Correctly log the convolution kernel used.
+
+Feature improvements:
+
+  * Convert: Re-implement -write so that it works in a useful fashion.
+
+Performance improvments:
+
+  * TIFF: Ping mode ('identify') is now really fast.
+
 
 1.2.6 (November 17, 2008)
 =========================
@@ -822,7 +851,7 @@ The objectives of GraphicsMagick are to:
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2003 - 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

@@ -1,3 +1,7 @@
+2009-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: GraphicsMagick 1.2.7 released.
+
 2008-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): The -write option was not
@@ -878,7 +882,7 @@
 	reading standard input if stdin fails isatty() test.
 
 ---------------------------------------------------------------------------
-Copyright (C) 2008 GraphicsMagick Group
+Copyright (C) 2008 - 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

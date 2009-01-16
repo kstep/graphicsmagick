@@ -836,7 +836,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
                   {
-                    image->compression=UndefinedCompression;
+                    image->compression=NoCompression;
                     if (LocaleCompare(values,"None") == 0)
                       image->compression=NoCompression;
                     else
