@@ -1,4 +1,4 @@
-2009-01-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+2009-01-17  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/fits.c: More robust fits parsing.
 
