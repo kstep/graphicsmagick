@@ -1,3 +1,7 @@
+2009-01-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: More robust fits parsing.
+
 2009-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Updated news.
@@ -13,6 +17,10 @@
 
 	* magick/command.c (VersionCommand): Print some build information
 	for MSVC builds.
+
+2009-01-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Ability to skip unsupported multidimensional object.
 
 2009-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
