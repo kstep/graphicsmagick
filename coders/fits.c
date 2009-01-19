@@ -315,10 +315,11 @@ ReadExtension:
           if (keyword[5] == 0) ax_number=-1;          
           else
 	  {
-           if(isdigit(keyword[5]))
-             ax_number = atoi(keyword+5);
-           else ax_number=-2;			/*unsupported fits keyword*/
+            if(isdigit(keyword[5]))
+              ax_number = atoi(keyword+5);
+            else ax_number=-2;			/*unsupported fits keyword*/
           }
+          if(ax_number>=-1) y = atoi(value);
           switch(ax_number)
           {
             case -1:fits_info.number_axes = y; break;
