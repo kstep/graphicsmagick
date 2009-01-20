@@ -16,6 +16,11 @@
 */
 
 digraph "pixel-cache" {
+
+  label = "\n\nGraphicsMagick\nPixel Cache Functions";
+  fontname = "Helvetica";
+  fontsize=20;
+
   node [style=filled];
   node [color="bisque"];
   ratio=fill

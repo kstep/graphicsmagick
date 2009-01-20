@@ -17,6 +17,10 @@
 
 digraph "pixel-cache-struct" {
 
+  label = "\n\nGraphicsMagick\nPixel Cache Data Structures";
+  fontname = "Helvetica";
+  fontsize=20;
+
   /* bounding box of drawing in inches */
   size = "11,8.5";
 
