@@ -1,0 +1,108 @@
+/*
+  Copyright (C) 2009 GraphicsMagick Group
+
+  This program is covered by multiple licenses, which are described in
+  Copyright.txt. You should have received a copy of Copyright.txt with
+  this package; otherwise see
+  http://www.graphicsmagick.org/www/Copyright.html.
+
+  Pixel Cache Data Structures
+  Written by Bob Friesenhahn, January 2009.
+
+  This file is in DOT format and may be viewed using GraphicsMagick if
+  'dot' is installed.  For example:
+
+    gm display -density 100  pixel-cache-struct.dot
+*/
+
+digraph "pixel-cache-struct" {
+
+  /* bounding box of drawing in inches */
+  size = "11,8.5";
+
+  /* aspect ratio, or fill/compress/auto */
+  ratio = 0.9;
+  /* ratio = auto; */
+
+  /* Rotation on page (only 0 or 90 works) */
+  rotate = 0;
+
+  /* minimum separation between nodes */
+  /* nodesep = 1; */
+
+  /* minimum separation between ranks */
+  /* ranksep = .5; */
+
+  /* Top to bottom drawing (alternative is LR) */
+  rankdir = "TB";
+
+  /* Default node attributes. */
+  node [
+    shape = record,
+    fontname = "Helvetica",
+    fontsize = 12,
+    fontcolor = "black",
+    fillcolor = "bisque",
+    style=filled
+    ];
+
+  "Image" [
+     shape=record,
+     label="<Struct> \N|{storage_class|colorspace|...|columns|rows|<cache> cache*|<default_views> default_views*|...|reference_count|semaphore}"
+     ];
+
+  "ThreadViewSet" [
+     shape=record, label="<Struct> \N|{<views> views[]|nviews}"
+     ];
+
+  "View" [
+     shape=record,
+     label="<Struct> \N|{<image> image*|<nexus_info> nexus_info*|signature}"
+     ];
+
+  "NexusInfo" [
+     shape=record,
+     label="<Struct> \N|{<pixels> pixels[]|<indexes> indexes[]|staging|length|<region> region|signature}"
+     ];
+
+  "CacheInfo" [
+     shape=record,
+     label="<Struct> \N|{colums|rows|offset|length|<pixels> pixels[]|<indexes> indexes[]|type|indexes_valid|reference_count|reference_semaphore|file_semaphore|storage_class|colorspace|virtual_pixel_method|file|filename|cache_filename|signature}"
+     ];
+
+  "PixelPacket" [
+     shape=record,
+     label="<Struct> \N|{red|green|blue|opacity}"
+     ];
+
+  "IndexPacket" [
+     shape=box,
+     label="\N"
+     ];
+
+  "RectangleInfo" [
+     shape=record,
+     label="<Struct> \N|{width|height|x|y}"
+     ];
+
+  Image:cache -> CacheInfo:Struct;
+
+  Image:default_views -> ThreadViewSet:Struct;
+
+  ThreadViewSet:views -> View:Struct;
+
+  View:image -> Image:Struct [ style = dashed ];
+
+  View:nexus_info -> NexusInfo:Struct;
+
+  NexusInfo:pixels -> PixelPacket:Struct [ style = dashed, constraint = false ];
+
+  NexusInfo:indexes -> IndexPacket [ style = dashed, constraint = false ];
+
+  NexusInfo:region -> RectangleInfo:Struct;
+
+  CacheInfo:pixels -> PixelPacket:Struct;
+
+  CacheInfo:indexes -> IndexPacket;
+
+}
