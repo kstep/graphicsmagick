@@ -205,6 +205,10 @@ an open source ICC profiler with graphical user interface.
 `Gallery <http://gallery.menalto.com/>`_,
 a facinating web-based photo album organizer.  Works with GraphicsMagick!.
 
+`DJV Imaging <http://djv.sourceforge.net/>`_, professional movie
+playback and image processing software for the film and computer
+animation industries.
+
 Stock Photos
 =============
 
@@ -214,5 +218,5 @@ Stock Photos
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2008
+`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2009
 
