@@ -1,3 +1,14 @@
+2009-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c (ReadBMPImage): Fix assertion thrown for BMP files
+	with negative image height values.  Resolves SF issue 2523536 "bug
+	in bmp coder".
+
+	* Makefile.am: Don't install Magick++ headers if Magick++ is
+	disabled.
+
+	* GraphicsMagick.spec.in: --enable-lzw option is no longer used.
+
 2009-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.3.4 released.

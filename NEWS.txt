@@ -14,7 +14,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.4 (not yet released)
+1.3.4 (January 13, 2009)
 =========================
 
 Security Fixes:

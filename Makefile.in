@@ -69,7 +69,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008, 2009
 #
 
 # Copyright (C) 2004 GraphicsMagick Group
@@ -156,8 +156,9 @@ TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
 	$(UTILITIES_TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
-	$(am__ltdlinclude_HEADERS_DIST) $(magickinc_HEADERS) \
-	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
+	$(am__ltdlinclude_HEADERS_DIST) \
+	$(am__magickppinc_HEADERS_DIST) \
+	$(am__magickpptopinc_HEADERS_DIST) $(magickinc_HEADERS) \
 	$(noinst_HEADERS) $(srcdir)/GraphicsMagick.spec.in \
 	$(srcdir)/Magick++/Makefile.am $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
@@ -1616,7 +1617,16 @@ am__ltdlinclude_HEADERS_DIST = ltdl/libltdl/lt_system.h \
 	ltdl/libltdl/lt_error.h ltdl/libltdl/lt_dlloader.h
 ltdlincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 magickincHEADERS_INSTALL = $(INSTALL_HEADER)
+am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
+	Magick++/lib/Magick++/CoderInfo.h \
+	Magick++/lib/Magick++/Color.h Magick++/lib/Magick++/Drawable.h \
+	Magick++/lib/Magick++/Exception.h \
+	Magick++/lib/Magick++/Geometry.h Magick++/lib/Magick++/Image.h \
+	Magick++/lib/Magick++/Include.h \
+	Magick++/lib/Magick++/Montage.h Magick++/lib/Magick++/Pixels.h \
+	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
 magickppincHEADERS_INSTALL = $(INSTALL_HEADER)
+am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 magickpptopincHEADERS_INSTALL = $(INSTALL_HEADER)
 wandincHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS) $(ltdlinclude_HEADERS) \
@@ -3111,6 +3121,10 @@ filters_analyze_la_LIBADD = $(LIBMAGICK)
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TESTS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TOP_INCHEADERS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
 MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
@@ -3220,11 +3234,13 @@ Magick___lib_libGraphicsMagick___la_SOURCES = \
 	Magick++/lib/Magick++/TypeMetric.h
 
 magickpptopincdir = $(topincludedir)
-magickpptopinc_HEADERS = \
+magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
+MAGICKPP_TOP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++.h
 
 magickppincdir = $(topincludedir)/Magick++
-magickppinc_HEADERS = \
+magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
+MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \

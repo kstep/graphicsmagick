@@ -1,7 +1,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008, 2009
 #
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
@@ -13,13 +13,17 @@ MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
 MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
 MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
 MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
+MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
 else
 LIBMAGICKPP = 
 MAGICKPP_CHECK_PGRMS = 
 MAGICKPP_MANS = 
 MAGICKPP_PKGCONFIG = 
 MAGICKPP_SCRPTS =
-MAGICKPP_TESTS = 
+MAGICKPP_TESTS =
+MAGICKPP_TOP_INCHEADERS =
+MAGICKPP_INCHEADERS =
 endif
 
 MAGICKPP_SCRIPTS_OPT = \
@@ -131,11 +135,17 @@ Magick___lib_libGraphicsMagick___la_SOURCES = \
 	Magick++/lib/Magick++/TypeMetric.h
 
 magickpptopincdir = $(topincludedir)
-magickpptopinc_HEADERS = \
+
+magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
+
+MAGICKPP_TOP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++.h
 
 magickppincdir = $(topincludedir)/Magick++
-magickppinc_HEADERS = \
+
+magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
+
+MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h \
