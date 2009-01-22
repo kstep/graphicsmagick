@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2009-01-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/bmp.c (ReadBMPImage): Fix assertion thrown for BMP files
+        with negative image height values.  Resolves SF issue 2523536 "bug
+        in bmp coder".
+
+  <LI> Makefile.am: Don't install Magick++ headers if Magick++ is
+        disabled.
+
+  <LI> GraphicsMagick.spec.in: --enable-lzw option is no longer used.
+
+</UL>
+<p>
 2009-01-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
