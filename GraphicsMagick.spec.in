@@ -177,6 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}-%{base_version}/config/*.mgk
 %dir %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}
 %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.so
+%{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.la
 %attr(755, root, root) %{_bindir}/gm
 %attr(644, root, man) %{_mandir}/man1/gm.1.gz
 %attr(644, root, man) %{_mandir}/man4/*gz
@@ -232,7 +233,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Wed Jun 02 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.2
+* Wed Jan 23 2009 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1
+- The module .la files need to be installed as part of the base
+  install or else the modules will fail to load.
+
+* Wed Jun 02 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1
 - Install *-config scripts with mode 755 rather than default 644.
 
 * Sat Feb 21 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1-1
