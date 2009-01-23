@@ -101,7 +101,7 @@ Requires: %{name}-devel = %{version}, bzip2-devel, freetype-devel
 Requires: libjpeg-devel, libpng-devel, libtiff-devel, zlib-devel, libxml2-devel
 
 %description c++-devel
-raphicsMagick-devel contains the static libraries and header files you'll
+GraphicsMagick-devel contains the static libraries and header files you'll
 need to develop GraphicsMagick applications using the Magick++ C++ bindings.
 GraphicsMagick is an image manipulation program.
 
@@ -177,6 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}-%{base_version}/config/*.mgk
 %dir %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}
 %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.so
+%{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.la
 %attr(755, root, root) %{_bindir}/gm
 %attr(644, root, man) %{_mandir}/man1/gm.1.gz
 %attr(644, root, man) %{_mandir}/man4/*gz
@@ -234,6 +235,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jan 23 2009 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.3
+- The module .la files need to be installed as part of the base
+  install or else the modules will fail to load.
+
 * Wed Jan 21 2009 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.3
 -  --enable-lzw option is not longer needed
 
