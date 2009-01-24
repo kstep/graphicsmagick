@@ -1,3 +1,7 @@
+2009-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/index.rst: Reduce the amount of text on the front page.
+
 2009-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: The module .la files need to be
