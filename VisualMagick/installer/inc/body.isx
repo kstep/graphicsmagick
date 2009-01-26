@@ -18,8 +18,8 @@
   #define MagickAppDirectory "{app}"
   #define MagickLibDirectory "{app}"
   #define MagickConfigDirectory "{app}\config"
-  #define MagickCodersDirectory "{app}\modules\coders"
-  #define MagickFiltersDirectory "{app}\modules\filters"
+  #define MagickCodersDirectory "{app}"
+  #define MagickFiltersDirectory "{app}"
 #endif
 
 #include "version.isx"
