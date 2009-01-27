@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on January 13, 2009
+This file was last updated on January 26, 2009
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,37 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.5 (January 26, 2009)
+=========================
+
+Security Fixes:
+
+  * BMP and DIB formats were throwing an assertion for negative height
+    values.  This caused the process to crash.
+
+Bug fixes:
+
+  * Don't install Magick++ headers if C++ is disabled.
+
+  * Linux RPM SPEC file needs to always install the loadable module
+    .la files or else the modules won't load.
+
+  * Windows runtime DLLs were for the wrong compiler version,
+    resulting in failure to execute if the correct runtime DLLs are
+    not available.
+
+New Features:
+
+  * None
+
+Feature improvements:
+
+  * FITS: Parsing is more robust.
+
+Performance Improvements:
+
+  * None
 
 1.3.4 (January 13, 2009)
 =========================
