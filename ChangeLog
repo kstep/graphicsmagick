@@ -1,3 +1,8 @@
+2009-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (OpenCache): Remove conservative
+	pre-allocation of pixel indexes.
+
 2009-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/index.rst: Reduce the amount of text on the front page.

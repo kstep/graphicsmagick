@@ -2794,19 +2794,9 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
       return MagickFail;
     }
   cache_info->length=offset;
-
   /*
-    Assure that there is sufficient address space available to contain
-    the PseudoClass representation (PixelPacket array + colormap
-    indexes array), and assure that there are sufficient memory
-    resources remaining. Pre-allocate sufficient memory to store the
-    PseudoClass representation in order to reduce the chance of
-    running out of virtual memory while processing the image. If the
-    operating system does not reserve heap allocations then it is
-    still possible to run out of virtual memory (the process will be
-    killed) even after the memory has been allocated.
+    Attempt to create pixel cache in memory
   */
-  offset=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((offset == (magick_off_t) ((size_t) offset)) &&
       ((cache_info->type == UndefinedCache) ||
        (cache_info->type == MemoryCache)) &&
