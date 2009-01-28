@@ -47,13 +47,25 @@ namespace MagickLib
 
 //
 // Provide appropriate DLL imports/exports for Visual C++,
-// Borland C++Builder and MinGW builds
+// Borland C++Builder and MinGW builds.
 //
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 # define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
-#  if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  if defined(_MT) && defined(_DLL) && !defined(_LIB) && !defined(STATIC_MAGICK)
+//
+// In a native Windows build, the following defines are used:
+//
+//   _MT         = Multithreaded
+//   _DLL        = Using code is part of a DLL
+//   _LIB        = Using code is being built as a library.
+//   _MAGICKMOD_ = Build uses loadable modules (Magick++ does not care about this)
+//
+// In the case where GraphicsMagick is built as a static library but the
+// using code is dynamic, STATIC_MAGICK may be defined in the project to
+// override triggering dynamic library behavior.
+//
 #    define MagickDLLBuild
 #    if defined(_VISUALC_)
 #      pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
