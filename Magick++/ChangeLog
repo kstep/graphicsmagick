@@ -1,3 +1,14 @@
+2009-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: If the user defines STATIC_MAGICK in his
+	project, then the Windows DLL decorations are ignored.  Without
+	this, Windows DLL-based code can't use a static GraphicsMagick.
+	This is recommended by SourceForge bug 2537627.
+
+	* lib/Magick++/Drawable.h: Apparently the only STL container which
+	may be DLL-exported is <vector> but we are using <list> so disable
+	DLL-export of list-based template objects.
+
 2008-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Color.cpp: Added an _isValid boolean to represent an invalid
