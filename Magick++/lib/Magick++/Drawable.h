@@ -27,12 +27,12 @@
 #include "Magick++/Geometry.h"
 
 #if defined(MagickDLLBuild)
-#  if defined(MAGICK_DRAWABLE_IMPLEMENTATION)
+#  if defined(MAGICK_PLUSPLUS_IMPLEMENTATION)
 #    define MagickDrawableExtern
 #  else
 #   pragma warning( disable: 4231 ) // Disable warning regarding using extern
 #    define MagickDrawableExtern extern
-#  endif // MAGICK_DRAWABLE_IMPLEMENTATION
+#  endif // MAGICK_PLUSPLUS_IMPLEMENTATION
 #else
 #  define MagickDrawableExtern
 #endif // MagickDLLBuild
