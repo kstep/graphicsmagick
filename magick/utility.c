@@ -732,7 +732,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
   register const char
     *p;
 
-  unsigned int
+  size_t
     length;
 
   assert(source != (const char *) NULL);
@@ -4413,7 +4413,7 @@ MagickExport char **StringToList(const char *text)
   register long
     i;
 
-  unsigned long
+  size_t
     lines;
 
   if (text == (char *) NULL)
