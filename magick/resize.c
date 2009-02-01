@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -562,7 +562,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_MinifyImage)
 #endif
         {
           row_count++;
@@ -960,7 +960,7 @@ HorizontalFilter(const Image *source,Image *destination,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_HorizontalFilter)
 #endif
       {
         if (QuantumTick(*quantum,span))
@@ -1158,7 +1158,7 @@ VerticalFilter(const Image *source,Image *destination,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_VerticalFilter)
 #endif
       {
         if (QuantumTick(*quantum,span))

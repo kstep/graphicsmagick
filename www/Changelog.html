@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2009-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c, coders/pnm.c: Fix several race conditions
+        reported by Julian Seward.<BR>
+        (OpenCache): Restore conservative pre-allocation of pixel indexes
+        since a glitch was encountered that needs to be resolved.
+
+  <LI> magick/{channel.c,compare.c,constitute.c,decorate.c,effect.c,fx.c,
+        image.c,operator.c,pixel_iterator.c,render.c,resize.c,segment.c,
+        shear.c,transform.c}: Use explicit OpenMP critical sections to
+        avoid possible cross-contention.
+
+  <LI> coders/{dpx.c, pnm.c} Use explicit OpenMP critical sections to
+        avoid possible cross-contention.
+
+</UL>
+<p>
 2009-01-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

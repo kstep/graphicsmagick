@@ -126,7 +126,7 @@ typedef struct _CacheInfo
   /* Image indexes if memory resident */
   IndexPacket *indexes;
 
-  /* Memory, Disk, Map */
+  /* Ping, Memory, Disk, Map */
   CacheType type;
 
   /* Image indexes are valid */
@@ -2548,7 +2548,6 @@ ModifyCache(Image *image, ExceptionInfo *exception)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
   status=MagickPass;
 
   /*
@@ -2558,6 +2557,7 @@ ModifyCache(Image *image, ExceptionInfo *exception)
   */
   LockSemaphoreInfo(image->semaphore);
   {
+    assert(image->cache != (Cache) NULL);
     cache_info=(CacheInfo *) image->cache;
 
     LockSemaphoreInfo(cache_info->reference_semaphore);
@@ -2797,6 +2797,7 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
   /*
     Attempt to create pixel cache in memory
   */
+  offset=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket)); /* FIXME */
   if ((offset == (magick_off_t) ((size_t) offset)) &&
       ((cache_info->type == UndefinedCache) ||
        (cache_info->type == MemoryCache)) &&
@@ -3521,12 +3522,12 @@ SetCacheNexus(Image *image,const long x,const long y,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
   if (ModifyCache(image,exception) == MagickFail)
     return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
   */
+  assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   offset=y*(magick_off_t) cache_info->columns+x;
   if (offset < 0)
@@ -3927,9 +3928,16 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
       ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
       return MagickFail;
     }
-  image->taint=MagickTrue;
-  image->is_grayscale=MagickFalse;
-  image->is_monochrome=MagickFalse;
+  /* LockSemaphoreInfo(image->semaphore); */
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_SyncCacheNexus)
+#endif
+  {
+    image->taint=MagickTrue;
+    image->is_grayscale=MagickFalse;
+    image->is_monochrome=MagickFalse;
+  }
+  /* UnlockSemaphoreInfo(image->semaphore); */
   if (IsNexusInCore(cache_info,nexus_info))
     return(MagickPass);
   if (image->clip_mask != (Image *) NULL)

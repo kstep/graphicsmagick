@@ -187,7 +187,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ChopImage)
 #endif
       {
         row_count++;
@@ -255,7 +255,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ChopImage)
 #endif
       {
         row_count++;
@@ -542,7 +542,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_CropImage)
 #endif
       {
         row_count++;
@@ -913,7 +913,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_FlipImage)
 #endif
       {
         row_count++;
@@ -1040,7 +1040,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_FlopImage)
 #endif
       {
         row_count++;

@@ -2329,7 +2329,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 
                 scanline_data=scanline;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadDPXImage)
 #endif
                 {
                   if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
@@ -2362,7 +2362,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (thread_status == MagickFail)
                 {
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadDPXImage)
 #endif
                   status=thread_status;
                   continue;
@@ -2581,7 +2581,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */              
               if (thread_status == MagickFail)
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadDPXImage)
 #endif
                 status=MagickFail;
 #if 0

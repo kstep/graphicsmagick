@@ -726,7 +726,7 @@ Classify(Image *image,short **extrema,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_Classify)
 #endif
       {
         row_count++;

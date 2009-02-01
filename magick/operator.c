@@ -571,7 +571,7 @@ QuantumDepthCB(void *mutable_data,
       */
 #if MaxRGB <= MaxMap
 #  if defined(HAVE_OPENMP)
-#    pragma omp critical
+#    pragma omp critical (GM_QuantumDepthCB)
 #  endif
       if (mutable_context->channel_lut == (Quantum *) NULL)
         {
@@ -751,7 +751,7 @@ QuantumGammaCB(void *mutable_data,
   */
 #if MaxRGB <= MaxMap
 #  if defined(HAVE_OPENMP)
-#    pragma omp critical
+#    pragma omp critical (GM_QuantumGammaCB)
 #  endif
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {
@@ -925,7 +925,7 @@ QuantumLogCB(void *mutable_data,
   */
 #if MaxRGB <= MaxMap
 #  if defined(HAVE_OPENMP)
-#    pragma omp critical
+#    pragma omp critical (GM_QuantumLogCB)
 #  endif
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {
@@ -1550,7 +1550,7 @@ QuantumPowCB(void *mutable_data,
   */
 #if MaxRGB <= MaxMap
 #  if defined(HAVE_OPENMP)
-#    pragma omp critical
+#    pragma omp critical (GM_QuantumPowCB)
 #  endif
   if (mutable_context->channel_lut == (Quantum *) NULL)
     {

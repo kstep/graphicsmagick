@@ -334,7 +334,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_FrameImage)
 #endif
       {
         row_count++;
@@ -433,15 +433,15 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %
 %
 */
-MagickExport MagickPassFail
-RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
-{
 #define AccentuateFactor  (double) ScaleCharToQuantum(135)
 #define HighlightFactor  (double) ScaleCharToQuantum(190)
 #define ShadowFactor  (double) ScaleCharToQuantum(190)
 #define RaiseImageText  "[%s] Raise image..."
 #define TroughFactor  (double) ScaleCharToQuantum(135)
 
+MagickExport MagickPassFail
+RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
+{
   unsigned long
     row_count=0;
 
@@ -586,7 +586,7 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise)
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_RaiseImage)
 #endif
       {
         row_count++;

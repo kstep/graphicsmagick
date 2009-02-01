@@ -866,7 +866,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_AverageImages)
 #endif
       {
         row_count++;
@@ -2629,7 +2629,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         thread_status;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageBoundingBox)
 #endif
       {
         thread_status=status;
@@ -2680,7 +2680,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageBoundingBox)
 #endif
       {
         row_count++;
@@ -2856,7 +2856,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
   ARG_NOT_USED(exception);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageDepthCallBack)
 #endif
   {
     depth=*current_depth;
@@ -2910,7 +2910,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
 #endif
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageDepthCallBack)
 #endif
   {
     if (depth > *current_depth)
@@ -3471,7 +3471,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsMean)
 #endif
   {
     statistics->red.mean += lstatistics.red.mean;
@@ -3531,7 +3531,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
 
   (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsVariance)
 #endif
   {
     lstatistics.red.mean=statistics->red.mean;
@@ -3563,7 +3563,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsVariance)
 #endif
   {
     statistics->red.variance += lstatistics.red.variance;
@@ -3785,7 +3785,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GradientImage)
 #endif
       {
         row_count++;
@@ -5733,7 +5733,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_TextureImage)
 #endif
       {
         row_count++;

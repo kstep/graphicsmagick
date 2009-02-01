@@ -478,7 +478,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ConvolveImage)
 #endif
         {
           row_count++;
@@ -662,7 +662,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ImplodeImage)
 #endif
         {
           row_count++;
@@ -1034,7 +1034,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_OilPaintImage)
 #endif
       {
         row_count++;
@@ -1545,7 +1545,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_SwirlImage)
 #endif
         {
           row_count++;
@@ -1706,7 +1706,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
               thread_status=MagickFail;
           }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_WaveImage)
 #endif
         {
           row_count++;

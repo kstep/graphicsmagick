@@ -1131,7 +1131,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_DrawAffineImage)
 #endif
       {
         row_count++;

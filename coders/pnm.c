@@ -579,7 +579,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 pixels=AccessThreadViewData(scanline_set);
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
                   if (ReadBlobZC(image,bytes_per_row,&pixels) != bytes_per_row)
@@ -612,7 +612,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (thread_status == MagickFail)
                   {
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                     status=MagickFail;
                   }
@@ -682,7 +682,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixels=AccessThreadViewData(scanline_set);
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
                   if (ReadBlobZC(image,bytes_per_row,&pixels) != bytes_per_row)
@@ -730,7 +730,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
                   if (thread_status == MagickFail)
@@ -806,14 +806,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (thread_status == MagickFail)
                   continue;
             
-                thread_is_grayscale=is_grayscale;
-                thread_is_monochrome=is_monochrome;
                 pixels=AccessThreadViewData(scanline_set);
             
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
+		  thread_is_grayscale=is_grayscale;
+		  thread_is_monochrome=is_monochrome;
+
                   if (ReadBlobZC(image,bytes_per_row,&pixels) != bytes_per_row)
                     thread_status=MagickFail;
               
@@ -858,7 +859,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
                   if (thread_status == MagickFail)

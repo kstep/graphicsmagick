@@ -2027,7 +2027,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_ConstituteTextureImage)
 #endif
       {
         row_count++;
