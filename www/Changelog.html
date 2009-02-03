@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2009-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Allow the user to force the
+        returned image to be TrueColor type for min-is-white and
+        min-is-black TIFF files.  Previous to this, bilevel TIFF files
+        were always returned as PseudoClass.
+
+</UL>
+<p>
 2009-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
