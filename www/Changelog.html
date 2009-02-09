@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2009-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (ResizeImage): Make error handling more robust.
+
+  <LI> magick/pixel_cache.c (SetNexus): Return a run-time error to
+        invoking code rather than exiting the program if the pixel staging
+        buffer fails to be allocated.
+
+</UL>
+<p>
 2009-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

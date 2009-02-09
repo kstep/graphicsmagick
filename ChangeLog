@@ -1,3 +1,11 @@
+2009-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (ResizeImage): Make error handling more robust.
+
+	* magick/pixel_cache.c (SetNexus): Return a run-time error to
+	invoking code rather than exiting the program if the pixel staging
+	buffer fails to be allocated.
+
 2009-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Allow the user to force the

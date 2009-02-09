@@ -840,7 +840,7 @@ HorizontalFilter(const Image *source,Image *destination,
         *p;
 
       register PixelPacket
-        *q;
+        *q = (PixelPacket *) NULL;
 
       const IndexPacket
         *source_indexes;
@@ -890,8 +890,12 @@ HorizontalFilter(const Image *source,Image *destination,
       p=AcquireImagePixels(source,contribution[0].pixel,0,
                            contribution[n-1].pixel-contribution[0].pixel+1,
                            source->rows,exception);
-      q=SetImagePixelsEx(destination,x,0,1,destination->rows,exception);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      if (p == (const PixelPacket *) NULL)
+	thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+	q=SetImagePixelsEx(destination,x,0,1,destination->rows,exception);
+      if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
 
       if (thread_status != MagickFail)
@@ -977,9 +981,10 @@ HorizontalFilter(const Image *source,Image *destination,
 
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                          "Normal exit HorizontalFilter()");
+                          "%s exit HorizontalFilter()",
+			  (status == MagickFail ? "Error" : "Normal"));
 
-  return (status != MagickFail);
+  return (status);
 }
 
 static MagickPassFail
@@ -1040,7 +1045,7 @@ VerticalFilter(const Image *source,Image *destination,
         *p;
     
       register PixelPacket
-        *q;
+        *q = (PixelPacket *) NULL;
 
       const IndexPacket
         *source_indexes;
@@ -1089,9 +1094,14 @@ VerticalFilter(const Image *source,Image *destination,
       p=AcquireImagePixels(source,0,contribution[0].pixel,source->columns,
                            contribution[n-1].pixel-contribution[0].pixel+1,
                            exception);
-      q=SetImagePixelsEx(destination,0,y,destination->columns,1,exception);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      if (p == (const PixelPacket *) NULL)
+	thread_status=MagickFail;
+
+      if (thread_status != MagickFail)
+	q=SetImagePixelsEx(destination,0,y,destination->columns,1,exception);
+      if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
+
       if (thread_status != MagickFail)
         {
           source_indexes=AccessImmutableIndexes(source);
@@ -1175,9 +1185,10 @@ VerticalFilter(const Image *source,Image *destination,
 
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                          "Normal exit VerticalFilter()");
+			  "%s exit VerticalFilter()",
+			  (status == MagickFail ? "Error" : "Normal"));
 
-  return (status != MagickFail);
+  return (status);
 }
 
 MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
@@ -1309,18 +1320,20 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (order)
     {
       span=source_image->columns+resize_image->rows;
-      status &= HorizontalFilter(image,source_image,x_factor,&filters[i],blur,
-                                 view_data_set,span,&quantum,exception);
-      status &= VerticalFilter(source_image,resize_image,y_factor,&filters[i],
-                               blur,view_data_set,span,&quantum,exception);
+      status=HorizontalFilter(image,source_image,x_factor,&filters[i],blur,
+			      view_data_set,span,&quantum,exception);
+      if (status != MagickFail)
+	status=VerticalFilter(source_image,resize_image,y_factor,&filters[i],
+			      blur,view_data_set,span,&quantum,exception);
     }
   else
     {
       span=resize_image->columns+source_image->rows;
-      status &= VerticalFilter(image,source_image,y_factor,&filters[i],blur,
-                               view_data_set,span,&quantum,exception);
-      status &= HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
-                                 blur,view_data_set,span,&quantum,exception);
+      status=VerticalFilter(image,source_image,y_factor,&filters[i],blur,
+			    view_data_set,span,&quantum,exception);
+      if (status != MagickFail)
+	status=HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
+				blur,view_data_set,span,&quantum,exception);
     }
   /*
     Free allocated memory.

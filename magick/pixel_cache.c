@@ -179,7 +179,7 @@ typedef struct _NexusInfo
   PixelPacket *staging;
 
   /* Allocation size (in bytes) of pixel staging area */
-  magick_off_t length;
+  size_t length;
 
   /* Selected region (width, height, x, y). */
   RectangleInfo region;
@@ -752,6 +752,8 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
   region.width=columns;
   region.height=rows;
   pixels=SetNexus(image,&region,nexus_info,exception);
+  if (pixels == (PixelPacket *) NULL)
+    return((const PixelPacket *) NULL);
   offset=region.y*(magick_off_t) cache_info->columns+region.x;
   length=(region.height-1)*cache_info->columns+region.width-1;
   number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
@@ -3773,8 +3775,8 @@ SetImageVirtualPixelMethod(const Image *image,
 %
 %  The format of the SetNexus() method is:
 %
-%      PixelPacket SetNexus(const Image *image,const RectangleInfo *region,
-%                           NexusInfo *nexus_info,ExceptionInfo *exception)
+%      PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
+%                            NexusInfo *nexus_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3806,7 +3808,8 @@ SetNexus(const Image *image,const RectangleInfo *region,
     offset;
 
   size_t
-    length;
+    length,
+    packet_size;
 
   ARG_NOT_USED(exception);
   assert(image != (Image *) NULL);
@@ -3840,37 +3843,36 @@ SetNexus(const Image *image,const RectangleInfo *region,
   */
   number_pixels=(magick_uint64_t)
     Max(nexus_info->region.width*nexus_info->region.height,cache_info->columns);
-  length=number_pixels*sizeof(PixelPacket);
+  packet_size=sizeof(PixelPacket);
   if (cache_info->indexes_valid)
-    length+=number_pixels*sizeof(IndexPacket);
-  if (nexus_info->staging == (PixelPacket *) NULL)
+    packet_size+=sizeof(IndexPacket);;
+  length=number_pixels*packet_size;
+  if ((length/packet_size == number_pixels) &&
+      ((nexus_info->staging == (PixelPacket *) NULL) ||
+       (nexus_info->length < length)))
     {
-      nexus_info->staging=MagickAllocateMemory(PixelPacket *,length);
-      nexus_info->length=length;
-      /*
-        Clear memory so valgrind is happy.
-      */
+      nexus_info->length=0;
+      MagickReallocMemory(PixelPacket *,nexus_info->staging,length);
       if (nexus_info->staging != (PixelPacket *) NULL)
-        (void) memset((void *) nexus_info->staging,0,nexus_info->length);
+	{
+	  nexus_info->length=length;
+	  (void) memset((void *) nexus_info->staging,0,nexus_info->length);
+	}
     }
-  else
-    if (nexus_info->length < (magick_off_t) length)
-      {
-        MagickReallocMemory(PixelPacket *,nexus_info->staging,length);
-        nexus_info->length=length;
-        /*
-          Clear memory so valgrind is happy.
-        */
-        if (nexus_info->staging != (PixelPacket *) NULL)
-          (void) memset((void *) nexus_info->staging,0,nexus_info->length);
-      }
-  if (nexus_info->staging == (PixelPacket *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-                      UnableToAllocateCacheInfo);
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
-  if (cache_info->indexes_valid)
+  if ((cache_info->indexes_valid) &&
+      (nexus_info->pixels != (PixelPacket *) NULL))
     nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
+  if (nexus_info->pixels == (PixelPacket *) NULL)
+    {
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+			    "Failed to allocate %lu bytes for nexus staging!",
+			    (unsigned long) length);
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+		     image->filename);
+    }
+
   return(nexus_info->pixels);
 }
 
