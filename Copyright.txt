@@ -20,8 +20,8 @@ The licences which components of this software fall under are as follows.
   In November 2002, the GraphicsMagick Group created GraphicsMagick from
   ImageMagick Studio's ImageMagick and applied this license:
 
-  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
-  to making software imaging solutions freely available.
+  Copyright (C) 2002 - 2009 GraphicsMagick Group, an organization
+  dedicated to making software imaging solutions freely available.
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files
@@ -48,8 +48,9 @@ The licences which components of this software fall under are as follows.
   authorization from the GraphicsMagick Group.
 
 2)
-  In August 1999, ImageMagick Studio assumed the responsibility for the
-  development of ImageMagick and applied a new license:
+  In October 1999, ImageMagick Studio assumed the responsibility for
+  the development of ImageMagick (forking from the distribution by
+  E. I. du Pont de Nemours and Company) and applied a new license:
 
   Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
   to making software imaging solutions freely available.
@@ -78,8 +79,9 @@ The licences which components of this software fall under are as follows.
   ImageMagick Studio.
 
 3)
-  From 1991 to August 1999, ImageMagick was developed and distributed by
-  E. I. du Pont de Nemours and Company:
+  From 1991 to October 1999 (through ImageMagick 4.2.9), ImageMagick
+  was developed and distributed by E. I. du Pont de Nemours and
+  Company:
 
   Copyright 1999 E. I. du Pont de Nemours and Company
 
