@@ -18,19 +18,23 @@ GraphicsMagick FAQ
 
 .. contents:: FAQ Contents
 
-1) How does GraphicsMagick differ from ImageMagick?
----------------------------------------------------
+How does GraphicsMagick differ from ImageMagick?
+------------------------------------------------
 
-*GraphicsMagick* is originally based on ImageMagick 5.5.2. Other than
-utilities being executed as sub-commands of the 'gm' command, the
-command-line syntax and programming APIs remain entirely upward
-compatible with ImageMagick 5.5.2. A better question might be "*How does
-ImageMagick differ from ImageMagick?*" since ImageMagick continues to
-alter and evolve its interfaces so they are no longer completely
-compatible with earlier versions. While GraphicsMagick also adds new
-features, it does so in a way which assures that existing features work
-as they did before. ImageMagick focuses on adding new functionality and
-features and has dramatically mutated several times since the fork.
+*GraphicsMagick* is originally based on (forked from) ImageMagick
+5.5.2 in November 2002, from the version distributed by ImageMagick
+Studio LLC, which is itself forked in August 1999 from ImageMagick
+developed by E. I. du Pont de Nemours and Company starting in
+1992. Other than utilities being executed as sub-commands of the 'gm'
+command, the command-line syntax and programming APIs remain entirely
+upward compatible with ImageMagick 5.5.2. A better question might be
+"*How does ImageMagick differ from ImageMagick?*" since ImageMagick
+continues to alter and evolve its interfaces so they are no longer
+completely compatible with earlier versions. While GraphicsMagick also
+adds new features, it does so in a way which assures that existing
+features work as they did before. ImageMagick focuses on adding new
+functionality and features and has dramatically mutated several times
+since the fork.
 
 GraphicsMagick maintains a stable release branch, maintains a detailed
 ChangeLog, and maintains a stable source repository with complete version
@@ -50,41 +54,62 @@ GraphicsMagick is usually faster than ImageMagick. The baseline execution
 overhead for simple commands is much lower, and GraphicsMagick is also
 more efficient at dealing with large images.
 
-2) How often does GraphicsMagick pick up new code from ImageMagick?
--------------------------------------------------------------------
+How often does GraphicsMagick pick up new code from ImageMagick?
+----------------------------------------------------------------
 
-GraphicsMagick never picks up new code from ImageMagick. Not long after
-the GraphicsMagick project was started in November 2002, ImageMagick
+GraphicsMagick never picks up new code from ImageMagick as distributed
+by ImageMagick Studio LLC. Not long after the GraphicsMagick project
+was started in November 2002, ImageMagick from ImageMagick Studio LLC
 abandoned the MIT X11 style license it had been using since 1992, and
 switched between several different licenses until it ended up with one
-based on the Apache license, which is intended to penalize projects which
-borrow some of its source code, or fork from it. Since that time,
-GraphicsMagick has not incorporated any ImageMagick source code. Authors
-of new features are encouraged to independently contribute their work to
-the GraphicsMagick project so that it can be released under
-GraphicsMagick's MIT X11 style license without additional encumberment.
+based on the Apache license, which is intended to penalize projects
+which borrow some of its source code, or fork from it. Since that
+time, GraphicsMagick has not incorporated any ImageMagick source
+code. Authors of new features are encouraged to independently
+contribute their work to the GraphicsMagick project so that it can be
+released under GraphicsMagick's MIT X11 style license without
+additional encumberment.
 
-3) Does ImageMagick violate the rights of other free software projects?
------------------------------------------------------------------------
+Does ImageMagick violate the rights of other free software projects?
+--------------------------------------------------------------------
 
-Unfortunately the answer to this question is 'yes'.  ImageMagick
-frequently incorporates code from other open source projects yet fails
-to accurately convey the copyright statements and usage licenses from
-those projects.  Copyright statements are routinely deleted from
-source and text files and replaced with the ImageMagick copyright
-statement.  ImageMagick users do not know which parts were copied or
-which parts were actually written by the ImageMagick project. Over the
-years we have noticed that ImageMagick has whittled down the necessary
-copyright statements and usage licenses until they are almost
-non-existent.  The usage licenses which grants the right to use or
-distribute the copied software have now been entirely removed.
-Instead, the ImageMagick license is the only license which is claimed
-to apply.  It seems that after a short time (and often immediately)
-the ImageMagick project decides that it is no longer worth mentioning
-where the code and documentation came from.  Most people would
-consider these actions to be plagiarism_ and they certainly constitute
-a violation of the core principles which are the basis for free open
-source projects.
+Unfortunately the answer to this question is 'yes'.  ImageMagick as
+distributed by ImageMagick Studio LLC frequently incorporates code
+from other open source projects yet fails to accurately convey the
+copyright statements and usage licenses from those projects.
+Copyright statements are routinely deleted from source and text files
+and replaced with the ImageMagick Studio LLC copyright statement.  The
+first example of this (that we are aware of) is that in October 1999,
+the copyright statements from E. I. du Pont de Nemours and Company
+were stripped from the source files and replaced with copyright
+statements which said that the files were written by ImageMagick
+Studio LLC in the year 2000.
+
+Users of ImageMagick as distributed by ImageMagick Studio LLC do not
+know which parts were copied from other projects or which parts were
+actually authored by ImageMagick Studio LLC. Over the years we have
+noticed that ImageMagick Studio LLC has whittled down the necessary
+copyright statements and usage licenses until they are essentially
+non-existent, in violation of federal laws and requirements specified
+by the usage licenses.  The usage licenses which grant the right to
+use or distribute the copied software have been entirely removed.
+Instead (until 6.4.9), the license from ImageMagick Studio LLC was the
+only license which is claimed to apply.  Even in ImageMagick 6.4.9 the
+copyright lines for files authored by other projects have been
+replaced with ones saying that they are copyright ImageMagick Studio
+LLC.  ImageMagick 6.4.9 places its own preferred copyright statement
+and license in a file called LICENSE (which is the content served up
+as the license on its web site), but it puts the copyright statements
+and licenses for copied software in an obscure file called NOTICE, as
+if the copyrights and licenses listed there do not equally apply.  The
+NOTICE file still fails to notice that ImageMagick from ImageMagick
+Studio LLC is based on ImageMagick from E. I. du Pont de Nemours and
+Company, and that this critical copyright and license is missing.  It
+seems that after a short time (and often immediately) ImageMagick
+Studio LLC decides that it is no longer worth mentioning where the
+code and documentation came from.  Most people would consider these
+actions to be plagiarism_ and they certainly constitute a violation of
+the core principles which are the basis for free open source projects.
 
 The GraphicsMagick project has been singled out for the worst abuses.
 We are not really sure of everything that has been copied without
@@ -94,20 +119,21 @@ and later, the Windows "setup" style installer, the
 "ImageMagickObject" DLL based on ATL7, a large part of the test suite,
 a number of image format modules, and (for a while) entire pages from
 the GraphicsMagick web site including its own mission statement.
-Since the GraphicsMagick project competes with the ImageMagick
-project, the unacknowledged copying puts GraphicsMagick at a severe
-disadvantage since ImageMagick users and redistributors do not know
-where the work originally came from or the author of the work.  The
-copyright statement for GraphicsMagick as listed in the ImageMagick
-NOTICE file is incorrect since it says that the parts which were
-copied are from 2002.  The GraphicsMagick project started in late
-November of 2002 and it did not provide access to any source code
-until March of 2003, while it was still developing its first release.
-Regardless of this, ImageMagick has continued to incorporate many
-updates from GraphicsMagick
+Since the GraphicsMagick project directly competes with the
+ImageMagick project distributed by ImageMagick Studio LLC, the
+unacknowledged copying puts GraphicsMagick at a severe disadvantage
+since ImageMagick users and redistributors do not know where the work
+originally came from or the author of the work.  The copyright
+statement for GraphicsMagick as listed in the ImageMagick NOTICE file
+is incorrect since it says that the parts which were copied are only
+from 2002.  The GraphicsMagick project started in late November of
+2002 and it did not provide access to any source code until March of
+2003, while it was still developing its first release.  Regardless of
+this, ImageMagick has continued to incorporate many updates from
+GraphicsMagick with no recognition of this fact.
 
-4) I received the following message, "?????? delegation failed ...". What does it mean?
----------------------------------------------------------------------------------------
+I received the following message, "?????? delegation failed ...". What does it mean?
+------------------------------------------------------------------------------------
 
 *GraphicsMagick* uses several freely available packages to perform the
 translation of certain image formats (*PostScript*, *MPEG*, etc.). Make
@@ -118,8 +144,8 @@ sufficient space is available. Finally, for *PostScript*, verify that
 Ghostscript supports the *pnmraw* or *ppmraw* device (``gs -h``) and that
 the document contains valid *PostScript* statements (``gs image.ps``).
 
-5) How do I set the transparency index in a GIF image so it displays properly within Mozilla?
----------------------------------------------------------------------------------------------
+How do I set the transparency index in a GIF image so it displays properly within Mozilla?
+------------------------------------------------------------------------------------------
 
 Display your GIF image with display_. Choose *Matte* from the *Image
 Edit* command menu and identify a pixel that has the *transparency*
@@ -157,8 +183,8 @@ If you do not have the *xstdcmap(1)* program, try ::
 
     gm display -visual TrueColor image.gif
 
-6) How can I stop the filenames from changing in the title bar of the animate(1) image window?
-----------------------------------------------------------------------------------------------
+How can I stop the filenames from changing in the title bar of the animate(1) image window?
+-------------------------------------------------------------------------------------------
 
 Animate_ updates the image file name in the title bar of the image window
 as each image is displayed from the image sequence. To display just a
@@ -166,8 +192,8 @@ single name that will not change, use *-title*::
 
     gm animate -title "My Image Sequence" images.
 
-7) The image grabbed by import(1) does not look like the image on my X server. What's wrong?
---------------------------------------------------------------------------------------------
+The image grabbed by import(1) does not look like the image on my X server. What's wrong?
+-----------------------------------------------------------------------------------------
 
 Use the *-descend* option::
 
@@ -186,30 +212,30 @@ with the window you select and compositing it on a blank canvas. This can
 be significantly slower than just grabbing the top-level window but
 ensures the correct image.
 
-8) How do I animate a digital YUV image sequence?
--------------------------------------------------
+How do I animate a digital YUV image sequence?
+----------------------------------------------
 
 Suppose your sequence is 72 352x240 frames titled frame0.Y, frame0.U,
 frame0.V, frame1.Y, frame1.U, etc. Use this command::
 
     gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
 
-9) How do I view only the red channel of an RGB image?
-------------------------------------------------------
+How do I view only the red channel of an RGB image?
+---------------------------------------------------
 
 Use the *-gamma* option, for example, ::
 
     gm display -gamma 1.0,0.0,0.0 image.miff
 
-10) How do I change the default *PostScript* page size?
--------------------------------------------------------
+How do I change the default *PostScript* page size?
+---------------------------------------------------
 
 The default dimensions of a *PostScript* page is 612x792. If you prefer
 another default, change the page geometries (PSPageGeometry) in
 `magick/image.h` and recompile.
 
-11) When I display or convert an image, I get Memory allocation error. What can I do?
--------------------------------------------------------------------------------------
+When I display or convert an image, I get Memory allocation error. What can I do?
+---------------------------------------------------------------------------------
 
 Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best
@@ -288,8 +314,8 @@ operating system's ability to address memory, and your degree of
 patience. GraphicsMagick has been used to process RGB images 64K by 64K
 pixels in size!
 
-12) How do I concatenate three images left-to-right with no borders, frames, or text?
--------------------------------------------------------------------------------------
+How do I concatenate three images left-to-right with no borders, frames, or text?
+---------------------------------------------------------------------------------
 
 Assume your three images are called image1.ppm, image2.ppm, and
 image3.ppm. Type ::
@@ -310,8 +336,8 @@ example, ::
     gm composite -geometry +0+375 composite.miff image4.gif composite.miff
 
 
-13) How do I create a GIF animation sequence to display within Netscape?
-------------------------------------------------------------------------
+How do I create a GIF animation sequence to display within Netscape?
+--------------------------------------------------------------------
 
 Use convert_ with the *-delay* and *-page* options. The *-delay* option
 is used to specify the delay in *1/100ths of a second* between the
@@ -340,8 +366,8 @@ animation. If you want a single image produced for each frame, use
 
     gm convert +adjoin images.* frames%d.gif
 
-14) When I display a *PostScript* image, white borders are trimmed.
--------------------------------------------------------------------
+When I display a *PostScript* image, white borders are trimmed.
+---------------------------------------------------------------
 
 *GraphicsMagick* automatically trims any *PostScript* image as defined by
 the bounding box. To preempt this behavior, remove the bounding box
@@ -350,8 +376,8 @@ example, ::
 
     gm display -page letter image.ps
 
-15) What are visual image directories? How do I use them?
----------------------------------------------------------
+What are visual image directories? How do I use them?
+-----------------------------------------------------
 
 A visual image directory (VID) is an image that contains thumbnails of
 one or more images in a file directory. Rather than displaying each
@@ -390,8 +416,8 @@ frames of an image sequence::
 
     gm display vid:movie.mpg
 
-16) How can I include the window frame when importing a window?
----------------------------------------------------------------
+How can I include the window frame when importing a window?
+-----------------------------------------------------------
 
 I use the window ID reported by *xwininfo(1)* with import and it does not
 include the window manager frame as expected. How can I save the window
@@ -406,8 +432,8 @@ You can then use the returned window ID with import_::
 
     gm import -frame -window ID window.miff
 
-17) I displayed an image and it appears as one solid color. What did I do wrong?
---------------------------------------------------------------------------------
+I displayed an image and it appears as one solid color. What did I do wrong?
+----------------------------------------------------------------------------
 
 A blank image generally means that the image is either corrupt or it has
 a matte channel and the matte values are all zero. *GraphicsMagick*
@@ -416,8 +442,8 @@ this is the problem, try ::
 
     gm display +matte image.miff
 
-18) I received the following message, "???? library is not available...".
--------------------------------------------------------------------------
+I received the following message, "???? library is not available...".
+---------------------------------------------------------------------
 
 *GraphicsMagick* requires source libraries not included with the
 distribution to view or convert certain image formats such as JPEG or
@@ -425,8 +451,8 @@ TIFF. The above message means you did not compile the required library
 and link with the *GraphicsMagick* utilities. See README_ for the
 location of these libraries and compiling instructions.
 
-19) I want to inspect the values of the matte channel within my image.
-----------------------------------------------------------------------
+I want to inspect the values of the matte channel within my image.
+------------------------------------------------------------------
 
 View the matte image as a gray scale image. Suppose you have a TIFF image
 that has a matte channel and is 640 pixels in width and 480 in height.
@@ -435,8 +461,8 @@ Type::
     gm convert image.tiff image.matte
     gm display -size 640x480 gray:image.matte
 
-20) How can I add one of those cool bevels to my image that I see used on the Web?
-----------------------------------------------------------------------------------
+How can I add one of those cool bevels to my image that I see used on the Web?
+------------------------------------------------------------------------------
 
 There are four types of ornamental borders you can add to your image
 with GraphicsMagick. Each is listed below with the procedure to use
@@ -476,8 +502,8 @@ them with your image.
     gm convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
     gm convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif
 
-21) I try to launch display from my window manager and it fails. What's up?
----------------------------------------------------------------------------
+I try to launch display from my window manager and it fails. What's up?
+-----------------------------------------------------------------------
 
 Display_ determines if it is executing interactively and behaves
 differently depending on the result. To convince display <display.html>
@@ -489,8 +515,8 @@ window manager, use either of ::
 
 Note that this issue no longer exists as of GraphicsMagick 1.2.
 
-22)  How can I make Postscript text look good?
-----------------------------------------------
+How can I make Postscript text look good?
+-----------------------------------------
 
 Simple. Increase the dots-per-inch when converting and sub-sample::
 
@@ -511,8 +537,8 @@ but in the process anti-aliases (or smooths) the fonts and lines of the
 image so as to remove the jaggies you would otherwise get from a normal
 postscript to image conversion.
 
-23) How can I annotate an image with text that is 2 to 3 inches tall?
----------------------------------------------------------------------
+How can I annotate an image with text that is 2 to 3 inches tall?
+-----------------------------------------------------------------
 
 If you do not access to a particular named font that is large, try
 scalable fonts. First see if you have any scalable fonts. Type ::
@@ -533,8 +559,8 @@ increase your pointsize and/or density::
 
     gm convert -font Helvetica -pointsize 100 -density 300 ...
 
-24) How can I convert my GIF animation sequence to individual image files?
---------------------------------------------------------------------------
+How can I convert my GIF animation sequence to individual image files?
+----------------------------------------------------------------------
 
 Use the scene embedded file format with convert_::
 
@@ -543,8 +569,8 @@ Use the scene embedded file format with convert_::
 The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.
 
-25) How can I remove the background that prints around my image when I display it with Netscape?
-------------------------------------------------------------------------------------------------
+How can I remove the background that prints around my image when I display it with Netscape?
+--------------------------------------------------------------------------------------------
 
 Use the +page option of the convert_ command::
 
@@ -556,8 +582,8 @@ could have been introduced by GraphicsMagick. Either way, +page
 removes the unwanted page offset and Netscape should behave as
 expected.
 
-26) How do I create a GIF or PNG image with Web safe colors?
-------------------------------------------------------------
+How do I create a GIF or PNG image with Web safe colors?
+--------------------------------------------------------
 
 Web safe colors are not normally needed any more since almost all
 computers now have true color displays. However, this FAQ may still be
@@ -571,8 +597,8 @@ Netscape predefines 216 colors for colormapped displays. Use the above
 command to ensure only these predefined colors are used. Otherwise
 Netscape dithers your image with varying degrees of image fidelity.
 
-27) How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?
-----------------------------------------------------------------------
+How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?
+------------------------------------------------------------------
 
 The default PDF compression is *Zip*. You need Acrobat 3.0 and above
 to read Zip compressed PDF. Instead use no compression or LZW
@@ -580,8 +606,8 @@ compression when you create the PDF file::
 
     gm convert +compress images.tiff image.pdf
 
-28) How can I add a matte layer to my image?
---------------------------------------------
+How can I add a matte layer to my image?
+----------------------------------------
 
 One way is to use a bitmap as your transparency mask First, use the
 -matte option to add an all-opaque opacity channel, then use the
@@ -595,8 +621,8 @@ Note, GIF is limited to one transparent color. If your mask has
 variable opacity, use a format like MIFF, TIFF, or PNG as your output
 image format.
 
-29) How can I draw with text using 'convert' under Windows NT?
---------------------------------------------------------------
+How can I draw with text using 'convert' under Windows NT?
+----------------------------------------------------------
 
 The problem is that NT interprets the command line differently than
 Unix does, causing the documented command to fail. The following
@@ -611,15 +637,15 @@ on Ghostscript's 'gs' program to installed)::
     gm convert.exe -pointsize 18 -draw "text 0,0 "This is my text!"" \
       C:\blank.gif c:\text.gif
 
-30) Why are my JPEG files larger than expected?
------------------------------------------------
+Why are my JPEG files larger than expected?
+-------------------------------------------
 
 Your JPEG files may contain embedded "profiles" such as Exif or IPTC,
 or they may contain uncompressed thumbnails. You can use the `+profile
 "*"` commandline option or an equivalent API method to remove them.
 
-31) How do I extract a single image from a multi-image file?
-------------------------------------------------------------
+How do I extract a single image from a multi-image file?
+--------------------------------------------------------
 
 Use a square-bracket syntax to indicate which frame or frames you
 want. For example, ::
@@ -630,8 +656,8 @@ Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.
 
-32) How can I extract and combine CMYK channels in a CMYK image?
-----------------------------------------------------------------
+How can I extract and combine CMYK channels in a CMYK image?
+------------------------------------------------------------
 
 GraphicsMagick 1.2.2 and later support combining multiple channels in of
 any image file format in order to create a CMYK image file.  For example,
@@ -658,8 +684,8 @@ There is also built-in support for a *Partition* interlace format which
 can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.
 
-33) How can I create a solid or patterned canvas image?
--------------------------------------------------------
+How can I create a solid or patterned canvas image?
+---------------------------------------------------
 
 Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
 formats. XC produces solid color images based on an color you specify
@@ -689,7 +715,7 @@ To create a patterned canvas image using a user-supplied image::
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 
