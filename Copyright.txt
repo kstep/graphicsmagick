@@ -266,6 +266,6 @@ The licences which components of this software fall under are as follows.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 
 
