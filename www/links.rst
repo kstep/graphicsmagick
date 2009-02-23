@@ -155,8 +155,8 @@ library and sample tools for dealing with high dynamic-range (HDR) images.
 Motion Picture Links
 =========================
 
-`Digital Praxis <http://www.digitalpraxis.net/>`_,
-white papers regarding HD video cameras, log color spaces, and digital intermediate.
+`Light Illusion <http://www.lightillusion.com/home.htm>`_,
+white papers by Steve Shaw regarding HD video cameras, log color spaces, and digital intermediate.
 
 `Digital Intermediates <http://www.digitalintermediates.org/>`_,
 site by Jack James dedicated to the digital intermediate industry.

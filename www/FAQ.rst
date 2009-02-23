@@ -64,73 +64,21 @@ abandoned the MIT X11 style license it had been using since 1992, and
 switched between several different licenses until it ended up with one
 based on the Apache license, which is intended to penalize projects
 which borrow some of its source code, or fork from it. Since that
-time, GraphicsMagick has not incorporated any ImageMagick source
-code. Authors of new features are encouraged to independently
-contribute their work to the GraphicsMagick project so that it can be
-released under GraphicsMagick's MIT X11 style license without
-additional encumberment.
+time, GraphicsMagick has not incorporated any ImageMagick source code.
 
-Does ImageMagick violate the rights of other free software projects?
---------------------------------------------------------------------
+On November 27, 2003 ImageMagick Studio LLC applied to register
+"ImageMagick" as its trademark, and it was awarded this registered
+trademark (serial number 78333969) on August 30, 2005.  Those who
+re-distribute modified versions of "ImageMagick" (e.g. patched or
+improved) under license as "ImageMagick" now face the risk of
+arbitrary trademark infringement claims by ImageMagick Studio LLC.
 
-Unfortunately the answer to this question is 'yes'.  ImageMagick as
-distributed by ImageMagick Studio LLC frequently incorporates code
-from other open source projects yet fails to accurately convey the
-copyright statements and usage licenses from those projects.
-Copyright statements are routinely deleted from source and text files
-and replaced with the ImageMagick Studio LLC copyright statement.  The
-first example of this (that we are aware of) is that in October 1999,
-the copyright statements from E. I. du Pont de Nemours and Company
-were stripped from the source files and replaced with copyright
-statements which said that the files were written by ImageMagick
-Studio LLC in the year 2000.
-
-Users of ImageMagick as distributed by ImageMagick Studio LLC do not
-know which parts were copied from other projects or which parts were
-actually authored by ImageMagick Studio LLC. Over the years we have
-noticed that ImageMagick Studio LLC has whittled down the necessary
-copyright statements and usage licenses until they are essentially
-non-existent, in violation of federal laws and requirements specified
-by the usage licenses.  The usage licenses which grant the right to
-use or distribute the copied software have been entirely removed.
-Instead (until 6.4.9), the license from ImageMagick Studio LLC was the
-only license which is claimed to apply.  Even in ImageMagick 6.4.9 the
-copyright lines for files authored by other projects have been
-replaced with ones saying that they are copyright ImageMagick Studio
-LLC.  ImageMagick 6.4.9 places its own preferred copyright statement
-and license in a file called LICENSE (which is the content served up
-as the license on its web site), but it puts the copyright statements
-and licenses for copied software in an obscure file called NOTICE, as
-if the copyrights and licenses listed there do not equally apply.  The
-NOTICE file still fails to notice that ImageMagick from ImageMagick
-Studio LLC is based on ImageMagick from E. I. du Pont de Nemours and
-Company, and that this critical copyright and license is missing.  It
-seems that after a short time (and often immediately) ImageMagick
-Studio LLC decides that it is no longer worth mentioning where the
-code and documentation came from.  Most people would consider these
-actions to be plagiarism_ and they certainly constitute a violation of
-the core principles which are the basis for free open source projects.
-
-The GraphicsMagick project has been singled out for the worst abuses.
-We are not really sure of everything that has been copied without
-acknowledgement but we do know that it definitely includes the Unix
-build environment, the Windows build environment supporting MSVC 7.0
-and later, the Windows "setup" style installer, the
-"ImageMagickObject" DLL based on ATL7, a large part of the test suite,
-a number of image format modules, and (for a while) entire pages from
-the GraphicsMagick web site including its own mission statement.
-Since the GraphicsMagick project directly competes with the
-ImageMagick project distributed by ImageMagick Studio LLC, the
-unacknowledged copying puts GraphicsMagick at a severe disadvantage
-since ImageMagick users and redistributors do not know where the work
-originally came from or the author of the work.  The copyright
-statement for GraphicsMagick as listed in the ImageMagick NOTICE file
-is incorrect since it says that the parts which were copied are only
-from 2002.  The GraphicsMagick project started in late November of
-2002 and it did not provide access to any source code until March of
-2003, while it was still developing its first release.  Regardless of
-this, ImageMagick has continued to incorporate many updates from
-GraphicsMagick with no recognition of this fact.
+Authors of new features are encouraged to independently contribute
+their work to the GraphicsMagick project so that it can be released
+under GraphicsMagick's MIT X11 style license without additional
+encumberment.  In order for a work to be accepted, it must have been
+developed entirely outside the ImageMagick source code to avoid any
+possibility of copyright taint.
 
 I received the following message, "?????? delegation failed ...". What does it mean?
 ------------------------------------------------------------------------------------
