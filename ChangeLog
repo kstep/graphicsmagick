@@ -1,5 +1,7 @@
 2009-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/read.t: Add a test for HRZ Slow scan TV.
+
 	* magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
 	clear monochrome and grayscale flags when pixels are accessed
 	read/write rather than at sync.

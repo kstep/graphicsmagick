@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003 - 2009 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 #
@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..69\n"; }
+BEGIN { $| = 1; $test=1; print "1..70\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -101,6 +101,10 @@ testReadCompare('gradient:red-blue', 'reference/read/gradient.miff',
 print("GRANITE (granite texture) ...\n");
 ++$test;
 testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0, 0);
+
+print("HRZ Slow scan TV ...\n");
+++$test;
+testReadCompare('input.hrz', 'reference/read/input_hrz.miff', q//, 0, 0);
 
 print("MAT (MatLab logical 8-bit LSB integer) ...\n");
 ++$test;

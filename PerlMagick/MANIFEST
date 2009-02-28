@@ -65,6 +65,7 @@ t/input.dcx
 t/input.dib
 t/input.gif
 t/input.gif87
+t/input.hrz
 t/input.ico
 t/input.im1
 t/input.im24
@@ -322,6 +323,7 @@ t/reference/read/input_gray_msb_double_fits.miff
 t/reference/read/input_gray_msb_float_fits.miff
 t/reference/read/input_gray_rla.miff
 t/reference/read/input_gray_rle.miff
+t/reference/read/input_hrz.miff
 t/reference/read/input_ico.miff
 t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff
