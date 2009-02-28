@@ -1,3 +1,7 @@
+2009-01-17  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/hrz.c: New HRZ reader for slow scan TV.
+
 2009-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resize.c (ResizeImage): Make error handling more robust.
