@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2009-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
+        clear monochrome and grayscale flags when pixels are accessed
+        read/write rather than at sync.
+
+  <LI> coders/Makefile.am (MAGICK_CODER_SRCS): Add coders/hrz.c to
+        build.
+
+</UL>
+<p>
+2009-01-27  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/hrz.c: New HRZ reader for slow scan TV.
+
+</UL>
+<p>
 2009-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

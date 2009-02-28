@@ -71,6 +71,7 @@ MAGICK_CODER_SRCS = \
 	coders/gradient.c \
 	coders/gray.c \
 	coders/histogram.c \
+	coders/hrz.c \
 	coders/html.c \
 	coders/icon.c \
 	coders/label.c \
@@ -150,16 +151,16 @@ coders_LTLIBRARIES = \
 	coders/caption.la coders/cineon.la coders/cmyk.la coders/cut.la \
 	coders/dcm.la coders/dcraw.la coders/dib.la coders/dps.la \
 	coders/dpx.la coders/fax.la coders/fits.la coders/gif.la \
-	coders/gradient.la coders/gray.la coders/histogram.la coders/html.la \
-	coders/icon.la coders/label.la coders/locale.la coders/logo.la \
-	coders/map.la coders/mat.la coders/matte.la coders/meta.la \
-	coders/miff.la coders/mono.la coders/mpc.la coders/mpeg.la \
-	coders/mpr.la coders/msl.la coders/mtv.la coders/mvg.la \
-	coders/null.la coders/otb.la coders/palm.la coders/pcd.la \
-	coders/pcl.la coders/pcx.la coders/pdb.la coders/pdf.la \
-	coders/pict.la coders/pix.la coders/plasma.la coders/pnm.la \
-	coders/preview.la coders/ps.la coders/ps2.la coders/ps3.la \
-	coders/psd.la coders/pwp.la coders/rgb.la coders/rla.la \
+	coders/gradient.la coders/gray.la coders/histogram.la coders/hrz.la \
+	coders/html.la coders/icon.la coders/label.la coders/locale.la \
+	coders/logo.la coders/map.la coders/mat.la coders/matte.la \
+	coders/meta.la coders/miff.la coders/mono.la coders/mpc.la \
+	coders/mpeg.la coders/mpr.la coders/msl.la coders/mtv.la \
+	coders/mvg.la coders/null.la coders/otb.la coders/palm.la \
+	coders/pcd.la coders/pcl.la coders/pcx.la coders/pdb.la \
+	coders/pdf.la coders/pict.la coders/pix.la coders/plasma.la \
+	coders/pnm.la coders/preview.la coders/ps.la coders/ps2.la \
+	coders/ps3.la coders/psd.la coders/pwp.la coders/rgb.la coders/rla.la \
 	coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
 	coders/stegano.la coders/sun.la coders/svg.la coders/tga.la \
 	coders/tile.la coders/tim.la coders/topol.la coders/ttf.la \
@@ -311,6 +312,12 @@ coders_histogram_la_SOURCES = coders/histogram.c
 coders_histogram_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_histogram_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_histogram_la_LIBADD  = $(LIBMAGICK)
+
+# HRZ coder module
+coders_hrz_la_SOURCES       = coders/hrz.c
+coders_hrz_la_CPPFLAGS      = $(MODULE_EXTRA_CPPFLAGS)
+coders_hrz_la_LDFLAGS       = $(MODULECOMMONFLAGS)
+coders_hrz_la_LIBADD        = $(LIBMAGICK)
 
 # HTML coder module
 coders_html_la_SOURCES     = coders/html.c

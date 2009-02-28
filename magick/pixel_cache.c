@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2595,12 +2595,21 @@ ModifyCache(Image *image, ExceptionInfo *exception)
     }
     UnlockSemaphoreInfo(cache_info->reference_semaphore);
 
-    /*
-      Make sure that pixel cache reflects key image parameters such as
-      storage class and colorspace.  Re-open cache if necessary.
-    */
     if (status != MagickFail)
       {
+	/*
+	  Indicate that image will be (possibly) modified, and unset
+	  grayscale/monocrome flags.
+	*/
+	image->taint=MagickTrue;
+	image->is_grayscale=MagickFalse;
+	image->is_monochrome=MagickFalse;
+
+	/*
+	  Make sure that pixel cache reflects key image parameters
+	  such as storage class and colorspace.  Re-open cache if
+	  necessary.
+	*/
         cache_info=(CacheInfo *) image->cache;
         status=(((image->storage_class == cache_info->storage_class) &&
                  (image->colorspace == cache_info->colorspace)) ||
@@ -3930,16 +3939,6 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
       ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
       return MagickFail;
     }
-  /* LockSemaphoreInfo(image->semaphore); */
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_SyncCacheNexus)
-#endif
-  {
-    image->taint=MagickTrue;
-    image->is_grayscale=MagickFalse;
-    image->is_monochrome=MagickFalse;
-  }
-  /* UnlockSemaphoreInfo(image->semaphore); */
   if (IsNexusInCore(cache_info,nexus_info))
     return(MagickPass);
   if (image->clip_mask != (Image *) NULL)
