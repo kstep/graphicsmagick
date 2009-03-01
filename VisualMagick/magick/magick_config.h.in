@@ -89,6 +89,29 @@
 // there is still risk of conflict at the source level.
 #undef PREFIX_MAGICK_SYMBOLS
 
+
+/////////////
+//
+// DisableSlowOpenMP
+//
+// Define in order to disable use of OpenMP for quick algorithms which
+// may run slower and slower rather than faster and faster as CPU
+// cores are added.  Unfortunately some operating systems and hardware
+// are not so good for OpenMP so that they incur considerable overhead
+// and therefore only provide benefit for very slow algorithms.  Since
+// the problematic algorithms are quick, the inability to speed them
+// up is not much of a problem.
+//
+// From what we have seen, AMD server CPUs (Opteron family) always
+// show a benefit from OpenMP, AMD desktop CPUs (e.g. Phenom X4) are
+// ok, Intel Core 2 Dual core are ok, Intel Core 2 Quad and other
+// Intel multi-chip modules (MCM) or older dual-CPU systems may
+// perform poorly for lightweight algorithms.  If the CPU cores need
+// to communicate via L3 cache or main memory, then performance may
+// suffer unless this define is used.
+// #undef DisableSlowOpenMP
+
+
 /////////////
 //
 // Optional packages

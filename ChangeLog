@@ -1,5 +1,8 @@
 2009-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/magick/magick_config.h.in: Provide configuration
+	access to the DisableSlowOpenMP define.
+
 	* PerlMagick/t/read.t: Add a test for HRZ Slow scan TV.
 
 	* magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
