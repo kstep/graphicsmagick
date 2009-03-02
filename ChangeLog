@@ -1,3 +1,9 @@
+2009-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageBoundingBox): If we fail to find a
+	smaller bounding box, then the returned bounding box is the entire
+	image.
+
 2009-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_config.h.in: Provide configuration
