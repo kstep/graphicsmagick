@@ -49,7 +49,7 @@ from interpreting the square brackets.</p>
 <p>Single images are written with the filename you specify. However, multi-part
 images (e.g., a multi-page PostScript document with <s>+adjoin</s>
 specified) are written with the filename followed by a period (<s>.</s>)
-and the scene number. You can change this behavior by embedding a <tt>%d
+and the scene number. You can change this behavior by embedding a <tt>%d</tt>
 format specification in the file name. For example,</p>
 <pre>
     image%02d.miff
