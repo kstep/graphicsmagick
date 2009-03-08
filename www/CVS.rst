@@ -17,9 +17,9 @@ GraphicsMagick CVS
               simulation, image, software, AniMagick, Animagic,  Magick++
 
 
-.. _CVS program : http://www.cvshome.org/
+.. _CVS program : http://www.nongnu.org/cvs/
 .. _TortoiseCVS : http://www.tortoisecvs.org/
-.. _CVS Home Page : http://www.cvshome.org/
+.. _CVS Home Page : http://www.nongnu.org/cvs/
 .. _cvs.graphicsmagick.org : http://cvs.graphicsmagick.org/
 .. _CVSWeb: http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/
 
@@ -190,4 +190,4 @@ numerous other web sites.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2008
+Copyright |copy| GraphicsMagick Group 2002 - 2009
