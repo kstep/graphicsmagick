@@ -173,7 +173,7 @@ options used in the remaining instructions may be set as defaults (so they don't
 need to be repeated) by creating a .cvsrc file in your home directory with the
 following contents:</p>
 <pre class="literal-block">
-cvs -z3
+cvs -z7
 update -P -d
 checkout -P
 diff -u
@@ -185,7 +185,7 @@ cvs co -P GraphicsMagick
 </pre>
 <p>Or to save bandwidth get the compressed version, type:</p>
 <pre class="literal-block">
-cvs -z3 co -P GraphicsMagick
+cvs -z7 co -P GraphicsMagick
 </pre>
 <p>Note that adding <tt class="docutils literal"><span class="pre">-r</span> <span class="pre">GraphicsMagick-1_3</span></tt> requests the sources from the
 GraphicsMagick 1.3 release branch.</p>
@@ -203,12 +203,12 @@ cvs update -P -d
 <p>To check out the GraphicsMagick source for Microsoft Windows, try this command
 line:</p>
 <pre class="literal-block">
-cvs -z3 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
+cvs -z7 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 </pre>
 <p>If you require a specific release of GraphicsMagick (e.g. 1.3.3), you may check
 it out like:</p>
 <pre class="literal-block">
-cvs -z3 co-r GraphicsMagick-1_3_3 -P GraphicsMagick
+cvs -z7 co-r GraphicsMagick-1_3_3 -P GraphicsMagick
 </pre>
 <p>where the <tt class="docutils literal"><span class="pre">GraphicsMagick-1_3_3</span></tt> is the release tag. You can use:</p>
 <pre class="literal-block">
@@ -218,7 +218,7 @@ cvs status -v README.txt
 tags are available.</p>
 <p>You can use:</p>
 <pre class="literal-block">
-cvs -z3 update -r GraphicsMagick-1_3_3
+cvs -z7 update -r GraphicsMagick-1_3_3
 </pre>
 <p>from within an existing checked out directory to move it up (or down) to that
 branch or release tag.</p>
@@ -228,13 +228,13 @@ cause an update if the tag is a branch tag, and is a newer version on the
 branch. To clear the sticky flags and update to the most current version on the
 trunk, use:</p>
 <pre class="literal-block">
-cvs -z3 update -A
+cvs -z7 update -A
 </pre>
 <p>Once a release has been tagged, checking out or updating using a release tag is
 the only reliable way to obtain release files from CVS since the default is to
 check out the most current sources on the requested branch, which may not be
 stable or released.</p>
-<p>Using compression levels over <tt class="docutils literal"><span class="pre">-z3</span></tt> may slow the CVS transfer since they require
+<p>Using compression levels over <tt class="docutils literal"><span class="pre">-z7</span></tt> will slow the CVS transfer since they require
 the CVS server to work much harder, yet don't compress the data much more.</p>
 </div>
 <div class="section">
@@ -247,7 +247,7 @@ numerous other web sites.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-08 00:33 UTC.
+Generated on: 2009-03-08 02:16 UTC.
 
 </div>
 </body>
