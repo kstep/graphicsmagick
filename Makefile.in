@@ -108,6 +108,15 @@
 # Makefile for building API HTML files
 #
 
+# Copyright (C) 2009 GraphicsMagick Group
+
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building Wand API HTML files
+#
+
 # Copyright (C) 2004 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
@@ -167,7 +176,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(srcdir)/magick/Makefile.am $(srcdir)/rungm.sh.in \
 	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
 	$(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am \
-	$(srcdir)/www/api/Makefile.am \
+	$(srcdir)/www/api/Makefile.am $(srcdir)/www/wand/Makefile.am \
 	$(top_srcdir)/Magick++/bin/GraphicsMagick++-config.in \
 	$(top_srcdir)/Magick++/lib/GraphicsMagick++.pc.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
@@ -2058,9 +2067,9 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	$(MAGICK_EXTRA_DIST) $(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) $(WAND_EXTRA_DIST) \
-	$(WWWW_EXTRA_DIST) $(WWWAPI_EXTRA_DIST) ltdl/lt__dirent.c \
-	ltdl/lt__strl.c ltdl/COPYING.LIB ltdl/README ltdl/argz_.h \
-	ltdl/argz.c
+	$(WWWW_EXTRA_DIST) $(WWWAPI_EXTRA_DIST) \
+	$(WWWWANDAPI_EXTRA_DIST) ltdl/lt__dirent.c ltdl/lt__strl.c \
+	ltdl/COPYING.LIB ltdl/README ltdl/argz_.h ltdl/argz.c
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
 AM_LDFLAGS = -no-undefined
@@ -4399,6 +4408,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/api/api.html \
+	$(WWWDIR)/wand/wand.html \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
@@ -4612,6 +4622,23 @@ WWWAPI_MAINTAINER_TARGETS = $(WWWAPI_HTML_TARGETS)
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@APIRST2HTML_COMMAND = $(RST2HTMLDECO) \
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@  --link-stylesheet=../docutils-articles.css`
 
+wwwwandapidir = $(htmldir)/wand
+WWWWANDAPIDIR = $(top_srcdir)/www/wand
+WWWWANDAPI_HTML_TARGETS = \
+	$(WWWWANDAPIDIR)/drawing_wand.html \
+	$(WWWWANDAPIDIR)/magick_wand.html \
+	$(WWWWANDAPIDIR)/pixel_wand.html
+
+WWWWANDAPI_FILES = \
+	www/wand/drawing_wand.html \
+	www/wand/magick_wand.html \
+	www/wand/pixel_wand.html
+
+WWWWANDAPI_EXTRA_DIST = \
+	www/wand/wand.rst \
+	$(WWWWANDAPI_FILES)
+
+WWWWANDAPI_MAINTAINER_TARGETS = $(WWWWANDAPI_HTML_TARGETS)
 UTILITIES_PGMS = \
 	utilities/gm
 
@@ -4782,7 +4809,8 @@ doc_DATA = \
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
 @MAINTAINER_MODE_TRUE@	magick-version \
 @MAINTAINER_MODE_TRUE@	$(WWW_MAINTAINER_TARGETS) \
-@MAINTAINER_MODE_TRUE@	$(WWWAPI_MAINTAINER_TARGETS)
+@MAINTAINER_MODE_TRUE@	$(WWWAPI_MAINTAINER_TARGETS) \
+@MAINTAINER_MODE_TRUE@	$(WWWWANDAPI_MAINTAINER_TARGETS)
 
 
 # Non-Automake subdirectories to distribute
@@ -4822,7 +4850,7 @@ all: $(BUILT_SOURCES)
 .SUFFIXES: .c .cpp .lo .o .obj
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/www/wand/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -10011,6 +10039,27 @@ uninstall-data-html:
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWAPIDIR)/%.html : $(WWWAPIDIR)/%.apirst
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-api.css \
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+#APIWHATIS = $(top_srcdir)/scripts/whatis.txt
+#FORMATCAPI = $(top_srcdir)/scripts/format_c_api_doc.py
+
+#APIRST2HTML_COMMAND = $(RST2HTMLDECO) \
+#  --link-stylesheet=../docutils-articles.css`
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWWANDAPI_HTML_TARGETS) : $(FORMATCAPI) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(APIWHATIS) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/html_fragments.py \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(top_srcdir)/www/wand/Makefile.am \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(top_srcdir)/www/api/api_hyperlinks.rst
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWWANDAPIDIR)/%.apirst : $(top_srcdir)/wand/%.c
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(FORMATCAPI) --whatis-file $(APIWHATIS) \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--include-rst ../api/api_hyperlinks.rst $< $@
+
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWWANDAPIDIR)/%.html : $(WWWWANDAPIDIR)/%.apirst
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-api.css \
+@HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
 @MAGICK_COMPAT_TRUE@install-exec-local-utilities:
 @MAGICK_COMPAT_TRUE@	$(mkdir_p) $(DESTDIR)$(bindir)
 @MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
@@ -10103,7 +10152,7 @@ perl-sources:
 
 # Target to build just the web pages.
 @MAINTAINER_MODE_TRUE@.PHONY: www
-@MAINTAINER_MODE_TRUE@www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+@MAINTAINER_MODE_TRUE@www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS) $(WWWWANDAPI_MAINTAINER_TARGETS)
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) \
 	$(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)

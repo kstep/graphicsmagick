@@ -35,6 +35,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/api/api.html \
+	$(WWWDIR)/wand/wand.html \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \

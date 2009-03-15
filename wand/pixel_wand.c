@@ -172,7 +172,7 @@ WandExport PixelWand *NewPixelWand(void)
 %
 %  The format of the NewPixelWand method is:
 %
-%      PixelWand NewPixelWand(const unsigned long number_wands)
+%      PixelWand NewPixelWands(const unsigned long number_wands)
 %
 %  A description of each parameter follows:
 %

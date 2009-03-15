@@ -6,10 +6,22 @@ See website for "wish list".
 For GM 1.4
 ===========
 
-* Update Windows libtiff to 4.0 Beta2
+* Update Windows libtiff to 4.0
 
 * -random-threshold needs to have gamma 2.2 pre-applied to the pixels
   for correct appearance.
+
+* Support -endian option for RGB and GRAY raw files.
+
+* Fix browser interoperability issues reported for PNG8.
+
+* Choose a better tile size for rotate by 0 and 270 degrees when the pixel
+  cache is disk-based.  Also disable threading.
+
+* Magick++ Image::quantumOperator should support 'double' type as rvalue.
+  quantumOperator() methods are also missing from HTML documentation.
+
+* Fix failure to render entire page for some PDF files.
 
 For Future
 ==========

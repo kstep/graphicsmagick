@@ -110,7 +110,8 @@ EXTRA_DIST = \
 	$(UTILITIES_EXTRA_DIST) \
 	$(WAND_EXTRA_DIST) \
 	$(WWWW_EXTRA_DIST) \
-	$(WWWAPI_EXTRA_DIST)
+	$(WWWAPI_EXTRA_DIST) \
+	$(WWWWANDAPI_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
 
@@ -135,6 +136,7 @@ include tests/Makefile.am
 include wand/Makefile.am
 include www/Makefile.am
 include www/api/Makefile.am
+include www/wand/Makefile.am
 include utilities/Makefile.am
 include PerlMagick/Makefile.am
 
@@ -164,11 +166,12 @@ if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
 	magick-version \
 	$(WWW_MAINTAINER_TARGETS) \
-	$(WWWAPI_MAINTAINER_TARGETS)
+	$(WWWAPI_MAINTAINER_TARGETS) \
+	$(WWWWANDAPI_MAINTAINER_TARGETS)
 
 # Target to build just the web pages.
 .PHONY: www
-www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS) $(WWWWANDAPI_MAINTAINER_TARGETS)
 
 endif
 

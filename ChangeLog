@@ -1,3 +1,13 @@
+2009-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c: Renamed all functions to final names rather
+	than using macros to remap the names.  Also stripped out unused
+	code.
+
+	* www/wand: Added formatted Wand API documentation.
+
+	* scripts/format_c_api_doc.py: Now supports --include-rst option.
+
 2009-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (GetImageBoundingBox): If we fail to find a

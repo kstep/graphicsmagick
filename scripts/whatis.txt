@@ -38,4 +38,7 @@ shear.c            Rotate image, shear image, or apply a 2D affine transformatio
 signature.c        Add a digital signature to the image
 transform.c        Crop, flip, flop, roll, coalesce, etc.
 resize.c           Resize an image
-widget.c           X11 Widgets'
+widget.c           X11 Widgets
+drawing_wand.c	   Wand vector drawing interfaces
+magick_wand.c	   Wand image processing interfaces
+pixel_wand.c	   Wand pixel access interfaces

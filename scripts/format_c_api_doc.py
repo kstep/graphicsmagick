@@ -29,6 +29,9 @@ Usage:
                           are separated by whitespace
                         * blank lines are ignored
                         * lines starting with '#' are ignored
+    -i --include-rst -- Comma-separated list of file paths to be objects of reST
+                        ..include:: directives inserted in OUTFILE.
+                        The default is the single file 'api_hyperlinks.rst'
 
 Example of whatis file format:
 
@@ -135,6 +138,9 @@ state_found_prototype = 5
 state_found_private = 6
 state_parmdescr = 7
 
+def warn(msg):
+    print >> sys.stderr, msg
+
 def debugtrace(msg):
     print >> sys.stdout, msg
 
@@ -142,13 +148,14 @@ def nodebugtrace(msg):
     pass
 
 dtrace = nodebugtrace
+#dtrace = debugtrace
 
 # extract and save function title.  example:
 # +   X M a g i c k C o m m a n d                                               %
 # %   X A n i m a t e B a c k g r o u n d I m a g e                             %
 # Lines starting with '+' are private APIs which should not appear in 
 # in the output.
-re_func_title = re.compile(r'^[+|%]\s+((\w )+)\s+%')
+re_func_title = re.compile(r'^[+|%]\s+((\w )+)\s*%')
 
 
 def proto_pretty(line):
@@ -280,6 +287,7 @@ def parse(srcfilepath):
     functions = []
     state = state_init
     linecnt = 0
+    ftitle = None
     f = file(srcfilepath, 'r')
     for line in f:
         linecnt += 1
@@ -297,6 +305,11 @@ def parse(srcfilepath):
 
         elif state == state_found_fcncomment:
             # Search for the function name, with spaces between each letter
+            if line.startswith('%%%%%%%%'):
+                warn('Line %d: WARNING: no function name found, found start of function comment block instead.' % linecnt)
+                state = state_init
+                continue
+
             m = re_func_title.search(line)
             if m:
                 if line.startswith('+'):
@@ -367,6 +380,11 @@ def parse(srcfilepath):
                         func.description.append(para)
                     para.lines.append(line)
             else:
+                if line.startswith('%%%%%%%%'):
+                    warn('Line %d: WARNING: no prototype found for %s, found start of function comment block instead.' % (linecnt, ftitle))
+                    state = state_found_fcncomment
+                    continue
+
                 if line.strip() == '%':
                     # empty line terminates paragraph
                     if para:
@@ -478,7 +496,7 @@ def parse(srcfilepath):
 
 
 
-def process_srcfile(srcfilepath, basename, whatis, outfile):
+def process_srcfile(srcfilepath, basename, whatis, outfile, include_rst):
     """outfile is a file object open for writing"""
     functions = parse(srcfilepath)
     print >> outfile, "=" * len(basename)
@@ -491,7 +509,8 @@ def process_srcfile(srcfilepath, basename, whatis, outfile):
     print >> outfile
     print >> outfile, '.. contents:: :depth: 1'
     print >> outfile
-    print >> outfile, '.. include:: api_hyperlinks.rst'
+    for x in include_rst:
+        print >> outfile, '.. include:: %s' % x
     print >> outfile
 
     # print all functions found in this source file
@@ -534,9 +553,10 @@ def main(argv=None):
 
     # parse command line options
     try:
-        opts, posn_args = getopt.getopt(argv, 'hw:',
+        opts, posn_args = getopt.getopt(argv, 'hw:i:',
                                        ['help',
                                         'whatis-file=',
+                                        'include-rst=',
                                         ])
     except getopt.GetoptError, msg:
          print msg
@@ -545,6 +565,7 @@ def main(argv=None):
 
     # process options
     whatis_file = None
+    include_rst = ['api_hyperlinks.rst']
 
     for opt, val in opts:
         if opt in ("-h", "--help"):
@@ -553,6 +574,9 @@ def main(argv=None):
 
         if opt in ("-w", "--whatis-file"):
             whatis_file = val
+
+        if opt in ("-i", "--include-rst"):
+            include_rst = [x for x in val.split(',') if x]
 
     if len(posn_args) != 2:
         print >> sys.stderr, 'Missing arguments'
@@ -569,7 +593,7 @@ def main(argv=None):
     else:
         whatis = None
     fout = file(outfile_path, 'w')
-    process_srcfile(srcfile_path, base, whatis, fout)
+    process_srcfile(srcfile_path, base, whatis, fout, include_rst)
     fout.close()
     return 0
 
