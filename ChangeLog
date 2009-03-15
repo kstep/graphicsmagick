@@ -1,8 +1,6 @@
 2009-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* wand/drawing_wand.c: Renamed all functions to final names rather
-	than using macros to remap the names.  Also stripped out unused
-	code.
+	* wand/drawing_wand.c: Stripped out unused code.
 
 	* www/wand: Added formatted Wand API documentation.
 

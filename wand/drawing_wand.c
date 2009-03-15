@@ -355,26 +355,26 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D e s t r o y D r a w i n g W a n d                           %
+%   D e s t r o y D r a w i n g W a n d                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   MagickDestroyDrawingWand() frees all resources associated with the drawing
+%  DestroyDrawingWand() frees all resources associated with the drawing
 %  wand. Once the drawing wand has been freed, it should not be used
 %  any further unless it re-allocated.
 %
-%  The format of the  MagickDestroyDrawingWand method is:
+%  The format of the  DestroyDrawingWand method is:
 %
-%      void  MagickDestroyDrawingWand(DrawingWand *drawing_wand)
+%      void  DestroyDrawingWand(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand. to destroy
 %
 */
-WandExport void MagickDestroyDrawingWand(DrawingWand *drawing_wand)
+WandExport void DestroyDrawingWand(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -415,17 +415,17 @@ WandExport void MagickDestroyDrawingWand(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w A n n o t a t i o n                                   %
+%   D r a w A n n o t a t i o n                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawAnnotation() draws text on the image.
+%  DrawAnnotation() draws text on the image.
 %
-%  The format of the MagickDrawAnnotation method is:
+%  The format of the DrawAnnotation method is:
 %
-%      void MagickDrawAnnotation(DrawingWand *drawing_wand,const double x,
+%      void DrawAnnotation(DrawingWand *drawing_wand,const double x,
 %        const double y,const unsigned char *text)
 %
 %  A description of each parameter follows:
@@ -439,7 +439,7 @@ WandExport void MagickDestroyDrawingWand(DrawingWand *drawing_wand)
 %    o text: text to draw
 %
 */
-WandExport void MagickDrawAnnotation(DrawingWand *drawing_wand,const double x,
+WandExport void DrawAnnotation(DrawingWand *drawing_wand,const double x,
   const double y,const unsigned char *text)
 {
   char
@@ -458,19 +458,19 @@ WandExport void MagickDrawAnnotation(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w A f f i n e                                           %
+%   D r a w A f f i n e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawAffine() adjusts the current affine transformation matrix with
+%  DrawAffine() adjusts the current affine transformation matrix with
 %  the specified affine transformation matrix. Note that the current affine
 %  transform is adjusted rather than replaced.
 %
-%  The format of the MagickDrawAffine method is:
+%  The format of the DrawAffine method is:
 %
-%      void MagickDrawAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
+%      void DrawAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
@@ -479,7 +479,7 @@ WandExport void MagickDrawAnnotation(DrawingWand *drawing_wand,const double x,
 %    o affine: Affine matrix parameters
 %
 */
-WandExport void MagickDrawAffine(DrawingWand *drawing_wand,
+WandExport void DrawAffine(DrawingWand *drawing_wand,
   const AffineMatrix *affine)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -495,18 +495,18 @@ WandExport void MagickDrawAffine(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w A l l o c a t e W a n d                               %
+%   D r a w A l l o c a t e W a n d                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawAllocateWand() allocates an initial drawing wand which is an
+%  DrawAllocateWand() allocates an initial drawing wand which is an
 %  opaque handle required by the remaining drawing methods.
 %
-%  The format of the MagickDrawAllocateWand method is:
+%  The format of the DrawAllocateWand method is:
 %
-%      DrawingWand MagickDrawAllocateWand(const DrawInfo *draw_info,Image *image)
+%      DrawingWand DrawAllocateWand(const DrawInfo *draw_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -516,7 +516,7 @@ WandExport void MagickDrawAffine(DrawingWand *drawing_wand,
 %    o image: The image to draw on.
 %
 */
-WandExport DrawingWand *MagickDrawAllocateWand(const DrawInfo *draw_info,Image *image)
+WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
 {
   DrawingWand
     *drawing_wand;
@@ -565,18 +565,18 @@ WandExport DrawingWand *MagickDrawAllocateWand(const DrawInfo *draw_info,Image *
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w A r c                                                 %
+%   D r a w A r c                                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawArc() draws an arc falling within a specified bounding rectangle on the
+%  DrawArc() draws an arc falling within a specified bounding rectangle on the
 %  image.
 %
-%  The format of the MagickDrawArc method is:
+%  The format of the DrawArc method is:
 %
-%      void MagickDrawArc(DrawingWand *drawing_wand,const double sx,const double sy,
+%      void DrawArc(DrawingWand *drawing_wand,const double sx,const double sy,
 %        const double ex,const double ey,const double sd,const double ed)
 %
 %  A description of each parameter follows:
@@ -596,7 +596,7 @@ WandExport DrawingWand *MagickDrawAllocateWand(const DrawInfo *draw_info,Image *
 %    o ed: ending degrees of rotation
 %
 */
-WandExport void MagickDrawArc(DrawingWand *drawing_wand,const double sx,
+WandExport void DrawArc(DrawingWand *drawing_wand,const double sx,
   const double sy,const double ex,const double ey,const double sd,
   const double ed)
 {
@@ -611,17 +611,17 @@ WandExport void MagickDrawArc(DrawingWand *drawing_wand,const double sx,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w B e z i e r                                           %
+%   D r a w B e z i e r                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawBezier() draws a bezier curve through a set of points on the image.
+%  DrawBezier() draws a bezier curve through a set of points on the image.
 %
-%  The format of the MagickDrawBezier method is:
+%  The format of the DrawBezier method is:
 %
-%      void MagickDrawBezier(DrawingWand *drawing_wand,
+%      void DrawBezier(DrawingWand *drawing_wand,
 %        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
@@ -633,7 +633,7 @@ WandExport void MagickDrawArc(DrawingWand *drawing_wand,const double sx,
 %    o coordinates: coordinates
 %
 */
-WandExport void MagickDrawBezier(DrawingWand *drawing_wand,
+WandExport void DrawBezier(DrawingWand *drawing_wand,
   const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -647,17 +647,17 @@ WandExport void MagickDrawBezier(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w C i r c l e                                           %
+%   D r a w C i r c l e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawCircle() draws a circle on the image.
+%  DrawCircle() draws a circle on the image.
 %
-%  The format of the MagickDrawCircle method is:
+%  The format of the DrawCircle method is:
 %
-%      void MagickDrawCircle(DrawingWand *drawing_wand,const double ox,
+%      void DrawCircle(DrawingWand *drawing_wand,const double ox,
 %        const double oy,const double px, const double py)
 %
 %  A description of each parameter follows:
@@ -673,7 +673,7 @@ WandExport void MagickDrawBezier(DrawingWand *drawing_wand,
 %    o py: perimeter y ordinate
 %
 */
-WandExport void MagickDrawCircle(DrawingWand *drawing_wand,const double ox,
+WandExport void DrawCircle(DrawingWand *drawing_wand,const double ox,
   const double oy,const double px,const double py)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -686,25 +686,25 @@ WandExport void MagickDrawCircle(DrawingWand *drawing_wand,const double ox,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t C l i p P a t h                                 %
+%   D r a w G e t C l i p P a t h                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetClipPath() obtains the current clipping path ID. The value returned
+%  DrawGetClipPath() obtains the current clipping path ID. The value returned
 %  must be deallocated by the user when it is no longer needed.
 %
-%  The format of the MagickDrawGetClipPath method is:
+%  The format of the DrawGetClipPath method is:
 %
-%      char *MagickDrawGetClipPath(const DrawingWand *drawing_wand)
+%      char *DrawGetClipPath(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport char *MagickDrawGetClipPath(const DrawingWand *drawing_wand)
+WandExport char *DrawGetClipPath(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -718,19 +718,19 @@ WandExport char *MagickDrawGetClipPath(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t C l i p P a t h                                 %
+%   D r a w S e t C l i p P a t h                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetClipPath() associates a named clipping path with the image.  Only
+%  DrawSetClipPath() associates a named clipping path with the image.  Only
 %  the areas drawn on by the clipping path will be modified as long as it
 %  remains in effect.
 %
-%  The format of the MagickDrawSetClipPath method is:
+%  The format of the DrawSetClipPath method is:
 %
-%      void MagickDrawSetClipPath(DrawingWand *drawing_wand,const char *clip_path)
+%      void DrawSetClipPath(DrawingWand *drawing_wand,const char *clip_path)
 %
 %  A description of each parameter follows:
 %
@@ -739,7 +739,7 @@ WandExport char *MagickDrawGetClipPath(const DrawingWand *drawing_wand)
 %    o clip_path: name of clipping path to associate with image
 %
 */
-WandExport void MagickDrawSetClipPath(DrawingWand *drawing_wand,
+WandExport void DrawSetClipPath(DrawingWand *drawing_wand,
   const char *clip_path)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -765,25 +765,25 @@ WandExport void MagickDrawSetClipPath(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t C l i p R u l e                                 %
+%   D r a w G e t C l i p R u l e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetClipRule() returns the current polygon fill rule to be used by the
+%  DrawGetClipRule() returns the current polygon fill rule to be used by the
 %  clipping path.
 %
-%  The format of the MagickDrawGetClipRule method is:
+%  The format of the DrawGetClipRule method is:
 %
-%     FillRule MagickDrawGetClipRule(const DrawingWand *drawing_wand)
+%     FillRule DrawGetClipRule(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport FillRule MagickDrawGetClipRule(const DrawingWand *drawing_wand)
+WandExport FillRule DrawGetClipRule(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -795,17 +795,17 @@ WandExport FillRule MagickDrawGetClipRule(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t C l i p R u l e                                 %
+%   D r a w S e t C l i p R u l e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetClipRule() set the polygon fill rule to be used by the clipping path.
+%  DrawSetClipRule() set the polygon fill rule to be used by the clipping path.
 %
-%  The format of the MagickDrawSetClipRule method is:
+%  The format of the DrawSetClipRule method is:
 %
-%      void MagickDrawSetClipRule(DrawingWand *drawing_wand,const FillRule fill_rule)
+%      void DrawSetClipRule(DrawingWand *drawing_wand,const FillRule fill_rule)
 %
 %  A description of each parameter follows:
 %
@@ -814,7 +814,7 @@ WandExport FillRule MagickDrawGetClipRule(const DrawingWand *drawing_wand)
 %    o fill_rule: fill rule (EvenOddRule or NonZeroRule)
 %
 */
-WandExport void MagickDrawSetClipRule(DrawingWand *drawing_wand,
+WandExport void DrawSetClipRule(DrawingWand *drawing_wand,
   const FillRule fill_rule)
 {
   const char
@@ -846,24 +846,24 @@ WandExport void MagickDrawSetClipRule(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t C l i p U n i t s                               %
+%   D r a w G e t C l i p U n i t s                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetClipUnits() returns the interpretation of clip path units.
+%  DrawGetClipUnits() returns the interpretation of clip path units.
 %
-%  The format of the MagickDrawGetClipUnits method is:
+%  The format of the DrawGetClipUnits method is:
 %
-%      ClipPathUnits MagickDrawGetClipUnits(const DrawingWand *drawing_wand)
+%      ClipPathUnits DrawGetClipUnits(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport ClipPathUnits MagickDrawGetClipUnits(const DrawingWand *drawing_wand)
+WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -875,17 +875,17 @@ WandExport ClipPathUnits MagickDrawGetClipUnits(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t C l i p U n i t s                               %
+%   D r a w S e t C l i p U n i t s                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetClipUnits() sets the interpretation of clip path units.
+%  DrawSetClipUnits() sets the interpretation of clip path units.
 %
-%  The format of the MagickDrawSetClipUnits method is:
+%  The format of the DrawSetClipUnits method is:
 %
-%      void MagickDrawSetClipUnits(DrawingWand *drawing_wand,
+%      void DrawSetClipUnits(DrawingWand *drawing_wand,
 %        const ClipPathUnits clip_units)
 %
 %  A description of each parameter follows:
@@ -895,7 +895,7 @@ WandExport ClipPathUnits MagickDrawGetClipUnits(const DrawingWand *drawing_wand)
 %    o clip_units: units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)
 %
 */
-WandExport void MagickDrawSetClipUnits(DrawingWand *drawing_wand,
+WandExport void DrawSetClipUnits(DrawingWand *drawing_wand,
   const ClipPathUnits clip_units)
 {
   const char
@@ -941,13 +941,13 @@ WandExport void MagickDrawSetClipUnits(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w C o l o r                                             %
+%   D r a w C o l o r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawColor() draws color on image using the current fill color, starting at
+%  DrawColor() draws color on image using the current fill color, starting at
 %  specified position, and using specified paint method. The available paint
 %  methods are:
 %
@@ -958,9 +958,9 @@ WandExport void MagickDrawSetClipUnits(DrawingWand *drawing_wand,
 $      border color.
 %    ResetMethod: Recolor all pixels.
 %
-%  The format of the MagickDrawColor method is:
+%  The format of the DrawColor method is:
 %
-%      void MagickDrawColor(DrawingWand *drawing_wand,const double x,const double y,
+%      void DrawColor(DrawingWand *drawing_wand,const double x,const double y,
 %        const PaintMethod paintMethod)
 %
 %  A description of each parameter follows:
@@ -974,7 +974,7 @@ $      border color.
 %    o paintMethod: paint method
 %
 */
-WandExport void MagickDrawColor(DrawingWand *drawing_wand,const double x,
+WandExport void DrawColor(DrawingWand *drawing_wand,const double x,
   const double y,const PaintMethod paintMethod)
 {
   const char
@@ -1009,17 +1009,17 @@ WandExport void MagickDrawColor(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w C o m m e n t                                         %
+%   D r a w C o m m e n t                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawComment() adds a comment to a vector output stream.
+%  DrawComment() adds a comment to a vector output stream.
 %
-%  The format of the MagickDrawComment method is:
+%  The format of the DrawComment method is:
 %
-%      void MagickDrawComment(DrawingWand *drawing_wand,const char *comment)
+%      void DrawComment(DrawingWand *drawing_wand,const char *comment)
 %
 %  A description of each parameter follows:
 %
@@ -1028,7 +1028,7 @@ WandExport void MagickDrawColor(DrawingWand *drawing_wand,const double x,
 %    o comment: comment text
 %
 */
-WandExport void MagickDrawComment(DrawingWand *drawing_wand,const char* comment)
+WandExport void DrawComment(DrawingWand *drawing_wand,const char* comment)
 {
   (void) MvgPrintf(drawing_wand,"#%s\n",comment);
 }
@@ -1038,17 +1038,17 @@ WandExport void MagickDrawComment(DrawingWand *drawing_wand,const char* comment)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w E l l i p s e                                         %
+%   D r a w E l l i p s e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawEllipse() draws an ellipse on the image.
+%  DrawEllipse() draws an ellipse on the image.
 %
-%  The format of the MagickDrawEllipse method is:
+%  The format of the DrawEllipse method is:
 %
-%       void MagickDrawEllipse(DrawingWand *drawing_wand,const double ox,
+%       void DrawEllipse(DrawingWand *drawing_wand,const double ox,
 %         const double oy,const double rx,const double ry,const double start,
 %         const double end)
 %
@@ -1069,7 +1069,7 @@ WandExport void MagickDrawComment(DrawingWand *drawing_wand,const char* comment)
 %    o end: ending rotation in degrees
 %
 */
-WandExport void MagickDrawEllipse(DrawingWand *drawing_wand,const double ox,
+WandExport void DrawEllipse(DrawingWand *drawing_wand,const double ox,
   const double oy,const double rx,const double ry,const double start,
   const double end)
 {
@@ -1084,17 +1084,17 @@ WandExport void MagickDrawEllipse(DrawingWand *drawing_wand,const double ox,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F i l l C o l o r                               %
+%   D r a w G e t F i l l C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFillColor() returns the fill color used for drawing filled objects.
+%  DrawGetFillColor() returns the fill color used for drawing filled objects.
 %
-%  The format of the MagickDrawGetFillColor method is:
+%  The format of the DrawGetFillColor method is:
 %
-%      void MagickDrawGetFillColor(const DrawingWand *drawing_wand,
+%      void DrawGetFillColor(const DrawingWand *drawing_wand,
 %        PixelWand *fill_color)
 %
 %  A description of each parameter follows:
@@ -1104,7 +1104,7 @@ WandExport void MagickDrawEllipse(DrawingWand *drawing_wand,const double ox,
 %    o fill_color: Return the fill color.
 %
 */
-WandExport void MagickDrawGetFillColor(const DrawingWand *drawing_wand,
+WandExport void DrawGetFillColor(const DrawingWand *drawing_wand,
   PixelWand *fill_color)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
@@ -1117,17 +1117,17 @@ WandExport void MagickDrawGetFillColor(const DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F i l l C o l o r                               %
+%   D r a w S e t F i l l C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFillColor() sets the fill color to be used for drawing filled objects.
+%  DrawSetFillColor() sets the fill color to be used for drawing filled objects.
 %
-%  The format of the MagickDrawSetFillColor method is:
+%  The format of the DrawSetFillColor method is:
 %
-%      void MagickDrawSetFillColor(DrawingWand *drawing_wand,
+%      void DrawSetFillColor(DrawingWand *drawing_wand,
 %        const PixelWand *fill_wand)
 %
 %  A description of each parameter follows:
@@ -1137,7 +1137,7 @@ WandExport void MagickDrawGetFillColor(const DrawingWand *drawing_wand,
 %    o fill_wand: fill wand.
 %
 */
-WandExport void MagickDrawSetFillColor(DrawingWand *drawing_wand,
+WandExport void DrawSetFillColor(DrawingWand *drawing_wand,
   const PixelWand *fill_wand)
 {
   PixelPacket
@@ -1167,20 +1167,20 @@ WandExport void MagickDrawSetFillColor(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F i l l P a t t e r n U R L                     %
+%   D r a w S e t F i l l P a t t e r n U R L                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFillPatternURL() sets the URL to use as a fill pattern for filling
+%  DrawSetFillPatternURL() sets the URL to use as a fill pattern for filling
 %  objects. Only local URLs ("#identifier") are supported at this time. These
 %  local URLs are normally created by defining a named fill pattern with
-%  MagickDrawPushPattern/MagickDrawPopPattern.
+%  DrawPushPattern/DrawPopPattern.
 %
-%  The format of the MagickDrawSetFillPatternURL method is:
+%  The format of the DrawSetFillPatternURL method is:
 %
-%      void MagickDrawSetFillPatternURL(DrawingWand *drawing_wand,
+%      void DrawSetFillPatternURL(DrawingWand *drawing_wand,
 %        const char *fill_url)
 %
 %  A description of each parameter follows:
@@ -1190,7 +1190,7 @@ WandExport void MagickDrawSetFillColor(DrawingWand *drawing_wand,
 %    o fill_url: URL to use to obtain fill pattern.
 %
 */
-WandExport void MagickDrawSetFillPatternURL(DrawingWand *drawing_wand,
+WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
   const char* fill_url)
 {
   char
@@ -1229,25 +1229,25 @@ WandExport void MagickDrawSetFillPatternURL(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F i l l O p a c i t y                           %
+%   D r a w G e t F i l l O p a c i t y                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFillOpacity() returns the opacity used when drawing using the fill
+%  DrawGetFillOpacity() returns the opacity used when drawing using the fill
 %  color or fill texture.  Fully opaque is 1.0.
 %
-%  The format of the MagickDrawGetFillOpacity method is:
+%  The format of the DrawGetFillOpacity method is:
 %
-%      double MagickDrawGetFillOpacity(const DrawingWand *drawing_wand)
+%      double DrawGetFillOpacity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport double MagickDrawGetFillOpacity(const DrawingWand *drawing_wand)
+WandExport double DrawGetFillOpacity(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1259,18 +1259,18 @@ WandExport double MagickDrawGetFillOpacity(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F i l l O p a c i t y                           %
+%   D r a w S e t F i l l O p a c i t y                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFillOpacity() sets the opacity to use when drawing using the fill
+%  DrawSetFillOpacity() sets the opacity to use when drawing using the fill
 %  color or fill texture.  Fully opaque is 1.0.
 %
-%  The format of the MagickDrawSetFillOpacity method is:
+%  The format of the DrawSetFillOpacity method is:
 %
-%      void MagickDrawSetFillOpacity(DrawingWand *drawing_wand,
+%      void DrawSetFillOpacity(DrawingWand *drawing_wand,
 %        const double fill_opacity)
 %
 %  A description of each parameter follows:
@@ -1280,7 +1280,7 @@ WandExport double MagickDrawGetFillOpacity(const DrawingWand *drawing_wand)
 %    o fill_opacity: fill opacity
 %
 */
-WandExport void MagickDrawSetFillOpacity(DrawingWand *drawing_wand,
+WandExport void DrawSetFillOpacity(DrawingWand *drawing_wand,
   const double fill_opacity)
 {
   Quantum
@@ -1302,23 +1302,23 @@ WandExport void MagickDrawSetFillOpacity(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F i l l R u l e                                 %
+%   D r a w G e t F i l l R u l e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFillRule() returns the fill rule used while drawing polygons.
+%  DrawGetFillRule() returns the fill rule used while drawing polygons.
 %
-%  The format of the MagickDrawGetFillRule method is:
+%  The format of the DrawGetFillRule method is:
 %
-%      FillRule MagickDrawGetFillRule(const DrawingWand *drawing_wand)
+%      FillRule DrawGetFillRule(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport FillRule MagickDrawGetFillRule(const DrawingWand *drawing_wand)
+WandExport FillRule DrawGetFillRule(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1330,17 +1330,17 @@ WandExport FillRule MagickDrawGetFillRule(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F i l l R u l e                                 %
+%   D r a w S e t F i l l R u l e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFillRule() sets the fill rule to use while drawing polygons.
+%  DrawSetFillRule() sets the fill rule to use while drawing polygons.
 %
-%  The format of the MagickDrawSetFillRule method is:
+%  The format of the DrawSetFillRule method is:
 %
-%      void MagickDrawSetFillRule(DrawingWand *drawing_wand,const FillRule fill_rule)
+%      void DrawSetFillRule(DrawingWand *drawing_wand,const FillRule fill_rule)
 %
 %  A description of each parameter follows:
 %
@@ -1349,7 +1349,7 @@ WandExport FillRule MagickDrawGetFillRule(const DrawingWand *drawing_wand)
 %    o fill_rule: fill rule (EvenOddRule or NonZeroRule)
 %
 */
-WandExport void MagickDrawSetFillRule(DrawingWand *drawing_wand,
+WandExport void DrawSetFillRule(DrawingWand *drawing_wand,
   const FillRule fill_rule)
 {
   const char
@@ -1381,25 +1381,25 @@ WandExport void MagickDrawSetFillRule(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t                                         %
+%   D r a w G e t F o n t                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFont() returns a null-terminaged string specifying the font used
+%  DrawGetFont() returns a null-terminaged string specifying the font used
 %  when annotating with text. The value returned must be freed by the user
 %  when no longer needed.
 %
-%  The format of the MagickDrawGetFont method is:
+%  The format of the DrawGetFont method is:
 %
-%      char *MagickDrawGetFont(const DrawingWand *drawing_wand)
+%      char *DrawGetFont(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport char *MagickDrawGetFont(const DrawingWand *drawing_wand)
+WandExport char *DrawGetFont(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1413,18 +1413,18 @@ WandExport char *MagickDrawGetFont(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t                                         %
+%   D r a w S e t F o n t                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFont() sets the fully-sepecified font to use when annotating with
+%  DrawSetFont() sets the fully-sepecified font to use when annotating with
 %  text.
 %
-%  The format of the MagickDrawSetFont method is:
+%  The format of the DrawSetFont method is:
 %
-%      void MagickDrawSetFont(DrawingWand *drawing_wand,const char *font_name)
+%      void DrawSetFont(DrawingWand *drawing_wand,const char *font_name)
 %
 %  A description of each parameter follows:
 %
@@ -1433,7 +1433,7 @@ WandExport char *MagickDrawGetFont(const DrawingWand *drawing_wand)
 %    o font_name: font name
 %
 */
-WandExport void MagickDrawSetFont(DrawingWand *drawing_wand,const char *font_name)
+WandExport void DrawSetFont(DrawingWand *drawing_wand,const char *font_name)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1454,24 +1454,24 @@ WandExport void MagickDrawSetFont(DrawingWand *drawing_wand,const char *font_nam
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t F a m i l y                             %
+%   D r a w G e t F o n t F a m i l y                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFontFamily() returns the font family to use when annotating with text.
+%  DrawGetFontFamily() returns the font family to use when annotating with text.
 %  The value returned must be freed by the user when it is no longer needed.
 %
-%  The format of the MagickDrawGetFontFamily method is:
+%  The format of the DrawGetFontFamily method is:
 %
-%      char *MagickDrawGetFontFamily(const DrawingWand *drawing_wand)
+%      char *DrawGetFontFamily(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport char *MagickDrawGetFontFamily(const DrawingWand *drawing_wand)
+WandExport char *DrawGetFontFamily(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1485,17 +1485,17 @@ WandExport char *MagickDrawGetFontFamily(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t F a m i l y                             %
+%   D r a w S e t F o n t F a m i l y                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFontFamily() sets the font family to use when annotating with text.
+%  DrawSetFontFamily() sets the font family to use when annotating with text.
 %
-%  The format of the MagickDrawSetFontFamily method is:
+%  The format of the DrawSetFontFamily method is:
 %
-%      void MagickDrawSetFontFamily(DrawingWand *drawing_wand,const char *font_family)
+%      void DrawSetFontFamily(DrawingWand *drawing_wand,const char *font_family)
 %
 %  A description of each parameter follows:
 %
@@ -1504,7 +1504,7 @@ WandExport char *MagickDrawGetFontFamily(const DrawingWand *drawing_wand)
 %    o font_family: font family
 %
 */
-WandExport void MagickDrawSetFontFamily(DrawingWand *drawing_wand,
+WandExport void DrawSetFontFamily(DrawingWand *drawing_wand,
   const char *font_family)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -1526,23 +1526,23 @@ WandExport void MagickDrawSetFontFamily(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t S i z e                                 %
+%   D r a w G e t F o n t S i z e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFontSize() returns the font pointsize used when annotating with text.
+%  DrawGetFontSize() returns the font pointsize used when annotating with text.
 %
-%  The format of the MagickDrawGetFontSize method is:
+%  The format of the DrawGetFontSize method is:
 %
-%      double MagickDrawGetFontSize(const DrawingWand *drawing_wand)
+%      double DrawGetFontSize(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport double MagickDrawGetFontSize(const DrawingWand *drawing_wand)
+WandExport double DrawGetFontSize(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1554,17 +1554,17 @@ WandExport double MagickDrawGetFontSize(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t S i z e                                 %
+%   D r a w S e t F o n t S i z e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFontSize() sets the font pointsize to use when annotating with text.
+%  DrawSetFontSize() sets the font pointsize to use when annotating with text.
 %
-%  The format of the MagickDrawSetFontSize method is:
+%  The format of the DrawSetFontSize method is:
 %
-%      void MagickDrawSetFontSize(DrawingWand *drawing_wand,const double pointsize)
+%      void DrawSetFontSize(DrawingWand *drawing_wand,const double pointsize)
 %
 %  A description of each parameter follows:
 %
@@ -1573,7 +1573,7 @@ WandExport double MagickDrawGetFontSize(const DrawingWand *drawing_wand)
 %    o pointsize: text pointsize
 %
 */
-WandExport void MagickDrawSetFontSize(DrawingWand *drawing_wand,
+WandExport void DrawSetFontSize(DrawingWand *drawing_wand,
   const double pointsize)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -1591,23 +1591,23 @@ WandExport void MagickDrawSetFontSize(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t S t r e t c h                           %
+%   D r a w G e t F o n t S t r e t c h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFontStretch() returns the font stretch used when annotating with text.
+%  DrawGetFontStretch() returns the font stretch used when annotating with text.
 %
-%  The format of the MagickDrawGetFontStretch method is:
+%  The format of the DrawGetFontStretch method is:
 %
-%      StretchType MagickDrawGetFontStretch(const DrawingWand *drawing_wand)
+%      StretchType DrawGetFontStretch(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport StretchType MagickDrawGetFontStretch(const DrawingWand *drawing_wand)
+WandExport StretchType DrawGetFontStretch(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1619,18 +1619,18 @@ WandExport StretchType MagickDrawGetFontStretch(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t S t r e t c h                           %
+%   D r a w S e t F o n t S t r e t c h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFontStretch() sets the font stretch to use when annotating with text.
+%  DrawSetFontStretch() sets the font stretch to use when annotating with text.
 %  The AnyStretch enumeration acts as a wild-card "don't care" option.
 %
-%  The format of the MagickDrawSetFontStretch method is:
+%  The format of the DrawSetFontStretch method is:
 %
-%      void MagickDrawSetFontStretch(DrawingWand *drawing_wand,
+%      void DrawSetFontStretch(DrawingWand *drawing_wand,
 %        const StretchType font_stretch)
 %
 %  A description of each parameter follows:
@@ -1643,7 +1643,7 @@ WandExport StretchType MagickDrawGetFontStretch(const DrawingWand *drawing_wand)
 %                    ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)
 %
 */
-WandExport void MagickDrawSetFontStretch(DrawingWand *drawing_wand,
+WandExport void DrawSetFontStretch(DrawingWand *drawing_wand,
   const StretchType font_stretch)
 {
   const char
@@ -1697,23 +1697,23 @@ WandExport void MagickDrawSetFontStretch(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t S t y l e                               %
+%   D r a w G e t F o n t S t y l e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFontStyle() returns the font style used when annotating with text.
+%  DrawGetFontStyle() returns the font style used when annotating with text.
 %
-%  The format of the MagickDrawGetFontStyle method is:
+%  The format of the DrawGetFontStyle method is:
 %
-%      StyleType MagickDrawGetFontStyle(const DrawingWand *drawing_wand)
+%      StyleType DrawGetFontStyle(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport StyleType MagickDrawGetFontStyle(const DrawingWand *drawing_wand)
+WandExport StyleType DrawGetFontStyle(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1725,18 +1725,18 @@ WandExport StyleType MagickDrawGetFontStyle(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t S t y l e                               %
+%   D r a w S e t F o n t S t y l e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFontStyle() sets the font style to use when annotating with text.
+%  DrawSetFontStyle() sets the font style to use when annotating with text.
 %  The AnyStyle enumeration acts as a wild-card "don't care" option.
 %
-%  The format of the MagickDrawSetFontStyle method is:
+%  The format of the DrawSetFontStyle method is:
 %
-%      void MagickDrawSetFontStyle(DrawingWand *drawing_wand,const StyleType style)
+%      void DrawSetFontStyle(DrawingWand *drawing_wand,const StyleType style)
 %
 %  A description of each parameter follows:
 %
@@ -1745,7 +1745,7 @@ WandExport StyleType MagickDrawGetFontStyle(const DrawingWand *drawing_wand)
 %    o style: font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)
 %
 */
-WandExport void MagickDrawSetFontStyle(DrawingWand *drawing_wand,
+WandExport void DrawSetFontStyle(DrawingWand *drawing_wand,
   const StyleType style)
 {
   const char
@@ -1781,23 +1781,23 @@ WandExport void MagickDrawSetFontStyle(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t F o n t W e i g h t                             %
+%   D r a w G e t F o n t W e i g h t                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetFontWeight() returns the font weight used when annotating with text.
+%  DrawGetFontWeight() returns the font weight used when annotating with text.
 %
-%  The format of the MagickDrawGetFontWeight method is:
+%  The format of the DrawGetFontWeight method is:
 %
-%      unsigned long MagickDrawGetFontWeight(const DrawingWand *drawing_wand)
+%      unsigned long DrawGetFontWeight(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport unsigned long MagickDrawGetFontWeight(const DrawingWand *drawing_wand)
+WandExport unsigned long DrawGetFontWeight(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1809,17 +1809,17 @@ WandExport unsigned long MagickDrawGetFontWeight(const DrawingWand *drawing_wand
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t F o n t W e i g h t                             %
+%   D r a w S e t F o n t W e i g h t                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetFontWeight() sets the font weight to use when annotating with text.
+%  DrawSetFontWeight() sets the font weight to use when annotating with text.
 %
-%  The format of the MagickDrawSetFontWeight method is:
+%  The format of the DrawSetFontWeight method is:
 %
-%      void MagickDrawSetFontWeight(DrawingWand *drawing_wand,
+%      void DrawSetFontWeight(DrawingWand *drawing_wand,
 %        const unsigned long font_weight)
 %
 %  A description of each parameter follows:
@@ -1829,7 +1829,7 @@ WandExport unsigned long MagickDrawGetFontWeight(const DrawingWand *drawing_wand
 %    o font_weight: font weight (valid range 100-900)
 %
 */
-WandExport void MagickDrawSetFontWeight(DrawingWand *drawing_wand,
+WandExport void DrawSetFontWeight(DrawingWand *drawing_wand,
   const unsigned long font_weight)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -1846,24 +1846,24 @@ WandExport void MagickDrawSetFontWeight(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t G r a v i t y                                   %
+%   D r a w G e t G r a v i t y                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetGravity() returns the text placement gravity used when annotating
+%  DrawGetGravity() returns the text placement gravity used when annotating
 %  with text.
 %
-%  The format of the MagickDrawGetGravity method is:
+%  The format of the DrawGetGravity method is:
 %
-%      GravityType MagickDrawGetGravity(const DrawingWand *drawing_wand)
+%      GravityType DrawGetGravity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport GravityType MagickDrawGetGravity(const DrawingWand *drawing_wand)
+WandExport GravityType DrawGetGravity(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -1875,18 +1875,18 @@ WandExport GravityType MagickDrawGetGravity(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t G r a v i t y                                   %
+%   D r a w S e t G r a v i t y                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetGravity() sets the text placement gravity to use when annotating
+%  DrawSetGravity() sets the text placement gravity to use when annotating
 %  with text.
 %
-%  The format of the MagickDrawSetGravity method is:
+%  The format of the DrawSetGravity method is:
 %
-%      void MagickDrawSetGravity(DrawingWand *drawing_wand,const GravityType gravity)
+%      void DrawSetGravity(DrawingWand *drawing_wand,const GravityType gravity)
 %
 %  A description of each parameter follows:
 %
@@ -1898,7 +1898,7 @@ WandExport GravityType MagickDrawGetGravity(const DrawingWand *drawing_wand)
 %               SouthEastGravity)
 %
 */
-WandExport void MagickDrawSetGravity(DrawingWand *drawing_wand,
+WandExport void DrawSetGravity(DrawingWand *drawing_wand,
   const GravityType gravity)
 {
   const char
@@ -1954,19 +1954,19 @@ WandExport void MagickDrawSetGravity(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w C o m p o s i t e                                     %
+%   D r a w C o m p o s i t e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawComposite() composites an image onto the current image, using the
+%  DrawComposite() composites an image onto the current image, using the
 %  specified composition operator, specified position, and at the specified
 %  size.
 %
-%  The format of the MagickDrawComposite method is:
+%  The format of the DrawComposite method is:
 %
-%      void MagickDrawComposite(DrawingWand *drawing_wand,
+%      void DrawComposite(DrawingWand *drawing_wand,
 %        const CompositeOperator composite_operator,const double x,
 %        const double y,const double width,const double height,
 %        const Image *image)
@@ -1990,7 +1990,7 @@ WandExport void MagickDrawSetGravity(DrawingWand *drawing_wand,
 %    o image: Image to composite
 %
 */
-WandExport void MagickDrawComposite(DrawingWand *drawing_wand,
+WandExport void DrawComposite(DrawingWand *drawing_wand,
   const CompositeOperator composite_operator,const double x,const double y,
   const double width,const double height,const Image *image)
 
@@ -2082,18 +2082,18 @@ WandExport void MagickDrawComposite(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w L i n e                                               %
+%   D r a w L i n e                                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawLine() draws a line on the image using the current stroke color,
+%  DrawLine() draws a line on the image using the current stroke color,
 %  stroke opacity, and stroke width.
 %
-%  The format of the MagickDrawLine method is:
+%  The format of the DrawLine method is:
 %
-%      void MagickDrawLine(DrawingWand *drawing_wand,const double sx,const double sy,
+%      void DrawLine(DrawingWand *drawing_wand,const double sx,const double sy,
 %        const double ex,const double ey)
 %
 %  A description of each parameter follows:
@@ -2109,7 +2109,7 @@ WandExport void MagickDrawComposite(DrawingWand *drawing_wand,
 %    o ey: ending y ordinate
 %
 */
-WandExport void MagickDrawLine(DrawingWand *drawing_wand,const double sx,
+WandExport void DrawLine(DrawingWand *drawing_wand,const double sx,
   const double sy,const double ex,const double ey)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2122,13 +2122,13 @@ WandExport void MagickDrawLine(DrawingWand *drawing_wand,const double sx,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w M a t t e                                             %
+%   D r a w M a t t e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawMatte() paints on the image's opacity channel in order to set effected
+%  DrawMatte() paints on the image's opacity channel in order to set effected
 %  pixels to transparent.
 %  to influence the opacity of pixels. The available paint
 %  methods are:
@@ -2140,9 +2140,9 @@ WandExport void MagickDrawLine(DrawingWand *drawing_wand,const double sx,
 %                        border color.
 %    ResetMethod: Select all pixels.
 %
-%  The format of the MagickDrawMatte method is:
+%  The format of the DrawMatte method is:
 %
-%      void MagickDrawMatte(DrawingWand *drawing_wand,const double x,const double y,
+%      void DrawMatte(DrawingWand *drawing_wand,const double x,const double y,
 %        const PaintMethod paint_method)
 %
 %  A description of each parameter follows:
@@ -2156,7 +2156,7 @@ WandExport void MagickDrawLine(DrawingWand *drawing_wand,const double sx,
 %    o paint_method:
 %
 */
-WandExport void MagickDrawMatte(DrawingWand *drawing_wand,const double x,
+WandExport void DrawMatte(DrawingWand *drawing_wand,const double x,
   const double y,const PaintMethod paint_method)
 {
   const char
@@ -2191,27 +2191,27 @@ WandExport void MagickDrawMatte(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h C l o s e                                     %
+%   D r a w P a t h C l o s e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathClose() adds a path element to the current path which closes the
+%  DrawPathClose() adds a path element to the current path which closes the
 %  current subpath by drawing a straight line from the current point to the
 %  current subpath's most recent starting point (usually, the most recent
 %  moveto point).
 %
-%  The format of the MagickDrawPathClose method is:
+%  The format of the DrawPathClose method is:
 %
-%      void MagickDrawPathClose(DrawingWand *drawing_wand)
+%      void DrawPathClose(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPathClose(DrawingWand *drawing_wand)
+WandExport void DrawPathClose(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -2224,21 +2224,21 @@ WandExport void MagickDrawPathClose(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h C u r v e T o A b s o l u t e                 %
+%   D r a w P a t h C u r v e T o A b s o l u t e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToAbsolute() draws a cubic Bezier curve from the current
+%  DrawPathCurveToAbsolute() draws a cubic Bezier curve from the current
 %  point to (x,y) using (x1,y1) as the control point at the beginning of
 %  the curve and (x2,y2) as the control point at the end of the curve using
 %  absolute coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToAbsolute method is:
+%  The format of the DrawPathCurveToAbsolute method is:
 %
-%      void MagickDrawPathCurveToAbsolute(DrawingWand *drawing_wand,const double x1,
+%      void DrawPathCurveToAbsolute(DrawingWand *drawing_wand,const double x1,
 %        const double y1,const double x2,const double y2,const double x,
 %        const double y)
 %
@@ -2279,7 +2279,7 @@ static void DrawPathCurveTo(DrawingWand *drawing_wand,const PathMode mode,
       x1,y1,x2,y2,x,y);
 }
 
-WandExport void MagickDrawPathCurveToAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathCurveToAbsolute(DrawingWand *drawing_wand,
   const double x1,const double y1,const double x2,const double y2,
   const double x,const double y)
 {
@@ -2293,21 +2293,21 @@ WandExport void MagickDrawPathCurveToAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h C u r v e T o R e l a t i v e                 %
+%   D r a w P a t h C u r v e T o R e l a t i v e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToRelative() draws a cubic Bezier curve from the current
+%  DrawPathCurveToRelative() draws a cubic Bezier curve from the current
 %  point to (x,y) using (x1,y1) as the control point at the beginning of
 %  the curve and (x2,y2) as the control point at the end of the curve using
 %  relative coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToRelative method is:
+%  The format of the DrawPathCurveToRelative method is:
 %
-%      void MagickDrawPathCurveToRelative(DrawingWand *drawing_wand,const double x1,
+%      void DrawPathCurveToRelative(DrawingWand *drawing_wand,const double x1,
 %        const double y1,const double x2,const double y2,const double x,
 %        const double y)
 %
@@ -2328,7 +2328,7 @@ WandExport void MagickDrawPathCurveToAbsolute(DrawingWand *drawing_wand,
 %    o y: y ordinate of the end of the curve
 %
 */
-WandExport void MagickDrawPathCurveToRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathCurveToRelative(DrawingWand *drawing_wand,
   const double x1,const double y1,const double x2,const double y2,
   const double x,const double y)
 {
@@ -2338,24 +2338,24 @@ WandExport void MagickDrawPathCurveToRelative(DrawingWand *drawing_wand,
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                            %
-%                                                                                            %
-%                                                                                            %
-%   M a g i c k D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e  %
-%                                                                                            %
-%                                                                                            %
-%                                                                                            %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e  %
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bezier curve
+%  DrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
 %  absolute coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToQuadraticBezierAbsolute method is:
+%  The format of the DrawPathCurveToQuadraticBezierAbsolute method is:
 %
-%      void MagickDrawPathCurveToQuadraticBezierAbsolute(DrawingWand *drawing_wand,
+%      void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *drawing_wand,
 %        const double x1,const double y1,onst double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2389,7 +2389,7 @@ static void DrawPathCurveToQuadraticBezier(DrawingWand *drawing_wand,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x1,y1,x,y);
 }
 
-WandExport void MagickDrawPathCurveToQuadraticBezierAbsolute(
+WandExport void DrawPathCurveToQuadraticBezierAbsolute(
   DrawingWand *drawing_wand,const double x1,const double y1,const double x,
   const double y)
 {
@@ -2399,24 +2399,24 @@ WandExport void MagickDrawPathCurveToQuadraticBezierAbsolute(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                             %
-%                                                                                             %
-%                                                                                             %
-%   M a g i c k D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e   %
-%                                                                                             %
-%                                                                                             %
-%                                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                 %
+%                                                                                 %
+%                                                                                 %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e   %
+%                                                                                 %
+%                                                                                 %
+%                                                                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToQuadraticBezierRelative() draws a quadratic Bezier curve
+%  DrawPathCurveToQuadraticBezierRelative() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
 %  relative coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToQuadraticBezierRelative method is:
+%  The format of the DrawPathCurveToQuadraticBezierRelative method is:
 %
-%      void MagickDrawPathCurveToQuadraticBezierRelative(DrawingWand *drawing_wand,
+%      void DrawPathCurveToQuadraticBezierRelative(DrawingWand *drawing_wand,
 %        const double x1,const double y1,const double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2432,7 +2432,7 @@ WandExport void MagickDrawPathCurveToQuadraticBezierAbsolute(
 %    o y: y ordinate of final point
 %
 */
-WandExport void MagickDrawPathCurveToQuadraticBezierRelative(
+WandExport void DrawPathCurveToQuadraticBezierRelative(
   DrawingWand *drawing_wand,const double x1,const double y1,const double x,
   const double y)
 {
@@ -2442,32 +2442,32 @@ WandExport void MagickDrawPathCurveToQuadraticBezierRelative(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                                         %
-%                                                                                                         %
-%                                                                                                         %
-%   M a g i c k D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h A b s o l u t e   %
-%                                                                                                         %
-%                                                                                                         %
-%                                                                                                         %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h A b s o l u t e   %
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
+%  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
 %  Bezier curve (using absolute coordinates) from the current point to
 %  (x,y). The control point is assumed to be the reflection of the
 %  control point on the previous command relative to the current
 %  point. (If there is no previous command or if the previous command was
-%  not a MagickDrawPathCurveToQuadraticBezierAbsolute,
-%  MagickDrawPathCurveToQuadraticBezierRelative,
-%  MagickDrawPathCurveToQuadraticBezierSmoothAbsolute or
-%  MagickDrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
+%  not a DrawPathCurveToQuadraticBezierAbsolute,
+%  DrawPathCurveToQuadraticBezierRelative,
+%  DrawPathCurveToQuadraticBezierSmoothAbsolute or
+%  DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
 %  is coincident with the current point.). At the end of the command, the
 %  new current point becomes the final (x,y) coordinate pair used in the
 %  polybezier.
 %
-%  The format of the MagickDrawPathCurveToQuadraticBezierSmoothAbsolute method is:
+%  The format of the DrawPathCurveToQuadraticBezierSmoothAbsolute method is:
 %
-%      void MagickDrawPathCurveToQuadraticBezierSmoothAbsolute(
+%      void DrawPathCurveToQuadraticBezierSmoothAbsolute(
 %        DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2497,7 +2497,7 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawingWand *drawing_wand,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
 
-WandExport void MagickDrawPathCurveToQuadraticBezierSmoothAbsolute(
+WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(
   DrawingWand *drawing_wand,const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2506,32 +2506,32 @@ WandExport void MagickDrawPathCurveToQuadraticBezierSmoothAbsolute(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                                         %
-%                                                                                                         %
-%                                                                                                         %
-%   M a g i c k D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h R e l a t i v e   %
-%                                                                                                         %
-%                                                                                                         %
-%                                                                                                         %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h R e l a t i v e   %
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToQuadraticBezierSmoothRelative() draws a quadratic
+%  DrawPathCurveToQuadraticBezierSmoothRelative() draws a quadratic
 %  Bezier curve (using relative coordinates) from the current point to
 %  (x,y). The control point is assumed to be the reflection of the
 %  control point on the previous command relative to the current
 %  point. (If there is no previous command or if the previous command was
-%  not a MagickDrawPathCurveToQuadraticBezierAbsolute,
-%  MagickDrawPathCurveToQuadraticBezierRelative,
-%  MagickDrawPathCurveToQuadraticBezierSmoothAbsolute or
-%  MagickDrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
+%  not a DrawPathCurveToQuadraticBezierAbsolute,
+%  DrawPathCurveToQuadraticBezierRelative,
+%  DrawPathCurveToQuadraticBezierSmoothAbsolute or
+%  DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
 %  is coincident with the current point.). At the end of the command, the
 %  new current point becomes the final (x,y) coordinate pair used in the
 %  polybezier.
 %
-%  The format of the MagickDrawPathCurveToQuadraticBezierSmoothRelative method is:
+%  The format of the DrawPathCurveToQuadraticBezierSmoothRelative method is:
 %
-%      void MagickDrawPathCurveToQuadraticBezierSmoothRelative(
+%      void DrawPathCurveToQuadraticBezierSmoothRelative(
 %        DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2544,7 +2544,7 @@ WandExport void MagickDrawPathCurveToQuadraticBezierSmoothAbsolute(
 %
 %
 */
-WandExport void MagickDrawPathCurveToQuadraticBezierSmoothRelative(
+WandExport void DrawPathCurveToQuadraticBezierSmoothRelative(
   DrawingWand *drawing_wand,const double x,const double y)
 {
   DrawPathCurveToQuadraticBezierSmooth(drawing_wand,RelativePathMode,x,y);
@@ -2555,27 +2555,27 @@ WandExport void MagickDrawPathCurveToQuadraticBezierSmoothRelative(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h C u r v e T o S m o o t h A b s o l u t e     %
+%   D r a w P a t h C u r v e T o S m o o t h A b s o l u t e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToSmoothAbsolute() draws a cubic Bezier curve from the
+%  DrawPathCurveToSmoothAbsolute() draws a cubic Bezier curve from the
 %  current point to (x,y) using absolute coordinates. The first control
 %  point is assumed to be the reflection of the second control point on
 %  the previous command relative to the current point. (If there is no
 %  previous command or if the previous command was not an
-%  MagickDrawPathCurveToAbsolute, MagickDrawPathCurveToRelative,
-%  MagickDrawPathCurveToSmoothAbsolute or MagickDrawPathCurveToSmoothRelative, assume
+%  DrawPathCurveToAbsolute, DrawPathCurveToRelative,
+%  DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume
 %  the first control point is coincident with the current point.) (x2,y2)
 %  is the second control point (i.e., the control point at the end of the
 %  curve). At the end of the command, the new current point becomes the
 %  final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToSmoothAbsolute method is:
+%  The format of the DrawPathCurveToSmoothAbsolute method is:
 %
-%      void MagickDrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
+%      void DrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
 %        const double x2const double y2,const double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2609,7 +2609,7 @@ static void DrawPathCurveToSmooth(DrawingWand *drawing_wand,const PathMode mode,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x2,y2,x,y);
 }
 
-WandExport void MagickDrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
   const double x2,const double y2,const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2622,27 +2622,27 @@ WandExport void MagickDrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h C u r v e T o S m o o t h R e l a t i v e     %
+%   D r a w P a t h C u r v e T o S m o o t h R e l a t i v e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathCurveToSmoothRelative() draws a cubic Bezier curve from the
+%  DrawPathCurveToSmoothRelative() draws a cubic Bezier curve from the
 %  current point to (x,y) using relative coordinates. The first control
 %  point is assumed to be the reflection of the second control point on
 %  the previous command relative to the current point. (If there is no
 %  previous command or if the previous command was not an
-%  MagickDrawPathCurveToAbsolute, MagickDrawPathCurveToRelative,
-%  MagickDrawPathCurveToSmoothAbsolute or MagickDrawPathCurveToSmoothRelative, assume
+%  DrawPathCurveToAbsolute, DrawPathCurveToRelative,
+%  DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume
 %  the first control point is coincident with the current point.) (x2,y2)
 %  is the second control point (i.e., the control point at the end of the
 %  curve). At the end of the command, the new current point becomes the
 %  final (x,y) coordinate pair used in the polybezier.
 %
-%  The format of the MagickDrawPathCurveToSmoothRelative method is:
+%  The format of the DrawPathCurveToSmoothRelative method is:
 %
-%      void MagickDrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
+%      void DrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
 %        const double x2,const double y2,const double x,const double y)
 %
 %  A description of each parameter follows:
@@ -2659,7 +2659,7 @@ WandExport void MagickDrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
 %
 %
 */
-WandExport void MagickDrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
   const double x2,const double y2,const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2672,13 +2672,13 @@ WandExport void MagickDrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h E l l i p t i c A r c A b s o l u t e         %
+%   D r a w P a t h E l l i p t i c A r c A b s o l u t e                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathEllipticArcAbsolute() draws an elliptical arc from the current
+%  DrawPathEllipticArcAbsolute() draws an elliptical arc from the current
 %  point to (x, y) using absolute coordinates. The size and orientation
 %  of the ellipse are defined by two radii (rx, ry) and an
 %  xAxisRotation, which indicates how the ellipse as a whole is rotated
@@ -2689,9 +2689,9 @@ WandExport void MagickDrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
 %  largeArcFlag is true then draw the larger of the available arcs. If
 %  sweepFlag is true, then draw the arc matching a clock-wise rotation.
 %
-%  The format of the MagickDrawPathEllipticArcAbsolute method is:
+%  The format of the DrawPathEllipticArcAbsolute method is:
 %
-%      void MagickDrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
+%      void DrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
 %        const double rx,const double ry,const double x_axis_rotation,
 %        unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
 %        const double y)
@@ -2737,7 +2737,7 @@ static void DrawPathEllipticArc(DrawingWand *drawing_wand, const PathMode mode,
       x_axis_rotation,large_arc_flag,sweep_flag,x,y);
 }
 
-WandExport void MagickDrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
   const double rx,const double ry,const double x_axis_rotation,
   unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
   const double y)
@@ -2753,13 +2753,13 @@ WandExport void MagickDrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h E l l i p t i c A r c R e l a t i v e         %
+%   D r a w P a t h E l l i p t i c A r c R e l a t i v e                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathEllipticArcRelative() draws an elliptical arc from the current
+%  DrawPathEllipticArcRelative() draws an elliptical arc from the current
 %  point to (x, y) using relative coordinates. The size and orientation
 %  of the ellipse are defined by two radii (rx, ry) and an
 %  xAxisRotation, which indicates how the ellipse as a whole is rotated
@@ -2770,9 +2770,9 @@ WandExport void MagickDrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
 %  largeArcFlag is true then draw the larger of the available arcs. If
 %  sweepFlag is true, then draw the arc matching a clock-wise rotation.
 %
-%  The format of the MagickDrawPathEllipticArcRelative method is:
+%  The format of the DrawPathEllipticArcRelative method is:
 %
-%      void MagickDrawPathEllipticArcRelative(DrawingWand *drawing_wand,
+%      void DrawPathEllipticArcRelative(DrawingWand *drawing_wand,
 %        const double rx,const double ry,const double x_axis_rotation,
 %        unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
 %        const double y)
@@ -2795,7 +2795,7 @@ WandExport void MagickDrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
 %                  clock-wise rotation
 %
 */
-WandExport void MagickDrawPathEllipticArcRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathEllipticArcRelative(DrawingWand *drawing_wand,
   const double rx,const double ry,const double x_axis_rotation,
   unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
   const double y)
@@ -2809,24 +2809,24 @@ WandExport void MagickDrawPathEllipticArcRelative(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h F i n i s h                                   %
+%   D r a w P a t h F i n i s h                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathFinish() terminates the current path.
+%  DrawPathFinish() terminates the current path.
 %
-%  The format of the MagickDrawPathFinish method is:
+%  The format of the DrawPathFinish method is:
 %
-%      void MagickDrawPathFinish(DrawingWand *drawing_wand)
+%      void DrawPathFinish(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPathFinish(DrawingWand *drawing_wand)
+WandExport void DrawPathFinish(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -2840,19 +2840,19 @@ WandExport void MagickDrawPathFinish(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h L i n e T o A b s o l u t e                   %
+%   D r a w P a t h L i n e T o A b s o l u t e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToAbsolute() draws a line path from the current point to the
+%  DrawPathLineToAbsolute() draws a line path from the current point to the
 %  given coordinate using absolute coordinates. The coordinate then becomes
 %  the new current point.
 %
-%  The format of the MagickDrawPathLineToAbsolute method is:
+%  The format of the DrawPathLineToAbsolute method is:
 %
-%      void MagickDrawPathLineToAbsolute(DrawingWand *drawing_wand,const double x,const double y)
+%      void DrawPathLineToAbsolute(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
@@ -2881,7 +2881,7 @@ static void DrawPathLineTo(DrawingWand *drawing_wand,const PathMode mode,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
 
-WandExport void MagickDrawPathLineToAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToAbsolute(DrawingWand *drawing_wand,
   const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2894,19 +2894,19 @@ WandExport void MagickDrawPathLineToAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h L i n e T o R e l a t i v e                   %
+%   D r a w P a t h L i n e T o R e l a t i v e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToRelative() draws a line path from the current point to the
+%  DrawPathLineToRelative() draws a line path from the current point to the
 %  given coordinate using relative coordinates. The coordinate then becomes
 %  the new current point.
 %
-%  The format of the MagickDrawPathLineToRelative method is:
+%  The format of the DrawPathLineToRelative method is:
 %
-%      void MagickDrawPathLineToRelative(DrawingWand *drawing_wand,const double x,
+%      void DrawPathLineToRelative(DrawingWand *drawing_wand,const double x,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -2918,7 +2918,7 @@ WandExport void MagickDrawPathLineToAbsolute(DrawingWand *drawing_wand,
 %    o y: target y ordinate
 %
 */
-WandExport void MagickDrawPathLineToRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToRelative(DrawingWand *drawing_wand,
   const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2931,19 +2931,19 @@ WandExport void MagickDrawPathLineToRelative(DrawingWand *drawing_wand,
 %                                                                                %
 %                                                                                %
 %                                                                                %
-%   M a g i c k D r a w P a t h L i n e T o H o r i z o n t a l A b s o l u t e  %
+%   D r a w P a t h L i n e T o H o r i z o n t a l A b s o l u t e              %
 %                                                                                %
 %                                                                                %
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToHorizontalAbsolute() draws a horizontal line path from the
+%  DrawPathLineToHorizontalAbsolute() draws a horizontal line path from the
 %  current point to the target point using absolute coordinates.  The target
 %  point then becomes the new current point.
 %
-%  The format of the MagickDrawPathLineToHorizontalAbsolute method is:
+%  The format of the DrawPathLineToHorizontalAbsolute method is:
 %
-%      void MagickDrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
+%      void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
 %        const PathMode mode,const double x)
 %
 %  A description of each parameter follows:
@@ -2971,7 +2971,7 @@ static void DrawPathLineToHorizontal(DrawingWand *drawing_wand,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g",x);
 }
 
-WandExport void MagickDrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
   const double x)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -2984,19 +2984,19 @@ WandExport void MagickDrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand
 %                                                                                %
 %                                                                                %
 %                                                                                %
-%   M a g i c k D r a w P a t h L i n e T o H o r i z o n t a l R e l a t i v e  %
+%   D r a w P a t h L i n e T o H o r i z o n t a l R e l a t i v e              %
 %                                                                                %
 %                                                                                %
 %                                                                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToHorizontalRelative() draws a horizontal line path from the
+%  DrawPathLineToHorizontalRelative() draws a horizontal line path from the
 %  current point to the target point using relative coordinates.  The target
 %  point then becomes the new current point.
 %
-%  The format of the MagickDrawPathLineToHorizontalRelative method is:
+%  The format of the DrawPathLineToHorizontalRelative method is:
 %
-%      void MagickDrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
+%      void DrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
 %        const double x)
 %
 %  A description of each parameter follows:
@@ -3006,7 +3006,7 @@ WandExport void MagickDrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand
 %    o x: target x ordinate
 %
 */
-WandExport void MagickDrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
   const double x)
 {
   DrawPathLineToHorizontal(drawing_wand,RelativePathMode,x);
@@ -3017,19 +3017,19 @@ WandExport void MagickDrawPathLineToHorizontalRelative(DrawingWand *drawing_wand
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h L i n e T o V e r t i c a l A b s o l u t e   %
+%   D r a w P a t h L i n e T o V e r t i c a l A b s o l u t e               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToVerticalAbsolute() draws a vertical line path from the
+%  DrawPathLineToVerticalAbsolute() draws a vertical line path from the
 %  current point to the target point using absolute coordinates.  The target
 %  point then becomes the new current point.
 %
-%  The format of the MagickDrawPathLineToVerticalAbsolute method is:
+%  The format of the DrawPathLineToVerticalAbsolute method is:
 %
-%      void MagickDrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
+%      void DrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -3057,7 +3057,7 @@ static void DrawPathLineToVertical(DrawingWand *drawing_wand,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g",y);
 }
 
-WandExport void MagickDrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
   const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3070,19 +3070,19 @@ WandExport void MagickDrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h L i n e T o V e r t i c a l R e l a t i v e   %
+%   D r a w P a t h L i n e T o V e r t i c a l R e l a t i v e               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathLineToVerticalRelative() draws a vertical line path from the
+%  DrawPathLineToVerticalRelative() draws a vertical line path from the
 %  current point to the target point using relative coordinates.  The target
 %  point then becomes the new current point.
 %
-%  The format of the MagickDrawPathLineToVerticalRelative method is:
+%  The format of the DrawPathLineToVerticalRelative method is:
 %
-%      void MagickDrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
+%      void DrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -3092,7 +3092,7 @@ WandExport void MagickDrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
 %    o y: target y ordinate
 %
 */
-WandExport void MagickDrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
   const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3104,19 +3104,19 @@ WandExport void MagickDrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h M o v e T o A b s o l u t e                   %
+%   D r a w P a t h M o v e T o A b s o l u t e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathMoveToAbsolute() starts a new sub-path at the given coordinate
+%  DrawPathMoveToAbsolute() starts a new sub-path at the given coordinate
 %  using absolute coordinates. The current point then becomes the
 %  specified coordinate.
 %
-%  The format of the MagickDrawPathMoveToAbsolute method is:
+%  The format of the DrawPathMoveToAbsolute method is:
 %
-%      void MagickDrawPathMoveToAbsolute(DrawingWand *drawing_wand,const double x,
+%      void DrawPathMoveToAbsolute(DrawingWand *drawing_wand,const double x,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -3145,7 +3145,7 @@ static void DrawPathMoveTo(DrawingWand *drawing_wand,const PathMode mode,
     (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
 
-WandExport void MagickDrawPathMoveToAbsolute(DrawingWand *drawing_wand,
+WandExport void DrawPathMoveToAbsolute(DrawingWand *drawing_wand,
   const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3158,19 +3158,19 @@ WandExport void MagickDrawPathMoveToAbsolute(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h M o v e T o R e l a t i v e                   %
+%   D r a w P a t h M o v e T o R e l a t i v e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathMoveToRelative() starts a new sub-path at the given coordinate
+%  DrawPathMoveToRelative() starts a new sub-path at the given coordinate
 %  using relative coordinates. The current point then becomes the
 %  specified coordinate.
 %
-%  The format of the MagickDrawPathMoveToRelative method is:
+%  The format of the DrawPathMoveToRelative method is:
 %
-%      void MagickDrawPathMoveToRelative(DrawingWand *drawing_wand,const double x,
+%      void DrawPathMoveToRelative(DrawingWand *drawing_wand,const double x,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -3182,7 +3182,7 @@ WandExport void MagickDrawPathMoveToAbsolute(DrawingWand *drawing_wand,
 %    o y: target y ordinate
 %
 */
-WandExport void MagickDrawPathMoveToRelative(DrawingWand *drawing_wand,
+WandExport void DrawPathMoveToRelative(DrawingWand *drawing_wand,
   const double x,const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3195,28 +3195,28 @@ WandExport void MagickDrawPathMoveToRelative(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P a t h S t a r t                                     %
+%   D r a w P a t h S t a r t                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPathStart() declares the start of a path drawing list which is terminated
-%  by a matching MagickDrawPathFinish() command. All other MagickDrawPath commands must
-%  be enclosed between a MagickDrawPathStart() and a MagickDrawPathFinish() command. This
+%  DrawPathStart() declares the start of a path drawing list which is terminated
+%  by a matching DrawPathFinish() command. All other DrawPath commands must
+%  be enclosed between a DrawPathStart() and a DrawPathFinish() command. This
 %  is because path drawing commands are subordinate commands and they do not
 %  function by themselves.
 %
-%  The format of the MagickDrawPathStart method is:
+%  The format of the DrawPathStart method is:
 %
-%      void MagickDrawPathStart(DrawingWand *drawing_wand)
+%      void DrawPathStart(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPathStart(DrawingWand *drawing_wand)
+WandExport void DrawPathStart(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3230,24 +3230,24 @@ WandExport void MagickDrawPathStart(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P e e k G r a p h i c C o n t e x t                   %
+%   D r a w P e e k G r a p h i c C o n t e x t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPeekGraphicContext() returns the current graphic drawing_wand.
+%  DrawPeekGraphicContext() returns the current graphic drawing_wand.
 %
-%  The format of the MagickDrawPeekGraphicContext method is:
+%  The format of the DrawPeekGraphicContext method is:
 %
-%      DrawInfo *MagickDrawPeekGraphicContext(const DrawingWand *drawing_wand)
+%      DrawInfo *DrawPeekGraphicContext(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport DrawInfo *MagickDrawPeekGraphicContext(const DrawingWand *drawing_wand)
+WandExport DrawInfo *DrawPeekGraphicContext(const DrawingWand *drawing_wand)
 {
   DrawInfo
     *draw_info;
@@ -3264,18 +3264,18 @@ WandExport DrawInfo *MagickDrawPeekGraphicContext(const DrawingWand *drawing_wan
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o i n t                                             %
+%   D r a w P o i n t                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPoint() draws a point using the current stroke color and stroke
+%  DrawPoint() draws a point using the current stroke color and stroke
 %  thickness at the specified coordinates.
 %
-%  The format of the MagickDrawPoint method is:
+%  The format of the DrawPoint method is:
 %
-%      void MagickDrawPoint(DrawingWand *drawing_wand,const double x,const double y)
+%      void DrawPoint(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
@@ -3286,7 +3286,7 @@ WandExport DrawInfo *MagickDrawPeekGraphicContext(const DrawingWand *drawing_wan
 %    o y: target y coordinate
 %
 */
-WandExport void MagickDrawPoint(DrawingWand *drawing_wand,const double x,
+WandExport void DrawPoint(DrawingWand *drawing_wand,const double x,
   const double y)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3299,18 +3299,18 @@ WandExport void MagickDrawPoint(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o l y g o n                                         %
+%   D r a w P o l y g o n                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPolygon() draws a polygon using the current stroke, stroke width, and
+%  DrawPolygon() draws a polygon using the current stroke, stroke width, and
 %  fill color or texture, using the specified array of coordinates.
 %
-%  The format of the MagickDrawPolygon method is:
+%  The format of the DrawPolygon method is:
 %
-%      void MagickDrawPolygon(DrawingWand *drawing_wand,
+%      void DrawPolygon(DrawingWand *drawing_wand,
 %        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
@@ -3322,7 +3322,7 @@ WandExport void MagickDrawPoint(DrawingWand *drawing_wand,const double x,
 %    o coordinates: coordinate array
 %
 */
-WandExport void MagickDrawPolygon(DrawingWand *drawing_wand,
+WandExport void DrawPolygon(DrawingWand *drawing_wand,
   const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3335,18 +3335,18 @@ WandExport void MagickDrawPolygon(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o l y l i n e                                       %
+%   D r a w P o l y l i n e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPolyline() draws a polyline using the current stroke, stroke width, and
+%  DrawPolyline() draws a polyline using the current stroke, stroke width, and
 %  fill color or texture, using the specified array of coordinates.
 %
-%  The format of the MagickDrawPolyline method is:
+%  The format of the DrawPolyline method is:
 %
-%      void MagickDrawPolyline(DrawingWand *drawing_wand,
+%      void DrawPolyline(DrawingWand *drawing_wand,
 %        const unsigned long number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
@@ -3358,7 +3358,7 @@ WandExport void MagickDrawPolygon(DrawingWand *drawing_wand,
 %    o coordinates: coordinate array
 %
 */
-WandExport void MagickDrawPolyline(DrawingWand *drawing_wand,
+WandExport void DrawPolyline(DrawingWand *drawing_wand,
   const unsigned long number_coordinates,const PointInfo *coordinates)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3372,24 +3372,24 @@ WandExport void MagickDrawPolyline(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o p C l i p P a t h                                 %
+%   D r a w P o p C l i p P a t h                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPopClipPath() terminates a clip path definition.
+%  DrawPopClipPath() terminates a clip path definition.
 %
-%  The format of the MagickDrawPopClipPath method is:
+%  The format of the DrawPopClipPath method is:
 %
-%      void MagickDrawPopClipPath(DrawingWand *drawing_wand)
+%      void DrawPopClipPath(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPopClipPath(DrawingWand *drawing_wand)
+WandExport void DrawPopClipPath(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3403,24 +3403,24 @@ WandExport void MagickDrawPopClipPath(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o p D e f s                                         %
+%   D r a w P o p D e f s                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPopDefs() terminates a definition list
+%  DrawPopDefs() terminates a definition list
 %
-%  The format of the MagickDrawPopDefs method is:
+%  The format of the DrawPopDefs method is:
 %
-%      void MagickDrawPopDefs(DrawingWand *drawing_wand)
+%      void DrawPopDefs(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPopDefs(DrawingWand *drawing_wand)
+WandExport void DrawPopDefs(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3434,27 +3434,27 @@ WandExport void MagickDrawPopDefs(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o p G r a p h i c C o n t e x t                     %
+%   D r a w P o p G r a p h i c C o n t e x t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPopGraphicContext() destroys the current drawing_wand returning to the
+%  DrawPopGraphicContext() destroys the current drawing_wand returning to the
 %  previously pushed drawing wand. Multiple drawing wand  may exist. It is an
 %  error to attempt to pop more drawing_wands than have been pushed, and it is
 %  proper form to pop all drawing_wands which have been pushed.
 %
-%  The format of the MagickDrawPopGraphicContext method is:
+%  The format of the DrawPopGraphicContext method is:
 %
-%      void MagickDrawPopGraphicContext(DrawingWand *drawing_wand)
+%      void DrawPopGraphicContext(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPopGraphicContext(DrawingWand *drawing_wand)
+WandExport void DrawPopGraphicContext(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3487,24 +3487,24 @@ WandExport void MagickDrawPopGraphicContext(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P o p P a t t e r n                                   %
+%   D r a w P o p P a t t e r n                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPopPattern() terminates a pattern definition.
+%  DrawPopPattern() terminates a pattern definition.
 %
-%  The format of the MagickDrawPopPattern method is:
+%  The format of the DrawPopPattern method is:
 %
-%      void MagickDrawPopPattern(DrawingWand *drawing_wand)
+%      void DrawPopPattern(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPopPattern(DrawingWand *drawing_wand)
+WandExport void DrawPopPattern(DrawingWand *drawing_wand)
 {
   char
     geometry[MaxTextExtent],
@@ -3541,19 +3541,19 @@ WandExport void MagickDrawPopPattern(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P u s h C l i p P a t h                               %
+%   D r a w P u s h C l i p P a t h                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPushClipPath() starts a clip path definition which is comprized of
-%  any number of drawing commands and terminated by a MagickDrawPopClipPath()
+%  DrawPushClipPath() starts a clip path definition which is comprized of
+%  any number of drawing commands and terminated by a DrawPopClipPath()
 %  command.
 %
-%  The format of the MagickDrawPushClipPath method is:
+%  The format of the DrawPushClipPath method is:
 %
-%      void MagickDrawPushClipPath(DrawingWand *drawing_wand,const char *clip_path_id)
+%      void DrawPushClipPath(DrawingWand *drawing_wand,const char *clip_path_id)
 %
 %  A description of each parameter follows:
 %
@@ -3563,7 +3563,7 @@ WandExport void MagickDrawPopPattern(DrawingWand *drawing_wand)
 %      later use.
 %
 */
-WandExport void MagickDrawPushClipPath(DrawingWand *drawing_wand,
+WandExport void DrawPushClipPath(DrawingWand *drawing_wand,
   const char *clip_path_id)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3578,26 +3578,26 @@ WandExport void MagickDrawPushClipPath(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P u s h D e f s                                       %
+%   D r a w P u s h D e f s                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPushDefs() indicates that commands up to a terminating MagickDrawPopDefs()
+%  DrawPushDefs() indicates that commands up to a terminating DrawPopDefs()
 %  command create named elements (e.g. clip-paths, textures, etc.) which
 %  may safely be processed earlier for the sake of efficiency.
 %
-%  The format of the MagickDrawPushDefs method is:
+%  The format of the DrawPushDefs method is:
 %
-%      void MagickDrawPushDefs(DrawingWand *drawing_wand)
+%      void DrawPushDefs(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPushDefs(DrawingWand *drawing_wand)
+WandExport void DrawPushDefs(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3610,28 +3610,28 @@ WandExport void MagickDrawPushDefs(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P u s h G r a p h i c C o n t e x t                   %
+%   D r a w P u s h G r a p h i c C o n t e x t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPushGraphicContext() clones the current drawing wand to create a
+%  DrawPushGraphicContext() clones the current drawing wand to create a
 %  new drawing wand. The original drawing drawing_wand(s) may be returned to
-%  by invoking MagickDrawPopGraphicContext().  The drawing wands are stored on a
+%  by invoking DrawPopGraphicContext().  The drawing wands are stored on a
 %  drawing wand stack.  For every Pop there must have already been an
 %  equivalent Push.
 %
-%  The format of the MagickDrawPushGraphicContext method is:
+%  The format of the DrawPushGraphicContext method is:
 %
-%      void MagickDrawPushGraphicContext(DrawingWand *drawing_wand)
+%      void DrawPushGraphicContext(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport void MagickDrawPushGraphicContext(DrawingWand *drawing_wand)
+WandExport void DrawPushGraphicContext(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3652,22 +3652,22 @@ WandExport void MagickDrawPushGraphicContext(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w P u s h P a t t e r n                                 %
+%   D r a w P u s h P a t t e r n                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawPushPattern() indicates that subsequent commands up to a
-%  MagickDrawPopPattern() command comprise the definition of a named pattern.
+%  DrawPushPattern() indicates that subsequent commands up to a
+%  DrawPopPattern() command comprise the definition of a named pattern.
 %  The pattern space is assigned top left corner coordinates, a width
 %  and height, and becomes its own drawing space.  Anything which can
 %  be drawn may be used in a pattern definition.
 %  Named patterns may be used as stroke or brush definitions.
 %
-%  The format of the MagickDrawPushPattern method is:
+%  The format of the DrawPushPattern method is:
 %
-%      void MagickDrawPushPattern(DrawingWand *drawing_wand,const char *pattern_id,
+%      void DrawPushPattern(DrawingWand *drawing_wand,const char *pattern_id,
 %        const double x,const double y,const double width,const double height)
 %
 %  A description of each parameter follows:
@@ -3685,7 +3685,7 @@ WandExport void MagickDrawPushGraphicContext(DrawingWand *drawing_wand)
 %    o height: height of pattern space
 %
 */
-WandExport void MagickDrawPushPattern(DrawingWand *drawing_wand,
+WandExport void DrawPushPattern(DrawingWand *drawing_wand,
   const char *pattern_id,const double x,const double y,const double width,
   const double height)
 {
@@ -3712,18 +3712,18 @@ WandExport void MagickDrawPushPattern(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w R e c t a n g l e                                     %
+%   D r a w R e c t a n g l e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawRectangle() draws a rectangle given two coordinates and using
+%  DrawRectangle() draws a rectangle given two coordinates and using
 %  the current stroke, stroke width, and fill settings.
 %
-%  The format of the MagickDrawRectangle method is:
+%  The format of the DrawRectangle method is:
 %
-%      void MagickDrawRectangle(DrawingWand *drawing_wand,const double x1,
+%      void DrawRectangle(DrawingWand *drawing_wand,const double x1,
 %        const double y1,const double x2,const double y2)
 %
 %  A description of each parameter follows:
@@ -3737,7 +3737,7 @@ WandExport void MagickDrawPushPattern(DrawingWand *drawing_wand,
 %    o y2: y ordinate of second coordinate
 %
 */
-WandExport void MagickDrawRectangle(DrawingWand *drawing_wand,const double x1,
+WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
   const double y1,const double x2,const double y2)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3750,24 +3750,24 @@ WandExport void MagickDrawRectangle(DrawingWand *drawing_wand,const double x1,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w R e n d e r                                           %
+%   D r a w R e n d e r                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawRender() renders all preceding drawing commands onto the image.
+%  DrawRender() renders all preceding drawing commands onto the image.
 %
-%  The format of the MagickDrawRender method is:
+%  The format of the DrawRender method is:
 %
-%      unsigned int MagickDrawRender(const DrawingWand *drawing_wand)
+%      unsigned int DrawRender(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport unsigned int MagickDrawRender(const DrawingWand *drawing_wand)
+WandExport unsigned int DrawRender(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -3784,17 +3784,17 @@ WandExport unsigned int MagickDrawRender(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w R o t a t e                                           %
+%   D r a w R o t a t e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawRotate() applies the specified rotation to the current coordinate space.
+%  DrawRotate() applies the specified rotation to the current coordinate space.
 %
-%  The format of the MagickDrawRotate method is:
+%  The format of the DrawRotate method is:
 %
-%      void MagickDrawRotate(DrawingWand *drawing_wand,const double degrees)
+%      void DrawRotate(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -3803,7 +3803,7 @@ WandExport unsigned int MagickDrawRender(const DrawingWand *drawing_wand)
 %    o degrees: degrees of rotation
 %
 */
-WandExport void MagickDrawRotate(DrawingWand *drawing_wand,const double degrees)
+WandExport void DrawRotate(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
@@ -3824,19 +3824,19 @@ WandExport void MagickDrawRotate(DrawingWand *drawing_wand,const double degrees)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w R o u n d R e c t a n g l e                           %
+%   D r a w R o u n d R e c t a n g l e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawRoundRectangle() draws a rounted rectangle given two coordinates,
+%  DrawRoundRectangle() draws a rounted rectangle given two coordinates,
 %  x & y corner radiuses and using the current stroke, stroke width,
 %  and fill settings.
 %
-%  The format of the MagickDrawRoundRectangle method is:
+%  The format of the DrawRoundRectangle method is:
 %
-%      void MagickDrawRoundRectangle(DrawingWand *drawing_wand,double x1,double y1,
+%      void DrawRoundRectangle(DrawingWand *drawing_wand,double x1,double y1,
 %        double x2,double y2,double rx,double ry)
 %
 %  A description of each parameter follows:
@@ -3856,7 +3856,7 @@ WandExport void MagickDrawRotate(DrawingWand *drawing_wand,const double degrees)
 %    o ry: radius of corner in vertical direction
 %
 */
-WandExport void MagickDrawRoundRectangle(DrawingWand *drawing_wand,double x1,
+WandExport void DrawRoundRectangle(DrawingWand *drawing_wand,double x1,
   double y1,double x2,double y2,double rx,double ry)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -3870,18 +3870,18 @@ WandExport void MagickDrawRoundRectangle(DrawingWand *drawing_wand,double x1,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S c a l e                                             %
+%   D r a w S c a l e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawScale() adjusts the scaling factor to apply in the horizontal and
+%  DrawScale() adjusts the scaling factor to apply in the horizontal and
 %  vertical directions to the current coordinate space.
 %
-%  The format of the MagickDrawScale method is:
+%  The format of the DrawScale method is:
 %
-%      void MagickDrawScale(DrawingWand *drawing_wand,const double x,const double y)
+%      void DrawScale(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
@@ -3892,7 +3892,7 @@ WandExport void MagickDrawRoundRectangle(DrawingWand *drawing_wand,double x1,
 %    o y: vertical scale factor
 %
 */
-WandExport void MagickDrawScale(DrawingWand *drawing_wand,const double x,
+WandExport void DrawScale(DrawingWand *drawing_wand,const double x,
   const double y)
 {
   AffineMatrix
@@ -3912,18 +3912,18 @@ WandExport void MagickDrawScale(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S k e w X                                             %
+%   D r a w S k e w X                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSkewX() skews the current coordinate system in the horizontal
+%  DrawSkewX() skews the current coordinate system in the horizontal
 %  direction.
 %
-%  The format of the MagickDrawSkewX method is:
+%  The format of the DrawSkewX method is:
 %
-%      void MagickDrawSkewX(DrawingWand *drawing_wand,const double degrees)
+%      void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -3932,7 +3932,7 @@ WandExport void MagickDrawScale(DrawingWand *drawing_wand,const double x,
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-WandExport void MagickDrawSkewX(DrawingWand *drawing_wand,const double degrees)
+WandExport void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
@@ -3950,18 +3950,18 @@ WandExport void MagickDrawSkewX(DrawingWand *drawing_wand,const double degrees)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S k e w Y                                             %
+%   D r a w S k e w Y                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSkewY() skews the current coordinate system in the vertical
+%  DrawSkewY() skews the current coordinate system in the vertical
 %  direction.
 %
-%  The format of the MagickDrawSkewY method is:
+%  The format of the DrawSkewY method is:
 %
-%      void MagickDrawSkewY(DrawingWand *drawing_wand,const double degrees)
+%      void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -3970,7 +3970,7 @@ WandExport void MagickDrawSkewX(DrawingWand *drawing_wand,const double degrees)
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-WandExport void MagickDrawSkewY(DrawingWand *drawing_wand,const double degrees)
+WandExport void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
@@ -3979,7 +3979,7 @@ WandExport void MagickDrawSkewY(DrawingWand *drawing_wand,const double degrees)
   assert(drawing_wand->signature == MagickSignature);
   GetAffineMatrix(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
-  MagickDrawAffine(drawing_wand,&affine);
+  DrawAffine(drawing_wand,&affine);
   (void) MvgPrintf(drawing_wand,"skewY %.4g\n",degrees);
 }
 #if 0
@@ -3989,17 +3989,17 @@ WandExport void MagickDrawSkewY(DrawingWand *drawing_wand,const double degrees)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t o p C o l o r                               %
+%   D r a w S e t S t o p C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStopColor() sets the stop color and offset for gradients
+%  DrawSetStopColor() sets the stop color and offset for gradients
 %
-%  The format of the MagickDrawSetStopColor method is:
+%  The format of the DrawSetStopColor method is:
 %
-%      void MagickDrawSetStopColor(DrawingWand *drawing_wand,
+%      void DrawSetStopColor(DrawingWand *drawing_wand,
 %        const PixelPacket *stop_color,const double offset)
 %
 %  A description of each parameter follows:
@@ -4012,7 +4012,7 @@ WandExport void MagickDrawSkewY(DrawingWand *drawing_wand,const double degrees)
 %
 */
 /* This is gradient stuff so it shouldn't be supported yet */
-WandExport void MagickDrawSetStopColor(DrawingWand *drawing_wand,
+WandExport void DrawSetStopColor(DrawingWand *drawing_wand,
   const PixelPacket * stop_color,const double offset)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4029,17 +4029,17 @@ WandExport void MagickDrawSetStopColor(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e C o l o r                           %
+%   D r a w G e t S t r o k e C o l o r                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeColor() returns the color used for stroking object outlines.
+%  DrawGetStrokeColor() returns the color used for stroking object outlines.
 %
-%  The format of the MagickDrawGetStrokeColor method is:
+%  The format of the DrawGetStrokeColor method is:
 %
-%      void MagickDrawGetStrokeColor(const DrawingWand *drawing_wand,
+%      void DrawGetStrokeColor(const DrawingWand *drawing_wand,
 $        PixelWand *stroke_color)
 %
 %  A description of each parameter follows:
@@ -4049,7 +4049,7 @@ $        PixelWand *stroke_color)
 %    o stroke_color: Return the stroke color.
 %
 */
-WandExport void MagickDrawGetStrokeColor(const DrawingWand *drawing_wand,
+WandExport void DrawGetStrokeColor(const DrawingWand *drawing_wand,
   PixelWand *stroke_color)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
@@ -4062,17 +4062,17 @@ WandExport void MagickDrawGetStrokeColor(const DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e C o l o r                           %
+%   D r a w S e t S t r o k e C o l o r                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeColor() sets the color used for stroking object outlines.
+%  DrawSetStrokeColor() sets the color used for stroking object outlines.
 %
-%  The format of the MagickDrawSetStrokeColor method is:
+%  The format of the DrawSetStrokeColor method is:
 %
-%      void MagickDrawSetStrokeColor(DrawingWand *drawing_wand,
+%      void DrawSetStrokeColor(DrawingWand *drawing_wand,
 %        const PixelWand *stroke_wand)
 %
 %  A description of each parameter follows:
@@ -4082,7 +4082,7 @@ WandExport void MagickDrawGetStrokeColor(const DrawingWand *drawing_wand,
 %    o stroke_wand: stroke wand.
 %
 */
-WandExport void MagickDrawSetStrokeColor(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeColor(DrawingWand *drawing_wand,
   const PixelWand *stroke_wand)
 {
   PixelPacket
@@ -4113,17 +4113,17 @@ WandExport void MagickDrawSetStrokeColor(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e P a t t e r n U R L                 %
+%   D r a w S e t S t r o k e P a t t e r n U R L                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokePatternURL() sets the pattern used for stroking object outlines.
+%  DrawSetStrokePatternURL() sets the pattern used for stroking object outlines.
 %
-%  The format of the MagickDrawSetStrokePatternURL method is:
+%  The format of the DrawSetStrokePatternURL method is:
 %
-%      void MagickDrawSetStrokePatternURL(DrawingWand *drawing_wand,
+%      void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
 %        const char *stroke_url)
 %
 %  A description of each parameter follows:
@@ -4133,7 +4133,7 @@ WandExport void MagickDrawSetStrokeColor(DrawingWand *drawing_wand,
 %    o stroke_url: URL specifying pattern ID (e.g. "#pattern_id")
 %
 */
-WandExport void MagickDrawSetStrokePatternURL(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
   const char *stroke_url)
 {
   char
@@ -4172,26 +4172,26 @@ WandExport void MagickDrawSetStrokePatternURL(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e A n t i a l i a s                   %
+%   D r a w G e t S t r o k e A n t i a l i a s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeAntialias() returns the current stroke antialias setting.
+%  DrawGetStrokeAntialias() returns the current stroke antialias setting.
 %  Stroked outlines are antialiased by default.  When antialiasing is disabled
 %  stroked pixels are thresholded to determine if the stroke color or
 %  underlying canvas color should be used.
 %
-%  The format of the MagickDrawGetStrokeAntialias method is:
+%  The format of the DrawGetStrokeAntialias method is:
 %
-%      unsigned int MagickDrawGetStrokeAntialias(const DrawingWand *drawing_wand)
+%      unsigned int DrawGetStrokeAntialias(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport unsigned int MagickDrawGetStrokeAntialias(const DrawingWand *drawing_wand)
+WandExport unsigned int DrawGetStrokeAntialias(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4203,20 +4203,20 @@ WandExport unsigned int MagickDrawGetStrokeAntialias(const DrawingWand *drawing_
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e A n t i a l i a s                   %
+%   D r a w S e t S t r o k e A n t i a l i a s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeAntialias() controls whether stroked outlines are antialiased.
+%  DrawSetStrokeAntialias() controls whether stroked outlines are antialiased.
 %  Stroked outlines are antialiased by default.  When antialiasing is disabled
 %  stroked pixels are thresholded to determine if the stroke color or
 %  underlying canvas color should be used.
 %
-%  The format of the MagickDrawSetStrokeAntialias method is:
+%  The format of the DrawSetStrokeAntialias method is:
 %
-%      void MagickDrawSetStrokeAntialias(DrawingWand *drawing_wand,
+%      void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
 %        const unsigned int stroke_antialias)
 %
 %  A description of each parameter follows:
@@ -4226,7 +4226,7 @@ WandExport unsigned int MagickDrawGetStrokeAntialias(const DrawingWand *drawing_
 %    o stroke_antialias: set to false (zero) to disable antialiasing
 %
 */
-WandExport void MagickDrawSetStrokeAntialias(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
   const unsigned int stroke_antialias)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4244,19 +4244,19 @@ WandExport void MagickDrawSetStrokeAntialias(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e D a s h A r r a y                   %
+%   D r a w G e t S t r o k e D a s h A r r a y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeDashArray() returns an array representing the pattern of
-%  dashes and gaps used to stroke paths (see MagickDrawSetStrokeDashArray). The
+%  DrawGetStrokeDashArray() returns an array representing the pattern of
+%  dashes and gaps used to stroke paths (see DrawSetStrokeDashArray). The
 %  array must be freed once it is no longer required by the user.
 %
-%  The format of the MagickDrawGetStrokeDashArray method is:
+%  The format of the DrawGetStrokeDashArray method is:
 %
-%      double *MagickDrawGetStrokeDashArray(const DrawingWand *drawing_wand,
+%      double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %        unsigned long *number_elements)
 %
 %  A description of each parameter follows:
@@ -4266,7 +4266,7 @@ WandExport void MagickDrawSetStrokeAntialias(DrawingWand *drawing_wand,
 %    o number_elements: address to place number of elements in dash array
 %
 % */
-WandExport double *MagickDrawGetStrokeDashArray(const DrawingWand *drawing_wand,
+WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
   unsigned long *number_elements)
 {
   register const double
@@ -4308,13 +4308,13 @@ WandExport double *MagickDrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e D a s h A r r a y                   %
+%   D r a w S e t S t r o k e D a s h A r r a y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to
+%  DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to
 %  stroke paths. The stroke dash array represents an array of numbers that
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
@@ -4322,9 +4322,9 @@ WandExport double *MagickDrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %  number_elements argument and null dash_array.
 %  A typical stroke dash array might contain the members 5 3 2.
 %
-%  The format of the MagickDrawSetStrokeDashArray method is:
+%  The format of the DrawSetStrokeDashArray method is:
 %
-%      void MagickDrawSetStrokeDashArray(DrawingWand *drawing_wand,
+%      void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
 %        const unsigned long number_elements,const double *dash_array)
 %
 %  A description of each parameter follows:
@@ -4336,7 +4336,7 @@ WandExport double *MagickDrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %    o dash_array: dash array values
 %
 % */
-WandExport void MagickDrawSetStrokeDashArray(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
   const unsigned long number_elements,const double *dash_array)
 {
   register const double
@@ -4425,25 +4425,25 @@ WandExport void MagickDrawSetStrokeDashArray(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e D a s h O f f s e t                 %
+%   D r a w G e t S t r o k e D a s h O f f s e t                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeDashOffset() returns the offset into the dash pattern to
+%  DrawGetStrokeDashOffset() returns the offset into the dash pattern to
 %  start the dash.
 %
-%  The format of the MagickDrawGetStrokeDashOffset method is:
+%  The format of the DrawGetStrokeDashOffset method is:
 %
-%      double MagickDrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
+%      double DrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport double MagickDrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
+WandExport double DrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4455,18 +4455,18 @@ WandExport double MagickDrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e D a s h O f f s e t                 %
+%   D r a w S e t S t r o k e D a s h O f f s e t                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeDashOffset() specifies the offset into the dash pattern to
+%  DrawSetStrokeDashOffset() specifies the offset into the dash pattern to
 %  start the dash.
 %
-%  The format of the MagickDrawSetStrokeDashOffset method is:
+%  The format of the DrawSetStrokeDashOffset method is:
 %
-%      void MagickDrawSetStrokeDashOffset(DrawingWand *drawing_wand,
+%      void DrawSetStrokeDashOffset(DrawingWand *drawing_wand,
 %        const double dash_offset)
 %
 %  A description of each parameter follows:
@@ -4476,7 +4476,7 @@ WandExport double MagickDrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 %    o dash_offset: dash offset
 %
 */
-WandExport void MagickDrawSetStrokeDashOffset(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeDashOffset(DrawingWand *drawing_wand,
   const double dash_offset)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4495,26 +4495,26 @@ WandExport void MagickDrawSetStrokeDashOffset(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e L i n e C a p                       %
+%   D r a w G e t S t r o k e L i n e C a p                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeLineCap() returns the shape to be used at the end of
+%  DrawGetStrokeLineCap() returns the shape to be used at the end of
 %  open subpaths when they are stroked. Values of LineCap are
 %  UndefinedCap, ButtCap, RoundCap, and SquareCap.
 %
-%  The format of the MagickDrawGetStrokeLineCap method is:
+%  The format of the DrawGetStrokeLineCap method is:
 %
-%      LineCap MagickDrawGetStrokeLineCap(const DrawingWand *drawing_wand)
+%      LineCap DrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 % */
-WandExport LineCap MagickDrawGetStrokeLineCap(const DrawingWand *drawing_wand)
+WandExport LineCap DrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4526,19 +4526,19 @@ WandExport LineCap MagickDrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e L i n e C a p                       %
+%   D r a w S e t S t r o k e L i n e C a p                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeLineCap() specifies the shape to be used at the end of
+%  DrawSetStrokeLineCap() specifies the shape to be used at the end of
 %  open subpaths when they are stroked. Values of LineCap are
 %  UndefinedCap, ButtCap, RoundCap, and SquareCap.
 %
-%  The format of the MagickDrawSetStrokeLineCap method is:
+%  The format of the DrawSetStrokeLineCap method is:
 %
-%      void MagickDrawSetStrokeLineCap(DrawingWand *drawing_wand,
+%      void DrawSetStrokeLineCap(DrawingWand *drawing_wand,
 %        const LineCap linecap)
 %
 %  A description of each parameter follows:
@@ -4548,7 +4548,7 @@ WandExport LineCap MagickDrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 %    o linecap: linecap style
 %
 % */
-WandExport void MagickDrawSetStrokeLineCap(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeLineCap(DrawingWand *drawing_wand,
   const LineCap linecap)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4584,27 +4584,27 @@ WandExport void MagickDrawSetStrokeLineCap(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e L i n e J o i n                     %
+%   D r a w G e t S t r o k e L i n e J o i n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeLineJoin() returns the shape to be used at the
+%  DrawGetStrokeLineJoin() returns the shape to be used at the
 %  corners of paths (or other vector shapes) when they are
 %  stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin,
 %  and BevelJoin.
 %
-%  The format of the MagickDrawGetStrokeLineJoin method is:
+%  The format of the DrawGetStrokeLineJoin method is:
 %
-%      LineJoin MagickDrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
+%      LineJoin DrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 % */
-WandExport LineJoin MagickDrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
+WandExport LineJoin DrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4616,20 +4616,20 @@ WandExport LineJoin MagickDrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e L i n e J o i n                     %
+%   D r a w S e t S t r o k e L i n e J o i n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeLineJoin() specifies the shape to be used at the
+%  DrawSetStrokeLineJoin() specifies the shape to be used at the
 %  corners of paths (or other vector shapes) when they are
 %  stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin,
 %  and BevelJoin.
 %
-%  The format of the MagickDrawSetStrokeLineJoin method is:
+%  The format of the DrawSetStrokeLineJoin method is:
 %
-%      void MagickDrawSetStrokeLineJoin(DrawingWand *drawing_wand,
+%      void DrawSetStrokeLineJoin(DrawingWand *drawing_wand,
 %        const LineJoin linejoin)
 %
 %  A description of each parameter follows:
@@ -4640,7 +4640,7 @@ WandExport LineJoin MagickDrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 %
 %
 */
-WandExport void MagickDrawSetStrokeLineJoin(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeLineJoin(DrawingWand *drawing_wand,
   const LineJoin linejoin)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4676,28 +4676,28 @@ WandExport void MagickDrawSetStrokeLineJoin(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e M i t e r L i m i t                 %
+%   D r a w G e t S t r o k e M i t e r L i m i t                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeMiterLimit() returns the miter limit. When two line
+%  DrawGetStrokeMiterLimit() returns the miter limit. When two line
 %  segments meet at a sharp angle and miter joins have been specified for
 %  'lineJoin', it is possible for the miter to extend far beyond the
 %  thickness of the line stroking the path. The miterLimit' imposes a
 %  limit on the ratio of the miter length to the 'lineWidth'.
 %
-%  The format of the MagickDrawGetStrokeMiterLimit method is:
+%  The format of the DrawGetStrokeMiterLimit method is:
 %
-%      unsigned long MagickDrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
+%      unsigned long DrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 % */
-WandExport unsigned long MagickDrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
+WandExport unsigned long DrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4709,21 +4709,21 @@ WandExport unsigned long MagickDrawGetStrokeMiterLimit(const DrawingWand *drawin
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e M i t e r L i m i t                 %
+%   D r a w S e t S t r o k e M i t e r L i m i t                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeMiterLimit() specifies the miter limit. When two line
+%  DrawSetStrokeMiterLimit() specifies the miter limit. When two line
 %  segments meet at a sharp angle and miter joins have been specified for
 %  'lineJoin', it is possible for the miter to extend far beyond the
 %  thickness of the line stroking the path. The miterLimit' imposes a
 %  limit on the ratio of the miter length to the 'lineWidth'.
 %
-%  The format of the MagickDrawSetStrokeMiterLimit method is:
+%  The format of the DrawSetStrokeMiterLimit method is:
 %
-%      void MagickDrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
+%      void DrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
 %        const unsigned long miterlimit)
 %
 %  A description of each parameter follows:
@@ -4733,7 +4733,7 @@ WandExport unsigned long MagickDrawGetStrokeMiterLimit(const DrawingWand *drawin
 %    o miterlimit: miter limit
 %
 % */
-WandExport void MagickDrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
   const unsigned long miterlimit)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4750,23 +4750,23 @@ WandExport void MagickDrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e O p a c i t y                       %
+%   D r a w G e t S t r o k e O p a c i t y                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeOpacity() returns the opacity of stroked object outlines.
+%  DrawGetStrokeOpacity() returns the opacity of stroked object outlines.
 %
-%  The format of the MagickDrawGetStrokeOpacity method is:
+%  The format of the DrawGetStrokeOpacity method is:
 %
-%      double MagickDrawGetStrokeOpacity(const DrawingWand *drawing_wand)
+%      double DrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 */
-WandExport double MagickDrawGetStrokeOpacity(const DrawingWand *drawing_wand)
+WandExport double DrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4778,17 +4778,17 @@ WandExport double MagickDrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e O p a c i t y                       %
+%   D r a w S e t S t r o k e O p a c i t y                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeOpacity() specifies the opacity of stroked object outlines.
+%  DrawSetStrokeOpacity() specifies the opacity of stroked object outlines.
 %
-%  The format of the MagickDrawSetStrokeOpacity method is:
+%  The format of the DrawSetStrokeOpacity method is:
 %
-%      void MagickDrawSetStrokeOpacity(DrawingWand *drawing_wand,
+%      void DrawSetStrokeOpacity(DrawingWand *drawing_wand,
 %        const double stroke_opacity)
 %
 %  A description of each parameter follows:
@@ -4798,7 +4798,7 @@ WandExport double MagickDrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 %    o stroke_opacity: stroke opacity.  The value 1.0 is opaque.
 %
 */
-WandExport void MagickDrawSetStrokeOpacity(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeOpacity(DrawingWand *drawing_wand,
   const double stroke_opacity)
 {
   double
@@ -4820,25 +4820,25 @@ WandExport void MagickDrawSetStrokeOpacity(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t S t r o k e W i d t h                           %
+%   D r a w G e t S t r o k e W i d t h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetStrokeWidth() returns the width of the stroke used to draw object
+%  DrawGetStrokeWidth() returns the width of the stroke used to draw object
 %  outlines.
 %
-%  The format of the MagickDrawGetStrokeWidth method is:
+%  The format of the DrawGetStrokeWidth method is:
 %
-%      double MagickDrawGetStrokeWidth(const DrawingWand *drawing_wand)
+%      double DrawGetStrokeWidth(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport double MagickDrawGetStrokeWidth(const DrawingWand *drawing_wand)
+WandExport double DrawGetStrokeWidth(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4850,18 +4850,18 @@ WandExport double MagickDrawGetStrokeWidth(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t S t r o k e W i d t h                           %
+%   D r a w S e t S t r o k e W i d t h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetStrokeWidth() sets the width of the stroke used to draw object
+%  DrawSetStrokeWidth() sets the width of the stroke used to draw object
 %  outlines.
 %
-%  The format of the MagickDrawSetStrokeWidth method is:
+%  The format of the DrawSetStrokeWidth method is:
 %
-%      void MagickDrawSetStrokeWidth(DrawingWand *drawing_wand,
+%      void DrawSetStrokeWidth(DrawingWand *drawing_wand,
 %        const double stroke_width)
 %
 %  A description of each parameter follows:
@@ -4871,7 +4871,7 @@ WandExport double MagickDrawGetStrokeWidth(const DrawingWand *drawing_wand)
 %    o stroke_width: stroke width
 %
 */
-WandExport void MagickDrawSetStrokeWidth(DrawingWand *drawing_wand,
+WandExport void DrawSetStrokeWidth(DrawingWand *drawing_wand,
   const double stroke_width)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4889,25 +4889,25 @@ WandExport void MagickDrawSetStrokeWidth(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t T e x t A n t i a l i a s                       %
+%   D r a w G e t T e x t A n t i a l i a s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetTextAntialias() returns the current text antialias setting, which
+%  DrawGetTextAntialias() returns the current text antialias setting, which
 %  determines whether text is antialiased.  Text is antialiased by default.
 %
-%  The format of the MagickDrawGetTextAntialias method is:
+%  The format of the DrawGetTextAntialias method is:
 %
-%      unsigned int MagickDrawGetTextAntialias(const DrawingWand *drawing_wand)
+%      unsigned int DrawGetTextAntialias(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport unsigned int MagickDrawGetTextAntialias(const DrawingWand *drawing_wand)
+WandExport unsigned int DrawGetTextAntialias(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4919,18 +4919,18 @@ WandExport unsigned int MagickDrawGetTextAntialias(const DrawingWand *drawing_wa
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t T e x t A n t i a l i a s                       %
+%   D r a w S e t T e x t A n t i a l i a s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetTextAntialias() controls whether text is antialiased.  Text is
+%  DrawSetTextAntialias() controls whether text is antialiased.  Text is
 %  antialiased by default.
 %
-%  The format of the MagickDrawSetTextAntialias method is:
+%  The format of the DrawSetTextAntialias method is:
 %
-%      void MagickDrawSetTextAntialias(DrawingWand *drawing_wand,
+%      void DrawSetTextAntialias(DrawingWand *drawing_wand,
 %        const unsigned int text_antialias)
 %
 %  A description of each parameter follows:
@@ -4941,7 +4941,7 @@ WandExport unsigned int MagickDrawGetTextAntialias(const DrawingWand *drawing_wa
 %      antialiasing.
 %
 */
-WandExport void MagickDrawSetTextAntialias(DrawingWand *drawing_wand,
+WandExport void DrawSetTextAntialias(DrawingWand *drawing_wand,
   const unsigned int text_antialias)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -4959,25 +4959,25 @@ WandExport void MagickDrawSetTextAntialias(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t T e x t D e c o r a t i o n                     %
+%   D r a w G e t T e x t D e c o r a t i o n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetTextDecoration() returns the decoration applied when annotating with
+%  DrawGetTextDecoration() returns the decoration applied when annotating with
 %  text.
 %
-%  The format of the MagickDrawGetTextDecoration method is:
+%  The format of the DrawGetTextDecoration method is:
 %
-%      DecorationType MagickDrawGetTextDecoration(DrawingWand *drawing_wand)
+%      DecorationType DrawGetTextDecoration(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 */
-WandExport DecorationType MagickDrawGetTextDecoration(const DrawingWand *drawing_wand)
+WandExport DecorationType DrawGetTextDecoration(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -4989,18 +4989,18 @@ WandExport DecorationType MagickDrawGetTextDecoration(const DrawingWand *drawing
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t T e x t D e c o r a t i o n                     %
+%   D r a w S e t T e x t D e c o r a t i o n                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetTextDecoration() specifies a decoration to be applied when
+%  DrawSetTextDecoration() specifies a decoration to be applied when
 %  annotating with text.
 %
-%  The format of the MagickDrawSetTextDecoration method is:
+%  The format of the DrawSetTextDecoration method is:
 %
-%      void MagickDrawSetTextDecoration(DrawingWand *drawing_wand,
+%      void DrawSetTextDecoration(DrawingWand *drawing_wand,
 %        const DecorationType decoration)
 %
 %  A description of each parameter follows:
@@ -5011,7 +5011,7 @@ WandExport DecorationType MagickDrawGetTextDecoration(const DrawingWand *drawing
 %      OverlineDecoration, or LineThroughDecoration
 %
 */
-WandExport void MagickDrawSetTextDecoration(DrawingWand *drawing_wand,
+WandExport void DrawSetTextDecoration(DrawingWand *drawing_wand,
   const DecorationType decoration)
 {
   const char
@@ -5047,26 +5047,26 @@ WandExport void MagickDrawSetTextDecoration(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t T e x t E n c o d i n g                         %
+%   D r a w G e t T e x t E n c o d i n g                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetTextEncoding() returns a null-terminated string which specifies the
+%  DrawGetTextEncoding() returns a null-terminated string which specifies the
 %  code set used for text annotations. The string must be freed by the user
 %  once it is no longer required.
 %
-%  The format of the MagickDrawGetTextEncoding method is:
+%  The format of the DrawGetTextEncoding method is:
 %
-%      char *MagickDrawGetTextEncoding(const DrawingWand *drawing_wand)
+%      char *DrawGetTextEncoding(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
 %    o drawing_wand: The drawing wand.
 %
 % */
-WandExport char *MagickDrawGetTextEncoding(const DrawingWand *drawing_wand)
+WandExport char *DrawGetTextEncoding(const DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
@@ -5080,22 +5080,22 @@ WandExport char *MagickDrawGetTextEncoding(const DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t T e x t E n c o d i n g                         %
+%   D r a w S e t T e x t E n c o d i n g                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetTextEncoding() specifies specifies the code set to use for
+%  DrawSetTextEncoding() specifies specifies the code set to use for
 %  text annotations. The only character encoding which may be specified
 %  at this time is "UTF-8" for representing Unicode as a sequence of
 %  bytes. Specify an empty string to set text encoding to the system's
 %  default. Successful text annotation using Unicode may require fonts
 %  designed to support Unicode.
 %
-%  The format of the MagickDrawSetTextEncoding method is:
+%  The format of the DrawSetTextEncoding method is:
 %
-%      void MagickDrawSetTextEncoding(DrawingWand *drawing_wand,const char *encoding)
+%      void DrawSetTextEncoding(DrawingWand *drawing_wand,const char *encoding)
 %
 %  A description of each parameter follows:
 %
@@ -5104,7 +5104,7 @@ WandExport char *MagickDrawGetTextEncoding(const DrawingWand *drawing_wand)
 %    o encoding: character string specifying text encoding
 %
 % */
-WandExport void MagickDrawSetTextEncoding(DrawingWand *drawing_wand,
+WandExport void DrawSetTextEncoding(DrawingWand *drawing_wand,
   const char *encoding)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -5123,18 +5123,18 @@ WandExport void MagickDrawSetTextEncoding(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w G e t T e x t U n d e r C o l o r                     %
+%   D r a w G e t T e x t U n d e r C o l o r                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawGetTextUnderColor() returns the color of a background rectangle
+%  DrawGetTextUnderColor() returns the color of a background rectangle
 %  to place under text annotations.
 %
-%  The format of the MagickDrawGetTextUnderColor method is:
+%  The format of the DrawGetTextUnderColor method is:
 %
-%      void MagickDrawGetTextUnderColor(const DrawingWand *drawing_wand,
+%      void DrawGetTextUnderColor(const DrawingWand *drawing_wand,
 %        PixelWand *under_color)
 %
 %  A description of each parameter follows:
@@ -5144,7 +5144,7 @@ WandExport void MagickDrawSetTextEncoding(DrawingWand *drawing_wand,
 %    o under_color: Return the under color.
 %
 */
-WandExport void MagickDrawGetTextUnderColor(const DrawingWand *drawing_wand,
+WandExport void DrawGetTextUnderColor(const DrawingWand *drawing_wand,
   PixelWand *under_color)
 {
   assert(drawing_wand != (const DrawingWand *) NULL);
@@ -5157,18 +5157,18 @@ WandExport void MagickDrawGetTextUnderColor(const DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t T e x t U n d e r C o l o r                     %
+%   D r a w S e t T e x t U n d e r C o l o r                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetTextUnderColor() specifies the color of a background rectangle
+%  DrawSetTextUnderColor() specifies the color of a background rectangle
 %  to place under text annotations.
 %
-%  The format of the MagickDrawSetTextUnderColor method is:
+%  The format of the DrawSetTextUnderColor method is:
 %
-%      void MagickDrawSetTextUnderColor(DrawingWand *drawing_wand,
+%      void DrawSetTextUnderColor(DrawingWand *drawing_wand,
 %        const PixelWand *under_wand)
 %
 %  A description of each parameter follows:
@@ -5178,7 +5178,7 @@ WandExport void MagickDrawGetTextUnderColor(const DrawingWand *drawing_wand,
 %    o under_wand.: text under wand.
 %
 */
-WandExport void MagickDrawSetTextUnderColor(DrawingWand *drawing_wand,
+WandExport void DrawSetTextUnderColor(DrawingWand *drawing_wand,
   const PixelWand *under_wand)
 {
   PixelPacket
@@ -5203,19 +5203,19 @@ WandExport void MagickDrawSetTextUnderColor(DrawingWand *drawing_wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w T r a n s l a t e                                     %
+%   D r a w T r a n s l a t e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawTranslate() applies a translation to the current coordinate
+%  DrawTranslate() applies a translation to the current coordinate
 %  system which moves the coordinate system origin to the specified
 %  coordinate.
 %
-%  The format of the MagickDrawTranslate method is:
+%  The format of the DrawTranslate method is:
 %
-%      void MagickDrawTranslate(DrawingWand *drawing_wand,const double x,
+%      void DrawTranslate(DrawingWand *drawing_wand,const double x,
 %        const double y)
 %
 %  A description of each parameter follows:
@@ -5227,7 +5227,7 @@ WandExport void MagickDrawSetTextUnderColor(DrawingWand *drawing_wand,
 %    o y: new y ordinate for coordinate system origin
 %
 */
-WandExport void MagickDrawTranslate(DrawingWand *drawing_wand,const double x,
+WandExport void DrawTranslate(DrawingWand *drawing_wand,const double x,
   const double y)
 {
   AffineMatrix
@@ -5247,21 +5247,21 @@ WandExport void MagickDrawTranslate(DrawingWand *drawing_wand,const double x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D r a w S e t V i e w b o x                                   %
+%   D r a w S e t V i e w b o x                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDrawSetViewbox() sets the overall canvas size to be recorded with the
+%  DrawSetViewbox() sets the overall canvas size to be recorded with the
 %  drawing vector data.  Usually this will be specified using the same
 %  size as the canvas image.  When the vector data is saved to SVG or MVG
 %  formats, the viewbox is use to specify the size of the canvas image that
 %  a viewer will render the vector data on.
 %
-%  The format of the MagickDrawSetViewbox method is:
+%  The format of the DrawSetViewbox method is:
 %
-%      void MagickDrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
+%      void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
 %        unsigned long y1,unsigned long x2,unsigned long y2)
 %
 %  A description of each parameter follows:
@@ -5277,7 +5277,7 @@ WandExport void MagickDrawTranslate(DrawingWand *drawing_wand,const double x,
 %    o y2: bottom y ordinate
 %
 */
-WandExport void MagickDrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
+WandExport void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
   unsigned long y1,unsigned long x2,unsigned long y2)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
@@ -5290,22 +5290,22 @@ WandExport void MagickDrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k N e w D r a w i n g W a n d                                   %
+%   N e w D r a w i n g W a n d                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickNewDrawingWand() returns a drawing wand required for all other methods in
+%  NewDrawingWand() returns a drawing wand required for all other methods in
 %  the API.
 %
-%  The format of the MagickNewDrawingWand method is:
+%  The format of the NewDrawingWand method is:
 %
-%      DrawingWand *MagickNewDrawingWand(void)
+%      DrawingWand *NewDrawingWand(void)
 %
 %
 */
-WandExport DrawingWand *MagickNewDrawingWand(void)
+WandExport DrawingWand *NewDrawingWand(void)
 {
   Image
     *image;
@@ -5313,5 +5313,5 @@ WandExport DrawingWand *MagickNewDrawingWand(void)
   image=AllocateImage((const ImageInfo *) NULL);
   /* A crummy way to determine that this image can be deleted. */
   strlcpy(image->filename,dummy_image_filename,MaxTextExtent);
-  return(MagickDrawAllocateWand((const DrawInfo *) NULL,image));
+  return(DrawAllocateWand((const DrawInfo *) NULL,image));
 }
