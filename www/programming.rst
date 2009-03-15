@@ -18,7 +18,7 @@ GraphicsMagick Programming Interfaces
 
 
 .. _`C Core` : api/api.html
-.. _`C Wand` : wand/api.html
+.. _`C Wand` : wand/wand.html
 .. _C++ : Magick++/index.html
 .. _Perl : perl.html
 .. _Ruby : http://rmagick.rubyforge.org/
