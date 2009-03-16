@@ -1,3 +1,11 @@
+2009-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/{gray.c, rgb.c, cymk.c}: Work toward supporting the
+	-endian option.  Not working properly yet.
+
+	* magick/enum_strings.c (EndianTypeToString): New function.
+	(InterlaceTypeToString): New function.
+
 2009-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/drawing_wand.c: Stripped out unused code.

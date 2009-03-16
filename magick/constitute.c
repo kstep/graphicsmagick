@@ -2698,7 +2698,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
       export_info->bytes_exported=0;
     }
 
-  /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
+/*   printf("quantum_type=%d  quantum_size=%u  endian=%s\n",(int) quantum_type, quantum_size, EndianTypeToString(endian)); */
 
   double_scale=(double) (double_maxvalue-double_minvalue)/MaxRGB;
   if ((sample_type != FloatQuantumSampleType) && (sample_bits <= 32U))
