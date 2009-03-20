@@ -80,8 +80,9 @@ image formats.
    | CGM          | R    | Computer Graphics         | Requires ralcgm_ to render CGM files.            |
    |              |      | Metafile                  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | CMYK         | RW   | Raw cyan, magenta,        | Set -size and -depth to specify the image width, |
-   |              |      | yellow, and black samples | height, and depth.                               |
+   | CMYK         | RW   | Raw cyan, magenta,        | Use -size, -depth, -endian, and -interlace to    |
+   |              |      | yellow, and black samples | specify the image width, height, depth, byte     |
+   |              |      |                           | order, and interlace.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
    | CUR          | R    | Microsoft Cursor Icon     |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -163,8 +164,8 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | GPLT         | R    | Gnuplot_ plot files       | Requires Gnuplot_ 3.5 or later.                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | GRAY         | RW   | Raw gray samples          | Use -size and -depth to specify the image width, |
-   |              |      |                           | height, and depth.                               |
+   | GRAY         | RW   | Raw gray samples          | Use -size, -depth, and -endian to specify the    |
+   |              |      |                           | image width, height, depth, and byte order.      |
    +--------------+------+---------------------------+--------------------------------------------------+
    | HPGL         | R    | HP-GL plotter language    | Requires hp2xx_ 3.2.0 or later                   |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -331,11 +332,13 @@ image formats.
    | RAD          | R    | Radiance_ image file      | Requires that ra_ppm from the Radiance_ software |
    |              |      |                           | package be installed.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | RGB          | RW   | Raw red, green, and blue  | Use -size and -depth to specify the image width, |
-   |              |      | samples                   | height, and depth.                               |
+   | RGB          | RW   | Raw red, green, and blue  | Use -size, -depth, -endian, and -interlace to    |
+   |              |      | samples                   | specify the image width, height, depth, byte     |
+   |              |      |                           | order, and interlace.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | RGBA         | RW   | Raw red, green, blue, and | Use -size and -depth to specify the image width, |
-   |              |      | matte samples             | height, and depth.                               |
+   | RGBA         | RW   | Raw red, green, and blue  | Use -size, -depth, -endian, and -interlace to    |
+   |              |      | and matte samples         | specify the image width, height, depth, byte     |
+   |              |      |                           | order, and interlace.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
    | RLA          | R    | Alias/Wavefront image     |                                                  |
    |              |      | file                      |                                                  |
