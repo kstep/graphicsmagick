@@ -194,9 +194,13 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case NoInterlace:
       default:
       {
+	QuantumType
+	  quantum_type;
+
         /*
           No interlacing:  RGBRGBRGBRGBRGBRGB...
         */
+	quantum_type=(image->matte ? RGBAQuantum : RGBQuantum);
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (long) image->rows; y++)
@@ -206,12 +210,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          if (!image->matte)
-            (void) ImportImagePixelArea(image,RGBQuantum,quantum_size,scanline+x,
-					&import_options,0);
-          else
-            (void) ImportImagePixelArea(image,RGBAQuantum,quantum_size,scanline+x,
-					&import_options,0);
+	  (void) ImportImagePixelArea(image,quantum_type,quantum_size,scanline+x,
+				      &import_options,0);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -638,26 +638,23 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       case NoInterlace:
       default:
       {
+	QuantumType
+	  quantum_type;
+
         /*
           No interlacing:  RGBRGBRGBRGBRGBRGB...
         */
+	quantum_type=RGBQuantum;
+	if (LocaleCompare(image_info->magick,"RGBA") == 0)
+	  quantum_type=RGBAQuantum;
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          if (LocaleCompare(image_info->magick,"RGBA") != 0)
-            {
-              (void) ExportImagePixelArea(image,RGBQuantum,quantum_size,pixels,
-					  &export_options,&export_info);
-              (void) WriteBlob(image,export_info.bytes_exported,pixels);
-            }
-          else
-            {
-              (void) ExportImagePixelArea(image,RGBAQuantum,quantum_size,pixels,
-					  &export_options,&export_info);
-              (void) WriteBlob(image,export_info.bytes_exported,pixels);
-            }
+	  (void) ExportImagePixelArea(image,quantum_type,quantum_size,pixels,
+				      &export_options,&export_info);
+	  (void) WriteBlob(image,export_info.bytes_exported,pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,

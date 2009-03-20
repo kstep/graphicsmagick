@@ -1,3 +1,9 @@
+2009-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/rgb.c: Compute the quantum type rather than using a
+	recurring conditional statement.  It turns out that the -endian
+	option is working as it should.
+
 2009-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/{gray.c, rgb.c, cymk.c}: Work toward supporting the
