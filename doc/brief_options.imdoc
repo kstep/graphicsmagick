@@ -202,7 +202,7 @@
 </utils>
 <utils apps=compare,composite,convert,display,import,mogrify,montage>
 <lopt>-endian <type></opt>
-<abs>specify endianness (MSB or LSB) of output image</abs>
+<abs>specify endianness (MSB, LSB, or Native) of image</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <opt>-enhance</opt>
