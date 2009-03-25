@@ -21,6 +21,109 @@
 </tr>
 </table>
 <p>
+2009-03-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/rgb.c: Compute the quantum type rather than using a
+        recurring conditional statement.  It turns out that the -endian
+        option is working as it should.
+
+</UL>
+<p>
+2009-03-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/{gray.c, rgb.c, cymk.c}: Work toward supporting the
+        -endian option.  Not working properly yet.
+
+  <LI> magick/enum_strings.c (EndianTypeToString): New function.
+        (InterlaceTypeToString): New function.
+
+</UL>
+<p>
+2009-03-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/drawing_wand.c: Stripped out unused code.
+
+  <LI> www/wand: Added formatted Wand API documentation.
+
+  <LI> scripts/format_c_api_doc.py: Now supports --include-rst option.
+
+</UL>
+<p>
+2009-03-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageBoundingBox): If we fail to find a
+        smaller bounding box, then the returned bounding box is the entire
+        image.
+
+</UL>
+<p>
+2009-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/magick/magick_config.h.in: Provide configuration
+        access to the DisableSlowOpenMP define.
+
+  <LI> PerlMagick/t/read.t: Add a test for HRZ Slow scan TV.
+
+  <LI> magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
+        clear monochrome and grayscale flags when pixels are accessed
+        read/write rather than at sync.
+
+  <LI> coders/Makefile.am (MAGICK_CODER_SRCS): Add coders/hrz.c to
+        build.
+
+</UL>
+<p>
+2009-01-27  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/hrz.c: New HRZ reader for slow scan TV.
+
+</UL>
+<p>
+2009-02-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (ResizeImage): Make error handling more robust.
+
+  <LI> magick/pixel_cache.c (SetNexus): Return a run-time error to
+        invoking code rather than exiting the program if the pixel staging
+        buffer fails to be allocated.
+
+</UL>
+<p>
+2009-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Allow the user to force the
+        returned image to be TrueColor type for min-is-white and
+        min-is-black TIFF files.  Previous to this, bilevel TIFF files
+        were always returned as PseudoClass.
+
+</UL>
+<p>
+2009-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c, coders/pnm.c: Fix several race conditions
+        reported by Julian Seward.<BR>
+        (OpenCache): Restore conservative pre-allocation of pixel indexes
+        since a glitch was encountered that needs to be resolved.
+
+  <LI> magick/{channel.c,compare.c,constitute.c,decorate.c,effect.c,fx.c,
+        image.c,operator.c,pixel_iterator.c,render.c,resize.c,segment.c,
+        shear.c,transform.c}: Use explicit OpenMP critical sections to
+        avoid possible cross-contention.
+
+  <LI> coders/{dpx.c, pnm.c} Use explicit OpenMP critical sections to
+        avoid possible cross-contention.
+
+</UL>
+<p>
 2009-01-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1,3 +1,10 @@
+2009-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantumOperator): New variant of method which
+	takes a 'double' argument, as it originally should.  Previous
+	method taking a Quantum argument is still supported but marked
+	deprecated.
+
 2009-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: If the user defines STATIC_MAGICK in his

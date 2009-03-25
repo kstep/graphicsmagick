@@ -11,8 +11,6 @@ For GM 1.4
 * -random-threshold needs to have gamma 2.2 pre-applied to the pixels
   for correct appearance.
 
-* Support -endian option for RGB and GRAY raw files.
-
 * Fix browser interoperability issues reported for PNG8.
 
 * Choose a better tile size for rotate by 0 and 270 degrees when the pixel
@@ -22,6 +20,12 @@ For GM 1.4
   quantumOperator() methods are also missing from HTML documentation.
 
 * Fix failure to render entire page for some PDF files.
+
+* Add ClonePixelWand(), Compare, and Distortion functions to the Wand
+  API.
+
+ * Verify that delegate-subsystem exceptions propogate properly from
+   BlobToImage().
 
 For Future
 ==========

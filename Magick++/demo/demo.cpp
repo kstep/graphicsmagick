@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2009
 //
 // Simple demo program for Magick++
 //
@@ -301,6 +301,18 @@ int main( int /*argc*/, char ** argv)
       example = model;
       example.label( "Oil Paint" );
       example.oilPaint( );
+      images.push_back( example );
+
+      cout << "  operator divide ..." << endl;
+      example = model;
+      example.label( "Operator Divide\n(All/2.0)" );
+      example.quantumOperator( AllChannels, DivideQuantumOp, 2.0);
+      images.push_back( example );
+
+      cout << "  operator rshift ..." << endl;
+      example = model;
+      example.label( "Operator RShift\n(All>>2)" );
+      example.quantumOperator( AllChannels, RShiftQuantumOp, static_cast<Quantum>(2));
       images.push_back( example );
 
       cout << "  ordered dither 2x2 ..." << endl;

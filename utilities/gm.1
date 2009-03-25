@@ -1,4 +1,4 @@
-.TH gm 1 "2009/03/05" "GraphicsMagick"
+.TH gm 1 "2009/03/20" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1671,12 +1671,13 @@ Choose from \fIAdobeCustom, AdobeExpert, AdobeStandard, AppleRoman,
 BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.\fP
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 
-MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
-indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
-option currently only influences the output of the DPX and TIFF
-writers.
+\fIMSB\fP indicates big-endian (e.g. SPARC, Motorola 68K) while
+\fILSB\fP indicates little-endian (e.g. Intel 'x86, VAX) byte
+ordering.  \fINative\fP indicates to use the normal ordering for the
+current CPU.  This option currently only influences the CMYK, DPX,
+GRAY, RGB, and TIFF, formats.
 
 Use \fB+endian\fP to revert to unspecified endianness.
 .TP
@@ -4328,7 +4329,7 @@ Options, above.
 \fRspecifies the X server to contact
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-file \fI<filename>"\fP
 \fRwrite annotated difference image to file
@@ -4484,7 +4485,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-filter \fI<type>"\fP
 \fRuse this type of filter when resizing an image
@@ -5351,7 +5352,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -5853,7 +5854,7 @@ Options, above.
 \fRdetect edges within an image
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -8011,7 +8012,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-frame"
 \fRinclude the X window frame in the imported image
@@ -8247,7 +8248,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -8708,7 +8709,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
