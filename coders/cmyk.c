@@ -609,18 +609,19 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     scene,
     status;
 
+  ExportPixelAreaOptions
+    export_options;
+
+  ExportPixelAreaInfo
+    export_info;
+
   if (image->depth <= 8)
     quantum_size=8;
   else if (image->depth <= 16)
     quantum_size=16;
   else
     quantum_size=32;
-
-  ExportPixelAreaOptions
-    export_options;
-
-  ExportPixelAreaInfo
-    export_info;
+  
 
   /*
     Allocate memory for pixels.
