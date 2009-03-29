@@ -229,6 +229,7 @@ namespace Magick
   using MagickLib::UndefinedEndian;
   using MagickLib::LSBEndian;
   using MagickLib::MSBEndian;
+  using MagickLib::NativeEndian;
 
   // Fill rules
   using MagickLib::FillRule;
